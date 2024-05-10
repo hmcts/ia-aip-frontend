@@ -13,9 +13,12 @@ import {
   getAppellantApplications,
   getApplicant,
   getFtpaApplicantType,
+  getLatestUpdateTribunalDecisionHistory,
   isFtpaFeatureEnabled,
   isNonStandardDirectionEnabled,
-  isReadonlyApplicationEnabled
+  isReadonlyApplicationEnabled,
+  isUpdateTribunalDecideWithRule31,
+  isUpdateTribunalDecideWithRule32
 } from './utils';
 
 /**
@@ -28,7 +31,9 @@ function constructEventObject(event: HistoryEvent, req: Request) {
   let eventContent = i18n.pages.overviewPage.timeline[event.id];
   if (isUploadEvidenceEventByLegalRep(req, event)) {
     eventContent = i18n.pages.overviewPage.timeline[event.id]['providedByLr'];
-  } else if (Events.RESIDENT_JUDGE_FTPA_DECISION.id === event.id || Events.LEADERSHIP_JUDGE_FTPA_DECISION.id === event.id) {
+  } else if (Events.RESIDENT_JUDGE_FTPA_DECISION.id === event.id
+      || Events.LEADERSHIP_JUDGE_FTPA_DECISION.id === event.id
+      || Events.DECIDE_FTPA_APPLICATION.id === event.id) {
     const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
     eventContent = i18n.pages.overviewPage.timeline['decideFtpa'][ftpaApplicantType];
   }
@@ -47,6 +52,13 @@ function constructEventObject(event: HistoryEvent, req: Request) {
   if (event.id === Events.REQUEST_RESPONSE_REVIEW.id) {
     eventObject.links[0].text = i18n.pages.overviewPage.timeline[event.id].status[req.session.appeal.appealReviewOutcome].text;
     eventObject.links[0].href = i18n.pages.overviewPage.timeline[event.id].status[req.session.appeal.appealReviewOutcome].href;
+  }
+  if (event.id === Events.SEND_DECISION_AND_REASONS.id) {
+    if (req.session.appeal.updatedAppealDecision) {
+      eventObject.links[0].href = i18n.pages.overviewPage.timeline[event.id].updatedLinks;
+    } else {
+      eventObject.links[0].href = i18n.pages.overviewPage.timeline[event.id].originalLinks;
+    }
   }
   return eventObject;
 }
@@ -143,6 +155,66 @@ function getDirectionHistory(req: Request): any[] {
   }
 }
 
+function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
+  let latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
+
+  if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled)) {
+    let timelineText = '';
+    let originalTribunalDecision;
+    let newTribunalDecision = req.session.appeal.updatedAppealDecision && req.session.appeal.updatedAppealDecision.toLowerCase() || null;
+    if (req.session.appeal.typesOfUpdateTribunalDecision && req.session.appeal.typesOfUpdateTribunalDecision.value) {
+      if (req.session.appeal.typesOfUpdateTribunalDecision.value.label.includes('Yes')) {
+        originalTribunalDecision = (newTribunalDecision === 'allowed') ? 'dismissed' : 'allowed';
+      }
+    }
+
+    if (originalTribunalDecision === 'allowed' && newTribunalDecision === 'dismissed') {
+      timelineText = i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule31.fromAllowedToDismissedText;
+    } else if (originalTribunalDecision === 'dismissed' && newTribunalDecision === 'allowed') {
+      timelineText = i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule31.fromDismissedToAllowedText;
+    } else {
+      return [];
+    }
+
+    return [{
+      date: moment(latestUpdateTribunalDecisionHistory.createdDate).format('DD MMMM YYYY'),
+      dateObject: new Date(latestUpdateTribunalDecisionHistory.createdDate),
+      text: timelineText || null
+    }];
+  } else if (isUpdateTribunalDecideWithRule32(req, ftpaSetAsideFeatureEnabled)) {
+
+    return [{
+      date: moment(latestUpdateTribunalDecisionHistory.createdDate).format('DD MMMM YYYY'),
+      dateObject: new Date(latestUpdateTribunalDecisionHistory.createdDate),
+      text: i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule32.documentOfReasonsForTheDecision.text || null,
+      links: [{
+        ...i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule32.documentOfReasonsForTheDecision.links[0],
+        href: i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule32.documentOfReasonsForTheDecision.links[0].href
+      }]
+    }];
+  } else {
+    return [];
+  }
+}
+
+function getUpdateTribunalDecisionDocumentHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
+  if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.updateTribunalDecisionAndReasonsFinalCheck === 'Yes') {
+
+    let latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
+
+    return [{
+      date: moment(latestUpdateTribunalDecisionHistory.createdDate).format('DD MMMM YYYY'),
+      dateObject: new Date(latestUpdateTribunalDecisionHistory.createdDate),
+      text: i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule31.newDecisionAndReasonsDocument.text || null,
+      links: [{
+        ...i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule31.newDecisionAndReasonsDocument.links[0]
+      }]
+    }];
+  } else {
+    return [];
+  }
+}
+
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
@@ -152,7 +224,8 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const uploadAddendumEvidenceFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
   const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
   const ftpaFeatureEnabled: boolean = await isFtpaFeatureEnabled(req);
-  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled);
+  const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
+  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
   const appealHearingRequirementsSection = constructSection(
@@ -187,9 +260,14 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
+  const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
+  const updatedTribunalDecisionDocumentHistory = getUpdateTribunalDecisionDocumentHistory(req, ftpaSetAsideFeatureEnabled);
+  const combinedAppealDecisionSection = appealDecisionSection.concat(updatedTribunalDecisionHistory, updatedTribunalDecisionDocumentHistory)
+    .sort((a: any, b: any) => b.dateObject - a.dateObject);
+
   return {
-    ...(appealDecisionSection && appealDecisionSection.length > 0) &&
-    { appealDecisionSection: appealDecisionSection },
+    ...(combinedAppealDecisionSection && combinedAppealDecisionSection.length > 0) &&
+    { appealDecisionSection: combinedAppealDecisionSection },
     ...(appealHearingRequirementsSection && appealHearingRequirementsSection.length > 0) &&
     { appealHearingRequirementsSection: appealHearingRequirementsSection },
     appealArgumentSection: argumentSection,
@@ -199,7 +277,8 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
 function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
   hearingBundleFeatureEnabled: boolean,
-  ftpaFeatureEnabled: boolean) {
+  ftpaFeatureEnabled: boolean,
+  ftpaSetAsideFeatureEnabled: boolean) {
   const appealHearingRequirementsSectionEvents = [
     Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
     Events.STITCHING_BUNDLE_COMPLETE.id,
@@ -228,6 +307,12 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
         Events.APPLY_FOR_FTPA_RESPONDENT.id,
         Events.LEADERSHIP_JUDGE_FTPA_DECISION.id,
         Events.RESIDENT_JUDGE_FTPA_DECISION.id
+    );
+  }
+
+  if (ftpaSetAsideFeatureEnabled) {
+    appealDecisionSectionEvents.push(
+        Events.DECIDE_FTPA_APPLICATION.id
     );
   }
 
@@ -284,6 +369,8 @@ export {
   getSubmitClarifyingQuestionsEvents,
   getApplicationEvents,
   getDirectionHistory,
+  getUpdateTribunalDecisionHistory,
+  getUpdateTribunalDecisionDocumentHistory,
   constructSection,
   getEventsAndStates
 };

@@ -128,7 +128,6 @@ interface Appeal {
   hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
-  hearingDocuments?: Evidence[];
   finalDecisionAndReasonsDocuments?: Evidence[];
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
@@ -160,6 +159,11 @@ interface Appeal {
   addendumEvidence?: AdditionalEvidenceDocument[];
   pcqId?: string;
   isDecisionAllowed?: string;
+  updateTribunalDecisionList?: string;
+  updatedAppealDecision?: string;
+  typesOfUpdateTribunalDecision?: DynamicList;
+  updateTribunalDecisionAndReasonsFinalCheck?: string;
+  rule32NoticeDocs?: Evidence;
   appealOutOfCountry?: string;
   ftpaApplicantType?: string;
   ftpaAppellantEvidenceDocuments?: Evidence[];
@@ -187,6 +191,13 @@ interface Appeal {
   nonStandardDirectionEnabled?: boolean;
   readonlyApplicationEnabled?: boolean;
   utAppealReferenceNumber?: string;
+  ftpaR35AppellantDocument?: Evidence;
+  ftpaR35RespondentDocument?: Evidence;
+  ftpaApplicationRespondentDocument?: Evidence;
+  ftpaApplicationAppellantDocument?: Evidence;
+  ftpaAppellantDecisionRemadeRule32Text?: string;
+  ftpaRespondentDecisionRemadeRule32Text?: string;
+  updatedDecisionAndReasons?: DecisionAndReasons[];
 }
 
 interface Hearing {
@@ -294,6 +305,12 @@ interface AppealApplication {
   saveAndAskForTime?: boolean;
   rpDcAppealHearingOption?: string;
   decisionHearingFeeOption?: string;
+  feeSupportPersisted?: boolean;
+  remissionOption?: string;
+  asylumSupportRefNumber?: string;
+  helpWithFeesOption?: string;
+  helpWithFeesRefNumber?: string;
+  localAuthorityLetters?: Evidence[];
 }
 
 interface CmaRequirements {
@@ -441,9 +458,18 @@ interface ApplicationStatus {
   [key: string]: Task;
 }
 
-declare module NodeJS {
-  interface Global {
-    testFailed: boolean
-  }
+interface DecisionAndReasons {
+  id: string;
+  updatedDecisionDate: string;
+  dateCoverLetterDocumentUploaded: string;
+  coverLetterDocument: Evidence;
+  dateDocumentAndReasonsDocumentUploaded?: string;
+  documentAndReasonsDocument?: Evidence;
+  summariseChanges?: string;
 }
 
+declare module NodeJS {
+  interface Global {
+    testFailed: boolean;
+  }
+}

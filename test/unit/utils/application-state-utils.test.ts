@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import {
@@ -173,6 +174,28 @@ describe('application-state-utils', () => {
       });
     });
 
+    it('when application status is appealSubmitted with fee and setAside is enabled should get correct \'Do This' +
+      ' next section\'', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      req.session.appeal.appealStatus = 'appealSubmitted';
+      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        cta: null,
+        deadline: '22 February 2020',
+        descriptionParagraphs: [
+          'Your appeal details have been sent to the Tribunal.',
+          'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+          'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
+          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+        ],
+        allowedAskForMoreTime: false
+      });
+    });
+
     it('get correct \'Do This next section\' when application status is pendingPayment', async () => {
       req.session.appeal.appealStatus = 'pendingPayment';
       const result = await getAppealApplicationNextStep(req as Request);
@@ -191,6 +214,29 @@ describe('application-state-utils', () => {
         },
         allowedAskForMoreTime: false,
         deadline: '22 February 2020'
+      });
+    });
+
+    it('get correct \'Do This next section\' when application status is pendingPayment and dlrm fee support is' +
+      ' on', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal.appealStatus = 'pendingPayment';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.appealOutOfCountry = 'Yes';
+
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        cta: null,
+        deadline: '07 March 2020',
+        descriptionParagraphs: [
+          'Your appeal details have been sent to the Tribunal.',
+          'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+          'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
+          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+        ],
+        allowedAskForMoreTime: false
       });
     });
 
@@ -263,6 +309,29 @@ describe('application-state-utils', () => {
           'title': 'Helpful Information',
           'url': "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
         }
+      });
+    });
+
+    it('when application status is lateAppealSubmitted with fee and setAside is enabled should get correct \'Do This' +
+      ' next section\'', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      req.session.appeal.application.isAppealLate = true;
+      req.session.appeal.appealStatus = 'lateAppealSubmitted';
+      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        cta: null,
+        deadline: '22 February 2020',
+        descriptionParagraphs: [
+          'Your appeal details have been sent to the Tribunal.',
+          'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+          'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
+          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+        ],
+        allowedAskForMoreTime: false
       });
     });
 
@@ -1123,6 +1192,64 @@ describe('application-state-utils', () => {
     expect(result).to.eql(expected);
   });
 
+  it('when application status is decided  with rule 31 after triggering updateTribunalDecision event - DLRM set aside enabled.', async () => {
+    req.session.appeal.appealStatus = 'decided';
+    req.session.appeal.isDecisionAllowed = 'allowed';
+    req.session.appeal.updatedAppealDecision = 'dismissed';
+    req.session.appeal.updateTribunalDecisionList = 'underRule31';
+    req.session.appeal.history = [
+      {
+        'id': 'updateTribunalDecision',
+        'createdDate': '2024-03-04T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, 'dlrm-setaside-feature-flag', false).resolves(true);
+    const expected = {
+      'descriptionParagraphs': [
+        'A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>',
+        `<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.updatedDecisionAndReasonsViewer }}>Read the Decision and Reasons document</a>`
+      ]
+    };
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    expect(result.decision).to.eql(req.session.appeal.updatedAppealDecision);
+    expect(result.descriptionParagraphs).to.eql(expected.descriptionParagraphs);
+    expect(result.deadline).to.eql('18 March 2024');
+  });
+
+  it('when application status is decided with rule 32 after triggering updateTribunalDecision event - DLRM set aside enabled.', async () => {
+    req.session.appeal.appealStatus = 'decided';
+    req.session.appeal.updateTribunalDecisionList = 'underRule32';
+    req.session.appeal.history = [
+      {
+        'id': 'updateTribunalDecision',
+        'createdDate': '2024-03-07T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, 'dlrm-setaside-feature-flag', false).resolves(true);
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'allowedAskForMoreTime': false,
+      'cta': {
+      },
+      'deadline': null,
+      'decision': undefined,
+      'descriptionParagraphs': [
+        'A judge has reviewed your appeal decision and decided that your appeal should be heard again. <br>',
+        '<a href={{ paths.common.decisionAndReasonsViewerWithRule32 }}>Read the reasons for this decision</a> <br>'
+      ],
+      'info': {
+        'title': 'What happens next',
+        'text': 'There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing.'
+      }
+    };
+
+    expect(result).to.eql(expected);
+  });
+
   it('when application status is appealSubmitted and appeal is late, status should be lateAppealSubmitted.', () => {
     req.session.appeal.appealStatus = 'appealSubmitted';
     req.session.appeal.application.isAppealLate = true;
@@ -1305,6 +1432,76 @@ describe('application-state-utils', () => {
       'descriptionParagraphs': [
         'The Home Office application for permission to appeal to the Upper Tribunal has been not admitted. This means the Tribunal did not consider the request because it was late or the Home Office did not have the right to appeal.',
         "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application is decided as reheardRule35 for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'reheardRule35';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'cta': {},
+      'descriptionParagraphs': [
+        'A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided that this appeal should be heard again by the First-tier Tribunal.',
+        'The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.',
+        '<a href={{ paths.common.ftpaDecisionViewer }}>Read the decision and reasons document</a>',
+        '<b>What happens next</b>',
+        'There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing.'
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application is decided as remadeRule31 for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'remadeRule31';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'cta': {},
+      'descriptionParagraphs': [
+        'A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>',
+        '<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>',
+        '<b>What happens next</b>',
+        'The Tribunal will contact you when the review of your appeal decision is complete.'
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application is decided as remadeRule32 for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'remadeRule32';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'cta': {},
+      'descriptionParagraphs': [
+        'A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>',
+        '<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>',
+        '<b>What happens next</b>',
+        'The Tribunal will contact you when the review of your appeal decision is complete.'
       ]
     };
 

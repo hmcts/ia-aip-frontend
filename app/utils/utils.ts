@@ -4,6 +4,7 @@ import nl2br from 'nl2br';
 import * as path from 'path';
 import { applicationTypes } from '../data/application-types';
 import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
+import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
@@ -130,6 +131,29 @@ export function isNonStandardDirectionEnabled(req: Request) {
 
 export function isReadonlyApplicationEnabled(req: Request) {
   return req.session.appeal.readonlyApplicationEnabled;
+}
+
+export function isUpdateTribunalDecide(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+  return (ftpaSetAsideFeatureEnabled &&
+    req.session.appeal.history &&
+    req.session.appeal.history.find(event => event.id === Events.UPDATE_TRIBUNAL_DECISION.id) !== undefined &&
+    req.session.appeal.appealStatus === 'decided');
+}
+
+export function isUpdateTribunalDecideWithRule31(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+  return (isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) &&
+    req.session.appeal.updateTribunalDecisionList === 'underRule31');
+}
+
+export function isUpdateTribunalDecideWithRule32(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+  return (isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) &&
+    req.session.appeal.updateTribunalDecisionList === 'underRule32');
+}
+
+export function getLatestUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): HistoryEvent {
+  return isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) ? req.session.appeal.history
+    .filter(history => history.id === Events.UPDATE_TRIBUNAL_DECISION.id)
+    .sort((a: any, b: any) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())[0] : null;
 }
 
 /**

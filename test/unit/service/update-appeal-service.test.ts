@@ -1,4 +1,3 @@
-
 import { Request } from 'express';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
@@ -1078,6 +1077,152 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).is.undefined;
       });
     });
+
+    describe('ftpaR35AppellantDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'ftpaR35AppellantDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+          'document_filename': 'FTPA_R35_DOCUMENT.PDF',
+          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map reheard rule 35 decision document', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.ftpaR35AppellantDocument.name).eq('FTPA_R35_DOCUMENT.PDF');
+      });
+    });
+
+    describe('ftpaR35RespondentDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'ftpaR35RespondentDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+          'document_filename': 'FTPA_R35_DOCUMENT.PDF',
+          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map reheard rule 35 decision document (respondent)', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.ftpaR35RespondentDocument.name).eq('FTPA_R35_DOCUMENT.PDF');
+      });
+    });
+
+    describe('ftpaApplicationAppellantDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'ftpaApplicationAppellantDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+          'document_filename': 'FTPA_APPELLANT_DECISION_DOCUMENT.PDF',
+          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map Decide FTPA decision document (appellant)', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.ftpaApplicationAppellantDocument.name).eq('FTPA_APPELLANT_DECISION_DOCUMENT.PDF');
+      });
+    });
+
+    describe('rule32NoticeDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'rule32NoticeDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d',
+          'document_filename': 'rule32.pdf',
+          'document_binary_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map rule 32 notice document', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.rule32NoticeDocs.name).eq('rule32.pdf');
+      });
+    });
+
+    describe('ftpaApplicationRespondentDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'ftpaApplicationRespondentDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+          'document_filename': 'FTPA_RESPONDENT_DECISION_DOCUMENT.PDF',
+          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map Decide FTPA decision document (respondent)', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.ftpaApplicationRespondentDocument.name).eq('FTPA_RESPONDENT_DECISION_DOCUMENT.PDF');
+      });
+    });
+
+    describe('correctedDecisionAndReasons', () => {
+      const caseData: Partial<CaseData> = {
+        'correctedDecisionAndReasons': [
+          {
+            'id': '2',
+            'value': {
+              'coverLetterDocument': {
+                'document_filename': 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              },
+              'dateCoverLetterDocumentUploaded': '2022-01-30',
+              'updatedDecisionDate': '2022-01-30'
+            }
+          },
+          {
+            'id': '1',
+            'value': {
+              'coverLetterDocument': {
+                'document_filename': 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              },
+              'dateCoverLetterDocumentUploaded': '2022-01-26',
+              'documentAndReasonsDocument': {
+                'document_filename': 'PA 50012 2022-bond20-Decision-and-reasons-AMENDED.PDF',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              },
+              'dateDocumentAndReasonsDocumentUploaded': '2022-01-26',
+              'summariseChanges': 'Document summarised example',
+              'updatedDecisionDate': '2022-01-26'
+            }
+          }
+        ]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map correctedDecisionAndReasons collection', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.updatedDecisionAndReasons).to.be.length(2);
+      });
+    });
   });
 
   describe('submitEvent', () => {
@@ -1102,6 +1247,7 @@ describe('update-appeal-service', () => {
           appeal: {
             appealStatus: 'appealStarted',
             application: {
+              appellantInUk: 'undefined',
               homeOfficeRefNumber: 'newRef',
               outsideUkWhenApplicationMade: 'No',
               hasSponsor: 'No',
@@ -1119,7 +1265,7 @@ describe('update-appeal-service', () => {
               dateClientLeaveUk: {
                 year: '2019',
                 month: '12',
-                day: '11'
+                day: '15'
               },
               decisionLetterReceivedDate: {
                 year: '2019',
@@ -1160,7 +1306,19 @@ describe('update-appeal-service', () => {
                 phone: '07123456789',
                 wantsSms: false
               },
-              addressLookup: {}
+              addressLookup: {},
+              remissionOption: 'test',
+              asylumSupportRefNumber: 'test',
+              helpWithFeesRefNumber: 'HWF-123',
+              feeSupportPersisted: true,
+              helpWithFeesOption: 'test',
+              localAuthorityLetters: [{
+                name: 'somefile.png',
+                fileId: '00000000-0000-0000-0000-000000000000',
+                dateUploaded: '2020-01-01',
+                'description': 'Some evidence 1',
+                'tag': 'additionalEvidence'
+              }]
             } as AppealApplication,
             reasonsForAppeal: {
               applicationReason: 'I\'ve decided to appeal because ...',
@@ -1215,89 +1373,109 @@ describe('update-appeal-service', () => {
       documentManagementService = new DocumentManagementService(authenticationService);
       updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, null, documentManagementService);
       expectedCaseData = {
-        journeyType: 'aip',
-        appellantInUk: 'undefined',
-        homeOfficeReferenceNumber: 'newRef',
-        outsideUkWhenApplicationMade: 'No',
-        hasSponsor: 'No',
-        sponsorGivenNames: 'ABC XYZ',
-        sponsorFamilyName: 'ABC XYZ',
-        sponsorNameForDisplay: 'ABC XYZ',
-        sponsorAuthorisation: 'ABC XYZ',
-        gwfReferenceNumber: '',
-        homeOfficeDecisionDate: '2019-12-11',
-        dateClientLeaveUk: '2019-12-11',
-        decisionLetterReceivedDate: '2019-12-11',
-        submissionOutOfTime: 'Yes',
-        recordedOutOfTimeDecision: 'No',
-        applicationOutOfTimeExplanation: 'a reason',
-        applicationOutOfTimeDocument: {
-          document_filename: 'somefile.png',
-          document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
-          document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
+        'journeyType': 'aip',
+        'homeOfficeReferenceNumber': 'newRef',
+        'appellantInUk': 'undefined',
+        'outsideUkWhenApplicationMade': 'No',
+        'gwfReferenceNumber': '',
+        'homeOfficeDecisionDate': '2019-12-11',
+        'submissionOutOfTime': 'Yes',
+        'recordedOutOfTimeDecision': 'No',
+        'applicationOutOfTimeExplanation': 'a reason',
+        'applicationOutOfTimeDocument': {
+          'document_filename': 'somefile.png',
+          'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
+          'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
         },
-        appellantGivenNames: 'givenNames',
-        appellantFamilyName: 'familyName',
-        appellantDateOfBirth: '1980-01-02',
-        appellantAddress: {
-          AddressLine1: '60 Beautiful Street',
-          AddressLine2: 'Flat 2',
-          PostTown: 'London',
-          County: 'London',
-          PostCode: 'W1W 7RT',
-          Country: 'United Kingdom'
-        },
-        appellantHasFixedAddress: 'Yes',
-        appellantEmailAddress: 'email@example.net',
-        appellantNationalities: [
+        'appellantGivenNames': 'givenNames',
+        'appellantFamilyName': 'familyName',
+        'appellantDateOfBirth': '1980-01-02',
+        'dateClientLeaveUk': '2019-12-15',
+        'decisionLetterReceivedDate': '2019-12-11',
+        'appellantNationalities': [
           {
-            value: {
-              code: 'nationality'
+            'value': {
+              'code': 'nationality'
             }
           }
         ],
-        appealType: 'appealType',
-        subscriptions: [
+        'appellantAddress': {
+          'AddressLine1': '60 Beautiful Street',
+          'AddressLine2': 'Flat 2',
+          'PostTown': 'London',
+          'County': 'London',
+          'PostCode': 'W1W 7RT',
+          'Country': 'United Kingdom'
+        },
+        'appellantHasFixedAddress': 'Yes',
+        'appealType': 'appealType',
+        'remissionOption': 'test',
+        'asylumSupportRefNumber': 'test',
+        'helpWithFeesOption': 'test',
+        'helpWithFeesRefNumber': 'HWF-123',
+        'localAuthorityLetters': [
           {
-            value: {
-              subscriber: 'appellant',
-              wantsEmail: 'Yes',
-              email: 'email@example.net',
-              wantsSms: 'No',
-              mobileNumber: null
+            'id': '00000000-0000-0000-0000-000000000000',
+            'value': {
+              'dateUploaded': '2020-01-01',
+              'description': 'Some evidence 1',
+              'tag': 'additionalEvidence',
+              'document': {
+                'document_filename': 'somefile.png',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
+              }
             }
           }
         ],
-        reasonsForAppealDecision: 'I\'ve decided to appeal because ...',
-        reasonsForAppealDateUploaded: '2020-01-02',
-        reasonsForAppealDocuments: [
+        'feeSupportPersisted': 'Yes',
+        'appellantEmailAddress': 'email@example.net',
+        'subscriptions': [
           {
-            value: {
-              dateUploaded: '2020-01-01',
-              description: 'Some evidence 1',
-              tag: 'additionalEvidence',
-              document: {
-                document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
-                document_filename: 'File1.png',
-                document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+            'value': {
+              'subscriber': 'appellant',
+              'wantsEmail': 'Yes',
+              'email': 'email@example.net',
+              'wantsSms': 'No',
+              'mobileNumber': null
+            }
+          }
+        ],
+        'hasSponsor': 'No',
+        'sponsorGivenNames': 'ABC XYZ',
+        'sponsorFamilyName': 'ABC XYZ',
+        'sponsorNameForDisplay': 'ABC XYZ',
+        'sponsorAuthorisation': 'ABC XYZ',
+        'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
+        'reasonsForAppealDocuments': [
+          {
+            'value': {
+              'dateUploaded': '2020-01-01',
+              'description': 'Some evidence 1',
+              'tag': 'additionalEvidence',
+              'document': {
+                'document_filename': 'File1.png',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
               }
             }
           },
           {
-            value: {
-              dateUploaded: '2020-02-02',
-              description: 'Some evidence 2',
-              tag: 'additionalEvidence',
-              document: {
-                document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
-                document_filename: 'File2.png',
-                document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
+            'value': {
+              'dateUploaded': '2020-02-02',
+              'description': 'Some evidence 2',
+              'tag': 'additionalEvidence',
+              'document': {
+                'document_filename': 'File2.png',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
               }
             }
           }
         ],
-        submitTimeExtensionEvidence: [],
-        submitTimeExtensionReason: 'ask for more time reason'
+        'reasonsForAppealDateUploaded': '2020-01-02',
+        'submitTimeExtensionReason': 'ask for more time reason',
+        'submitTimeExtensionEvidence': []
       };
     });
 

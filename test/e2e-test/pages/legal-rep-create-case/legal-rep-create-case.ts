@@ -106,16 +106,9 @@ module.exports = {
     });
 
     When(/^I stop representing the client$/, async () => {
-      for (let i = 0; i < 3; i++) {
-        try {
-          await I.selectOption('#next-step', 'Stop representing a client');
-          await I.handleNextStep('Once you\'ve submitted this request', 'removeRepresentation/removeRepresentationSingleFormPageWithComplex', appealReference);
-          await I.see('Once you\'ve submitted this request');
-          break;
-        } catch (err) {
-          // do nothing
-        }
-      }
+      await I.selectOption('#next-step', 'Stop representing a client');
+      await I.handleNextStep('Once you\'ve submitted this request', 'removeRepresentation/removeRepresentationSingleFormPageWithComplex', appealReference);
+      await I.see('Once you\'ve submitted this request');
       await I.click('Continue');
       await I.waitForText('Submit', 60);
       await I.click('Submit');

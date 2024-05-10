@@ -69,10 +69,9 @@ module.exports = {
                 .split('*Enter this security code: ');
             setCaseReferenceNumber(usefulInfo[0].trim());
             setAccessCode(usefulInfo[1].trim());
-            let name = emailBody.split('Appellant name:')[1].split('The online service:')[0].trim();
-            setFirstName(name.split(' ')[0]);
-            setLastName(name.split(' ')[1]);
-            setAppealRef(emailBody.split('HMCTS reference:')[1].split('Appellant name:')[0].trim());
+            let name = emailBody.split('*Name: ')[1].split('*Date of birth: ')[0].trim().split(' ');
+            setFirstName(name[0]);
+            setLastName(name[1]);
           })
           .catch((error: any) => {
             // Handle errors if any
@@ -130,5 +129,14 @@ module.exports = {
       await I.see('Nothing to do next');
       await I.see('Your appeal details have been sent to the Tribunal.');
     });
+
+    When('I grab the appeal reference from ExUi', async () => {
+      let element: Locator = new Locator('ccd-markdown > div > markdown > h1').first()
+      await I.waitForElement(element);
+      await I.see(element);
+      let caseRecordText: string = await I.grabTextFrom(element);
+      let appealReference: string = caseRecordText.split('record for ')[1].trim();
+      setAppealRef(appealReference);
+    })
   }
 };

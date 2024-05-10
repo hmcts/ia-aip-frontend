@@ -50,7 +50,7 @@ class NavigationHelper extends HelperClass {
     const helper = this.helpers['Puppeteer'];
     try {
       await helper.click('Go');
-      await helper.waitForText(awaitedText, 60);
+      await helper.waitForText(awaitedText, 30);
     } catch {
       await helper.amOnPage(exuiBaseUrl + 'cases/case-details/' + appealReference + '/trigger/' + eventUrl);
       await helper.waitForText(awaitedText, 60);

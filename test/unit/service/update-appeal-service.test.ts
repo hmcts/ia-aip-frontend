@@ -1,4 +1,3 @@
-
 import { Request } from 'express';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
@@ -1373,6 +1372,7 @@ describe('update-appeal-service', () => {
           appeal: {
             appealStatus: 'appealStarted',
             application: {
+              appellantInUk: 'undefined',
               homeOfficeRefNumber: 'newRef',
               outsideUkWhenApplicationMade: 'No',
               hasSponsor: 'No',
@@ -1431,7 +1431,19 @@ describe('update-appeal-service', () => {
                 phone: '07123456789',
                 wantsSms: false
               },
-              addressLookup: {}
+              addressLookup: {},
+              remissionOption: 'test',
+              asylumSupportRefNumber: 'test',
+              helpWithFeesRefNumber: 'HWF-123',
+              feeSupportPersisted: true,
+              helpWithFeesOption: 'test',
+              localAuthorityLetters: [{
+                name: 'somefile.png',
+                fileId: '00000000-0000-0000-0000-000000000000',
+                dateUploaded: '2020-01-01',
+                'description': 'Some evidence 1',
+                'tag': 'additionalEvidence'
+              }]
             } as AppealApplication,
             reasonsForAppeal: {
               applicationReason: 'I\'ve decided to appeal because ...',
@@ -1500,28 +1512,50 @@ describe('update-appeal-service', () => {
           'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
           'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
         },
-        appellantGivenNames: 'givenNames',
-        appellantFamilyName: 'familyName',
-        appellantDateOfBirth: '1980-01-02',
-        appellantAddress: {
-          AddressLine1: '60 Beautiful Street',
-          AddressLine2: 'Flat 2',
-          PostTown: 'London',
-          County: 'London',
-          PostCode: 'W1W 7RT',
-          Country: 'United Kingdom'
-        },
-        appellantHasFixedAddress: 'Yes',
-        appellantEmailAddress: 'email@example.net',
-        appellantNationalities: [
+        'appellantGivenNames': 'givenNames',
+        'appellantFamilyName': 'familyName',
+        'appellantDateOfBirth': '1980-01-02',
+        'dateClientLeaveUk': '2019-12-15',
+        'decisionLetterReceivedDate': '2019-12-11',
+        'appellantNationalities': [
           {
-            value: {
-              code: 'nationality'
+            'value': {
+              'code': 'nationality'
             }
           }
         ],
-        appealType: 'appealType',
-        subscriptions: [
+        'appellantAddress': {
+          'AddressLine1': '60 Beautiful Street',
+          'AddressLine2': 'Flat 2',
+          'PostTown': 'London',
+          'County': 'London',
+          'PostCode': 'W1W 7RT',
+          'Country': 'United Kingdom'
+        },
+        'appellantHasFixedAddress': 'Yes',
+        'appealType': 'appealType',
+        'remissionOption': 'test',
+        'asylumSupportRefNumber': 'test',
+        'helpWithFeesOption': 'test',
+        'helpWithFeesRefNumber': 'HWF-123',
+        'localAuthorityLetters': [
+          {
+            'id': '00000000-0000-0000-0000-000000000000',
+            'value': {
+              'dateUploaded': '2020-01-01',
+              'description': 'Some evidence 1',
+              'tag': 'additionalEvidence',
+              'document': {
+                'document_filename': 'somefile.png',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
+              }
+            }
+          }
+        ],
+        'feeSupportPersisted': 'Yes',
+        'appellantEmailAddress': 'email@example.net',
+        'subscriptions': [
           {
             'value': {
               'subscriber': 'appellant',
@@ -1532,36 +1566,41 @@ describe('update-appeal-service', () => {
             }
           }
         ],
-        reasonsForAppealDecision: 'I\'ve decided to appeal because ...',
-        reasonsForAppealDateUploaded: '2020-01-02',
-        reasonsForAppealDocuments: [
+        'hasSponsor': 'No',
+        'sponsorGivenNames': 'ABC XYZ',
+        'sponsorFamilyName': 'ABC XYZ',
+        'sponsorNameForDisplay': 'ABC XYZ',
+        'sponsorAuthorisation': 'ABC XYZ',
+        'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
+        'reasonsForAppealDocuments': [
           {
-            value: {
-              dateUploaded: '2020-01-01',
-              description: 'Some evidence 1',
-              tag: 'additionalEvidence',
-              document: {
-                document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
-                document_filename: 'File1.png',
-                document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+            'value': {
+              'dateUploaded': '2020-01-01',
+              'description': 'Some evidence 1',
+              'tag': 'additionalEvidence',
+              'document': {
+                'document_filename': 'File1.png',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
               }
             }
           },
           {
-            value: {
-              dateUploaded: '2020-02-02',
-              description: 'Some evidence 2',
-              tag: 'additionalEvidence',
-              document: {
-                document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
-                document_filename: 'File2.png',
-                document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
+            'value': {
+              'dateUploaded': '2020-02-02',
+              'description': 'Some evidence 2',
+              'tag': 'additionalEvidence',
+              'document': {
+                'document_filename': 'File2.png',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
               }
             }
           }
         ],
-        submitTimeExtensionEvidence: [],
-        submitTimeExtensionReason: 'ask for more time reason'
+        'reasonsForAppealDateUploaded': '2020-01-02',
+        'submitTimeExtensionReason': 'ask for more time reason',
+        'submitTimeExtensionEvidence': []
       };
     });
 

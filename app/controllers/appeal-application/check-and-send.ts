@@ -11,12 +11,14 @@ import LaunchDarklyService from '../../service/launchDarkly-service';
 import PaymentService from '../../service/payments-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getFee, payNowForApplicationNeeded } from '../../utils/payments-utils';
+import { appealHasRemissionOption } from '../../utils/remission-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { formatTextForCYA } from '../../utils/utils';
 import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
 
 async function createSummaryRowsFrom(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+  const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
   const { application } = req.session.appeal;
   const appealTypeNames: string[] = application.appealType.split(',').map(appealTypeInstance => {
     return i18n.appealTypes[appealTypeInstance].name;
@@ -187,16 +189,6 @@ async function createSummaryRowsFrom(req: Request) {
 
   rows.push(...rowsCont);
 
-  if (application.isAppealLate) {
-    const lateAppealValue = [formatTextForCYA(application.lateAppeal.reason)];
-    if (application.lateAppeal.evidence) {
-      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`;
-      lateAppealValue.push(urlHtml);
-    }
-    const lateAppealRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, lateAppealValue, paths.appealStarted.appealLate);
-    rows.push(lateAppealRow);
-  }
-
   if (paymentsFlag) {
     let decisionType: string;
     if (['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
@@ -217,6 +209,76 @@ async function createSummaryRowsFrom(req: Request) {
       rows.push(payNowRow);
     }
   }
+
+  if (dlrmFeeRemissionFlag) {
+    const application = req.session.appeal.application;
+    const remissionOption = application.remissionOption;
+    const asylumSupportRefNumber = application.asylumSupportRefNumber;
+    const helpWithFeesOption = application.helpWithFeesOption;
+    const helpWithFeesRefNumber = application.helpWithFeesRefNumber;
+    const localAuthorityLetter = application.localAuthorityLetters;
+    if (remissionOption) {
+      const feeStatementRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.feeStatement,
+        [i18n.pages.remissionOptionPage.options[remissionOption].text],
+          paths.appealStarted.feeSupport + editParameter
+      );
+      rows.push(feeStatementRow);
+    }
+    if (asylumSupportRefNumber) {
+      const asylumSupportRefNumberRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.asylumSupportRefNumber,
+        [asylumSupportRefNumber],
+        paths.appealStarted.asylumSupport + editParameter
+      );
+      rows.push(asylumSupportRefNumberRow);
+    }
+    if (helpWithFeesOption) {
+      let helpWithFeeValue = '';
+      if (helpWithFeesOption === 'wantToApply') {
+        helpWithFeeValue = i18n.pages.helpWithFees.checkAndSendWantToApply;
+      } else if (helpWithFeesOption === 'willPayForAppeal') {
+        helpWithFeeValue = i18n.pages.helpWithFees.checkAndSendWillPayForAppeal;
+      } else {
+        helpWithFeeValue = i18n.pages.helpWithFees.options[helpWithFeesOption].text;
+      }
+
+      const helpWithFeesRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.helpWithFees,
+        [helpWithFeeValue],
+        paths.appealStarted.helpWithFees + editParameter
+      );
+      rows.push(helpWithFeesRow);
+    }
+    if (helpWithFeesRefNumber) {
+      const helpWithFeeRefNumberRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.helpWithFeesRefNumber,
+        [helpWithFeesRefNumber],
+        paths.appealStarted.helpWithFeesReferenceNumber + editParameter
+      );
+      rows.push(helpWithFeeRefNumberRow);
+    }
+    if (localAuthorityLetter && localAuthorityLetter.length > 0) {
+      const localAuthorityLetterRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter,
+        application.localAuthorityLetters.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
+        paths.appealStarted.localAuthorityLetter + editParameter,
+        Delimiter.BREAK_LINE
+      );
+      rows.push(localAuthorityLetterRow);
+    }
+  }
+
+  if (application.isAppealLate) {
+    const lateAppealValue = [formatTextForCYA(application.lateAppeal.reason)];
+    if (application.lateAppeal.evidence) {
+      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`;
+      lateAppealValue.push(urlHtml);
+    }
+    const lateAppealRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, lateAppealValue, paths.appealStarted.appealLate);
+    rows.push(lateAppealRow);
+  }
+
   return rows;
 }
 
@@ -225,6 +287,8 @@ function getCheckAndSend(paymentService: PaymentService) {
     try {
       const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
       const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, defaultFlag);
+      const { application } = req.session.appeal;
+      const hasRemissionOption = appealHasRemissionOption(application);
       const summaryRows = await createSummaryRowsFrom(req);
       const { paymentReference = null } = req.session.appeal;
       let fee;
@@ -240,7 +304,8 @@ function getCheckAndSend(paymentService: PaymentService) {
         previousPage: paths.appealStarted.taskList,
         ...(paymentsFlag && payNow) && { fee: fee.calculated_amount },
         ...(paymentsFlag && !appealPaid) && { payNow },
-        ...(paymentsFlag && appealPaid) && { appealPaid }
+        ...(paymentsFlag && appealPaid) && { appealPaid },
+        ...(hasRemissionOption) && { hasRemissionOption }
       });
     } catch (error) {
       next(error);

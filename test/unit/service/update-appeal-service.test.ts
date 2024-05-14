@@ -1142,6 +1142,152 @@ describe('update-appeal-service', () => {
       });
     });
 
+    describe('ftpaR35AppellantDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'ftpaR35AppellantDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+          'document_filename': 'FTPA_R35_DOCUMENT.PDF',
+          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map reheard rule 35 decision document', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.ftpaR35AppellantDocument.name).eq('FTPA_R35_DOCUMENT.PDF');
+      });
+    });
+
+    describe('ftpaR35RespondentDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'ftpaR35RespondentDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+          'document_filename': 'FTPA_R35_DOCUMENT.PDF',
+          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map reheard rule 35 decision document (respondent)', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.ftpaR35RespondentDocument.name).eq('FTPA_R35_DOCUMENT.PDF');
+      });
+    });
+
+    describe('ftpaApplicationAppellantDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'ftpaApplicationAppellantDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+          'document_filename': 'FTPA_APPELLANT_DECISION_DOCUMENT.PDF',
+          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map Decide FTPA decision document (appellant)', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.ftpaApplicationAppellantDocument.name).eq('FTPA_APPELLANT_DECISION_DOCUMENT.PDF');
+      });
+    });
+
+    describe('rule32NoticeDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'rule32NoticeDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d',
+          'document_filename': 'rule32.pdf',
+          'document_binary_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map rule 32 notice document', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.rule32NoticeDocs.name).eq('rule32.pdf');
+      });
+    });
+
+    describe('ftpaApplicationRespondentDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'ftpaApplicationRespondentDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+          'document_filename': 'FTPA_RESPONDENT_DECISION_DOCUMENT.PDF',
+          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map Decide FTPA decision document (respondent)', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.ftpaApplicationRespondentDocument.name).eq('FTPA_RESPONDENT_DECISION_DOCUMENT.PDF');
+      });
+    });
+
+    describe('correctedDecisionAndReasons', () => {
+      const caseData: Partial<CaseData> = {
+        'correctedDecisionAndReasons': [
+          {
+            'id': '2',
+            'value': {
+              'coverLetterDocument': {
+                'document_filename': 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              },
+              'dateCoverLetterDocumentUploaded': '2022-01-30',
+              'updatedDecisionDate': '2022-01-30'
+            }
+          },
+          {
+            'id': '1',
+            'value': {
+              'coverLetterDocument': {
+                'document_filename': 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              },
+              'dateCoverLetterDocumentUploaded': '2022-01-26',
+              'documentAndReasonsDocument': {
+                'document_filename': 'PA 50012 2022-bond20-Decision-and-reasons-AMENDED.PDF',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              },
+              'dateDocumentAndReasonsDocumentUploaded': '2022-01-26',
+              'summariseChanges': 'Document summarised example',
+              'updatedDecisionDate': '2022-01-26'
+            }
+          }
+        ]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map correctedDecisionAndReasons collection', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.updatedDecisionAndReasons).to.be.length(2);
+      });
+    });
+
     describe('map appellant or witness details from caseData for interpreter information', () => {
       let witness1: WitnessDetails = { witnessPartyId: '1', witnessName: 'witness', witnessFamilyName: '1' };
       let witness2: WitnessDetails = { witnessPartyId: '2', witnessName: 'witness', witnessFamilyName: '2' };
@@ -1244,7 +1390,7 @@ describe('update-appeal-service', () => {
               dateClientLeaveUk: {
                 year: '2019',
                 month: '12',
-                day: '11'
+                day: '15'
               },
               decisionLetterReceivedDate: {
                 year: '2019',
@@ -1340,26 +1486,19 @@ describe('update-appeal-service', () => {
       documentManagementService = new DocumentManagementService(authenticationService);
       updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, null, documentManagementService);
       expectedCaseData = {
-        journeyType: 'aip',
-        appellantInUk: 'undefined',
-        homeOfficeReferenceNumber: 'newRef',
-        outsideUkWhenApplicationMade: 'No',
-        hasSponsor: 'No',
-        sponsorGivenNames: 'ABC XYZ',
-        sponsorFamilyName: 'ABC XYZ',
-        sponsorNameForDisplay: 'ABC XYZ',
-        sponsorAuthorisation: 'ABC XYZ',
-        gwfReferenceNumber: '',
-        homeOfficeDecisionDate: '2019-12-11',
-        dateClientLeaveUk: '2019-12-11',
-        decisionLetterReceivedDate: '2019-12-11',
-        submissionOutOfTime: 'Yes',
-        recordedOutOfTimeDecision: 'No',
-        applicationOutOfTimeExplanation: 'a reason',
-        applicationOutOfTimeDocument: {
-          document_filename: 'somefile.png',
-          document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
-          document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
+        'journeyType': 'aip',
+        'homeOfficeReferenceNumber': 'newRef',
+        'appellantInUk': 'undefined',
+        'outsideUkWhenApplicationMade': 'No',
+        'gwfReferenceNumber': '',
+        'homeOfficeDecisionDate': '2019-12-11',
+        'submissionOutOfTime': 'Yes',
+        'recordedOutOfTimeDecision': 'No',
+        'applicationOutOfTimeExplanation': 'a reason',
+        'applicationOutOfTimeDocument': {
+          'document_filename': 'somefile.png',
+          'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
+          'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
         },
         appellantGivenNames: 'givenNames',
         appellantFamilyName: 'familyName',
@@ -1384,12 +1523,12 @@ describe('update-appeal-service', () => {
         appealType: 'appealType',
         subscriptions: [
           {
-            value: {
-              subscriber: 'appellant',
-              wantsEmail: 'Yes',
-              email: 'email@example.net',
-              wantsSms: 'No',
-              mobileNumber: null
+            'value': {
+              'subscriber': 'appellant',
+              'wantsEmail': 'Yes',
+              'email': 'email@example.net',
+              'wantsSms': 'No',
+              'mobileNumber': null
             }
           }
         ],

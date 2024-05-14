@@ -1,0 +1,46 @@
+{% set pageTitleName = i18n.pages.homeOfficePage.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+ {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% block content %}
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: errorList
+        }) }}
+    {% endif %}
+    <form action="{{ paths.appealStarted.helpWithFeesReferenceNumber }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% call govukFieldset({
+            legend: {
+                text: i18n.pages.helpWithFeesReference.title,
+                classes: "govuk-fieldset__legend--xl",
+                isPageHeading: true
+            }
+        }) %}
+            <p>{{ i18n.pages.helpWithFeesReference.paragraph }}</p>
+
+            {{ govukInput({
+                label: {
+                    text: i18n.pages.helpWithFeesReference.helpWithFeesReferenceNumberLabel
+                },
+                hint: {
+                    text: i18n.pages.helpWithFeesReference.hint
+                },
+                classes: "govuk-input--width-20",
+                id: "helpWithFeesRefNumber",
+                name: "helpWithFeesRefNumber",
+                value: helpWithFeesRefNumber,
+                errorMessage: {
+                    text:  errors['helpWithFeesRefNumber'].text
+                } if errors['helpWithFeesRefNumber']
+            }) }}
+
+            {{ saveButtons() }}
+        {% endcall %}
+    </form>
+    {{ contactUs() }}
+{% endblock %}

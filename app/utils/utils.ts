@@ -4,6 +4,7 @@ import nl2br from 'nl2br';
 import * as path from 'path';
 import { applicationTypes } from '../data/application-types';
 import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
+import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
@@ -132,80 +133,104 @@ export function isReadonlyApplicationEnabled(req: Request) {
   return req.session.appeal.readonlyApplicationEnabled;
 }
 
+export function isUpdateTribunalDecide(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+  return (ftpaSetAsideFeatureEnabled &&
+    req.session.appeal.history &&
+    req.session.appeal.history.find(event => event.id === Events.UPDATE_TRIBUNAL_DECISION.id) !== undefined &&
+    req.session.appeal.appealStatus === 'decided');
+}
+
+export function isUpdateTribunalDecideWithRule31(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+  return (isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) &&
+    req.session.appeal.updateTribunalDecisionList === 'underRule31');
+}
+
+export function isUpdateTribunalDecideWithRule32(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+  return (isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) &&
+    req.session.appeal.updateTribunalDecisionList === 'underRule32');
+}
+
+export function getLatestUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): HistoryEvent {
+  return isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) ? req.session.appeal.history
+    .filter(history => history.id === Events.UPDATE_TRIBUNAL_DECISION.id)
+    .sort((a: any, b: any) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())[0] : null;
+}
+
 export function formatWitnessName(witnessName: WitnessName) {
-  const givenNames = witnessName.witnessGivenNames;
-  const familyName = witnessName.witnessFamilyName;
-  return familyName ? givenNames + ' ' + familyName : givenNames;
+    const givenNames = witnessName.witnessGivenNames;
+    const familyName = witnessName.witnessFamilyName;
+    return familyName ? givenNames + ' ' + familyName : givenNames;
 }
 
 export function getWitnessComponent(hearingRequirements: HearingRequirements, witnessIndex: string): WitnessComponent {
-  let WitnessComponent: WitnessComponent = null;
+    let WitnessComponent: WitnessComponent = null;
 
-  if (hearingRequirements && witnessIndex) {
-    let witnessString = 'witness' + (parseInt(witnessIndex, 10) + 1);
-    let witness: WitnessDetails = hearingRequirements[witnessString] || null;
+    if (hearingRequirements && witnessIndex) {
+        let witnessString = 'witness' + (parseInt(witnessIndex, 10) + 1);
+        let witness: WitnessDetails = hearingRequirements[witnessString] || null;
 
-    let witnessListElementString = 'witnessListElement' + (parseInt(witnessIndex, 10) + 1);
-    let witnessListElement: DynamicMultiSelectList = hearingRequirements[witnessListElementString] || null;
+        let witnessListElementString = 'witnessListElement' + (parseInt(witnessIndex, 10) + 1);
+        let witnessListElement: DynamicMultiSelectList = hearingRequirements[witnessListElementString] || null;
 
-    let witnessInterpreterLanguageCategoryString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterLanguageCategory';
-    let witnessInterpreterLanguageCategory = hearingRequirements[witnessInterpreterLanguageCategoryString] || null;
+        let witnessInterpreterLanguageCategoryString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterLanguageCategory';
+        let witnessInterpreterLanguageCategory = hearingRequirements[witnessInterpreterLanguageCategoryString] || null;
 
-    let witnessInterpreterSpokenLanguageString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterSpokenLanguage';
-    let witnessInterpreterSpokenLanguage = hearingRequirements[witnessInterpreterSpokenLanguageString] || null;
+        let witnessInterpreterSpokenLanguageString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterSpokenLanguage';
+        let witnessInterpreterSpokenLanguage = hearingRequirements[witnessInterpreterSpokenLanguageString] || null;
 
-    let witnessInterpreterSignLanguageString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterSignLanguage';
-    let witnessInterpreterSignLanguage = hearingRequirements[witnessInterpreterSignLanguageString] || null;
+        let witnessInterpreterSignLanguageString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterSignLanguage';
+        let witnessInterpreterSignLanguage = hearingRequirements[witnessInterpreterSignLanguageString] || null;
 
-    WitnessComponent = {
-      witnessFullName: (witnessListElement && witnessListElement.list_items && witnessListElement.list_items.length > 0) ? witnessListElement.list_items[0].label : '',
-      witnessFieldString: witnessString,
-      witness: witness,
-      witnessListElementFieldString: witnessListElementString,
-      witnessListElement: witnessListElement,
-      witnessInterpreterLanguageCategoryFieldString: witnessInterpreterLanguageCategoryString,
-      witnessInterpreterLanguageCategory: witnessInterpreterLanguageCategory,
-      witnessInterpreterSpokenLanguageFieldString: witnessInterpreterSpokenLanguageString,
-      witnessInterpreterSpokenLanguage: witnessInterpreterSpokenLanguage,
-      witnessInterpreterSignLanguageFieldString: witnessInterpreterSignLanguageString,
-      witnessInterpreterSignLanguage: witnessInterpreterSignLanguage,
-      witnessNumnber: witnessIndex
-    };
-  }
-  return WitnessComponent;
+        WitnessComponent = {
+            witnessFullName: (witnessListElement && witnessListElement.list_items && witnessListElement.list_items.length > 0) ? witnessListElement.list_items[0].label : '',
+            witnessFieldString: witnessString,
+            witness: witness,
+            witnessListElementFieldString: witnessListElementString,
+            witnessListElement: witnessListElement,
+            witnessInterpreterLanguageCategoryFieldString: witnessInterpreterLanguageCategoryString,
+            witnessInterpreterLanguageCategory: witnessInterpreterLanguageCategory,
+            witnessInterpreterSpokenLanguageFieldString: witnessInterpreterSpokenLanguageString,
+            witnessInterpreterSpokenLanguage: witnessInterpreterSpokenLanguage,
+            witnessInterpreterSignLanguageFieldString: witnessInterpreterSignLanguageString,
+            witnessInterpreterSignLanguage: witnessInterpreterSignLanguage,
+            witnessNumnber: witnessIndex
+        };
+    }
+    return WitnessComponent;
 }
 
 export function clearWitnessCachedData(hearingRequirements: HearingRequirements) {
-  for (let index = 0; index < 10; index++) {
-    let witnessListElementFieldString = 'witnessListElement' + (index + 1);
-    let witnessInterpreterLanguageCategoryFieldString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
-    let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
-    let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
+    for (let index = 0; index < 10; index++) {
+        let witnessListElementFieldString = 'witnessListElement' + (index + 1);
+        let witnessInterpreterLanguageCategoryFieldString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
+        let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
+        let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
 
-    let witnessListElementObj: DynamicMultiSelectList = hearingRequirements[witnessListElementFieldString];
+        let witnessListElementObj: DynamicMultiSelectList = hearingRequirements[witnessListElementFieldString];
 
-    if (hearingRequirements.isAnyWitnessInterpreterRequired !== undefined && !hearingRequirements.isAnyWitnessInterpreterRequired) {
-      hearingRequirements[witnessListElementFieldString] = null;
-      hearingRequirements[witnessInterpreterLanguageCategoryFieldString] = null;
-      hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = null;
-      hearingRequirements[witnessInterpreterSignLanguageFieldString] = null;
+        if (hearingRequirements.isAnyWitnessInterpreterRequired !== undefined && !hearingRequirements.isAnyWitnessInterpreterRequired) {
+            hearingRequirements[witnessListElementFieldString] = null;
+            hearingRequirements[witnessInterpreterLanguageCategoryFieldString] = null;
+            hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = null;
+            hearingRequirements[witnessInterpreterSignLanguageFieldString] = null;
 
-    } else if (witnessListElementObj && witnessListElementObj.value && witnessListElementObj.value.length === 0) {
-      hearingRequirements[witnessInterpreterLanguageCategoryFieldString] = null;
-      hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = null;
-      hearingRequirements[witnessInterpreterSignLanguageFieldString] = null;
+        } else if (witnessListElementObj && witnessListElementObj.value && witnessListElementObj.value.length === 0) {
+            hearingRequirements[witnessInterpreterLanguageCategoryFieldString] = null;
+            hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = null;
+            hearingRequirements[witnessInterpreterSignLanguageFieldString] = null;
 
-    } else if (hearingRequirements[witnessInterpreterLanguageCategoryFieldString] && hearingRequirements[witnessInterpreterLanguageCategoryFieldString] !== undefined) {
-      if (!hearingRequirements[witnessInterpreterLanguageCategoryFieldString].includes('spokenLanguageInterpreter')) {
-        hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = null;
-      }
-      if (!hearingRequirements[witnessInterpreterLanguageCategoryFieldString].includes('signLanguageInterpreter')) {
-        hearingRequirements[witnessInterpreterSignLanguageFieldString] = null;
-      }
+        } else if (hearingRequirements[witnessInterpreterLanguageCategoryFieldString] && hearingRequirements[witnessInterpreterLanguageCategoryFieldString] !== undefined) {
+            if (!hearingRequirements[witnessInterpreterLanguageCategoryFieldString].includes('spokenLanguageInterpreter')) {
+                hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = null;
+            }
+            if (!hearingRequirements[witnessInterpreterLanguageCategoryFieldString].includes('signLanguageInterpreter')) {
+                hearingRequirements[witnessInterpreterSignLanguageFieldString] = null;
+            }
 
+        }
     }
-  }
 }
+
 /**
  * Takes in a fileName and converts it to the correct display format
  * @param fileName the file name e.g Some_file.pdf

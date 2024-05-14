@@ -71,10 +71,12 @@ describe('Confirmation Page Controller', () => {
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(5),
+      dateOutOfCountryAppeal: addDaysToDate(14),
       late: false,
       paPayLater: false,
       paPayNow: true,
-      eaHuEu: false
+      eaHuEu: false,
+      appealWithRemissionOption: false
     });
   });
 
@@ -88,10 +90,12 @@ describe('Confirmation Page Controller', () => {
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(5),
+      dateOutOfCountryAppeal: addDaysToDate(14),
       late: false,
       paPayLater: true,
       paPayNow: false,
-      eaHuEu: false
+      eaHuEu: false,
+      appealWithRemissionOption: false
     });
   });
 
@@ -105,10 +109,12 @@ describe('Confirmation Page Controller', () => {
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(5),
+      dateOutOfCountryAppeal: addDaysToDate(14),
       late: false,
       paPayLater: false,
       paPayNow: false,
-      eaHuEu: false
+      eaHuEu: false,
+      appealWithRemissionOption: false
     });
   });
 
@@ -121,10 +127,12 @@ describe('Confirmation Page Controller', () => {
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(14),
+      dateOutOfCountryAppeal: addDaysToDate(14),
       late: false,
       paPayLater: false,
       paPayNow: false,
-      eaHuEu: true
+      eaHuEu: true,
+      appealWithRemissionOption: false
     });
   });
 
@@ -137,10 +145,12 @@ describe('Confirmation Page Controller', () => {
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(14),
+      dateOutOfCountryAppeal: addDaysToDate(14),
       late: false,
       paPayLater: false,
       paPayNow: false,
-      eaHuEu: true
+      eaHuEu: true,
+      appealWithRemissionOption: false
     });
   });
 
@@ -153,10 +163,12 @@ describe('Confirmation Page Controller', () => {
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(14),
+      dateOutOfCountryAppeal: addDaysToDate(14),
       late: false,
       paPayLater: false,
       paPayNow: false,
-      eaHuEu: true
+      eaHuEu: true,
+      appealWithRemissionOption: false
     });
   });
 
@@ -170,10 +182,12 @@ describe('Confirmation Page Controller', () => {
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(5),
+      dateOutOfCountryAppeal: addDaysToDate(14),
       late: true,
       paPayLater: false,
       paPayNow: true,
-      eaHuEu: false
+      eaHuEu: false,
+      appealWithRemissionOption: false
     });
   });
 
@@ -195,7 +209,8 @@ describe('Confirmation Page Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
       date: addDaysToDate(5),
       title: i18n.pages.confirmationPaid.title,
-      whatNextContent: i18n.pages.confirmationPaidLater.content
+      whatNextContent: i18n.pages.confirmationPaidLater.content,
+      appealWithRemissionOption: false
     });
   });
 
@@ -212,7 +227,8 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       title: i18n.pages.successPage.inTime.panel,
       whatNextListItems: i18n.pages.confirmationPaid.content,
-      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
+      appealWithRemissionOption: false
     });
   });
 
@@ -229,7 +245,8 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       title: i18n.pages.successPage.outOfTime.panel,
       whatNextListItems: i18n.pages.confirmationPaid.contentLate,
-      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
+      appealWithRemissionOption: false
     });
   });
 
@@ -246,7 +263,8 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       title: i18n.pages.confirmationPaidLater.title,
       whatNextListItems: i18n.pages.confirmationPaidLater.content,
-      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
+      appealWithRemissionOption: false
     });
   });
 
@@ -263,7 +281,8 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       title: i18n.pages.confirmationPaidLater.title,
       whatNextListItems: i18n.pages.confirmationPaidLater.content,
-      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
+      appealWithRemissionOption: false
     });
   });
 
@@ -279,7 +298,8 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       title: i18n.pages.successPage.inTime.panel,
       whatNextListItems: i18n.pages.confirmationPaid.content,
-      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
+      appealWithRemissionOption: false
     });
   });
 
@@ -295,7 +315,85 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       title: i18n.pages.successPage.outOfTime.panel,
       whatNextListItems: i18n.pages.confirmationPaid.contentLate,
-      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
+      appealWithRemissionOption: false
+    });
+  });
+
+  it('getConfirmationPage should render confirmation.njk for an appeal with the remission option', () => {
+    const { appeal } = req.session;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+    appeal.application.remissionOption = 'asylumSupportFromHo';
+
+    getConfirmationPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
+      date: addDaysToDate(5),
+      dateOutOfCountryAppeal: addDaysToDate(14),
+      late: undefined,
+      paPayLater: false,
+      paPayNow: true,
+      eaHuEu: false,
+      appealWithRemissionOption: true
+    });
+  });
+
+  it('getConfirmationPage should render confirmation.njk for an appeal with the remission option and late appeal', () => {
+    const { appeal } = req.session;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+    appeal.application.remissionOption = 'asylumSupportFromHo';
+    appeal.application.isAppealLate = true;
+
+    getConfirmationPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
+      date: addDaysToDate(5),
+      dateOutOfCountryAppeal: addDaysToDate(14),
+      late: true,
+      paPayLater: false,
+      paPayNow: true,
+      eaHuEu: false,
+      appealWithRemissionOption: true
+    });
+  });
+
+  it('getConfirmationPage should render confirmation.njk for an appeal with the remission option and late appeal Out' +
+    ' of the country', () => {
+    const { appeal } = req.session;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+    appeal.application.remissionOption = 'asylumSupportFromHo';
+    appeal.application.isAppealLate = true;
+    appeal.appealOutOfCountry = 'Yes';
+
+    getConfirmationPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
+      date: addDaysToDate(5),
+      dateOutOfCountryAppeal: addDaysToDate(28),
+      late: true,
+      paPayLater: false,
+      paPayNow: true,
+      eaHuEu: false,
+      appealWithRemissionOption: true
+    });
+  });
+
+  it('getConfirmationPage should render confirmation.njk for an appeal without the remission option', () => {
+    const { appeal } = req.session;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+    appeal.application.remissionOption = 'noneOfTheseStatements';
+    appeal.application.helpWithFeesOption = 'willPayForAppeal';
+
+    getConfirmationPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
+      date: addDaysToDate(5),
+      dateOutOfCountryAppeal: addDaysToDate(14),
+      late: undefined,
+      paPayLater: false,
+      paPayNow: true,
+      eaHuEu: false,
+      appealWithRemissionOption: false
     });
   });
 

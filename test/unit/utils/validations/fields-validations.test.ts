@@ -1,17 +1,23 @@
 import {
   appellantNamesValidation,
   askForMoreTimeValidation,
+  asylumSupportValidation,
   contactDetailsValidation,
   dateValidation,
   DOBValidation,
   emailValidation,
+  helpWithFeesRefNumberValidation,
+  helpWithFeesValidation,
   homeOfficeNumberValidation,
   interpreterLanguageSelectionValidation,
   interpreterSupportSelectionValidation,
   interpreterTypesSelectionValidation,
   isDateInRange,
   reasonForAppealDecisionValidation,
-  selectedRequiredValidation, selectedRequiredValidationDialect,
+  remissionOptionsValidation,
+  selectedRequiredValidation,
+  selectedRequiredValidationDialect,
+  sponsorContactDetailsValidation,
   statementOfTruthValidation,
   textAreaValidation,
   witenessesInterpreterNeedsValidation,
@@ -28,6 +34,7 @@ describe('fields-validations', () => {
       text: errorMessage
     };
   }
+
   const dateMissingErrorMsg = i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing;
 
   describe('homeOfficeNumberValidation', () => {
@@ -338,6 +345,43 @@ describe('fields-validations', () => {
       expect(validationResult).to.equal(null);
     });
 
+    it('should pass validation when an international mobile phone number is entered', () => {
+      const phoneNumbers: string[] = [
+        '+86 138 0013 8000',
+        '+91 987 654 3210',
+        '+62 812 345 6789',
+        '+1 212 456 7890',
+        '+55 11 98765 4321',
+        '+7 912 345 6789',
+        '+92 333 123 4567',
+        '+234 802 345 6789',
+        '+880 1712 345 678',
+        '+81 90 1234 5678',
+        '+49 171 234 5678',
+        '+63 917 123 4567',
+        '+52 55 1234 5678',
+        '+98 912 345 6789',
+        '+20 10 1234 5678',
+        '+39 333 123 4567',
+        '+44 791 112 3456',
+        '+84 912 345 678',
+        '+90 532 123 4567',
+        '+33 7 56 78 90 12',
+        '+66 92 345 6789',
+        '+27 82 345 6789',
+        '+57 321 123 4567',
+        '+380 97 123 4567',
+        '+54 911 1234 5678',
+        '+54 911-1234-5678'];
+      phoneNumbers.forEach((phoneNumber: string) => {
+        let validationResult = contactDetailsValidation({
+          selections: 'text-message',
+          'text-message-value': phoneNumber
+        });
+        expect(validationResult, `${phoneNumber} failed validation`).to.equal(null);
+      });
+    });
+
     it('should pass validation when an email and mobile phone number is entered', () => {
       const validationResult = contactDetailsValidation({
         selections: 'email,text-message',
@@ -385,23 +429,225 @@ describe('fields-validations', () => {
       });
     });
 
-    describe('yesOrNoRequiredValidation', () => {
-      it('no error if yes selected', () => {
-        const validationResult = yesOrNoRequiredValidation({ answer: 'yes' }, 'error message');
+    it('should fail validation if phone number ends with a non digit', () => {
+      testContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '0127722222a'
+      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
 
-        expect(validationResult).to.deep.equal(null);
-      });
+    it('should fail validation if mobile phone number has multiple +44', () => {
+      testContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '+++447899999999'
+      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
 
-      it('error if yes on no not selected', () => {
-        const validationResult = yesOrNoRequiredValidation({}, 'error message');
-        const expectedResponse = {};
-        expectedResponse['answer'] = {
-          'href': '#answer',
-          'key': 'answer',
-          'text': 'error message'
-        };
-        expect(validationResult).to.deep.equal(expectedResponse);
+    it('should fail validation if phone number starts with anything but + or a digit', () => {
+      testContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '¢07899999999'
+      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
+  });
+
+  describe('sponsorContactDetailsValidation', () => {
+    function testSponsorContactDetailsValidation(object, key, message) {
+      const validationResult = sponsorContactDetailsValidation(object);
+      const expectedResponse = {};
+      expectedResponse[key] = {
+        'href': `#${key}`,
+        'key': key,
+        'text': message
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    }
+
+    it('should fail validation if no type of contact details found', () => {
+      testSponsorContactDetailsValidation({ selections: '' }, 'selections', 'Select at least one of the contact options');
+    });
+
+    it('should fail validation if no email entered', () => {
+      testSponsorContactDetailsValidation({ selections: 'email' }, 'email-value', 'Enter an email address');
+      testSponsorContactDetailsValidation({ selections: 'email', 'email-value': '' }, 'email-value', 'Enter an email address');
+    });
+
+    it('should fail validation if email not in correct format', () => {
+      testSponsorContactDetailsValidation(
+          { selections: 'email', 'email-value': 'not an email' },
+          'email-value',
+          'Enter an email address in the correct format, like name@example.com'
+      );
+    });
+
+    it('should pass validation when an email is entered', () => {
+      const validationResult = contactDetailsValidation({ selections: 'email', 'email-value': 'foo@bar.com' });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation if no mobile phone number entered entered', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': ''
+      }, 'text-message-value', 'Enter a phone number');
+    });
+
+    it('should fail validation if mobile phone number not incorrect format', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': 'qwerty'
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
+    });
+
+    it('should fail validation if mobile phone number not a mobile phone number', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '01277222222'
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
+    });
+
+    it('should fail validation if mobile phone number is a +44 but missing +', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '447899999999'
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
+    });
+
+    it('should fail validation if mobile phone number has multiple +44', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '+++447899999999'
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
+    });
+
+    it('should fail validation if mobile phone number starts with 0044', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '00447899999999'
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
+    });
+
+    it('should pass validation when a mobile phone number is entered', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '07899999999'
       });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation when an international mobile phone number is entered', () => {
+      const phoneNumbers: string[] = [
+        '+86 138 0013 8000',
+        '+91 987 654 3210',
+        '+62 812 345 6789',
+        '+1 212 456 7890',
+        '+55 11 98765 4321',
+        '+7 912 345 6789',
+        '+92 333 123 4567',
+        '+234 802 345 6789',
+        '+880 1712 345 678',
+        '+81 90 1234 5678',
+        '+49 171 234 5678',
+        '+63 917 123 4567',
+        '+52 55 1234 5678',
+        '+98 912 345 6789',
+        '+20 10 1234 5678',
+        '+39 333 123 4567',
+        '+44 791 112 3456',
+        '+84 912 345 678',
+        '+90 532 123 4567',
+        '+33 7 56 78 90 12',
+        '+66 92 345 6789',
+        '+27 82 345 6789',
+        '+57 321 123 4567',
+        '+380 97 123 4567',
+        '+54 911 1234 5678'];
+      phoneNumbers.forEach((phoneNumber: string) => {
+        testSponsorContactDetailsValidation({
+          selections: 'text-message',
+          'text-message-value': phoneNumber
+        }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
+      });
+    });
+
+    it('should pass validation when an email and mobile phone number is entered', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'email,text-message',
+        'email-value': 'foo@bar.com',
+        'text-message-value': '07899999999'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should pass validation when an invalid email entered but only text-message selected', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'text-message',
+        'email-value': 'invalid',
+        'text-message-value': '07899999999'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should pass validation when an invalid mobile number entered but only email selected', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'email',
+        'email-value': 'foo@bar.com',
+        'text-message-value': 'invalid'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation when an email and mobile phone number are not entered', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'email,text-message',
+        'email-value': '',
+        'text-message-value': ''
+      });
+      expect(validationResult).to.deep.equal({
+        'email-value': {
+          'href': '#email-value',
+          'key': 'email-value',
+          'text': 'Enter an email address'
+        },
+        'text-message-value': {
+          'href': '#text-message-value',
+          'key': 'text-message-value',
+          'text': 'Enter a phone number'
+        }
+      });
+    });
+
+    it('should fail validation if phone number ends with a non digit', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '0127722222a'
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
+    });
+
+    it('should fail validation if phone number starts with anything but + or a digit', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '¢07899999999'
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
+    });
+  });
+
+  describe('yesOrNoRequiredValidation', () => {
+    it('no error if yes selected', () => {
+      const validationResult = yesOrNoRequiredValidation({ answer: 'yes' }, 'error message');
+
+      expect(validationResult).to.deep.equal(null);
+    });
+
+    it('error if yes on no not selected', () => {
+      const validationResult = yesOrNoRequiredValidation({}, 'error message');
+      const expectedResponse = {};
+      expectedResponse['answer'] = {
+        'href': '#answer',
+        'key': 'answer',
+        'text': 'error message'
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
     });
   });
 
@@ -600,6 +846,121 @@ describe('fields-validations', () => {
 
       expect(validations).to.deep.equal(null);
 
+    });
+  });
+
+  describe('feeSupportValidations', () => {
+    it('should validate if remission option present', () => {
+      const object = { 'answer': 'asylumSupportFromHo' };
+      const validationResult = remissionOptionsValidation(object);
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation and return "string.empty if remission option is not selected" ', () => {
+      const object = { };
+      const validationResult = remissionOptionsValidation(object);
+      const expectedResponse = {
+        answer: {
+          href: '#answer',
+          key: 'answer',
+          text: 'Select the statement that applies to you'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail validation and return "string.empty if asylum support ref number is missing" ', () => {
+      const object = { 'asylumSupportRefNumber': '' };
+      const validationResult = asylumSupportValidation(object);
+      const expectedResponse = {
+        asylumSupportRefNumber: {
+          href: '#asylumSupportRefNumber',
+          key: 'asylumSupportRefNumber',
+          text: 'Enter your asylum support reference number'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should validate if asylum support ref number is present" ', () => {
+      const object = { 'asylumSupportRefNumber': 'test' };
+      const validationResult = asylumSupportValidation(object);
+      const expectedResponse = {
+        asylumSupportRefNumber: {
+          href: '#asylumSupportRefNumber',
+          key: 'asylumSupportRefNumber',
+          text: 'Enter your asylum support reference number'
+        }
+      };
+      expect(validationResult).to.deep.equal(null);
+    });
+
+    it('should fail validation and return "string.empty if fees option is not selected" ', () => {
+      const object = { };
+      const validationResult = helpWithFeesValidation(object);
+      const expectedResponse = {
+        answer: {
+          href: '#answer',
+          key: 'answer',
+          text: 'Select if you want to apply for Help with Fees'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail validation and return "string.empty if help with fees ref number is not typed" ', () => {
+      const object = { 'helpWithFeesRefNumber': '' };
+      const validationResult = helpWithFeesRefNumberValidation(object);
+      const expectedResponse = {
+        helpWithFeesRefNumber: {
+          href: '#helpWithFeesRefNumber',
+          key: 'helpWithFeesRefNumber',
+          text: 'Enter your Help with Fees reference number'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    const helpWithFeesRefNumberTestData = [
+      {
+        input: { 'helpWithFeesRefNumber': 'HWF123' },
+        expectedResponse: null,
+        description: 'valid input'
+      },
+      {
+        input: { 'helpWithFeesRefNumber': 'hwf123' },
+        expectedResponse: null,
+        description: 'valid input with lowercase'
+      },
+      {
+        input: { 'helpWithFeesRefNumber': '' },
+        expectedResponse: {
+          helpWithFeesRefNumber: {
+            href: '#helpWithFeesRefNumber',
+            key: 'helpWithFeesRefNumber',
+            text: 'Enter your Help with Fees reference number'
+          }
+        },
+        description: 'empty helpWithFeesRefNumber'
+      },
+      {
+        input: { 'helpWithFeesRefNumber': 'abc123' },
+        expectedResponse: {
+          helpWithFeesRefNumber: {
+            href: '#helpWithFeesRefNumber',
+            key: 'helpWithFeesRefNumber',
+            text: 'Your Help with Fees reference number must start with HWF, like HWF-A1B-23C'
+          }
+        },
+        description: 'invalid helpWithFeesRefNumber'
+      }
+    ];
+
+    helpWithFeesRefNumberTestData.forEach(({ input, expectedResponse, description }) => {
+      it(`should be ${description}`, () => {
+        const validationResult = helpWithFeesRefNumberValidation(input);
+        expect(validationResult).to.deep.equal(expectedResponse);
+      });
     });
   });
 

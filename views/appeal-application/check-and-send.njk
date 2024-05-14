@@ -16,7 +16,9 @@
     }) }}
   {% endif %}
 
-  {% if payNow %}
+  {% if hasRemissionOption %}
+    {% set buttonCopy = i18n.common.buttons.submit  %}
+  {% elif payNow %}
     {% set buttonCopy = i18n.common.buttons.payNow  %}
   {% else %}
     {% set buttonCopy = i18n.common.buttons.submitYourAppeal  %}

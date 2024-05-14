@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { paths } from '../../../../app/paths';
 import { dayMonthYearFormat } from '../../../../app/utils/date-utils';
+import content from '../../../../locale/en.json';
 
 module.exports = {
   appealSent(I) {
@@ -45,9 +46,9 @@ module.exports = {
     Then('I am on the appeal details sent with payment page', async () => {
       await I.waitInUrl(paths.common.confirmationPayment, 15);
       await I.seeInCurrentUrl(paths.common.confirmationPayment);
-      I.see('Your appeal details have been sent');
-      I.see('A Tribunal Caseworker will ask the Home Office to send any documents it has about your case to the Tribunal');
-      I.see('A Tribunal Caseworker will check the Home Office documents and then contact you to tell you what to do next');
+      I.see(content.pages.successPage.inTime.panel);
+      I.see(content.pages.successPage.askHomeOffice);
+      I.see(content.pages.successPage.whatToDoNext);
       I.seeInSource(moment().add(5,'days').format(dayMonthYearFormat));
     });
 

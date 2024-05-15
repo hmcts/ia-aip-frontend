@@ -492,7 +492,7 @@
       "thingsYouCanDoAfterPaying": {
         "thingsYouCanDo": "Things you can do now",
         "readMore": "Read more about appealing an immigration or asylum decision",
-        "findOutMore": "Find organisations that can help with your appeal"
+        "findOutMore": "Find organisations that can help you with your appeal"
       }
     },
     "reasonForAppeal": {
@@ -853,6 +853,7 @@
       "email": "Email:",
       "emailLink": "contactia@justice.gov.uk",
       "endedInsert": "This appeal has ended",
+      "transferredToUt": "Appeal moved to the Upper Tribunal",
       "time": "Monday to Friday, 8:30am to 5pm",
       "charges": "Find out about call charges",
       "newWindow": "(opens in a new window)",
@@ -1233,6 +1234,20 @@
               "<b>What happens next</b>",
               "The Tribunal will contact you when the review of your appeal decision is complete."
             ]
+          }
+        },
+        "transferredToUt": {
+          "description": "Your appeal has been moved to the Upper Tribunal, which is a higher tribunal than the First-tier tribunal.",
+          "explanation": "This is because you also have an expedited section 82A appeal in the Upper Tribunal, with the following appeal reference:",
+          "utAppealReferenceNumber": "{{ applicationNextStep.utAppealReferenceNumber }}",
+          "utAction": "An Upper Tribunal judge will decide both appeals at the same time.",
+          "info": {
+            "title": "What happens next",
+            "description": "\nThe upper tribunal may contact you about this appeal.<br /><br />If you still have to respond to a question about your appeal from the First-tier Tribunal, you should tell the Upper Tribunal. The Upper Tribunal will decide what will happen next."
+          },
+          "usefulDocuments": {
+            "title": "Helpful Information",
+            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/courts-tribunals/upper-tribunal-immigration-and-asylum-chamber\" target=\"_blank\">Find out more about the Upper Tribunal, including contact details</a>. (Opens in a new window)"
           }
         },
         "remitted": {
@@ -1645,6 +1660,9 @@
             ]
           }
         },
+        "markAsReadyForUtTransfer": {
+          "text": "Your appeal moved to the Upper Tribunal"
+        },
         "updateTribunalDecision": {
           "underRule31": {
             "fromAllowedToDismissedText": "The Tribunal changed the appeal decision from allowed to dismissed.",
@@ -1694,7 +1712,6 @@
               }
             ]
           }
-          
         }
       }
     },
@@ -3813,6 +3830,7 @@
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",
     "phoneFormat": "Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999",
+    "ukPhoneFormat": "Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982",
     "hasSponsor": "Select yes if you have a sponsor",
     "sponsorGivenNames": "Enter your sponsor's given name or names",
     "sponsorFamilyName": "Enter your sponsor's family name or names",

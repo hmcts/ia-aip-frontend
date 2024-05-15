@@ -28,7 +28,17 @@ module.exports = {
     });
 
     Given(/^I click the contact details link$/, async () => {
-      await I.click('Your contact details');
+      for (let i = 0; i < 3; i++) {
+        try {
+          await I.click('#contactDetailsLink');
+          await I.waitInUrl(paths.appealStarted.contactDetails, 20);
+          await I.seeInCurrentUrl(paths.appealStarted.contactDetails);
+          break;
+        } catch (e) {
+          await I.seeInCurrentUrl(paths.appealStarted.taskList);
+        }
+      }
+      await I.seeInCurrentUrl(paths.appealStarted.contactDetails);
     });
 
     Then(/^I should be taken to the contact\-details page$/, async () => {

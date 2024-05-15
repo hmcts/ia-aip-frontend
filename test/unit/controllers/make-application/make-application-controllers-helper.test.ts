@@ -330,12 +330,12 @@ describe('Make application controllers helper', () => {
 
     it('should render with error', () => {
       req.query.error = 'noFileSelected';
-      const errorList = [{ key: 'uploadFile', text: 'Select a file', href: '#uploadFile' }];
+      const errorList = [{ key: 'file-upload', text: 'Select a file', href: '#file-upload' }];
       const error = {
         uploadFile: {
-          key: 'uploadFile',
+          key: 'file-upload',
           text: 'Select a file',
-          href: '#uploadFile'
+          href: '#file-upload'
         }
       };
 

@@ -11,7 +11,17 @@ module.exports = {
     });
 
     When(/^I click on the check and send your appeal link$/, async () => {
-      await I.click('Check and send your appeal');
+      for (let i = 0; i < 3; i++) {
+        try {
+          await I.click('#checkAndSendLink');
+          await I.waitInUrl(paths.appealStarted.checkAndSend, 20);
+          await I.seeInCurrentUrl(paths.appealStarted.checkAndSend);
+          break;
+        } catch (e) {
+          await I.seeInCurrentUrl(paths.appealStarted.taskList);
+        }
+      }
+      await I.seeInCurrentUrl(paths.appealStarted.checkAndSend);
     });
 
     When('I go into the Check and send your appeal details task', async () => {

@@ -503,6 +503,7 @@ export default class UpdateAppealService {
       updateTribunalDecisionAndReasonsFinalCheck: caseData.updateTribunalDecisionAndReasonsFinalCheck,
       rule32NoticeDocs: rule32NoticeDocs,
       appealOutOfCountry: caseData.appealOutOfCountry,
+      utAppealReferenceNumber: caseData.utAppealReferenceNumber,
       nonStandardDirectionEnabled: true,
       ftpaR35AppellantDocument: reheardRule35AppellantDocument,
       ftpaR35RespondentDocument: reheardRule35RespondentDocument,
@@ -765,7 +766,9 @@ export default class UpdateAppealService {
         });
       }
 
-      caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
+      if (appeal.application.feeSupportPersisted) {
+        caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
+      }
 
       if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
         const subscription: Subscription = {

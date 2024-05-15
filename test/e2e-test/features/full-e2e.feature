@@ -74,7 +74,7 @@ Scenario: Complete appeal application
   And I see the respond by date is 5 days in the future
 
   # Case Progression
-  When I grab the Appeal Reference
+  When I grab the Online Case Reference
   And I sign in as a Case Officer and Request Home Office data
   And I Request respondent evidence
   And I Request the reasons for appeal

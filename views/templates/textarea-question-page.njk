@@ -19,26 +19,38 @@
       isPageHeading: true
     }
     }) %}
-
-      {{ govukTextarea({
-        name: question.name,
-        id: question.name,
-        label: {
-          text: question.description
-        } if (question.description),
-        label: {
-          text: question.title,
-          classes: "sr-only"
-        } if not (question.description),
-        hint: {
-          text: question.hint
-        } if (question.hint),
-        value: question.value,
-        errorMessage: {
-          text: error[question.name].text
-        } if error[question.name]
-      }) }}
-
+    {% if question.description %}
+        {{ govukTextarea({
+            name: question.name,
+            id: question.name,
+            label: {
+              text: question.description
+            },
+            hint: {
+              text: question.hint
+            } if (question.hint),
+            value: question.value,
+            errorMessage: {
+              text: error[question.name].text
+            } if error[question.name]
+        }) }}
+    {% else %}
+        {{ govukTextarea({
+            name: question.name,
+            id: question.name,
+            label: {
+              text: question.title,
+              classes: "sr-only"
+            },
+            hint: {
+              text: question.hint
+            } if (question.hint),
+            value: question.value,
+            errorMessage: {
+              text: error[question.name].text
+            } if error[question.name]
+        }) }}
+    {% endif %}
       {% set supportingEvidenceContent %}
         <h2 class="govuk-heading-s">
           {{ i18n.pages.clarifyingQuestionPage.panel.supportingEvidence }}

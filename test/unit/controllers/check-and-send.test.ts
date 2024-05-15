@@ -15,6 +15,7 @@ import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { addSummaryRow } from '../../../app/utils/summary-list';
 import { formatTextForCYA } from '../../../app/utils/utils';
+import { helpWithFeesRefNumberValidation } from '../../../app/utils/validations/fields-validations';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { createDummyAppealApplication } from '../mockData/mock-appeal';
@@ -310,6 +311,20 @@ describe('Check and Send Controller', () => {
         previousPage: paths.appealStarted.taskList,
         fee: '140',
         payNow: true
+      });
+    });
+
+    it('should render check-and-send-page.njk, hasRemissionOption with appeal with remission and dlrmFeeRemissionFlag' +
+      ' flag is ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+        summaryRows: sinon.match.any,
+        previousPage: paths.appealStarted.taskList,
+        dlrmFeeRemissionFlag: true,
+        hasRemissionOption: true
       });
     });
 

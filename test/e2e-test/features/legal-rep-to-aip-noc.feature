@@ -1,9 +1,10 @@
-@start-representing-yourself @lr-to-aip-noc @nightly-test
+@start-representing-yourself @lr-to-aip-noc @nightly-test @testy-test
 Feature: Legal Rep to Appellant in person Notice of change
 
 Scenario: NoC Happy path LR to AiP
    Given I log in as a Legal Rep
    And I create a new case and submit it
+   And I grab the appeal reference from ExUi
    And I stop representing the client
    And I get the NoC required data from the sent notification
    When I visit the start-representing-yourself page

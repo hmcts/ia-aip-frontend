@@ -54,6 +54,7 @@ interface DoThisNextSection {
   feeForAppeal?: string;
   feeLeftToPay?: string;
   remissionRejectedDatePlus14days?: string;
+  utAppealReferenceNumber?: string;
 }
 
 /**
@@ -557,18 +558,38 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'ended':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.ended.ctaInstruction,
-          i18n.pages.overviewPage.doThisNext.ended.ctaReview
-        ],
-        cta: {
-          url: null,
-          ctaTitle: i18n.pages.overviewPage.doThisNext.ended.ctaTitle
-        },
-        allowedAskForMoreTime: false,
-        hearingCentreEmail: getHearingCentreEmail(req)
-      };
+      if (transferredToUpperTribunal(req)) {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.transferredToUt.description,
+            i18n.pages.overviewPage.doThisNext.transferredToUt.explanation,
+            i18n.pages.overviewPage.doThisNext.transferredToUt.utAppealReferenceNumber,
+            i18n.pages.overviewPage.doThisNext.transferredToUt.utAction
+          ],
+          info: {
+            title: i18n.pages.overviewPage.doThisNext.transferredToUt.usefulDocuments.title,
+            url: i18n.pages.overviewPage.doThisNext.transferredToUt.usefulDocuments.url
+          },
+          usefulDocuments: {
+            title: i18n.pages.overviewPage.doThisNext.transferredToUt.info.title,
+            url: i18n.pages.overviewPage.doThisNext.transferredToUt.info.description
+          },
+          utAppealReferenceNumber: req.session.appeal.utAppealReferenceNumber
+        };
+      } else {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.ended.ctaInstruction,
+            i18n.pages.overviewPage.doThisNext.ended.ctaReview
+          ],
+          cta: {
+            url: null,
+            ctaTitle: i18n.pages.overviewPage.doThisNext.ended.ctaTitle
+          },
+          allowedAskForMoreTime: false,
+          hearingCentreEmail: getHearingCentreEmail(req)
+        };
+      }
       break;
     case 'appealTakenOffline':
       doThisNextSection = {
@@ -664,20 +685,33 @@ async function getAppealApplicationNextStep(req: Request) {
       }
       break;
     case 'pendingPayment':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          isLate ? i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSentLate : i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
-          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
-          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate1
-        ],
-        cta: {
-          link: {
-            text: i18n.pages.overviewPage.doThisNext.pendingPayment.payForYourAppeal,
-            url: paths.common.payLater
-          }
-        },
-        allowedAskForMoreTime: false
-      };
+      if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.feeDetails,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.tribunalCheck,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.dueDate
+          ],
+          cta: null,
+          allowedAskForMoreTime: false
+        };
+      } else {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            isLate ? i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSentLate : i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
+            i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
+            i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate1
+          ],
+          cta: {
+            link: {
+              text: i18n.pages.overviewPage.doThisNext.pendingPayment.payForYourAppeal,
+              url: paths.common.payLater
+            }
+          },
+          allowedAskForMoreTime: false
+        };
+      }
       break;
     case 'ftpaSubmitted':
       doThisNextSection = {
@@ -819,6 +853,10 @@ function isEventLatestInHistoryList(req: Request, eventId: string) {
   return req.session.appeal.history && req.session.appeal.history.length > 0 ? req.session.appeal.history[0].id === eventId : false;
 }
 
+function transferredToUpperTribunal(req: Request): boolean {
+  return req.session.appeal.utAppealReferenceNumber == null ? false : true;
+}
+
 export {
   getAppealApplicationNextStep,
   getAppealStatus,
@@ -826,9 +864,11 @@ export {
   getMoveAppealOfflineDate,
   isPreAddendumEvidenceUploadState,
   eventByLegalRep,
+  transferredToUpperTribunal,
   isEventLatestInHistoryList,
   requestFeeRemissionEventIsTheLatest,
   remissionDecisionEventIsTheLatest,
   getFeeRemissionParagraph,
   getRemissionDecisionParagraphs
+
 };

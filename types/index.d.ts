@@ -191,6 +191,7 @@ interface Appeal {
   ftpaAppellantDecisionDate?: string;
   nonStandardDirectionEnabled?: boolean;
   readonlyApplicationEnabled?: boolean;
+  utAppealReferenceNumber?: string;
   ftpaR35AppellantDocument?: Evidence;
   ftpaR35RespondentDocument?: Evidence;
   ftpaApplicationRespondentDocument?: Evidence;
@@ -498,4 +499,10 @@ interface RemissionDetails {
   helpWithFeesReferenceNumber?: string;
   helpWithFeesOption?: string;
   localAuthorityLetters?: Evidence[];
+}
+
+declare module NodeJS {
+  interface Global {
+    testFailed: boolean;
+  }
 }

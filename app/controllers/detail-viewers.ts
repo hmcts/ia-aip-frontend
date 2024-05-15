@@ -171,7 +171,6 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
   }
   return rows;
 }
-
 async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   const { application } = req.session.appeal;
   const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
@@ -282,7 +281,6 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     feeHistoryRows
   };
 }
-
 async function addPaymentDetails(req: Request, application: AppealApplication, feeDetailsRows: any[]) {
   const fee = getFee(req.session.appeal);
   const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);

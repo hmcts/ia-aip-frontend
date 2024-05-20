@@ -405,7 +405,8 @@ interface AppealType {
 }
 
 interface IdamDetails {
-  uid: string;
+  uid?: string;
+  id?: string
   name: string;
   given_name: string;
   family_name: string;

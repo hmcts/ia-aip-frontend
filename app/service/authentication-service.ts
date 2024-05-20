@@ -23,9 +23,6 @@ class AuthenticationService {
   }
 
   async getSecurityHeaders(req: Request): Promise<SecurityHeaders> {
-    if (req.idam && req.idam.userDetails) {
-      req.idam.userDetails.uid = req.idam.userDetails.id;
-    }
     const userToken = this.idamService.getUserToken(req);
     const serviceToken = await this.s2sService.getServiceToken();
     return { userToken, serviceToken };

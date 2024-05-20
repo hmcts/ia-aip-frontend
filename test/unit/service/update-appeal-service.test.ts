@@ -1318,7 +1318,8 @@ describe('update-appeal-service', () => {
                 dateUploaded: '2020-01-01',
                 'description': 'Some evidence 1',
                 'tag': 'additionalEvidence'
-              }]
+              }],
+              deportationOrderOptions: 'Yes'
             } as AppealApplication,
             reasonsForAppeal: {
               applicationReason: 'I\'ve decided to appeal because ...',
@@ -1446,6 +1447,7 @@ describe('update-appeal-service', () => {
         'sponsorFamilyName': 'ABC XYZ',
         'sponsorNameForDisplay': 'ABC XYZ',
         'sponsorAuthorisation': 'ABC XYZ',
+        'deportationOrderOptions': 'Yes',
         'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
         'reasonsForAppealDocuments': [
           {

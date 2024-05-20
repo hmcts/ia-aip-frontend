@@ -104,6 +104,12 @@ async function createSummaryRowsFrom(req: Request) {
         Delimiter.BREAK_LINE
     ),
     addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.deportationOrder,
+      [application.deportationOrderOptions === 'Yes' ? i18n.pages.deportationOrder.cyaPageRowValueWhenYesSelected : i18n.pages.deportationOrder.cyaPageRowValueWhenNoSelected],
+      paths.appealStarted.deportationOrder + editParameter,
+      Delimiter.BREAK_LINE
+    ),
+    addSummaryRow(
         i18n.pages.checkYourAnswers.rowTitles.name,
         [application.personalDetails.givenNames, application.personalDetails.familyName],
         paths.appealStarted.name + editParameter,

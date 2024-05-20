@@ -137,11 +137,11 @@ describe('Home office decision letter', function () {
       expect(res.redirect).to.have.been.calledWith(`${paths.appealStarted.homeOfficeDecisionLetter}?error=noFileSelected`);
     });
 
-    it('should redirect to \'/about-appeal\' if home office letter upload present and not in editing mode', async () => {
+    it('should redirect to \'/deportation-order\' if home office letter upload present and not in editing mode', async () => {
       req.session.appeal.application.homeOfficeLetter = [{ fileId: 'id', name: 'name' } as Evidence];
       postHomeOfficeDecisionLetter(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.deportationOrder);
     });
 
     it('should redirect to \'/check-answers\' if home office letter upload present and in editing mode', async () => {

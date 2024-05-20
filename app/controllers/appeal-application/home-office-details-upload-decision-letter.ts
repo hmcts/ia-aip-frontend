@@ -44,7 +44,7 @@ function postHomeOfficeDecisionLetter(req: Request, res: Response, next: NextFun
   try {
     const decisionLetterUploads = req.session.appeal.application.homeOfficeLetter || [];
     if (decisionLetterUploads.length > 0) {
-      const redirectTo = req.session.appeal.application.isEdit ? paths.appealStarted.checkAndSend : paths.appealStarted.taskList;
+      const redirectTo = req.session.appeal.application.isEdit ? paths.appealStarted.checkAndSend : paths.appealStarted.deportationOrder;
       return res.redirect(redirectTo);
     } else {
       return res.redirect(`${paths.appealStarted.homeOfficeDecisionLetter}?error=noFileSelected`);

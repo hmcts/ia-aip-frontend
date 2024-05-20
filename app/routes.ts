@@ -7,6 +7,7 @@ import { setupCheckAndSendController } from './controllers/appeal-application/ch
 import { setConfirmationController } from './controllers/appeal-application/confirmation-page';
 import { setupContactDetailsController } from './controllers/appeal-application/contact-details';
 import { setupDecisionTypeController } from './controllers/appeal-application/decision-type';
+import { setupDeportationOrderController } from './controllers/appeal-application/deportation-order';
 import { setupFeeSupportController } from './controllers/appeal-application/fee-support';
 import { setupFeeWaiverController } from './controllers/appeal-application/fee-waiver';
 import { setupHelpWithFeesController } from './controllers/appeal-application/help-with-fees';
@@ -330,6 +331,7 @@ const hearingBundleFeatureToggleController = setupHearingBundleFeatureToggleCont
 const outOfCountryFeatureToggleController = setupOutOfCountryFeatureToggleController(middleware);
 
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
+const deportationOrderController = setupDeportationOrderController(middleware, updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -450,5 +452,6 @@ router.use(outOfCountryFeatureToggleController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);
+router.use(deportationOrderController);
 
 export { router };

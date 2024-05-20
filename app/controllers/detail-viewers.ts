@@ -1160,6 +1160,46 @@ async function getUpdatedDecisionAndReasonsViewer(req: Request, res: Response, n
   }
 }
 
+async function getRemittalDocumentsViewer(req: Request, res: Response, next: NextFunction) {
+
+  try {
+    let previousPage: string = paths.common.overview;
+    const remittalDocuments = req.session.appeal.remittalDocuments;
+    const remittalDocs: SummaryList[] = [];
+
+    if (remittalDocuments && remittalDocuments.length) {
+      for (let index = 0; index < remittalDocuments.length; index++) {
+        const indexRow: number = index + 1;
+        const dataRows: SummaryRow[] = [];
+        const decision = remittalDocuments[index];
+        const otherDocuments = decision.otherRemittalDocs;
+        dataRows.push(addSummaryRow(i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel, [moment(decision.decisionDocument.dateUploaded).format(dayMonthYearFormat)]));
+        dataRows.push(addSummaryRow(i18n.pages.detailViewers.remittalDocuments.documentLabel, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${decision.decisionDocument.fileId}'>${decision.decisionDocument.name}</a>`]));
+        if (otherDocuments) {
+          for (let index = 0; index < otherDocuments.length; index++) {
+            const otherDocument = otherDocuments[index];
+            dataRows.push(addSummaryRow(i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel, [moment(otherDocument.dateUploaded).format(dayMonthYearFormat)]));
+            dataRows.push(addSummaryRow(i18n.pages.detailViewers.remittalDocuments.documentLabel, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${otherDocument.fileId}'>${otherDocument.name}</a>`]));
+            dataRows.push(addSummaryRow(i18n.pages.detailViewers.remittalDocuments.documentDescriptionLabel, [otherDocument.description]));
+          }
+        }
+        remittalDocs.push({
+          summaryRows: dataRows,
+          title: i18n.pages.detailViewers.remittalDocuments.subtitle + indexRow
+        });
+      }
+    }
+
+    return res.render('templates/details-viewer-remittal.njk', {
+      title: i18n.pages.detailViewers.remittalDocuments.title,
+      remittalDocs,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
@@ -1181,6 +1221,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.ftpaDecisionViewer, getFtpaDecisionDetails);
   router.get(paths.common.directionHistoryViewer, getDirectionHistory);
   router.get(paths.common.updatedDecisionAndReasonsViewer, getUpdatedDecisionAndReasonsViewer);
+  router.get(paths.common.remittalDocumentsViewer, getRemittalDocumentsViewer);
   return router;
 }
 
@@ -1209,5 +1250,6 @@ export {
   getFtpaDecisionDetails,
   getDirectionHistory,
   getRespondentApplicationSummaryRows,
-  getUpdatedDecisionAndReasonsViewer
+  getUpdatedDecisionAndReasonsViewer,
+  getRemittalDocumentsViewer
 };

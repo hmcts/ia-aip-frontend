@@ -38,6 +38,11 @@ function constructEventObject(event: HistoryEvent, req: Request) {
     eventContent = i18n.pages.overviewPage.timeline['decideFtpa'][ftpaApplicantType];
   }
 
+  if (Events.MARK_APPEAL_AS_REMITTED.id === event.id) {
+    const sourceOfRemittal = req.session.appeal.sourceOfRemittal;
+    eventContent = i18n.pages.overviewPage.timeline[event.id][sourceOfRemittal];
+  }
+
   let eventObject = eventContent
       ? {
         date: moment(event.createdDate).format('DD MMMM YYYY'),
@@ -299,7 +304,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
     Events.RECORD_OUT_OF_TIME_DECISION.id,
     Events.MARK_AS_READY_FOR_UT_TRANSFER.id
   ];
-  const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id];
+  const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id, Events.MARK_APPEAL_AS_REMITTED.id];
 
   if (ftpaFeatureEnabled) {
     appealDecisionSectionEvents.push(

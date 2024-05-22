@@ -1287,6 +1287,75 @@ describe('update-appeal-service', () => {
       });
     });
 
+    describe('remittalDocuments', () => {
+      const caseData: Partial<CaseData> = {
+        'remittalDocuments': [
+          {
+            id: '1',
+            value: {
+              decisionDocument: {
+                document: {
+                  'document_filename': 'CA-2023-000001-Decision-to-remit.pdf',
+                  'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                  'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+                },
+                dateUploaded: '2024-04-09'
+              },
+              'otherRemittalDocs': [
+                {
+                  id: '11',
+                  value: {
+                    document: {
+                      'document_filename': 'upload_test_add_doc.pdf',
+                      'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
+                      'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
+                    },
+                    description: 'Test description 1',
+                    dateUploaded: '2024-04-09'
+                  }
+                }
+              ]
+            }
+          },
+          {
+            id: '2',
+            value: {
+              decisionDocument: {
+                document: {
+                  'document_filename': 'CA-2023-000002-Decision-to-remit.pdf',
+                  'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000003',
+                  'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000003/binary'
+                },
+                dateUploaded: '2024-04-10'
+              },
+              'otherRemittalDocs': [
+                {
+                  id: '21',
+                  value: {
+                    document: {
+                      'document_filename': 'upload_test_add_doc.pdf',
+                      'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000004',
+                      'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000004/binary'
+                    },
+                    description: 'Test description 2',
+                    dateUploaded: '2024-04-10'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map remittalDocuments collection', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.remittalDocuments).to.be.length(2);
+      });
+    });
+
     describe('map appellant or witness details from caseData for interpreter information', () => {
       let witness1: WitnessDetails = { witnessPartyId: '1', witnessName: 'witness', witnessFamilyName: '1' };
       let witness2: WitnessDetails = { witnessPartyId: '2', witnessName: 'witness', witnessFamilyName: '2' };
@@ -1434,9 +1503,9 @@ describe('update-appeal-service', () => {
               addressLookup: {},
               remissionOption: 'test',
               asylumSupportRefNumber: 'test',
-              helpWithFeesRefNumber: 'HWF-123',
               feeSupportPersisted: true,
               helpWithFeesOption: 'test',
+              helpWithFeesRefNumber: 'HWF-123',
               localAuthorityLetters: [{
                 name: 'somefile.png',
                 fileId: '00000000-0000-0000-0000-000000000000',

@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { paths } from '../../../../app/paths';
 import { dayMonthYearFormat } from '../../../../app/utils/date-utils';
+import content from '../../../../locale/en.json';
 
 module.exports = {
   appealSent(I) {
@@ -45,26 +46,32 @@ module.exports = {
     Then('I am on the appeal details sent with payment page', async () => {
       await I.waitInUrl(paths.common.confirmationPayment, 15);
       await I.seeInCurrentUrl(paths.common.confirmationPayment);
-      I.see('Your appeal details have been sent');
-      I.see('A Tribunal Caseworker will ask the Home Office to send any documents it has about your case to the Tribunal');
-      I.see('A Tribunal Caseworker will check the Home Office documents and then contact you to tell you what to do next');
-      I.seeInSource(moment().add(5,'days').format(dayMonthYearFormat));
+      await I.see(content.pages.successPage.inTime.panel);
+      await I.see(content.pages.successPage.askHomeOffice);
+      await I.see(content.pages.successPage.whatToDoNext);
+      await I.seeInSource(moment().add(5,'days').format(dayMonthYearFormat));
     });
 
     Then('I see the respond by date is 4 weeks in the future', async () => {
-      I.seeInSource(moment().add(28,'days').format(dayMonthYearFormat));
+      await I.seeInSource(moment().add(28,'days').format(dayMonthYearFormat));
     });
 
     Then('I see the respond by date is 5 days in the future', async () => {
-      I.seeInSource(moment().add(5,'days').format(dayMonthYearFormat));
+      await I.seeInSource(moment().add(5,'days').format(dayMonthYearFormat));
     });
 
     Then('I see the pay by date is 14 days in the future', async () => {
-      I.seeInSource(moment().add(14,'days').format(dayMonthYearFormat));
+      await I.seeInSource(moment().add(14,'days').format(dayMonthYearFormat));
     });
 
     When('I click on the See your appeal progress link', async () => {
-      I.click('See your appeal progress');
+      await I.click('See your appeal progress');
+      try {
+        await I.waitInUrl(paths.common.overview, 30);
+      } catch {
+        await I.click('See your appeal progress');
+        await I.waitInUrl(paths.common.overview, 30);
+      }
     });
   }
 };

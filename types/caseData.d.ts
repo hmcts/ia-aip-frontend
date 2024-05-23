@@ -209,6 +209,8 @@ interface CaseData {
   manageFeeRefundedAmount?: string;
   manageFeeRequestedAmount?: string;
   paidAmount?: string;
+  sourceOfRemittal?: string;
+  remittalDocuments: Collection<CcdRemittalDetails>[];
 }
 
 interface Application<T> {
@@ -340,6 +342,12 @@ interface CcdDecisionAndReasons {
   dateDocumentAndReasonsDocumentUploaded?: string;
   documentAndReasonsDocument?: SupportingDocument;
   summariseChanges?: string;
+  [key: string]: any;
+}
+
+interface CcdRemittalDetails {
+  decisionDocument: DocumentWithMetaData;
+  otherRemittalDocs?: Collection<DocumentWithMetaData>[];
   [key: string]: any;
 }
 

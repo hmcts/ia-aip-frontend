@@ -246,6 +246,7 @@ const paths = {
     ftpaDecisionViewer: '/ftpa-decision',
     directionHistoryViewer: '/direction-history/:id',
     updatedDecisionAndReasonsViewer: '/updated-decision-reasons',
+    remittalDocumentsViewer: '/remittal-documents',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

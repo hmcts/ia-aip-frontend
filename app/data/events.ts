@@ -233,5 +233,10 @@ export const Events = {
     id: 'manageFeeUpdate',
     summary: 'Manage a fee update',
     description: 'Manage a fee update'
+  },
+  MARK_APPEAL_AS_REMITTED: {
+    id: 'markAppealAsRemitted',
+    summary: 'Mark appeal as remitted',
+    description: 'Mark appeal as remitted'
   }
 };

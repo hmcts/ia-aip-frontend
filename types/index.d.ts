@@ -199,6 +199,8 @@ interface Appeal {
   ftpaAppellantDecisionRemadeRule32Text?: string;
   ftpaRespondentDecisionRemadeRule32Text?: string;
   updatedDecisionAndReasons?: DecisionAndReasons[];
+  sourceOfRemittal?: string;
+  remittalDocuments?: RemittalDetails[];
 }
 
 interface Hearing {
@@ -499,6 +501,12 @@ interface RemissionDetails {
   helpWithFeesReferenceNumber?: string;
   helpWithFeesOption?: string;
   localAuthorityLetters?: Evidence[];
+}
+
+interface RemittalDetails {
+  id: string;
+  decisionDocument: Evidence;
+  otherRemittalDocs?: Evidence[];
 }
 
 declare module NodeJS {

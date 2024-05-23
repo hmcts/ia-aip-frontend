@@ -55,6 +55,7 @@ interface DoThisNextSection {
   feeLeftToPay?: string;
   remissionRejectedDatePlus14days?: string;
   utAppealReferenceNumber?: string;
+  sourceOfRemittal?: string;
 }
 
 /**
@@ -745,6 +746,13 @@ async function getAppealApplicationNextStep(req: Request) {
           descriptionParagraphs: [`Nothing to do next`]
         };
       }
+      break;
+    case 'remitted':
+      doThisNextSection = {
+        cta: {},
+        descriptionParagraphs: [i18n.pages.overviewPage.doThisNext.remitted.decision],
+        sourceOfRemittal: req.session.appeal.sourceOfRemittal
+      };
       break;
     default:
       // default message to avoid app crashing on events that are to be implemented.

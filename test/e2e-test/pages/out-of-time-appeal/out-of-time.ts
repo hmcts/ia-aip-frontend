@@ -19,5 +19,10 @@ module.exports = {
     Then('I dont see Uploaded file list', async () => {
       I.dontSeeElement('.evidence');
     });
+
+    When('I choose Yes and click save and continue', async () => {
+      await I.checkOption('#answer');
+      await I.click('Save and continue');
+    });
   }
 };

@@ -19,6 +19,8 @@ import { statementOfTruthValidation } from '../../utils/validations/fields-valid
 async function createSummaryRowsFrom(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
   const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+  const dlrmInternalFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false);
+
   const { application } = req.session.appeal;
   const appealTypeNames: string[] = application.appealType.split(',').map(appealTypeInstance => {
     return i18n.appealTypes[appealTypeInstance].name;
@@ -104,12 +106,6 @@ async function createSummaryRowsFrom(req: Request) {
         Delimiter.BREAK_LINE
     ),
     addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.deportationOrder,
-      [application.deportationOrderOptions === 'Yes' ? i18n.pages.deportationOrder.cyaPageRowValueWhenYesSelected : i18n.pages.deportationOrder.cyaPageRowValueWhenNoSelected],
-      paths.appealStarted.deportationOrder + editParameter,
-      Delimiter.BREAK_LINE
-    ),
-    addSummaryRow(
         i18n.pages.checkYourAnswers.rowTitles.name,
         [application.personalDetails.givenNames, application.personalDetails.familyName],
         paths.appealStarted.name + editParameter,
@@ -127,6 +123,16 @@ async function createSummaryRowsFrom(req: Request) {
         paths.appealStarted.nationality + editParameter
     )
   ];
+
+  if (dlrmInternalFeatureFlag) {
+    const deportationOrderRow = addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.deportationOrder,
+      [application.deportationOrderOptions === 'Yes' ? i18n.pages.deportationOrder.cyaPageRowValueWhenYesSelected : i18n.pages.deportationOrder.cyaPageRowValueWhenNoSelected],
+      paths.appealStarted.deportationOrder + editParameter,
+      Delimiter.BREAK_LINE);
+
+    rowsCont.splice(1, 0, deportationOrderRow);
+  }
 
   if (application.appellantInUk) {
 

@@ -4,7 +4,9 @@ import {
   postDeportationOrder,
   setupDeportationOrderController
 } from '../../../app/controllers/appeal-application/deportation-order';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { paths } from '../../../app/paths';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -59,6 +61,8 @@ describe('Deportation order Controller', function () {
         }
       })
     };
+
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false).resolves(true);
   });
 
   afterEach(() => {

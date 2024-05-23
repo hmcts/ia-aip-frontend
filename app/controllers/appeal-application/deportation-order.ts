@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
+import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
+import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
@@ -31,6 +33,9 @@ function getDeportationOrderOptionsQuestion(appeal: Appeal) {
 
 async function getDeportationOrder(req: Request, res: Response, next: NextFunction) {
   try {
+    const dlrmInternalFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false);
+    if (!dlrmInternalFeatureFlag) return res.redirect(paths.common.overview);
+
     const appeal = req.session.appeal;
     appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -46,6 +51,9 @@ async function getDeportationOrder(req: Request, res: Response, next: NextFuncti
 
 function postDeportationOrder(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    const dlrmInternalFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false);
+    if (!dlrmInternalFeatureFlag) return res.redirect(paths.common.overview);
+
     async function persistAppeal(appeal: Appeal) {
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {

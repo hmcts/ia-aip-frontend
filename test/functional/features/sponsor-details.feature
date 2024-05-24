@@ -32,8 +32,6 @@ Scenario: Complete appeal application
   Then I click "Save and continue" button
   When I upload a Home Office decision letter
   And I click "Save and continue" button
-  Then I see "Has a deportation order been made against you?" in title
-  When I choose Yes and click save and continue
   Then I should see the task-list page
 
   # Your personal details page

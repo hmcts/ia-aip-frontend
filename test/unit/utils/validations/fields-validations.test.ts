@@ -615,6 +615,78 @@ describe('fields-validations', () => {
           'text': 'Enter a phone number'
         }
       });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should pass validation when an invalid email entered but only text-message selected', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'text-message',
+        'email-value': 'invalid',
+        'text-message-value': '07899999999'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should pass validation when an invalid mobile number entered but only email selected', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'email',
+        'email-value': 'foo@bar.com',
+        'text-message-value': 'invalid'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation when an email and mobile phone number are not entered', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'email,text-message',
+        'email-value': '',
+        'text-message-value': ''
+      });
+      expect(validationResult).to.deep.equal({
+        'email-value': {
+          'href': '#email-value',
+          'key': 'email-value',
+          'text': 'Enter an email address'
+        },
+        'text-message-value': {
+          'href': '#text-message-value',
+          'key': 'text-message-value',
+          'text': 'Enter a phone number'
+        }
+      });
+    });
+
+    it('should fail validation if phone number ends with a non digit', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '0127722222a'
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
+    });
+
+    it('should fail validation if phone number starts with anything but + or a digit', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '¢07899999999'
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
+    });
+  });
+
+  describe('yesOrNoRequiredValidation', () => {
+    it('no error if yes selected', () => {
+      const validationResult = yesOrNoRequiredValidation({ answer: 'yes' }, 'error message');
+
+      expect(validationResult).to.deep.equal(null);
+    });
+
+    it('error if yes on no not selected', () => {
+      const validationResult = yesOrNoRequiredValidation({}, 'error message');
+      const expectedResponse = {};
+      expectedResponse['answer'] = {
+        'href': '#answer',
+        'key': 'answer',
+        'text': 'error message'
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
     });
 
     it('should fail validation if phone number ends with a non digit', () => {

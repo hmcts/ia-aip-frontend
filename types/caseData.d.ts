@@ -122,6 +122,7 @@ interface CaseData {
   homeOfficeAppealResponseEvidence?: any;
   rpDcAppealHearingOption?: string;
   decisionHearingFeeOption?: string;
+  feeSupportPersisted?: string;
   paymentReference?: string;
   paymentStatus?: string;
   paymentDate?: string;
@@ -189,6 +190,11 @@ interface CaseData {
   witness10InterpreterSignLanguage?: InterpreterLanguageRefData;
   interpreterLanguage?: Collection<InterpreterLanguage>[];
   isDecisionAllowed?: string;
+  updateTribunalDecisionList?: string;
+  typesOfUpdateTribunalDecision?: DynamicList;
+  updatedAppealDecision?: string;
+  updateTribunalDecisionAndReasonsFinalCheck?: string;
+  rule32NoticeDocument?: SupportingDocument;
   appealOutOfCountry?: string;
   hasSponsor?: string;
   sponsorGivenNames?: string;
@@ -224,6 +230,21 @@ interface CaseData {
   ftpaAppellantDecisionOutcomeType?: string;
   ftpaAppellantDecisionDocument?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   ftpaAppellantDecisionDate?: string;
+  ftpaR35AppellantDocument: SupportingDocument;
+  ftpaR35RespondentDocument: SupportingDocument;
+  ftpaApplicationAppellantDocument: SupportingDocument;
+  ftpaApplicationRespondentDocument: SupportingDocument;
+  ftpaAppellantDecisionRemadeRule32Text?: string;
+  ftpaRespondentDecisionRemadeRule32Text?: string;
+  utAppealReferenceNumber?: string;
+  remissionOption?: string;
+  asylumSupportRefNumber?: string;
+  helpWithFeesOption?: string;
+  helpWithFeesRefNumber?: string;
+  localAuthorityLetters?: Collection<DocumentWithMetaData>[];
+  correctedDecisionAndReasons: Collection<CcdDecisionAndReasons>[];
+  sourceOfRemittal?: string;
+  remittalDocuments: Collection<CcdRemittalDetails>[];
 }
 
 interface Application<T> {
@@ -355,15 +376,31 @@ interface Subscription {
   mobileNumber: string;
 }
 
-interface InterpreterLanguageRefData {
-  languageRefData?: DynamicList;
-  languageManualEntry?: string[];
-  languageManualEntryDescription?: string;
+interface CcdDecisionAndReasons {
+  updatedDecisionDate: string;
+  dateCoverLetterDocumentUploaded: string;
+  coverLetterDocument: SupportingDocument;
+  dateDocumentAndReasonsDocumentUploaded?: string;
+  documentAndReasonsDocument?: SupportingDocument;
+  summariseChanges?: string;
+  [key: string]: any;
+}
+
+interface CcdRemittalDetails {
+  decisionDocument: DocumentWithMetaData;
+  otherRemittalDocs?: Collection<DocumentWithMetaData>[];
+  [key: string]: any;
 }
 
 interface DynamicList {
   value?: Value;
   list_items?: Value[];
+}
+
+interface InterpreterLanguageRefData {
+  languageRefData?: DynamicList;
+  languageManualEntry?: string[];
+  languageManualEntryDescription?: string;
 }
 
 interface Value {

@@ -510,11 +510,11 @@ function sponsorContactDetailsValidation(obj: object) {
     'text-message-value': Joi.alternatives().conditional(
         'selections', {
           is: Joi.string().regex(/text-message/),
-          then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
+          then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164').defaultCountry('GB')
               .messages({
                 'string.empty': i18n.validationErrors.phoneEmpty,
-                'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
-                'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
+                'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.ukPhoneFormat,
+                'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.ukPhoneFormat
               }),
           otherwise: Joi.any()
         })
@@ -576,6 +576,43 @@ function isDateInRange(dateFrom: string, dateTo: string, obj,dateMissingErrMsg: 
   return validate(toValidate, schema, true);
 }
 
+function remissionOptionsValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.remissionOptions
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
+function asylumSupportValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    asylumSupportRefNumber: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.asylumSupport })
+  }).unknown();
+  return validate(obj, schema);
+}
+
+function helpWithFeesValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.helpWithFees
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
+function helpWithFeesRefNumberValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    helpWithFeesRefNumber: Joi.string().required().regex(/^(HWF|hwf).*$/).messages({
+      'string.empty': i18n.validationErrors.helpWithFeesRefNumber.required,
+      'string.pattern.base': i18n.validationErrors.helpWithFeesRefNumber.invalid
+    })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 export {
   createStructuredError,
   contactDetailsValidation,
@@ -617,5 +654,9 @@ export {
   sponsorContactDetailsValidation,
   sponsorAuthorisationValidation,
   gwfReferenceNumberValidation,
-  selectedRequiredValidationDialect
+  selectedRequiredValidationDialect,
+  remissionOptionsValidation,
+  asylumSupportValidation,
+  helpWithFeesValidation,
+  helpWithFeesRefNumberValidation
 };

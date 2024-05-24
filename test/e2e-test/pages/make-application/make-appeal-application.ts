@@ -130,8 +130,8 @@ module.exports = {
     });
 
     Then(/^I should see You sent the Tribunal a request$/, async (text: string) => {
-      await I.waitForText('You sent the Tribunal a request',30);
-      await I.see('You sent the Tribunal a request');
+      await I.waitForText('You sent the Tribunal a request.',30);
+      await I.see('You sent the Tribunal a request.');
     });
   }
 };

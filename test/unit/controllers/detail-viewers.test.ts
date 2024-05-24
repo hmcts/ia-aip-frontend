@@ -20,7 +20,11 @@ import {
   getMakeAnApplicationViewer,
   getNoticeEndedAppeal,
   getOutOfTimeDecisionViewer,
-  getReasonsForAppealViewer, getRespondentApplicationSummaryRows,
+  getReasonsForAppealViewer,
+  getRemittalDocumentsViewer,
+  getRespondentApplicationSummaryRows,
+  getUpdatedDecisionAndReasonsViewer,
+  getUpdatedTribunalDecisionWithRule32Viewer,
   setupCmaRequirementsViewer,
   setupDetailViewersController
 } from '../../../app/controllers/detail-viewers';
@@ -419,6 +423,7 @@ describe('Detail viewer Controller', () => {
 
   describe('getAppealDetailsViewer', () => {
     let expectedSummaryRows;
+    let expectedSummaryRowsWithDlrmFeeRemission;
 
     beforeEach(() => {
       req.session.appeal = {
@@ -430,8 +435,10 @@ describe('Detail viewer Controller', () => {
         application: {
           appellantInUk: 'Yes',
           homeOfficeRefNumber: 'A1234567',
+          hasSponsor: 'No',
           outsideUkWhenApplicationMade: 'No',
           gwfReferenceNumber: '',
+          decisionHearingFeeOption: 'decisionWithHearing',
           dateClientLeaveUk: {
             year: '2022',
             month: '2',
@@ -573,6 +580,37 @@ describe('Detail viewer Controller', () => {
           }
         }
       ];
+
+      expectedSummaryRowsWithDlrmFeeRemission = {
+        'aboutAppealRows': [
+          { key: { text: 'In the UK' }, value: { html: 'Yes' } },
+          { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
+          { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
+          { key: { text: 'Home Office decision letter' },
+            value: {
+              html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>"
+            }
+          },
+          { key: { text: 'Sponsor' }, value: { html: 'No' } },
+          { key: { text: 'Appeal type' }, value: { html: 'Protection' } },
+          { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
+          { key: { text: 'Reason for late appeal' }, value: { html: 'a reason for being late' } },
+          { key: { text: 'Supporting evidence' },
+            value: {
+              html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>"
+            }
+          }
+        ],
+        'personalDetailsRows': [
+          { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
+          { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
+          { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+          { key: { text: 'Address' }, value: { html: '60 GREAT PORTLAND STREET  LONDON United Kingdom W1W 7RT' } },
+          { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } }
+        ],
+        'feeDetailsRows': [
+        ]
+      };
     });
 
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
@@ -623,22 +661,223 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    // it('should render detail-viewers/appeal-details-viewer.njk deprivation appeal type, payments flag ON @detailsViewer', async () => {
-    //   sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
-    //   expectedSummaryRows[8].value.html = 'Deprivation of Citizenship';
-    //   expectedSummaryRows.push(
-    //     { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } }
-    //   );
-    //   req.session.appeal.application.appealType = 'deprivation';
-    //   req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
-    //
-    //   await getAppealDetailsViewer(req as Request, res as Response, next);
-    //   expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
-    //     title: i18n.pages.detailViewers.appealDetails.title,
-    //     previousPage: paths.common.overview,
-    //     data: expectedSummaryRows
-    //   });
-    // });
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and has' +
+      ' sponsor not in Uk', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows[0].value.html = 'No'; // appellant in uk
+      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows[4].value.html = 'Yes'; // sponsor
+      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows.splice(5,0,
+        { key: { text: 'Sponsor\'s name' }, value: { html: 'Sponsor Name' } },
+        { key: { text: 'Sponsor\'s address' }, value: { html: '60 GREAT PORTLAND STREET<br>LONDON<br>United Kingdom<br>W1W 7RT' } },
+        { key: { text: 'Sponsor\'s contact details' }, value: { html: 'test@email.com<br>7759991234' } },
+        { key: { text: 'Sponsor has access to information' }, value: { html: 'Sponsor authorisation' } }
+      );
+
+      expectedSummaryRowsWithDlrmFeeRemission.personalDetailsRows[3].key.text = 'Address'; // out of country address
+      expectedSummaryRowsWithDlrmFeeRemission.personalDetailsRows[3].value.html = 'some appellant out of country address'; // out of country address
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Payment status' }, value: {  html: 'Paid' } }
+      );
+
+      req.session.appeal.application.appellantInUk = 'No';
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.sponsorNameForDisplay = 'Sponsor Name';
+      req.session.appeal.application.sponsorAddress = {
+        line1: '60 GREAT PORTLAND STREET',
+        line2: '',
+        city: 'LONDON',
+        county: 'United Kingdom',
+        postcode: 'W1W 7RT'
+      };
+      req.session.appeal.application.sponsorContactDetails = {
+        email: 'test@email.com',
+        wantsEmail: true,
+        phone: '7759991234',
+        wantsSms: true
+      };
+      req.session.appeal.application.appellantOutOfCountryAddress = 'some appellant out of country address';
+      req.session.appeal.application.sponsorAuthorisation = 'Sponsor authorisation';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
+      req.session.appeal.application.helpWithFeesOption = 'willPayForAppeal';
+      req.session.appeal.paymentStatus = 'Paid';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Payment status' }, value: {  html: 'Paid' } }
+      );
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
+      req.session.appeal.application.helpWithFeesOption = 'willPayForAppeal';
+      req.session.appeal.paymentStatus = 'Paid';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and' +
+      ' remissionOption is asylumSupportFromHo', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.feeWithHearing = '140';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and' +
+      ' remissionOption is parentGetSupportFromLocalAuthority', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } },
+        { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank'" +
+              " rel='noopener noreferrer' href='/view/document/docName1'>document 1</a><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/docName2'>document 2</a>" } }
+      );
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'parentGetSupportFromLocalAuthority';
+      req.session.appeal.application.localAuthorityLetters = [
+        {
+          fileId : 'docName1',
+          name: 'document 1'
+        },
+        {
+          fileId : 'docName2',
+          name: 'document 2'
+        }
+      ];
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and' +
+      ' remissionOption is noneOfTheseStatements', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } },
+        { key: { text: 'Help with fees reference number' }, value: {  html: 'helpWithFeesRefNumberValue' } }
+      );
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
+      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
+      req.session.appeal.application.helpWithFeesRefNumber = 'helpWithFeesRefNumberValue';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and' +
+      ' remissionOption is noneOfTheseStatements and helpWithFeesOption is willPayForAppeal', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£20' } },
+        { key: { text: 'Payment status' }, value: {  html: 'Paid' } }
+      );
+      req.session.appeal.feeWithHearing = '20';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
+      req.session.appeal.application.helpWithFeesOption = 'willPayForAppeal';
+      req.session.appeal.paymentStatus = 'Paid';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and' +
+      ' remission is not applied due to a Revocation of protection journey', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows[5].value.html = 'Revocation of Protection Status'; // appeal type
+
+      req.session.appeal.feeWithHearing = '20';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = undefined;
+      req.session.appeal.application.helpWithFeesOption = undefined;
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.application.appealType = 'revocationOfProtection';
+      req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
 
     it('should catch exception and call next with the error', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
@@ -1557,6 +1796,40 @@ describe('Detail viewer Controller', () => {
         res.render = sandbox.stub().throws(error);
 
         getDecisionAndReasonsViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
+  });
+
+  describe('should render updated decision and reasons page with rule 32', () => {
+    const documents = {
+      fileId: 'f2194fde-001a-4640-8b7e-b90a7189e6ba',
+      name: 'rule32.pdf'
+    };
+
+    it('should render templates/details-viewer.njk with updated decision and reasons page rule 32', async () => {
+      req.session.appeal.rule32NoticeDocs = documents;
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.documentText },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f2194fde-001a-4640-8b7e-b90a7189e6ba'>rule32(PDF)</a>` }
+        }
+      ];
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getUpdatedTribunalDecisionWithRule32Viewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+
+      it('getUpdatedTribunalDecisionWithRule32Viewer should catch error and call next with it', async () => {
+        req.session.appeal.rule32NoticeDocs = documents;
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        await getUpdatedTribunalDecisionWithRule32Viewer(req as Request, res as Response, next);
         expect(next).to.have.been.calledWith(error);
       });
     });
@@ -2492,8 +2765,12 @@ describe('Detail viewer Controller', () => {
         tag: 'ftpaRespondent'
       }
     ];
+    const document = {
+      fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+      name: 'FTPA_Respondent_Doc.PDF'
+    };
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when granted', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when granted', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2545,8 +2822,8 @@ describe('Detail viewer Controller', () => {
           }
         ]
       };
-
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2556,7 +2833,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when partially granted', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when partially granted', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2609,7 +2886,8 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2619,7 +2897,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when not admitted', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when not admitted', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2656,7 +2934,8 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2666,7 +2945,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2699,7 +2978,8 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2709,7 +2989,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused by resident judge', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused by resident judge', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2742,7 +3022,8 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2752,7 +3033,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'appellant',
@@ -2807,7 +3088,8 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
@@ -2817,7 +3099,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details for resident judge decision', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details for resident judge decision', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'appellant',
@@ -2872,7 +3154,8 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
@@ -2882,7 +3165,809 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should catch error and call next with it', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details for resident judge decision reheard rule 35', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'appellant',
+        ftpaAppellantGrounds: 'ftpaAppellantGrounds',
+        ftpaAppellantApplicationDate: '2023-03-20',
+        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantDecisionDate: '2023-03-20',
+        ftpaAppellantDecisionDocument: [],
+        ftpaAppellantRjDecisionOutcomeType: 'reheardRule35',
+        ftpaR35AppellantDocument: document
+      };
+      documents[0].name = 'FTPA_Appellant_Doc.PDF';
+      document.name = 'FTPA_Reheard_Rule_35_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.grounds },
+            value: { html: 'ftpaAppellantGrounds' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
+            value: { html: 'ftpaAppellantOutOfTimeExplanation' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Appeal&nbsp;to&nbsp;be&nbsp;heard&nbsp;again' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Reheard_Rule_35_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details for resident judge decision reheard rule 35', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
+        ftpaRespondentApplicationDate: '2023-03-20',
+        ftpaRespondentDecisionDate: '2023-03-20',
+        ftpaRespondentDecisionDocument: [],
+        ftpaRespondentRjDecisionOutcomeType: 'reheardRule35',
+        ftpaR35RespondentDocument: document
+      };
+      documents[0].name = 'FTPA_Respondent_Doc.PDF';
+      document.name = 'FTPA_Reheard_Rule_35_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Appeal&nbsp;to&nbsp;be&nbsp;heard&nbsp;again' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Reheard_Rule_35_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details for resident judge decision remade rule 31', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
+        ftpaRespondentApplicationDate: '2023-03-20',
+        ftpaRespondentDecisionDate: '2023-03-20',
+        ftpaRespondentDecisionDocument: [],
+        ftpaRespondentRjDecisionOutcomeType: 'remadeRule31',
+        ftpaRespondentDecisionRemadeRule32Text: 'Rule 31 reasons for the decision'
+      };
+      documents[0].name = 'FTPA_Respondent_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Appeal&nbsp;decision&nbsp;to&nbsp;be&nbsp;reviewed' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionReasons },
+            value: { html: 'Rule&nbsp;31&nbsp;reasons&nbsp;for&nbsp;the&nbsp;decision' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details for resident judge decision remade rule 32', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
+        ftpaRespondentApplicationDate: '2023-03-20',
+        ftpaRespondentDecisionDate: '2023-03-20',
+        ftpaRespondentDecisionDocument: [],
+        ftpaRespondentRjDecisionOutcomeType: 'remadeRule32',
+        ftpaRespondentDecisionRemadeRule32Text: 'Rule 32 reasons for the decision'
+      };
+      documents[0].name = 'FTPA_Respondent_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Appeal&nbsp;decision&nbsp;to&nbsp;be&nbsp;reviewed' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionReasons },
+            value: { html: 'Rule&nbsp;32&nbsp;reasons&nbsp;for&nbsp;the&nbsp;decision' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details for resident judge decision remade rule 31', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'appellant',
+        ftpaAppellantGrounds: 'ftpaAppellantGrounds',
+        ftpaAppellantApplicationDate: '2023-03-20',
+        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantDecisionDate: '2023-03-20',
+        ftpaAppellantDecisionDocument: [],
+        ftpaAppellantRjDecisionOutcomeType: 'remadeRule31',
+        ftpaAppellantDecisionRemadeRule32Text: 'Rule 31 reasons for the decision'
+      };
+      documents[0].name = 'FTPA_Appellant_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.grounds },
+            value: { html: 'ftpaAppellantGrounds' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
+            value: { html: 'ftpaAppellantOutOfTimeExplanation' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Appeal&nbsp;decision&nbsp;to&nbsp;be&nbsp;reviewed' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionReasons },
+            value: { html: 'Rule&nbsp;31&nbsp;reasons&nbsp;for&nbsp;the&nbsp;decision' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details for resident judge decision remade rule 32', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'appellant',
+        ftpaAppellantGrounds: 'ftpaAppellantGrounds',
+        ftpaAppellantApplicationDate: '2023-03-20',
+        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantDecisionDate: '2023-03-20',
+        ftpaAppellantDecisionDocument: [],
+        ftpaAppellantRjDecisionOutcomeType: 'remadeRule32',
+        ftpaAppellantDecisionRemadeRule32Text: 'Rule 32 reasons for the decision'
+      };
+      documents[0].name = 'FTPA_Appellant_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.grounds },
+            value: { html: 'ftpaAppellantGrounds' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
+            value: { html: 'ftpaAppellantOutOfTimeExplanation' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Appeal&nbsp;decision&nbsp;to&nbsp;be&nbsp;reviewed' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionReasons },
+            value: { html: 'Rule&nbsp;32&nbsp;reasons&nbsp;for&nbsp;the&nbsp;decision' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj for FTPA Application by: Appellant for Decide FTPA Application event with decision: granted', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'appellant',
+        ftpaAppellantGrounds: 'ftpaAppellantGrounds',
+        ftpaAppellantApplicationDate: '2023-03-20',
+        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantDecisionDate: '2023-03-20',
+        ftpaAppellantDecisionDocument: [],
+        ftpaApplicationAppellantDocument: document,
+        ftpaAppellantRjDecisionOutcomeType: 'granted'
+      };
+
+      documents[0].name = 'FTPA_Appellant_Doc.PDF';
+      document.name = 'FTPA_Granted_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.grounds },
+            value: { html: 'ftpaAppellantGrounds' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
+            value: { html: 'ftpaAppellantOutOfTimeExplanation' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Granted' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Granted_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj for FTPA Application by: Appellant for Decide FTPA Application event with decision: partially granted', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'appellant',
+        ftpaAppellantGrounds: 'ftpaAppellantGrounds',
+        ftpaAppellantApplicationDate: '2023-03-20',
+        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantDecisionDate: '2023-03-20',
+        ftpaAppellantDecisionDocument: [],
+        ftpaApplicationAppellantDocument: document,
+        ftpaAppellantRjDecisionOutcomeType: 'granted'
+      };
+
+      documents[0].name = 'FTPA_Appellant_Doc.PDF';
+      document.name = 'FTPA_Granted_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.grounds },
+            value: { html: 'ftpaAppellantGrounds' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
+            value: { html: 'ftpaAppellantOutOfTimeExplanation' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Granted' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Granted_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj for FTPA Application by: Appellant for Decide FTPA Application event with decision: refused', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'appellant',
+        ftpaAppellantApplicationDate: '2023-03-20',
+        ftpaAppellantDecisionDate: '2023-03-20',
+        ftpaAppellantDecisionDocument: [],
+        ftpaApplicationAppellantDocument: document,
+        ftpaAppellantRjDecisionOutcomeType: 'refused'
+      };
+
+      documents[0].name = 'FTPA_Appellant_Doc.PDF';
+      document.name = 'FTPA_Refused_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Refused' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Refused_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj for FTPA Application by: Appellant for Decide FTPA Application event with decision: not admitted', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'appellant',
+        ftpaAppellantApplicationDate: '2023-03-20',
+        ftpaAppellantDecisionDate: '2023-03-20',
+        ftpaAppellantDecisionDocument: [],
+        ftpaApplicationAppellantDocument: document,
+        ftpaAppellantRjDecisionOutcomeType: 'notAdmitted'
+      };
+
+      documents[0].name = 'FTPA_Appellant_Doc.PDF';
+      document.name = 'FTPA_Not_Admitted_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Not&nbsp;admitted' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Not_Admitted_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj for FTPA Application by: Respondent for Decide FTPA Application event with decision: granted', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
+        ftpaRespondentGroundsDocuments: [ ...documents ],
+        ftpaRespondentApplicationDate: '2023-03-20',
+        ftpaRespondentEvidenceDocuments: [ ...documents ],
+        ftpaRespondentOutOfTimeExplanation: 'ftpaRespondentOutOfTimeExplanation',
+        ftpaRespondentOutOfTimeDocuments: [ ...documents ],
+        ftpaRespondentDecisionDate: '2023-03-20',
+        ftpaRespondentDecisionDocument: [],
+        ftpaApplicationRespondentDocument: document,
+        ftpaRespondentRjDecisionOutcomeType: 'granted'
+      };
+
+      documents[0].name = 'FTPA_Respondent_Doc.PDF';
+      document.name = 'FTPA_Granted_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.groundsDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
+            value: { html: 'ftpaRespondentOutOfTimeExplanation' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Granted' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Granted_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj for FTPA Application by: Respondent for Decide FTPA Application event with decision: partially granted', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
+        ftpaRespondentGroundsDocuments: [ ...documents ],
+        ftpaRespondentApplicationDate: '2023-03-20',
+        ftpaRespondentEvidenceDocuments: [ ...documents ],
+        ftpaRespondentOutOfTimeExplanation: 'ftpaRespondentOutOfTimeExplanation',
+        ftpaRespondentOutOfTimeDocuments: [ ...documents ],
+        ftpaRespondentDecisionDate: '2023-03-20',
+        ftpaRespondentDecisionDocument: [],
+        ftpaApplicationRespondentDocument: document,
+        ftpaRespondentRjDecisionOutcomeType: 'partiallyGranted'
+      };
+
+      documents[0].name = 'FTPA_Respondent_Doc.PDF';
+      document.name = 'FTPA_Partially_Granted_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.groundsDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
+            value: { html: 'ftpaRespondentOutOfTimeExplanation' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Partially&nbsp;granted' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Partially_Granted_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj for FTPA Application by: Respondent for Decide FTPA Application event with decision: refused', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
+        ftpaRespondentApplicationDate: '2023-03-20',
+        ftpaRespondentDecisionDate: '2023-03-20',
+        ftpaRespondentDecisionDocument: [],
+        ftpaApplicationRespondentDocument: document,
+        ftpaRespondentRjDecisionOutcomeType: 'refused'
+      };
+
+      documents[0].name = 'FTPA_Respondent_Doc.PDF';
+      document.name = 'FTPA_Refused_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Refused' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Refused_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj for FTPA Application by: Respondent for Decide FTPA Application event with decision: not admitted', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
+        ftpaRespondentApplicationDate: '2023-03-20',
+        ftpaRespondentDecisionDate: '2023-03-20',
+        ftpaRespondentDecisionDocument: [],
+        ftpaApplicationRespondentDocument: document,
+        ftpaRespondentRjDecisionOutcomeType: 'notAdmitted'
+      };
+
+      documents[0].name = 'FTPA_Respondent_Doc.PDF';
+      document.name = 'FTPA_Not_Admitted_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Not&nbsp;admitted' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Not_Admitted_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should catch error and call next with it', async () => {
       const error = new Error('an error');
       req.session.appeal = {
         ...req.session.appeal,
@@ -2894,11 +3979,12 @@ describe('Detail viewer Controller', () => {
         ftpaRespondentOutOfTimeDocuments: [ ...documents ],
         ftpaRespondentDecisionDate: '2023-03-20',
         ftpaRespondentDecisionDocument: [ ...documents ],
-        ftpaRespondentDecisionOutcomeType: 'refused'
+        ftpaRespondentDecisionOutcomeType: 'refused',
+        ftpaApplicationRespondentDocument: document
       };
       res.render = sandbox.stub().throws(error);
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -2993,6 +4079,246 @@ describe('Detail viewer Controller', () => {
       expect(next).to.have.been.calledWith(error);
     });
 
+  });
+
+  describe('should render updated decision and reasons page', () => {
+    const documents = [
+      {
+        fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+        name: 'PA 50012 2022-bond20-Decision-and-reasons-FINAL.pdf',
+        id: '2',
+        tag: 'finalDecisionAndReasonsPdf',
+        dateUploaded: '2022-01-26'
+      },
+      {
+        fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+        name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter.PDF',
+        id: '1',
+        tag: 'decisionAndReasonsCoverLetter',
+        dateUploaded: '2022-01-26'
+      }
+    ];
+    const updatedDecisionAndReasons: DecisionAndReasons[] = [
+      {
+        id: '2',
+        documentAndReasonsDocument: {
+          fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+          name: 'PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf'
+        },
+        updatedDecisionDate: '2023-12-15',
+        dateCoverLetterDocumentUploaded: '2023-12-15',
+        dateDocumentAndReasonsDocumentUploaded: '2023-12-15',
+        summariseChanges: 'Summarise explanation',
+        coverLetterDocument: {
+          fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+          name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF'
+        }
+      },
+      {
+        id: '1',
+        updatedDecisionDate: '2023-10-15',
+        dateCoverLetterDocumentUploaded: '2023-10-15',
+        coverLetterDocument: {
+          fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+          name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF'
+        }
+      }
+    ];
+    it('should render templates/updated-details-viewer.njk with updated decision and reasons collection', async () => {
+      req.session.appeal.finalDecisionAndReasonsDocuments = documents;
+      req.session.appeal.updatedDecisionAndReasons = updatedDecisionAndReasons;
+      const expectedSummaryRows = {
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.common.dateUploaded },
+            value: { html: '26 January 2022' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.document },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.dateUploaded },
+            value: { html: '26 January 2022' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.document },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>` }
+          }
+        ]
+      };
+
+      const expectedSummaryList: SummaryList[] = [
+        {
+          summaryRows: [
+            {
+              key: { text: i18n.pages.detailViewers.common.dateUploaded },
+              value: { html: '15 December 2023' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.document },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.dateUploaded },
+              value: { html: '15 December 2023' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.document },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.decisionsAndReasons.summariseChanges },
+              value: { html: 'Summarise explanation' }
+            }
+          ],
+          title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + '1'
+        },
+        {
+          summaryRows: [
+            {
+              key: { text: i18n.pages.detailViewers.common.dateUploaded },
+              value: { html: '15 October 2023' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.document },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
+            }
+          ],
+          title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + '2'
+        }
+      ];
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/updated-details-viewer.njk', {
+        title: i18n.pages.detailViewers.decisionsAndReasons.title,
+        originalSubTitle: i18n.pages.detailViewers.decisionsAndReasons.originalSubTitle,
+        description: i18n.pages.detailViewers.decisionsAndReasons.description,
+        data: expectedSummaryRows,
+        updatedDecisions: expectedSummaryList,
+        previousPage: paths.common.overview
+      });
+
+      it('should catch error and call next with it', async () => {
+        req.session.appeal.finalDecisionAndReasonsDocuments = documents;
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
+  });
+
+  describe('should render remittal documents page', () => {
+    const remittalDocuments: RemittalDetails[] = [
+      {
+        id: '1',
+        decisionDocument: {
+          fileId: '6fc7d1fd-f9c3-418f-a767-ba5c00c0863f',
+          name: 'CA-2023-000001-Decision-to-remit.pdf',
+          dateUploaded: '2024-04-08'
+        },
+        otherRemittalDocs: [
+          {
+            id: '1',
+            fileId: '7a1e760b-670f-4029-bcb3-17c640971a1f',
+            name: 'upload-test-other-remittal-doc.pdf',
+            dateUploaded: '2024-04-08',
+            description: 'Test description 1'
+          }
+        ]
+      },
+      {
+        id: '2',
+        decisionDocument: {
+          fileId: '6fc7d1fd-f9c3-418f-a767-ba5c00c08635',
+          name: 'CA-2023-000002-Decision-to-remit.pdf',
+          dateUploaded: '2024-04-08'
+        },
+        otherRemittalDocs: [
+          {
+            id: '1',
+            fileId: '7a1e760b-670f-4029-bcb3-17c640971a15',
+            name: 'upload-test-other-remittal-doc.pdf',
+            dateUploaded: '2024-04-08',
+            description: 'Test description 2'
+          }
+        ]
+      }
+    ];
+    it('should render templates/details-viewer-remittal.njk with remittal documents collection', async () => {
+      req.session.appeal.remittalDocuments = remittalDocuments;
+      const expectedSummaryList: SummaryList[] = [
+        {
+          summaryRows: [
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel },
+              value: { html: '08 April 2024' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/6fc7d1fd-f9c3-418f-a767-ba5c00c0863f'>CA-2023-000001-Decision-to-remit.pdf</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel },
+              value: { html: '08 April 2024' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/7a1e760b-670f-4029-bcb3-17c640971a1f'>upload-test-other-remittal-doc.pdf</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.documentDescriptionLabel },
+              value: { html: 'Test description 1' }
+            }
+          ],
+          title: i18n.pages.detailViewers.remittalDocuments.subtitle + '1'
+        },
+        {
+          summaryRows: [
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel },
+              value: { html: '08 April 2024' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/6fc7d1fd-f9c3-418f-a767-ba5c00c08635'>CA-2023-000002-Decision-to-remit.pdf</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel },
+              value: { html: '08 April 2024' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/7a1e760b-670f-4029-bcb3-17c640971a15'>upload-test-other-remittal-doc.pdf</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.documentDescriptionLabel },
+              value: { html: 'Test description 2' }
+            }
+          ],
+          title: i18n.pages.detailViewers.remittalDocuments.subtitle + '2'
+        }
+      ];
+
+      await getRemittalDocumentsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer-remittal.njk', {
+        title: i18n.pages.detailViewers.remittalDocuments.title,
+        remittalDocs: expectedSummaryList,
+        previousPage: paths.common.overview
+      });
+
+      it('should catch error and call next with it', async () => {
+        req.session.appeal.remittalDocuments = remittalDocuments;
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        await getRemittalDocumentsViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
   });
 
 });

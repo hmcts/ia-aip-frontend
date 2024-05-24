@@ -12,7 +12,7 @@ To run the project you will need to have the following installed:
 * Node.js
 * Yarn
 
-For information about the software versions used to build this application and a complete list of it's dependencies see package.json
+For information about the software versions used to build this application and a complete list of its dependencies see package.json
 
 ### Running the application
 
@@ -67,7 +67,7 @@ If the username is not recognised then no-cases@example.com behaviour will be us
 
 ### Using the application
 
-To understand if the application is working, you can call it's health endpoint:
+To understand if the application is working, you can call its health endpoint:
 
 ```
 curl https://localhost:3000/health

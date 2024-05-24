@@ -29,6 +29,7 @@
       "confirmAndSend": "Confirm and send",
       "continueUseNewService": "Continue to use the new service",
       "submitYourAppeal": "Submit your appeal",
+      "submit": "Submit",
       "addAnotherWitness": "Add another witness",
       "addAnotherLanguage": "Add another language"
     },
@@ -80,6 +81,7 @@
       "sections": {
         "yourDetails": "Your details",
         "decisionType": "Decision type",
+        "feeSupport": "Fee support",
         "checkAndSend": "Check and send"
       },
       "homeOfficeDetails": {
@@ -117,6 +119,11 @@
         "title": "Decision with or without a hearing",
         "path": "appealStarted.decisionType"
       },
+      "feeSupport": {
+        "id": "feeSupportLink",
+        "title": "Support to pay the fee",
+        "path": "appealStarted.feeSupport"
+      },
       "typeOfAppealAndDecision": {
         "id": "typeOfAppealLink",
         "title": "Appeal and decision type",
@@ -127,7 +134,17 @@
         "title": "Check and send your appeal details",
         "path": "appealStarted.checkAndSend"
       },
+      "checkAndSendDlrmSetAsideFlag": {
+        "id": "checkAndSendLink",
+        "title": "Check and send your appeal details",
+        "path": "appealStarted.checkAndSend"
+      },
       "checkAndSendWithPayments": {
+        "id": "checkAndSendLink",
+        "title": "Check and send your appeal details",
+        "path": "appealStarted.checkAndSend"
+      },
+      "checkAndSendWithPaymentsDlrmSetAsideFlag": {
         "id": "checkAndSendLink",
         "title": "Check and send your appeal details",
         "path": "appealStarted.checkAndSend"
@@ -197,9 +214,13 @@
     },
     "decisionTypePage": {
       "title": "How do you want your appeal to be decided?",
-      "hint": {
+      "hint" : {
         "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
         "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80.</p><p>Select an option</p>"
+      },
+      "hintWithDrlmSetAsideFlag": {
+        "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>",
+        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>"
       },
       "options": {
         "withHearing": {
@@ -272,9 +293,22 @@
         "sponsorsAddress": "Sponsor's Address",
         "sponsorsContactDetails": "Sponsor's contact details",
         "sponsorsHasAccessToInformation": "Sponsor has access to information",
-        "decisionType": "Decision Type",
+        "decisionType": "Decision type",
         "whatDateDidYouLeaveTheUKAfterYourProtectionClaimWasRefused": "What date did you leave the UK after your Protection claim was refused?",
-        "whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused": "What date did you leave the UK after your application to stay in the country was refused?"
+        "whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused": "What date did you leave the UK after your application to stay in the country was refused?",
+        "feeStatement": "Fee statement",
+        "asylumSupportRefNumber": "Asylum support reference number",
+        "helpWithFees": "Help with fees",
+        "helpWithFeesRefNumber": "Help with fees reference number",
+        "aboutTheAppeal": "About the appeal",
+        "personalDetails": "Personal details",
+        "feeDetails": "Fee details",
+        "feeSupportStatus": "Fee support status",
+        "asylumSupportReferenceNumber": "Asylum Support reference number",
+        "feeSupportType": "Fee support type",
+        "localAuthorityLetter": "Local Authority letter",
+        "helpWithFeesReferenceNumber": "Help with fees reference number",
+        "paymentStatus": "Payment status"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",
@@ -386,15 +420,15 @@
       "seeProgress": "See your appeal progress",
       "whatHappensNext": "What happens next",
       "info": "You will receive a notification to confirm that the Tribunal has received your appeal details",
-      "askHomeOffice": "A Tribunal Caseworker will ask the Home Office to send any documents it has about your case to the Tribunal",
-      "whatToDoNext": "A Tribunal Caseworker will check the Home Office documents and then contact you to tell you what to do next",
+      "askHomeOffice": "A Legal Officer will ask the Home Office to send any documents it has about your case to the Tribunal",
+      "whatToDoNext": "A Legal Officer will check the Home Office documents and then contact you to tell you what to do next",
       "timescale": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might take longer than that",
       "thingsYouCanDo": "Things you can do now",
       "readMore": "Read more about appealing an immigration or asylum decision",
-      "findOutMore": "Find organisations that can help with your appeal",
+      "findOutMore": "Find organisations that can help you with your appeal",
       "outOfTime": {
         "panel": "Your late appeal details have been sent",
-        "askHomeOffice": "A Tribunal Caseworker will look at the reasons your appeal was late and decide if your appeal can continue",
+        "askHomeOffice": "A Legal Officer will look at the reasons your appeal was late and decide if your appeal can continue",
         "whatToDoNext": "You will be sent a notification to tell you what the Tribunal has decided and what you can do next",
         "timescale": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might be later than that"
       },
@@ -423,6 +457,18 @@
         "heading": "We'd like to hear your thoughts",
         "contentText": "Complete this short, 5-minute survey to help improve our services for you and others.",
         "contentLink": "<a href=\"https://www.smartsurvey.co.uk/s/SurveyExit/?service=iac/\" target=\"_blank\">Please leave your feedback here</a>"
+      },
+      "withRemissionOption": {
+        "panel": "You have sent your appeal details",
+        "textBullet1": "The Tribunal will check the information you sent and let you know if you need to pay a fee",
+        "textBullet2": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might take longer than that"
+      },
+      "withRemissionOptionAndLate": {
+        "panel": "Your late appeal details have been sent",
+        "textBullet1": "You have sent a late appeal and have told the Tribunal you believe you do not have to pay some or all the fee",
+        "textBullet2": "The Tribunal will first check the information you sent about the fee and let you know if you need to pay",
+        "textBullet3": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ dateOutOfCountryAppeal }}</span> but it might take longer than that",
+        "textBullet4": "The Tribunal will then look at the reasons your appeal was late and let you know what will happen next"
       }
     },
     "confirmationPaidLater": {
@@ -446,7 +492,7 @@
       "thingsYouCanDoAfterPaying": {
         "thingsYouCanDo": "Things you can do now",
         "readMore": "Read more about appealing an immigration or asylum decision",
-        "findOutMore": "Find organisations that can help with your appeal"
+        "findOutMore": "Find organisations that can help you with your appeal"
       }
     },
     "reasonForAppeal": {
@@ -814,6 +860,7 @@
       "email": "Email:",
       "emailLink": "contactia@justice.gov.uk",
       "endedInsert": "This appeal has ended",
+      "transferredToUt": "Appeal moved to the Upper Tribunal",
       "time": "Monday to Friday, 8:30am to 5pm",
       "charges": "Find out about call charges",
       "newWindow": "(opens in a new window)",
@@ -860,6 +907,12 @@
             "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
+        "appealSubmittedDlrmFeeRemission": {
+          "detailsSent": "Your appeal details have been sent to the Tribunal.",
+          "feeDetails": "There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.",
+          "tribunalCheck": "The Tribunal will check the information you sent and let you know if you need to pay a fee.",
+          "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
+        },
         "pendingPayment": {
           "payForYourAppeal": "Pay for your appeal",
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
@@ -882,6 +935,12 @@
             "title": "Helpful Information",
             "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
+        },
+        "lateAppealSubmittedDlrmFeeRemission": {
+          "detailsSent": "Your appeal details have been sent to the Tribunal.",
+          "feeDetails": "There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.",
+          "tribunalCheck": "The Tribunal will check the information you sent and let you know if you need to pay a fee.",
+          "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
         },
         "lateAppealRejected": {
           "description": "Your appeal cannot continue. Read the <a href='{{ paths.common.outOfTimeDecisionViewer }}'>reasons for this decision</a>.",
@@ -1062,15 +1121,24 @@
           "decision": "A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>",
           "description": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> <br> <p> If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to appeal to the Upper Tribunal. </p>",
           "descriptionFtpaEnabled": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
+          "updatedDescriptionFtpaEnabled": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.updatedDecisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
           "info": {
             "title": "Helpful Information",
             "titleFtpaEnabled": "Appeal Information",
             "text": "If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.",
             "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>",
             "urlFtpaEnabled": "<a href=\"{{ paths.ftpa.ftpaApplication }}\">Apply for permission to appeal to the Upper Tribunal</a>"
+          },
+          "underRule32": {
+            "description": "A judge has reviewed your appeal decision and decided that your appeal should be heard again. <br>",
+            "url": "<a href={{ paths.common.decisionAndReasonsViewerWithRule32 }}>Read the reasons for this decision</a> <br>",
+            "info": {
+              "title": "What happens next",
+              "text": "There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing."
+            }
           }
         },
-        "ftpaSubmitted":{
+        "ftpaSubmitted": {
           "description": {
             "appellant": [
               "A judge will decide your application for permission to appeal to the Upper Tribunal.",
@@ -1098,6 +1166,25 @@
             "refused": [
               "The HOme Office application for permission to appeal to the Upper Tribunal has been refused.",
               "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+            ],
+            "reheardRule35": [
+              "A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided that this appeal should be heard again by the First-tier Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the decision and reasons document</a>",
+              "<b>What happens next</b>",
+              "There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing."
+            ],
+            "remadeRule31": [
+              "A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>",
+              "<b>What happens next</b>",
+              "The Tribunal will contact you when the review of your appeal decision is complete."
+            ],
+            "remadeRule32": [
+              "A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>",
+              "<b>What happens next</b>",
+              "The Tribunal will contact you when the review of your appeal decision is complete."
             ]
           },
           "appellant": {
@@ -1135,8 +1222,44 @@
               "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
               "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>",
               "You must send your application by {{ applicationNextStep.ftpaDeadline }}"
+            ],
+            "reheardRule35": [
+              "A judge has reviewed your application for permission to appeal to the Upper Tribunal and decided that your appeal should be heard again by the First-tier Tribunal.<br>",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing."
+            ],
+            "remadeRule31": [
+              "A judge has reviewed your application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>",
+              "<b>What happens next</b>",
+              "The Tribunal will contact you when the review of your appeal decision is complete."
+            ],
+            "remadeRule32": [
+              "A judge has reviewed your application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>",
+              "<b>What happens next</b>",
+              "The Tribunal will contact you when the review of your appeal decision is complete."
             ]
           }
+        },
+        "transferredToUt": {
+          "description": "Your appeal has been moved to the Upper Tribunal, which is a higher tribunal than the First-tier tribunal.",
+          "explanation": "This is because you also have an expedited section 82A appeal in the Upper Tribunal, with the following appeal reference:",
+          "utAppealReferenceNumber": "{{ applicationNextStep.utAppealReferenceNumber }}",
+          "utAction": "An Upper Tribunal judge will decide both appeals at the same time.",
+          "info": {
+            "title": "What happens next",
+            "description": "\nThe upper tribunal may contact you about this appeal.<br /><br />If you still have to respond to a question about your appeal from the First-tier Tribunal, you should tell the Upper Tribunal. The Upper Tribunal will decide what will happen next."
+          },
+          "usefulDocuments": {
+            "title": "Helpful Information",
+            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/courts-tribunals/upper-tribunal-immigration-and-asylum-chamber\" target=\"_blank\">Find out more about the Upper Tribunal, including contact details</a>. (Opens in a new window)"
+          }
+        },
+        "remitted": {
+          "decision": "The {{ applicationNextStep.sourceOfRemittal }} has decided that this appeal will be heard again by the First-tier Tribunal. <br><br> <a href={{ paths.common.remittalDocumentsViewer }}>See the {{ applicationNextStep.sourceOfRemittal }} documents</a> <br><br> <b>What happens next</b> <br><br> There will be a new hearing for this appeal. The Tribunal will contact you to let you know what to do next. <br><br> You can <a href={{ paths.common.provideMoreEvidenceForm }}>provide more evidence for this appeal</a> to the Tribunal, if you have it."
         }
       },
       "timeline": {
@@ -1491,9 +1614,11 @@
             {
               "title": "Useful documents",
               "text": "Decision and Reasons",
-              "href": "{{ paths.common.decisionAndReasonsViewer }}"
+              "href": ""
             }
-          ]
+          ],
+          "originalLinks": "{{ paths.common.decisionAndReasonsViewer }}",
+          "updatedLinks": "{{ paths.common.updatedDecisionAndReasonsViewer }}"
         },
         "applyForFTPAAppellant": {
           "text": "You applied for permission to appeal to the Upper Tribunal.",
@@ -1552,6 +1677,59 @@
               }
             ]
           }
+        },
+        "markAsReadyForUtTransfer": {
+          "text": "Your appeal moved to the Upper Tribunal"
+        },
+        "updateTribunalDecision": {
+          "underRule31": {
+            "fromAllowedToDismissedText": "The Tribunal changed the appeal decision from allowed to dismissed.",
+            "fromDismissedToAllowedText": "The Tribunal changed the appeal decision from dismissed to allowed.",
+            "newDecisionAndReasonsDocument": {
+              "text": "The Tribunal created a new Decision and Reasons document for your appeal",
+              "links": [
+                {
+                  "title": "Useful documents",
+                  "text": "See the new Decisions and Reasons",
+                  "href": "{{ paths.common.updatedDecisionAndReasonsViewer }}"
+                }
+              ]
+            }
+          },
+          "underRule32": {
+            "documentOfReasonsForTheDecision": {
+              "text": "The Tribunal decided that your appeal will be heard again.",
+              "links": [
+                {
+                  "title": "Useful documents",
+                  "text": "Reasons for the decision",
+                  "href": "{{ paths.common.decisionAndReasonsViewerWithRule32 }}"
+                }
+              ]
+            }
+          }
+        },
+        "markAppealAsRemitted": {
+          "Upper Tribunal": {
+            "text": "The Upper Tribunal decided the appeal will be heard again by the First-tier Tribunal.",
+            "links": [
+              {
+                "title": "Useful documents",
+                "text": "Upper Tribunal documents",
+                "href": "{{ paths.common.remittalDocumentsViewer }}"
+              }
+            ]
+          },
+          "Court of Appeal": {
+            "text": "The Court of Appeal decided the appeal will be heard again by the First-tier Tribunal.",
+            "links": [
+              {
+                "title": "Useful documents",
+                "text": "Court of Appeal documents",
+                "href": "{{ paths.common.remittalDocumentsViewer }}"
+              }
+            ]
+          }
         }
       }
     },
@@ -1571,6 +1749,13 @@
       },
       "hoDocuments": {
         "title": "Home Office documents about your case"
+      },
+      "remittalDocuments": {
+        "title": "Remittal documents",
+        "subtitle": "Remittal documents ",
+        "dateUploadedLabel": "Date uploaded",
+        "documentLabel": "Document",
+        "documentDescriptionLabel": "Document description"
       },
       "reasonsForAppealCheckAnswersHistory": {
         "title": "Why you think the Home Office is wrong",
@@ -1845,7 +2030,14 @@
       },
       "decisionsAndReasons": {
         "title": "Decision and Reasons",
+        "originalSubTitle": "Original Decision and Reasons",
+        "correctedSubTitle": "Corrected Decision and Reasons ",
+        "summariseChanges": "What has been corrected",
         "description": "This document is in two parts.  The first part includes the decision and information on what happens next.  The second part includes detailed reasons for the judge's decision"
+      },
+      "updatedTribunalDecisionWithRule32": {
+        "title": "Reasons for decision",
+        "documentText": "Reasons your appeal will be heard again"
       },
       "ftpaApplication": {
         "title": {
@@ -1863,12 +2055,16 @@
         "title": "Decision details",
         "decision": "What the Tribunal decided",
         "decisionDocument": "Decision and reasons document",
+        "decisionReasons": "Reasons for the decision",
         "date": "Date of decision",
         "decisionOutcomeType": {
           "granted": "Granted",
           "partiallyGranted": "Partially granted",
           "notAdmitted": "Not admitted",
-          "refused": "Refused"
+          "refused": "Refused",
+          "reheardRule35": "Appeal to be heard again",
+          "remadeRule31": "Appeal decision to be reviewed",
+          "remadeRule32": "Appeal decision to be reviewed"
         }
       },
       "directionHistory": {
@@ -3564,6 +3760,98 @@
       "dateHint": "For example, 31 3 2019",
       "dateLegend": "The field to enter the date when you left the UK after your Protection claim was refused",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
+    },
+    "remissionOptionPage": {
+      "title": "Do you have to pay the fee?",
+      "hint" : "<p>The fee for this appeal is £{{ fee }}. You do not have to pay the fee if one of the following statements applies to you.</p><p>Select one</p>",
+      "options": {
+        "asylumSupportFromHo": {
+          "value": "asylumSupportFromHo",
+          "text": "I get asylum support from the Home Office"
+        },
+        "feeWaiverFromHo": {
+          "value": "feeWaiverFromHo",
+          "text": "I got a fee waiver from the Home Office for my application to stay in the UK"
+        },
+        "under18GetSupportFromLocalAuthority": {
+          "value": "under18GetSupportFromLocalAuthority",
+          "text": "I am under 18 and get housing or other support from the local authority"
+        },
+        "parentGetSupportFromLocalAuthority": {
+          "value": "parentGetSupportFromLocalAuthority",
+          "text": "I am the parent, guardian or sponsor of someone under 18 who gets housing or other support from the local authority"
+        },
+        "noneOfTheseStatements": {
+          "value": "noneOfTheseStatements",
+          "text": "None of these statements apply to me",
+          "hint":  "You may still be able to get help to pay the fee"
+        }
+      }
+    },
+    "asylumSupportPage": {
+      "title": "What is your asylum support reference number?",
+      "legend1": "The Tribunal will check your reference number is valid after your submit your appeal.",
+      "legend2": "If you do not know your reference number, contact <a href=\"https://www.migranthelpuk.org/\" target=\"_blank\">Migrant Help (opens in a new tab)</a> on 0808 8010 503 or <a href='mailto:proofofsupport@migranthelpuk.org' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>proofofsupport@migranthelpuk.org</a>.",
+      "attentionNotice": "Your asylum support reference number is not your Home Office reference number",
+      "asylumSupportReferenceNumberLabel": "Enter your asylum support reference number",
+      "hint": "For example, 23/02/12345"
+    },
+    "feeWaiverPage": {
+      "title": "Home Office fee waiver",
+      "legend1": "You do not have to pay the fee for this appeal if you got a fee waiver for the application to the Home Office that you are now appealing.",
+      "legend2": "The Tribunal will check with the Home Office that you had a fee waiver after you submit the appeal."
+    },
+    "uploadLocalAuthorityLetter": {
+      "title": "Upload local authority letter",
+      "legend1": "You should have a letter from the local authority that says it will provide housing or support for someone under 18.",
+      "legend2": "If you do not have this letter, you should ask social services for a new letter that shows you receive support.",
+      "panelTitle": "The way the support is described in the letter will depend on where you live.",
+      "panelBullet1": "If you are in <strong>England</strong>, the letter should say the support will be provided under <strong>section 17 or 20</strong> of the Children Act 1989",
+      "panelBullet2": "If you are in <strong>Scotland</strong>, the letter should say the support will be provided under <strong>section 22 or 25</strong> of the Children (Scotland) Act 1995",
+      "panelBullet3": "If you are in <strong>Nothern Ireland</strong>, the letter should say the support will be provided under <strong>article 18 or 21</strong> of the Children (Nothern Ireland) Order",
+      "panelBullet4": "If you are in <strong>Wales</strong>, the letter should say the support will be provided under <strong>section 37 or 76</strong> of the Social Services and Well-being (Wales) Act 2014",
+      "fileUploadTitle": "<strong>Upload local authority letter</strong>",
+      "uploadedFileTitle": "Your documents"
+    },
+    "helpWithFees": {
+      "title": "Help with paying the fee",
+      "tips": "If none of the statements on the previous page apply to you, you may still be able to apply for help with fees. This is a Tribunal programme that helps people to pay the fee if they:",
+      "tipsBullet1": "receive certain benefits",
+      "tipsBullet2": "have little or no savings",
+      "tipsBullet3": "are on a low income or have no income",
+      "guidanceLink": "<a href=\"https://www.gov.uk/get-help-with-court-fees/\" target=\"_blank\">Visit the help with fees guidance page (opens in a new tab)</a> to find out if you are eligible for support.",
+      "radioButtonsTitle": "Do you want to apply for help with fees?",
+      "options": {
+        "wantToApply": {
+          "value": "wantToApply",
+          "text": "Yes, I want to apply for help with fees"
+        },
+        "alreadyApplied": {
+          "value": "alreadyApplied",
+          "text": "I have already applied for help with fees"
+        },
+        "willPayForAppeal": {
+          "value": "willPayForAppeal",
+          "text": "No, I will pay for the appeal now"
+        }
+      },
+      "checkAndSendWantToApply": "I want to apply for help with fees",
+      "checkAndSendWillPayForAppeal": "I want to pay for the appeal now"
+    },
+    "stepsToHelpWithFees": {
+      "title": "Apply for help with fees",
+      "tips": "Follow these steps to submit a help with fees application along with this appeal.",
+      "bullet1": "Go to <a href=\"https://helpwithcourtfees.service.gov.uk/checklist/\" target=\"_blank\">apply for help with fees (opens in a new tab)</a>",
+      "bullet2": "When you are asked to enter a court or tribunal form number, enter IAFT-1",
+      "bullet3": "Make a note of the help with fees reference number you get when you complete your help with fees application",
+      "bullet4": "Return to this service and go to the 'Help with paying the fee' page",
+      "bullet5": "Select 'I have already applied for help with fees' and enter your help with fees reference number"
+    },
+    "helpWithFeesReference": {
+      "title": "What is your help with fees reference number?",
+      "paragraph": "You will have received this number when you applied for help with fees. This reference must not have been used for a previous appeal.",
+      "helpWithFeesReferenceNumberLabel": "Enter your help with fees reference number",
+      "hint": "For example, HWF-A1B-23C"
     }
   },
   "error": {
@@ -3605,10 +3893,18 @@
     "oocHrEea": "Select yes if you are were living outside the United Kingdom when you made your application",
     "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",
+    "remissionOptions": "Select the statement that applies to you",
+    "asylumSupport": "Enter your asylum support reference number",
+    "helpWithFeesRefNumber": {
+      "required": "Enter your Help with Fees reference number",
+      "invalid": "Your Help with Fees reference number must start with HWF, like HWF-A1B-23C"
+    },
+    "helpWithFees": "Select if you want to apply for Help with Fees",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",
     "phoneFormat": "Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999",
+    "ukPhoneFormat": "Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982",
     "hasSponsor": "Select yes if you have a sponsor",
     "sponsorGivenNames": "Enter your sponsor's given name or names",
     "sponsorFamilyName": "Enter your sponsor's family name or names",

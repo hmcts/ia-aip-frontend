@@ -10,10 +10,13 @@ import {
   getAppellantApplications,
   getFtpaApplicantType,
   hasPendingTimeExtension,
-  isFtpaFeatureEnabled
+  isFtpaFeatureEnabled,
+  isUpdateTribunalDecideWithRule31,
+  isUpdateTribunalDecideWithRule32
 } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline, getDueDateForAppellantToRespondToFtpaDecision } from './event-deadline-date-finder';
+import { appealHasNoRemissionOption, appealHasRemissionOption } from './remission-utils';
 
 interface DoThisNextSection {
   descriptionParagraphs: string[];
@@ -47,6 +50,8 @@ interface DoThisNextSection {
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   decision?: string;
+  utAppealReferenceNumber?: string;
+  sourceOfRemittal?: string;
 }
 
 /**
@@ -111,6 +116,8 @@ async function getAppealApplicationNextStep(req: Request) {
   const isLate = req.session.appeal.application.isAppealLate;
   const ftpaEnabled: boolean = await isFtpaFeatureEnabled(req);
   const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
+  const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
+  const dlrmFeeRemissionFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
 
   let descriptionParagraphs;
   let respondBy;
@@ -142,18 +149,32 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'appealSubmitted':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.appealSubmitted.detailsSent,
-          i18n.pages.overviewPage.doThisNext.appealSubmitted.dueDate
-        ],
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
-          url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
-        },
-        cta: null,
-        allowedAskForMoreTime: false
-      };
+      if (dlrmFeeRemissionFlag &&
+        !appealHasNoRemissionOption(req.session.appeal.application)) {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.feeDetails,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.tribunalCheck,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.dueDate
+          ],
+          cta: null,
+          allowedAskForMoreTime: false
+        };
+      } else {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.appealSubmitted.detailsSent,
+            i18n.pages.overviewPage.doThisNext.appealSubmitted.dueDate
+          ],
+          info: {
+            title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
+            url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
+          },
+          cta: null,
+          allowedAskForMoreTime: false
+        };
+      }
       break;
     case 'listing':
       const paragraphs = eventByLegalRep(req, Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, 'listing')
@@ -177,18 +198,32 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'lateAppealSubmitted':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.detailsSent,
-          i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.dueDate
-        ],
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
-          url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
-        },
-        cta: null,
-        allowedAskForMoreTime: false
-      };
+      if (dlrmFeeRemissionFlag &&
+        !appealHasNoRemissionOption(req.session.appeal.application)) {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.lateAppealSubmittedDlrmFeeRemission.detailsSent,
+            i18n.pages.overviewPage.doThisNext.lateAppealSubmittedDlrmFeeRemission.feeDetails,
+            i18n.pages.overviewPage.doThisNext.lateAppealSubmittedDlrmFeeRemission.tribunalCheck,
+            i18n.pages.overviewPage.doThisNext.lateAppealSubmittedDlrmFeeRemission.dueDate
+          ],
+          cta: null,
+          allowedAskForMoreTime: false
+        };
+      } else {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.detailsSent,
+            i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.dueDate
+          ],
+          info: {
+            title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
+            url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
+          },
+          cta: null,
+          allowedAskForMoreTime: false
+        };
+      }
       break;
     case 'awaitingRespondentEvidence':
       doThisNextSection = {
@@ -489,18 +524,38 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'ended':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.ended.ctaInstruction,
-          i18n.pages.overviewPage.doThisNext.ended.ctaReview
-        ],
-        cta: {
-          url: null,
-          ctaTitle: i18n.pages.overviewPage.doThisNext.ended.ctaTitle
-        },
-        allowedAskForMoreTime: false,
-        hearingCentreEmail: getHearingCentreEmail(req)
-      };
+      if (transferredToUpperTribunal(req)) {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.transferredToUt.description,
+            i18n.pages.overviewPage.doThisNext.transferredToUt.explanation,
+            i18n.pages.overviewPage.doThisNext.transferredToUt.utAppealReferenceNumber,
+            i18n.pages.overviewPage.doThisNext.transferredToUt.utAction
+          ],
+          info: {
+            title: i18n.pages.overviewPage.doThisNext.transferredToUt.usefulDocuments.title,
+            url: i18n.pages.overviewPage.doThisNext.transferredToUt.usefulDocuments.url
+          },
+          usefulDocuments: {
+            title: i18n.pages.overviewPage.doThisNext.transferredToUt.info.title,
+            url: i18n.pages.overviewPage.doThisNext.transferredToUt.info.description
+          },
+          utAppealReferenceNumber: req.session.appeal.utAppealReferenceNumber
+        };
+      } else {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.ended.ctaInstruction,
+            i18n.pages.overviewPage.doThisNext.ended.ctaReview
+          ],
+          cta: {
+            url: null,
+            ctaTitle: i18n.pages.overviewPage.doThisNext.ended.ctaTitle
+          },
+          allowedAskForMoreTime: false,
+          hearingCentreEmail: getHearingCentreEmail(req)
+        };
+      }
       break;
     case 'appealTakenOffline':
       doThisNextSection = {
@@ -532,6 +587,7 @@ async function getAppealApplicationNextStep(req: Request) {
 
       let decidedDescriptionParagraphs;
       let decidedInfo;
+      let decision;
 
       if (ftpaEnabled) {
         decidedDescriptionParagraphs = [
@@ -557,8 +613,27 @@ async function getAppealApplicationNextStep(req: Request) {
         };
       }
 
+      if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.updatedAppealDecision) {
+        decision = req.session.appeal.updatedAppealDecision.toLowerCase();
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.decision,
+          i18n.pages.overviewPage.doThisNext.decided.updatedDescriptionFtpaEnabled
+        ];
+      } else if (isUpdateTribunalDecideWithRule32(req, ftpaSetAsideFeatureEnabled)) {
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.underRule32.description,
+          i18n.pages.overviewPage.doThisNext.decided.underRule32.url
+        ];
+        decidedInfo = {
+          title: i18n.pages.overviewPage.doThisNext.decided.underRule32.info.title,
+          text: i18n.pages.overviewPage.doThisNext.decided.underRule32.info.text
+        };
+      } else {
+        decision = req.session.appeal.isDecisionAllowed;
+      }
+
       doThisNextSection = {
-        decision: req.session.appeal.isDecisionAllowed,
+        decision: decision,
         descriptionParagraphs: decidedDescriptionParagraphs,
         info: decidedInfo,
         cta: {},
@@ -566,20 +641,33 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'pendingPayment':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          isLate ? i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSentLate : i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
-          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
-          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate1
-        ],
-        cta: {
-          link: {
-            text: i18n.pages.overviewPage.doThisNext.pendingPayment.payForYourAppeal,
-            url: paths.common.payLater
-          }
-        },
-        allowedAskForMoreTime: false
-      };
+      if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.feeDetails,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.tribunalCheck,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.dueDate
+          ],
+          cta: null,
+          allowedAskForMoreTime: false
+        };
+      } else {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            isLate ? i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSentLate : i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
+            i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
+            i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate1
+          ],
+          cta: {
+            link: {
+              text: i18n.pages.overviewPage.doThisNext.pendingPayment.payForYourAppeal,
+              url: paths.common.payLater
+            }
+          },
+          allowedAskForMoreTime: false
+        };
+      }
       break;
     case 'ftpaSubmitted':
       doThisNextSection = {
@@ -598,14 +686,28 @@ async function getAppealApplicationNextStep(req: Request) {
         };
       } else if (ftpaEnabled && APPLICANT_TYPE.RESPONDENT === ftpaApplicantType) {
         const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType || req.session.appeal.ftpaRespondentRjDecisionOutcomeType;
-        doThisNextSection = {
-          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided.respondent[ftpaDecision]
-        };
+        if (ftpaSetAsideFeatureEnabled && (ftpaDecision === 'reheardRule35' || ftpaDecision === 'remadeRule31' || ftpaDecision === 'remadeRule32')) {
+          doThisNextSection = {
+            cta: {},
+            descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided.respondent[ftpaDecision]
+          };
+        } else {
+          doThisNextSection = {
+            descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided.respondent[ftpaDecision]
+          };
+        }
       } else {
         doThisNextSection = {
           descriptionParagraphs: [ `Nothing to do next` ]
         };
       }
+      break;
+    case 'remitted':
+      doThisNextSection = {
+        cta: {},
+        descriptionParagraphs: [i18n.pages.overviewPage.doThisNext.remitted.decision],
+        sourceOfRemittal: req.session.appeal.sourceOfRemittal
+      };
       break;
     default:
       // default message to avoid app crashing on events that are to be implemented.
@@ -616,7 +718,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
   }
-  doThisNextSection.deadline = getDeadline(currentAppealStatus, req);
+  doThisNextSection.deadline = getDeadline(currentAppealStatus, req, dlrmFeeRemissionFlag, ftpaSetAsideFeatureEnabled);
   return doThisNextSection;
 }
 
@@ -637,11 +739,16 @@ function eventByLegalRep(req: Request, eventId: string, state: string): boolean 
     && event.user.id !== req.idam.userDetails.uid).length > 0;
 }
 
+function transferredToUpperTribunal(req: Request): boolean {
+  return req.session.appeal.utAppealReferenceNumber == null ? false : true;
+}
+
 export {
   getAppealApplicationNextStep,
   getAppealStatus,
   getMoveAppealOfflineReason,
   getMoveAppealOfflineDate,
   isPreAddendumEvidenceUploadState,
-  eventByLegalRep
+  eventByLegalRep,
+  transferredToUpperTribunal
 };

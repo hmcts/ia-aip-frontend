@@ -530,7 +530,8 @@ export default class UpdateAppealService {
         helpWithFeesOption: caseData.helpWithFeesOption,
         helpWithFeesRefNumber: caseData.helpWithFeesRefNumber,
         ...caseData.localAuthorityLetters && { localAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.localAuthorityLetters, documentMap) },
-        feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined
+        feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined,
+        deportationOrderOptions: caseData.deportationOrderOptions
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -815,6 +816,10 @@ export default class UpdateAppealService {
         if (appeal.application.sponsorAuthorisation) {
           caseData.sponsorAuthorisation = appeal.application.sponsorAuthorisation;
         }
+      }
+
+      if (appeal.application.deportationOrderOptions) {
+        caseData.deportationOrderOptions = appeal.application.deportationOrderOptions;
       }
     }
 

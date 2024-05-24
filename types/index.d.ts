@@ -311,6 +311,7 @@ interface AppealApplication {
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
   localAuthorityLetters?: Evidence[];
+  deportationOrderOptions?: string;
 }
 
 interface CmaRequirements {

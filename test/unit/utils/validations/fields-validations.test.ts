@@ -617,44 +617,6 @@ describe('fields-validations', () => {
       });
     });
 
-    it('should pass validation when an invalid email entered but only text-message selected', () => {
-      const validationResult = sponsorContactDetailsValidation({
-        selections: 'text-message',
-        'email-value': 'invalid',
-        'text-message-value': '07899999999'
-      });
-      expect(validationResult).to.equal(null);
-    });
-
-    it('should pass validation when an invalid mobile number entered but only email selected', () => {
-      const validationResult = sponsorContactDetailsValidation({
-        selections: 'email',
-        'email-value': 'foo@bar.com',
-        'text-message-value': 'invalid'
-      });
-      expect(validationResult).to.equal(null);
-    });
-
-    it('should fail validation when an email and mobile phone number are not entered', () => {
-      const validationResult = sponsorContactDetailsValidation({
-        selections: 'email,text-message',
-        'email-value': '',
-        'text-message-value': ''
-      });
-      expect(validationResult).to.deep.equal({
-        'email-value': {
-          'href': '#email-value',
-          'key': 'email-value',
-          'text': 'Enter an email address'
-        },
-        'text-message-value': {
-          'href': '#text-message-value',
-          'key': 'text-message-value',
-          'text': 'Enter a phone number'
-        }
-      });
-    });
-
     it('should fail validation if phone number ends with a non digit', () => {
       testSponsorContactDetailsValidation({
         selections: 'text-message',

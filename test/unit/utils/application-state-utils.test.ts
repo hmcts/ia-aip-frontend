@@ -1458,7 +1458,6 @@ describe('application-state-utils', () => {
         'There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing.'
       ]
     };
-
     expect(result).to.eql(expected);
   });
 

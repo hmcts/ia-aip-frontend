@@ -160,15 +160,22 @@ describe('application-state-utils', () => {
 
     it('when application status is appealSubmitted should get correct \'Do This next section\'', async () => {
       req.session.appeal.appealStatus = 'appealSubmitted';
+      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         cta: null,
-        deadline: '13 February 2020',
-        descriptionParagraphs: [
-          'Your appeal details have been sent to the Tribunal.',
-          'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
-        ],
+        'deadline': dlrmFeeRemissionFlag ? '22 February 2020' : '13 February 2020',
+        descriptionParagraphs: dlrmFeeRemissionFlag
+          ? ['Your appeal details have been sent to the Tribunal.',
+            'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+            'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
+            'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.']
+          : [
+            'Your appeal details have been sent to the Tribunal.',
+            'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+          ],
         info: {
           title: 'Helpful Information',
           url: '<a class=\'govuk-link\' href=\'{{ paths.common.tribunalCaseworker }}\'>What is a Tribunal Caseworker?</a>'
@@ -341,15 +348,21 @@ describe('application-state-utils', () => {
       req.session.appeal.appealStatus = 'lateAppealSubmitted';
       req.session.appeal.application.isAppealLate = true;
       const result = await getAppealApplicationNextStep(req as Request);
+      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
 
       expect(result).to.eql({
         'allowedAskForMoreTime': false,
         'cta': null,
-        'deadline': '13 February 2020',
-        'descriptionParagraphs': [
-          'Your late appeal details have been sent to the Tribunal.',
-          'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
-        ],
+        'deadline': dlrmFeeRemissionFlag ? '22 February 2020' : '13 February 2020',
+        descriptionParagraphs: dlrmFeeRemissionFlag
+          ? ['Your late appeal details have been sent to the Tribunal.',
+            'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+            'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
+            'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.']
+          : [
+            'Your late appeal details have been sent to the Tribunal.',
+            'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+          ],
         'info': {
           'title': 'Helpful Information',
           'url': '<a class=\'govuk-link\' href=\'{{ paths.common.tribunalCaseworker }}\'>What is a Tribunal Caseworker?</a>'
@@ -391,13 +404,14 @@ describe('application-state-utils', () => {
     });
 
     it('when application status is awaitingRespondentEvidence should get correct \'Do This next section\'', async () => {
+      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
       req.session.appeal.appealStatus = 'awaitingRespondentEvidence';
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         'allowedAskForMoreTime': false,
         'cta': null,
-        'deadline': '13 February 2020',
+        'deadline': dlrmFeeRemissionFlag ? '22 February 2020' : '13 February 2020',
         'descriptionParagraphs': [
           i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
           i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
@@ -1286,8 +1300,7 @@ describe('application-state-utils', () => {
 
     const expected = {
       'allowedAskForMoreTime': false,
-      'cta': {
-      },
+      'cta': {},
       'deadline': null,
       'decision': undefined,
       'descriptionParagraphs': [
@@ -1563,8 +1576,8 @@ describe('application-state-utils', () => {
 
   it('when application is decided as reheardRule35 for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'reheardRule35';
@@ -1581,14 +1594,13 @@ describe('application-state-utils', () => {
         'There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing.'
       ]
     };
-
     expect(result).to.eql(expected);
   });
 
   it('when application is decided as remadeRule31 for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'remadeRule31';
@@ -1610,8 +1622,8 @@ describe('application-state-utils', () => {
 
   it('when application is decided as remadeRule32 for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'remadeRule32';

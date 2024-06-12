@@ -1,6 +1,5 @@
 import config from 'config';
 import { bootstrap as ourBootStrap, teardown as ourTeardown } from './test/functional/bootstrap';
-// const ourBootstrap = {bootstrap} =  require('./test/functional/bootstrap.ts').bootstrap;
 
 exports.config = {
   name: 'codecept',
@@ -18,6 +17,9 @@ exports.config = {
       chrome: {
         ignoreHTTPSErrors: true
       }
+    },
+    FailedTest: {
+      require: './test/e2e-test/helpers/failedTestHelper.js'
     }
   },
   gherkin: {

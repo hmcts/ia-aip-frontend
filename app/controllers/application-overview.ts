@@ -6,7 +6,7 @@ import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getAppealApplicationNextStep, isPreAddendumEvidenceUploadState } from '../utils/application-state-utils';
+import { getAppealApplicationNextStep, isPreAddendumEvidenceUploadState, transferredToUpperTribunal } from '../utils/application-state-utils';
 import { getHearingCentre } from '../utils/cma-hearing-details';
 import { formatDate, timeFormat } from '../utils/date-utils';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
@@ -164,6 +164,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         stages: stagesStatus,
         saved: isPartiallySaved,
         ended: appealEnded,
+        transferredToUt: transferredToUpperTribunal(req),
         askForMoreTimeInFlight: hasPendingTimeExtension(req.session.appeal),
         askForMoreTime,
         saveAndAskForMoreTime,

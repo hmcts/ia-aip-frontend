@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from '../../../app/utils/cma-hearing-details';
-import { getDeadline, getFormattedDirectionDueDate } from '../../../app/utils/event-deadline-date-finder';
+import { getDeadline, getDueDateForAppellantToRespondToJudgeDecision, getFormattedDirectionDueDate } from '../../../app/utils/event-deadline-date-finder';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 describe('event-deadline-date-finder', () => {
@@ -83,6 +83,10 @@ describe('event-deadline-date-finder', () => {
             {
               'id': 'decisionWithdrawn',
               'createdDate': '2020-02-19T16:00:00.000'
+            },
+            {
+              'id': 'updateTribunalDecision',
+              'createdDate': '2024-03-05T15:36:26.099'
             }
           ]
         }
@@ -123,12 +127,54 @@ describe('event-deadline-date-finder', () => {
       expect(result).to.be.equal('13 February 2020');
     });
 
+    it('appealSubmitted with fee and setAside is enabled should return a formatted date with 14 days offset from the' +
+      ' appealSubmission date', () => {
+
+      const currentAppealStatus = 'appealSubmitted';
+      req.session.appeal.application.appealType = 'refusalOfHumanRights';
+      const result = getDeadline(currentAppealStatus, req as Request, true);
+
+      expect(result).to.be.equal('22 February 2020');
+    });
+
+    it('lateAppealSubmitted with fee and setAside is enabled should return a formatted date with 14 days offset from the' +
+      ' appealSubmission date', () => {
+
+      const currentAppealStatus = 'lateAppealSubmitted';
+      req.session.appeal.application.appealType = 'euSettlementScheme';
+      const result = getDeadline(currentAppealStatus, req as Request, true);
+
+      expect(result).to.be.equal('22 February 2020');
+    });
+
     it('pendingPayment should return a formatted date with 14 days offset from the appealSubmission date', () => {
 
       const currentAppealStatus = 'pendingPayment';
       const result = getDeadline(currentAppealStatus, req as Request);
 
       expect(result).to.be.equal('22 February 2020');
+    });
+
+    it('pendingPayment should return a formatted date with 14 days offset from the appealSubmission date when dlrmFeeRemission' +
+      ' is on', () => {
+
+      const currentAppealStatus = 'pendingPayment';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+
+      const result = getDeadline(currentAppealStatus, req as Request, true);
+
+      expect(result).to.be.equal('22 February 2020');
+    });
+
+    it('pendingPayment should return a formatted date with 28 days offset from the appealSubmission date when dlrmFeeRemission' +
+      ' is on and out of country', () => {
+      req.session.appeal.appealOutOfCountry = 'Yes';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+      req.session.appeal.application.helpWithFeesOption = 'someFee';
+      const currentAppealStatus = 'pendingPayment';
+      const result = getDeadline(currentAppealStatus, req as Request, true);
+
+      expect(result).to.be.equal('07 March 2020');
     });
 
     it('awaitingRespondentEvidence should return a formatted date with 14 days offset from the appealSubmission date', () => {
@@ -145,6 +191,24 @@ describe('event-deadline-date-finder', () => {
       const result = getDeadline(currentAppealStatus, req as Request);
 
       expect(result).to.be.equal('13 February 2020');
+    });
+
+    it('awaitingRespondentEvidence should return a formatted date with 14 days offset from the appealSubmission date' +
+      ' when dlrmFeeRemission is enabled', () => {
+
+      const currentAppealStatus = 'awaitingRespondentEvidence';
+      const result = getDeadline(currentAppealStatus, req as Request, true);
+
+      expect(result).to.be.equal('22 February 2020');
+    });
+    it('awaitingRespondentEvidence should return a formatted date with 28 days offset from the appealSubmission date' +
+      ' when dlrmFeeRemission is enabled and appeal is out of country', () => {
+      req.session.appeal.appealOutOfCountry = 'Yes';
+      req.session.appeal.application.helpWithFeesOption = 'someFee';
+      const currentAppealStatus = 'awaitingRespondentEvidence';
+      const result = getDeadline(currentAppealStatus, req as Request, true);
+
+      expect(result).to.be.equal('07 March 2020');
     });
 
     it('awaitingReasonsForAppeal should return a formatted date with the requestReasonForAppeal direction due date', () => {
@@ -433,6 +497,71 @@ describe('event-deadline-date-finder', () => {
     it('getFormattedDirectionDueDate should return due date from first directive with matching tag', () => {
       const result = getFormattedDirectionDueDate(req.session.appeal.directions, ['requestCaseBuilding']);
       expect(result).to.be.equal('28 August 2020');
+    });
+
+    it('getDueDateForAppellantToRespondToJudgeDecision should return due date when triggered updateTribunalDecision event with rule 31', () => {
+
+      req.session.appeal.appealStatus = 'decided';
+      req.session.appeal.isDecisionAllowed = 'allowed';
+      req.session.appeal.updatedAppealDecision = 'dismissed';
+      req.session.appeal.updateTribunalDecisionList = 'underRule31';
+
+      const result = getDueDateForAppellantToRespondToJudgeDecision(req as Request, true);
+      expect(result).to.be.equal('19 March 2024');
+    });
+
+    it('getDueDateForAppellantToRespondToJudgeDecision should return due date when triggered updateTribunalDecision event with rule 31 and OOC', () => {
+
+      req.session.appeal.appealStatus = 'decided';
+      req.session.appeal.isDecisionAllowed = 'allowed';
+      req.session.appeal.updatedAppealDecision = 'dismissed';
+      req.session.appeal.updateTribunalDecisionList = 'underRule31';
+      req.session.appeal.appealOutOfCountry = 'Yes';
+
+      const result = getDueDateForAppellantToRespondToJudgeDecision(req as Request, true);
+      expect(result).to.be.equal('02 April 2024');
+    });
+
+    it('getDueDateForAppellantToRespondToJudgeDecision should return due date when triggered updateTribunalDecision event with rule 32', () => {
+
+      req.session.appeal.appealStatus = 'decided';
+      req.session.appeal.updateTribunalDecisionList = 'underRule32';
+
+      const result = getDueDateForAppellantToRespondToJudgeDecision(req as Request, true);
+      expect(result).to.be.equal(null);
+    });
+
+    it('getDueDateForAppellantToRespondToJudgeDecision should return due date from finalDecisionAndReasonsPdf tag when the flag of DLRM set aside is off', () => {
+
+      req.session.appeal.finalDecisionAndReasonsDocuments = [
+        {
+          fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+          name: 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-Cover-letter-FINAL.pdf',
+          id: '1',
+          tag: 'finalDecisionAndReasonsPdf',
+          dateUploaded: '2024-02-28'
+        }
+      ];
+
+      const result = getDueDateForAppellantToRespondToJudgeDecision(req as Request, false);
+      expect(result).to.be.equal('13 March 2024');
+    });
+
+    it('getDueDateForAppellantToRespondToJudgeDecision should return due date from finalDecisionAndReasonsPdf tag when the flag of DLRM set aside is off and OOC', () => {
+
+      req.session.appeal.appealOutOfCountry = 'Yes';
+      req.session.appeal.finalDecisionAndReasonsDocuments = [
+        {
+          fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+          name: 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-Cover-letter-FINAL.pdf',
+          id: '1',
+          tag: 'finalDecisionAndReasonsPdf',
+          dateUploaded: '2024-02-28'
+        }
+      ];
+
+      const result = getDueDateForAppellantToRespondToJudgeDecision(req as Request, false);
+      expect(result).to.be.equal('27 March 2024');
     });
   });
 });

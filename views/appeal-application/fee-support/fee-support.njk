@@ -1,0 +1,74 @@
+{% set pageTitleName = pageTitle %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% extends "layout.njk" %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+
+<form action="{{ formAction }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+            <h1 class="govuk-fieldset__heading">
+                {{ question.title | eval }}
+            </h1>
+        </legend>
+        <p>{{ question.hint | eval | safe if question.hint }}</p>
+        <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{ question.options[0].value }}" name="answer" type="radio" value="{{ question.options[0].value }}">
+                <label class="govuk-label govuk-radios__label" for="{{ question.options[0].value }}">
+                    {{ question.options[0].text | eval }}
+                </label>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{ question.options[1].value }}" name="answer" type="radio" value="{{ question.options[1].value }}">
+                <label class="govuk-label govuk-radios__label" for="{{ question.options[1].value }}">
+                    {{ question.options[1].text | eval }}
+                </label>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{ question.options[2].value }}" name="answer" type="radio" value="{{ question.options[2].value }}">
+                <label class="govuk-label govuk-radios__label" for="{{ question.options[2].value }}">
+                    {{ question.options[2].text | eval }}
+                </label>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{ question.options[3].value }}" name="answer" type="radio" value="{{ question.options[3].value }}">
+                <label class="govuk-label govuk-radios__label" for="{{ question.options[3].value }}">
+                    {{ question.options[3].text | eval }}
+                </label>
+            </div>
+            <div class="govuk-radios__fees">or</div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{ question.options[4].value }}" name="answer" type="radio" value="{{ question.options[4].value }}">
+                <label class="govuk-label govuk-radios__label" for="{{ question.options[4].value }}">
+                    {{ question.options[4].text | eval }}
+                </label>
+                <div id="signIn-2-item-hint" class="govuk-hint govuk-radios__hint">
+                    {{ question.options[4].hint.text | eval }}
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
+    {% if saveAndContinueOnly %}
+        {{ saveAndContinueButton() }}
+    {% else %}
+        {% if saveAndContinue %}
+            {{ saveButtons() }}
+        {% else %}
+            {{ continueButton() }}
+        {% endif %}
+    {% endif %}
+
+</form>
+{{ contactUs() }}
+{% endblock %}

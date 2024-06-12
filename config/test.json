@@ -9,6 +9,9 @@
   "features": {
     "timelineEnabled": true
   },
+  "cdamDocumentManagement": {
+    "apiUrl": "CASE_DOCUMENT_AM_URL"
+  },
   "payments": {
     "apiUrl": "http://testUrl"
   },

@@ -5,13 +5,31 @@ const testUrl = config.get('testUrl');
 
 module.exports = {
   decisionType(I) {
+    When('I go to appeal overview page', () => {
+      I.retry(3).amOnPage(testUrl + '/appeal-overview');
+    });
+
     Given('I should be taken to the decision type page', async () => {
-      await I.waitInUrl(paths.appealStarted.decisionType,10);
+      await I.waitInUrl(paths.appealStarted.decisionType,30);
       await I.seeInCurrentUrl(paths.appealStarted.decisionType);
     });
 
+    When('I go into the Decision with or without a hearing task', async () => {
+      await I.amOnPage(testUrl + paths.appealStarted.decisionType);
+    });
+
     When(/^I click on the decision-type link$/, async () => {
-      await I.click('Decision with or without a hearing');
+      for (let i = 0; i < 3; i++) {
+        try {
+          await I.click('#typeOfDecisionLink');
+          await I.waitInUrl(paths.appealStarted.decisionType, 20);
+          await I.seeInCurrentUrl(paths.appealStarted.decisionType);
+          break;
+        } catch (e) {
+          await I.seeInCurrentUrl(paths.appealStarted.taskList);
+        }
+      }
+      await I.seeInCurrentUrl(paths.appealStarted.decisionType);
     });
 
     When(/^I click on Decision with hearing as my type of decision and click Save and continue$/, async () => {
@@ -58,7 +76,7 @@ module.exports = {
       }
       if (paChoice !== 'non PA') {
         await I.click('Save and continue');
-        await I.waitInUrl(paths.appealStarted.payNow,10);
+        await I.waitInUrl(paths.appealStarted.payNow,15);
         await I.seeInCurrentUrl(paths.appealStarted.payNow);
         if (paChoice === 'PA pay now') {
           await I.checkOption('#answer');

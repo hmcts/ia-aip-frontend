@@ -4,7 +4,7 @@ Feature: Back button
   I want to be able to navigate Back
 
   Scenario: Navigate back to task list page
-    Given I am authenticated as a valid appellant
+    Given I have logged in as an appellant in state "appealStarted"
     And I click continue
 
     Then I see "Tell us about your appeal" in title

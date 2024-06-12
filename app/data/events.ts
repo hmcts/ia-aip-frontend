@@ -82,6 +82,11 @@ export const Events = {
     summary: 'Direct the appellant to answer clarifying questions',
     description: 'Direct the appellant to answer clarifying questions'
   },
+  UPDATE_TRIBUNAL_DECISION: {
+    id: 'updateTribunalDecision',
+    summary: 'Update Tribunal decision',
+    description: 'Update Tribunal decision'
+  },
   LIST_CMA: {
     id: 'listCma',
     summary: 'Cma has been listed.',
@@ -205,5 +210,20 @@ export const Events = {
     id: 'decisionWithoutHearing',
     summary: 'Decision without a hearing',
     description: 'Decision without a hearing'
+  },
+  MARK_AS_READY_FOR_UT_TRANSFER: {
+    id: 'markAsReadyForUtTransfer',
+    summary: 'Transfer appeal to Upper Tribunal',
+    description: 'Transfer appeal to Upper Tribunal'
+  },
+  DECIDE_FTPA_APPLICATION: {
+    id: 'decideFtpaApplication',
+    summary: 'Decide FTPA application',
+    description: 'Decide FTPA application'
+  },
+  MARK_APPEAL_AS_REMITTED: {
+    id: 'markAppealAsRemitted',
+    summary: 'Mark appeal as remitted',
+    description: 'Mark appeal as remitted'
   }
 };

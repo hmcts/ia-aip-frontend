@@ -25,7 +25,6 @@ async function createUser() {
   aipCurrentUser.password = 'Apassword123';
   aipCurrentUser.forename = 'ATestForename';
   aipCurrentUser.surname = 'ATestSurname';
-
   const options = {
     url: `${idamUrl}/testing-support/accounts`,
     json: true,

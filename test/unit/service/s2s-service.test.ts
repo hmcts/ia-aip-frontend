@@ -46,6 +46,7 @@ describe('s2s-service', () => {
         oneTimePassword: '12345'
       }
     };
+
     const stubResponse = { status: 200, statusText: 'OK', data:  'theNewToken' };
     const restCall = sandbox.stub(axios, 'post').withArgs(requestStub.uri, requestStub.body).returns(Promise.resolve(stubResponse));
 
@@ -53,9 +54,7 @@ describe('s2s-service', () => {
       return true;
     });
 
-    const buildStub = sandbox.stub(s2s, 'buildRequest').callsFake(() => {
-      return requestStub;
-    });
+    const buildStub = sandbox.stub(s2s, 'buildRequest').resolves(requestStub);
 
     const result = await s2s.getServiceToken();
     expect(jwtStub).has.been.calledOnce;
@@ -82,9 +81,7 @@ describe('s2s-service', () => {
       return true;
     });
 
-    const buildStub = sandbox.stub(s2s, 'buildRequest').callsFake(() => {
-      return requestStub;
-    });
+    const buildStub = sandbox.stub(s2s, 'buildRequest').resolves(requestStub);
 
     const result = await s2s.getServiceToken();
     expect(jwtStub).has.been.calledOnce;

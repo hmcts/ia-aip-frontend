@@ -4,6 +4,6 @@ Feature: Type iof appeal
   I want to be able to enter my type of appeal
 
   Scenario: Home office reference page
-    Given I am authenticated as a valid appellant
+    Given I have logged in as an appellant in state "appealStarted"
     When I enter a non existent url
     Then I should see page not found error page

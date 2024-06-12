@@ -16,12 +16,12 @@ Scenario: I view cookies and accept them
   And I click "Accept analytics cookies" button
   Then I dont see "Cookies on MyHMCTS" on the page
 
-Scenario: I accept analytics cookie
+Scenario: I accept analytics cookie 1
   And I see "Cookies on MyHMCTS" in subheading
   And I click "Accept analytics cookies" button
   Then I dont see "Cookies on MyHMCTS" on the page
 
-Scenario: I accept analytics cookie
+Scenario: I reject analytics cookie
   And I see "Cookies on MyHMCTS" in subheading
   And I click "Reject analytics cookies" button
   Then I dont see "Cookies on MyHMCTS" on the page

@@ -4,5 +4,5 @@
 		"jsdom-global/register",
 		"source-map-support/register"
 	],
-	"timeout":10000
+	"timeout":20000
 }

@@ -99,7 +99,7 @@ describe('Home office decision letter', function () {
 
     it('should render template with validation errors', function () {
       req.query = { error: 'error' };
-      const validationErrors = { uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload[`${req.query.error}`]) };
+      const validationErrors = { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${req.query.error}`]) };
       getHomeOfficeDecisionLetter(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('templates/multiple-evidence-upload-page.njk', {
         title: i18n.pages.homeOfficeLetterUpload.title,

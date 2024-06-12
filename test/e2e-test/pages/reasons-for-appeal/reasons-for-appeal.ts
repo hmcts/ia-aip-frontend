@@ -31,8 +31,8 @@ module.exports = {
       await I.waitInUrl(paths.awaitingReasonsForAppeal.supportingEvidence,10);
       await I.seeInCurrentUrl(paths.awaitingReasonsForAppeal.supportingEvidence);
     });
-    // TODO send back button to timeline screen and also click continue to get back to reasons for appeal
-    When(/^I click the back button on reasons for appeal$/, async () => {
+
+    When(/^I click the back button/, async () => {
       await I.click('.govuk-back-link');
     });
     Then(/^I should be taken to the appellant timeline$/, async () => {

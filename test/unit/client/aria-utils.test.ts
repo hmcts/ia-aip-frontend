@@ -7,11 +7,9 @@ describe('aria utils', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     document.body.innerHTML =
-    `
-    <details class='govuk-details'>
+    `<details class='govuk-details'>
       <p>some content here</p>
-    </details>
-    `;
+    </details>`;
     details = document.querySelector('details');
   });
 

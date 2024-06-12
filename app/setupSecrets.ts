@@ -32,6 +32,7 @@ const setupSecrets = () => {
   setSecret('secrets.ia.docmosis-access-key', 'docmosis.accessKey');
   setSecret('secrets.ia.customer-services-telephone', 'customerServices.telephone');
   setSecret('secrets.ia.customer-services-email', 'customerServices.email');
+  setSecret('secrets.ia.ia-gov-notify-key', 'govNotify.accessKey');
 
   return config;
 };

@@ -46,10 +46,10 @@ export default class S2SService implements IS2SService {
    * Assembles a serviceAuthProvider request object to be used to query the service
    * also creates a one-time-password from the secret.
    */
-  buildRequest() {
+  async buildRequest() {
 
     const uri = `${s2sUrl}/lease`;
-    const oneTimePassword = otp(s2sSecret).totp();
+    const oneTimePassword = await otp(s2sSecret).totp();
 
     return {
       uri: uri,
@@ -67,7 +67,7 @@ export default class S2SService implements IS2SService {
    */
   async requestServiceToken() {
     logger.trace('Attempting to request a S2S token', logLabel);
-    const request = this.buildRequest();
+    const request = await this.buildRequest();
     let proxyConfig;
     if (process.env.NODE_ENV === 'development' && !s2sUrl.startsWith('http://localhost')) {
       proxyConfig = { proxy: { host: proxyHost, port: proxyPort } };

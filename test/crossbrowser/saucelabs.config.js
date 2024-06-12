@@ -1,5 +1,7 @@
 const browsers = require('./browsers.js');
 const config = require('config');
+const ourBootstrap = {bootstrapAll} =  require('../functional/bootstrap-all.ts').bootstrapAll;
+const ourTeardown = {teardownAll} =  require('../functional/bootstrap-all.ts').teardownAll;
 
 const SAUCE_USERNAME = process.env.SAUCE_USERNAME;
 const SAUCE_ACCESS_KEY = process.env.SAUCE_ACCESS_KEY;
@@ -35,7 +37,7 @@ const getBrowserConfig = browserGroup => {
 exports.config = {
   name: 'AIP Frontend Tests',
   helpers: {
-    WebDriverIO: {
+    WebDriver: {
       url: TEST_URL,
       browser: 'chrome',
       waitForTimeout: 60000,
@@ -46,7 +48,7 @@ exports.config = {
       user: SAUCE_USERNAME,
       key: SAUCE_ACCESS_KEY,
       desiredCapabilities: {},
-},
+    },
     SauceLabsReportingHelper: {
       require: './helpers/SauceLabsReportingHelper.js'
     }
@@ -75,8 +77,8 @@ exports.config = {
     //   browsers: getBrowserConfig('safari')
     // }
   },
-  bootstrapAll: '../functional/bootstrap-all.ts',
-  teardownAll: '../functional/bootstrap-all.ts',
+  bootstrapAll: bootstrapAll,
+  teardownAll: teardownAll,
   gherkin: {
     features: '../e2e-test/features/*.feature',
     steps: [ '../e2e-test/step_definitions/steps.ts' ]
@@ -85,8 +87,18 @@ exports.config = {
     stepByStepReport: {
       enabled: true,
       fullPageScreenshots: true,
-      deleteSuccessful: false
-    }
+      deleteSuccessful: false,
+      output: "functional-output/crossbrowser/reports/"
+    },
+    selenoid: {
+      enabled: true,
+      deletePassed: true,
+      autoCreate: true,
+      autoStart: true,
+      sessionTimeout: '30m',
+      enableVideo: true,
+      enableLog: true,
+    },
   },
   require: [ 'ts-node/register/transpile-only' ]
 };

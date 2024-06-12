@@ -57,6 +57,7 @@ function createApp() {
   if (environment === 'development' || environment === 'test') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
+    // @ts-ignore
     const options = { stats: 'errors-only' } as Options;
     const wpDevMiddleware = webpackDevMiddleware(compiler, options);
     app.use(wpDevMiddleware);
@@ -93,7 +94,8 @@ function configureHelmet(app) {
         '\'unsafe-inline\'',
         'www.google-analytics.com',
         'www.googletagmanager.com',
-        'tagmanager.google.com'
+        'tagmanager.google.com',
+        'https://*.dynatrace.com'
       ],
       styleSrc: [
         '\'self\'',
@@ -104,7 +106,7 @@ function configureHelmet(app) {
             ? `'unsafe-inline'`
             : `'nonce-${res.locals.nonce}'`
       ],
-      connectSrc: [ '\'self\'', '*.gov.uk', '*.google-analytics.com', '*.platform.hmcts.net' ],
+      connectSrc: [ '\'self\'', '*.gov.uk', '*.google-analytics.com', '*.platform.hmcts.net', 'https://*.dynatrace.com'],
       mediaSrc: [ '\'self\'' ],
       frameSrc: [
         '\'self\'',
@@ -121,7 +123,8 @@ function configureHelmet(app) {
         'www.google-analytics.com',
         'www.googletagmanager.com',
         'tagmanager.google.com',
-        'vcc-eu4.8x8.com'
+        'vcc-eu4.8x8.com',
+        'https://*.dynatrace.com'
       ]
     }
   }));

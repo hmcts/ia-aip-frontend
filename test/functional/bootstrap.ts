@@ -2,6 +2,7 @@ import express from 'express';
 import fs from 'graceful-fs';
 import http from 'http';
 import https from 'https';
+import * as process from 'process';
 import { createApp } from '../../app/app';
 import Logger, { getLogLabel } from '../../app/utils/logger';
 
@@ -67,6 +68,7 @@ export async function bootstrap() {
   const documentManagementStoreConfigs = dyson.getConfigurations(documentManagementStoreOptions);
   dyson.registerServices(documentManagementStoreApp, documentManagementStoreOptions, documentManagementStoreConfigs);
   documentManagementStoreServer = documentManagementStoreApp.listen(20003);
+  global.testFailed = false;
 }
 function closeServerWithPromise(server) {
   return new Promise(function (resolve, reject) {
@@ -98,6 +100,10 @@ export async function teardown() {
   } catch (e) {
     logger.exception(e, logLabel);
   } finally {
-    process.exit();
+    if (global.testFailed) {
+      process.exit(1);
+    } else {
+      process.exit(0);
+    }
   }
 }

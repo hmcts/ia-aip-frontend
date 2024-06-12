@@ -15,6 +15,7 @@ import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { addSummaryRow } from '../../../app/utils/summary-list';
 import { formatTextForCYA } from '../../../app/utils/utils';
+import { helpWithFeesRefNumberValidation } from '../../../app/utils/validations/fields-validations';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { createDummyAppealApplication } from '../mockData/mock-appeal';
@@ -52,12 +53,14 @@ describe('createSummaryRowsFrom', () => {
   });
 
   it('should create rows', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     const rows: any[] = await createSummaryRowsFrom(req as Request);
 
     expect(rows).to.be.deep.equal(getMockedSummaryRows());
   });
 
   it('should create rows when appeal is late', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     req.session.appeal.application.isAppealLate = true;
     req.session.appeal.application.lateAppeal = {
       reason: 'The reason why I am late'
@@ -71,6 +74,7 @@ describe('createSummaryRowsFrom', () => {
   });
 
   it('should create rows when appeal is late with evidence', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     req.session.appeal.application.isAppealLate = true;
     req.session.appeal.application.lateAppeal = {
       reason: 'The reason why I am late',
@@ -121,6 +125,56 @@ describe('createSummaryRowsFrom', () => {
     mockedRows.push(decisionType);
     mockedRows.push(paymentType);
     expect(rows).to.be.deep.equal(mockedRows);
+  });
+
+  it('should create fee rows when fee support values are present and dlrm set aside enabled', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+    req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+    req.session.appeal.application.asylumSupportRefNumber = 'refNumber';
+    req.session.appeal.application.helpWithFeesRefNumber = 'HWF12345';
+    req.session.appeal.application.localAuthorityLetters = [{ fileId: 'fileId', name: 'filename' }];
+    const editParameter = '?edit';
+    const fileLine = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/fileId'>filename</a>`;
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const remissionOptionRow = addSummaryRow('Fee statement', ['I get asylum support from the Home Office'], paths.appealStarted.feeSupport + editParameter);
+    const asylumSupportRefNumberRow = addSummaryRow('Asylum support reference number', ['refNumber'], paths.appealStarted.asylumSupport + editParameter);
+    const helpWithFeesRefNumberRow = addSummaryRow('Help with fees reference number', ['HWF12345'], paths.appealStarted.helpWithFeesReferenceNumber + editParameter);
+    const localAuthorityLettersRow = addSummaryRow('Local authority letter', [fileLine], paths.appealStarted.localAuthorityLetter + editParameter);
+    const mockedRows: SummaryRow[] = getMockedSummaryRows();
+
+    mockedRows.push(remissionOptionRow);
+    mockedRows.push(asylumSupportRefNumberRow);
+    mockedRows.push(helpWithFeesRefNumberRow);
+    mockedRows.push(localAuthorityLettersRow);
+
+    const helpWithFeesOptionTestData = [
+      {
+        input: 'wantToApply',
+        expectedResponse: 'I want to apply for help with fees',
+        description: 'wantToApply text'
+      },
+      {
+        input: 'alreadyApplied',
+        expectedResponse: 'I have already applied for help with fees',
+        description: 'alreadyApplied text'
+      },
+      {
+        input: 'willPayForAppeal',
+        expectedResponse: 'I want to pay for the appeal now',
+        description: 'willPayForAppeal text'
+      }
+    ];
+
+    helpWithFeesOptionTestData.forEach(({ input, expectedResponse, description }) => {
+      it(`should be ${description}`, () => {
+        req.session.appeal.application.helpWithFeesOption = input;
+        const helpWithFeesRow = addSummaryRow('Help with fees', [expectedResponse], paths.appealStarted.helpWithFees + editParameter);
+        mockedRows.push(localAuthorityLettersRow);
+        expect(rows).to.be.deep.equal(mockedRows);
+        mockedRows.pop();
+      });
+    });
   });
 });
 
@@ -197,6 +251,7 @@ describe('Check and Send Controller', () => {
   describe('getCheckAndSend', () => {
 
     it('should render check-and-send-page.njk and Payments flag is OFF', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
@@ -259,6 +314,19 @@ describe('Check and Send Controller', () => {
       });
     });
 
+    it('should render check-and-send-page.njk, hasRemissionOption with appeal with remission and dlrmFeeRemissionFlag' +
+      ' flag is ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+        summaryRows: sinon.match.any,
+        previousPage: paths.appealStarted.taskList,
+        hasRemissionOption: true
+      });
+    });
+
     it('should catch exception and call next with the error', async () => {
       req.session.appeal = createDummyAppealApplication();
       const error = new Error('an error');
@@ -270,6 +338,7 @@ describe('Check and Send Controller', () => {
 
   describe('postCheckAndSend', () => {
     it('should fail validation when statement of truth not checked', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       req.session.appeal = createDummyAppealApplication();
       req.body = { 'button': 'save-and-continue', 'data': [] };
 

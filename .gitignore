@@ -21,3 +21,6 @@ ia-aip-frontend.iml
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+/test/java/.gradle/
+/test/java/lib/
+/test/java/Fortify Scan/

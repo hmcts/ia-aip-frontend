@@ -12,7 +12,7 @@ To run the project you will need to have the following installed:
 * Node.js
 * Yarn
 
-For information about the software versions used to build this application and a complete list of it's dependencies see package.json
+For information about the software versions used to build this application and a complete list of its dependencies see package.json
 
 ### Running the application
 
@@ -67,7 +67,7 @@ If the username is not recognised then no-cases@example.com behaviour will be us
 
 ### Using the application
 
-To understand if the application is working, you can call it's health endpoint:
+To understand if the application is working, you can call its health endpoint:
 
 ```
 curl https://localhost:3000/health
@@ -149,3 +149,10 @@ additional information where necessary.
    `git config --local --unset core.hooksPath`
 
    Still, you shouldn't be doing it so make sure you get in touch with a Technical Lead soon afterwards.
+   
+### Styles
+
+In case we added some custom styles, or modified existing one we need to refresh the build:
+1. in package.json we need to change "build": "webpack --config webpack/webpack.**dev**.js"
+2. yarn build
+3. yarn dev

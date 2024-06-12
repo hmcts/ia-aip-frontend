@@ -1,3 +1,4 @@
+@crossbrowser
 Feature: Eligibility
   In know if can use the service
   As a citizen
@@ -9,15 +10,9 @@ Feature: Eligibility
     When I click start now
     Then I should see the "Are you currently in detention" eligibility page
     When I select No and click continue
-    Then I should see the "Are you appealing an EU Settlement Scheme decision?" eligibility page
-    When I select No and click continue
     Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision" eligibility page
     When I select Yes and click continue
     Then I should see the eligible page
-    When I click "Back" button
-    Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision" eligibility page
-    When I select No and click continue
-    Then I should see the "There is a fee for this appeal" eligibility page
 
   @nightly-test
   Scenario: Citizen is ineligible to use the service
@@ -38,17 +33,19 @@ Feature: Eligibility
     Then I should see the "Are you currently in detention" eligibility page
 
   @nightly-test
-  Scenario: Citizen can click back to change answer to previous question
+  Scenario: Citizen can click back on an question page to change answer to previous question
     Given I am on home page
     When I click start now
     Then I should see the "Are you currently in detention" eligibility page
     When I select No and click continue
-    Then I should see the "Are you appealing an EU Settlement Scheme decision?" eligibility page
+    Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision" eligibility page
     When I click "Back" button
     Then I should see the "Are you currently in detention" eligibility page
+    When I select Yes and click continue
+    Then I should see the ineligible page
 
   @nightly-test
-  Scenario: Citizen can click back on in ineligible page to change answer to previous question
+  Scenario: Citizen can click back on an ineligible page to change answer to previous question
     Given I am on home page
     When I click start now
     Then I should see the "Are you currently in detention" eligibility page
@@ -56,6 +53,22 @@ Feature: Eligibility
     Then I should see the ineligible page
     When I click "Back" button
     Then I should see the "Are you currently in detention" eligibility page
+
+  @nightly-test
+  Scenario: Citizen can click back on an eligible page to change answer to previous question
+    Given I am on home page
+    When I click start now
+    Then I should see the "Are you currently in detention" eligibility page
+    When I select No and click continue
+    Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision" eligibility page
+    When I select Yes and click continue
+    Then I should see the eligible page
+    When I click "Back" button
+    Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision" eligibility page
+    When I select No and click continue
+    Then I should see the "There is a fee for this appeal" eligibility page
+    When I click "Back" button
+    Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision" eligibility page
 
   @nightly-test
   Scenario: Citizen can continue already started appeal

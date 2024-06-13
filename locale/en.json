@@ -1263,11 +1263,11 @@
           "appealDetailsSection": "Your appeal details"
         },
         "asyncStitchingComplete": {
-          "text": "The hearing bundle is ready to view.",
+          "text": "A hearing bundle is ready to view.",
           "links": [
             {
               "title": "Useful documents",
-              "text": "Hearing bundle",
+              "text": "Hearing bundles",
               "href": "{{ paths.common.hearingBundleViewer }}"
             }
           ]
@@ -2000,6 +2000,10 @@
       },
       "hearingBundle": {
         "title": "Hearing Bundle",
+        "titlePlural": "Hearing Bundles",
+        "originalSubtitle": "Original Hearing Bundle",
+        "amendedSubtitle": "Amended Hearing Bundle",
+        "amendedSubtitlePlural": "Amended Hearing Bundles",
         "dateUploaded": "Date uploaded",
         "document": "Document"
       },

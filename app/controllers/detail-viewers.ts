@@ -852,17 +852,41 @@ function getHomeOfficeResponse(req: Request, res: Response, next: NextFunction) 
 function getHearingBundle(req: Request, res: Response, next: NextFunction) {
   try {
     const previousPage: string = paths.common.overview;
-    const hearingBundleDocuments = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'hearingBundle');
+    const hearingBundles = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'hearingBundle');
+    let originalBundleData: SummaryRow[] = [];
+    let amendedBundleData: SummaryRow[] = [];
+    let hasAmendedBundles: boolean = false;
+    const regexPattern: RegExp = /^.*-.*-amended-hearing-bundle.*$/;
+    hearingBundles.forEach((hearingBundle: Evidence) => {
+      const dateUploaded: string = moment(hearingBundle.dateUploaded).format(dayMonthYearFormat);
+      const documentLink: string = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`;
+      const isAmendedHearingBundle: boolean = regexPattern.test(hearingBundle.name);
+      const summaryRows: SummaryRow[] = [
+        addSummaryRow(i18n.pages.detailViewers.hearingBundle.dateUploaded, [dateUploaded]),
+        addSummaryRow(i18n.pages.detailViewers.hearingBundle.document, [documentLink])
+      ];
+      if (isAmendedHearingBundle) {
+        hasAmendedBundles = true;
+        amendedBundleData.push(...summaryRows);
+      } else {
+        originalBundleData.push(...summaryRows);
+      }
+    });
+    const title: string = hasAmendedBundles ? i18n.pages.detailViewers.hearingBundle.titlePlural :
+        i18n.pages.detailViewers.hearingBundle.title;
+    const subtitle1: string | null = hasAmendedBundles ? i18n.pages.detailViewers.hearingBundle.originalSubtitle : null;
+    const subtitle2: string | null = hasAmendedBundles ?
+        amendedBundleData.length > 2 ? i18n.pages.detailViewers.hearingBundle.amendedSubtitlePlural
+            : i18n.pages.detailViewers.hearingBundle.amendedSubtitle
+        : null;
+    const data2: SummaryRow[] | null = hasAmendedBundles ? amendedBundleData : null;
 
-    const hearingBundle = hearingBundleDocuments.shift();
-    const data = [
-      addSummaryRow(i18n.pages.detailViewers.hearingBundle.dateUploaded, [moment(hearingBundle.dateUploaded).format(dayMonthYearFormat)]),
-      addSummaryRow(i18n.pages.detailViewers.hearingBundle.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`])
-    ];
-
-    return res.render('templates/details-viewer.njk', {
-      title: i18n.pages.detailViewers.hearingBundle.title,
-      data,
+    return res.render('templates/details-viewer-hearing-bundles.njk', {
+      title: title,
+      subtitle1: subtitle1,
+      data1: originalBundleData,
+      subtitle2: subtitle2,
+      data2: data2,
       previousPage
     });
   } catch (error) {

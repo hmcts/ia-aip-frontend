@@ -872,14 +872,19 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
         originalBundleData.push(...summaryRows);
       }
     });
-    const title: string = hasAmendedBundles ? i18n.pages.detailViewers.hearingBundle.titlePlural :
-        i18n.pages.detailViewers.hearingBundle.title;
-    const subtitle1: string | null = hasAmendedBundles ? i18n.pages.detailViewers.hearingBundle.originalSubtitle : null;
-    const subtitle2: string | null = hasAmendedBundles ?
-        amendedBundleData.length > 2 ? i18n.pages.detailViewers.hearingBundle.amendedSubtitlePlural
-            : i18n.pages.detailViewers.hearingBundle.amendedSubtitle
-        : null;
-    const data2: SummaryRow[] | null = hasAmendedBundles ? amendedBundleData : null;
+    let title: string = i18n.pages.detailViewers.hearingBundle.title;
+    let subtitle1: string | null = null;
+    let subtitle2: string | null = null;
+    let data2: SummaryRow[] | null = null;
+
+    if (hasAmendedBundles) {
+      title = i18n.pages.detailViewers.hearingBundle.titlePlural;
+      subtitle1 = i18n.pages.detailViewers.hearingBundle.originalSubtitle;
+      subtitle2 = amendedBundleData.length > 2
+          ? i18n.pages.detailViewers.hearingBundle.amendedSubtitlePlural
+          : i18n.pages.detailViewers.hearingBundle.amendedSubtitle;
+      data2 = amendedBundleData;
+    }
 
     return res.render('templates/details-viewer-hearing-bundles.njk', {
       title: title,

@@ -141,6 +141,8 @@ describe('application-state-utils', () => {
     it('should return \'Do This next section\' when application status is appealStartedPartial', async () => {
       req.session.appeal.appealStatus = 'appealStarted';
       req.session.appeal.application.homeOfficeRefNumber = '12345678';
+      req.session.appeal.application.remissionOption = null;
+      req.session.appeal.application.remissionDecision = null;
 
       const result = await getAppealApplicationNextStep(req as Request);
 
@@ -159,7 +161,9 @@ describe('application-state-utils', () => {
     });
 
     it('when application status is appealSubmitted should get correct \'Do This next section\'', async () => {
-      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
+      req.session.appeal.application.remissionOption = null;
+      req.session.appeal.application.remissionDecision = null;
 
       req.session.appeal.appealStatus = 'appealSubmitted';
 
@@ -167,19 +171,37 @@ describe('application-state-utils', () => {
 
       expect(result).to.eql({
         cta: null,
-        'deadline': dlrmFeeRemissionFlag ? '22 February 2020' : '13 February 2020',
-        descriptionParagraphs: dlrmFeeRemissionFlag
-          ? ['Your appeal details have been sent to the Tribunal.',
-            'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.']
-          : ['Your appeal details have been sent to the Tribunal.',
-            'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
-            'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
-            'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'],
+        deadline: '13 February 2020',
+        descriptionParagraphs: [
+          'Your appeal details have been sent to the Tribunal.',
+          'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'],
         info: {
           title: 'Helpful Information',
           url: '<a class=\'govuk-link\' href=\'{{ paths.common.tribunalCaseworker }}\'>What is a Tribunal Caseworker?</a>'
         },
         allowedAskForMoreTime: false
+      });
+    });
+
+    it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
+
+      req.session.appeal.appealStatus = 'lateAppealSubmitted';
+      req.session.appeal.application.isAppealLate = true;
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        allowedAskForMoreTime: false,
+        cta: null,
+        deadline: '13 February 2020',
+        descriptionParagraphs: [
+          'Your late appeal details have been sent to the Tribunal.',
+          'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+        ],
+        'info': {
+          'title': 'Helpful Information',
+          'url': '<a class=\'govuk-link\' href=\'{{ paths.common.tribunalCaseworker }}\'>What is a Tribunal Caseworker?</a>'
+        }
       });
     });
 
@@ -340,33 +362,6 @@ describe('application-state-utils', () => {
           url: '<a class=\'govuk-link\' href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
         },
         allowedAskForMoreTime: false
-      });
-    });
-
-    it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', async () => {
-      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-
-      req.session.appeal.appealStatus = 'lateAppealSubmitted';
-      req.session.appeal.application.isAppealLate = true;
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      expect(result).to.eql({
-        'allowedAskForMoreTime': false,
-        'cta': null,
-        'deadline': dlrmFeeRemissionFlag ? '22 February 2020' : '13 February 2020',
-        descriptionParagraphs: dlrmFeeRemissionFlag
-          ? [
-            'Your late appeal details have been sent to the Tribunal.',
-            'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
-          ]
-          : ['Your late appeal details have been sent to the Tribunal.',
-            'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
-            'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
-            'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'],
-        'info': {
-          'title': 'Helpful Information',
-          'url': '<a class=\'govuk-link\' href=\'{{ paths.common.tribunalCaseworker }}\'>What is a Tribunal Caseworker?</a>'
-        }
       });
     });
 

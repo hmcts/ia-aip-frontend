@@ -1999,11 +1999,11 @@
         "title": "Notice of Hearing"
       },
       "hearingBundle": {
-        "title": "Hearing Bundle",
-        "titlePlural": "Hearing Bundles",
-        "originalSubtitle": "Original Hearing Bundle",
-        "amendedSubtitle": "Amended Hearing Bundle",
-        "amendedSubtitlePlural": "Amended Hearing Bundles",
+        "title": "Hearing bundle",
+        "titlePlural": "Hearing bundles",
+        "originalSubtitle": "Hearing bundle",
+        "amendedSubtitle": "Amended hearing bundle",
+        "amendedSubtitlePlural": "Amended hearing bundles",
         "dateUploaded": "Date uploaded",
         "document": "Document"
       },

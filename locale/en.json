@@ -2004,6 +2004,9 @@
         "originalSubtitle": "Hearing bundle",
         "amendedSubtitle": "Amended hearing bundle",
         "amendedSubtitlePlural": "Amended hearing bundles",
+        "reheardOriginalSubtitle": "Reheard Hearing Bundle",
+        "reheardAmendedSubtitle": "Reheard Amended hearing bundle",
+        "reheardAmendedSubtitlePlural": "Reheard Amended hearing bundles",
         "dateUploaded": "Date uploaded",
         "document": "Document"
       },

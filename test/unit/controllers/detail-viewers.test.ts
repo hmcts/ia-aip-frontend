@@ -1590,6 +1590,10 @@ describe('Detail viewer Controller', () => {
         data1: sinon.match.array,
         subtitle2: null,
         data2: null,
+        subtitle3: null,
+        data3: null,
+        subtitle4: null,
+        data4: null,
         previousPage: paths.common.overview
       });
     });
@@ -1615,7 +1619,7 @@ describe('Detail viewer Controller', () => {
         },
         {
           fileId: 'uuid',
-          name: 'DC 50001 2024-lastName-amended-hearing-bundle.pdf',
+          name: 'DC 50001 2024-lastName-amended-1-hearing-bundle.pdf',
           description: 'description here',
           dateUploaded: '2020-02-21',
           id: '3',
@@ -1631,6 +1635,10 @@ describe('Detail viewer Controller', () => {
         data1: sinon.match.array,
         subtitle2: i18n.pages.detailViewers.hearingBundle.amendedSubtitle,
         data2: sinon.match.array,
+        subtitle3: null,
+        data3: null,
+        subtitle4: null,
+        data4: null,
         previousPage: paths.common.overview
       });
     });
@@ -1656,7 +1664,7 @@ describe('Detail viewer Controller', () => {
         },
         {
           fileId: 'uuid',
-          name: 'DC 50001 2024-lastName-amended-hearing-bundle.pdf',
+          name: 'DC 50001 2024-lastName-amended-1-hearing-bundle.pdf',
           description: 'description here',
           dateUploaded: '2020-02-21',
           id: '3',
@@ -1664,7 +1672,7 @@ describe('Detail viewer Controller', () => {
         },
         {
           fileId: 'uuid',
-          name: 'DC 50001 2024-lastName-amended-hearing-bundle-2.pdf',
+          name: 'DC 50001 2024-lastName-amended-20-hearing-bundle-2.pdf',
           description: 'description here',
           dateUploaded: '2020-02-21',
           id: '4',
@@ -1680,6 +1688,151 @@ describe('Detail viewer Controller', () => {
         data1: sinon.match.array,
         subtitle2: i18n.pages.detailViewers.hearingBundle.amendedSubtitlePlural,
         data2: sinon.match.array,
+        subtitle3: null,
+        data3: null,
+        subtitle4: null,
+        data4: null,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('getHearingBundle should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getHearingBundle(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getHearingBundle with reheard bundle', () => {
+    beforeEach(() => {
+      req.session.appeal.reheardHearingDocumentsCollection = [{
+        reheardHearingDocs: [
+          {
+            fileId: 'uuid',
+            name: 'filename',
+            description: 'description here',
+            dateUploaded: '2020-02-21',
+            id: '2',
+            tag: 'hearingBundle'
+          }
+        ]
+      }];
+    });
+    it('should render details-viewer template', () => {
+      getHearingBundle(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer-hearing-bundles.njk', {
+        title: i18n.pages.detailViewers.hearingBundle.title,
+        subtitle1: null,
+        data1: [],
+        subtitle2: null,
+        data2: null,
+        subtitle3: i18n.pages.detailViewers.hearingBundle.reheardOriginalSubtitle,
+        data3: sinon.match.array,
+        subtitle4: null,
+        data4: null,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('getHearingBundle should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getHearingBundle(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getHearingBundle with reheard amended bundle', () => {
+    beforeEach(() => {
+      req.session.appeal.reheardHearingDocumentsCollection = [{
+        reheardHearingDocs: [
+          {
+            fileId: 'uuid',
+            name: 'filename',
+            description: 'description here',
+            dateUploaded: '2020-02-21',
+            id: '2',
+            tag: 'hearingBundle'
+          },
+          {
+            fileId: 'uuid',
+            name: 'DC 50001 2024-lastName-amended-1-reheard-hearing-bundle-2.pdf',
+            description: 'description here',
+            dateUploaded: '2020-02-21',
+            id: '3',
+            tag: 'hearingBundle'
+          }
+        ]
+      }];
+    });
+    it('should render details-viewer template', () => {
+      getHearingBundle(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer-hearing-bundles.njk', {
+        title: i18n.pages.detailViewers.hearingBundle.title,
+        subtitle1: null,
+        data1: [],
+        subtitle2: null,
+        data2: null,
+        subtitle3: i18n.pages.detailViewers.hearingBundle.reheardOriginalSubtitle,
+        data3: sinon.match.array,
+        subtitle4: i18n.pages.detailViewers.hearingBundle.reheardAmendedSubtitle,
+        data4: sinon.match.array,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('getHearingBundle should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getHearingBundle(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getHearingBundle with multiple reheard amended bundles', () => {
+    beforeEach(() => {
+      req.session.appeal.reheardHearingDocumentsCollection = [{
+        reheardHearingDocs: [
+          {
+            fileId: 'uuid',
+            name: 'filename',
+            description: 'description here',
+            dateUploaded: '2020-02-21',
+            id: '2',
+            tag: 'hearingBundle'
+          },
+          {
+            fileId: 'uuid',
+            name: 'DC 50001 2024-lastName-amended-1-reheard-hearing-bundle-2.pdf',
+            description: 'description here',
+            dateUploaded: '2020-02-21',
+            id: '3',
+            tag: 'hearingBundle'
+          },
+          {
+            fileId: 'uuid',
+            name: 'DC 50001 2024-lastName-amended-52-reheard-hearing-bundle-2.pdf',
+            description: 'description here',
+            dateUploaded: '2020-02-21',
+            id: '4',
+            tag: 'hearingBundle'
+          }
+        ]
+      }];
+    });
+    it('should render details-viewer template', () => {
+      getHearingBundle(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer-hearing-bundles.njk', {
+        title: i18n.pages.detailViewers.hearingBundle.title,
+        subtitle1: null,
+        data1: [],
+        subtitle2: null,
+        data2: null,
+        subtitle3: i18n.pages.detailViewers.hearingBundle.reheardOriginalSubtitle,
+        data3: sinon.match.array,
+        subtitle4: i18n.pages.detailViewers.hearingBundle.reheardAmendedSubtitlePlural,
+        data4: sinon.match.array,
         previousPage: paths.common.overview
       });
     });

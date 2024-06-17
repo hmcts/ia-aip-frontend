@@ -1996,7 +1996,8 @@
         "additionalEvidence": "Additional evidence"
       },
       "hearingNotice": {
-        "title": "Notice of Hearing"
+        "title": "Notice of Hearing",
+        "reheardTitle": "Reheard Notice of Hearing"
       },
       "hearingBundle": {
         "title": "Hearing Bundle",

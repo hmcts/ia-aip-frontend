@@ -715,16 +715,38 @@ function getHearingNoticeViewer(req: Request, res: Response, next: NextFunction)
   try {
     let previousPage: string = paths.common.overview;
     const hearingNoticeDocuments = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'hearingNotice');
+    const reheardHearingNoticeDocuments = req.session.appeal.reheardHearingDocumentsCollection.reheardHearingDocs
+        .filter(doc => doc.tag === 'hearingNotice');
     const data = [];
+    const reheardData = [];
     hearingNoticeDocuments.forEach(document => {
       const fileNameFormatted = fileNameFormatter(document.name);
       data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(document.dateUploaded).format(dayMonthYearFormat)]));
       data.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${document.fileId}'>${fileNameFormatted}</a>`]));
     });
+    reheardHearingNoticeDocuments.forEach(document => {
+      const fileNameFormatted = fileNameFormatter(document.name);
+      reheardData.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(document.dateUploaded).format(dayMonthYearFormat)]));
+      reheardData.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${document.fileId}'>${fileNameFormatted}</a>`]));
+    });
+    let reheardTitle: string | null;
+    switch(reheardData.length) {
+      case 0:
+        reheardTitle = null;
+        break;
+      case 1:
+        reheardTitle = i18n.pages.detailViewers.hearingNotice.reheardTitle;
+        break;
+      default:
+        reheardTitle = i18n.pages.detailViewers.hearingNotice.reheardTitle + 's';
+        break;
+    }
 
-    return res.render('templates/details-viewer.njk', {
+    return res.render('templates/hearing-notice-details-viewer.njk', {
       title: i18n.pages.detailViewers.hearingNotice.title,
       data,
+      reheardTitle: reheardTitle,
+      reheardData: reheardData.length > 0 ? reheardData : null,
       previousPage
     });
   } catch (error) {

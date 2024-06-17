@@ -1,0 +1,23 @@
+{% extends '../layout.njk' %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% set pageTitleName = title %}
+
+{% block content %}
+    <h1>{{ title  }}</h1>
+    {% if description %}
+        <p>{{ description }}</p>
+    {% endif %}
+    {{ govukSummaryList({
+        rows: data
+    }) }}
+    {% if reheardTitle %}
+        <h2>{{ reheardTitle }}</h2>
+    {% endif %}
+    {% if reheardData %}
+        {{ govukSummaryList({
+            rows: reheardData
+        }) }}
+    {% endif %}
+
+  {{ contactUs() }}
+{% endblock %}

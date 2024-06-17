@@ -858,11 +858,13 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
     }
     let reheardHearingBundles: Evidence[] = [];
     if (req.session.appeal.reheardHearingDocumentsCollection) {
-      req.session.appeal.reheardHearingDocumentsCollection.forEach((docCollection) => {
-        let filteredCollection: Evidence[] = docCollection.reheardHearingDocs
-            .filter(doc => doc.tag === 'hearingBundle');
-        reheardHearingBundles.push(...filteredCollection);
-      });
+      req.session.appeal.reheardHearingDocumentsCollection.forEach((collection) => {
+        if (collection.value.reheardHearingDocs) {
+          let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
+              .filter(doc => doc.tag === 'hearingBundle');
+          reheardHearingBundles.push(...filteredCollection);
+        }
+      })
     }
     let originalBundleData: SummaryRow[] = [];
     let amendedBundleData: SummaryRow[] = [];

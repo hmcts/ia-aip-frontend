@@ -1707,16 +1707,19 @@ describe('Detail viewer Controller', () => {
   describe('getHearingBundle with reheard bundle', () => {
     beforeEach(() => {
       req.session.appeal.reheardHearingDocumentsCollection = [{
-        reheardHearingDocs: [
-          {
-            fileId: 'uuid',
-            name: 'filename',
-            description: 'description here',
-            dateUploaded: '2020-02-21',
-            id: '2',
-            tag: 'hearingBundle'
-          }
-        ]
+        id: '1',
+        value: {
+          reheardHearingDocs: [
+            {
+              fileId: 'uuid',
+              name: 'filename',
+              description: 'description here',
+              dateUploaded: '2020-02-21',
+              id: '2',
+              tag: 'hearingBundle'
+            }
+          ]
+        }
       }];
     });
     it('should render details-viewer template', () => {
@@ -1746,24 +1749,27 @@ describe('Detail viewer Controller', () => {
   describe('getHearingBundle with reheard amended bundle', () => {
     beforeEach(() => {
       req.session.appeal.reheardHearingDocumentsCollection = [{
-        reheardHearingDocs: [
-          {
-            fileId: 'uuid',
-            name: 'filename',
-            description: 'description here',
-            dateUploaded: '2020-02-21',
-            id: '2',
-            tag: 'hearingBundle'
-          },
-          {
-            fileId: 'uuid',
-            name: 'DC 50001 2024-lastName-amended-1-reheard-hearing-bundle-2.pdf',
-            description: 'description here',
-            dateUploaded: '2020-02-21',
-            id: '3',
-            tag: 'hearingBundle'
-          }
-        ]
+        id: '1',
+        value: {
+          reheardHearingDocs: [
+            {
+              fileId: 'uuid',
+              name: 'filename',
+              description: 'description here',
+              dateUploaded: '2020-02-21',
+              id: '2',
+              tag: 'hearingBundle'
+            },
+            {
+              fileId: 'uuid',
+              name: 'DC 50001 2024-lastName-amended-1-reheard-hearing-bundle-2.pdf',
+              description: 'description here',
+              dateUploaded: '2020-02-21',
+              id: '3',
+              tag: 'hearingBundle'
+            }
+          ]
+        }
       }];
     });
     it('should render details-viewer template', () => {
@@ -1793,32 +1799,35 @@ describe('Detail viewer Controller', () => {
   describe('getHearingBundle with multiple reheard amended bundles', () => {
     beforeEach(() => {
       req.session.appeal.reheardHearingDocumentsCollection = [{
-        reheardHearingDocs: [
-          {
-            fileId: 'uuid',
-            name: 'filename',
-            description: 'description here',
-            dateUploaded: '2020-02-21',
-            id: '2',
-            tag: 'hearingBundle'
-          },
-          {
-            fileId: 'uuid',
-            name: 'DC 50001 2024-lastName-amended-1-reheard-hearing-bundle-2.pdf',
-            description: 'description here',
-            dateUploaded: '2020-02-21',
-            id: '3',
-            tag: 'hearingBundle'
-          },
-          {
-            fileId: 'uuid',
-            name: 'DC 50001 2024-lastName-amended-52-reheard-hearing-bundle-2.pdf',
-            description: 'description here',
-            dateUploaded: '2020-02-21',
-            id: '4',
-            tag: 'hearingBundle'
-          }
-        ]
+        id: '1',
+        value: {
+          reheardHearingDocs: [
+            {
+              fileId: 'uuid',
+              name: 'filename',
+              description: 'description here',
+              dateUploaded: '2020-02-21',
+              id: '2',
+              tag: 'hearingBundle'
+            },
+            {
+              fileId: 'uuid',
+              name: 'DC 50001 2024-lastName-amended-1-reheard-hearing-bundle-2.pdf',
+              description: 'description here',
+              dateUploaded: '2020-02-21',
+              id: '3',
+              tag: 'hearingBundle'
+            },
+            {
+              fileId: 'uuid',
+              name: 'DC 50001 2024-lastName-amended-52-reheard-hearing-bundle-2.pdf',
+              description: 'description here',
+              dateUploaded: '2020-02-21',
+              id: '4',
+              tag: 'hearingBundle'
+            }
+          ]
+        }
       }];
     });
     it('should render details-viewer template', () => {

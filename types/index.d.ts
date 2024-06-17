@@ -117,7 +117,7 @@ interface Appeal {
   respondentDocuments?: Evidence[];
   hearingDocuments?: Evidence[];
   reheardHearingDocs?: Evidence[];
-  reheardHearingDocumentsCollection?: Evidence[][]
+  reheardHearingDocumentsCollection?: Collection<Evidence[]>
   cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];

@@ -103,6 +103,10 @@ interface MakeAnApplicationTypes {
   list_items?: Value[];
 }
 
+interface ReheardHearingDocs {
+  reheardHearingDocs: Evidence[]
+}
+
 interface Appeal {
   ccdCaseId?: string;
   appealStatus?: string;
@@ -117,7 +121,7 @@ interface Appeal {
   respondentDocuments?: Evidence[];
   hearingDocuments?: Evidence[];
   reheardHearingDocs?: Evidence[];
-  reheardHearingDocumentsCollection?: Collection<Evidence[]>[]
+  reheardHearingDocumentsCollection?: Collection<ReheardHearingDocs>[]
   cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];

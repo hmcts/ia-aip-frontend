@@ -858,8 +858,8 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
     }
     let reheardHearingBundles: Evidence[] = [];
     if (req.session.appeal.reheardHearingDocumentsCollection) {
-      req.session.appeal.reheardHearingDocumentsCollection.forEach((collection) => {
-        if (collection.value.reheardHearingDocs) {
+      req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: Collection<ReheardHearingDocs>) => {
+        if (collection.value) {
           let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
               .filter(doc => doc.tag === 'hearingBundle');
           reheardHearingBundles.push(...filteredCollection);

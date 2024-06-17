@@ -864,7 +864,7 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
               .filter(doc => doc.tag === 'hearingBundle');
           reheardHearingBundles.push(...filteredCollection);
         }
-      })
+      });
     }
     let originalBundleData: SummaryRow[] = [];
     let amendedBundleData: SummaryRow[] = [];

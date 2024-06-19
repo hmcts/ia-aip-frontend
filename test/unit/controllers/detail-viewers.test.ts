@@ -1636,18 +1636,18 @@ describe('Detail viewer Controller', () => {
     };
 
     let tests = [
-      { hearingDocs: [hearingBundle], reheardHearingDocs: [], title: 'hearing bundle' },
-      { hearingDocs: [hearingBundle, amendedBundle1], reheardHearingDocs: [], title: 'hearing and amended bundle' },
-      { hearingDocs: [amendedBundle1], reheardHearingDocs: [], title: 'amended bundle' },
-      { hearingDocs: [hearingBundle, amendedBundle1, amendedBundle2], reheardHearingDocs: [], title: 'multiple amended bundles' },
-      { hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection1], title: 'reheard bundle' },
-      { hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection4], title: 'reheard amended bundle' },
-      { hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection2], title: 'reheard hearing and amended bundle' },
-      { hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection3], title: 'multiple reheard amended bundles' },
+      { hearingDocs: [hearingBundle], reheardHearingDocs: null, title: 'hearing bundle' },
+      { hearingDocs: [hearingBundle, amendedBundle1], reheardHearingDocs: null, title: 'hearing and amended bundle' },
+      { hearingDocs: [amendedBundle1], reheardHearingDocs: null, title: 'amended bundle' },
+      { hearingDocs: [hearingBundle, amendedBundle1, amendedBundle2], reheardHearingDocs: null, title: 'multiple amended bundles' },
+      { hearingDocs: null, reheardHearingDocs: [reheardHearingDocCollection1], title: 'reheard bundle' },
+      { hearingDocs: null, reheardHearingDocs: [reheardHearingDocCollection4], title: 'reheard amended bundle' },
+      { hearingDocs: null, reheardHearingDocs: [reheardHearingDocCollection2], title: 'reheard hearing and amended bundle' },
+      { hearingDocs: null, reheardHearingDocs: [reheardHearingDocCollection3], title: 'multiple reheard amended bundles' },
       { hearingDocs: [hearingBundle], reheardHearingDocs: [reheardHearingDocCollection1], title: 'multiple regular and reheard bundle' },
       { hearingDocs: [amendedBundle1], reheardHearingDocs: [reheardHearingDocCollection4], title: 'multiple regular and reheard amended bundles' },
       { hearingDocs: [hearingBundle, amendedBundle1], reheardHearingDocs: [reheardHearingDocCollection2], title: 'multiple regular and reheard non-amended and amended bundles' },
-      { hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection1, reheardHearingDocCollection1], title: 'multiple rehearings and one bundle for each' }
+      { hearingDocs: null, reheardHearingDocs: [reheardHearingDocCollection1, reheardHearingDocCollection1], title: 'multiple rehearings and one bundle for each' }
     ];
     let title = i18n.pages.detailViewers.hearingBundle.title;
     let titlePlural = i18n.pages.detailViewers.hearingBundle.titlePlural;

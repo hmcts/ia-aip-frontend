@@ -1577,7 +1577,7 @@ describe('Detail viewer Controller', () => {
       dateUploaded: '2020-02-21',
       id: '2',
       tag: 'hearingBundle'
-    }
+    };
     let amendedBundle1 = {
       fileId: 'uuid',
       name: 'DC 50001 2024-lastName-amended-1-hearing-bundle.pdf',
@@ -1585,7 +1585,7 @@ describe('Detail viewer Controller', () => {
       dateUploaded: '2020-02-21',
       id: '3',
       tag: 'hearingBundle'
-    }
+    };
     let amendedBundle2 = {
       fileId: 'uuid',
       name: 'DC 50001 2024-lastName-amended-20-hearing-bundle-2.pdf',
@@ -1593,7 +1593,7 @@ describe('Detail viewer Controller', () => {
       dateUploaded: '2020-02-21',
       id: '4',
       tag: 'hearingBundle'
-    }
+    };
     let amendedReheardBundle1 = {
       fileId: 'uuid',
       name: 'DC 50001 2024-lastName-amended-1-reheard-hearing-bundle.pdf',
@@ -1601,7 +1601,7 @@ describe('Detail viewer Controller', () => {
       dateUploaded: '2020-02-21',
       id: '5',
       tag: 'hearingBundle'
-    }
+    };
     let amendedReheardBundle2 = {
       fileId: 'uuid',
       name: 'DC 50001 2024-lastName-amended-52-reheard-hearing-bundle.pdf',
@@ -1609,46 +1609,46 @@ describe('Detail viewer Controller', () => {
       dateUploaded: '2020-02-21',
       id: '4',
       tag: 'hearingBundle'
-    }
+    };
     let reheardHearingDocCollection1 = {
       id: '1',
       value: {
         reheardHearingDocs: [hearingBundle]
       }
-    }
+    };
     let reheardHearingDocCollection2 = {
       id: '2',
       value: {
         reheardHearingDocs: [hearingBundle, amendedReheardBundle1]
       }
-    }
+    };
     let reheardHearingDocCollection3 = {
       id: '3',
       value: {
         reheardHearingDocs: [hearingBundle, amendedReheardBundle1, amendedReheardBundle2]
       }
-    }
+    };
     let reheardHearingDocCollection4 = {
       id: '4',
       value: {
         reheardHearingDocs: [amendedReheardBundle1]
       }
-    }
+    };
 
     let tests = [
-      {hearingDocs: [hearingBundle], reheardHearingDocs: [], title: 'hearing bundle'},
-      {hearingDocs: [hearingBundle, amendedBundle1], reheardHearingDocs: [], title: 'hearing and amended bundle'},
-      {hearingDocs: [amendedBundle1], reheardHearingDocs: [], title: 'amended bundle'},
-      {hearingDocs: [hearingBundle, amendedBundle1, amendedBundle2], reheardHearingDocs: [], title: 'multiple amended bundles'},
-      {hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection1], title: 'reheard bundle'},
-      {hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection4], title: 'reheard amended bundle'},
-      {hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection2], title: 'reheard hearing and amended bundle'},
-      {hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection3], title: 'multiple reheard amended bundles'},
-      {hearingDocs: [hearingBundle], reheardHearingDocs: [reheardHearingDocCollection1], title: 'multiple regular and reheard bundle'},
-      {hearingDocs: [amendedBundle1], reheardHearingDocs: [reheardHearingDocCollection4], title: 'multiple regular and reheard amended bundles'},
-      {hearingDocs: [hearingBundle, amendedBundle1], reheardHearingDocs: [reheardHearingDocCollection2], title: 'multiple regular and reheard non-amended and amended bundles'},
-      {hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection1, reheardHearingDocCollection1], title: 'multiple rehearings and one bundle for each'}
-    ]
+      { hearingDocs: [hearingBundle], reheardHearingDocs: [], title: 'hearing bundle' },
+      { hearingDocs: [hearingBundle, amendedBundle1], reheardHearingDocs: [], title: 'hearing and amended bundle' },
+      { hearingDocs: [amendedBundle1], reheardHearingDocs: [], title: 'amended bundle' },
+      { hearingDocs: [hearingBundle, amendedBundle1, amendedBundle2], reheardHearingDocs: [], title: 'multiple amended bundles' },
+      { hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection1], title: 'reheard bundle' },
+      { hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection4], title: 'reheard amended bundle' },
+      { hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection2], title: 'reheard hearing and amended bundle' },
+      { hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection3], title: 'multiple reheard amended bundles' },
+      { hearingDocs: [hearingBundle], reheardHearingDocs: [reheardHearingDocCollection1], title: 'multiple regular and reheard bundle' },
+      { hearingDocs: [amendedBundle1], reheardHearingDocs: [reheardHearingDocCollection4], title: 'multiple regular and reheard amended bundles' },
+      { hearingDocs: [hearingBundle, amendedBundle1], reheardHearingDocs: [reheardHearingDocCollection2], title: 'multiple regular and reheard non-amended and amended bundles' },
+      { hearingDocs: [], reheardHearingDocs: [reheardHearingDocCollection1, reheardHearingDocCollection1], title: 'multiple rehearings and one bundle for each' }
+    ];
     let title = i18n.pages.detailViewers.hearingBundle.title;
     let titlePlural = i18n.pages.detailViewers.hearingBundle.titlePlural;
     let originalSubtitle = i18n.pages.detailViewers.hearingBundle.originalSubtitle;
@@ -1656,21 +1656,21 @@ describe('Detail viewer Controller', () => {
     let amendedSubtitle = i18n.pages.detailViewers.hearingBundle.amendedSubtitle;
     let amendedSubtitlePlural = i18n.pages.detailViewers.hearingBundle.amendedSubtitlePlural;
     let expectedOutput = [
-      {title: title, subtitle1: originalSubtitle, data1: 2, subtitle2: null, data2: 0},
-      {title: titlePlural, subtitle1: originalSubtitle, data1: 2, subtitle2: amendedSubtitle, data2: 2},
-      {title: title, subtitle1: null, data1: 0, subtitle2: amendedSubtitle, data2: 2},
-      {title: titlePlural, subtitle1: originalSubtitle, data1: 2, subtitle2: amendedSubtitlePlural, data2: 4},
-      {title: title, subtitle1: originalSubtitle, data1: 2, subtitle2: null, data2: 0},
-      {title: title, subtitle1: null, data1: 0, subtitle2: amendedSubtitle, data2: 2},
-      {title: titlePlural, subtitle1: originalSubtitle, data1: 2, subtitle2: amendedSubtitle, data2: 2},
-      {title: titlePlural, subtitle1: originalSubtitle, data1: 2, subtitle2: amendedSubtitlePlural, data2: 4},
-      {title: titlePlural, subtitle1: originalSubtitlePlural, data1: 4, subtitle2: null, data2: 0},
-      {title: titlePlural, subtitle1: null, data1: 0, subtitle2: amendedSubtitlePlural, data2: 4},
-      {title: titlePlural, subtitle1: originalSubtitlePlural, data1: 4, subtitle2: amendedSubtitlePlural, data2: 4},
-      {title: titlePlural, subtitle1: originalSubtitlePlural, data1: 4, subtitle2: null, data2: 0}
-    ]
+      { title: title, subtitle1: originalSubtitle, data1: 2, subtitle2: null, data2: 0 },
+      { title: titlePlural, subtitle1: originalSubtitle, data1: 2, subtitle2: amendedSubtitle, data2: 2 },
+      { title: title, subtitle1: null, data1: 0, subtitle2: amendedSubtitle, data2: 2 },
+      { title: titlePlural, subtitle1: originalSubtitle, data1: 2, subtitle2: amendedSubtitlePlural, data2: 4 },
+      { title: title, subtitle1: originalSubtitle, data1: 2, subtitle2: null, data2: 0 },
+      { title: title, subtitle1: null, data1: 0, subtitle2: amendedSubtitle, data2: 2 },
+      { title: titlePlural, subtitle1: originalSubtitle, data1: 2, subtitle2: amendedSubtitle, data2: 2 },
+      { title: titlePlural, subtitle1: originalSubtitle, data1: 2, subtitle2: amendedSubtitlePlural, data2: 4 },
+      { title: titlePlural, subtitle1: originalSubtitlePlural, data1: 4, subtitle2: null, data2: 0 },
+      { title: titlePlural, subtitle1: null, data1: 0, subtitle2: amendedSubtitlePlural, data2: 4 },
+      { title: titlePlural, subtitle1: originalSubtitlePlural, data1: 4, subtitle2: amendedSubtitlePlural, data2: 4 },
+      { title: titlePlural, subtitle1: originalSubtitlePlural, data1: 4, subtitle2: null, data2: 0 }
+    ];
     function sinonArrayMatcher(value: number) {
-        return sinon.match.array.and(sinon.match((array) => array.length == value))
+      return sinon.match.array.and(sinon.match((array) => array.length === value));
     }
 
     tests.forEach(function(test, index) {

@@ -1312,7 +1312,7 @@ export default class UpdateAppealService {
 
   private mapDocsWithMetadataToEvidenceArray = (docs: Collection<DocumentWithMetaData>[], documentMap: DocumentMap[]): Evidence[] => {
     return docs.map((doc: Collection<DocumentWithMetaData>): Evidence => {
-      return this.mapDocWithMetadataToEvidence(doc, documentMap)
+      return this.mapDocWithMetadataToEvidence(doc, documentMap);
     });
   }
 

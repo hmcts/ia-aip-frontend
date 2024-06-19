@@ -564,6 +564,7 @@ export default class UpdateAppealService {
       ...(_.has(caseData, 'remittalDocuments')) && { remittalDocuments },
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
       ...caseData.clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers: this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers, documentMap) },
+      ...caseData.reheardHearingDocumentsCollection && { reheardHearingDocumentsCollection: this.mapCcdReheardHearingDocsToAppeal(caseData.reheardHearingDocumentsCollection, documentMap) },
       cmaRequirements,
       hearingRequirements,
       askForMoreTime: {
@@ -1079,6 +1080,9 @@ export default class UpdateAppealService {
       ...appeal.clarifyingQuestionsAnswers && {
         clarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.clarifyingQuestionsAnswers, appeal.documentMap)
       },
+      ...appeal.reheardHearingDocumentsCollection && {
+        reheardHearingDocumentsCollection: this.mapAppealReheardHearingDocsToCcd(appeal.reheardHearingDocumentsCollection, appeal.documentMap)
+      },
       ...appeal.application.homeOfficeLetter && {
         uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
       },
@@ -1189,6 +1193,37 @@ export default class UpdateAppealService {
     });
   }
 
+  private mapCcdReheardHearingDocsToAppeal(reheardHearingDocumentsCollection: ReheardHearingDocs<Collection<DocumentWithMetaData>>[], documentMap: DocumentMap[]): ReheardHearingDocs<Evidence>[] {
+    return reheardHearingDocumentsCollection.map(doc => {
+      let evidencesList: Evidence[] = [];
+      if (doc.value.reheardHearingDocs) {
+        evidencesList = doc.value.reheardHearingDocs.map(e => this.mapDocWithMetadataToEvidence(e, documentMap));
+      }
+      return {
+        id: doc.id,
+        value: {
+          reheardHearingDocs: evidencesList
+        }
+      };
+    });
+  }
+
+  private mapAppealReheardHearingDocsToCcd(reheardHearingDocs: ReheardHearingDocs<Evidence>[], documentMap: DocumentMap[]): ReheardHearingDocs<Collection<DocumentWithMetaData>>[] {
+    const ccdCQ = reheardHearingDocs.map((answer: ReheardHearingDocs<Evidence>): ReheardHearingDocs<Collection<DocumentWithMetaData>> => {
+      let reheardHearingDocs: Collection<DocumentWithMetaData>[];
+      if (answer.value.reheardHearingDocs) {
+        reheardHearingDocs = answer.value.reheardHearingDocs.map(evidence => this.mapEvidenceToReheardHearingDocs(evidence, documentMap));
+      }
+      return {
+        ...answer,
+        value: {
+          ...answer.value,
+          ...answer.value.reheardHearingDocs && { reheardHearingDocs }
+        }
+      };
+    });
+    return ccdCQ;
+  }
   private mapAppealClarifyingQuestionsToCcd(clarifyingQuestions: ClarifyingQuestion<Evidence>[], documentMap: DocumentMap[]): ClarifyingQuestion<Collection<SupportingDocument>>[] {
     const ccdCQ = clarifyingQuestions.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
       let supportingEvidence: Collection<SupportingDocument>[];
@@ -1245,6 +1280,23 @@ export default class UpdateAppealService {
     };
   }
 
+  private mapEvidenceToReheardHearingDocs(evidence: Evidence, documentMap: DocumentMap[]): Collection<DocumentWithMetaData> {
+    const documentUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
+    return {
+      id: evidence.id,
+      value: {
+        tag: evidence.tag,
+        document: {
+          document_filename: evidence.name,
+          document_url: documentUrl,
+          document_binary_url: `${documentUrl}/binary`
+        },
+        description: evidence.description,
+        dateUploaded: evidence.dateUploaded
+      }
+    };
+  }
+
   private mapToTimeExtensionEvidenceCollection(evidences: Evidence[], appeal: Appeal): TimeExtensionEvidenceCollection[] {
     return evidences ? evidences.map((evidence) => {
       const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
@@ -1272,6 +1324,19 @@ export default class UpdateAppealService {
       };
     });
     return evidences;
+  }
+
+  private mapDocWithMetadataToEvidence = (doc: Collection<DocumentWithMetaData>, documentMap: DocumentMap[]): Evidence => {
+    const fileId = this._documentManagementService.addToDocumentMapper(doc.value.document.document_url, documentMap);
+    return {
+        fileId,
+        name: doc.value.document.document_filename,
+        ...doc.id && { id: doc.id },
+        ...doc.value.tag && { tag: doc.value.tag },
+        ...doc.value.suppliedBy && { suppliedBy: doc.value.suppliedBy },
+        ...doc.value.description && { description: doc.value.description },
+        ...doc.value.dateUploaded && { dateUploaded: doc.value.dateUploaded }
+      }
   }
 
   private mapAdditionalEvidenceToDocumentWithDescriptionArray = (docs: AdditionalEvidence[], documentMap: DocumentMap[]): Evidence[] => {

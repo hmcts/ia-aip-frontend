@@ -69,6 +69,7 @@ interface CaseData {
   submitTimeExtensionReason?: string;
   submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
   clarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
+  reheardHearingDocumentsCollection?: ReheardHearingDocs<Collection<DocumentWithMetaData>>[];
   isInterpreterServicesNeeded?: string;
   interpreterLanguage?: Collection<AdditionalLanguage>[];
   isHearingRoomNeeded?: string;

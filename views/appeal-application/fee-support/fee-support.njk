@@ -23,32 +23,37 @@
         <p>{{ question.hint | eval | safe if question.hint }}</p>
         <div class="govuk-radios" data-module="govuk-radios">
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="{{ question.options[0].value }}" name="answer" type="radio" value="{{ question.options[0].value }}">
+                <input class="govuk-radios__input" id="{{ question.options[0].value }}" name="answer" type="radio" value="{{ question.options[0].value }}"
+                       {% if question.options[0].checked %}checked{% endif %}>
                 <label class="govuk-label govuk-radios__label" for="{{ question.options[0].value }}">
                     {{ question.options[0].text | eval }}
                 </label>
             </div>
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="{{ question.options[1].value }}" name="answer" type="radio" value="{{ question.options[1].value }}">
+                <input class="govuk-radios__input" id="{{ question.options[1].value }}" name="answer" type="radio" value="{{ question.options[1].value }}"
+                       {% if question.options[1].checked %}checked{% endif %}>
                 <label class="govuk-label govuk-radios__label" for="{{ question.options[1].value }}">
                     {{ question.options[1].text | eval }}
                 </label>
             </div>
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="{{ question.options[2].value }}" name="answer" type="radio" value="{{ question.options[2].value }}">
+                <input class="govuk-radios__input" id="{{ question.options[2].value }}" name="answer" type="radio" value="{{ question.options[2].value }}"
+                       {% if question.options[2].checked %}checked{% endif %}>
                 <label class="govuk-label govuk-radios__label" for="{{ question.options[2].value }}">
                     {{ question.options[2].text | eval }}
                 </label>
             </div>
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="{{ question.options[3].value }}" name="answer" type="radio" value="{{ question.options[3].value }}">
+                <input class="govuk-radios__input" id="{{ question.options[3].value }}" name="answer" type="radio" value="{{ question.options[3].value }}"
+                       {% if question.options[3].checked %}checked{% endif %}>
                 <label class="govuk-label govuk-radios__label" for="{{ question.options[3].value }}">
                     {{ question.options[3].text | eval }}
                 </label>
             </div>
             <div class="govuk-radios__fees">or</div>
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="{{ question.options[4].value }}" name="answer" type="radio" value="{{ question.options[4].value }}">
+                <input class="govuk-radios__input" id="{{ question.options[4].value }}" name="answer" type="radio" value="{{ question.options[4].value }}"
+                       {% if question.options[4].checked %}checked{% endif %}>
                 <label class="govuk-label govuk-radios__label" for="{{ question.options[4].value }}">
                     {{ question.options[4].text | eval }}
                 </label>

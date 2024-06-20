@@ -3,15 +3,15 @@ import {
   checkAppealEnded,
   checkEnableProvideMoreEvidenceSection,
   getAppealRefNumber,
-  getApplicationOverview,
-  getHearingDetails, isPostDecisionState,
+  getAppellantName,
+  getApplicationOverview, getHearingDetails,
+  isAppealInProgress,
+  isPostDecisionState,
   setupApplicationOverviewController,
   showAppealRequestSection,
   showAppealRequestSectionInAppealEndedStatus,
   showFtpaApplicationLink,
-  showHearingRequestSection,
-  isAppealInProgress,
-  getAppellantName
+  showHearingRequestSection
 } from '../../../app/controllers/application-overview';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { States } from '../../../app/data/states';
@@ -254,7 +254,7 @@ describe('Confirmation Page Controller', () => {
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
-      appealRefNumber: "PA/12345/2025",
+      appealRefNumber: 'PA/12345/2025',
       applicationNextStep: sinon.match.any,
       history: expectedHistory,
       stages: expectedStages,
@@ -276,7 +276,6 @@ describe('Confirmation Page Controller', () => {
       isPostDecisionState: true
     });
   });
-
 
   it('getApplicationOverview should enable paymentLink in decided with ftpa enabled', async () => {
     req.idam = {
@@ -329,7 +328,7 @@ describe('Confirmation Page Controller', () => {
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
-      appealRefNumber: "PA/12345/2025",
+      appealRefNumber: 'PA/12345/2025',
       applicationNextStep: sinon.match.any,
       history: expectedHistory,
       stages: expectedStages,

@@ -6,7 +6,7 @@ import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getAppealApplicationNextStep, isPreAddendumEvidenceUploadState, transferredToUpperTribunal } from '../utils/application-state-utils';
+import { getAppealApplicationNextStep, isAddendumEvidenceUploadState, transferredToUpperTribunal } from '../utils/application-state-utils';
 import { getHearingCentre } from '../utils/cma-hearing-details';
 import { formatDate, timeFormat } from '../utils/date-utils';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
@@ -68,7 +68,7 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
     States.CMA_LISTED.id,
     States.ADJOURNED.id
   ];
-  let preAddendumEvidenceUploadState = isPreAddendumEvidenceUploadState(appealStatus);
+  let preAddendumEvidenceUploadState = isAddendumEvidenceUploadState(appealStatus);
   if (!preAddendumEvidenceUploadState) {
     return provideMoreEvidenceStates.includes(appealStatus);
   }

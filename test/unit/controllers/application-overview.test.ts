@@ -9,7 +9,9 @@ import {
   showAppealRequestSection,
   showAppealRequestSectionInAppealEndedStatus,
   showFtpaApplicationLink,
-  showHearingRequestSection
+  showHearingRequestSection,
+  isAppealInProgress,
+  getAppellantName
 } from '../../../app/controllers/application-overview';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { States } from '../../../app/data/states';
@@ -125,7 +127,8 @@ describe('Confirmation Page Controller', () => {
 
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
       .withArgs(req as Request, FEATURE_FLAGS.MAKE_APPLICATION, false).resolves(true)
-      .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(true);
+      .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(true)
+      .withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(true);
 
     next = sandbox.stub() as NextFunction;
   });
@@ -197,7 +200,155 @@ describe('Confirmation Page Controller', () => {
       ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
-      showFtpaApplicationLink: false
+      showFtpaApplicationLink: false,
+      isPostDecisionState: false
+    });
+  });
+
+  it('getApplicationOverview should render application-overview.njk with isPostDecisionState', async () => {
+    req.idam = {
+      userDetails: {
+        uid: 'anId',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer',
+        sub: 'email@test.com'
+      }
+    };
+    req.session.appeal.appealStatus = 'decided';
+    req.session.appeal.isDecisionAllowed = 'allowed';
+    req.session.appeal.appealReferenceNumber = 'PA/12345/2025';
+    req.session.appeal.finalDecisionAndReasonsDocuments = [
+      {
+        fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+        name: 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-Cover-letter-FINAL.pdf',
+        id: '1',
+        tag: 'finalDecisionAndReasonsPdf',
+        dateUploaded: '2024-02-28'
+      }
+    ];
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    const expectedStages = [{
+      title: 'Your appeal<br/> details',
+      ariaLabel: 'Your appeal details stage',
+      active: false,
+      completed: true
+    }, {
+      title: 'Your appeal<br/> argument',
+      ariaLabel: 'Your appeal argument stage',
+      active: false,
+      completed: true
+    }, {
+      title: 'Your hearing<br/> details',
+      ariaLabel: 'Your hearing details stage',
+      active: false,
+      completed: true
+    }, {
+      title: 'Your appeal<br/> decision',
+      ariaLabel: 'Your appeal decision stage',
+      active: false,
+      completed: true
+    }];
+
+    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+      name: 'Alex Developer',
+      appealRefNumber: "PA/12345/2025",
+      applicationNextStep: sinon.match.any,
+      history: expectedHistory,
+      stages: expectedStages,
+      saved: false,
+      ended: false,
+      transferredToUt: false,
+      askForMoreTimeInFlight: false,
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: true,
+      showAppealRequests: true,
+      showAppealRequestsInAppealEndedStatus: false,
+      showHearingRequests: false,
+      showPayLaterLink: false,
+      ftpaFeatureEnabled: true,
+      hearingDetails: null,
+      showChangeRepresentation: true,
+      showFtpaApplicationLink: false,
+      isPostDecisionState: true
+    });
+  });
+
+
+  it('getApplicationOverview should enable paymentLink in decided with ftpa enabled', async () => {
+    req.idam = {
+      userDetails: {
+        uid: 'anId',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer',
+        sub: 'email@test.com'
+      }
+    };
+    req.session.appeal.appealStatus = 'decided';
+    req.session.appeal.isDecisionAllowed = 'allowed';
+    req.session.appeal.appealReferenceNumber = 'PA/12345/2025';
+    req.session.appeal.application.appealType = 'protection';
+    req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+    req.session.appeal.finalDecisionAndReasonsDocuments = [
+      {
+        fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+        name: 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-Cover-letter-FINAL.pdf',
+        id: '1',
+        tag: 'finalDecisionAndReasonsPdf',
+        dateUploaded: '2024-02-28'
+      }
+    ];
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    const expectedStages = [{
+      title: 'Your appeal<br/> details',
+      ariaLabel: 'Your appeal details stage',
+      active: false,
+      completed: true
+    }, {
+      title: 'Your appeal<br/> argument',
+      ariaLabel: 'Your appeal argument stage',
+      active: false,
+      completed: true
+    }, {
+      title: 'Your hearing<br/> details',
+      ariaLabel: 'Your hearing details stage',
+      active: false,
+      completed: true
+    }, {
+      title: 'Your appeal<br/> decision',
+      ariaLabel: 'Your appeal decision stage',
+      active: false,
+      completed: true
+    }];
+
+    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+      name: 'Alex Developer',
+      appealRefNumber: "PA/12345/2025",
+      applicationNextStep: sinon.match.any,
+      history: expectedHistory,
+      stages: expectedStages,
+      saved: false,
+      ended: false,
+      transferredToUt: false,
+      askForMoreTimeInFlight: false,
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: true,
+      showAppealRequests: true,
+      showAppealRequestsInAppealEndedStatus: false,
+      showHearingRequests: false,
+      showPayLaterLink: true,
+      ftpaFeatureEnabled: true,
+      hearingDetails: null,
+      showChangeRepresentation: true,
+      showFtpaApplicationLink: false,
+      isPostDecisionState: true
     });
   });
 
@@ -257,7 +408,8 @@ describe('Confirmation Page Controller', () => {
       ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
-      showFtpaApplicationLink: false
+      showFtpaApplicationLink: false,
+      isPostDecisionState: false
     });
   });
 
@@ -318,7 +470,8 @@ describe('Confirmation Page Controller', () => {
       ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
-      showFtpaApplicationLink: false
+      showFtpaApplicationLink: false,
+      isPostDecisionState: false
     });
   });
 
@@ -392,11 +545,12 @@ describe('Confirmation Page Controller', () => {
       ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
-      showFtpaApplicationLink: false
+      showFtpaApplicationLink: false,
+      isPostDecisionState: false
     });
   });
 
-  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and entered name @justthis', async () => {
+  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and entered name', async () => {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -467,7 +621,8 @@ describe('Confirmation Page Controller', () => {
       ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
-      showFtpaApplicationLink: false
+      showFtpaApplicationLink: false,
+      isPostDecisionState: false
     });
   });
 
@@ -681,5 +836,143 @@ describe('Confirmation Page Controller', () => {
     };
     const result = showFtpaApplicationLink(appeal, true);
     expect(result).to.equal(false);
+  });
+
+  it('getAppealRefNumber should return null for DRAFT reference', () => {
+    const result = getAppealRefNumber('DRAFT');
+    expect(result).to.be.null;
+  });
+
+  it('getAppealRefNumber should return the appeal reference number', () => {
+    const result = getAppealRefNumber('PA12345');
+    expect(result).to.equal('PA12345');
+  });
+
+  it('checkAppealEnded should return true for ENDED status', () => {
+    const result = checkAppealEnded('ENDED');
+    expect(result).to.be.true;
+  });
+
+  it('checkAppealEnded should return false for non-ENDED status', () => {
+    const result = checkAppealEnded('SUBMITTED');
+    expect(result).to.be.false;
+  });
+
+  it('getAppellantName should return name from session appeal details', () => {
+    req.session.appeal.application.personalDetails.givenNames = 'John';
+    req.session.appeal.application.personalDetails.familyName = 'Doe';
+    const result = getAppellantName(req);
+    expect(result).to.equal('John Doe');
+  });
+
+  it('getAppellantName should return name from idam userDetails', () => {
+    req.idam.userDetails.name = 'ATest User';
+    const result = getAppellantName(req);
+    expect(result).to.equal('ATest User');
+  });
+
+  it('getHearingDetails should return null if no hearing details', () => {
+    const result = getHearingDetails(req);
+    expect(result).to.be.null;
+  });
+
+  it('getHearingDetails should return hearing details if present', () => {
+    req.session.appeal['hearing'] = { date: '2022-10-10' };
+    const result = getHearingDetails(req);
+    expect(result).to.deep.equal({
+      hearingCentre: '',
+      time: '12:00 am',
+      date: '10 October 2022'
+    });
+  });
+
+  it('checkEnableProvideMoreEvidenceSection should return true if state is pre-addendum and feature is enabled', () => {
+    const result = checkEnableProvideMoreEvidenceSection(States.RESPONDENT_REVIEW.id, true);
+    expect(result).to.be.true;
+  });
+
+  it('checkEnableProvideMoreEvidenceSection should return false if state is not in list and feature is not enabled', () => {
+    const result = checkEnableProvideMoreEvidenceSection(States.AWAITING_RESPONDENT_EVIDENCE.id, false);
+    expect(result).to.be.false;
+  });
+
+  it('showAppealRequestSection should return true if feature enabled and state is in list', () => {
+    const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, true);
+    expect(result).to.be.true;
+  });
+
+  it('showAppealRequestSection should return false if feature not enabled', () => {
+    const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, false);
+    expect(result).to.be.false;
+  });
+
+  it('showAppealRequestSectionInAppealEndedStatus should return true if feature enabled and appeal ended', () => {
+    const result = showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, true);
+    expect(result).to.be.true;
+  });
+
+  it('showAppealRequestSectionInAppealEndedStatus should return false if feature not enabled', () => {
+    const result = showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, false);
+    expect(result).to.be.false;
+  });
+
+  it('showHearingRequestSection should return true if feature enabled and state is in list', () => {
+    const result = showHearingRequestSection(States.PREPARE_FOR_HEARING.id, true);
+    expect(result).to.be.true;
+  });
+
+  it('showHearingRequestSection should return false if feature not enabled', () => {
+    const result = showHearingRequestSection(States.PREPARE_FOR_HEARING.id, false);
+    expect(result).to.be.false;
+  });
+
+  it('isAppealInProgress should return true if appeal is in progress', () => {
+    const result = isAppealInProgress(States.APPEAL_SUBMITTED.id);
+    expect(result).to.be.true;
+  });
+
+  it('isAppealInProgress should return false if appeal is not in progress', () => {
+    const result = isAppealInProgress(States.APPEAL_STARTED.id);
+    expect(result).to.be.false;
+  });
+
+  it('showFtpaApplicationLink should return false when appellant ftpa appeal is submitted', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.FTPA_SUBMITTED.id,
+      ftpaAppellantApplicationDate: '2020-01-01'
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(false);
+  });
+
+  it('showFtpaApplicationLink should return false when appellant ftpa appeal is decided', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.FTPA_DECIDED.id,
+      ftpaAppellantApplicationDate: '2020-01-01'
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(false);
+  });
+
+  it('showFtpaApplicationLink should return true when respondent ftpa appeal is submitted', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.FTPA_SUBMITTED.id,
+      ftpaRespondentApplicationDate: '2020-01-01'
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(true);
+  });
+
+  it('showFtpaApplicationLink should return true when respondent ftpa appeal is decided', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.FTPA_DECIDED.id,
+      ftpaRespondentApplicationDate: '2020-01-01'
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(true);
   });
 });

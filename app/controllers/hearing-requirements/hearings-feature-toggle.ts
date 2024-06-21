@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { hearingBundleFeatureMiddleware, hearingRequirementsMiddleware } from '../../middleware/hearing-requirements-middleware';
 import { paths } from '../../paths';
-import { getDecisionAndReasonsViewer, getHearingNoticeViewer } from '../detail-viewers';
+import { getDecisionAndReasonsViewer, getHearingAdjournmentNoticeViewer, getHearingNoticeViewer } from '../detail-viewers';
 import { getCheckAndSendPage } from './check-and-send';
 import { getHearingRequirementsConfirmationPage } from './confirmation-page';
 import { getAddAnotherDateQuestionPage } from './dates-to-avoid/add-another-date';
@@ -77,6 +77,7 @@ function setupHearingBundleFeatureToggleController(middleware: Middleware[]): Ro
   const router = Router();
   router.get(paths.common.hearingNoticeViewer,middleware,hearingBundleFeatureMiddleware,getHearingNoticeViewer);
   router.get(paths.common.decisionAndReasonsViewer,middleware,hearingBundleFeatureMiddleware,getDecisionAndReasonsViewer);
+  router.get(paths.common.hearingAdjournmentNoticeViewer,middleware,hearingBundleFeatureMiddleware,getHearingAdjournmentNoticeViewer);
 
   return router;
 }

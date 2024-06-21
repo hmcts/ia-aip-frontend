@@ -24,3 +24,6 @@ ia-aip-frontend.iml
 /test/java/.gradle/
 /test/java/lib/
 /test/java/Fortify Scan/
+keys/
+keys/server.key
+keys/server.cert

@@ -352,17 +352,9 @@ function gwfReferenceNumberValidation(obj: object): null | ValidationErrors {
    * Validates the Global Web Form (GWF) reference number
    * GWF reference has the format of GWF12345678
    */
-  const postcodeRegex = new RegExp(
-      '^([Gg][Ii][Rr] 0[Aa]{2})|'
-      + '((([A-Za-z][0-9]{1,2})|'
-      + '(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|'
-      + '(([A-Za-z][0-9][A-Za-z])|'
-      + '([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))'
-      + ' [0-9][A-Za-z]{2})$'
-  );
-  const schema = Joi.object({
 
-    gwfReferenceNumber: Joi.string().required().regex(postcodeRegex).messages({
+  const schema = Joi.object({
+    gwfReferenceNumber: Joi.string().required().regex(/^[a-zA-Z]+\d{8}/).messages({
       'string.empty': i18n.validationErrors.gwfReference.required,
       'string.pattern.base': i18n.validationErrors.gwfReference.invalid
     })

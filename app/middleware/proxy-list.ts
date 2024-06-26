@@ -8,7 +8,10 @@ export const proxyList: {
   path: (req: Request) => string;
 }[] = [
   {
-    endpoints: (req: Request) => [`/downloads/${req.params.documentId}`],
+    endpoints: (req: Request) => {
+      const path = `/downloads/${req.params.documentId}`;
+      return path ? [path] : ['/'];
+    },
     path: (req: Request): string => findDocumentAndGetPath(req, req.params.documentId)
   }
 
@@ -16,18 +19,10 @@ export const proxyList: {
 
 const findDocumentAndGetPath = (req: Request, documentId: string): string => {
   log.info('Request is ' + req + ' and params are ' + req.params);
-  return `/view/document/${documentId}`;
+  const document = req.session.appeal.documentMap?.find(doc => doc.id === documentId);
+  if (!document) {
+    throw new Error(`Document with id ${documentId} not found`);
+  }
+  log.info(`Downloading document(url=${document.url})`);
+  return document.url;
 };
-
-// const findDocumentAndGetPath = (req: Request, documentId: string): string => {
-//     return getPath(
-//         req,
-//         req.session.userCase?.documentsGenerated?.find(doc => doc.value.documentId === documentId)?.value
-//     );
-// };
-
-// const getPath = (req: Request): string => {
-//     const path = document?.documentLink.document_binary_url.replace(/.*documents/, '/cases/documents') as string;
-//     req.locals.logger.info(`downloading document(url=${path})`);
-//     return path;
-// };

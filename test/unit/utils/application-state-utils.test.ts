@@ -161,7 +161,6 @@ describe('application-state-utils', () => {
     it('when application status is appealSubmitted should get correct \'Do This next section\'', async () => {
       req.session.appeal.appealStatus = 'appealSubmitted';
       const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({

@@ -13,19 +13,19 @@ export class DocumentDownloadMiddleware {
       app.use(
                 log.info('Entered the documentdownloadmiddleware class for request'),
                 downloadProxy.endpoints,
-                proxy(config.get('CASE_DOCUMENT_AM_URL'), {
+                proxy(config.get('cdamDocumentManagement.apiUrl'), {
                   proxyReqPathResolver: downloadProxy.path,
                   // proxyReqOptDecorator: this.addCdamHeaders,
                   secure: false,
                   changeOrigin: true,
                   proxyErrorHandler: (err, res, next) => {
                     if (err instanceof UserNotLoggedInError) {
-                      return res.redirect(); // TIMED_OUT_URL to be defined later
+                      return res.redirect('/login');
                     } else if (err.status === 401) {
-                      return res.redirect(); // TIMED_OUT_URL to be defined later
+                      return res.redirect(); // TODO: define path to redirect to
                     } else if (err.code === 'ECONNRESET') {
                       log.info('Connection reset by peer. URL: ' + res.req.path);
-                      return res.redirect(); // TIMED_OUT_URL to be defined later
+                      return res.redirect(); // TODO: define path to redirect to
                     }
                     next(err);
                   }
@@ -34,19 +34,19 @@ export class DocumentDownloadMiddleware {
     }
   }
 
-    // addCdamHeaders(
-    //     proxyReqOpts: { headers: Record<string, unknown> },
-    //     userReq: Request
-    // ): { headers: Record<string, unknown> } {
-    //     if (!userReq.session.user) {
-    //         throw new UserNotLoggedInError();
-    //     }
-    //
-    //     proxyReqOpts.headers['ServiceAuthorization'] = getServiceAuthToken();
-    //     proxyReqOpts.headers['Authorization'] = `Bearer ${userReq.session.user.accessToken}`;
-    //     proxyReqOpts.headers['user-roles'] = userReq.session.user.roles.join(',');
-    //     return proxyReqOpts;
-    // }
+// addCdamHeaders(
+//     proxyReqOpts: { headers: Record<string, unknown> },
+//     req: Request
+// ): { headers: Record<string, unknown> } {
+//     if (!req.session.user) {
+//         throw new UserNotLoggedInError();
+//     }
+//
+//     proxyReqOpts.headers['ServiceAuthorization'] = this.authenticationService.getSecurityHeaders(req);
+//     proxyReqOpts.headers['Authorization'] = `Bearer ${req.session.user.accessToken}`;
+//     proxyReqOpts.headers['user-roles'] = 'citizen';
+//     return proxyReqOpts;
+// }
 }
 
 class UserNotLoggedInError extends Error {

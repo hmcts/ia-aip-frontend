@@ -13,7 +13,7 @@ export class DocumentDownloadMiddleware {
       app.use(
                 log.info('Entered the documentdownloadmiddleware class for request'),
                 downloadProxy.endpoints,
-                proxy(config.get('services.caseDocumentManagement.url'), {
+                proxy(config.get('CASE_DOCUMENT_AM_URL'), {
                   proxyReqPathResolver: downloadProxy.path,
                   // proxyReqOptDecorator: this.addCdamHeaders,
                   secure: false,

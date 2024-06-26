@@ -59,6 +59,7 @@
     "dyson": "^3.0.4",
     "expect-ct": "^0.3.0",
     "express": "^4.19.2",
+    "express-http-proxy": "^2.0.0",
     "express-session": "^1.16.2",
     "google-libphonenumber": "^3.2.21",
     "govuk-frontend": "^4.7.0",

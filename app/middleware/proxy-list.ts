@@ -19,7 +19,8 @@ export const proxyList: {
 
 const findDocumentAndGetPath = (req: Request, documentId: string): string => {
   log.info('Request is ' + req + ' and params are ' + req.params);
-  const document = req.session.appeal.documentMap?.find(doc => doc.id === documentId);
+  const documentMap = req.session.appeal && req.session.appeal.documentMap;
+  const document = documentMap ? documentMap.find(doc => doc.id === documentId) : undefined;
   if (!document) {
     throw new Error(`Document with id ${documentId} not found`);
   }

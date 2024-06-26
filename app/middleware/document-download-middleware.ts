@@ -12,7 +12,7 @@ export class DocumentDownloadMiddleware {
     for (const downloadProxy of proxyList) {
       app.use(
                 log.info('Entered the documentdownloadmiddleware class for request'),
-                downloadProxy.endpoints,
+                downloadProxy.endpoint,
                 proxy(config.get('cdamDocumentManagement.apiUrl'), {
                   proxyReqPathResolver: downloadProxy.path,
                   // proxyReqOptDecorator: this.addCdamHeaders,

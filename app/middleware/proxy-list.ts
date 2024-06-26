@@ -4,13 +4,14 @@ import { Request } from 'express';
 const log = Logger.getLogger('proxy-list');
 
 export const proxyList: {
-  endpoints: (req: Request) => string[];
+  endpoint: (req: Request) => string;
   path: (req: Request) => string;
 }[] = [
   {
-    endpoints: (req: Request) => {
+    endpoint: (req: Request) => {
       const path = `/downloads/${req.params.documentId}`;
-      return [path || '/'];
+      log.info('The path value is ' + path);
+      return path || '/';
     },
     path: (req: Request): string => findDocumentAndGetPath(req, req.params.documentId)
   }

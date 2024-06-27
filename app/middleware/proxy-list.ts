@@ -12,7 +12,10 @@ export const proxyList: {
       log.info('The request is ' + req);
       return req.params.documentId ? `/downloads/${req.params.documentId}` : '/';
     },
-    path: (req: Request): string => findDocumentAndGetPath(req, req.params.documentId)
+    path: (req: Request): string => {
+      const documentId = req.params && req.params.documentId;
+      return documentId ? findDocumentAndGetPath(req, req.params.documentId) : '/';
+    }
   }
 
 ];
@@ -21,9 +24,6 @@ const findDocumentAndGetPath = (req: Request, documentId: string): string => {
   log.info('Request is ' + req + ' and params are ' + req.params);
   const documentMap = req.session.appeal && req.session.appeal.documentMap;
   const document = documentMap ? documentMap.find(doc => doc.id === documentId) : undefined;
-  if (!document) {
-    throw new Error(`Document with id ${documentId} not found`);
-  }
   log.info(`Downloading document(url=${document.url})`);
   return document.url;
 };

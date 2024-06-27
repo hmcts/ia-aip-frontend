@@ -9,9 +9,7 @@ export const proxyList: {
 }[] = [
   {
     endpoint: (req: Request) => {
-      const path = `/downloads/${req.params.documentId}`;
-      log.info('The path value is ' + path);
-      return path || '/';
+      return req.params?.documentId ? `/downloads/${req.params.documentId}` : '/';
     },
     path: (req: Request): string => findDocumentAndGetPath(req, req.params.documentId)
   }

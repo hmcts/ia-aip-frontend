@@ -9,12 +9,12 @@ const proxy = require('express-http-proxy');
 
 export class DocumentDownloadMiddleware {
   public enableFor(app: Application): void {
-    for (const downloadProxy of proxyList) {
-      app.use(
+    app.use(
                 log.info('Entered the documentdownloadmiddleware class for request'),
-                downloadProxy.endpoint,
+                proxyList.endpoint,
+                log.info('Finished getting the proxyList endpoint'),
                 proxy(config.get('cdamDocumentManagement.apiUrl'), {
-                  proxyReqPathResolver: downloadProxy.path,
+                  proxyReqPathResolver: proxyList.path,
                   // proxyReqOptDecorator: this.addCdamHeaders,
                   secure: false,
                   changeOrigin: true,
@@ -22,16 +22,15 @@ export class DocumentDownloadMiddleware {
                     if (err instanceof UserNotLoggedInError) {
                       return res.redirect('/login');
                     } else if (err.status === 401) {
-                      return res.redirect(); // TODO: define path to redirect to
+                      return res.redirect('/login'); // TODO: define path to redirect to
                     } else if (err.code === 'ECONNRESET') {
                       log.info('Connection reset by peer. URL: ' + res.req.path);
-                      return res.redirect(); // TODO: define path to redirect to
+                      return res.redirect('/login'); // TODO: define path to redirect to
                     }
                     next(err);
                   }
                 })
             );
-    }
   }
 
 // addCdamHeaders(

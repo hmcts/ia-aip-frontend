@@ -10,12 +10,6 @@ const proxy = require('express-http-proxy');
 export class DocumentDownloadMiddleware {
   public enableFor(app: Application): void {
     app.use(
-                log.info('Entered the documentdownloadmiddleware class for request'),
-                log.info('proxyList object is ' + JSON.stringify(proxyList)),
-                log.info('proxyList.endpoint is ' + proxyList.endpoint),
-                log.info('Finished getting the proxyList endpoint'),
-                log.info('proxyList.path is ' + proxyList.path),
-                log.info('Finished getting the proxyList path'),
                 proxyList.endpoint,
                 proxy(config.get('cdamDocumentManagement.apiUrl'), {
                   proxyReqPathResolver: proxyList.path,

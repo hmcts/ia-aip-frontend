@@ -9,8 +9,14 @@ const proxy = require('express-http-proxy');
 
 export class DocumentDownloadMiddleware {
   public enableFor(app: Application): void {
+    log.info('Entering DocumentDownloadMiddleware');
     app.use(
                 proxyList.endpoint,
+                (req, res, next) => {
+                  log.info(`DocumentDownloadMiddleware Request URL: ${req.url},
+                    Headers: ${JSON.stringify(req.headers)}`);
+                  next();
+                },
                 proxy(config.get('cdamDocumentManagement.apiUrl'), {
                   proxyReqPathResolver: proxyList.path,
                   // proxyReqOptDecorator: this.addCdamHeaders,

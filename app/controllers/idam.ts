@@ -23,7 +23,7 @@ function getLogout(req: Request, res: Response, next: NextFunction) {
 
 function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
   try {
-    const redirectTo: String = req.session.redirectUrl || paths.common.overview;
+    const redirectTo: string = req.session.redirectUrl || paths.common.overview;
     req.session.redirectUrl = undefined;
     const validRedirectDomains = ['service.gov.uk', 'platform.hmcts.net'];
     if (redirectTo.includes(validRedirectDomains[0]) || redirectTo.includes(validRedirectDomains[1])) {

@@ -25,12 +25,11 @@ function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
   try {
     const redirectTo: String = req.session.redirectUrl || paths.common.overview;
     req.session.redirectUrl = undefined;
-    const validRedirectDomains = ["service.gov.uk", "platform.hmcts.net"]
-    if (redirectTo.includes(validRedirectDomains[0]) || redirectTo.includes(validRedirectDomains[1]))
-    {
+    const validRedirectDomains = ['service.gov.uk', 'platform.hmcts.net'];
+    if (redirectTo.includes(validRedirectDomains[0]) || redirectTo.includes(validRedirectDomains[1])) {
       res.redirect(redirectTo);
     } else {
-      throw Error("Redirect URL is not in a valid domain");
+      throw Error('Redirect URL is not in a valid domain.');
     }
   } catch (e) {
     next(e);

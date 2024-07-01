@@ -21,16 +21,23 @@ function getLogout(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function isValidUrl(urlString: string): boolean {
+  try {
+    const parsedUrl = new URL(urlString);
+    return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+  } catch (error) {
+    return false;
+  }
+}
+
 function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
   try {
-    const redirectTo: string = req.session.redirectUrl || paths.common.overview;
-    req.session.redirectUrl = undefined;
-    const validRedirectDomains = ['service.gov.uk', 'platform.hmcts.net'];
-    if (redirectTo.includes(validRedirectDomains[0]) || redirectTo.includes(validRedirectDomains[1])) {
-      res.redirect(redirectTo);
-    } else {
-      throw Error('Redirect URL is not in a valid domain.');
+    let redirectTo = req.session.redirectUrl || paths.common.overview;
+    if (!isValidUrl(redirectTo)) {
+      redirectTo = paths.common.overview;
     }
+    req.session.redirectUrl = undefined;
+    res.redirect(redirectTo);
   } catch (e) {
     next(e);
   }

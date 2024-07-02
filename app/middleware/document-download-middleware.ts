@@ -9,11 +9,11 @@ const proxy = require('express-http-proxy');
 
 export class DocumentDownloadMiddleware {
   public enableFor(app: Application): void {
-    log.info('Entering DocumentDownloadMiddleware with proxy endpoint '
-        + proxyList.endpoint + ' and proxy path ' + proxyList.path);
     app.use(
                 proxyList.endpoint,
                 (req, res, next) => {
+                  log.info('Entering DocumentDownloadMiddleware with proxy endpoint '
+                      + proxyList.endpoint(req) + ' and proxy path ' + proxyList.path(req));
                   log.info(`DocumentDownloadMiddleware Request URL: ${req.url},
                     Headers: ${JSON.stringify(req.headers)}`);
                   next();

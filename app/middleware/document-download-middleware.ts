@@ -9,6 +9,7 @@ const proxy = require('express-http-proxy');
 
 export class DocumentDownloadMiddleware {
   public enableFor(app: Application): void {
+    log.info('Before app.use in DocumentDownloadMiddleware');
     app.use(
                 proxyList.endpoint,
                 (req, res, next) => {

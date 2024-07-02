@@ -1,12 +1,13 @@
 import { Request } from 'express';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
+import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import {
   getAppealApplicationNextStep,
   getAppealStatus,
   getMoveAppealOfflineDate,
-  getMoveAppealOfflineReason
+  getMoveAppealOfflineReason, isAddendumEvidenceUploadState
 } from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
@@ -1727,5 +1728,21 @@ describe('application-state-utils', () => {
     };
 
     expect(result).to.eql(expected);
+  });
+
+  it('isAddendumEvidenceUploadState', async () => {
+    const disabledFlag = 'preHearingOutOfCountryFeatureDisabled';
+    expect(isAddendumEvidenceUploadState(disabledFlag)).to.be.true;
+    const enabledFlag = 'appealSubmitted';
+    expect(isAddendumEvidenceUploadState(enabledFlag)).to.be.false;
+    for (const state in States) {
+      const stateId = States[state].id;
+      if ([States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id,
+        States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id].includes(stateId)) {
+        expect(isAddendumEvidenceUploadState(stateId)).to.be.true;
+      } else {
+        expect(isAddendumEvidenceUploadState(stateId)).to.be.false;
+      }
+    }
   });
 });

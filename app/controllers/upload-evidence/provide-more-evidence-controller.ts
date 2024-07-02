@@ -8,7 +8,7 @@ import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { isPreAddendumEvidenceUploadState } from '../../utils/application-state-utils';
+import { isAddendumEvidenceUploadState } from '../../utils/application-state-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
@@ -37,7 +37,7 @@ function getProvideMoreEvidence(req: Request, res: Response, next: NextFunction)
       continueCancelButtons: true,
       redirectTo: paths.common.provideMoreEvidenceCheck
     };
-    if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
+    if (isAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
       content.evidences = req.session.appeal.addendumEvidence;
       content.redirectTo = paths.common.whyEvidenceLate;
     }
@@ -138,7 +138,7 @@ function uploadProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
     if (!req.file) {
       return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
     }
-    return (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)
+    return (isAddendumEvidenceUploadState(req.session.appeal.appealStatus)
       ? uploadAddendumEvidence(req, res, documentManagementService)
       : uploadAdditionalEvidence(req, res, documentManagementService)).catch(e => next(e));
   };
@@ -146,7 +146,7 @@ function uploadProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
 
 function postProvideMoreEvidenceCheckAndSend(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
+    if (isAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
       return postAddendumEvidence(req, res, updateAppealService).catch(e => next(e));
     } else {
       return postAdditionalEvidence(req, res, updateAppealService).catch(e => next(e));
@@ -157,7 +157,7 @@ function postProvideMoreEvidenceCheckAndSend(updateAppealService: UpdateAppealSe
 function deleteProvideMoreEvidence(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (req.query.id) {
-      if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
+      if (isAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
         return deleteAddendumEvidence(req, res, documentManagementService).catch(e => next(e));
       } else {
         return deleteAdditionalEvidence(req, res, documentManagementService).catch(e => next(e));
@@ -169,7 +169,7 @@ function deleteProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
 
 function getProvideMoreEvidenceCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-    if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
+    if (isAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
       return getProvideAddendumEvidenceCheckAndSend(req, res);
     } else {
       return getProvideAdditionalEvidenceCheckAndSend(req, res);
@@ -181,7 +181,7 @@ function getProvideMoreEvidenceCheckAndSend(req: Request, res: Response, next: N
 
 function getConfirmation(req: Request, res: Response, next: NextFunction) {
   try {
-    if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
+    if (isAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
       return res.render('templates/confirmation-page.njk', {
         title: i18n.pages.provideMoreEvidence.confirmation.title,
         whatNextContent: i18n.pages.provideMoreEvidence.confirmation.whatNextContent

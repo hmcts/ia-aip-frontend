@@ -2,8 +2,6 @@ import { Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
 import { Application } from 'express';
 
-import { proxyList } from './proxy-list';
-
 const log = Logger.getLogger('document-download');
 const proxy = require('express-http-proxy');
 
@@ -11,18 +9,17 @@ export class DocumentDownloadMiddleware {
   public enableFor(app: Application): void {
     log.info('Before app.use in DocumentDownloadMiddleware');
     app.use(
-         (req, res, next) => {
-           log.info(
-                    'Entering DocumentDownloadMiddleware with proxy endpoint ' +
-                    proxyList.endpoint(req) + ' and proxy path ' + proxyList.path(req)
-                );
-           log.info(
-                    `DocumentDownloadMiddleware Request URL: ${req.url}, Headers: ${JSON.stringify(req.headers)}`
-                );
-           next();
-         },
             proxy(config.get('cdamDocumentManagement.apiUrl'), {
-              proxyReqPathResolver: (req) => proxyList.path(req),
+              proxyReqPathResolver: (req) => {
+                if (req.params && req.params.documentId) {
+                  const documentPath = `/view/document/${req.params.documentId}`;
+                  log.info(`Proxy request path resolved: ${documentPath}`);
+                  return documentPath;
+                } else {
+                  log.error('documentId parameter is not present in the request');
+                  return '/default/path';
+                }
+              },
                 // proxyReqOptDecorator: this.addCdamHeaders,
               secure: false,
               changeOrigin: true,

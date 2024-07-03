@@ -8,34 +8,34 @@ const proxy = require('express-http-proxy');
 export class DocumentDownloadMiddleware {
   public enableFor(app: Application): void {
     log.info('Before app.use in DocumentDownloadMiddleware');
-    app.use(
-            proxy(config.get('cdamDocumentManagement.apiUrl'), {
-              proxyReqPathResolver: (req) => {
-                if (req.params && req.params.documentId) {
-                  const documentPath = `/downloads/${req.params.documentId}`;
-                  log.info(`Proxy request path resolved: ${documentPath}`);
-                  return documentPath;
-                } else {
-                  log.error('documentId parameter is not present in the request');
-                  return '';
-                }
-              },
-                // proxyReqOptDecorator: this.addCdamHeaders,
-              secure: false,
-              changeOrigin: true,
-              proxyErrorHandler: (err, res, next) => {
-                if (err instanceof UserNotLoggedInError) {
-                  return res.redirect('/login');
-                } else if (err.status === 401) {
-                  return res.redirect('/login'); // TODO: define path to redirect to
-                } else if (err.code === 'ECONNRESET') {
-                  log.info('Connection reset by peer. URL: ' + res.req.path);
-                  return res.redirect('/login'); // TODO: define path to redirect to
-                }
-                next(err);
-              }
-            })
-        );
+
+    app.use((req, res, next) => {
+      if (req.path.startsWith('/downloads/')) {
+        return proxy(config.get('cdamDocumentManagement.apiUrl'), {
+          proxyReqPathResolver: (req) => {
+            if (req.params && req.params.documentId) {
+              const documentPath = `/downloads/${req.params.documentId}`;
+              log.info(`Proxy request path resolved: ${documentPath}`);
+              return documentPath;
+            } else {
+              log.error('documentId parameter is not present in the request');
+              return '';
+            }
+          },
+          // proxyReqOptDecorator: this.addCdamHeaders,
+          secure: false,
+          changeOrigin: true,
+          proxyErrorHandler: (err, _req, res, next) => {
+            if (err instanceof UserNotLoggedInError || err.status === 401 || err.code === 'ECONNRESET') {
+              return res.redirect('/login');
+            }
+            next(err);
+          }
+        })(req, res, next);
+      } else {
+        next();
+      }
+    });
   }
 }
 

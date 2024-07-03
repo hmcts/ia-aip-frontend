@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import fs from 'graceful-fs';
 import https from 'https';
 import { createApp } from './app';
@@ -14,6 +14,8 @@ const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
 new DocumentDownloadMiddleware().enableFor(app);
+app.use(express.json() as RequestHandler);
+app.use(express.urlencoded({ extended: false }) as RequestHandler);
 
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   https.createServer({

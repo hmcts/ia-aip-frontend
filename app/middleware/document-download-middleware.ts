@@ -17,7 +17,7 @@ export class DocumentDownloadMiddleware {
                   return documentPath;
                 } else {
                   log.error('documentId parameter is not present in the request');
-                  return '/default/path';
+                  return '';
                 }
               },
                 // proxyReqOptDecorator: this.addCdamHeaders,

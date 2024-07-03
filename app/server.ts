@@ -13,10 +13,6 @@ const port: number | string = process.env.PORT || 3000;
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
-new DocumentDownloadMiddleware().enableFor(app);
-app.use(express.json() as RequestHandler);
-app.use(express.urlencoded({ extended: false }) as RequestHandler);
-
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   https.createServer({
     key: fs.readFileSync('keys/server.key'),

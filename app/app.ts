@@ -10,6 +10,7 @@ import internationalization from '../locale/en.json';
 import webpackDevConfig from '../webpack/webpack.dev.js';
 import { configureIdam, configureLogger, configureNunjucks, configureS2S } from './app-config';
 import { pageNotFoundHandler, serverErrorHandler } from './handlers/error-handler';
+import { DocumentDownloadMiddleware } from './middleware/document-download-middleware';
 import { handleFileUploadErrors, uploadConfiguration } from './middleware/file-upload-validation-middleware';
 import { isUserAuthenticated } from './middleware/is-user-authenticated';
 import { logErrorMiddleware, logRequestMiddleware } from './middleware/logger';
@@ -53,6 +54,9 @@ function createApp() {
   app.use(csurf());
   app.post('*', uploadConfiguration, handleFileUploadErrors);
   app.post('*', filterRequest);
+
+  const documentDownloadMiddleware = new DocumentDownloadMiddleware();
+  documentDownloadMiddleware.enableFor(app);
 
   if (environment === 'development' || environment === 'test') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;

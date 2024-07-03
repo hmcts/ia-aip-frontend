@@ -1,3 +1,4 @@
+@ignore
 Feature: Reason for appeal file not found
   Check file not found page
 

@@ -156,7 +156,11 @@ describe('application-state-utils', () => {
     });
 
     it('when application status is appealSubmitted should get correct \'Do This next section\'', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
+      req.session.appeal.application.remissionOption = null;
+
       req.session.appeal.appealStatus = 'appealSubmitted';
+
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
@@ -168,9 +172,33 @@ describe('application-state-utils', () => {
         ],
         info: {
           title: 'Helpful Information',
-          url: "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+          url: '<a class=\'govuk-link\' href=\'{{ paths.common.tribunalCaseworker }}\'>What is a Tribunal Caseworker?</a>'
         },
         allowedAskForMoreTime: false
+      });
+    });
+
+    it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
+      req.session.appeal.application.remissionOption = null;
+
+      req.session.appeal.appealStatus = 'lateAppealSubmitted';
+      req.session.appeal.application.isAppealLate = true;
+
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        allowedAskForMoreTime: false,
+        cta: null,
+        deadline: '13 February 2020',
+        descriptionParagraphs: [
+          'Your late appeal details have been sent to the Tribunal.',
+          'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+        ],
+        'info': {
+          'title': 'Helpful Information',
+          'url': '<a class=\'govuk-link\' href=\'{{ paths.common.tribunalCaseworker }}\'>What is a Tribunal Caseworker?</a>'
+        }
       });
     });
 
@@ -253,7 +281,7 @@ describe('application-state-utils', () => {
         ],
         info: {
           title: 'Helpful Information',
-          url: "<a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          url: '<a class=\'govuk-link\' href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
         },
         allowedAskForMoreTime: false
       });
@@ -286,29 +314,9 @@ describe('application-state-utils', () => {
         ],
         info: {
           title: 'Helpful Information',
-          url: "<a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          url: '<a class=\'govuk-link\' href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
         },
         allowedAskForMoreTime: false
-      });
-    });
-
-    it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', async () => {
-      req.session.appeal.appealStatus = 'lateAppealSubmitted';
-      req.session.appeal.application.isAppealLate = true;
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      expect(result).to.eql({
-        'allowedAskForMoreTime': false,
-        'cta': null,
-        'deadline': '13 February 2020',
-        'descriptionParagraphs': [
-          'Your late appeal details have been sent to the Tribunal.',
-          "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
-        ],
-        'info': {
-          'title': 'Helpful Information',
-          'url': "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
-        }
       });
     });
 
@@ -336,13 +344,14 @@ describe('application-state-utils', () => {
     });
 
     it('when application status is awaitingRespondentEvidence should get correct \'Do This next section\'', async () => {
+      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
       req.session.appeal.appealStatus = 'awaitingRespondentEvidence';
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         'allowedAskForMoreTime': false,
         'cta': null,
-        'deadline': '13 February 2020',
+        'deadline': dlrmFeeRemissionFlag ? '22 February 2020' : '13 February 2020',
         'descriptionParagraphs': [
           i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
           i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
@@ -369,7 +378,7 @@ describe('application-state-utils', () => {
         },
         'deadline': 'TBC',
         'descriptionParagraphs': [
-          "Your appeal cannot continue. Read the <a href='{{ paths.common.outOfTimeDecisionViewer }}'>reasons for this decision</a>.",
+          'Your appeal cannot continue. Read the <a href=\'{{ paths.common.outOfTimeDecisionViewer }}\'>reasons for this decision</a>.',
           'If you do not contact the Tribunal within 14 days of the decision, a Tribunal Caseworker will end the appeal.'
         ]
       });
@@ -570,11 +579,11 @@ describe('application-state-utils', () => {
             ],
             info: {
               title: 'Helpful Information',
-              url: "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+              url: '<a href=\'{{ paths.common.homeOfficeDocuments }}\'>Understanding your Home Office documents</a>'
             },
             usefulDocuments: {
               title: 'Useful documents',
-              url: "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
+              url: '<a href=\'{{ paths.common.homeOfficeDocumentsViewer }}\'>Home Office documents about your case</a>'
             },
             allowedAskForMoreTime: true
           }
@@ -606,11 +615,11 @@ describe('application-state-utils', () => {
             ],
             info: {
               title: 'Helpful Information',
-              url: "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+              url: '<a href=\'{{ paths.common.homeOfficeDocuments }}\'>Understanding your Home Office documents</a>'
             },
             usefulDocuments: {
               title: 'Useful documents',
-              url: "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
+              url: '<a href=\'{{ paths.common.homeOfficeDocumentsViewer }}\'>Home Office documents about your case</a>'
             },
             allowedAskForMoreTime: true
           }
@@ -641,11 +650,11 @@ describe('application-state-utils', () => {
             ],
             info: {
               title: 'Helpful Information',
-              url: "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+              url: '<a href=\'{{ paths.common.homeOfficeDocuments }}\'>Understanding your Home Office documents</a>'
             },
             usefulDocuments: {
               title: 'Useful documents',
-              url: "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
+              url: '<a href=\'{{ paths.common.homeOfficeDocumentsViewer }}\'>Home Office documents about your case</a>'
             },
             allowedAskForMoreTime: true
           }
@@ -676,11 +685,11 @@ describe('application-state-utils', () => {
             ],
             info: {
               title: 'Helpful Information',
-              url: "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+              url: '<a href=\'{{ paths.common.homeOfficeDocuments }}\'>Understanding your Home Office documents</a>'
             },
             usefulDocuments: {
               title: 'Useful documents',
-              url: "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
+              url: '<a href=\'{{ paths.common.homeOfficeDocumentsViewer }}\'>Home Office documents about your case</a>'
             },
             allowedAskForMoreTime: true
           }
@@ -806,7 +815,7 @@ describe('application-state-utils', () => {
         ],
         info: {
           title: 'Helpful Information',
-          url: "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+          url: '<a href=\'{{ paths.common.whatToExpectAtCMA }}\'>What to expect at a case management appointment</a>'
         }
       };
 
@@ -828,7 +837,7 @@ describe('application-state-utils', () => {
           ],
           'info': {
             'title': 'Helpful Information',
-            'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+            'url': '<a href=\'{{ paths.common.whatToExpectAtCMA }}\'>What to expect at a case management appointment</a>'
           }
         }
       );
@@ -849,7 +858,7 @@ describe('application-state-utils', () => {
           ],
           'info': {
             'title': 'Helpful Information',
-            'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+            'url': '<a href=\'{{ paths.common.whatToExpectAtCMA }}\'>What to expect at a case management appointment</a>'
           }
         }
       );
@@ -874,12 +883,12 @@ describe('application-state-utils', () => {
           'hearingCentre': 'Taylor House',
           'info': {
             'title': 'Helpful Information',
-            'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+            'url': '<a href=\'{{ paths.common.whatToExpectAtCMA }}\'>What to expect at a case management appointment</a>'
           },
           'time': '10:00 am',
           'usefulDocuments': {
             'title': 'Useful documents',
-            'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>Notice of Case Management Appointment.pdf</a>"
+            'url': '<a href=\'{{ paths.common.whatToExpectAtCMA }}\'>Notice of Case Management Appointment.pdf</a>'
           }
         }
       );
@@ -901,7 +910,7 @@ describe('application-state-utils', () => {
         ],
         info: {
           title: 'Helpful Information',
-          url: "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          url: '<a href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
         }
       };
 
@@ -933,7 +942,7 @@ describe('application-state-utils', () => {
           ],
           info: {
             title: 'Helpful Information',
-            url: "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+            url: '<a href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
           }
         }
       );
@@ -958,12 +967,12 @@ describe('application-state-utils', () => {
           'hearingCentre': 'Taylor House',
           'info': {
             'title': 'Helpful Information',
-            'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+            'url': '<a href=\'{{ paths.common.whatToExpectAtCMA }}\'>What to expect at a case management appointment</a>'
           },
           'time': '10:00 am',
           'usefulDocuments': {
             'title': 'Useful documents',
-            'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>Notice of Case Management Appointment.pdf</a>"
+            'url': '<a href=\'{{ paths.common.whatToExpectAtCMA }}\'>Notice of Case Management Appointment.pdf</a>'
           }
         }
       );
@@ -1000,7 +1009,7 @@ describe('application-state-utils', () => {
           ],
           'info': {
             'title': 'Helpful Information',
-            'url': "<a class='govuk-link' href='{{ paths.common.understandingHearingBundle }}'>Understanding the hearing bundle</a><br /><a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+            'url': '<a class=\'govuk-link\' href=\'{{ paths.common.understandingHearingBundle }}\'>Understanding the hearing bundle</a><br /><a class=\'govuk-link\' href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
           }
         }
       );
@@ -1108,11 +1117,11 @@ describe('application-state-utils', () => {
         '<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}',
         '<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}',
         '<span class=\"govuk-!-font-weight-bold\">Location:</span> {{ applicationNextStep.hearingCentre }} ',
-        "You can now access your <a href='{{ paths.common.hearingNoticeViewer }}'>Notice of Hearing</a>.  It includes important<br>details about the hearing and you should read it carefully."
+        'You can now access your <a href=\'{{ paths.common.hearingNoticeViewer }}\'>Notice of Hearing</a>.  It includes important<br>details about the hearing and you should read it carefully.'
       ],
       'info': {
         'title': 'Helpful Information',
-        'url': "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+        'url': '<a href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
       },
       'hearingCentre': 'Taylor House',
       'time': '10:00 am'
@@ -1138,8 +1147,7 @@ describe('application-state-utils', () => {
     const result = await getAppealApplicationNextStep(req as Request);
     const expected = {
       'allowedAskForMoreTime': false,
-      'cta': {
-      },
+      'cta': {},
       'deadline': '09 February 2022',
       'decision': 'allowed',
       'descriptionParagraphs': [
@@ -1174,8 +1182,7 @@ describe('application-state-utils', () => {
 
     const expected = {
       'allowedAskForMoreTime': false,
-      'cta': {
-      },
+      'cta': {},
       'deadline': '09 February 2022',
       'decision': 'allowed',
       'descriptionParagraphs': [
@@ -1233,8 +1240,7 @@ describe('application-state-utils', () => {
 
     const expected = {
       'allowedAskForMoreTime': false,
-      'cta': {
-      },
+      'cta': {},
       'deadline': null,
       'decision': undefined,
       'descriptionParagraphs': [
@@ -1270,7 +1276,7 @@ describe('application-state-utils', () => {
 
   it('when application status is ftpaSubmitted after respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaSubmitted';
     req.session.appeal.ftpaRespondentApplicationDate = '2022-01-01';
     req.session.appeal.history = [
@@ -1298,7 +1304,7 @@ describe('application-state-utils', () => {
 
     const expected = {
       'deadline': 'TBC',
-      'descriptionParagraphs': [ `The Home Office has applied for permission to appeal to the Upper Tribunal. The Tribunal will contact you when the judge has decided the application.` ]
+      'descriptionParagraphs': [`The Home Office has applied for permission to appeal to the Upper Tribunal. The Tribunal will contact you when the judge has decided the application.`]
     };
 
     expect(result).to.eql(expected);
@@ -1306,7 +1312,7 @@ describe('application-state-utils', () => {
 
   it('when application status is ftpaSubmitted after appellant ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaSubmitted';
     req.session.appeal.ftpaAppellantApplicationDate = '2022-01-01';
     req.session.appeal.history = [
@@ -1345,7 +1351,7 @@ describe('application-state-utils', () => {
 
   it('when application is granted for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'granted';
@@ -1355,7 +1361,7 @@ describe('application-state-utils', () => {
       'deadline': 'TBC',
       'descriptionParagraphs': [
         'The Home Office application for permission to appeal to the Upper Tribunal has been granted.',
-        "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
+        'The Upper Tribunal will decide if the Tribunal\'s decision was wrong. The Upper Tribunal will contact you to tell you what will happen next.'
       ]
     };
 
@@ -1364,7 +1370,7 @@ describe('application-state-utils', () => {
 
   it('when application is refused for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'refused';
@@ -1374,7 +1380,7 @@ describe('application-state-utils', () => {
       'deadline': 'TBC',
       'descriptionParagraphs': [
         'The HOme Office application for permission to appeal to the Upper Tribunal has been refused.',
-        "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+        'If the Home Office still think the Tribunal\'s decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens.'
       ]
     };
 
@@ -1383,7 +1389,7 @@ describe('application-state-utils', () => {
 
   it('when application is partially granted for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'partiallyGranted';
@@ -1393,7 +1399,7 @@ describe('application-state-utils', () => {
       'deadline': 'TBC',
       'descriptionParagraphs': [
         'The Home Office application for permission to appeal to the Upper Tribunal has been partially granted.',
-        "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
+        'The Upper Tribunal will decide if the Tribunal\'s decision was wrong. The Upper Tribunal will contact you to tell you what will happen next.'
       ]
     };
 
@@ -1402,7 +1408,7 @@ describe('application-state-utils', () => {
 
   it('when respondent ftpa application is partially granted by resident judge, should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentRjDecisionOutcomeType = 'partiallyGranted';
@@ -1412,7 +1418,7 @@ describe('application-state-utils', () => {
       'deadline': 'TBC',
       'descriptionParagraphs': [
         'The Home Office application for permission to appeal to the Upper Tribunal has been partially granted.',
-        "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
+        'The Upper Tribunal will decide if the Tribunal\'s decision was wrong. The Upper Tribunal will contact you to tell you what will happen next.'
       ]
     };
 
@@ -1421,7 +1427,7 @@ describe('application-state-utils', () => {
 
   it('when application is not admitted for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'notAdmitted';
@@ -1431,7 +1437,7 @@ describe('application-state-utils', () => {
       'deadline': 'TBC',
       'descriptionParagraphs': [
         'The Home Office application for permission to appeal to the Upper Tribunal has been not admitted. This means the Tribunal did not consider the request because it was late or the Home Office did not have the right to appeal.',
-        "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+        'If the Home Office still think the Tribunal\'s decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens.'
       ]
     };
 
@@ -1440,8 +1446,8 @@ describe('application-state-utils', () => {
 
   it('when application is decided as reheardRule35 for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'reheardRule35';
@@ -1458,14 +1464,13 @@ describe('application-state-utils', () => {
         'There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing.'
       ]
     };
-
     expect(result).to.eql(expected);
   });
 
   it('when application is decided as remadeRule31 for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'remadeRule31';
@@ -1487,8 +1492,8 @@ describe('application-state-utils', () => {
 
   it('when application is decided as remadeRule32 for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'remadeRule32';
@@ -1510,7 +1515,7 @@ describe('application-state-utils', () => {
 
   it('when application is granted for appellant ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'appellant';
     req.session.appeal.ftpaAppellantDecisionOutcomeType = 'granted';
@@ -1526,7 +1531,7 @@ describe('application-state-utils', () => {
         'The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.',
         '<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>',
         '<b>What happens next</b>',
-        "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next."
+        'The Upper Tribunal will decide if the Tribunal\'s decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next.'
       ]
     };
 
@@ -1535,7 +1540,7 @@ describe('application-state-utils', () => {
 
   it('when application is refused for appellant ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'appellant';
     req.session.appeal.ftpaAppellantDecisionOutcomeType = 'refused';
@@ -1551,7 +1556,7 @@ describe('application-state-utils', () => {
         'The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.',
         '<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>',
         '<b>What happens next</b>',
-        "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
+        'If you still think the Tribunal\'s decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.',
         '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>',
         'You must send your application by {{ applicationNextStep.ftpaDeadline }}'
       ]
@@ -1562,7 +1567,7 @@ describe('application-state-utils', () => {
 
   it('when application is partially granted for appellant ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'appellant';
     req.session.appeal.ftpaAppellantDecisionOutcomeType = 'partiallyGranted';
@@ -1578,7 +1583,7 @@ describe('application-state-utils', () => {
         'The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.',
         '<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>',
         '<b>What happens next</b>',
-        "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next.",
+        'The Upper Tribunal will decide if the Tribunal\'s decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next.',
         'If you think your application should have been fully granted, you can send an application for permission to appeal directly to the Upper Tribunal.',
         '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply</a>',
         'You must send your application by {{ applicationNextStep.ftpaDeadline }}'
@@ -1590,7 +1595,7 @@ describe('application-state-utils', () => {
 
   it('when application is not admitted for appellant ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'appellant';
     req.session.appeal.ftpaAppellantDecisionOutcomeType = 'notAdmitted';
@@ -1607,7 +1612,7 @@ describe('application-state-utils', () => {
         'The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.',
         '<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>',
         '<b>What happens next</b>',
-        "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
+        'If you still think the Tribunal\'s decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.',
         '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>',
         'You must send your application by {{ applicationNextStep.ftpaDeadline }}'
       ]
@@ -1618,7 +1623,7 @@ describe('application-state-utils', () => {
 
   it('when appellant ftpa application is not admitted by resident judge, should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'appellant';
     req.session.appeal.ftpaAppellantRjDecisionOutcomeType = 'notAdmitted';
@@ -1635,7 +1640,7 @@ describe('application-state-utils', () => {
         'The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.',
         '<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>',
         '<b>What happens next</b>',
-        "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
+        'If you still think the Tribunal\'s decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.',
         '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>',
         'You must send your application by {{ applicationNextStep.ftpaDeadline }}'
       ]
@@ -1703,7 +1708,7 @@ describe('application-state-utils', () => {
     expect(result).to.eql('aappealSubmitted');
   });
 
-  it('when application is in final bundling state after decision without hearing, should return correct do this next.', async() => {
+  it('when application is in final bundling state after decision without hearing, should return correct do this next.', async () => {
     req.session.appeal.appealStatus = 'finalBundling';
     const event = {
       'id': 'decisionWithoutHearing',

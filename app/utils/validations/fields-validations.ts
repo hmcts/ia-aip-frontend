@@ -90,7 +90,7 @@ function homeOfficeNumberValidation(obj: object) {
   }
 
   const schema = Joi.object({
-    homeOfficeRefNumber: Joi.string().required().regex(/^(([0-9]{1,9})|([0-9]{4}\-[0-9]{4}\-[0-9]{4}\-[0-9]{4}))$/).messages({
+    homeOfficeRefNumber: Joi.string().required().regex(/^((\d{1,9})|(\d{4}\-\d{4}\-\d{4}\-\d{4}))$/).messages({
       'string.empty': i18n.validationErrors.homeOfficeReference.required,
       'string.pattern.base': i18n.validationErrors.homeOfficeReference.invalid
     })

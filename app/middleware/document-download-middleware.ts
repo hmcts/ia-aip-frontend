@@ -1,6 +1,7 @@
 import { Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
 import { Application } from 'express';
+import { paths } from '../paths';
 
 const log = Logger.getLogger('document-download');
 const proxy = require('express-http-proxy');
@@ -10,14 +11,14 @@ export class DocumentDownloadMiddleware {
     log.info('Before app.use in DocumentDownloadMiddleware');
 
     app.use((req, res, next) => {
-      if (req.path.startsWith('/downloads/')) {
+      if (req.path.startsWith(paths.common.documentViewer + '/')) {
         return proxy(config.get('cdamDocumentManagement.apiUrl'), {
           proxyReqPathResolver: (req) => {
             if (req.params) {
               log.info(req.params);
             }
             if (req.params && req.params.documentId) {
-              const documentPath = `/downloads/${req.params.documentId}`;
+              const documentPath = `${paths.common.documentViewer}/${req.params.documentId}`;
               log.info(`Proxy request path resolved: ${documentPath}`);
               return documentPath;
             } else {

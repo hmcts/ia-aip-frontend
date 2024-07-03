@@ -218,6 +218,7 @@ describe('Remission fields utils', () => {
   it('should return proper decision reason row for appeal details', () => {
     const { appeal } = req.session;
     appeal.application.amountLeftToPay = '4000';
+    appeal.application.remissionDecisionReason = 'Test reason';
     const testData = [
       {
         remissionDecision: 'approved',
@@ -228,8 +229,7 @@ describe('Remission fields utils', () => {
         remissionDecision: 'partiallyApproved',
         expectedResponse: [
           addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
-            [i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApprovedDecisionReason
-              .replace('{{ feeLeftToPay }}', '40')], null),
+            ['Test reason'], null),
           addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToPay, ['£' + '40'], null)
         ],
         description: 'Decision partiallyApproved'
@@ -238,7 +238,7 @@ describe('Remission fields utils', () => {
         remissionDecision: 'rejected',
         expectedResponse: [
           addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
-            [i18n.pages.overviewPage.doThisNext.remissionDecided.refusedDecisionReason], null)
+            ['Test reason'], null)
         ],
         description: 'Decision rejected'
       }

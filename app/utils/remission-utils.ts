@@ -38,6 +38,7 @@ function getFeeSupportStatusForAppealDetails(req: Request) {
 
 function getDecisionReasonRowForAppealDetails(req: Request) {
   const remissionDecision = req.session.appeal.application.remissionDecision;
+  const remissionDecisionReason = req.session.appeal.application.remissionDecisionReason;
   switch (remissionDecision) {
     case 'approved':
       return [];
@@ -45,14 +46,13 @@ function getDecisionReasonRowForAppealDetails(req: Request) {
       const amountLeftToPay = convertToAmountOfMoneyDividedBy100(req.session.appeal.application.amountLeftToPay);
       return [
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
-          [i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApprovedDecisionReason
-            .replace('{{ feeLeftToPay }}', amountLeftToPay)], null),
+          [remissionDecisionReason], null),
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToPay, ['£' + amountLeftToPay], null)
       ];
     case 'rejected':
       return [
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
-          [i18n.pages.overviewPage.doThisNext.remissionDecided.refusedDecisionReason], null)
+          [remissionDecisionReason], null)
       ];
     default:
       return [];

@@ -1287,8 +1287,6 @@
           "feeSupportStatusApproved": "Fee support request approved",
           "feeSupportStatusRefused": "Fee support request refused",
           "feeSupportStatusPartiallyApproved": "Fee support partially approved",
-          "partiallyApprovedDecisionReason": "Based on the evidence provided the Tribunal believes the appellant would be able to afford a reduced fee of £{{ feeLeftToPay }}.",
-          "refusedDecisionReason": "Based on the evidence provided the Tribunal believes the appellant has enough money to pay for the appeal without support.",
           "paymentPending": {
             "decisionApprovedPaymentStatus": "No payment needed",
             "decisionPartiallyApprovedPaymentStatus": "Not paid",

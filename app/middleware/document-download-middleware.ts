@@ -13,6 +13,9 @@ export class DocumentDownloadMiddleware {
       if (req.path.startsWith('/downloads/')) {
         return proxy(config.get('cdamDocumentManagement.apiUrl'), {
           proxyReqPathResolver: (req) => {
+            if (req.params) {
+              log.info(req.params);
+            }
             if (req.params && req.params.documentId) {
               const documentPath = `/downloads/${req.params.documentId}`;
               log.info(`Proxy request path resolved: ${documentPath}`);

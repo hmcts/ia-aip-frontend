@@ -55,6 +55,12 @@ function createApp() {
   app.post('*', uploadConfiguration, handleFileUploadErrors);
   app.post('*', filterRequest);
 
+  app.use(paths.common.documentViewer + '/:documentId', (req, res, next) => {
+    next();
+  });
+  const documentDownloadMiddleware = new DocumentDownloadMiddleware();
+  documentDownloadMiddleware.enableFor(app);
+
   if (environment === 'development' || environment === 'test') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
@@ -71,8 +77,6 @@ function createApp() {
   });
   app.use(isUserAuthenticated);
   app.use(router);
-  const documentDownloadMiddleware = new DocumentDownloadMiddleware();
-  documentDownloadMiddleware.enableFor(app);
   app.use(logErrorMiddleware);
   app.use(pageNotFoundHandler);
   app.use(serverErrorHandler);

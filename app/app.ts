@@ -58,6 +58,7 @@ function createApp() {
   router.get(paths.common.documentViewer + '/:documentId', (req, res, next) => {
     next();
   });
+  app.use('/view/document', router);
   const documentDownloadMiddleware = new DocumentDownloadMiddleware();
   documentDownloadMiddleware.enableFor(app);
 

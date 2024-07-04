@@ -55,7 +55,7 @@ function createApp() {
   app.post('*', uploadConfiguration, handleFileUploadErrors);
   app.post('*', filterRequest);
 
-  app.use(paths.common.documentViewer + '/:documentId', (req, res, next) => {
+  router.get(paths.common.documentViewer + '/:documentId', (req, res, next) => {
     next();
   });
   const documentDownloadMiddleware = new DocumentDownloadMiddleware();

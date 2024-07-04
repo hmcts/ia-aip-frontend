@@ -16,16 +16,9 @@ export class DocumentDownloadMiddleware {
           proxyReqPathResolver: (req) => {
             if (req.path) {
               log.info(`Proxy request path: ${req.path}`);
-            }
-            if (req.params && req.params.documentId) {
-              const documentPath = `${paths.common.documentViewer}/${req.params.documentId}`;
-              log.info(`Proxy request path resolved: ${documentPath}`);
-              return documentPath;
+              return req.path;
             } else {
-              log.error('documentId parameter is not present in the request');
-              if (req.params && JSON.stringify(req)) {
-                log.info(JSON.stringify(req));
-              }
+              log.error('Path is not defined for the request');
               return '';
             }
           },

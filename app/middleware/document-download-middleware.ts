@@ -22,7 +22,7 @@ export class DocumentDownloadMiddleware {
               return '';
             }
           },
-          // proxyReqOptDecorator: this.addCdamHeaders,
+          proxyReqOptDecorator: this.addDmHeaders,
           secure: false,
           changeOrigin: true,
           proxyErrorHandler: (err, _req, res, next) => {
@@ -37,6 +37,13 @@ export class DocumentDownloadMiddleware {
       }
     });
   }
+  private addDmHeaders(proxyReqOpts: any, req: Request): any {
+    proxyReqOpts.headers = proxyReqOpts.headers || {};
+    proxyReqOpts.headers['Authorization'] = req.headers['Authorization'];
+    proxyReqOpts.headers['ServiceAuthorization'] = req.headers['ServiceAuthorization'];
+    // proxyReqOpts.headers['user-id'] = req.idam.userDetails.uid;
+    return proxyReqOpts;
+  }
 }
 
 class UserNotLoggedInError extends Error {
@@ -44,6 +51,17 @@ class UserNotLoggedInError extends Error {
     super('Error downloading document. User not logged in.');
   }
 }
+
+//
+//   addDmHeaders(
+//       proxyReqOpts: { headers: Record<string, unknown> },
+//       req: Request
+//   ): { headers: Record<string, unknown> } {
+//     if (!req.) {
+//
+//     }
+//   }
+// }
 
 // Uncomment and implement addCdamHeaders if needed
 // addCdamHeaders(

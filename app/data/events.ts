@@ -238,5 +238,10 @@ export const Events = {
     id: 'markAppealAsRemitted',
     summary: 'Mark appeal as remitted',
     description: 'Mark appeal as remitted'
+  },
+  MARK_APPEAL_PAID: {
+    id: 'markAppealPaid',
+    summary: 'Mark appeal as paid',
+    description: 'Make a paid'
   }
 };

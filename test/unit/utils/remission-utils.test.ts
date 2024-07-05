@@ -319,6 +319,7 @@ describe('Remission fields utils', () => {
     appeal.paymentStatus = 'Paid';
     const testData = [
       {
+        isLateRemissionRequest: false,
         remissionDecision: 'approved',
         history: [
           {
@@ -330,6 +331,7 @@ describe('Remission fields utils', () => {
         description: 'No payment needed'
       },
       {
+        isLateRemissionRequest: false,
         remissionDecision: 'partiallyApproved',
         history: [
           {
@@ -341,6 +343,7 @@ describe('Remission fields utils', () => {
         description: 'Not paid'
       },
       {
+        isLateRemissionRequest: false,
         remissionDecision: 'partiallyApproved',
         history: [
           {
@@ -358,6 +361,7 @@ describe('Remission fields utils', () => {
         description: 'Paid'
       },
       {
+        isLateRemissionRequest: true,
         remissionDecision: 'partiallyApproved',
         history: [
           {
@@ -373,6 +377,7 @@ describe('Remission fields utils', () => {
         description: 'To be refunded'
       },
       {
+        isLateRemissionRequest: true,
         remissionDecision: 'approved',
         history: [
           {
@@ -388,6 +393,7 @@ describe('Remission fields utils', () => {
         description: 'To be refunded'
       },
       {
+        isLateRemissionRequest: true,
         remissionDecision: 'rejected',
         history: [
           {
@@ -401,6 +407,22 @@ describe('Remission fields utils', () => {
         ] as HistoryEvent[],
         response: 'Paid',
         description: 'Paid'
+      },
+      {
+        isLateRemissionRequest: false,
+        remissionDecision: 'rejected',
+        history: [
+          {
+            'id': 'recordRemissionDecision',
+            'createdDate': '2024-04-07T15:36:26.099'
+          },
+          {
+            'id': 'markAppealPaid',
+            'createdDate': '2024-04-07T15:32:26.099'
+          }
+        ] as HistoryEvent[],
+        response: 'Paid',
+        description: 'Paid'
       }
     ];
 
@@ -408,9 +430,11 @@ describe('Remission fields utils', () => {
                         remissionDecision,
                         history,
                         response,
-                        description
+                        description,
+                        isLateRemissionRequest
                       }) => {
       appeal.application.remissionDecision = remissionDecision;
+      appeal.application.isLateRemissionRequest = isLateRemissionRequest;
       appeal.history = history;
       expect(getPaymentStatusRow(req)).to.be.deep.equal(response);
     });

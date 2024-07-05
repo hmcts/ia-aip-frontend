@@ -25,9 +25,20 @@ export class DocumentDownloadMiddleware {
           proxyReqOptDecorator: this.addDmHeaders,
           secure: false,
           changeOrigin: true,
+          userResHeaderDecorator: (headers, req, res, proxyReq, proxyRes) => {
+            log.info(`Response headers from proxied request: ${JSON.stringify(headers)}`);
+            return headers;
+          },
+          userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+            log.info(`Response status from proxied request: ${proxyRes.statusCode}`);
+            log.info(`Response status from proxied request: ${proxyResData.status}`);
+            return proxyResData;
+          },
           proxyErrorHandler: (err, _req, res, next) => {
             if (err instanceof UserNotLoggedInError || err.status === 401 || err.code === 'ECONNRESET') {
               return res.redirect('/login');
+            } else if (err.status === 502) {
+              log.error(`Bad Gateway: ${err.message}`);
             }
             next(err);
           }

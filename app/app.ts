@@ -25,8 +25,6 @@ const uuid = require('uuid');
 function createApp() {
   const app: express.Application = express();
   const environment: string = process.env.NODE_ENV;
-  const documentDownloadMiddleware = new DocumentDownloadMiddleware();
-  documentDownloadMiddleware.enableFor(app);
 
   // Inject nonce Id on every request.
   app.use((req, res, next) => {
@@ -71,6 +69,9 @@ function createApp() {
     res.locals.host = getUrl(req.protocol, req.hostname, '');
     next();
   });
+
+  const documentDownloadMiddleware = new DocumentDownloadMiddleware();
+  documentDownloadMiddleware.enableFor(app);
   app.use(isUserAuthenticated);
   app.use(router);
   router.get(paths.common.documentViewer + '/:documentId', (req, res, next) => {

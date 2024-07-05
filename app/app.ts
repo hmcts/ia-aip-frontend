@@ -25,6 +25,8 @@ const uuid = require('uuid');
 function createApp() {
   const app: express.Application = express();
   const environment: string = process.env.NODE_ENV;
+  const documentDownloadMiddleware = new DocumentDownloadMiddleware();
+  documentDownloadMiddleware.enableFor(app);
 
   // Inject nonce Id on every request.
   app.use((req, res, next) => {
@@ -78,8 +80,6 @@ function createApp() {
   app.use(logErrorMiddleware);
   app.use(pageNotFoundHandler);
   app.use(serverErrorHandler);
-  const documentDownloadMiddleware = new DocumentDownloadMiddleware();
-  documentDownloadMiddleware.enableFor(app);
 
   return app;
 }

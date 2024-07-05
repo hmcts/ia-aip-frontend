@@ -26,6 +26,9 @@ function createApp() {
   const app: express.Application = express();
   const environment: string = process.env.NODE_ENV;
 
+  const documentDownloadMiddleware = new DocumentDownloadMiddleware();
+  documentDownloadMiddleware.enableFor(app);
+
   // Inject nonce Id on every request.
   app.use((req, res, next) => {
     res.locals.nonce = uuid.v4();
@@ -55,13 +58,6 @@ function createApp() {
   app.post('*', uploadConfiguration, handleFileUploadErrors);
   app.post('*', filterRequest);
 
-  router.get(paths.common.documentViewer + '/:documentId', (req, res, next) => {
-    next();
-  });
-  app.use('/view/document', router);
-  const documentDownloadMiddleware = new DocumentDownloadMiddleware();
-  documentDownloadMiddleware.enableFor(app);
-
   if (environment === 'development' || environment === 'test') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
@@ -78,6 +74,10 @@ function createApp() {
   });
   app.use(isUserAuthenticated);
   app.use(router);
+  router.get(paths.common.documentViewer + '/:documentId', (req, res, next) => {
+    next();
+  });
+  app.use('/view/document', router);
   app.use(logErrorMiddleware);
   app.use(pageNotFoundHandler);
   app.use(serverErrorHandler);

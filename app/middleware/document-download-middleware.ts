@@ -18,7 +18,7 @@ export class DocumentDownloadMiddleware {
               log.info(`Proxy request path: ${req.path}`);
               return req.path;
             } else {
-              log.error('Path is not defined for the request');
+              log.error('Req.path is not defined');
               return '';
             }
           },
@@ -52,18 +52,7 @@ class UserNotLoggedInError extends Error {
   }
 }
 
-//
-//   addDmHeaders(
-//       proxyReqOpts: { headers: Record<string, unknown> },
-//       req: Request
-//   ): { headers: Record<string, unknown> } {
-//     if (!req.) {
-//
-//     }
-//   }
-// }
-
-// Uncomment and implement addCdamHeaders if needed
+// Implement addCdamHeaders if needed
 // addCdamHeaders(
 //     proxyReqOpts: { headers: Record<string, unknown> },
 //     req: Request

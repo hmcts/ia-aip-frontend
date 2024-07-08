@@ -61,9 +61,19 @@ function getDecisionReasonRowForAppealDetails(req: Request) {
 
 function getPaymentStatusRow(req: Request) {
   const { paymentStatus = null } = req.session.appeal;
-  if (hasFeeRemissionDecision(req)) {
-    const remissionDecision = req.session.appeal.application.remissionDecision;
-    if (!paymentForAppealHasBeenMade(req)) {
+  const { application } = req.session.appeal;
+  const { remissionDecision, isLateRemissionRequest } = application;
+
+  if (!hasFeeRemissionDecision(req)) {
+    return paymentStatus;
+  }
+
+  if (isLateRemissionRequest) {
+    return ['approved', 'partiallyApproved'].includes(remissionDecision) ? 'To be refunded' : paymentStatus;
+  } else {
+    if (paymentForAppealHasBeenMade(req) && paymentStatus === 'Paid') {
+      return paymentStatus;
+    } else {
       switch (remissionDecision) {
         case 'approved':
           return i18n.pages.overviewPage.doThisNext.remissionDecided.paymentPending.decisionApprovedPaymentStatus;
@@ -72,15 +82,7 @@ function getPaymentStatusRow(req: Request) {
         case 'rejected':
           return i18n.pages.overviewPage.doThisNext.remissionDecided.paymentPending.decisionRejectedPaymentStatus;
       }
-    } else {
-      if (remissionDecision === 'approved' || remissionDecision === 'partiallyApproved') {
-        return 'To be refunded';
-      } else {
-        return paymentStatus;
-      }
     }
-  } else {
-    return paymentStatus;
   }
 }
 
@@ -90,7 +92,7 @@ In such cases, the payment status changed to 'PAID' automatically without the oc
 This function verifies whether a payment event has been triggered or not. */
 function paymentForAppealHasBeenMade(req: Request) {
   return req.session.appeal.history
-    && req.session.appeal.history.some(history => history.id === Events.PAYMENT_APPEAL.id);
+    && req.session.appeal.history.some(history => [Events.PAYMENT_APPEAL.id, Events.MARK_APPEAL_PAID.id].includes(history.id));
 }
 
 export {

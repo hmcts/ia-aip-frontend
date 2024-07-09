@@ -448,7 +448,7 @@ describe('fields-validations', () => {
     });
 
     it('should return null for valid postcodes', () => {
-      const validPostcodes = ['SW1A 1AA', 'M1 1AE', 'B33 8TH', 'CR2 6XH', 'DN55 1PT'];
+      const validPostcodes = ['SW1A 1AA', 'M1 1AE', 'B33 8TH', 'CR2 6XH', 'M300HB', 'DN551PT'];
       validPostcodes.forEach(postcode => {
         const result = postcodeValidation({ postcode });
         expect(result).to.equal(null);
@@ -456,7 +456,7 @@ describe('fields-validations', () => {
     });
 
     it('should return an error for invalid postcodes', () => {
-      const invalidPostcodes = ['123', 'ABCDE', 'SW1A 1A', 'M1 1', 'B338TH', 'M300HNT', 'CR26XH', 'DN551PT'];
+      const invalidPostcodes = ['123', 'ABCDE', 'SW1A 1A', 'M1 1', 'M300HNT'];
       invalidPostcodes.forEach(postcode => {
         const result = postcodeValidation({ postcode });
         expect(result).not.to.equal(null);

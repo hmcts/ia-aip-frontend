@@ -871,7 +871,7 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
     let subtitle1: string | null = null;
     let subtitle2: string | null = null;
 
-    const amendedRegexPattern: RegExp = /^[^-]*-[^-]*-amended-\d{1,2}.*-hearing-bundle.*$/;
+    const amendedRegexPattern: RegExp = /^.*-.*-amended-\d{1,2}.*-hearing-bundle.*$/;
     hearingBundles.forEach((hearingBundle: Evidence) => {
       const dateUploaded: string = moment(hearingBundle.dateUploaded).format(dayMonthYearFormat);
       const documentLink: string = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`;

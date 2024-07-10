@@ -74,10 +74,10 @@ function createApp() {
   documentDownloadMiddleware.enableFor(app);
   app.use(isUserAuthenticated);
   app.use(router);
-  router.get(paths.common.documentViewer + '/:documentId', (req, res, next) => {
-    next();
-  });
-  app.use('/view/document', router);
+  // app.use(paths.common.documentViewer, router);
+  // router.get(paths.common.documentViewer + '/:documentId', (req, res, next) => {
+  //   next();
+  // });
   app.use(logErrorMiddleware);
   app.use(pageNotFoundHandler);
   app.use(serverErrorHandler);

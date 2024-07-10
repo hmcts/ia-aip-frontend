@@ -198,12 +198,14 @@ import { setupSecrets } from './setupSecrets';
 import './controllers/appeal-application/home-office-details-upload-decision-letter';
 import './controllers/appeal-application/pay-now';
 import './controllers/appeal-application/upload-local-authority-letter';
+// import { DocumentDownloadMiddleware } from './middleware/document-download-middleware';
 
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
+// const documentDownloadMiddleware = new DocumentDownloadMiddleware(authenticationService);
 const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance(), documentManagementService);
 const paymentService: PaymentService = new PaymentService(authenticationService, updateAppealService);
 const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));

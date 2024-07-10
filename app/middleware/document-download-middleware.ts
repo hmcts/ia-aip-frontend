@@ -1,12 +1,19 @@
 import { Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
-import { Application } from 'express';
+import { Application, Request } from 'express';
 import { paths } from '../paths';
+// import { AuthenticationService, SecurityHeaders } from '../service/authentication-service';
+import { documentIdToDocStoreUrl } from '../utils/utils';
 
 const log = Logger.getLogger('document-download');
 const proxy = require('express-http-proxy');
 
 export class DocumentDownloadMiddleware {
+
+  // private authenticationService: AuthenticationService;
+  // constructor(authenticationService: AuthenticationService) {
+  //   this.authenticationService = authenticationService;
+  // }
   public enableFor(app: Application): void {
     log.info('Before app.use in DocumentDownloadMiddleware');
 
@@ -16,7 +23,11 @@ export class DocumentDownloadMiddleware {
           proxyReqPathResolver: (req) => {
             if (req.path) {
               log.info(`Proxy request path: ${req.path}`);
-              return req.path;
+              const documentId = req.params.documentId;
+              const documentLocationUrl: string = documentIdToDocStoreUrl(documentId, req.session.appeal.documentMap);
+              log.info('The document Id is ' + documentId);
+              log.info('The document location URL is ' + documentLocationUrl);
+              return documentLocationUrl;
             } else {
               log.error('Req.path is not defined');
               return '';
@@ -25,15 +36,6 @@ export class DocumentDownloadMiddleware {
           proxyReqOptDecorator: this.addDmHeaders,
           secure: false,
           changeOrigin: true,
-          userResHeaderDecorator: (headers, req, res, proxyReq, proxyRes) => {
-            log.info(`Response headers from proxied request: ${JSON.stringify(headers)}`);
-            return headers;
-          },
-          userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
-            log.info(`Response status from proxied request: ${proxyRes.statusCode}`);
-            log.info(`Response status from proxied request: ${proxyResData.status}`);
-            return proxyResData;
-          },
           proxyErrorHandler: (err, _req, res, next) => {
             if (err instanceof UserNotLoggedInError || err.status === 401 || err.code === 'ECONNRESET') {
               return res.redirect('/login');
@@ -48,11 +50,12 @@ export class DocumentDownloadMiddleware {
       }
     });
   }
-  private addDmHeaders(proxyReqOpts: any, req: Request): any {
+  private async addDmHeaders(proxyReqOpts: any, req: Request): Promise<any> {
     proxyReqOpts.headers = proxyReqOpts.headers || {};
     proxyReqOpts.headers['Authorization'] = req.headers['Authorization'];
     proxyReqOpts.headers['ServiceAuthorization'] = req.headers['ServiceAuthorization'];
-    // proxyReqOpts.headers['user-id'] = req.idam.userDetails.uid;
+    // proxyReqOpts.headers = await this.authenticationService.getSecurityHeaders(req);
+    proxyReqOpts.headers['user-id'] = req.idam.userDetails.uid;
     return proxyReqOpts;
   }
 }

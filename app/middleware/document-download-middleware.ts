@@ -23,7 +23,12 @@ export class DocumentDownloadMiddleware {
           proxyReqPathResolver: (req) => {
             if (req.path) {
               log.info(`Proxy request path: ${req.path}`);
-              const documentId = req.params.documentId;
+              let documentId;
+              if (req.params && req.params.documentId) {
+                documentId = req.params.documentId;
+              } else {
+                log.error('The req params are null or the document id is null');
+              }
               const documentLocationUrl: string = documentIdToDocStoreUrl(documentId, req.session.appeal.documentMap);
               log.info('The document Id is ' + documentId);
               log.info('The document location URL is ' + documentLocationUrl);

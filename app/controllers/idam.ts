@@ -21,9 +21,21 @@ function getLogout(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function isValidUrl(urlString: string): boolean {
+  try {
+    const parsedUrl = new URL(urlString);
+    return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+  } catch (error) {
+    return false;
+  }
+}
+
 function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
   try {
-    const redirectTo = req.session.redirectUrl || paths.common.overview;
+    let redirectTo = req.session.redirectUrl || paths.common.overview;
+    if (!isValidUrl(redirectTo)) {
+      redirectTo = paths.common.overview;
+    }
     req.session.redirectUrl = undefined;
     res.redirect(redirectTo);
   } catch (e) {

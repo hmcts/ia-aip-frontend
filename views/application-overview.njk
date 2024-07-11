@@ -144,7 +144,7 @@
               {% if provideMoreEvidenceSection %}
                 <p><a class="govuk-link" href='{{ paths.common.provideMoreEvidenceForm }}'>{{ i18n.pages.provideMoreEvidence.form.title }}</a></p>
               {% endif %}
-              {% if showAppealRequests %}
+              {% if showAppealRequests and not isPostDecisionState %}
                 <p><a class="govuk-link" href='{{ paths.makeApplication.withdraw }}'>{{ i18n.pages.overviewPage.withdrawAppeal }}</a></p>
               {% endif %}
             </div>
@@ -154,7 +154,9 @@
                   <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.appealRequests.sectionHeading }}</h2>
                        {% if showAppealRequests %}
                          <p><a class="govuk-link" href='{{ paths.makeApplication.updateAppealDetails }}'>{{ i18n.pages.overviewPage.appealRequests.askToChangeDetails }}</a></p>
-                         <p><a class="govuk-link" href='{{ paths.makeApplication.linkOrUnlink }}'>{{ i18n.pages.overviewPage.appealRequests.askToLinkOrUnlink }}</a></p>
+                         {% if not isPostDecisionState %}
+                             <p><a class="govuk-link" href='{{ paths.makeApplication.linkOrUnlink }}'>{{ i18n.pages.overviewPage.appealRequests.askToLinkOrUnlink }}</a></p>
+                         {% endif %}
                          <p><a class="govuk-link" href='{{ paths.makeApplication.judgesReview }}'>{{ i18n.pages.overviewPage.appealRequests.askJudgeToReview }}</a></p>
                          <p><a class="govuk-link" href='{{ paths.makeApplication.changeHearingType }}'>{{ i18n.pages.overviewPage.appealRequests.askToChangeHearingType }}</a></p>
                          <p><a class="govuk-link" href='{{ paths.makeApplication.other }}'>{{ i18n.pages.overviewPage.appealRequests.askForSomethingElse }}</a></p>

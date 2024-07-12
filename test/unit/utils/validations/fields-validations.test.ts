@@ -10,6 +10,7 @@ import {
   helpWithFeesValidation,
   homeOfficeNumberValidation,
   isDateInRange,
+  postcodeValidation,
   reasonForAppealDecisionValidation,
   remissionOptionsValidation,
   selectedRequiredValidation,
@@ -444,6 +445,53 @@ describe('fields-validations', () => {
         selections: 'text-message',
         'text-message-value': '¢07899999999'
       }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
+
+    it('should return null for valid postcodes', () => {
+      const validPostcodes = ['SW1A 1AA', 'M1 1AE', 'B33 8TH', 'CR2 6XH', 'M300HB', 'DN551PT'];
+      validPostcodes.forEach(postcode => {
+        const result = postcodeValidation({ postcode });
+        expect(result).to.equal(null);
+      });
+    });
+
+    it('should return an error for invalid postcodes', () => {
+      const invalidPostcodes = ['123', 'ABCDE', 'SW1A 1A', 'M1 1', 'M300HNT'];
+      invalidPostcodes.forEach(postcode => {
+        const result = postcodeValidation({ postcode });
+        expect(result).not.to.equal(null);
+        expect(result.postcode.text).to.equal('Enter a valid postcode');
+      });
+    });
+
+    it('should return an error if postcode is empty', () => {
+      const result = postcodeValidation({ postcode: '' });
+      expect(result).not.to.equal(null);
+      expect(result.postcode.text).to.equal('Enter your postcode');
+    });
+
+    it('should return null for valid postcodes with unusual formats', () => {
+      const validPostcodes = ['GX11 1AA', 'WC2H 7LT'];
+      validPostcodes.forEach(postcode => {
+        const result = postcodeValidation({ postcode });
+        expect(result).to.equal(null);
+      });
+    });
+
+    it('should return null for valid postcodes with leading or trailing whitespaces', () => {
+      const validPostcodes = [' SW1A 1AA ', ' M1 1AE ', ' B33 8TH ', ' CR2 6XH ', ' DN55 1PT '];
+      validPostcodes.forEach(postcode => {
+        const result = postcodeValidation({ postcode });
+        expect(result).to.equal(null);
+      });
+    });
+
+    it('should return null for valid postcodes in different cases', () => {
+      const validPostcodes = ['sw1a 1aa', 'M1 1AE', 'b33 8th', 'Cr2 6xH', 'dn55 1Pt'];
+      validPostcodes.forEach(postcode => {
+        const result = postcodeValidation({ postcode });
+        expect(result).to.equal(null);
+      });
     });
   });
 

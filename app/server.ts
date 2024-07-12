@@ -1,8 +1,7 @@
-import express, { RequestHandler } from 'express';
+import express from 'express';
 import fs from 'graceful-fs';
 import https from 'https';
 import { createApp } from './app';
-import { DocumentDownloadMiddleware } from './middleware/document-download-middleware';
 import { setupSecrets } from './setupSecrets';
 import Logger, { getLogLabel } from './utils/logger';
 

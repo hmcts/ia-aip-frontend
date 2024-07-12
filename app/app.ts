@@ -64,16 +64,17 @@ function createApp() {
     app.use(wpDevMiddleware);
   }
 
+  const documentDownloadMiddleware = new DocumentDownloadMiddleware();
+  documentDownloadMiddleware.enableFor(app);
+  app.use(isUserAuthenticated);
+  app.use(router);
+
   app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
     res.locals.host = getUrl(req.protocol, req.hostname, '');
     next();
   });
 
-  const documentDownloadMiddleware = new DocumentDownloadMiddleware();
-  documentDownloadMiddleware.enableFor(app);
-  app.use(isUserAuthenticated);
-  app.use(router);
   // app.use(paths.common.documentViewer, router);
   // router.get(paths.common.documentViewer + '/:documentId', (req, res, next) => {
   //   next();

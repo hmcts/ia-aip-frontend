@@ -1,4 +1,4 @@
-const multer = require('multer');
+const multer = require('fastify-multer');
 import { NextFunction, Request, Response } from 'express';
 import { handleFileUploadErrors } from '../../../app/middleware/file-upload-validation-middleware';
 import { expect, sinon } from '../../utils/testUtils';

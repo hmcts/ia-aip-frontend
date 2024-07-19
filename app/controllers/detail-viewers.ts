@@ -872,7 +872,7 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
     let subtitle2: string | null = null;
 
     const amendedRegexPattern: RegExp = /^[^\r\n-]*-[^\r\n]*-amended-\d{1,2}.*-hearing-bundle.*$/;
-    hearingBundles.sort((a, b) => moment(b.dateUploaded, 'DD-MM-YYYY').diff(moment(a.dateUploaded, 'DD-MM-YYYY')))
+    hearingBundles.sort((a, b) => moment(b.dateUploaded, 'DD-MM-YYYY').diff(moment(a.dateUploaded, 'DD-MM-YYYY')));
     hearingBundles.forEach((hearingBundle: Evidence) => {
       const dateUploaded: string = moment(hearingBundle.dateUploaded).format(dayMonthYearFormat);
       const documentLink: string = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`;

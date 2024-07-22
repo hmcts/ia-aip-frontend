@@ -2052,4 +2052,40 @@ describe('application-state-utils', () => {
       allowedAskForMoreTime: false
     });
   });
+
+  it('when application status is pendingPayment with decision rejected for fee refund and flag is enabled should get correct \'Do This' +
+    ' next section\'', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+    req.session.appeal.appealStatus = 'pendingPayment';
+    req.session.appeal.application.remissionDecision = 'rejected';
+    req.session.appeal.feeWithHearing = '140';
+    req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+    req.session.appeal.application.remissionRejectedDatePlus14days = '2022-03-12';
+    req.session.appeal.history = [
+      {
+        'id': 'recordRemissionDecision',
+        'createdDate': '2020-02-22T15:36:26.099'
+      },
+      {
+        'id': 'submitAppeal',
+        'createdDate': '2020-02-22T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql({
+      cta: {},
+      deadline: '07 March 2020',
+      feeForAppeal: '140',
+      remissionRejectedDatePlus14days: '2022-03-12',
+      descriptionParagraphs: [
+        'The fee for this appeal is £{{ applicationNextStep.feeForAppeal }}.',
+        'If you do not pay the fee by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.',
+        '<a href={{ paths.common.payLater }}>Pay for the appeal</a>'
+      ],
+      allowedAskForMoreTime: false
+    });
+  });
 });

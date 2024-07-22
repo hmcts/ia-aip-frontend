@@ -686,7 +686,9 @@ async function getAppealApplicationNextStep(req: Request) {
       }
       break;
     case 'pendingPayment':
-      if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
+        doThisNextSection = getRemissionDecisionParagraphs(req);
+      } else if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
         doThisNextSection = {
           descriptionParagraphs: [
             i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,

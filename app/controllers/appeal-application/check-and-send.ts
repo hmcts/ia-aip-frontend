@@ -99,7 +99,7 @@ async function createSummaryRowsFrom(req: Request) {
   const rowsCont = [
     addSummaryRow(
         i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter,
-        application.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
+        application.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/downloads/${evidence.fileId}'>${evidence.name}</a>`),
         paths.appealStarted.homeOfficeDecisionLetter + editParameter,
         Delimiter.BREAK_LINE
     ),

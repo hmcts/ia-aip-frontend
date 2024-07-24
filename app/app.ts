@@ -10,6 +10,7 @@ import internationalization from '../locale/en.json';
 import webpackDevConfig from '../webpack/webpack.dev.js';
 import { configureIdam, configureLogger, configureNunjucks, configureS2S } from './app-config';
 import { pageNotFoundHandler, serverErrorHandler } from './handlers/error-handler';
+import { DocumentDownloadMiddleware } from './middleware/document-download-middleware';
 import { handleFileUploadErrors, uploadConfiguration } from './middleware/file-upload-validation-middleware';
 import { isUserAuthenticated } from './middleware/is-user-authenticated';
 import { logErrorMiddleware, logRequestMiddleware } from './middleware/logger';
@@ -63,13 +64,21 @@ function createApp() {
     app.use(wpDevMiddleware);
   }
 
+  const documentDownloadMiddleware = new DocumentDownloadMiddleware();
+  documentDownloadMiddleware.enableFor(app);
+  app.use(isUserAuthenticated);
+  app.use(router);
+
   app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
     res.locals.host = getUrl(req.protocol, req.hostname, '');
     next();
   });
-  app.use(isUserAuthenticated);
-  app.use(router);
+
+  // app.use(paths.common.documentViewer, router);
+  // router.get(paths.common.documentViewer + '/:documentId', (req, res, next) => {
+  //   next();
+  // });
   app.use(logErrorMiddleware);
   app.use(pageNotFoundHandler);
   app.use(serverErrorHandler);

@@ -31,27 +31,50 @@ nodejs:
   keyVaults:
     ia:
       secrets:
-        - idam-secret
-        - addressLookupToken
-        - s2s-secret
-        - ia-redis-access-key
-        - ia-redis-connection-string
-        - launch-darkly-sdk-key
-        - AppInsightsInstrumentationKey
-        - hearing-centre-bradford-email
-        - hearing-centre-manchester-email
-        - hearing-centre-newport-email
-        - hearing-centre-taylor-house-email
-        - hearing-centre-north-shields-email
-        - hearing-centre-birmingham-email
-        - hearing-centre-hatton-cross-email
-        - hearing-centre-glasgow-email
-        - pcq-token-key
-        - system-username
-        - system-password
-        - docmosis-access-key
-        - customer-services-telephone
-        - customer-services-email
+        - name: idam-secret
+          alias: idam.secret
+        - name: addressLookupToken
+          alias: addressLookup.token
+        - name: s2s-secret
+          alias: S2S_SECRET
+        - name: ia-redis-access-key
+          alias: session.redis.secret
+        - name: ia-redis-connection-string
+          alias: session.redis.url
+        - name: launch-darkly-sdk-key
+          alias: launchDarkly.sdkKey
+        - name: AppInsightsInstrumentationKey
+          alias: appInsights.instrumentationKey
+        - name: hearing-centre-bradford-email
+          alias: hearingCentres.bradfordEmail
+        - name: hearing-centre-manchester-email
+          alias: hearingCentres.manchesterEmail
+        - name: hearing-centre-newport-email
+          alias: hearingCentres.newportEmail
+        - name: hearing-centre-taylor-house-email
+          alias: hearingCentres.taylorhouseEmail
+        - name: hearing-centre-north-shields-email
+          alias: hearingCentres.northshieldsEmail
+        - name: hearing-centre-birmingham-email
+          alias: hearingCentres.birminghamEmail
+        - name: hearing-centre-hatton-cross-email
+          alias: hearingCentres.hattoncrossEmail
+        - name: hearing-centre-glasgow-email
+          alias: hearingCentres.glasgowEmail
+        - name: pcq-token-key
+          alias: pcq.tokenKey
+        - name: system-username
+          alias: systemUser.username
+        - name: system-password
+          alias: systemUser.password
+        - name: docmosis-access-key
+          alias: docmosis.accessKey
+        - name: customer-services-telephone
+          alias: customerServices.telephone
+        - name: customer-services-email
+          alias: customerServices.email
+        - name: ia-gov-notify-key
+          alias: govNotify.accessKey
 redis:
   enabled: false
   architecture: standalone

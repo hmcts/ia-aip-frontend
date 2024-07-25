@@ -1271,11 +1271,11 @@
           "appealDetailsSection": "Your appeal details"
         },
         "asyncStitchingComplete": {
-          "text": "The hearing bundle is ready to view.",
+          "text": "A hearing bundle is ready to view.",
           "links": [
             {
               "title": "Useful documents",
-              "text": "Hearing bundle",
+              "text": "Hearing bundles",
               "href": "{{ paths.common.hearingBundleViewer }}"
             }
           ]
@@ -2024,7 +2024,12 @@
         "title": "Notice of Adjourned Hearing"
       },
       "hearingBundle": {
-        "title": "Hearing Bundle",
+        "title": "Hearing bundle",
+        "titlePlural": "Hearing bundles",
+        "originalSubtitle": "Hearing bundle",
+        "originalSubtitlePlural": "Hearing bundles",
+        "amendedSubtitle": "Amended hearing bundle",
+        "amendedSubtitlePlural": "Amended hearing bundles",
         "dateUploaded": "Date uploaded",
         "document": "Document"
       },

@@ -873,17 +873,60 @@ function getHomeOfficeResponse(req: Request, res: Response, next: NextFunction) 
 function getHearingBundle(req: Request, res: Response, next: NextFunction) {
   try {
     const previousPage: string = paths.common.overview;
-    const hearingBundleDocuments = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'hearingBundle');
+    let hearingBundles: Evidence[] = [];
+    if (req.session.appeal.hearingDocuments) {
+      hearingBundles = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'hearingBundle');
+    }
+    if (req.session.appeal.reheardHearingDocumentsCollection) {
+      req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {
+        if (collection.value) {
+          let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
+              .filter(doc => doc.tag === 'hearingBundle');
+          hearingBundles.push(...filteredCollection);
+        }
+      });
+    }
+    let originalBundleData: SummaryRow[] = [];
+    let amendedBundleData: SummaryRow[] = [];
+    let title: string;
+    let subtitle1: string | null = null;
+    let subtitle2: string | null = null;
 
-    const hearingBundle = hearingBundleDocuments.shift();
-    const data = [
-      addSummaryRow(i18n.pages.detailViewers.hearingBundle.dateUploaded, [moment(hearingBundle.dateUploaded).format(dayMonthYearFormat)]),
-      addSummaryRow(i18n.pages.detailViewers.hearingBundle.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`])
-    ];
-
-    return res.render('templates/details-viewer.njk', {
-      title: i18n.pages.detailViewers.hearingBundle.title,
-      data,
+    const amendedRegexPattern: RegExp = /^[^\r\n-]*-[^\r\n]*-amended-\d{1,2}.*-hearing-bundle.*$/;
+    hearingBundles.sort((a, b) => moment(b.dateUploaded, 'YYYY-MM-DD').diff(moment(a.dateUploaded, 'YYYY-MM-DD')));
+    hearingBundles.forEach((hearingBundle: Evidence) => {
+      const dateUploaded: string = moment(hearingBundle.dateUploaded).format(dayMonthYearFormat);
+      const documentLink: string = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`;
+      const isAmendedHearingBundle: boolean = amendedRegexPattern.test(hearingBundle.name);
+      const summaryRows: SummaryRow[] = [
+        addSummaryRow(i18n.pages.detailViewers.hearingBundle.dateUploaded, [dateUploaded]),
+        addSummaryRow(i18n.pages.detailViewers.hearingBundle.document, [documentLink])
+      ];
+      if (isAmendedHearingBundle) {
+        amendedBundleData.push(...summaryRows);
+      } else {
+        originalBundleData.push(...summaryRows);
+      }
+    });
+    if (originalBundleData.length > 0) {
+      subtitle1 = originalBundleData.length > 2
+          ? i18n.pages.detailViewers.hearingBundle.originalSubtitlePlural
+          : i18n.pages.detailViewers.hearingBundle.originalSubtitle;
+    }
+    if (amendedBundleData.length > 0) {
+      subtitle2 = amendedBundleData.length > 2
+          ? i18n.pages.detailViewers.hearingBundle.amendedSubtitlePlural
+          : i18n.pages.detailViewers.hearingBundle.amendedSubtitle;
+    }
+    title = originalBundleData.length + amendedBundleData.length > 2
+        ? i18n.pages.detailViewers.hearingBundle.titlePlural
+        : i18n.pages.detailViewers.hearingBundle.title;
+    return res.render('templates/details-viewer-hearing-bundles.njk', {
+      title: title,
+      subtitle1: subtitle1,
+      data1: originalBundleData,
+      subtitle2: subtitle2,
+      data2: amendedBundleData,
       previousPage
     });
   } catch (error) {

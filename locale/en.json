@@ -729,6 +729,13 @@
         "ableToAddEvidenceTitle": "Supporting evidence for why you want the appeal to be reinstated",
         "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
       },
+      "askChangeHearingType": {
+        "title": "Ask to change hearing type",
+        "description": "<p>Explain why you want to change the hearing type and the type of hearing that you would like to change to.</p>",
+        "hint": "",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want to change hearing type",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
       "provideSupportingEvidenceYesOrNo": {
         "title": "Do you want to provide supporting evidence for this request?",
         "options": {
@@ -873,7 +880,8 @@
         "askToLinkOrUnlink": "Ask to link or unlink with another appeal",
         "askJudgeToReview": "Ask for a judge to review a decision by a Tribunal Caseworker",
         "askForSomethingElse": "Ask for something else",
-        "askReinstateAppeal": "Ask to reinstate the appeal"
+        "askReinstateAppeal": "Ask to reinstate the appeal",
+        "askToChangeHearingType": "Ask to change hearing type"
       },
       "hearingRequests": {
         "sectionHeading": "Hearing requests",
@@ -1589,6 +1597,16 @@
             }
           ]
         },
+        "recordAdjournmentDetails": {
+          "text": "Your hearing was adjourned.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "Notice of Adjourned Hearing",
+              "href": "{{ paths.common.hearingAdjournmentNoticeViewer }}"
+            }
+          ]
+        },
         "sendDecisionAndReasons": {
           "text": "The Decision and Reasons documents is ready to view.",
           "textForEditListCase": "The Decision and Reasons documents is ready to view.",
@@ -1763,7 +1781,8 @@
             "askWithdraw": "Ask to withdraw the appeal",
             "askUpdateDetails": "Ask to change some of your details",
             "askUpdateHearingRequirements": "Ask for something at the hearing",
-            "askSomethingElse": "Ask for something else"
+            "askSomethingElse": "Ask for something else",
+            "askChangeHearingType": "Ask to change hearing type"
           },
           "whatNext": {
             "title": "What happens next",
@@ -1792,6 +1811,9 @@
             "askSomethingElse": {},
             "askChangeHearing": {
               "granted": "The details of your hearing will be updated. The Tribunal will contact you when this happens."
+            },
+            "askChangeHearingType": {
+              "granted": "If a hearing has been listed for this case it will be cancelled.  You will need to request a new hearing."
             }
           },
           "request": {
@@ -1997,6 +2019,9 @@
       },
       "hearingNotice": {
         "title": "Notice of Hearing"
+      },
+      "hearingAdjournmentNotice": {
+        "title": "Notice of Adjourned Hearing"
       },
       "hearingBundle": {
         "title": "Hearing bundle",
@@ -3245,7 +3270,9 @@
         "hearingWitnessNames": {
           "pageTitle": "Add witnesses names",
           "title": "Add witnesses names",
-          "text": "Witnesses name",
+          "textWith10Witnesses": "You can add up to 10 witnesses.",
+          "givenNames": "Witness given names",
+          "familyName": "Witness family name",
           "cya": "Witnesses names"
         },
         "witnessOutsideUk": {
@@ -3266,10 +3293,57 @@
           "title": "Access needs",
           "text": "If you or anyone coming with you needs an interpreter, step-free access or a hearing loop, they will be provided at the hearing."
         },
+        "communicationAndAccessSupportPage": {
+          "pageTitle": "Communication and access support",
+          "title": "Communication and access support",
+          "text": "<p>Use this form if you or anyone with you needs to request:</p><p><ul><li>an interpreter for translating spoken language</li><li>an interpreter for sign language</li><li>step-free access</li><li>a hearing loop</li></ul></p><p>You can request more than one for you or any witnesses.</p><p>They will be provided at the hearing.</p>"
+        },
+        "interpreterSupportAppellantWitnesess": {
+          "pageTitle": "Who are you requesting support for?",
+          "title": "Who are you requesting support for?",
+          "text": "If you request an interpreter, they will be provided by the court. You cannot bring your own.<br/>You will be able to request step-free access or hearing loop later.",
+          "hint": "Select all that apply",
+          "interpreterSupportAppellant": "Interpreter support for me personally",
+          "interpreterSupportWitnesses": "Interpreter support for one or more witnesses",
+          "noSupportNeeded": "I do not need to request any interpreter support at this time"
+        },
         "needInterpreterPage": {
-          "pageTitle": "Will you or any witnesses need an interpreter at the hearing?",
-          "title": "Will you or any witnesses need an interpreter at the hearing?",
-          "text": "We will provide an interpreter if you or any witnesses need one."
+          "pageTitle": "Will you need an interpreter at the hearing?",
+          "title": "Will you need an interpreter at the hearing?",
+          "text": "We will provide an interpreter for you. You cannot bring your own."
+        },
+        "interpreterTypePage": {
+          "pageTitle": "What kind of interpreter do you need to request?",
+          "title": "What kind of interpreter do you need to request?",
+          "witnessTitle": "What kind of interpreter will {witnessName} need?",
+          "hint": "Select all that apply",
+          "spokenLanguageOption": "I need a spoken language interpreter",
+          "spokenLanguageOptionHint": "For example, an interpreter for Urdu",
+          "signLanguageOption": "I need a sign language interpreter",
+          "signLanguageOptionHint": "For example, British Sign Language (BSL)"
+        },
+        "interpreterSpokenLanguageSelection": {
+          "pageTitle": "Tell us about your language requirements",
+          "title": "Tell us about your language requirements",
+          "witnessTitle": "Which spoken language interpreter does {witnessName} need?",
+          "text": "We will provide an interpreter for you to understand spoken communication.",
+          "dropdownListText": "Select language",
+          "checkBoxText": "Enter the language manually",
+          "languageManuallyText": "Enter the details of the language you need to request"
+        },
+        "interpreterSignLanguageSelection": {
+          "pageTitle": "Tell us about your sign language requirements",
+          "title": "Tell us about your sign language requirements",
+          "witnessTitle": "Which sign language interpreter does {witnessName} need?",
+          "text": "We will provide a sign language interpreter for you to understand spoken communication.",
+          "dropdownListText": "Select sign language",
+          "checkBoxText": "Enter the language manually",
+          "languageManuallyText": "Enter the details of the language you need to request"
+        },
+        "witnesessInterpreterNeeds": {
+          "pageTitle": "Select which witnesses need an interpreter",
+          "title": "Select which witnesses need an interpreter",
+          "hint": "Select all that apply"
         },
         "additionalLanguagePage": {
           "pageTitle": "Add language details",
@@ -3855,7 +3929,9 @@
     },
     "givenNames": "Enter your given name or names",
     "familyName": "Enter your family name or names",
-    "witnessName": "Enter a witness name",
+    "witnesses": "Enter a witness name",
+    "witnessName": "Enter witness given names",
+    "witnessFamilyName": "Enter witness family name",
     "dateOfBirth": {
       "missing": "Your date of birth must include a day, month and year",
       "incorrectFormat": "Enter the date in the correct format",
@@ -3970,6 +4046,20 @@
         "witnessesOnHearingRequired": "Select yes if any witnesses will be coming to the hearing",
         "witnessesOutsideUKRequired": "Select Yes if you or any witnesses will take part in the hearing from outside the UK"
       },
+      "interpreterSuuport": {
+        "selectOneOption": "You must select at least one option"
+      },
+      "witnessesInterpreterNeeds": {
+        "selectOneOption": "You must select at least one witness"
+      },
+      "interpreterType": {
+        "selectOneOption": "You must select at least one kind of interpreter"
+      },
+      "interpreterLanguageSelection": {
+        "selectLanguage": "Please select the language you need to request",
+        "enterLanguageManually": "Please enter the detail of the language you need to request",
+        "selectOneOptionOnly": "Fill in only one field"
+      },
       "accessNeeds": {
         "selectInterpreter": "Select yes if you or any witnesses will need an interpreter at the hearing",
         "addLanguage": "Select a language",
@@ -4018,7 +4108,8 @@
       "askLinkUnlink": "Enter which appeal, or appeals, you want to link to or unlink from and why",
       "askJudgeReview": "Enter which decision you want a judge to review and why",
       "askReinstate": "Enter why you want the appeal to be reinstated",
-      "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
+      "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence",
+      "askChangeHearingType": "Enter why you want to change the hearing type and the type of hearing that you would like to change to"
     },
     "ftpaApplication": {
       "ftpaReason": "Enter the reasons you think the Tribunal's decision is wrong?",

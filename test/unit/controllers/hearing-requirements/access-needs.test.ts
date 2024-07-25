@@ -4,17 +4,28 @@ import {
   getAccessNeeds,
   getAdditionalLanguage,
   getHearingLoopPage,
+  getInterpreterSignLanguagePage,
+  getInterpreterSpokenLanguagePage,
+  getInterpreterSupportAppellantWitnesses,
+  getInterpreterTypePage,
   getNeedInterpreterPage,
   getStepFreeAccessPage,
+  getWitnessesInterpreterNeeds,
   postAdditionalLanguage,
   postHearingLoopPage,
+  postInterpreterSignLanguagePage,
+  postInterpreterSpokenLanguagePage,
+  postInterpreterSupportAppellantWitnesses,
+  postInterpreterTypePage,
   postNeedInterpreterPage,
-  postStepFreeAccessPage, removeLanguagePostAction,
+  postStepFreeAccessPage,
+  postWitnessesInterpreterNeeds,
+  removeLanguagePostAction,
   setupHearingAccessNeedsController
 } from '../../../../app/controllers/hearing-requirements/access-needs';
-
 import { isoLanguages } from '../../../../app/data/isoLanguages';
 import { paths } from '../../../../app/paths';
+import RefDataService from '../../../../app/service/ref-data-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import Logger from '../../../../app/utils/logger';
 import { expect, sinon } from '../../../utils/testUtils';
@@ -23,12 +34,17 @@ const express = require('express');
 
 describe('Hearing requirements access needs controller', () => {
   let sandbox: sinon.SinonSandbox;
+  let refDataServiceObj: Partial<RefDataService>;
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
   const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
+  let refDataServiceForSpokenLanguage;
+  let refDataServiceForSignLanguage;
+  let witness1: WitnessName;
+  let witness2: WitnessName;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -52,7 +68,48 @@ describe('Hearing requirements access needs controller', () => {
       body: {}
     } as Partial<Request>;
 
+    refDataServiceForSpokenLanguage = {
+      getCommonRefData: sandbox.stub().withArgs(req as Request, 'InterpreterLanguage').returns(JSON.stringify({
+        'list_of_values': [
+          {
+            'category_key': 'InterpreterLanguage',
+            'key': 'hun',
+            'value_en': 'Hungarian',
+            'value_cy': '',
+            'hint_text_en': '',
+            'hint_text_cy': '',
+            'lov_order': null,
+            'parent_category': '',
+            'parent_key': '',
+            'active_flag': 'Y',
+            'child_nodes': null
+          }
+        ]
+      }))
+    } as Partial<RefDataService>;
+
+    refDataServiceForSignLanguage = {
+      getCommonRefData: sandbox.stub().withArgs(req as Request, 'SignLanguage').returns(JSON.stringify({
+        'list_of_values': [
+          {
+            'category_key': 'SignLanguage',
+            'key': 'bfi',
+            'value_en': 'British Sign Language (BSL)',
+            'value_cy': 'Iaith Arwyddion Prydain (BSL)',
+            'hint_text_en': '',
+            'hint_text_cy': '',
+            'lov_order': null,
+            'parent_category': '',
+            'parent_key': '',
+            'active_flag': 'Y',
+            'child_nodes': null
+          }
+        ]
+      }))
+    } as Partial<RefDataService>;
+
     updateAppealService = { submitEvent: sandbox.stub() };
+    updateAppealService.submitEventRefactored = sandbox.stub();
 
     res = {
       render: sandbox.stub(),
@@ -61,6 +118,9 @@ describe('Hearing requirements access needs controller', () => {
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
+
+    witness1 = { witnessPartyId: '1', witnessGivenNames: 'witness', witnessFamilyName: '1' };
+    witness2 = { witnessPartyId: '2', witnessGivenNames: 'witness', witnessFamilyName: '2' };
   });
 
   afterEach(() => {
@@ -73,14 +133,20 @@ describe('Hearing requirements access needs controller', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupHearingAccessNeedsController(middleware, updateAppealService as UpdateAppealService);
+      setupHearingAccessNeedsController(middleware, updateAppealService as UpdateAppealService, refDataServiceObj as RefDataService);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.accessNeeds);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreter);
+      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterTypes);
+      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection);
+      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingLanguageDetails);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingLanguageDetailsRemove);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingStepFreeAccess);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingLoop);
       expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreter);
+      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterTypes);
+      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection);
+      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection);
       expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingLanguageDetails);
       expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingLanguageDetailsAdd);
       expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingStepFreeAccess);
@@ -89,11 +155,181 @@ describe('Hearing requirements access needs controller', () => {
   });
 
   describe('getAccessNeeds', () => {
-    it('getAccessNeeds should access-needs.njk', () => {
+    it('getAccessNeeds should access-needs.njk when there is no witnesses on hearing', () => {
+      req.session.appeal.hearingRequirements.witnessesOnHearing = false;
+
       getAccessNeeds(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/access-needs.njk', {
-        previousPage: previousPage
+        previousPage: previousPage,
+        link: paths.submitHearingRequirements.hearingInterpreter
       });
+    });
+
+    it('getAccessNeeds should access-needs.njk when there is witnesses on hearing', () => {
+      req.session.appeal.hearingRequirements.witnessesOnHearing = true;
+
+      getAccessNeeds(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/access-needs.njk', {
+        previousPage: previousPage,
+        link: paths.submitHearingRequirements.hearingInterpreterSupportAppellantWitnesses
+      });
+    });
+  });
+
+  describe('InterpreterSupportAppellantWitnesses', () => {
+    it('getInterpreterSupportAppellantWitnesses should render getInterpreterSupportAppellantWitnesses', () => {
+      req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = undefined;
+      req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = undefined;
+
+      getInterpreterSupportAppellantWitnesses(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
+        previousPage: previousPage,
+        isInterpreterServicesNeeded: false,
+        isAnyWitnessInterpreterRequired: false,
+        noInterpreterRequired: false
+      });
+    });
+
+    it('getInterpreterSupportAppellantWitnesses should render the page when load user answer with interpreter support', () => {
+      req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = true;
+      req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = true;
+
+      getInterpreterSupportAppellantWitnesses(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
+        previousPage: previousPage,
+        isInterpreterServicesNeeded: true,
+        isAnyWitnessInterpreterRequired: true,
+        noInterpreterRequired: false
+      });
+    });
+
+    it('getInterpreterSupportAppellantWitnesses should render the page when load user answer with no interpreter support', () => {
+      req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = false;
+      req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = false;
+
+      getInterpreterSupportAppellantWitnesses(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
+        previousPage: previousPage,
+        isInterpreterServicesNeeded: false,
+        isAnyWitnessInterpreterRequired: false,
+        noInterpreterRequired: true
+      });
+    });
+
+    it('postInterpreterSupportAppellantWitnesses should show validation error if no option is selected', async () => {
+      req.body.selections = '';
+
+      await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
+        previousPage: previousPage,
+        errorList: [
+          {
+            key: 'selections',
+            text: 'You must select at least one option',
+            href: '#selections'
+          }
+        ]
+      });
+    });
+
+    it('postInterpreterSupportAppellantWitnesses should set appeallant and witness flag to true if option are selected for appellant and witness', async () => {
+      req.body.selections = 'isInterpreterServicesNeeded,isAnyWitnessInterpreterRequired';
+      req.session.appeal.hearingRequirements.witnessNames = [witness1];
+
+      await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.hearingRequirements.isInterpreterServicesNeeded).to.have.eq(true);
+      expect(req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired).to.have.eq(true);
+    });
+
+    it('postInterpreterSupportAppellantWitnesses should set appeallant and witness flag to false if no interpreter service is selected', async () => {
+      req.body.selections = 'noInterpreterRequired';
+
+      await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.hearingRequirements.isInterpreterServicesNeeded).to.have.eq(false);
+      expect(req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired).to.have.eq(false);
+    });
+
+    it('postInterpreterSupportAppellantWitnesses should set witness flag to true only if option is selected for witness only', async () => {
+      req.body.selections = 'isAnyWitnessInterpreterRequired';
+      req.session.appeal.hearingRequirements.witnessNames = [witness1];
+
+      await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.hearingRequirements.isInterpreterServicesNeeded).to.have.eq(false);
+      expect(req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired).to.have.eq(true);
+    });
+
+    it('postInterpreterSupportAppellantWitnesses should set witness flag to true only if option is selected with more than one witness', async () => {
+      req.body.selections = 'isAnyWitnessInterpreterRequired';
+      req.session.appeal.hearingRequirements.witnessNames = [witness1, witness2];
+
+      await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.hearingRequirements.isInterpreterServicesNeeded).to.have.eq(false);
+      expect(req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired).to.have.eq(true);
+    });
+
+    it('postInterpreterSupportAppellantWitnesses should clear all cached old witness interpreter information', async () => {
+      req.body.selections = 'noInterpreterRequired';
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'list_items': [{ 'label': 'witness 1' } ] };
+      req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+
+      await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.hearingRequirements.witnessListElement1).to.be.null;
+      expect(req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory).to.be.null;
+    });
+  });
+
+  describe('WitnessesInterpreterNeeds', () => {
+    it('getWitnessesInterpreterNeeds should render getWitnessesInterpreterNeeds', () => {
+      req.session.appeal.hearingRequirements.witnessNames = [witness1];
+
+      getWitnessesInterpreterNeeds(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/witnesses-interpreter-needs.njk', {
+        previousPage: previousPage,
+        witnessesNameList: [{ value: 0, text: 'witness 1', checked: false }]
+      });
+    });
+
+    it('getWitnessesInterpreterNeeds should render the page when load appellant selected witnesses', () => {
+      req.session.appeal.hearingRequirements.witnessNames = [witness1, witness2];
+      req.session.appeal.hearingRequirements.witnessListElement1 = { value: [{ code: 'witness 1', label: 'witness 1' }], list_items: [{ code: 'witness 1', label: 'witness 1' }] };
+      req.session.appeal.hearingRequirements.witnessListElement2 = { value: [], list_items: [{ code: 'witness 2', label: 'witness 2' }] };
+
+      getWitnessesInterpreterNeeds(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/witnesses-interpreter-needs.njk', {
+        previousPage: previousPage,
+        witnessesNameList: [
+          { value: 0, text: 'witness 1', checked: true },
+          { value: 1, text: 'witness 2', checked: false }
+        ]
+      });
+    });
+
+    it('postWitnessesInterpreterNeeds should show validation error if no witness is selected', async () => {
+      req.session.appeal.hearingRequirements.witnessNames = [witness1];
+      req.body.selections = '';
+
+      await postWitnessesInterpreterNeeds(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/witnesses-interpreter-needs.njk', {
+        previousPage: previousPage,
+        witnessesNameList: [{ value: 0, text: 'witness 1', checked: false }],
+        errorList: [
+          {
+            key: 'selections',
+            text: 'You must select at least one witness',
+            href: '#selections'
+          }
+        ]
+      });
+    });
+
+    it('postWitnessesInterpreterNeeds should set witnessListElement if witness is selected', async () => {
+      req.session.appeal.hearingRequirements.witnessNames = [witness1];
+      req.body.selections = '0';
+
+      await postWitnessesInterpreterNeeds(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.hearingRequirements.witnessListElement1).to.not.be.null;
+      expect(req.session.appeal.hearingRequirements.witnessListElement1).to.deep.eq(
+        { value: [{ code: 'witness 1', label: 'witness 1' }], list_items: [{ code: 'witness 1', label: 'witness 1' }] });
     });
   });
 
@@ -104,7 +340,7 @@ describe('Hearing requirements access needs controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
         previousPage: previousPage,
         formAction: '/hearing-interpreter',
-        pageTitle: 'Will you or any witnesses need an interpreter at the hearing?',
+        pageTitle: 'Will you need an interpreter at the hearing?',
         saveAndContinue: true,
         question: {
           options: [{ checked: false, text: 'Yes', value: 'yes' }, {
@@ -112,8 +348,8 @@ describe('Hearing requirements access needs controller', () => {
             text: 'No',
             value: 'no'
           }],
-          title: 'Will you or any witnesses need an interpreter at the hearing?',
-          hint: 'We will provide an interpreter if you or any witnesses need one.',
+          title: 'Will you need an interpreter at the hearing?',
+          hint: 'We will provide an interpreter for you. You cannot bring your own.',
           name: 'answer'
         }
       });
@@ -128,11 +364,11 @@ describe('Hearing requirements access needs controller', () => {
         error: { 'answer': { key: 'answer', text: '"answer" is not allowed to be empty', href: '#answer' } },
         previousPage: previousPage,
         formAction: '/hearing-interpreter',
-        pageTitle: 'Will you or any witnesses need an interpreter at the hearing?',
+        pageTitle: 'Will you need an interpreter at the hearing?',
         question: {
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
-          title: 'Will you or any witnesses need an interpreter at the hearing?',
-          hint: 'We will provide an interpreter if you or any witnesses need one.',
+          title: 'Will you need an interpreter at the hearing?',
+          hint: 'We will provide an interpreter for you. You cannot bring your own.',
           name: 'answer'
         },
         saveAndContinue: true
@@ -146,6 +382,467 @@ describe('Hearing requirements access needs controller', () => {
       expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
+  });
+
+  describe('HearingInterpreterTypePage', () => {
+    it('getInterpreterTypePage should render getInterpreterTypePage for appellant', () => {
+      req.query = { selectedWitnesses: null };
+      getInterpreterTypePage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-types.njk', {
+        previousPage: previousPage,
+        pageQuestion: 'What kind of interpreter do you need to request?',
+        checkboxHintText: 'Select all that apply',
+        interpreterSpokenLanguage: false,
+        interpreterSignLanguage: false,
+        selectedWitnessesList: null
+      });
+    });
+
+    it('getInterpreterTypePage should render getInterpreterTypePage for witness', () => {
+      req.query = { selectedWitnesses: '0' };
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
+      getInterpreterTypePage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-types.njk', {
+        previousPage: previousPage,
+        pageQuestion: 'What kind of interpreter will Witness 1 need?',
+        checkboxHintText: '',
+        interpreterSpokenLanguage: false,
+        interpreterSignLanguage: false,
+        selectedWitnessesList: [ '0' ]
+      });
+    });
+
+    it('getInterpreterTypePage should render getInterpreterTypePage if appellant selected personal spoken and sign language', () => {
+      req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      req.query = { selectedWitnesses: null };
+      getInterpreterTypePage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-types.njk', {
+        previousPage: previousPage,
+        pageQuestion: 'What kind of interpreter do you need to request?',
+        checkboxHintText: 'Select all that apply',
+        interpreterSpokenLanguage: true,
+        interpreterSignLanguage: true,
+        selectedWitnessesList: null
+      });
+    });
+
+    it('getInterpreterTypePage should render getInterpreterTypePage if appellant selected personal spoken and sign language for witness', () => {
+      req.query = { selectedWitnesses: '0' };
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
+      req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      getInterpreterTypePage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-types.njk', {
+        previousPage: previousPage,
+        pageQuestion: 'What kind of interpreter will Witness 1 need?',
+        checkboxHintText: '',
+        interpreterSpokenLanguage: true,
+        interpreterSignLanguage: true,
+        selectedWitnessesList: [ '0' ]
+      });
+    });
+
+    it('postInterpreterTypePage should show validation error if appellant did not select interpreter language', async () => {
+      req.body.selections = '';
+      await postInterpreterTypePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-types.njk', {
+        previousPage: previousPage,
+        pageQuestion: 'What kind of interpreter do you need to request?',
+        checkboxHintText: 'Select all that apply',
+        selectedWitnessesList: null,
+        errorList: Object.values([{ key: 'selections', text: 'You must select at least one kind of interpreter', href: '#selections' }])
+      });
+    });
+
+    it('postInterpreterTypePage should show validation error if appellant did not select interpreter language for witness', async () => {
+      req.body.selectedWitnessesList = '0';
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
+      req.body.selections = '';
+      await postInterpreterTypePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-types.njk', {
+        previousPage: previousPage,
+        pageQuestion: 'What kind of interpreter will Witness 1 need?',
+        checkboxHintText: '',
+        selectedWitnessesList: [ '0' ],
+        errorList: Object.values([{ key: 'selections', text: 'You must select at least one kind of interpreter', href: '#selections' }])
+      });
+    });
+
+    it('postInterpreterTypePage should render as witnessInterpreterLanguageCategory page there is parameter of selectedWitnessesList', async () => {
+      req.body.selectedWitnessesList = '0';
+      req.body.selections = 'spokenLanguageInterpreter,signLanguageInterpreter';
+
+      await postInterpreterTypePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory).to.deep.eq(['spokenLanguageInterpreter', 'signLanguageInterpreter']);
+
+    });
+
+    it('postInterpreterTypePage should render as appellantInterpreterLanguageCategory page if there is no parameter of selectedWitnessesList', async () => {
+      req.body.selections = 'spokenLanguageInterpreter';
+
+      await postInterpreterTypePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory).to.deep.eq(['spokenLanguageInterpreter']);
+
+    });
+  });
+
+  describe('InterpreterSpokenLanguagePage', () => {
+    it('getInterpreterSpokenLanguagePage should render getInterpreterSpokenLanguagePage', async () => {
+
+      req.query = { selectedWitnesses: null };
+      await getInterpreterSpokenLanguagePage(refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
+        previousPage: previousPage,
+        formAction: '/hearing-interpreter-spoken-language-selection',
+        pageTitle: 'Tell us about your language requirements',
+        pageText: 'We will provide an interpreter for you to understand spoken communication.',
+        dropdownListText: 'Select language',
+        checkBoxText: 'Enter the language manually',
+        languageManuallyText: 'Enter the details of the language you need to request',
+        languageManualEntry: false,
+        languageManualEntryDescription: '',
+        items: [
+          { text: 'Select language', value: '' },
+          { text: 'Hungarian', value: 'hun', selected: null }
+        ],
+        selectedWitnessesList: null
+      });
+    });
+
+    it('getInterpreterSpokenLanguagePage should render getInterpreterSpokenLanguagePage for witness', async () => {
+
+      req.query = { selectedWitnesses: '0' };
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
+      await getInterpreterSpokenLanguagePage(refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
+        previousPage: previousPage,
+        formAction: '/hearing-interpreter-spoken-language-selection',
+        pageTitle: 'Which spoken language interpreter does Witness 1 need?',
+        pageText: '',
+        dropdownListText: 'Select language',
+        checkBoxText: 'Enter the language manually',
+        languageManuallyText: 'Enter the details of the language you need to request',
+        languageManualEntry: false,
+        languageManualEntryDescription: '',
+        items: [
+          { text: 'Select language', value: '' },
+          { text: 'Hungarian', value: 'hun', selected: null }
+        ],
+        selectedWitnessesList: [ '0' ]
+      });
+    });
+
+    it('postInterpreterSpokenLanguagePage should show validation error if appellant did not select spokenn language', async () => {
+
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
+        previousPage: previousPage,
+        formAction: '/hearing-interpreter-spoken-language-selection',
+        pageTitle: 'Tell us about your language requirements',
+        pageText: 'We will provide an interpreter for you to understand spoken communication.',
+        dropdownListText: 'Select language',
+        checkBoxText: 'Enter the language manually',
+        languageManuallyText: 'Enter the details of the language you need to request',
+        languageManualEntry: false,
+        languageManualEntryDescription: '',
+        items: [
+          { text: 'Select language', value: '' },
+          { text: 'Hungarian', value: 'hun', selected: null }
+        ],
+        selectedWitnessesList: null,
+        errors: {
+          'languageRefData-languageManualEntry': {
+            key: 'languageRefData-languageManualEntry',
+            text: 'Please select the language you need to request',
+            href: '#languageRefData'
+          }
+        },
+        errorList: [
+          {
+            key: 'languageRefData-languageManualEntry',
+            text: 'Please select the language you need to request',
+            href: '#languageRefData'
+          }
+        ]
+      });
+    });
+
+    it('postInterpreterSpokenLanguagePage should show validation error if appellant did not select spokenn language for witness', async () => {
+
+      req.body.selectedWitnessesList = '0';
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
+        previousPage: previousPage,
+        formAction: '/hearing-interpreter-spoken-language-selection',
+        pageTitle: 'Which spoken language interpreter does Witness 1 need?',
+        pageText: '',
+        dropdownListText: 'Select language',
+        checkBoxText: 'Enter the language manually',
+        languageManuallyText: 'Enter the details of the language you need to request',
+        languageManualEntry: false,
+        languageManualEntryDescription: '',
+        items: [
+          { text: 'Select language', value: '' },
+          { text: 'Hungarian', value: 'hun', selected: null }
+        ],
+        selectedWitnessesList: [ '0' ],
+        errors: {
+          'languageRefData-languageManualEntry': {
+            key: 'languageRefData-languageManualEntry',
+            text: 'Please select the language you need to request',
+            href: '#languageRefData'
+          }
+        },
+        errorList: [
+          {
+            key: 'languageRefData-languageManualEntry',
+            text: 'Please select the language you need to request',
+            href: '#languageRefData'
+          }
+        ]
+      });
+    });
+
+    it('postInterpreterSpokenLanguagePage should redirect to sign language selection page if witness need sign language support', async () => {
+
+      req.body.selectedWitnessesList = '0,1';
+      req.body.languageManualEntry = 'Yes';
+      req.body.languageManualEntryDescription = 'spoken language for witness 1';
+      req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.hearingRequirements.witness1InterpreterSpokenLanguage).to.deep.eq(
+        {
+          languageManualEntry: [req.body.languageManualEntry],
+          languageManualEntryDescription: req.body.languageManualEntryDescription
+        }
+      );
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection + '?selectedWitnesses=' + req.body.selectedWitnessesList);
+
+    });
+
+    it('postInterpreterSpokenLanguagePage should redirect to hearing step free access page if no more interpreter service is required', async () => {
+
+      req.body.selectedWitnessesList = '1';
+      req.body.languageManualEntry = 'Yes';
+      req.body.languageManualEntryDescription = 'spoken language for witness 2';
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingStepFreeAccess);
+
+    });
+
+    it('postInterpreterSpokenLanguagePage should redirect to appellant sign language selection page if there is no parameter of selectedWitnessesList', async () => {
+
+      req.body.languageManualEntry = 'Yes';
+      req.body.languageManualEntryDescription = 'spoken language for appellant';
+      req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection);
+
+    });
+
+    it('postInterpreterSpokenLanguagePage should redirect to witness interpreter type page if there is only one witness', async () => {
+
+      req.body.languageManualEntry = 'Yes';
+      req.body.languageManualEntryDescription = 'appellant spoken language';
+      req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = true;
+      req.session.appeal.hearingRequirements.witnessNames = [witness1];
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage).to.deep.eq(
+        {
+          languageManualEntry: [req.body.languageManualEntry],
+          languageManualEntryDescription: req.body.languageManualEntryDescription
+        }
+      );
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=0');
+
+    });
+  });
+
+  describe('InterpreterSignLanguagePage', () => {
+    it('getInterpreterSignLanguagePage should render getInterpreterSignLanguagePage', async () => {
+
+      req.query = { selectedWitnesses: null };
+      await getInterpreterSignLanguagePage(refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
+        previousPage: previousPage,
+        formAction: '/hearing-interpreter-sign-language-selection',
+        pageTitle: 'Tell us about your sign language requirements',
+        pageText: 'We will provide a sign language interpreter for you to understand spoken communication.',
+        dropdownListText: 'Select sign language',
+        checkBoxText: 'Enter the language manually',
+        languageManuallyText: 'Enter the details of the language you need to request',
+        languageManualEntry: false,
+        languageManualEntryDescription: '',
+        items: [
+          { text: 'Select language', value: '' },
+          { text: 'British Sign Language (BSL)', value: 'bfi', selected: null }
+        ],
+        selectedWitnessesList: null
+      });
+    });
+
+    it('getInterpreterSignLanguagePage should render getInterpreterSignLanguagePage for witness', async () => {
+
+      req.query = { selectedWitnesses: '0' };
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
+      await getInterpreterSignLanguagePage(refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
+        previousPage: previousPage,
+        formAction: '/hearing-interpreter-sign-language-selection',
+        pageTitle: 'Which sign language interpreter does Witness 1 need?',
+        pageText: '',
+        dropdownListText: 'Select sign language',
+        checkBoxText: 'Enter the language manually',
+        languageManuallyText: 'Enter the details of the language you need to request',
+        languageManualEntry: false,
+        languageManualEntryDescription: '',
+        items: [
+          { text: 'Select language', value: '' },
+          { text: 'British Sign Language (BSL)', value: 'bfi', selected: null }
+        ],
+        selectedWitnessesList: ['0']
+      });
+    });
+
+    it('postInterpreterSignLanguagePage should show validation error if appellant did not sign spokenn language', async () => {
+
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
+        previousPage: previousPage,
+        formAction: '/hearing-interpreter-sign-language-selection',
+        pageTitle: 'Tell us about your sign language requirements',
+        pageText: 'We will provide a sign language interpreter for you to understand spoken communication.',
+        dropdownListText: 'Select sign language',
+        checkBoxText: 'Enter the language manually',
+        languageManuallyText: 'Enter the details of the language you need to request',
+        languageManualEntry: false,
+        languageManualEntryDescription: '',
+        items: [
+          { text: 'Select language', value: '' },
+          { text: 'British Sign Language (BSL)', value: 'bfi', selected: null }
+        ],
+        selectedWitnessesList: null,
+        errors: {
+          'languageRefData-languageManualEntry': {
+            key: 'languageRefData-languageManualEntry',
+            text: 'Please select the language you need to request',
+            href: '#languageRefData'
+          }
+        },
+        errorList: [
+          {
+            key: 'languageRefData-languageManualEntry',
+            text: 'Please select the language you need to request',
+            href: '#languageRefData'
+          }
+        ]
+      });
+    });
+
+    it('postInterpreterSignLanguagePage should show validation error if appellant did not select sign language for witness', async () => {
+
+      req.body.selectedWitnessesList = '0';
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
+        previousPage: previousPage,
+        formAction: '/hearing-interpreter-sign-language-selection',
+        pageTitle: 'Which sign language interpreter does Witness 1 need?',
+        pageText: '',
+        dropdownListText: 'Select sign language',
+        checkBoxText: 'Enter the language manually',
+        languageManuallyText: 'Enter the details of the language you need to request',
+        languageManualEntry: false,
+        languageManualEntryDescription: '',
+        items: [
+          { text: 'Select language', value: '' },
+          { text: 'British Sign Language (BSL)', value: 'bfi', selected: null }
+        ],
+        selectedWitnessesList: ['0'],
+        errors: {
+          'languageRefData-languageManualEntry': {
+            key: 'languageRefData-languageManualEntry',
+            text: 'Please select the language you need to request',
+            href: '#languageRefData'
+          }
+        },
+        errorList: [
+          {
+            key: 'languageRefData-languageManualEntry',
+            text: 'Please select the language you need to request',
+            href: '#languageRefData'
+          }
+        ]
+      });
+    });
+
+    it('postInterpreterSignLanguagePage should redirect to interpreter type selection page for next witness', async () => {
+
+      req.body.selectedWitnessesList = '1,2';
+      req.body.languageManualEntry = 'Yes';
+      req.body.languageManualEntryDescription = 'sign language for witness 2';
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage).to.deep.eq(
+        {
+          languageManualEntry: [req.body.languageManualEntry],
+          languageManualEntryDescription: req.body.languageManualEntryDescription
+        }
+      );
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=2');
+
+    });
+
+    it('postInterpreterSignLanguagePage should redirect to hearing step free access page if there are no more witness', async () => {
+
+      req.body.selectedWitnessesList = '2';
+      req.body.languageManualEntry = 'Yes';
+      req.body.languageManualEntryDescription = 'sign language for witness 2';
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingStepFreeAccess);
+
+    });
+
+    it('postInterpreterSignLanguagePage should redirect to hearing step free access page after selecting appellant sign language with no more witness', async () => {
+
+      req.body.languageManualEntry = 'Yes';
+      req.body.languageManualEntryDescription = 'sign language for appellant';
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingStepFreeAccess);
+
+    });
+
+    it('postInterpreterSignLanguagePage should redirect to witness interpreter type page after selecting appellant sign language with only one more witness', async () => {
+
+      req.body.languageManualEntry = 'Yes';
+      req.body.languageManualEntryDescription = 'appellant sign language';
+      req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = true;
+      req.session.appeal.hearingRequirements.witnessNames = [witness1];
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage).to.deep.eq(
+        {
+          languageManualEntry: [req.body.languageManualEntry],
+          languageManualEntryDescription: req.body.languageManualEntryDescription
+        }
+      );
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=0');
+
+    });
   });
 
   describe('AdditionalLanguage', () => {

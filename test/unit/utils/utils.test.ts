@@ -5,6 +5,7 @@ import {
   asBooleanValue,
   documentIdToDocStoreUrl,
   formatTextForCYA,
+  formatWitnessName,
   getApplicationType,
   getFtpaApplicantType,
   getLatestUpdateTribunalDecisionHistory,
@@ -380,4 +381,27 @@ describe('utils', () => {
       expect(getLatestUpdateTribunalDecisionHistory(req as Request, true)).to.eq(null);
     });
   });
+
+  describe('formatWitnessName', () => {
+
+    it('should correctly format when family name is given', async () => {
+      const witnessName: WitnessName = {
+        'witnessGivenNames': 'GivenName1 GivenName2',
+        'witnessFamilyName': 'FamilyName'
+      };
+      const witnessNameFormatted: String = formatWitnessName(witnessName);
+      const expected = 'GivenName1 GivenName2 FamilyName';
+      expect(witnessNameFormatted).to.equals(expected);
+    });
+
+    it('should correctly format when family name is not given', async () => {
+      const witnessName: WitnessName = {
+        'witnessGivenNames': 'GivenName1 GivenName2'
+      };
+      const witnessNameFormatted: String = formatWitnessName(witnessName);
+      const expected = 'GivenName1 GivenName2';
+      expect(witnessNameFormatted).to.equals(expected);
+    });
+  });
+
 });

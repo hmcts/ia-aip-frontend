@@ -256,10 +256,26 @@ describe('Confirmation Page Controller', () => {
       completed: true
     }];
 
+    const appNextStep = {
+      decision: 'allowed',
+      descriptionParagraphs: [
+        'A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>',
+        '<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>'
+      ],
+      info: {
+        title: 'Appeal Information',
+        text: 'If you disagree with this decision, you have until <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.',
+        url: '<a href="{{ paths.ftpa.ftpaApplication }}">Apply for permission to appeal to the Upper Tribunal</a>'
+      },
+      cta: {},
+      allowedAskForMoreTime: false,
+      deadline: '13 March 2024'
+    };
+
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'PA/12345/2025',
-      applicationNextStep: sinon.match.any,
+      applicationNextStep: appNextStep,
       history: expectedHistory,
       stages: expectedStages,
       saved: false,
@@ -277,6 +293,8 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: true,
       showFtpaApplicationLink: false,
+      showAskForFeeRemission: false,
+      showAskForSomethingInEndedState: false,
       isPostDecisionState: true
     });
   });
@@ -330,10 +348,26 @@ describe('Confirmation Page Controller', () => {
       completed: true
     }];
 
+    const appNextStep = {
+      decision: 'allowed',
+      descriptionParagraphs: [
+        'A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>',
+        '<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>'
+      ],
+      info: {
+        title: 'Appeal Information',
+        text: 'If you disagree with this decision, you have until <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.',
+        url: '<a href="{{ paths.ftpa.ftpaApplication }}">Apply for permission to appeal to the Upper Tribunal</a>'
+      },
+      cta: {},
+      allowedAskForMoreTime: false,
+      deadline: '13 March 2024'
+    };
+
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'PA/12345/2025',
-      applicationNextStep: sinon.match.any,
+      applicationNextStep: appNextStep,
       history: expectedHistory,
       stages: expectedStages,
       saved: false,
@@ -351,6 +385,8 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: true,
       showFtpaApplicationLink: false,
+      showAskForFeeRemission: false,
+      showAskForSomethingInEndedState: false,
       isPostDecisionState: true
     });
   });

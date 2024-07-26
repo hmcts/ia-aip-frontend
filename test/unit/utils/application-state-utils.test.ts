@@ -8,10 +8,10 @@ import {
   getAppealStatus,
   getMoveAppealOfflineDate,
   getMoveAppealOfflineReason,
+  isAddendumEvidenceUploadState,
   isEventLatestInHistoryList,
   remissionDecisionEventIsTheLatest,
-  requestFeeRemissionEventIsTheLatest,
-  isAddendumEvidenceUploadState
+  requestFeeRemissionEventIsTheLatest
 } from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';

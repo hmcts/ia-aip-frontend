@@ -4,6 +4,7 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { getProvideSupportingEvidence, getProvideSupportingEvidenceCheckAndSend, getProvideSupportingEvidenceYesOrNo, postProvideSupportingEvidence, postProvideSupportingEvidenceCheckAndSend, postProvideSupportingEvidenceYesOrNo } from '../make-application-common';
 import { validate } from '../setup-application-controllers';
 import { getChangeDetailsApplication, postChangeDetailsApplication } from './change-details-application';
+import { getChangeHearingTypeApplication, postChangeHearingTypeApplication } from './change-hearing-type-application';
 import { getJudgeReviewApplication, postJudgeReviewApplication } from './judge-review-application';
 import { getLinkOrUnlinkAppealApplication, postLinkOrUnlinkAppealApplication } from './link-or-unlink-appeal-application';
 import { getReinstateAppealApplication, postReinstateAppealApplication } from './reinstate-appeal-application';
@@ -71,6 +72,16 @@ function setupAppealRequestControllers(middleware: Middleware[], updateAppealSer
   router.post(paths.makeApplication.provideSupportingEvidenceReinstate, middleware, postProvideSupportingEvidence);
   router.post(paths.makeApplication.supportingEvidenceReinstate, middleware, postProvideSupportingEvidenceYesOrNo);
   router.post(paths.makeApplication.checkAnswerReinstate, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
+
+  /* Change Hearing Type */
+  router.get(paths.makeApplication.changeHearingType, middleware, getChangeHearingTypeApplication);
+  router.get(paths.makeApplication.supportingEvidenceChangeHearingType, middleware, getProvideSupportingEvidenceYesOrNo);
+  router.get(paths.makeApplication.provideSupportingEvidenceChangeHearingType, middleware, getProvideSupportingEvidence);
+  router.get(paths.makeApplication.checkAnswerChangeHearingType, middleware, getProvideSupportingEvidenceCheckAndSend);
+  router.post(paths.makeApplication.changeHearingType, middleware, postChangeHearingTypeApplication);
+  router.post(paths.makeApplication.provideSupportingEvidenceChangeHearingType, middleware, postProvideSupportingEvidence);
+  router.post(paths.makeApplication.supportingEvidenceChangeHearingType, middleware, postProvideSupportingEvidenceYesOrNo);
+  router.post(paths.makeApplication.checkAnswerChangeHearingType, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
 
   return router;
 }

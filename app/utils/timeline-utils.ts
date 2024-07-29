@@ -235,9 +235,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
   const appealHearingRequirementsSection = constructSection(
     eventsAndStates.appealHearingRequirementsSectionEvents,
-    req.session.appeal.history.filter(event =>
-      ![Events.UPLOAD_ADDITIONAL_EVIDENCE.id, Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id].includes(event.id)
-      || isUploadEvidenceEventByLegalRep(req, event)),
+    filterEventsForHearingRequirementsSection(req),
     null, req
   );
   const appealArgumentSection = constructSection(
@@ -337,7 +335,10 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
   ];
 
   if (hearingBundleFeatureEnabled) {
-    appealHearingRequirementsSectionEvents.push(Events.LIST_CASE.id);
+    appealHearingRequirementsSectionEvents.push(
+      Events.LIST_CASE.id,
+      Events.RECORD_ADJOURNMENT_DETAILS.id
+    );
   }
 
   if (uploadAddendumEvidenceFeatureEnabled) {
@@ -369,6 +370,25 @@ function isUploadEvidenceEventByLegalRep(req: Request, event: HistoryEvent) {
   ].includes(event.id) && event.user.id !== req.idam.userDetails.uid;
 }
 
+function isRecordAdjournmentEventAndCaseAdjourned(req: Request, event: HistoryEvent) {
+  const caseAdjourned = req.session.appeal.appealStatus === States.ADJOURNED.id;
+
+  return (event.id === Events.RECORD_ADJOURNMENT_DETAILS.id) && caseAdjourned;
+}
+
+function filterEventsForHearingRequirementsSection(req: Request) {
+  const targetEvents = [
+    Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+    Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
+    Events.RECORD_ADJOURNMENT_DETAILS.id
+  ];
+
+  return req.session.appeal.history.filter(event =>
+    isUploadEvidenceEventByLegalRep(req, event)
+    || isRecordAdjournmentEventAndCaseAdjourned(req, event)
+    || !targetEvents.includes(event.id));
+}
+
 export {
   getAppealApplicationHistory,
   getSubmitClarifyingQuestionsEvents,
@@ -377,5 +397,6 @@ export {
   getUpdateTribunalDecisionHistory,
   getUpdateTribunalDecisionDocumentHistory,
   constructSection,
-  getEventsAndStates
+  getEventsAndStates,
+  filterEventsForHearingRequirementsSection
 };

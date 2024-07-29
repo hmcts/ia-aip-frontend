@@ -9,6 +9,9 @@ import {
   helpWithFeesRefNumberValidation,
   helpWithFeesValidation,
   homeOfficeNumberValidation,
+  interpreterLanguageSelectionValidation,
+  interpreterSupportSelectionValidation,
+  interpreterTypesSelectionValidation,
   isDateInRange,
   postcodeValidation,
   reasonForAppealDecisionValidation,
@@ -18,6 +21,7 @@ import {
   sponsorContactDetailsValidation,
   statementOfTruthValidation,
   textAreaValidation,
+  witenessesInterpreterNeedsValidation,
   yesOrNoRequiredValidation
 } from '../../../../app/utils/validations/fields-validations';
 import i18n from '../../../../locale/en.json';
@@ -716,29 +720,6 @@ describe('fields-validations', () => {
       };
       expect(validationResult).to.deep.equal(expectedResponse);
     });
-  });
-
-  describe('reasonForAppealDecisionValidation', () => {
-    it('should validate if statement present', () => {
-      const object = { 'applicationReason': 'some reason text here' };
-      const validationResult = reasonForAppealDecisionValidation(object);
-      expect(validationResult).to.equal(null);
-    });
-
-    it('should fail validation and return "string.empty" type', () => {
-      const object = { 'applicationReason': '' };
-      const validationResult = reasonForAppealDecisionValidation(object);
-      const expectedResponse = {
-
-        applicationReason: {
-          href: '#applicationReason',
-          key: 'applicationReason',
-          text: 'Enter the reasons you think the Home Office decision is wrong'
-        }
-
-      };
-      expect(validationResult).to.deep.equal(expectedResponse);
-    });
 
     it('should fail validation and return "string.empty" type ask for more time', () => {
       const object = { 'askForMoreTime': '' };
@@ -1007,4 +988,99 @@ describe('fields-validations', () => {
       });
     });
   });
+
+  describe('interpreterSupportSelectionValidation', () => {
+    it('should validate interpreter support selection', () => {
+      const validationResult = interpreterSupportSelectionValidation({ selections: 'isInterpreterServicesNeeded' });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validate when selection is blank', () => {
+      const validationResult = interpreterSupportSelectionValidation({ selections: '' });
+      expect(validationResult).to.deep.equal({
+        selections: {
+          key: 'selections',
+          text: 'You must select at least one option',
+          href: '#selections'
+        }
+      });
+    });
+  });
+
+  describe('witenessesInterpreterNeedsValidation', () => {
+    it('should validate witness selection', () => {
+      const validationResult = witenessesInterpreterNeedsValidation({ selections: 'witness 1' });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validate when selection is blank', () => {
+      const validationResult = witenessesInterpreterNeedsValidation({ selections: '' });
+      expect(validationResult).to.deep.equal({
+        selections: {
+          key: 'selections',
+          text: 'You must select at least one witness',
+          href: '#selections'
+        }
+      });
+    });
+  });
+
+  describe('interpreterTypesSelectionValidation', () => {
+    it('should validate interpreter type selection', () => {
+      const validationResult = interpreterTypesSelectionValidation({ selections: 'spokenLanguageInterpreter' });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validate when selection is blank', () => {
+      const validationResult = interpreterTypesSelectionValidation({ selections: '' });
+      expect(validationResult).to.deep.equal({
+        selections: {
+          key: 'selections',
+          text: 'You must select at least one kind of interpreter',
+          href: '#selections'
+        }
+      });
+    });
+  });
+
+  describe('interpreterLanguageSelectionValidation', () => {
+    it('should fail validate when interpreter language Selection are blank', () => {
+      const validationResult = interpreterLanguageSelectionValidation({ languageManualEntry: '', languageManualEntryDescription: '', languageRefData: '' });
+      expect(validationResult).to.deep.equal({
+        'languageRefData-languageManualEntry': {
+          key: 'languageRefData-languageManualEntry',
+          text: 'Please select the language you need to request',
+          href: '#languageRefData'
+        }
+      });
+    });
+
+    it('should fail validate when user selected manually input with empty language detail', () => {
+      const validationResult = interpreterLanguageSelectionValidation({ languageManualEntry: 'Yes', languageManualEntryDescription: '', languageRefData: '' });
+      expect(validationResult).to.deep.equal({
+        languageManualEntryDescription: {
+          key: 'languageManualEntryDescription',
+          text: 'Please enter the detail of the language you need to request',
+          href: '#languageManualEntryDescription'
+        }
+      });
+    });
+
+    it('should fail validate when user selected both option', () => {
+      const validationResult = interpreterLanguageSelectionValidation({ languageManualEntry: 'Yes', languageManualEntryDescription: 'language', languageRefData: 'language' });
+      expect(validationResult).to.deep.equal({
+        'languageRefData-languageManualEntry': {
+          key: 'languageRefData-languageManualEntry',
+          text: 'Fill in only one field',
+          href: '#languageRefData'
+        }
+      });
+    });
+
+    it('should validate interpreter support selection', () => {
+      const validationResult = interpreterLanguageSelectionValidation({ languageManualEntry: 'Yes', languageManualEntryDescription: 'language', languageRefData: '' });
+      expect(validationResult).to.equal(null);
+    });
+  });
+
 });

@@ -381,7 +381,7 @@ describe('Confirmation Page Controller', () => {
       showAppealRequests: true,
       showAppealRequestsInAppealEndedStatus: false,
       showHearingRequests: false,
-      showPayLaterLink: true,
+      showPayLaterLink: false,
       ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: true,

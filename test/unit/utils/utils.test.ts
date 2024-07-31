@@ -5,6 +5,7 @@ import {
   asBooleanValue,
   documentIdToDocStoreUrl,
   formatTextForCYA,
+  formatWitnessName,
   getApplicationType,
   getFtpaApplicantType,
   getLatestUpdateRemissionDecionsEventHistory,
@@ -463,4 +464,27 @@ describe('utils', () => {
       expect(latesHistoryEvent.createdDate).to.be.deep.equal('2024-04-07T15:36:26.099');
     });
   });
+
+  describe('formatWitnessName', () => {
+
+    it('should correctly format when family name is given', async () => {
+      const witnessName: WitnessName = {
+        'witnessGivenNames': 'GivenName1 GivenName2',
+        'witnessFamilyName': 'FamilyName'
+      };
+      const witnessNameFormatted: String = formatWitnessName(witnessName);
+      const expected = 'GivenName1 GivenName2 FamilyName';
+      expect(witnessNameFormatted).to.equals(expected);
+    });
+
+    it('should correctly format when family name is not given', async () => {
+      const witnessName: WitnessName = {
+        'witnessGivenNames': 'GivenName1 GivenName2'
+      };
+      const witnessNameFormatted: String = formatWitnessName(witnessName);
+      const expected = 'GivenName1 GivenName2';
+      expect(witnessNameFormatted).to.equals(expected);
+    });
+  });
+
 });

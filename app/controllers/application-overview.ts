@@ -6,7 +6,7 @@ import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getAppealApplicationNextStep, isPreAddendumEvidenceUploadState, transferredToUpperTribunal } from '../utils/application-state-utils';
+import { getAppealApplicationNextStep, isAddendumEvidenceUploadState, transferredToUpperTribunal } from '../utils/application-state-utils';
 import { getHearingCentre } from '../utils/cma-hearing-details';
 import { formatDate, timeFormat } from '../utils/date-utils';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
@@ -56,6 +56,8 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
     States.PRE_HEARING.id,
     States.DECISION.id,
     States.DECIDED.id,
+    States.FTPA_SUBMITTED.id,
+    States.FTPA_DECIDED.id,
     States.REASONS_FOR_APPEAL_SUBMITTED.id,
     States.AWAITING_CMA_REQUIREMENTS.id,
     States.CMA_REQUIREMENTS_SUBMITTED.id,
@@ -63,7 +65,7 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
     States.CMA_LISTED.id,
     States.ADJOURNED.id
   ];
-  let preAddendumEvidenceUploadState = isPreAddendumEvidenceUploadState(appealStatus);
+  let preAddendumEvidenceUploadState = isAddendumEvidenceUploadState(appealStatus);
   if (!preAddendumEvidenceUploadState) {
     return provideMoreEvidenceStates.includes(appealStatus);
   }
@@ -149,12 +151,9 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       }
 
       const showChangeRepresentation = isAppealInProgress(appealStatus);
-      const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled)
-          && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
-      const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
-          && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
-      const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
-          && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
+      const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled);
+      const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
+      const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
       const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
           && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
 
@@ -188,7 +187,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showChangeRepresentation,
         showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, ftpaFeatureEnabled),
         showAskForFeeRemission,
-        showAskForSomethingInEndedState
+        showAskForSomethingInEndedState,
+        isPostDecisionState: isPostDecisionState(appealStatus, ftpaFeatureEnabled)
       });
     } catch (e) {
       next(e);
@@ -239,5 +239,7 @@ export {
   showHearingRequestSection,
   isPostDecisionState,
   showAppealRequestSectionInAppealEndedStatus,
-  showFtpaApplicationLink
+  showFtpaApplicationLink,
+  isAppealInProgress,
+  getAppellantName
 };

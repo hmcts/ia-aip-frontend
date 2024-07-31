@@ -769,13 +769,14 @@ async function getAppealApplicationNextStep(req: Request) {
   return doThisNextSection;
 }
 
-function isPreAddendumEvidenceUploadState(appealStatus: string): Boolean {
+function isAddendumEvidenceUploadState(appealStatus: string): Boolean {
   // TODO: remove after Feature flag for AIP Hearing (Bundling) is permanently switched on
   if ('preHearingOutOfCountryFeatureDisabled'.startsWith(appealStatus)) {
     return true;
   }
 
-  return [States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id].includes(appealStatus);
+  return [States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id,
+    States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id].includes(appealStatus);
 }
 
 function eventByLegalRep(req: Request, eventId: string, state: string): boolean {
@@ -872,7 +873,7 @@ export {
   getAppealStatus,
   getMoveAppealOfflineReason,
   getMoveAppealOfflineDate,
-  isPreAddendumEvidenceUploadState,
+  isAddendumEvidenceUploadState,
   eventByLegalRep,
   transferredToUpperTribunal,
   isEventLatestInHistoryList,

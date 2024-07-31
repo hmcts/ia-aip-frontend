@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
+import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import {
@@ -7,6 +8,7 @@ import {
   getAppealStatus,
   getMoveAppealOfflineDate,
   getMoveAppealOfflineReason,
+  isAddendumEvidenceUploadState,
   isEventLatestInHistoryList,
   remissionDecisionEventIsTheLatest,
   requestFeeRemissionEventIsTheLatest
@@ -159,27 +161,49 @@ describe('application-state-utils', () => {
     });
 
     it('when application status is appealSubmitted should get correct \'Do This next section\'', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
+      req.session.appeal.application.remissionOption = null;
+
       req.session.appeal.appealStatus = 'appealSubmitted';
       const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         cta: null,
-        'deadline': dlrmFeeRemissionFlag ? '22 February 2020' : '13 February 2020',
-        descriptionParagraphs: dlrmFeeRemissionFlag
-          ? ['Your appeal details have been sent to the Tribunal.',
-            'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
-            'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
-            'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.']
-          : [
-            'Your appeal details have been sent to the Tribunal.',
-            'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
-          ],
+        deadline: '13 February 2020',
+        descriptionParagraphs: [
+          'Your appeal details have been sent to the Tribunal.',
+          'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+        ],
         info: {
           title: 'Helpful Information',
           url: '<a class=\'govuk-link\' href=\'{{ paths.common.tribunalCaseworker }}\'>What is a Tribunal Caseworker?</a>'
         },
         allowedAskForMoreTime: false
+      });
+    });
+
+    it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
+      req.session.appeal.application.remissionOption = null;
+
+      req.session.appeal.appealStatus = 'lateAppealSubmitted';
+      req.session.appeal.application.isAppealLate = true;
+
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        allowedAskForMoreTime: false,
+        cta: null,
+        deadline: '13 February 2020',
+        descriptionParagraphs: [
+          'Your late appeal details have been sent to the Tribunal.',
+          'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+        ],
+        'info': {
+          'title': 'Helpful Information',
+          'url': '<a class=\'govuk-link\' href=\'{{ paths.common.tribunalCaseworker }}\'>What is a Tribunal Caseworker?</a>'
+        }
       });
     });
 
@@ -340,32 +364,6 @@ describe('application-state-utils', () => {
           url: '<a class=\'govuk-link\' href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
         },
         allowedAskForMoreTime: false
-      });
-    });
-
-    it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', async () => {
-      req.session.appeal.appealStatus = 'lateAppealSubmitted';
-      req.session.appeal.application.isAppealLate = true;
-      const result = await getAppealApplicationNextStep(req as Request);
-      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-
-      expect(result).to.eql({
-        'allowedAskForMoreTime': false,
-        'cta': null,
-        'deadline': dlrmFeeRemissionFlag ? '22 February 2020' : '13 February 2020',
-        descriptionParagraphs: dlrmFeeRemissionFlag
-          ? ['Your late appeal details have been sent to the Tribunal.',
-            'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
-            'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
-            'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.']
-          : [
-            'Your late appeal details have been sent to the Tribunal.',
-            'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
-          ],
-        'info': {
-          'title': 'Helpful Information',
-          'url': '<a class=\'govuk-link\' href=\'{{ paths.common.tribunalCaseworker }}\'>What is a Tribunal Caseworker?</a>'
-        }
       });
     });
 
@@ -2087,5 +2085,21 @@ describe('application-state-utils', () => {
       ],
       allowedAskForMoreTime: false
     });
+  });
+
+  it('isAddendumEvidenceUploadState', async () => {
+    const disabledFlag = 'preHearingOutOfCountryFeatureDisabled';
+    expect(isAddendumEvidenceUploadState(disabledFlag)).to.be.true;
+    const enabledFlag = 'appealSubmitted';
+    expect(isAddendumEvidenceUploadState(enabledFlag)).to.be.false;
+    for (const state in States) {
+      const stateId = States[state].id;
+      if ([States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id,
+        States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id].includes(stateId)) {
+        expect(isAddendumEvidenceUploadState(stateId)).to.be.true;
+      } else {
+        expect(isAddendumEvidenceUploadState(stateId)).to.be.false;
+      }
+    }
   });
 });

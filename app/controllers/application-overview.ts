@@ -145,7 +145,11 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);
       const hearingDetails = getHearingDetails(req);
-      const showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req));
+      let showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
+      if (refundFeatureEnabled) {
+        showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus, ftpaFeatureEnabled) && !isRemissionApprovedOrPartiallyApproved(req.session.appeal);
+      }
+
       const showChangeRepresentation = isAppealInProgress(appealStatus);
       const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled);
       const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
@@ -217,6 +221,11 @@ function setupApplicationOverviewController(updateAppealService: UpdateAppealSer
   const router = Router();
   router.get(paths.common.overview, getApplicationOverview(updateAppealService));
   return router;
+}
+
+function isRemissionApprovedOrPartiallyApproved(appeal: Appeal): boolean {
+  const remissionDecision = appeal.application.remissionDecision;
+  return (remissionDecision === 'approved' || remissionDecision === 'partiallyApproved');
 }
 
 export {

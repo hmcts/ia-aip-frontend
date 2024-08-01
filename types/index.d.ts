@@ -68,6 +68,7 @@ interface Evidence {
   description?: string;
   dateUploaded?: string;
   uploadedBy?: string;
+  document?: SupportingDocument
 }
 
 interface AdditionalEvidenceDocument {
@@ -125,6 +126,7 @@ interface Appeal {
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+  reheardHearingDocumentsCollection?: ReheardHearingDocs<Evidence>[];
   hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
@@ -500,6 +502,13 @@ interface ClarifyingQuestion<T> {
     answer?: string;
     directionId: string;
     supportingEvidence?: T[];
+  };
+}
+
+interface ReheardHearingDocs<T> {
+  id?: string;
+  value: {
+    reheardHearingDocs?: T[];
   };
 }
 

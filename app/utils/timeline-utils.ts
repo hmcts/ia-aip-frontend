@@ -164,7 +164,7 @@ function getDirectionHistory(req: Request): any[] {
 function getListCaseEvent(req: Request): any[] {
   let hearingNotices: Evidence[] = [];
   if (req.session.appeal.hearingDocuments) {
-    hearingNotices = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'hearingNotice');
+    hearingNotices = req.session.appeal.hearingDocuments.filter((doc: { tag: string; }) => doc.tag === 'hearingNotice');
   }
   if (req.session.appeal.reheardHearingDocumentsCollection) {
     req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {
@@ -179,7 +179,7 @@ function getListCaseEvent(req: Request): any[] {
   return hearingNotices
         .map(hearingNotice => {
           console.log(hearingNotice);
-          let uniqueId = hearingNotice.document.documentUrl.split('/documents/')[1];
+          let uniqueId: string = hearingNotice.document.document_url.split('/documents/')[1];
           return {
             date: moment(hearingNotice.dateUploaded).format('DD MMMM YYYY'),
             dateObject: new Date(hearingNotice.dateUploaded),

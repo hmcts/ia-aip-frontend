@@ -232,7 +232,7 @@ const paths = {
     outOfTimeDecisionViewer: '/out-of-time-decision',
     homeOfficeWithdrawLetter: '/home-office-withdrawal-letter',
     homeOfficeResponse: '/home-office-response',
-    hearingNoticeViewer: '/hearing-notice',
+    hearingNoticeViewer: '/hearing-notice/:id',
     hearingAdjournmentNoticeViewer: '/hearing-adjournment-notice',
     hearingBundleViewer: '/hearing-bundle',
     decisionAndReasonsViewer: '/decision-reasons',

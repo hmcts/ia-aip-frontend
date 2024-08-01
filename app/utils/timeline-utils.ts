@@ -164,7 +164,7 @@ function getDirectionHistory(req: Request): any[] {
 function getListCaseEvent(req: Request): any[] {
   let hearingNotices: Evidence[] = [];
   if (req.session.appeal.hearingDocuments) {
-    hearingNotices = req.session.appeal.hearingDocuments.filter((doc: { tag: string; }) => doc.tag === 'hearingNotice');
+    hearingNotices = req.session.appeal.hearingDocuments.filter((doc: Evidence) => doc.tag === 'hearingNotice');
   }
   if (req.session.appeal.reheardHearingDocumentsCollection) {
     req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {

@@ -10,7 +10,8 @@ import {
   getEventsAndStates,
   getSubmitClarifyingQuestionsEvents,
   getUpdateTribunalDecisionDocumentHistory,
-  getUpdateTribunalDecisionHistory
+  getUpdateTribunalDecisionHistory,
+  getListCaseEvent
 } from '../../../app/utils/timeline-utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
@@ -970,4 +971,59 @@ describe('timeline-utils', () => {
       expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(3);
     });
   });
+
+  describe('getListCaseEvent', () => {
+    it('should return an empty array when there are no hearing documents', () => {
+      const result = getListCaseEvent(req as Request);
+      expect(result).to.be.an('array').that.is.empty;
+    });
+
+    it('should return filtered hearing notices from hearingDocuments', () => {
+      req.session.appeal.hearingDocuments = [
+        { tag: 'hearingNotice', document: { document_url: '/documents/123' }, dateUploaded: '2024-01-01' },
+        { tag: 'other', document: { document_url: '/documents/456' }, dateUploaded: '2024-01-02' }
+      ];
+
+      const result = getListCaseEvent(req as Request);
+      expect(result).to.have.lengthOf(1);
+      expect(result[0]).to.include({ date: '01 January 2024' });
+    });
+
+    it('should return filtered hearing notices from reheardHearingDocumentsCollection', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [
+        {
+          value: {
+            reheardHearingDocs: [
+              { tag: 'reheardHearingNotice', document: { document_url: '/documents/789' }, dateUploaded: '2024-03-03' },
+              { tag: 'other', document: { document_url: '/documents/101' }, dateUploaded: '2024-04-04' }
+            ]
+          }
+        }
+      ];
+
+      const result = getListCaseEvent(req as Request);
+      expect(result).to.have.lengthOf(1);
+      expect(result[0]).to.include({ date: '03 March 2024' });
+    });
+
+    it('should handle both hearingDocuments and reheardHearingDocumentsCollection', () => {
+      req.session.appeal.hearingDocuments = [
+        { tag: 'hearingNotice', document: { document_url: '/documents/123' }, dateUploaded: '2024-01-01' }
+      ];
+      req.session.appeal.reheardHearingDocumentsCollection = [
+        {
+          value: {
+            reheardHearingDocs: [
+              { tag: 'reheardHearingNotice', document: { document_url: '/documents/789' }, dateUploaded: '2024-03-03' }
+            ]
+          }
+        }
+      ];
+
+      const result = getListCaseEvent(req as Request);
+      expect(result).to.have.lengthOf(2);
+      expect(result[0]).to.include({ date: '01 January 2024' });
+      expect(result[1]).to.include({ date: '03 March 2024' });
+    });
+  })
 });

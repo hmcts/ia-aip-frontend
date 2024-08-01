@@ -434,5 +434,6 @@ export {
     getUpdateTribunalDecisionDocumentHistory,
     constructSection,
     getEventsAndStates,
-    filterEventsForHearingRequirementsSection
+    filterEventsForHearingRequirementsSection,
+    getListCaseEvent
 };

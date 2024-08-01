@@ -8,10 +8,10 @@ import {
   getApplicationEvents,
   getDirectionHistory,
   getEventsAndStates,
+  getListCaseEvent,
   getSubmitClarifyingQuestionsEvents,
   getUpdateTribunalDecisionDocumentHistory,
-  getUpdateTribunalDecisionHistory,
-  getListCaseEvent
+  getUpdateTribunalDecisionHistory
 } from '../../../app/utils/timeline-utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
@@ -1025,5 +1025,5 @@ describe('timeline-utils', () => {
       expect(result[0]).to.include({ date: '01 January 2024' });
       expect(result[1]).to.include({ date: '03 March 2024' });
     });
-  })
+  });
 });

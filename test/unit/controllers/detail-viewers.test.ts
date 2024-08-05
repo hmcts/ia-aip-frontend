@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-  findDocumentInCollections,
+  findDocumentInReheardHearingDocCollection,
   getAppealDetailsViewer,
   getApplicationTitle,
   getCmaRequirementsViewer,
@@ -1765,12 +1765,12 @@ describe('Detail viewer Controller', () => {
     });
   });
 
-  describe('findDocumentInCollections', () => {
+  describe('findDocumentInReheardHearingDocCollection', () => {
     it('should return the document if it exists in the collection', () => {
       const collections = [
         { value: { reheardHearingDocs: [{ fileId: '123' }] } }
       ];
-      const result = findDocumentInCollections(collections, '123');
+      const result = findDocumentInReheardHearingDocCollection(collections, '123');
       expect(result).to.deep.equal({ fileId: '123' });
     });
 
@@ -1778,7 +1778,7 @@ describe('Detail viewer Controller', () => {
       const collections = [
         { value: { reheardHearingDocs: [{ fileId: '123' }] } }
       ];
-      const result = findDocumentInCollections(collections, '456');
+      const result = findDocumentInReheardHearingDocCollection(collections, '456');
       expect(result).to.be.undefined;
     });
 
@@ -1787,13 +1787,13 @@ describe('Detail viewer Controller', () => {
         { value: undefined },
         { value: { reheardHearingDocs: [{ fileId: '123' }] } }
       ];
-      const result = findDocumentInCollections(collections, '123');
+      const result = findDocumentInReheardHearingDocCollection(collections, '123');
       expect(result).to.deep.equal({ fileId: '123' });
     });
 
     it('should handle empty collections', () => {
       const collections: any[] = [];
-      const result = findDocumentInCollections(collections, '123');
+      const result = findDocumentInReheardHearingDocCollection(collections, '123');
       expect(result).to.be.undefined;
     });
   });

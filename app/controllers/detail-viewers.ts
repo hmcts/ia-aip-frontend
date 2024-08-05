@@ -711,10 +711,10 @@ function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function findDocumentInCollections(collections: any[], fileId: string): Evidence | undefined {
+function findDocumentInReheardHearingDocCollection(collections: ReheardHearingDocs<Evidence>[], fileId: string): Evidence | undefined {
   for (let collection of collections) {
     let documentCollection = collection.value ? collection.value : {};
-    const docs = documentCollection.reheardHearingDocs;
+    const docs: Evidence[] = documentCollection.reheardHearingDocs;
     if (docs) {
       const document: Evidence = docs.find((doc: Evidence) => doc.fileId === fileId);
       if (document) {
@@ -725,13 +725,33 @@ function findDocumentInCollections(collections: any[], fileId: string): Evidence
   return undefined;
 }
 
-function getHearingNoticeDocument(req: any): Evidence {
+function getLatestHearingNoticeDocument(appeal: Appeal): Evidence | undefined {
+  let hearingDocuments: Evidence[] = appeal.hearingDocuments || [];
+  let reheardHearingDocumentsCollection: ReheardHearingDocs<Evidence>[] = appeal.reheardHearingDocumentsCollection || [];
+  for (let collection of reheardHearingDocumentsCollection) {
+    let documentCollection = collection.value ? collection.value : {};
+    const docs: Evidence[] = documentCollection.reheardHearingDocs;
+    if (docs) {
+      hearingDocuments.push(...docs);
+    }
+  }
+  let hearingNotices: Evidence[] = hearingDocuments.filter((doc: Evidence) =>
+      doc.tag === 'hearingNotice' || doc.tag === 'reheardHearingNotice');
+  hearingNotices.sort((a: Evidence, b: Evidence) =>
+      new Date(b.dateUploaded).getTime() - new Date(a.dateUploaded).getTime());
+  return hearingNotices[0];
+}
+
+function getHearingNoticeDocument(req: Request): Evidence {
   const { appeal } = req.session;
   const { id } = req.params;
+  if (id === 'latest') {
+    return getLatestHearingNoticeDocument(appeal);
+  }
   let hearingDocuments = appeal.hearingDocuments ? appeal.hearingDocuments : [];
   let hearingNoticeDocument = hearingDocuments.find((doc: Evidence) => doc.fileId === id);
   if (!hearingNoticeDocument) {
-    hearingNoticeDocument = findDocumentInCollections(appeal.reheardHearingDocumentsCollection || [], id);
+    hearingNoticeDocument = findDocumentInReheardHearingDocCollection(appeal.reheardHearingDocumentsCollection || [], id);
   }
   if (!hearingNoticeDocument) {
     throw new Error(`No hearing notice with {fileId: ${id}} found.`);
@@ -1260,6 +1280,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.homeOfficeWithdrawLetter, getHomeOfficeWithdrawLetter);
   router.get(paths.common.homeOfficeResponse, getHomeOfficeResponse);
   router.get(paths.common.hearingNoticeViewer, getHearingNoticeViewer);
+  router.get(paths.common.latestHearingNoticeViewer, getHearingNoticeViewer);
   router.get(paths.common.hearingAdjournmentNoticeViewer, getHearingAdjournmentNoticeViewer);
   router.get(paths.common.hearingBundleViewer, getHearingBundle);
   router.get(paths.common.decisionAndReasonsViewer, getDecisionAndReasonsViewer);
@@ -1291,7 +1312,7 @@ export {
   getHomeOfficeResponse,
   getHearingNoticeViewer,
   getHearingNoticeDocument,
-  findDocumentInCollections,
+  findDocumentInReheardHearingDocCollection,
   getHearingAdjournmentNoticeViewer,
   getHearingBundle,
   getDecisionAndReasonsViewer,

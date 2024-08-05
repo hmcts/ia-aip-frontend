@@ -714,19 +714,33 @@ function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
 function getHearingNoticeViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
-    const hearingNoticeDocuments = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'hearingNotice');
-    const data = [];
-    hearingNoticeDocuments.forEach(document => {
-      const fileNameFormatted = fileNameFormatter(document.name);
-      data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(document.dateUploaded).format(dayMonthYearFormat)]));
-      data.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${document.fileId}'>${fileNameFormatted}</a>`]));
-    });
+    let hearingDocuments = req.session.appeal.hearingDocuments;
+    if (hearingDocuments && req.params.id) {
+      let hearingNoticeDocument = hearingDocuments.find((doc: Evidence) => (req.params.id === doc.fileId));
+      if (!hearingNoticeDocument) {
+        let reheardHearingDocuments = req.session.appeal.reheardHearingDocumentsCollection;
+        if (reheardHearingDocuments) {
+          for (let collection of reheardHearingDocuments) {
+            if (collection.value) {
+              hearingNoticeDocument = collection.value.reheardHearingDocs.find((doc: Evidence) => (req.params.id === doc.fileId));
+              if (hearingNoticeDocument) {
+                break;
+              }
+            }
+          }
+        }
+      }
+      const data = [];
+      const fileNameFormatted = fileNameFormatter(hearingNoticeDocument.name);
+      data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(hearingNoticeDocument.dateUploaded).format(dayMonthYearFormat)]));
+      data.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingNoticeDocument.fileId}'>${fileNameFormatted}</a>`]));
 
-    return res.render('templates/details-viewer.njk', {
-      title: i18n.pages.detailViewers.hearingNotice.title,
-      data,
-      previousPage
-    });
+      return res.render('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data,
+        previousPage
+      });
+    }
   } catch (error) {
     next(error);
   }

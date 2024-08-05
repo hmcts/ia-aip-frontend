@@ -166,27 +166,31 @@ function getListCaseEvent(req: Request): any[] {
   if (req.session.appeal.hearingDocuments) {
     hearingNotices = req.session.appeal.hearingDocuments.filter((doc: Evidence) => doc.tag === 'hearingNotice');
   }
+  console.log("plooop")
+  console.log(req.session.appeal)
   if (req.session.appeal.reheardHearingDocumentsCollection) {
+    console.log(req.session.appeal.reheardHearingDocumentsCollection)
     req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {
       if (collection.value) {
+        console.log(collection.value)
         let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
                     .filter(doc => doc.tag === 'hearingNotice' || doc.tag === 'reheardHearingNotice');
         hearingNotices.push(...filteredCollection);
+        console.log(filteredCollection)
+        console.log(hearingNotices)
       }
     });
   }
 
   return hearingNotices
         .map(hearingNotice => {
-          console.log(hearingNotice);
-          let uniqueId: string = hearingNotice.document.document_url.split('/documents/')[1];
           return {
             date: moment(hearingNotice.dateUploaded).format('DD MMMM YYYY'),
             dateObject: new Date(hearingNotice.dateUploaded),
             text: i18n.pages.overviewPage.timeline.listCase.text || null,
             links: [{
               ...i18n.pages.overviewPage.timeline.listCase.links[0],
-              href: paths.common.hearingNoticeViewer.replace(':id', uniqueId)
+              href: paths.common.hearingNoticeViewer.replace(':id', hearingNotice.fileId)
             }]
           };
         });

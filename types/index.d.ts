@@ -68,7 +68,6 @@ interface Evidence {
   description?: string;
   dateUploaded?: string;
   uploadedBy?: string;
-  document?: SupportingDocument
 }
 
 interface AdditionalEvidenceDocument {

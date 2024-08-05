@@ -1678,6 +1678,70 @@ describe('Detail viewer Controller', () => {
     };
     it('should render templates/details-viewer.njk with hearing notice document', () => {
       req.session.appeal.hearingDocuments = [document];
+      req.params.id = 'a3d396eb-277d-4b66-81c8-627f57212e8'
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '01 June 2021' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/${document.fileId}'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+
+      it('should catch error and call next with it', () => {
+        req.session.appeal.hearingDocuments = [document];
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        getHearingNoticeViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
+  });
+
+
+  describe('should render reheard notice of hearing', () => {
+    const document = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-hearing-notice.PDF',
+      id: '1',
+      tag: 'hearingNotice',
+      dateUploaded: '2021-06-01'
+    };
+
+    const reheardHearingDocumentsCollection =
+        {
+          "id": "1",
+          "value": {
+            "reheardHearingDocs": [
+              {
+                "id": "1",
+                "value": {
+                  "tag": "reheardHearingNotice",
+                  "document": {
+                    "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/18a78aaa-09d8-4ac0-b170-22ef8314d76e",
+                    "document_filename": "DC 50056 2023-name2-hearing-notice.PDF",
+                    "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/18a78aaa-09d8-4ac0-b170-22ef8314d76e/binary"
+                  },
+                  "suppliedBy": "",
+                  "description": "",
+                  "dateUploaded": "2024-07-24"
+                }
+              }
+            ]
+          }
+        }
+    it('should render templates/details-viewer.njk with hearing notice document', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      req.params.id = 'a3d396eb-277d-4b66-81c8-627f57212e8'
       const expectedSummaryRows = [
         {
           key: { text: i18n.pages.detailViewers.common.dateUploaded },

@@ -980,8 +980,8 @@ describe('timeline-utils', () => {
 
     it('should return filtered hearing notices from hearingDocuments', () => {
       req.session.appeal.hearingDocuments = [
-        { tag: 'hearingNotice', document: { document_url: '/documents/123' }, dateUploaded: '2024-01-01' },
-        { tag: 'other', document: { document_url: '/documents/456' }, dateUploaded: '2024-01-02' }
+        { tag: 'hearingNotice', fileId: 'some-id-0123', dateUploaded: '2024-01-01' },
+        { tag: 'other', fileId: 'some-id-1234', dateUploaded: '2024-01-02' }
       ];
 
       const result = getListCaseEvent(req as Request);
@@ -994,8 +994,8 @@ describe('timeline-utils', () => {
         {
           value: {
             reheardHearingDocs: [
-              { tag: 'reheardHearingNotice', document: { document_url: '/documents/789' }, dateUploaded: '2024-03-03' },
-              { tag: 'other', document: { document_url: '/documents/101' }, dateUploaded: '2024-04-04' }
+              { tag: 'reheardHearingNotice', fileId: 'some-id-2345', dateUploaded: '2024-03-03' },
+              { tag: 'other', fileId: 'some-id-3456', dateUploaded: '2024-04-04' }
             ]
           }
         }
@@ -1008,13 +1008,13 @@ describe('timeline-utils', () => {
 
     it('should handle both hearingDocuments and reheardHearingDocumentsCollection', () => {
       req.session.appeal.hearingDocuments = [
-        { tag: 'hearingNotice', document: { document_url: '/documents/123' }, dateUploaded: '2024-01-01' }
+        { tag: 'hearingNotice', fileId: 'some-id-4567', dateUploaded: '2024-01-01' }
       ];
       req.session.appeal.reheardHearingDocumentsCollection = [
         {
           value: {
             reheardHearingDocs: [
-              { tag: 'reheardHearingNotice', document: { document_url: '/documents/789' }, dateUploaded: '2024-03-03' }
+              { tag: 'reheardHearingNotice', fileId: 'some-id-5678', dateUploaded: '2024-03-03' }
             ]
           }
         }

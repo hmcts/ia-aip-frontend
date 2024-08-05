@@ -711,36 +711,48 @@ function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function findDocumentInCollections(collections: any[], fileId: string): Evidence | undefined {
+  for (let collection of collections) {
+    let documentCollection = collection.value ? collection.value : {};
+    const docs = documentCollection.reheardHearingDocs;
+    if (docs) {
+      const document: Evidence = docs.find((doc: Evidence) => doc.fileId === fileId);
+      if (document) {
+        return document;
+      }
+    }
+  }
+  return undefined;
+}
+
+function getHearingNoticeDocument(req: any): Evidence {
+  const { appeal } = req.session;
+  const { id } = req.params;
+  let hearingDocuments = appeal.hearingDocuments ? appeal.hearingDocuments : [];
+  let hearingNoticeDocument = hearingDocuments.find((doc: Evidence) => doc.fileId === id);
+  if (!hearingNoticeDocument) {
+    hearingNoticeDocument = findDocumentInCollections(appeal.reheardHearingDocumentsCollection || [], id);
+  }
+  if (!hearingNoticeDocument) {
+    throw new Error(`No hearing notice with {fileId: ${id}} found.`);
+  }
+  return hearingNoticeDocument;
+}
+
 function getHearingNoticeViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
-    let hearingDocuments = req.session.appeal.hearingDocuments;
-    if (hearingDocuments && req.params.id) {
-      let hearingNoticeDocument = hearingDocuments.find((doc: Evidence) => (req.params.id === doc.fileId));
-      if (!hearingNoticeDocument) {
-        let reheardHearingDocuments = req.session.appeal.reheardHearingDocumentsCollection;
-        if (reheardHearingDocuments) {
-          for (let collection of reheardHearingDocuments) {
-            if (collection.value) {
-              hearingNoticeDocument = collection.value.reheardHearingDocs.find((doc: Evidence) => (req.params.id === doc.fileId));
-              if (hearingNoticeDocument) {
-                break;
-              }
-            }
-          }
-        }
-      }
-      const data = [];
-      const fileNameFormatted = fileNameFormatter(hearingNoticeDocument.name);
-      data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(hearingNoticeDocument.dateUploaded).format(dayMonthYearFormat)]));
-      data.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingNoticeDocument.fileId}'>${fileNameFormatted}</a>`]));
+    const hearingNoticeDocument: Evidence = getHearingNoticeDocument(req);
+    const data = [];
+    const fileNameFormatted = fileNameFormatter(hearingNoticeDocument.name);
+    data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(hearingNoticeDocument.dateUploaded).format(dayMonthYearFormat)]));
+    data.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingNoticeDocument.fileId}'>${fileNameFormatted}</a>`]));
 
-      return res.render('templates/details-viewer.njk', {
-        title: i18n.pages.detailViewers.hearingNotice.title,
-        data,
-        previousPage
-      });
-    }
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.hearingNotice.title,
+      data,
+      previousPage
+    });
   } catch (error) {
     next(error);
   }
@@ -1278,6 +1290,8 @@ export {
   getOutOfTimeDecisionViewer,
   getHomeOfficeResponse,
   getHearingNoticeViewer,
+  getHearingNoticeDocument,
+  findDocumentInCollections,
   getHearingAdjournmentNoticeViewer,
   getHearingBundle,
   getDecisionAndReasonsViewer,

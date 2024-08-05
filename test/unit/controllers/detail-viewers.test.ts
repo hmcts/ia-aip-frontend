@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import {
+  findDocumentInCollections,
   getAppealDetailsViewer,
   getApplicationTitle,
   getCmaRequirementsViewer,
@@ -10,6 +11,7 @@ import {
   getFtpaDecisionDetails,
   getHearingAdjournmentNoticeViewer,
   getHearingBundle,
+  getHearingNoticeDocument,
   getHearingNoticeViewer,
   getHoEvidenceDetailsViewer,
   getHomeOfficeResponse,
@@ -1678,7 +1680,7 @@ describe('Detail viewer Controller', () => {
     };
     it('should render templates/details-viewer.njk with hearing notice document', () => {
       req.session.appeal.hearingDocuments = [document];
-      req.params.id = 'a3d396eb-277d-4b66-81c8-627f57212e8'
+      req.params.id = 'a3d396eb-277d-4b66-81c8-627f57212ec8'
       const expectedSummaryRows = [
         {
           key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -1723,25 +1725,18 @@ describe('Detail viewer Controller', () => {
           "value": {
             "reheardHearingDocs": [
               {
-                "id": "1",
-                "value": {
-                  "tag": "reheardHearingNotice",
-                  "document": {
-                    "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/18a78aaa-09d8-4ac0-b170-22ef8314d76e",
-                    "document_filename": "DC 50056 2023-name2-hearing-notice.PDF",
-                    "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/18a78aaa-09d8-4ac0-b170-22ef8314d76e/binary"
-                  },
-                  "suppliedBy": "",
-                  "description": "",
-                  "dateUploaded": "2024-07-24"
-                }
+                fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+                name: 'PA 50002 2021-perez-hearing-notice.PDF',
+                id: '1',
+                tag: 'reheardHearingNotice',
+                dateUploaded: '2021-06-01'
               }
             ]
           }
         }
     it('should render templates/details-viewer.njk with hearing notice document', () => {
       req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
-      req.params.id = 'a3d396eb-277d-4b66-81c8-627f57212e8'
+      req.params.id = 'a3d396eb-277d-4b66-81c8-627f57212ec8'
       const expectedSummaryRows = [
         {
           key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -1767,6 +1762,113 @@ describe('Detail viewer Controller', () => {
         getHearingNoticeViewer(req as Request, res as Response, next);
         expect(next).to.have.been.calledWith(error);
       });
+    });
+  });
+
+  describe('findDocumentInCollections', () => {
+    it('should return the document if it exists in the collection', () => {
+      const collections = [
+        { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+      ];
+      const result = findDocumentInCollections(collections, '123');
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should return undefined if the document does not exist in the collection', () => {
+      const collections = [
+        { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+      ];
+      const result = findDocumentInCollections(collections, '456');
+      expect(result).to.be.undefined;
+    });
+
+    it('should handle collections with undefined values', () => {
+      const collections = [
+        { value: undefined },
+        { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+      ];
+      const result = findDocumentInCollections(collections, '123');
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should handle empty collections', () => {
+      const collections: any[] = [];
+      const result = findDocumentInCollections(collections, '123');
+      expect(result).to.be.undefined;
+    });
+  });
+
+  describe('getHearingNoticeDocument', () => {
+    it('should return the document if it exists in primary hearing documents', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [{ fileId: '123' }],
+            reheardHearingDocumentsCollection: []
+          }
+        },
+        params: { id: '123' }
+      };
+      const result = getHearingNoticeDocument(req);
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should return the document if it exists in reheard hearing documents', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [],
+            reheardHearingDocumentsCollection: [
+              { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+            ]
+          }
+        },
+        params: { id: '123' }
+      };
+      const result = getHearingNoticeDocument(req);
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should throw an error if the document does not exist in any collection', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [],
+            reheardHearingDocumentsCollection: []
+          }
+        },
+        params: { id: '123' }
+      };
+      expect(() => getHearingNoticeDocument(req)).to.throw('No hearing notice with {fileId: 123} found.');
+    });
+
+    it('should handle undefined reheard hearing documents collection', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [],
+            reheardHearingDocumentsCollection: undefined
+          }
+        },
+        params: { id: '123' }
+      };
+      expect(() => getHearingNoticeDocument(req)).to.throw('No hearing notice with {fileId: 123} found.');
+    });
+
+    it('should handle undefined primary hearing documents', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: undefined,
+            reheardHearingDocumentsCollection: [
+              { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+            ]
+          }
+        },
+        params: { id: '123' }
+      };
+      const result = getHearingNoticeDocument(req);
+      expect(result).to.deep.equal({ fileId: '123' });
     });
   });
 

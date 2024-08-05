@@ -711,10 +711,10 @@ function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function findDocumentInReheardHearingDocCollection(collections: ReheardHearingDocs<Evidence>[], fileId: string): Evidence | undefined {
+function findDocumentInReheardHearingDocCollection(collections, fileId: string): Evidence | undefined {
   for (let collection of collections) {
     let documentCollection = collection.value ? collection.value : {};
-    const docs: Evidence[] = documentCollection.reheardHearingDocs;
+    const docs = documentCollection.reheardHearingDocs;
     if (docs) {
       const document: Evidence = docs.find((doc: Evidence) => doc.fileId === fileId);
       if (document) {

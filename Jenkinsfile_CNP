@@ -55,6 +55,7 @@ withPipeline("nodejs", product, component) {
 
   enableAksStagingDeployment()
   disableLegacyDeployment()
+  enableFortifyScan()
 
   env.S2S_MICROSERVICE_NAME = 'iac'
   env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'

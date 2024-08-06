@@ -278,7 +278,6 @@ function postWitnessesInterpreterNeeds(updateAppealService: UpdateAppealService)
   };
 }
 
-
 function getInterpreterTypePage(req: Request, res: Response, next: NextFunction) {
   try {
     const { hearingRequirements } = req.session.appeal;

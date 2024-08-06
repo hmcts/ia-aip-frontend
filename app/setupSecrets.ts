@@ -29,11 +29,11 @@ const setupSecrets = () => {
   setSecret('secrets.ia.pcq-token-key', 'pcq.tokenKey');
   setSecret('secrets.ia.system-username', 'systemUser.username');
   set(config, 'systemUser.password', 'secrets.ia.system-password');
-  set(config, 'testCaseOfficerPassword', 'secrets.ia.test-caseofficer-password');
-  set(config, 'testHomeOfficeGenericPassword', 'secrets.ia.test-homeoffice-generic-password');
-  set(config, 'testAdminOfficerPassword', 'secrets.ia.test-adminofficer-password');
-  set(config, 'testJudgePassword', 'secrets.ia.test-judge-x-password');
-  set(config, 'testLawFirmAPassword', 'secrets.ia.test-law-firm-share-case-a-password');
+  set(config, 'testAccounts.testCaseOfficerPassword', 'secrets.ia.test-caseofficer-password');
+  set(config, 'testAccounts.testHomeOfficeGenericPassword', 'secrets.ia.test-homeoffice-generic-password');
+  set(config, 'testAccounts.testAdminOfficerPassword', 'secrets.ia.test-adminofficer-password');
+  set(config, 'testAccounts.testJudgePassword', 'secrets.ia.test-judge-x-password');
+  set(config, 'testAccounts.testLawFirmAPassword', 'secrets.ia.test-law-firm-share-case-a-password');
   setSecret('secrets.ia.docmosis-access-key', 'docmosis.accessKey');
   setSecret('secrets.ia.customer-services-telephone', 'customerServices.telephone');
   setSecret('secrets.ia.customer-services-email', 'customerServices.email');

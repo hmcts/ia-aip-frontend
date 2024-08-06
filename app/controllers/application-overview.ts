@@ -147,7 +147,9 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const hearingDetails = getHearingDetails(req);
       let showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
       if (refundFeatureEnabled) {
-        showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus, ftpaFeatureEnabled) && !isRemissionApprovedOrPartiallyApproved(req.session.appeal);
+        showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req) || req.session.appeal.application.refundConfirmationApplied)
+          && !isPostDecisionState(appealStatus, ftpaFeatureEnabled)
+          && !isRemissionApprovedOrPartiallyApproved(req.session.appeal);
       }
 
       const showChangeRepresentation = isAppealInProgress(appealStatus);

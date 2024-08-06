@@ -332,6 +332,7 @@ interface AppealApplication {
   manageFeeRefundedAmount?: string;
   manageFeeRequestedAmount?: string;
   paidAmount?: string;
+  refundConfirmationApplied?: boolean;
 }
 
 interface CmaRequirements {

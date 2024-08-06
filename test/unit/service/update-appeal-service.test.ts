@@ -8,6 +8,7 @@ import IdamService from '../../../app/service/idam-service';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
+import { getFeeSupportStatusForAppealDetails } from '../../../app/utils/remission-utils';
 import { expect, sinon, validateUuid } from '../../utils/testUtils';
 
 describe('update-appeal-service', () => {
@@ -1569,6 +1570,37 @@ describe('update-appeal-service', () => {
     });
   });
 
+  describe('map the refundConfirmationApplied from Yes value', () => {
+    const testData = [
+      {
+        value: 'Yes',
+        expectation: true
+      },
+      {
+        value: 'No',
+        expectation: false
+      },
+      {
+        value: null,
+        expectation: undefined
+      }
+    ];
+
+    testData.forEach(({ value, expectation }) => {
+      it(`mapped value should be ${expectation}`, () => {
+        const caseData: Partial<CaseData> = {
+          'refundConfirmationApplied': value
+        };
+
+        const appeal: Partial<CcdCaseDetails> = {
+          case_data: caseData as CaseData
+        };
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.application.refundConfirmationApplied).to.be.eq(expectation);
+      });
+    });
+  });
+
   describe('remissionRejectedDatePlus14days and amountLeftToPay mappings', () => {
     const caseData: Partial<CaseData> = {
       'remissionRejectedDatePlus14days': '2022-01-26',
@@ -1842,7 +1874,6 @@ describe('update-appeal-service', () => {
         'sponsorGivenNames': 'ABC XYZ',
         'sponsorFamilyName': 'ABC XYZ',
         'sponsorNameForDisplay': 'ABC XYZ',
-        'sponsorAuthorisation': 'ABC XYZ',
         'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
         'reasonsForAppealDocuments': [
           {

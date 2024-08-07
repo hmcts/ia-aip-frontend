@@ -1771,6 +1771,13 @@ describe('Detail viewer Controller', () => {
       tag: 'hearingNotice',
       dateUploaded: '2021-06-01'
     };
+    const documentRelisted = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-hearing-notice.PDF',
+      id: '1',
+      tag: 'hearingNoticeRelisted',
+      dateUploaded: '2021-06-01'
+    };
 
     const reheardHearingDocumentsCollection = {
       'id': '1',
@@ -1782,6 +1789,13 @@ describe('Detail viewer Controller', () => {
             id: '1',
             tag: 'reheardHearingNotice',
             dateUploaded: '2021-06-02'
+          },
+          {
+            fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec7',
+            name: 'PA 50002 2021-perez-hearing-notice.PDF',
+            id: '2',
+            tag: 'reheardHearingNoticeRelisted',
+            dateUploaded: '2021-06-03'
           }
         ]
       }
@@ -1789,7 +1803,7 @@ describe('Detail viewer Controller', () => {
     it('should render hearing notice if latest', () => {
       req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
       document.dateUploaded = '2021-06-05';
-      req.session.appeal.hearingDocuments = [document];
+      req.session.appeal.hearingDocuments = [document, documentRelisted];
       req.params.id = 'latest';
       const expectedSummaryRows = [
         {

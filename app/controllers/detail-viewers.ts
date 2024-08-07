@@ -735,8 +735,10 @@ function getLatestHearingNoticeDocument(appeal: Appeal): Evidence | undefined {
       hearingDocuments.push(...docs);
     }
   }
+  let hearingNoticeTags: string[] = ['hearingNotice', 'hearingNoticeRelisted',
+    'reheardHearingNotice', 'reheardHearingNoticeRelisted'];
   let hearingNotices: Evidence[] = hearingDocuments.filter((doc: Evidence) =>
-      doc.tag === 'hearingNotice' || doc.tag === 'reheardHearingNotice');
+      hearingNoticeTags.includes(doc.tag));
   hearingNotices.sort((a: Evidence, b: Evidence) =>
       new Date(b.dateUploaded).getTime() - new Date(a.dateUploaded).getTime());
   return hearingNotices[0];

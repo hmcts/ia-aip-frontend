@@ -163,31 +163,30 @@ function getDirectionHistory(req: Request): any[] {
 
 function getListCaseEvent(req: Request): any[] {
   let hearingNotices: Evidence[] = [];
+  let hearingNoticeTags: string[] = ['hearingNotice', 'hearingNoticeRelisted',
+    'reheardHearingNotice', 'reheardHearingNoticeRelisted'];
   if (req.session.appeal.hearingDocuments) {
-    hearingNotices = req.session.appeal.hearingDocuments.filter((doc: Evidence) => doc.tag === 'hearingNotice');
+    hearingNotices = req.session.appeal.hearingDocuments.filter((doc: Evidence) => hearingNoticeTags.includes(doc.tag));
   }
-  console.log('plooop');
-  console.log(req.session.appeal);
   if (req.session.appeal.reheardHearingDocumentsCollection) {
-    console.log(req.session.appeal.reheardHearingDocumentsCollection);
     req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {
       if (collection.value) {
-        console.log(collection.value);
         let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
-                    .filter(doc => doc.tag === 'hearingNotice' || doc.tag === 'reheardHearingNotice');
+                    .filter(doc => hearingNoticeTags.includes(doc.tag));
         hearingNotices.push(...filteredCollection);
-        console.log(filteredCollection);
-        console.log(hearingNotices);
       }
     });
   }
 
   return hearingNotices
         .map(hearingNotice => {
+          const textForTimeline: string = hearingNotice.tag.includes('Relisted')
+              ? i18n.pages.overviewPage.timeline.listCase.textForEditListCase
+              : i18n.pages.overviewPage.timeline.listCase.text;
           return {
             date: moment(hearingNotice.dateUploaded).format('DD MMMM YYYY'),
             dateObject: new Date(hearingNotice.dateUploaded),
-            text: i18n.pages.overviewPage.timeline.listCase.text || null,
+            text: textForTimeline || null,
             links: [{
               ...i18n.pages.overviewPage.timeline.listCase.links[0],
               href: paths.common.hearingNoticeViewer.replace(':id', hearingNotice.fileId)

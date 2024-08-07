@@ -646,7 +646,7 @@ export default class UpdateAppealService {
         manageFeeRefundedAmount: caseData.manageFeeRefundedAmount,
         manageFeeRequestedAmount: caseData.manageFeeRequestedAmount,
         paidAmount: caseData.paidAmount,
-        refundConfirmationApplied: caseData.refundConfirmationApplied ? yesNoToBool(caseData.refundConfirmationApplied) : undefined
+        refundConfirmationApplied: caseData.refundConfirmationApplied ? yesNoToBool(caseData.refundConfirmationApplied) : false
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,

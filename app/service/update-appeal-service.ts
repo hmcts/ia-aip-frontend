@@ -646,7 +646,7 @@ export default class UpdateAppealService {
         manageFeeRefundedAmount: caseData.manageFeeRefundedAmount,
         manageFeeRequestedAmount: caseData.manageFeeRequestedAmount,
         paidAmount: caseData.paidAmount,
-        refundConfirmationApplied: caseData.refundConfirmationApplied ? yesNoToBool(caseData.refundConfirmationApplied) : false
+        refundConfirmationApplied: caseData.refundConfirmationApplied ? yesNoToBool(caseData.refundConfirmationApplied) : undefined
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -983,6 +983,8 @@ export default class UpdateAppealService {
           caseData.sponsorSubscriptions = [{ value: sponsorSubscription }];
         }
       }
+
+      caseData.refundConfirmationApplied = appeal.application.refundConfirmationApplied ? YesOrNo.YES : YesOrNo.NO;
     }
 
     if (_.has(appeal, 'reasonsForAppeal')) {

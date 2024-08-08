@@ -1582,7 +1582,7 @@ describe('update-appeal-service', () => {
       },
       {
         value: null,
-        expectation: false
+        expectation: undefined
       }
     ];
 

@@ -265,6 +265,7 @@ interface CaseData {
   paidAmount?: string;
   sourceOfRemittal?: string;
   remittalDocuments: Collection<CcdRemittalDetails>[];
+  refundConfirmationApplied?: string;
 }
 
 interface Application<T> {

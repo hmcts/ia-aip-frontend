@@ -259,7 +259,7 @@ const confirmationRefundController = setConfirmationRefundController(middleware)
 const personalDetailsController = setupPersonalDetailsController(middleware, { updateAppealService, osPlacesClient });
 const contactDetailsController = setupContactDetailsController(middleware, updateAppealService);
 const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService, paymentService);
-const confirmationController = setConfirmationController(middleware);
+const confirmationController = setConfirmationController(middleware, updateAppealService);
 const outOfTimeController = setupOutOfTimeController(middleware, { updateAppealService, documentManagementService });
 const reasonsForAppealController = setupReasonsForAppealController(middleware, {
   updateAppealService,

@@ -409,6 +409,24 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
   };
 }
 
+async function updateRefundConfirmationAppliedStatus(req: Request) {
+  const event = req.session.appeal.appealStatus === 'appealStarted' ? Events.EDIT_APPEAL : Events.PAYMENT_APPEAL;
+
+  const appeal: Appeal = {
+    ...req.session.appeal,
+    application: {
+      ...req.session.appeal.application,
+      refundConfirmationApplied: false
+    }
+  };
+
+  const appealUpdated: Appeal = await this.updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true);
+  req.session.appeal = {
+    ...req.session.appeal,
+    ...appealUpdated
+  };
+}
+
 function setupCheckAndSendController(middleware: Middleware[], updateAppealService: UpdateAppealService, paymentService: PaymentService): Router {
   const router = Router();
   router.get(paths.appealStarted.checkAndSend, middleware, appealOutOfTimeMiddleware, getCheckAndSend(paymentService));
@@ -425,5 +443,6 @@ export {
   getCheckAndSend,
   getFinishPayment,
   getPayLater,
-  postCheckAndSend
+  postCheckAndSend,
+  updateRefundConfirmationAppliedStatus
 };

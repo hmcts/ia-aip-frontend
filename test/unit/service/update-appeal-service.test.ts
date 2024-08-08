@@ -8,7 +8,6 @@ import IdamService from '../../../app/service/idam-service';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
-import { getFeeSupportStatusForAppealDetails } from '../../../app/utils/remission-utils';
 import { expect, sinon, validateUuid } from '../../utils/testUtils';
 
 describe('update-appeal-service', () => {
@@ -738,6 +737,7 @@ describe('update-appeal-service', () => {
             helpWithFeesRefNumber: null,
             isLateRemissionRequest: 'No',
             localAuthorityLetters: null,
+            refundConfirmationApplied: 'No',
             refundRequested: 'No',
             remissionDecision: null,
             remissionOption: null,
@@ -780,6 +780,7 @@ describe('update-appeal-service', () => {
             helpWithFeesRefNumber: null,
             isLateRemissionRequest: 'No',
             localAuthorityLetters: null,
+            refundConfirmationApplied: 'No',
             refundRequested: 'No',
             remissionDecision: null,
             remissionOption: null,
@@ -823,6 +824,7 @@ describe('update-appeal-service', () => {
             helpWithFeesRefNumber: null,
             isLateRemissionRequest: 'No',
             localAuthorityLetters: null,
+            refundConfirmationApplied: 'No',
             refundRequested: 'No',
             remissionDecision: null,
             remissionOption: null,
@@ -900,6 +902,7 @@ describe('update-appeal-service', () => {
           'helpWithFeesRefNumber': null,
           'isLateRemissionRequest': 'No',
           'localAuthorityLetters': null,
+          'refundConfirmationApplied': 'No',
           'refundRequested': 'No',
           'remissionDecision': null,
           'remissionOption': null,
@@ -964,7 +967,8 @@ describe('update-appeal-service', () => {
               'document_url': 'someurl'
             }
           }
-        ]
+        ],
+        'refundConfirmationApplied': 'No'
       });
     });
     it('converts uploadTheNoticeOfDecisionDocs', () => {
@@ -992,6 +996,7 @@ describe('update-appeal-service', () => {
         'helpWithFeesRefNumber': null,
         'isLateRemissionRequest': 'No',
         'localAuthorityLetters': null,
+        'refundConfirmationApplied': 'No',
         'refundRequested': 'No',
         'remissionDecision': null,
         'remissionOption': null,
@@ -1874,6 +1879,7 @@ describe('update-appeal-service', () => {
         'sponsorGivenNames': 'ABC XYZ',
         'sponsorFamilyName': 'ABC XYZ',
         'sponsorNameForDisplay': 'ABC XYZ',
+        'refundConfirmationApplied': 'No',
         'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
         'reasonsForAppealDocuments': [
           {

@@ -4,11 +4,11 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const commonConfig = require('./webpack.common');
 
 const serverConfig = {
-  mode: "production"
+  mode: "vELII"
 };
 
 const clientConfig = {
-        mode: "production",
+        mode: "Veli",
         optimization: {
             minimizer: [
                 new TerserJSPlugin({}),

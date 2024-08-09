@@ -147,6 +147,9 @@
               {% if showAppealRequests and not isPostDecisionState %}
                 <p><a class="govuk-link" href='{{ paths.makeApplication.withdraw }}'>{{ i18n.pages.overviewPage.withdrawAppeal }}</a></p>
               {% endif %}
+              {% if showAskForFeeRemission %}
+                    <p><a class="govuk-link" href='{{ paths.appealSubmitted.feeSupportRefund }}'>{{ i18n.pages.overviewPage.askForFeeRemission }}</a></p>
+              {% endif %}
             </div>
           {% endif %}
           {% if showAppealRequests or showAppealRequestsInAppealEndedStatus %}
@@ -163,6 +166,9 @@
                        {% elif showAppealRequestsInAppealEndedStatus %}
                           <p><a class="govuk-link" href='{{ paths.makeApplication.reinstate }}'>{{ i18n.pages.overviewPage.appealRequests.askReinstateAppeal }}</a></p>
                           <p><a class="govuk-link" href='{{ paths.makeApplication.judgesReview }}'>{{ i18n.pages.overviewPage.appealRequests.askJudgeToReview}}</a></p>
+                          {% if showAskForSomethingInEndedState %}
+                            <p><a class="govuk-link" href='{{ paths.makeApplication.other }}'>{{ i18n.pages.overviewPage.appealRequests.askForSomethingElse }}</a></p>
+                          {% endif %}
                       {% endif %}
               </div>
           {% endif %}

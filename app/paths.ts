@@ -43,7 +43,18 @@ const paths = {
     oocProtectionDepartureDate: '/ooc-protection-departure-date'
   },
   appealSubmitted: {
-    confirmation: '/appeals-details-sent'
+    confirmation: '/appeals-details-sent',
+    feeSupportRefund: '/fee-support-refund',
+    asylumSupportRefund: '/asylum-support-refund',
+    feeWaiverRefund: '/fee-waiver-refund',
+    localAuthorityLetterRefund: '/local-authority-letter-refund',
+    localAuthorityLetterUploadRefund: '/local-authority-letter-refund/upload',
+    localAuthorityLetterDeleteRefund: '/local-authority-letter-refund/delete',
+    helpWithFeesRefund: '/help-with-fees-refund',
+    stepsToApplyForHelpWithFeesRefund: '/steps-to-help-with-fees-refund',
+    helpWithFeesReferenceNumberRefund: '/help-with-fees-ref-number-refund',
+    checkYourAnswersRefund: '/check-your-answers-refund',
+    confirmationRefund: '/asked-for-remission'
   },
   pendingPayment: {
     confirmation: '/appeals-details-sent'

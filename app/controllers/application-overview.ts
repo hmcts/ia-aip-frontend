@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { application, NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
 import { FEATURE_FLAGS } from '../data/constants';
@@ -22,10 +22,7 @@ function getAppealRefNumber(appealRef: string) {
 }
 
 function checkAppealEnded(appealStatus: string): boolean {
-  if (appealStatus && appealStatus.toUpperCase() === 'ENDED') {
-    return true;
-  }
-  return false;
+  return appealStatus && appealStatus.toUpperCase() === 'ENDED';
 }
 
 function getAppellantName(req: Request) {
@@ -134,6 +131,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
       const makeApplicationFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.MAKE_APPLICATION, false);
       const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
+      const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
       const ftpaFeatureEnabled = await isFtpaFeatureEnabled(req);
 
       const isPartiallySaved = _.has(req.query, 'saved');
@@ -147,13 +145,25 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);
       const hearingDetails = getHearingDetails(req);
-      const showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req));
+      let showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
+      if (refundFeatureEnabled) {
+        showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus, ftpaFeatureEnabled) && !isRemissionApprovedOrPartiallyApproved(req.session.appeal);
+      }
+
       const showChangeRepresentation = isAppealInProgress(appealStatus);
       const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled);
       const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
       const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
       const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
           && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
+
+      const application = req.session.appeal.application;
+
+      const showAskForFeeRemission = refundFeatureEnabled
+        && 'Paid' === paymentStatus
+        && (!application.refundRequested || application.refundRequested && !!application.remissionDecision);
+
+      const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -176,6 +186,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         hearingDetails,
         showChangeRepresentation,
         showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, ftpaFeatureEnabled),
+        showAskForFeeRemission,
+        showAskForSomethingInEndedState,
         isPostDecisionState: isPostDecisionState(appealStatus, ftpaFeatureEnabled)
       });
     } catch (e) {
@@ -209,6 +221,11 @@ function setupApplicationOverviewController(updateAppealService: UpdateAppealSer
   const router = Router();
   router.get(paths.common.overview, getApplicationOverview(updateAppealService));
   return router;
+}
+
+function isRemissionApprovedOrPartiallyApproved(appeal: Appeal): boolean {
+  const remissionDecision = appeal.application.remissionDecision;
+  return (remissionDecision === 'approved' || remissionDecision === 'partiallyApproved');
 }
 
 export {

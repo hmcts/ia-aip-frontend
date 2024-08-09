@@ -119,7 +119,6 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
-
       getAnythingElseQuestionPage(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });

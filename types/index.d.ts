@@ -153,6 +153,7 @@ interface Appeal {
   feeDescription?: string;
   feeVersion?: string;
   feeAmountGbp?: string;
+  newFeeAmount?: string;
   additionalEvidenceDocuments?: Evidence[];
   addendumEvidenceDocuments?: Evidence[];
   additionalEvidence?: AdditionalEvidenceDocument[];
@@ -313,6 +314,24 @@ interface AppealApplication {
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
   localAuthorityLetters?: Evidence[];
+
+  lateRemissionOption?: string;
+  lateAsylumSupportRefNumber?: string;
+  lateHelpWithFeesOption?: string;
+  lateHelpWithFeesRefNumber?: string;
+  lateLocalAuthorityLetters?: Evidence[];
+
+  refundRequested?: boolean;
+  remissionDecision?: string;
+  amountLeftToPay?: string;
+  remissionDecisionReason?: string;
+  previousRemissionDetails?: RemissionDetails[];
+  remissionRejectedDatePlus14days?: string;
+  isLateRemissionRequest?: boolean;
+  feeUpdateTribunalAction?: string;
+  manageFeeRefundedAmount?: string;
+  manageFeeRequestedAmount?: string;
+  paidAmount?: string;
 }
 
 interface CmaRequirements {
@@ -521,6 +540,20 @@ interface DecisionAndReasons {
   dateDocumentAndReasonsDocumentUploaded?: string;
   documentAndReasonsDocument?: Evidence;
   summariseChanges?: string;
+}
+
+interface RemissionDetails {
+  id?: string;
+  feeAmount?: string;
+  amountRemitted?: string;
+  amountLeftToPay?: string;
+  feeRemissionType?: string;
+  remissionDecision?: string;
+  asylumSupportReference?: string;
+  remissionDecisionReason?: string;
+  helpWithFeesReferenceNumber?: string;
+  helpWithFeesOption?: string;
+  localAuthorityLetters?: Evidence[];
 }
 
 interface RemittalDetails {

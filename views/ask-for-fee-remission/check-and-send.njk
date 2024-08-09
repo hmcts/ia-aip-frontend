@@ -1,0 +1,35 @@
+{% set pageTitleName = i18n.pages.checkYourAnswers.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "components/summary-list.njk" import govukSummaryList %}
+{% import "components/text-components.njk" as text with context %}
+
+{% block content %}
+
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+
+  <h1 class="govuk-heading-xl">{{ i18n.pages.checkYourAnswers.header }}</h1>
+
+  {{ govukSummaryList({
+    rows: summaryRows
+  }) }}
+
+  <form method="post" action={{ paths.appealSubmitted.checkYourAnswersRefund }}>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    <div class="save-buttons__container">
+      {{ govukButton({
+        text: "Submit",
+        classes: "govuk-!-margin-right-1",
+        preventDoubleClick: true
+      }) }}
+    </div>
+  </form>
+  {{ contactUs() }}
+{% endblock %}

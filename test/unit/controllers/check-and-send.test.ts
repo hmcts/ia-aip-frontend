@@ -170,7 +170,7 @@ describe('createSummaryRowsFrom', () => {
       it(`should be ${description}`, () => {
         req.session.appeal.application.helpWithFeesOption = input;
         const helpWithFeesRow = addSummaryRow('Help with fees', [expectedResponse], paths.appealStarted.helpWithFees + editParameter);
-        mockedRows.push(localAuthorityLettersRow);
+        mockedRows.push(helpWithFeesRow);
         expect(rows).to.be.deep.equal(mockedRows);
         mockedRows.pop();
       });
@@ -323,7 +323,19 @@ describe('Check and Send Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
+        dlrmFeeRemissionFlag: true,
         hasRemissionOption: true
+      });
+    });
+
+    it('should render check-and-send-page.njk, dlrmFeeRemissionFlag with dlrmFeeRemissionFlag flag is ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+        summaryRows: sinon.match.any,
+        previousPage: paths.appealStarted.taskList,
+        dlrmFeeRemissionFlag: true
       });
     });
 

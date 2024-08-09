@@ -173,7 +173,12 @@ describe('update-appeal-service', () => {
       isInterpreterServicesNeeded: 'false',
       isHearingRoomNeeded: 'true',
       isHearingLoopNeeded: 'true',
-      hearingCentre: 'birmingham'
+      hearingCentre: 'birmingham',
+      feeUpdateTribunalAction: 'refund',
+      manageFeeRefundedAmount: '1000',
+      manageFeeRequestedAmount: '1500',
+      paidAmount: '2000',
+      newFeeAmount: '2000'
     };
 
   });
@@ -229,6 +234,11 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.sponsorFamilyName).eq('ABC XYZ');
       expect(req.session.appeal.application.sponsorNameForDisplay).eq('ABC XYZ');
       expect(req.session.appeal.application.sponsorAuthorisation).eq('ABC XYZ');
+      expect(req.session.appeal.application.feeUpdateTribunalAction).eq('refund');
+      expect(req.session.appeal.application.manageFeeRefundedAmount).eq('1000');
+      expect(req.session.appeal.application.manageFeeRequestedAmount).eq('1500');
+      expect(req.session.appeal.application.paidAmount).eq('2000');
+      expect(req.session.appeal.newFeeAmount).eq('2000');
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -721,6 +731,20 @@ describe('update-appeal-service', () => {
             gwfReferenceNumber: null,
             isHearingLoopNeeded: null,
             isHearingRoomNeeded: null,
+            asylumSupportRefNumber: null,
+            feeSupportPersisted: 'No',
+            helpWithFeesOption: null,
+            helpWithFeesRefNumber: null,
+            isLateRemissionRequest: 'No',
+            localAuthorityLetters: null,
+            refundRequested: 'No',
+            remissionDecision: null,
+            remissionOption: null,
+            lateAsylumSupportRefNumber: null,
+            lateHelpWithFeesOption: null,
+            lateHelpWithFeesRefNumber: null,
+            lateLocalAuthorityLetters: null,
+            lateRemissionOption: null,
             journeyType: 'aip',
             subscriptions: [
               {
@@ -749,6 +773,20 @@ describe('update-appeal-service', () => {
             gwfReferenceNumber: null,
             isHearingLoopNeeded: null,
             isHearingRoomNeeded: null,
+            asylumSupportRefNumber: null,
+            feeSupportPersisted: 'No',
+            helpWithFeesOption: null,
+            helpWithFeesRefNumber: null,
+            isLateRemissionRequest: 'No',
+            localAuthorityLetters: null,
+            refundRequested: 'No',
+            remissionDecision: null,
+            remissionOption: null,
+            lateAsylumSupportRefNumber: null,
+            lateHelpWithFeesOption: null,
+            lateHelpWithFeesRefNumber: null,
+            lateLocalAuthorityLetters: null,
+            lateRemissionOption: null,
             appellantEmailAddress: 'abc@example.net',
             subscriptions: [
               {
@@ -778,6 +816,20 @@ describe('update-appeal-service', () => {
             gwfReferenceNumber: null,
             isHearingLoopNeeded: null,
             isHearingRoomNeeded: null,
+            asylumSupportRefNumber: null,
+            feeSupportPersisted: 'No',
+            helpWithFeesOption: null,
+            helpWithFeesRefNumber: null,
+            isLateRemissionRequest: 'No',
+            localAuthorityLetters: null,
+            refundRequested: 'No',
+            remissionDecision: null,
+            remissionOption: null,
+            lateAsylumSupportRefNumber: null,
+            lateHelpWithFeesOption: null,
+            lateHelpWithFeesRefNumber: null,
+            lateLocalAuthorityLetters: null,
+            lateRemissionOption: null,
             subscriptions: [
               {
                 value: {
@@ -841,6 +893,20 @@ describe('update-appeal-service', () => {
           'gwfReferenceNumber': null,
           'isHearingLoopNeeded': null,
           'isHearingRoomNeeded': null,
+          'asylumSupportRefNumber': null,
+          'feeSupportPersisted': 'No',
+          'helpWithFeesOption': null,
+          'helpWithFeesRefNumber': null,
+          'isLateRemissionRequest': 'No',
+          'localAuthorityLetters': null,
+          'refundRequested': 'No',
+          'remissionDecision': null,
+          'remissionOption': null,
+          'lateAsylumSupportRefNumber': null,
+          'lateHelpWithFeesOption': null,
+          'lateHelpWithFeesRefNumber': null,
+          'lateLocalAuthorityLetters': null,
+          'lateRemissionOption': null,
           'reviewTimeExtensionRequired': 'Yes',
           'submitTimeExtensionReason': 'more time reason',
           'submitTimeExtensionEvidence': [
@@ -856,6 +922,7 @@ describe('update-appeal-service', () => {
         }
       );
     });
+
     it('converts time extension to makeAnApplicationEvidence', () => {
       emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
       emptyApplication.makeAnApplicationEvidence = [
@@ -873,6 +940,20 @@ describe('update-appeal-service', () => {
         'gwfReferenceNumber': null,
         'isHearingLoopNeeded': null,
         'isHearingRoomNeeded': null,
+        'asylumSupportRefNumber': null,
+        'feeSupportPersisted': 'No',
+        'helpWithFeesOption': null,
+        'helpWithFeesRefNumber': null,
+        'isLateRemissionRequest': 'No',
+        'localAuthorityLetters': null,
+        'refundRequested': 'No',
+        'remissionDecision': null,
+        'remissionOption': null,
+        'lateAsylumSupportRefNumber': null,
+        'lateHelpWithFeesOption': null,
+        'lateHelpWithFeesRefNumber': null,
+        'lateLocalAuthorityLetters': null,
+        'lateRemissionOption': null,
         'makeAnApplicationEvidence': [
           {
             'id': 'id',
@@ -904,6 +985,20 @@ describe('update-appeal-service', () => {
         'gwfReferenceNumber': null,
         'isHearingLoopNeeded': null,
         'isHearingRoomNeeded': null,
+        'asylumSupportRefNumber': null,
+        'feeSupportPersisted': 'No',
+        'helpWithFeesOption': null,
+        'helpWithFeesRefNumber': null,
+        'isLateRemissionRequest': 'No',
+        'localAuthorityLetters': null,
+        'refundRequested': 'No',
+        'remissionDecision': null,
+        'remissionOption': null,
+        'lateAsylumSupportRefNumber': null,
+        'lateHelpWithFeesOption': null,
+        'lateHelpWithFeesRefNumber': null,
+        'lateLocalAuthorityLetters': null,
+        'lateRemissionOption': null,
         'uploadTheNoticeOfDecisionDocs': [
           {
             'id': 'fileId',
@@ -1221,6 +1316,61 @@ describe('update-appeal-service', () => {
       });
     });
 
+    describe('previousRemissionDetails', () => {
+      const caseData: Partial<CaseData> = {
+        previousRemissionDetails:
+        [{
+          id: '1',
+          value: {
+            feeAmount: '2000',
+            amountRemitted: '1000',
+            amountLeftToPay: '1000',
+            feeRemissionType: 'type1',
+            remissionDecision: 'decission1',
+            asylumSupportReference: 'refNumber1',
+            remissionDecisionReason: 'decission',
+            helpWithFeesReferenceNumber: 'refNumber2',
+            helpWithFeesOption: 'helpOption',
+            localAuthorityLetters: [
+              {
+                id: 'fa35dcae-ae4c-462d-9cce-6878326875b0',
+                value: {
+                  tag: 'additionalEvidence',
+                  document: {
+                    document_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4',
+                    document_filename: '1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf',
+                    document_binary_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4/binary'
+                  },
+                  dateUploaded: ''
+                }
+              }
+            ]
+          } as RemissionDetailsData
+        }] as RemissionDetailsCollection[]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map previousRemissionDetails', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.application.previousRemissionDetails[0].id).to.be.equals('1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].feeAmount).to.be.equals('2000');
+        expect(mappedAppeal.application.previousRemissionDetails[0].amountRemitted).to.be.equals('1000');
+        expect(mappedAppeal.application.previousRemissionDetails[0].amountLeftToPay).to.be.equals('1000');
+        expect(mappedAppeal.application.previousRemissionDetails[0].feeRemissionType).to.be.equals('type1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].remissionDecision).to.be.equals('decission1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].asylumSupportReference).to.be.equals('refNumber1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].remissionDecisionReason).to.be.equals('decission');
+        expect(mappedAppeal.application.previousRemissionDetails[0].helpWithFeesReferenceNumber).to.be.equals('refNumber2');
+        expect(mappedAppeal.application.previousRemissionDetails[0].helpWithFeesOption).to.be.equals('helpOption');
+        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].id).to.be.equals('fa35dcae-ae4c-462d-9cce-6878326875b0');
+        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].name).to.be.equals('1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].tag).to.be.equals('additionalEvidence');
+
+      });
+    });
+
     describe('ftpaApplicationRespondentDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaApplicationRespondentDocument':
@@ -1419,6 +1569,24 @@ describe('update-appeal-service', () => {
     });
   });
 
+  describe('remissionRejectedDatePlus14days and amountLeftToPay mappings', () => {
+    const caseData: Partial<CaseData> = {
+      'remissionRejectedDatePlus14days': '2022-01-26',
+      'amountLeftToPay': '4000'
+    };
+
+    const appeal: Partial<CcdCaseDetails> = {
+      case_data: caseData as CaseData
+    };
+
+    it('should map remissionRejectedDatePlus14days and amountLeftToPay', () => {
+      const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+      expect(mappedAppeal.application.amountLeftToPay).eq('4000');
+      expect(mappedAppeal.application.remissionRejectedDatePlus14days).eq('2022-01-26');
+    });
+  });
+
   describe('submitEvent', () => {
     let expectedCaseData: Partial<CaseData>;
     let ccdService2: Partial<CcdService>;
@@ -1512,7 +1680,20 @@ describe('update-appeal-service', () => {
                 dateUploaded: '2020-01-01',
                 'description': 'Some evidence 1',
                 'tag': 'additionalEvidence'
-              }]
+              }],
+              lateRemissionOption: 'test',
+              lateAsylumSupportRefNumber: 'test',
+              lateHelpWithFeesOption: 'test',
+              lateHelpWithFeesRefNumber: 'HWF-123',
+              lateLocalAuthorityLetters: [{
+                name: 'somefile.png',
+                fileId: '00000000-0000-0000-0000-000000000000',
+                dateUploaded: '2020-01-01',
+                'description': 'Some evidence 1',
+                'tag': 'additionalEvidence'
+              }],
+              refundRequested: true,
+              remissionDecision: 'approved'
             } as AppealApplication,
             reasonsForAppeal: {
               applicationReason: 'I\'ve decided to appeal because ...',
@@ -1623,6 +1804,28 @@ describe('update-appeal-service', () => {
           }
         ],
         'feeSupportPersisted': 'Yes',
+        'refundRequested': 'Yes',
+        'isLateRemissionRequest': 'No',
+        'remissionDecision': 'approved',
+        'lateRemissionOption': 'test',
+        'lateAsylumSupportRefNumber': 'test',
+        'lateHelpWithFeesOption': 'test',
+        'lateHelpWithFeesRefNumber': 'HWF-123',
+        'lateLocalAuthorityLetters': [
+          {
+            'id': '00000000-0000-0000-0000-000000000000',
+            'value': {
+              'dateUploaded': '2020-01-01',
+              'description': 'Some evidence 1',
+              'tag': 'additionalEvidence',
+              'document': {
+                'document_filename': 'somefile.png',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
+              }
+            }
+          }
+        ],
         'appellantEmailAddress': 'email@example.net',
         'subscriptions': [
           {

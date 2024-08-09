@@ -287,6 +287,7 @@ function getCheckAndSend(paymentService: PaymentService) {
     try {
       const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
       const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, defaultFlag);
+      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
       const { application } = req.session.appeal;
       const hasRemissionOption = appealHasRemissionOption(application);
       const summaryRows = await createSummaryRowsFrom(req);
@@ -305,6 +306,7 @@ function getCheckAndSend(paymentService: PaymentService) {
         ...(paymentsFlag && payNow) && { fee: fee.calculated_amount },
         ...(paymentsFlag && !appealPaid) && { payNow },
         ...(paymentsFlag && appealPaid) && { appealPaid },
+        ...(dlrmFeeRemissionFlag) && { dlrmFeeRemissionFlag },
         ...(hasRemissionOption) && { hasRemissionOption }
       });
     } catch (error) {

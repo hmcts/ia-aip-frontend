@@ -18,5 +18,22 @@
             rows: data.feeDetailsRows
         }) }}
     {% endif %}
+
+    {% if data.feeHistoryRows | length %}
+        {% for feeHistoryRow in data.feeHistoryRows %}
+            <div class="govuk-summary-history">
+                <div class ="govuk-summary-history-header">
+                    <div class="govuk-summary-list__key">Fee remission application {{data.feeHistoryRows.length + 1 -
+                    loop
+                    .index}}</div>
+                </div>
+                <div class="govuk-summary-history-body">
+                      {{ govukSummaryList({
+                        rows: feeHistoryRow
+                      }) }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
   {{ contactUs() }}
 {% endblock %}

@@ -17,7 +17,6 @@ describe('launchDarkly-service', () => {
     const secondInstance = LaunchDarklyService.getInstance();
 
     expect(firstInstance).eq(secondInstance);
-
     LaunchDarklyService.close();
   });
 });

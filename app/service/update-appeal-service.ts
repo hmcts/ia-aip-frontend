@@ -163,6 +163,7 @@ export default class UpdateAppealService {
     let documentMap: DocumentMap[] = [];
     let updatedDecisionAndReasons: DecisionAndReasons[] = null;
     let rule32NoticeDocs: Evidence = null;
+    let previousRemissionDetails: RemissionDetails[] = null;
     let remittalDocuments: RemittalDetails[] = null;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
@@ -540,6 +541,30 @@ export default class UpdateAppealService {
       rule32NoticeDocs = this.mapSupportingDocumentToEvidence(caseData.rule32NoticeDocument, documentMap);
     }
 
+    if (caseData.previousRemissionDetails) {
+      const previousRemissionDetailsData = caseData.previousRemissionDetails || [];
+      previousRemissionDetails = previousRemissionDetailsData.map(remissionDetail => {
+        let localAuthorityLetters = [];
+        if (remissionDetail.value.localAuthorityLetters && remissionDetail.value.localAuthorityLetters.length > 0) {
+          let documentMapLocalAuthorityLetters: DocumentMap[] = [];
+          localAuthorityLetters = this.mapDocsWithMetadataToEvidenceArray(remissionDetail.value.localAuthorityLetters, documentMapLocalAuthorityLetters);
+        }
+        return {
+          id: remissionDetail.id,
+          feeAmount: remissionDetail.value.feeAmount,
+          amountRemitted: remissionDetail.value.amountRemitted,
+          amountLeftToPay: remissionDetail.value.amountLeftToPay,
+          feeRemissionType: remissionDetail.value.feeRemissionType,
+          remissionDecision: remissionDetail.value.remissionDecision,
+          asylumSupportReference: remissionDetail.value.asylumSupportReference,
+          remissionDecisionReason: remissionDetail.value.remissionDecisionReason,
+          helpWithFeesReferenceNumber: remissionDetail.value.helpWithFeesReferenceNumber,
+          helpWithFeesOption: remissionDetail.value.helpWithFeesOption,
+          localAuthorityLetters: localAuthorityLetters
+        } as RemissionDetails;
+      });
+    }
+
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
@@ -604,7 +629,23 @@ export default class UpdateAppealService {
         helpWithFeesOption: caseData.helpWithFeesOption,
         helpWithFeesRefNumber: caseData.helpWithFeesRefNumber,
         ...caseData.localAuthorityLetters && { localAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.localAuthorityLetters, documentMap) },
-        feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined
+        feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined,
+        refundRequested: caseData.refundRequested ? yesNoToBool(caseData.refundRequested) : undefined,
+        remissionDecision: caseData.remissionDecision,
+        lateRemissionOption: caseData.lateRemissionOption,
+        lateAsylumSupportRefNumber: caseData.lateAsylumSupportRefNumber,
+        lateHelpWithFeesOption: caseData.lateHelpWithFeesOption,
+        lateHelpWithFeesRefNumber: caseData.lateHelpWithFeesRefNumber,
+        ...caseData.lateLocalAuthorityLetters && { lateLocalAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.lateLocalAuthorityLetters, documentMap) },
+        ...caseData.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: caseData.remissionRejectedDatePlus14days },
+        ...caseData.amountLeftToPay && { amountLeftToPay: caseData.amountLeftToPay },
+        previousRemissionDetails: previousRemissionDetails,
+        remissionDecisionReason: caseData.remissionDecisionReason,
+        isLateRemissionRequest: caseData.isLateRemissionRequest ? yesNoToBool(caseData.isLateRemissionRequest) : undefined,
+        feeUpdateTribunalAction: caseData.feeUpdateTribunalAction,
+        manageFeeRefundedAmount: caseData.manageFeeRefundedAmount,
+        manageFeeRequestedAmount: caseData.manageFeeRequestedAmount,
+        paidAmount: caseData.paidAmount
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -655,6 +696,7 @@ export default class UpdateAppealService {
       ...caseData.feeDescription && { feeDescription: caseData.feeDescription },
       ...caseData.feeVersion && { feeVersion: caseData.feeVersion },
       ...caseData.feeAmountGbp && { feeAmountGbp: caseData.feeAmountGbp },
+      ...caseData.newFeeAmount && { newFeeAmount: caseData.newFeeAmount },
       ...caseData.ftpaApplicantType && { ftpaApplicantType: caseData.ftpaApplicantType },
       ...caseData.ftpaAppellantEvidenceDocuments && { ftpaAppellantEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantEvidenceDocuments, documentMap) },
       ...caseData.ftpaAppellantGroundsDocuments && { ftpaAppellantGroundsDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantGroundsDocuments, documentMap) },
@@ -776,22 +818,27 @@ export default class UpdateAppealService {
         caseData.appealType = appeal.application.appealType;
       }
 
+      caseData.remissionOption = null;
       if (appeal.application.remissionOption) {
         caseData.remissionOption = appeal.application.remissionOption;
       }
 
+      caseData.asylumSupportRefNumber = null;
       if (appeal.application.asylumSupportRefNumber) {
         caseData.asylumSupportRefNumber = appeal.application.asylumSupportRefNumber;
       }
 
+      caseData.helpWithFeesOption = null;
       if (appeal.application.helpWithFeesOption) {
         caseData.helpWithFeesOption = appeal.application.helpWithFeesOption;
       }
 
+      caseData.helpWithFeesRefNumber = null;
       if (appeal.application.helpWithFeesRefNumber) {
         caseData.helpWithFeesRefNumber = appeal.application.helpWithFeesRefNumber;
       }
 
+      caseData.localAuthorityLetters = null;
       if (appeal.application.localAuthorityLetters) {
         const evidences: Evidence[] = appeal.application.localAuthorityLetters;
 
@@ -800,7 +847,7 @@ export default class UpdateAppealService {
           return {
             ...evidence.fileId && { id: evidence.fileId },
             value: {
-              dateUploaded: evidence.dateUploaded,
+              dateUploaded: evidence.dateUploaded || '',
               description: evidence.description,
               tag: 'additionalEvidence',
               document: {
@@ -813,8 +860,56 @@ export default class UpdateAppealService {
         });
       }
 
-      if (appeal.application.feeSupportPersisted) {
-        caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
+      caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
+
+      caseData.refundRequested = appeal.application.refundRequested ? YesOrNo.YES : YesOrNo.NO;
+      caseData.isLateRemissionRequest = appeal.application.isLateRemissionRequest ? YesOrNo.YES : YesOrNo.NO;
+
+      caseData.remissionDecision = null;
+      if (appeal.application.remissionDecision) {
+        caseData.remissionDecision = appeal.application.remissionDecision;
+      }
+
+      caseData.lateRemissionOption = null;
+      if (appeal.application.lateRemissionOption) {
+        caseData.lateRemissionOption = appeal.application.lateRemissionOption;
+      }
+
+      caseData.lateAsylumSupportRefNumber = null;
+      if (appeal.application.lateAsylumSupportRefNumber) {
+        caseData.lateAsylumSupportRefNumber = appeal.application.lateAsylumSupportRefNumber;
+      }
+
+      caseData.lateHelpWithFeesOption = null;
+      if (appeal.application.lateHelpWithFeesOption) {
+        caseData.lateHelpWithFeesOption = appeal.application.lateHelpWithFeesOption;
+      }
+
+      caseData.lateHelpWithFeesRefNumber = null;
+      if (appeal.application.lateHelpWithFeesRefNumber) {
+        caseData.lateHelpWithFeesRefNumber = appeal.application.lateHelpWithFeesRefNumber;
+      }
+
+      caseData.lateLocalAuthorityLetters = null;
+      if (appeal.application.lateLocalAuthorityLetters) {
+        const evidences: Evidence[] = appeal.application.lateLocalAuthorityLetters;
+
+        caseData.lateLocalAuthorityLetters = evidences.map((evidence: Evidence) => {
+          const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+          return {
+            ...evidence.fileId && { id: evidence.fileId },
+            value: {
+              dateUploaded: evidence.dateUploaded || '',
+              description: evidence.description,
+              tag: 'additionalEvidence',
+              document: {
+                document_filename: evidence.name,
+                document_url: documentLocationUrl,
+                document_binary_url: `${documentLocationUrl}/binary`
+              }
+            }
+          } as Collection<DocumentWithMetaData>;
+        });
       }
 
       if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
@@ -1206,7 +1301,9 @@ export default class UpdateAppealService {
       },
       ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },
       ...appeal.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: appeal.ftpaAppellantOutOfTimeExplanation },
-      ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime }
+      ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime },
+      ...appeal.application.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: appeal.application.remissionRejectedDatePlus14days },
+      ...appeal.application.amountLeftToPay && { amountLeftToPay: appeal.application.amountLeftToPay }
     };
     return caseData;
   }

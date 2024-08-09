@@ -61,7 +61,6 @@ interface CaseData {
   reasonsForAppealDateUploaded?: string;
   reasonsForAppealDocuments: Collection<DocumentWithMetaData>[];
   respondentDocuments: Collection<RespondentEvidenceDocument>[];
-  hearingDocuments: Collection<RespondentEvidenceDocument>[];
   timeExtensions: Collection<CcdTimeExtension>[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: Collection<CcdDirection>[];
@@ -108,6 +107,7 @@ interface CaseData {
   legalRepresentativeDocuments?: Collection<DocumentWithMetaData>[];
   tribunalDocuments?: Collection<DocumentWithMetaData>[];
   hearingDocuments?: Collection<DocumentWithMetaData>[];
+  reheardHearingDocuments?: Collection<DocumentWithMetaData>[];
   finalDecisionAndReasonsDocuments?: Collection<DocumentWithMetaData>[];
   hearingCentre?: string;
   outOfTimeDecisionType?: string;

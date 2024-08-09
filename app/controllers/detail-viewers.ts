@@ -726,7 +726,8 @@ function findDocumentInReheardHearingDocCollection(collections, fileId: string):
 }
 
 function getLatestHearingNoticeDocument(appeal: Appeal): Evidence | undefined {
-  let hearingDocuments: Evidence[] = appeal.hearingDocuments || [];
+  let reheardHearingDocuments: Evidence[] = appeal.reheardHearingDocuments || [];
+  let hearingDocuments: Evidence[] = (appeal.hearingDocuments || []).concat(reheardHearingDocuments);
   let reheardHearingDocumentsCollection: ReheardHearingDocs<Evidence>[] = appeal.reheardHearingDocumentsCollection || [];
   for (let collection of reheardHearingDocumentsCollection) {
     let documentCollection = collection.value ? collection.value : {};

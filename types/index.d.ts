@@ -126,6 +126,7 @@ interface Appeal {
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   reheardHearingDocumentsCollection?: ReheardHearingDocs<Evidence>[];
+  reheardHearingDocuments?: Evidence[];
   hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];

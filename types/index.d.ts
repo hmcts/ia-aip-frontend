@@ -116,6 +116,7 @@ interface Appeal {
   hearingRequirements?: HearingRequirements;
   respondentDocuments?: Evidence[];
   hearingDocuments?: Evidence[];
+  reheardHearingDocuments?: Evidence[];
   cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];
@@ -125,6 +126,7 @@ interface Appeal {
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+  reheardHearingDocumentsCollection?: ReheardHearingDocs<Evidence>[];
   hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
@@ -500,6 +502,13 @@ interface ClarifyingQuestion<T> {
     answer?: string;
     directionId: string;
     supportingEvidence?: T[];
+  };
+}
+
+interface ReheardHearingDocs<T> {
+  id?: string;
+  value: {
+    reheardHearingDocs?: T[];
   };
 }
 

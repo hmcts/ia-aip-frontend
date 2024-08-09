@@ -711,16 +711,65 @@ function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function findDocumentInReheardHearingDocCollection(collections, fileId: string): Evidence | undefined {
+  for (let collection of collections) {
+    let documentCollection = collection.value ? collection.value : {};
+    const docs = documentCollection.reheardHearingDocs;
+    if (docs) {
+      const document: Evidence = docs.find((doc: Evidence) => doc.fileId === fileId);
+      if (document) {
+        return document;
+      }
+    }
+  }
+  return undefined;
+}
+
+function getLatestHearingNoticeDocument(appeal: Appeal): Evidence | undefined {
+  let reheardHearingDocuments: Evidence[] = appeal.reheardHearingDocuments || [];
+  let hearingDocuments: Evidence[] = (appeal.hearingDocuments || []).concat(reheardHearingDocuments);
+  let reheardHearingDocumentsCollection: ReheardHearingDocs<Evidence>[] = appeal.reheardHearingDocumentsCollection || [];
+  for (let collection of reheardHearingDocumentsCollection) {
+    let documentCollection = collection.value ? collection.value : {};
+    const docs: Evidence[] = documentCollection.reheardHearingDocs;
+    if (docs) {
+      hearingDocuments.push(...docs);
+    }
+  }
+  let hearingNoticeTags: string[] = ['hearingNotice', 'hearingNoticeRelisted',
+    'reheardHearingNotice', 'reheardHearingNoticeRelisted'];
+  let hearingNotices: Evidence[] = hearingDocuments.filter((doc: Evidence) =>
+      hearingNoticeTags.includes(doc.tag));
+  hearingNotices.sort((a: Evidence, b: Evidence) =>
+      new Date(b.dateUploaded).getTime() - new Date(a.dateUploaded).getTime());
+  return hearingNotices[0];
+}
+
+function getHearingNoticeDocument(req: Request): Evidence {
+  const { appeal } = req.session;
+  const { id } = req.params;
+  if (id === 'latest') {
+    return getLatestHearingNoticeDocument(appeal);
+  }
+  let hearingDocuments = appeal.hearingDocuments ? appeal.hearingDocuments : [];
+  let hearingNoticeDocument = hearingDocuments.find((doc: Evidence) => doc.fileId === id);
+  if (!hearingNoticeDocument) {
+    hearingNoticeDocument = findDocumentInReheardHearingDocCollection(appeal.reheardHearingDocumentsCollection || [], id);
+  }
+  if (!hearingNoticeDocument) {
+    throw new Error(`No hearing notice with {fileId: ${id}} found.`);
+  }
+  return hearingNoticeDocument;
+}
+
 function getHearingNoticeViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
-    const hearingNoticeDocuments = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'hearingNotice');
+    const hearingNoticeDocument: Evidence = getHearingNoticeDocument(req);
     const data = [];
-    hearingNoticeDocuments.forEach(document => {
-      const fileNameFormatted = fileNameFormatter(document.name);
-      data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(document.dateUploaded).format(dayMonthYearFormat)]));
-      data.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${document.fileId}'>${fileNameFormatted}</a>`]));
-    });
+    const fileNameFormatted = fileNameFormatter(hearingNoticeDocument.name);
+    data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(hearingNoticeDocument.dateUploaded).format(dayMonthYearFormat)]));
+    data.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingNoticeDocument.fileId}'>${fileNameFormatted}</a>`]));
 
     return res.render('templates/details-viewer.njk', {
       title: i18n.pages.detailViewers.hearingNotice.title,
@@ -1234,6 +1283,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.homeOfficeWithdrawLetter, getHomeOfficeWithdrawLetter);
   router.get(paths.common.homeOfficeResponse, getHomeOfficeResponse);
   router.get(paths.common.hearingNoticeViewer, getHearingNoticeViewer);
+  router.get(paths.common.latestHearingNoticeViewer, getHearingNoticeViewer);
   router.get(paths.common.hearingAdjournmentNoticeViewer, getHearingAdjournmentNoticeViewer);
   router.get(paths.common.hearingBundleViewer, getHearingBundle);
   router.get(paths.common.decisionAndReasonsViewer, getDecisionAndReasonsViewer);
@@ -1264,6 +1314,8 @@ export {
   getOutOfTimeDecisionViewer,
   getHomeOfficeResponse,
   getHearingNoticeViewer,
+  getHearingNoticeDocument,
+  findDocumentInReheardHearingDocCollection,
   getHearingAdjournmentNoticeViewer,
   getHearingBundle,
   getDecisionAndReasonsViewer,

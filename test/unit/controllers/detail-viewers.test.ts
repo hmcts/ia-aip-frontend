@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import {
+  findDocumentInReheardHearingDocCollection,
   getAppealDetailsViewer,
   getApplicationTitle,
   getCmaRequirementsViewer,
@@ -10,6 +11,7 @@ import {
   getFtpaDecisionDetails,
   getHearingAdjournmentNoticeViewer,
   getHearingBundle,
+  getHearingNoticeDocument,
   getHearingNoticeViewer,
   getHoEvidenceDetailsViewer,
   getHomeOfficeResponse,
@@ -1678,6 +1680,7 @@ describe('Detail viewer Controller', () => {
     };
     it('should render templates/details-viewer.njk with hearing notice document', () => {
       req.session.appeal.hearingDocuments = [document];
+      req.params.id = 'a3d396eb-277d-4b66-81c8-627f57212ec8';
       const expectedSummaryRows = [
         {
           key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -1703,6 +1706,304 @@ describe('Detail viewer Controller', () => {
         getHearingNoticeViewer(req as Request, res as Response, next);
         expect(next).to.have.been.calledWith(error);
       });
+    });
+  });
+
+  describe('should render reheard notice of hearing', () => {
+    const document = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-hearing-notice.PDF',
+      id: '1',
+      tag: 'hearingNotice',
+      dateUploaded: '2021-06-01'
+    };
+
+    const reheardHearingDocumentsCollection = {
+      'id': '1',
+      'value': {
+        'reheardHearingDocs': [
+          {
+            fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+            name: 'PA 50002 2021-perez-hearing-notice.PDF',
+            id: '1',
+            tag: 'reheardHearingNotice',
+            dateUploaded: '2021-06-01'
+          }
+        ]
+      }
+    };
+    it('should render templates/details-viewer.njk with hearing notice document', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      req.params.id = 'a3d396eb-277d-4b66-81c8-627f57212ec8';
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '01 June 2021' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/${document.fileId}'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+
+      it('should catch error and call next with it', () => {
+        req.session.appeal.hearingDocuments = [document];
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        getHearingNoticeViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
+  });
+
+  describe('should render latest notice of hearing', () => {
+    const document = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-hearing-notice.PDF',
+      id: '1',
+      tag: 'hearingNotice',
+      dateUploaded: '2021-06-01'
+    };
+    const documentRelisted = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-hearing-notice.PDF',
+      id: '1',
+      tag: 'hearingNoticeRelisted',
+      dateUploaded: '2021-06-01'
+    };
+
+    const reheardHearingDocumentsCollection = {
+      'id': '1',
+      'value': {
+        'reheardHearingDocs': [
+          {
+            fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec7',
+            name: 'PA 50002 2021-perez-hearing-notice.PDF',
+            id: '1',
+            tag: 'reheardHearingNotice',
+            dateUploaded: '2021-06-02'
+          },
+          {
+            fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec7',
+            name: 'PA 50002 2021-perez-hearing-notice.PDF',
+            id: '2',
+            tag: 'reheardHearingNoticeRelisted',
+            dateUploaded: '2021-06-03'
+          }
+        ]
+      }
+    };
+    it('should render hearing notice if latest', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      document.dateUploaded = '2021-06-05';
+      req.session.appeal.hearingDocuments = [document, documentRelisted];
+      req.params.id = 'latest';
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '05 June 2021' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+
+      it('should render reheard hearing notice if latest', () => {
+        req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+        req.session.appeal.hearingDocuments = [document];
+        req.params.id = 'latest';
+        const expectedSummaryRows = [
+          {
+            key: { text: i18n.pages.detailViewers.common.dateUploaded },
+            value: { html: '01 June 2021' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.document },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec7'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+          }];
+
+        getHearingNoticeViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+          title: i18n.pages.detailViewers.hearingNotice.title,
+          data: expectedSummaryRows,
+          previousPage: paths.common.overview
+        });
+
+        it('should catch error and call next with it', () => {
+          req.session.appeal.hearingDocuments = [document];
+          const error = new Error('an error');
+          res.render = sandbox.stub().throws(error);
+
+          getHearingNoticeViewer(req as Request, res as Response, next);
+          expect(next).to.have.been.calledWith(error);
+        });
+      });
+    });
+    it('should render hearing notice if latest', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      document.dateUploaded = '2021-06-05';
+      req.session.appeal.hearingDocuments = [document, documentRelisted];
+      req.params.id = 'latest';
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '05 June 2021' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+    it('should render old stored reheard edited hearing notice if latest', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      req.session.appeal.hearingDocuments = [document];
+      documentRelisted.dateUploaded = '2022-06-01';
+      req.session.appeal.reheardHearingDocuments = [documentRelisted];
+      req.params.id = 'latest';
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '01 June 2022' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+  });
+
+  describe('findDocumentInReheardHearingDocCollection', () => {
+    it('should return the document if it exists in the collection', () => {
+      const collections = [
+        { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+      ];
+      const result = findDocumentInReheardHearingDocCollection(collections, '123');
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should return undefined if the document does not exist in the collection', () => {
+      const collections = [
+        { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+      ];
+      const result = findDocumentInReheardHearingDocCollection(collections, '456');
+      expect(result).to.be.undefined;
+    });
+
+    it('should handle collections with undefined values', () => {
+      const collections = [
+        { value: undefined },
+        { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+      ];
+      const result = findDocumentInReheardHearingDocCollection(collections, '123');
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should handle empty collections', () => {
+      const collections: any[] = [];
+      const result = findDocumentInReheardHearingDocCollection(collections, '123');
+      expect(result).to.be.undefined;
+    });
+  });
+
+  describe('getHearingNoticeDocument', () => {
+    it('should return the document if it exists in primary hearing documents', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [{ fileId: '123' }],
+            reheardHearingDocumentsCollection: []
+          }
+        },
+        params: { id: '123' }
+      };
+      const result = getHearingNoticeDocument(req);
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should return the document if it exists in reheard hearing documents', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [],
+            reheardHearingDocumentsCollection: [
+              { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+            ]
+          }
+        },
+        params: { id: '123' }
+      };
+      const result = getHearingNoticeDocument(req);
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should throw an error if the document does not exist in any collection', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [],
+            reheardHearingDocumentsCollection: []
+          }
+        },
+        params: { id: '123' }
+      };
+      expect(() => getHearingNoticeDocument(req)).to.throw('No hearing notice with {fileId: 123} found.');
+    });
+
+    it('should handle undefined reheard hearing documents collection', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [],
+            reheardHearingDocumentsCollection: undefined
+          }
+        },
+        params: { id: '123' }
+      };
+      expect(() => getHearingNoticeDocument(req)).to.throw('No hearing notice with {fileId: 123} found.');
+    });
+
+    it('should handle undefined primary hearing documents', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: undefined,
+            reheardHearingDocumentsCollection: [
+              { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+            ]
+          }
+        },
+        params: { id: '123' }
+      };
+      const result = getHearingNoticeDocument(req);
+      expect(result).to.deep.equal({ fileId: '123' });
     });
   });
 

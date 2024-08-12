@@ -1113,4 +1113,47 @@ describe('Confirmation Page Controller', () => {
       });
     });
   });
+
+  describe('getApplicationOverview with DLRM refund enabled paymentLink and refund confirmation completed', function () {
+    const tests = [
+      { refundConfirmation: false, status: 'Paid', expected: false },
+      { refundConfirmation: true, status: 'Paid', expected: true },
+      { refundConfirmation: false, status: 'Payment pending', expected: true }
+    ];
+
+    tests.forEach(({ refundConfirmation, status, expected }) => {
+      it(`getApplicationOverview with DLRM refund enabled and refundConfirmation is ${refundConfirmation} and paymentStatus is ${status} should render application-overview.njk with option showPayLaterLink ${expected}`, async function () {
+        const recordRemissionEvent = [{
+          'id': 'recordRemissionDecision',
+          'createdDate': '2024-03-07T15:36:26.099'
+        } as HistoryEvent];
+        mockCcdService = {
+          getCaseHistory: sandbox.stub().returns(recordRemissionEvent)
+        } as Partial<CcdService>;
+
+        updateAppealService = {
+          getAuthenticationService: sandbox.stub().returns(mockAuthenticationService),
+          getCcdService: sandbox.stub().returns(mockCcdService)
+        };
+
+        req.session.appeal.appealStatus = 'appealSubmitted';
+        req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
+        req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
+        req.session.appeal.application.personalDetails.givenNames = 'Appellant';
+        req.session.appeal.application.personalDetails.familyName = 'Name';
+        req.session.appeal.application.appealType = 'protection';
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+        req.session.appeal.application.remissionDecision = 'rejected';
+        req.session.appeal.application.refundConfirmationApplied = refundConfirmation;
+        req.session.appeal.paymentStatus = status;
+
+        await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        const stubRender = res.render as SinonStub;
+        expect(stubRender.getCall(0).args[0]).to.equal('application-overview.njk');
+        expect(stubRender.getCall(0).args[1].showPayLaterLink).to.equal(expected);
+      });
+    });
+  });
 });

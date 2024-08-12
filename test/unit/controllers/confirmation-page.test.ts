@@ -1,11 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
+import { SinonSpy } from 'sinon';
+import { postAsylumSupport } from '../../../app/controllers/appeal-application/asylum-support';
 import {
   getConfirmationPage,
   getConfirmationPaidPage,
-  setConfirmationController
+  setConfirmationController, updateRefundConfirmationAppliedStatus
 } from '../../../app/controllers/appeal-application/confirmation-page';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
+import { Events } from '../../../app/data/events';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { addDaysToDate } from '../../../app/utils/date-utils';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
@@ -18,6 +24,7 @@ describe('Confirmation Page Controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: NextFunction;
+  let updateAppealService: Partial<UpdateAppealService>;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -48,6 +55,15 @@ describe('Confirmation Page Controller', () => {
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
+
+    updateAppealService = {
+      submitEvent: sandbox.stub(),
+      submitEventRefactored: sandbox.stub().returns({
+        case_data: {
+          asylumSupportRefNumber: 'A1234567'
+        }
+      })
+    };
   });
 
   afterEach(() => {
@@ -57,7 +73,7 @@ describe('Confirmation Page Controller', () => {
   it('should setup the routes', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
     const middleware = [];
-    setConfirmationController(middleware);
+    setConfirmationController(middleware, updateAppealService as UpdateAppealService);
     expect(routerGetStub).to.have.been.calledWith(paths.appealSubmitted.confirmation, middleware);
   });
 
@@ -198,14 +214,14 @@ describe('Confirmation Page Controller', () => {
     expect(next).to.have.been.calledOnce.calledWith(error);
   });
 
-  it('getConfirmationPaidPage should render confirmation.njk for a paPayLater appeal', () => {
+  it('getConfirmationPaidPage should render confirmation.njk for a paPayLater appeal', async () => {
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.APPEAL_SUBMITTED.id;
     appeal.application.appealType = 'protection';
     appeal.paAppealTypeAipPaymentOption = 'payLater';
 
-    getConfirmationPaidPage(req as Request, res as Response, next);
+    await getConfirmationPaidPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
       date: addDaysToDate(5),
       title: i18n.pages.confirmationPaid.title,
@@ -214,7 +230,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow in-time appeal paid immediately after submission', () => {
+  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow in-time appeal paid immediately after submission', async () => {
     req.session.payingImmediately = true;
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
@@ -222,7 +238,7 @@ describe('Confirmation Page Controller', () => {
     appeal.application.appealType = 'protection';
     appeal.paAppealTypeAipPaymentOption = 'payNow';
 
-    getConfirmationPaidPage(req as Request, res as Response, next);
+    await getConfirmationPaidPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
       date: addDaysToDate(5),
       title: i18n.pages.successPage.inTime.panel,
@@ -232,7 +248,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow out-of-time appeal paid immeditaley after submission', () => {
+  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow out-of-time appeal paid immeditaley after submission', async () => {
     req.session.payingImmediately = true;
     const { appeal } = req.session;
     appeal.application.isAppealLate = true;
@@ -240,7 +256,7 @@ describe('Confirmation Page Controller', () => {
     appeal.application.appealType = 'protection';
     appeal.paAppealTypeAipPaymentOption = 'payNow';
 
-    getConfirmationPaidPage(req as Request, res as Response, next);
+    await getConfirmationPaidPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
       date: addDaysToDate(5),
       title: i18n.pages.successPage.outOfTime.panel,
@@ -250,7 +266,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow in-time appeal paid not immediately', () => {
+  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow in-time appeal paid not immediately', async () => {
     req.session.payingImmediately = false;
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
@@ -258,7 +274,7 @@ describe('Confirmation Page Controller', () => {
     appeal.application.appealType = 'protection';
     appeal.paAppealTypeAipPaymentOption = 'payNow';
 
-    getConfirmationPaidPage(req as Request, res as Response, next);
+    await getConfirmationPaidPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
       date: addDaysToDate(5),
       title: i18n.pages.confirmationPaidLater.title,
@@ -268,7 +284,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow out-of-time appeal paid not immediately', () => {
+  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow out-of-time appeal paid not immediately', async () => {
     req.session.payingImmediately = false;
     const { appeal } = req.session;
     appeal.application.isAppealLate = true;
@@ -276,7 +292,7 @@ describe('Confirmation Page Controller', () => {
     appeal.application.appealType = 'protection';
     appeal.paAppealTypeAipPaymentOption = 'payNow';
 
-    getConfirmationPaidPage(req as Request, res as Response, next);
+    await getConfirmationPaidPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
       date: addDaysToDate(5),
       title: i18n.pages.confirmationPaidLater.title,
@@ -286,14 +302,14 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPaidPage should render confirmation.njk for on time EA appeal', () => {
+  it('getConfirmationPaidPage should render confirmation.njk for on time EA appeal', async () => {
     req.session.payingImmediately = false;
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.APPEAL_SUBMITTED.id;
     appeal.application.appealType = 'refusalOfEu';
 
-    getConfirmationPaidPage(req as Request, res as Response, next);
+    await getConfirmationPaidPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
       date: addDaysToDate(5),
       title: i18n.pages.successPage.inTime.panel,
@@ -303,14 +319,14 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPaidPage should render confirmation.njk for a late EA appeal', () => {
+  it('getConfirmationPaidPage should render confirmation.njk for a late EA appeal', async () => {
     req.session.payingImmediately = false;
     const { appeal } = req.session;
     appeal.application.isAppealLate = true;
     appeal.appealStatus = States.APPEAL_SUBMITTED.id;
     appeal.application.appealType = 'refusalOfEu';
 
-    getConfirmationPaidPage(req as Request, res as Response, next);
+    await getConfirmationPaidPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
       date: addDaysToDate(5),
       title: i18n.pages.successPage.outOfTime.panel,
@@ -395,6 +411,26 @@ describe('Confirmation Page Controller', () => {
       eaHuEu: false,
       appealWithRemissionOption: false
     });
+  });
+
+  it('should call updateRefundConfirmationAppliedStatus when getConfirmationPaidPage invoked and change the refundConfirmationApplied value to false', async () => {
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = false;
+    appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+    appeal.application.appealType = 'protection';
+    appeal.application.refundConfirmationApplied = false;
+    appeal.paAppealTypeAipPaymentOption = 'payLater';
+
+    updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      application: {
+        refundConfirmationApplied: false
+      }
+    } as Appeal);
+
+    await getConfirmationPaidPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    expect(updateAppealService.submitEventRefactored).to.have.been.calledOnce;
+    expect(req.session.appeal.application.refundConfirmationApplied).to.be.false;
   });
 
 });

@@ -1,5 +1,6 @@
 {
   "testUrl": "TEST_URL",
+  "currentEnvironment": "NODE_ENV",
   "httpProxy": "HTTP_PROXY",
   "appInsights": {
     "instrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY"

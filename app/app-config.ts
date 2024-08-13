@@ -15,6 +15,8 @@ function configureLogger(app: express.Application) {
 }
 
 function configureNunjucks(app: express.Application) {
+  const currentEnv: string = config.get('currentEnvironment');
+
   const nunjucksEnv: nunjucks.Environment = nunjucks.configure([
     'views',
     path.resolve('node_modules/govuk-frontend/')
@@ -23,7 +25,7 @@ function configureNunjucks(app: express.Application) {
     express: app,
     noCache: true
   });
-  nunjucksEnv.addGlobal('environment', process.env.NODE_ENV);
+  nunjucksEnv.addGlobal('environment', currentEnv);
   nunjucksEnv.addFilter('eval', function(text: string) {
     return nunjucks.renderString(text, this.ctx);
   });

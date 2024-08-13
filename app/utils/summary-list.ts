@@ -21,7 +21,8 @@ export function addSummaryRow(key?: string, values?: (number | string | string[]
       items: [
         {
           href: href,
-          text: text || i18n.common.links.change
+          text: text || i18n.common.links.change,
+          visuallyHiddenText: key
         }
       ]
     };

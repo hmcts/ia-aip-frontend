@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
+import validator from 'validator';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { isoLanguages } from '../../data/isoLanguages';
@@ -238,6 +239,12 @@ function postWitnessesInterpreterNeeds(updateAppealService: UpdateAppealService)
       const witnessNames = req.session.appeal.hearingRequirements && req.session.appeal.hearingRequirements.witnessNames || [];
       let selectedWitnessesList = req.body.selections.split(',');
 
+      // Validate and sanitize selectedWitnessesList
+      selectedWitnessesList = selectedWitnessesList
+          .map(index => index.trim()) // Trim whitespace
+          .filter(index => validator.isInt(index)) // Ensure each index is an integer
+          .map(index => validator.toInt(index)); // Convert to integer
+
       witnessNames.forEach((witness, index) => {
         let witnessName = formatWitnessName(witness);
         let witnessListElementString = 'witnessListElement' + (index + 1);
@@ -245,7 +252,7 @@ function postWitnessesInterpreterNeeds(updateAppealService: UpdateAppealService)
         let valueObj: Value = { code: witnessName, label: witnessName };
 
         for (let selectedWitnessIndex of selectedWitnessesList) {
-          if (index === parseInt(selectedWitnessIndex, 10)) {
+          if (index === selectedWitnessIndex) {
             value.push(valueObj);
             break;
           }
@@ -260,7 +267,10 @@ function postWitnessesInterpreterNeeds(updateAppealService: UpdateAppealService)
         ...appealUpdated
       };
 
-      return res.redirect(paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=' + selectedWitnessesList);
+      // Construct sanitized query parameter
+      const sanitizedSelectedWitnesses = selectedWitnessesList.join(',');
+
+      return res.redirect(paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=' + encodeURIComponent(sanitizedSelectedWitnesses));
 
     } catch (error) {
       next(error);

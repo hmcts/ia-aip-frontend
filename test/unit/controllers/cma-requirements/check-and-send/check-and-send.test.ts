@@ -116,15 +116,15 @@ describe('CMA Requirements Check and Send controller', () => {
           summaryLists: [ {
             title: 'Interpreter',
             summaryRows: [ { key: { text: 'Question' }, value: { html: 'Will you need an interpreter?' } }, {
-              actions: { items: [ { href: '/appointment-interpreter?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-interpreter?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Answer' },
               value: { html: 'Yes' }
             }, {
-              actions: { items: [ { href: '/appointment-add-language-details?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-add-language-details?edit', text: 'Change', visuallyHiddenText: 'Language' } ] },
               key: { text: 'Language' },
               value: { html: 'Afar' }
             }, {
-              actions: { items: [ { href: '/appointment-add-language-details?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-add-language-details?edit', text: 'Change', visuallyHiddenText: 'Dialect' } ] },
               key: { text: 'Dialect' },
               value: { html: 'A dialect' }
             } ]
@@ -134,7 +134,7 @@ describe('CMA Requirements Check and Send controller', () => {
               key: { text: 'Question' },
               value: { html: 'Will you or anyone coming with you need step-free access?' }
             }, {
-              actions: { items: [ { href: '/appointment-step-free-access?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-step-free-access?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Answer' },
               value: { html: 'Yes' }
             } ]
@@ -144,7 +144,7 @@ describe('CMA Requirements Check and Send controller', () => {
               key: { text: 'Question' },
               value: { html: 'Will you or anyone coming with you need a hearing loop?' }
             }, {
-              actions: { items: [ { href: '/appointment-hearing-loop?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-hearing-loop?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Answer' },
               value: { html: 'Yes' }
             } ]
@@ -157,7 +157,7 @@ describe('CMA Requirements Check and Send controller', () => {
               key: { text: 'Question' },
               value: { html: 'Will you bring any multimedia evidence?' }
             }, {
-              actions: { items: [ { href: '/appointment-multimedia-evidence?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-multimedia-evidence?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Answer' },
               value: { html: 'Yes' }
             }, {
@@ -165,7 +165,7 @@ describe('CMA Requirements Check and Send controller', () => {
               value: { html: 'Will you bring the equipment to play this evidence?' }
             }, {
               actions: {
-                items: [ { href: '/appointment-multimedia-evidence-equipment?edit', text: 'Change' } ]
+                items: [ { href: '/appointment-multimedia-evidence-equipment?edit', text: 'Change', visuallyHiddenText: 'Answer' } ]
               },
               key: { text: 'Answer' },
               value: { html: 'No' }
@@ -176,7 +176,7 @@ describe('CMA Requirements Check and Send controller', () => {
               }
             }, {
               actions: {
-                items: [ { href: '/appointment-multimedia-evidence-equipment-reasons?edit', text: 'Change' } ]
+                items: [ { href: '/appointment-multimedia-evidence-equipment-reasons?edit', text: 'Change', visuallyHiddenText: 'Answer' } ]
               },
               key: { text: 'Answer' },
               value: {
@@ -189,21 +189,21 @@ describe('CMA Requirements Check and Send controller', () => {
               key: { text: 'Question' },
               value: { html: 'Will you need an all-female or all-male appointment?' }
             }, {
-              actions: { items: [ { href: '/appointment-single-sex?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-single-sex?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Answer' },
               value: { html: 'Yes' }
             }, {
               key: { text: 'Question' },
               value: { html: 'What type of appointment will you need?' }
             }, {
-              actions: { items: [ { href: '/appointment-single-sex-type?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-single-sex-type?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Answer' },
               value: { html: 'All male' }
             }, {
               key: { text: 'Question' },
               value: { html: 'Tell us why you need an all-male appointment' }
             }, {
-              actions: { items: [ { href: '/appointment-single-sex-type-male?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-single-sex-type-male?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Answer' },
               value: {
                 html: '<pre>Reason for "Tell us why you need an all-male appointment"</pre>'
@@ -215,14 +215,14 @@ describe('CMA Requirements Check and Send controller', () => {
               key: { text: 'Question' },
               value: { html: 'Will you need a private appointment?' }
             }, {
-              actions: { items: [ { href: '/appointment-private?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-private?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Answer' },
               value: { html: 'Yes' }
             }, {
               key: { text: 'Question' },
               value: { html: 'Tell us why you need a private appointment' }
             }, {
-              actions: { items: [ { href: '/appointment-private-reasons?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-private-reasons?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Answer' },
               value: { html: '<pre>Reason for "Tell us why you need a private appointment"</pre>' }
             } ]
@@ -235,7 +235,7 @@ describe('CMA Requirements Check and Send controller', () => {
               }
             }, {
               actions: {
-                items: [ { href: '/appointment-physical-mental-health?edit', text: 'Change' } ]
+                items: [ { href: '/appointment-physical-mental-health?edit', text: 'Change', visuallyHiddenText: 'Answer' } ]
               },
               key: { text: 'Answer' },
               value: { html: 'Yes' }
@@ -246,7 +246,7 @@ describe('CMA Requirements Check and Send controller', () => {
               }
             }, {
               actions: {
-                items: [ { href: '/appointment-physical-mental-health-reasons?edit', text: 'Change' } ]
+                items: [ { href: '/appointment-physical-mental-health-reasons?edit', text: 'Change', visuallyHiddenText: 'Answer' } ]
               },
               key: { text: 'Answer' },
               value: {
@@ -261,7 +261,7 @@ describe('CMA Requirements Check and Send controller', () => {
                 html: 'Have you had any past experiences that may affect you at the appointment?'
               }
             }, {
-              actions: { items: [ { href: '/appointment-past-experiences?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-past-experiences?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Answer' },
               value: { html: 'Yes' }
             }, {
@@ -271,7 +271,7 @@ describe('CMA Requirements Check and Send controller', () => {
               }
             }, {
               actions: {
-                items: [ { href: '/appointment-past-experiences-reasons?edit', text: 'Change' } ]
+                items: [ { href: '/appointment-past-experiences-reasons?edit', text: 'Change', visuallyHiddenText: 'Answer' } ]
               },
               key: { text: 'Answer' },
               value: {
@@ -284,7 +284,7 @@ describe('CMA Requirements Check and Send controller', () => {
               key: { text: 'Question' },
               value: { html: 'Will you need anything else at the appointment?' }
             }, {
-              actions: { items: [ { href: '/appointment-anything-else?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-anything-else?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Answer' },
               value: { html: 'Yes' }
             }, {
@@ -292,7 +292,7 @@ describe('CMA Requirements Check and Send controller', () => {
               value: { html: 'Tell us what you will need and why you need it' }
             }, {
               actions: {
-                items: [ { href: '/appointment-anything-else-reasons?edit', text: 'Change' } ]
+                items: [ { href: '/appointment-anything-else-reasons?edit', text: 'Change', visuallyHiddenText: 'Answer' } ]
               },
               key: { text: 'Answer' },
               value: {
@@ -307,17 +307,17 @@ describe('CMA Requirements Check and Send controller', () => {
               key: { text: 'Question' },
               value: { html: 'Are there any dates you cannot go to the appointment?' }
             }, {
-              actions: { items: [ { href: '/appointment-dates-avoid?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-dates-avoid?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Answer' },
               value: { html: 'Yes' }
             }, {
-              actions: { items: [ { href: '/appointment-dates-avoid-enter/0?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-dates-avoid-enter/0?edit', text: 'Change', visuallyHiddenText: 'Dates to avoid' } ] },
               key: { text: 'Dates to avoid' },
               value: {
                 html: '<b>Date</b><br><pre>08 July 2020</pre><br><b>Reason</b><br><pre>Reason 1 for "Why can you not go to the appointment on this date?"</pre>'
               }
             }, {
-              actions: { items: [ { href: '/appointment-dates-avoid-enter/1?edit', text: 'Change' } ] },
+              actions: { items: [ { href: '/appointment-dates-avoid-enter/1?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: null },
               value: {
                 html: '<b>Date</b><br><pre>09 July 2020</pre><br><b>Reason</b><br><pre>Reason 2  for "Why can you not go to the appointment on this date?:</pre>'

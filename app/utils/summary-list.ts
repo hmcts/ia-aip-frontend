@@ -22,7 +22,7 @@ export function addSummaryRow(key?: string, values?: (number | string | string[]
         {
           href: href,
           text: text || i18n.common.links.change,
-          visuallyHiddenText: key
+          visuallyHiddenText: key ? key : 'Answer'
         }
       ]
     };

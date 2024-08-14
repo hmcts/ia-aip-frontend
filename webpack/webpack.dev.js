@@ -1,4 +1,4 @@
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const commonConfig = require('./webpack.common');
 
 const serverConfig = {
@@ -17,4 +17,5 @@ const devConfig = {
   client: clientConfig
 };
 
-module.exports = merge.multiple(commonConfig, devConfig);
+const mergedDevConfig = merge(devConfig.server, devConfig.client)
+module.exports = merge(commonConfig, mergedDevConfig);

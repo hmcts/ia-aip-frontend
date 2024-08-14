@@ -7,12 +7,12 @@ import { aipCurrentUser, getUserId, getUserToken } from './idam-service';
 import { getS2sToken } from './s2s-service';
 
 const config = require('config');
-const caseOfficerUserName = config.get('testAccounts.testCaseOfficerUserName');
-const caseOfficerPassword = config.get('testAccounts.testCaseOfficerPassword');
-const adminOfficerUserName = config.get('testAccounts.testAdminOfficerUserName');
-const adminOfficerPassword = config.get('testAccounts.testAdminOfficerPassword');
-const judgeUserName = config.get('testAccounts.testJudgeUserName');
-const judgePassword = config.get('testAccounts.testJudgePassword');
+const caseOfficerUserName = config.get('testAccounts.testCaseOfficerUserName') || '';
+const caseOfficerPassword = config.get('testAccounts.testCaseOfficerPassword') || '';
+const adminOfficerUserName = config.get('testAccounts.testAdminOfficerUserName') || '';
+const adminOfficerPassword = config.get('testAccounts.testAdminOfficerPassword') || '';
+const judgeUserName = config.get('testAccounts.testJudgeUserName') || '';
+const judgePassword = config.get('testAccounts.testJudgePassword') || '';
 
 const testUrl = config.get('testUrl');
 let exUiUrl;

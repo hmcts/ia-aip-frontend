@@ -1,7 +1,8 @@
 const { merge } = require('webpack-merge');
 //const merge = require('webpack-merge');
 const TerserJSPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+//const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const commonConfigMerged = require('./webpack.common');
 
 const serverConfig = {
@@ -11,9 +12,10 @@ const serverConfig = {
 const clientConfig = {
         mode: "production",
         optimization: {
+            minimize: true,
             minimizer: [
                 new TerserJSPlugin({}),
-                new OptimizeCSSAssetsPlugin({})
+                new CssMinimizerPlugin({})
             ]
     }
 };

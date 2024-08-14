@@ -1,6 +1,6 @@
 'use strict';
 import config from 'config';
-import * as crypto from 'crypto';
+import * as crypto from 'crypto-browserify';
 
 const algorithm = 'aes-256-gcm';
 const bufferSize = 16;

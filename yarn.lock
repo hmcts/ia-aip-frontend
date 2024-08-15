@@ -8583,6 +8583,7 @@ __metadata:
     tslint-no-unused-expression-chai: ^0.1.4
     typescript: ^3.9.9
     uuid-validate: ^0.0.3
+    validator: ^13.12.0
     webdriverio: ^6.12.1
     webpack: ^4.46.0
     webpack-cli: ^3.3.12
@@ -16094,6 +16095,13 @@ __metadata:
     spdx-correct: ^3.0.0
     spdx-expression-parse: ^3.0.0
   checksum: 35703ac889d419cf2aceef63daeadbe4e77227c39ab6287eeb6c1b36a746b364f50ba22e88591f5d017bc54685d8137bc2d328d0a896e4d3fd22093c0f32a9ad
+  languageName: node
+  linkType: hard
+
+"validator@npm:^13.12.0":
+  version: 13.12.0
+  resolution: "validator@npm:13.12.0"
+  checksum: fb8f070724770b1449ea1a968605823fdb112dbd10507b2802f8841cda3e7b5c376c40f18c84e6a7b59de320a06177e471554101a85f1fa8a70bac1a84e48adf
   languageName: node
   linkType: hard
 

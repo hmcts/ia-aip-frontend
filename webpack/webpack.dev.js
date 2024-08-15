@@ -1,5 +1,5 @@
 const { merge } = require('webpack-merge');
-const commonConfig = require('./webpack.common');
+const commonConfigMerged = require('./webpack.common');
 
 const serverConfig = {
     mode: "development",
@@ -18,4 +18,4 @@ const devConfig = {
 };
 
 const mergedDevConfig = merge(devConfig.server, devConfig.client)
-module.exports = merge(commonConfig, mergedDevConfig);
+module.exports = [commonConfigMerged, mergedDevConfig];

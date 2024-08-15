@@ -48,7 +48,6 @@ const clientConfig = {
             './client/main.ts',
             './app/assets/scss/application.scss'
         ],
-  watch: true,
         target: 'web',
         output: {
             path: path.resolve(__dirname, '../build'),

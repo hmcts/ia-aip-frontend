@@ -5,14 +5,15 @@ import { AuthenticationService } from './authentication-service';
 import { updateAppeal } from './ccd-service';
 import { aipCurrentUser, getUserId, getUserToken } from './idam-service';
 import { getS2sToken } from './s2s-service';
+import process from "process";
 
 const config = require('config');
-const caseOfficerUserName = config.get('testAccounts.testCaseOfficerUserName') || '';
-const caseOfficerPassword = config.get('testAccounts.testCaseOfficerPassword') || '';
-const adminOfficerUserName = config.get('testAccounts.testAdminOfficerUserName') || '';
-const adminOfficerPassword = config.get('testAccounts.testAdminOfficerPassword') || '';
-const judgeUserName = config.get('testAccounts.testJudgeUserName') || '';
-const judgePassword = config.get('testAccounts.testJudgePassword') || '';
+const caseOfficerUserName = config.get('testAccounts.testCaseOfficerUserName');
+const caseOfficerPassword = process.env.TEST_CASEOFFICER_PASSWORD;
+const adminOfficerUserName = config.get('testAccounts.testAdminOfficerUserName');
+const adminOfficerPassword = process.env.TEST_ADMINOFFICER_PASSWORD;
+const judgeUserName = config.get('testAccounts.testJudgeUserName');
+const judgePassword = process.env.TEST_JUDGE_X_PASSWORD;
 
 const testUrl = config.get('testUrl');
 let exUiUrl;

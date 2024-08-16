@@ -1,5 +1,4 @@
 import { getUserToken } from './idam-service';
-import * as process from "process";
 
 const config = require('config');
 const caseOfficerUserName = config.get('testAccounts.testCaseOfficerUserName');

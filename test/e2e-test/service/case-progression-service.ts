@@ -1,11 +1,9 @@
 import { Events } from '../../../app/data/events';
-import { paths } from '../../../app/paths';
 import { CcdService } from '../../../app/service/ccd-service';
 import { AuthenticationService } from './authentication-service';
 import { updateAppeal } from './ccd-service';
 import { aipCurrentUser, getUserId, getUserToken } from './idam-service';
 import { getS2sToken } from './s2s-service';
-import process from "process";
 
 const config = require('config');
 const caseOfficerUserName = config.get('testAccounts.testCaseOfficerUserName');

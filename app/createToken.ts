@@ -1,6 +1,7 @@
 'use strict';
 import config from 'config';
-import * as crypto from 'crypto-browserify';
+import * as crypto from 'crypto';
+const { scryptSync } = require('crypto');
 
 const algorithm = 'aes-256-gcm';
 const bufferSize = 16;
@@ -12,7 +13,7 @@ const createToken = params => {
   let encrypted = '';
 
   if (tokenKey) {
-    const key = crypto.scryptSync(tokenKey, 'salt', keyLen);
+    const key = scryptSync(tokenKey, 'salt', keyLen);
     Object.keys(params).forEach(p => {
       params[p] = String(params[p]);
     });

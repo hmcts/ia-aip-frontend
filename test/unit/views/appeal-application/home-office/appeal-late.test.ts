@@ -1,7 +1,6 @@
 import nunjucks from 'nunjucks';
 import i18n from '../../../../../locale/en.json';
 const { expect } = require('chai');
-const govUK = require('govuk-frontend');
 
 describe('Delete evidence button', () => {
 //   var env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views'));

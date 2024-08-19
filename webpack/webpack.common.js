@@ -46,7 +46,8 @@ const serverConfig = {
 const clientConfig = {
         entry: [
             './client/main.ts',
-            './app/assets/scss/application.scss'
+            './app/assets/scss/application.scss',
+            './app/assets/scss/_cookie-banner.scss'
         ],
         target: 'web',
         output: {

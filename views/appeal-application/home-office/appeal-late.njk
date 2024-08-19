@@ -67,7 +67,7 @@
           <ul class="govuk-list">
             <li class="list__item">
               <span>{{ evidence.name }}</span>
-              <input type="submit" class="evidence-list__link" value="{{ i18n.common.links.delete }}" formaction="{{ paths.appealStarted.deleteEvidence }}?_csrf={{ csrfToken }}" aria-label="{{ evidence.name }}"/>
+              <input type="submit" class="evidence-list__link" value="{{ i18n.common.links.delete }}" formaction="{{ paths.appealStarted.deleteEvidence }}?_csrf={{ csrfToken }}" aria-label="{{ i18n.common.links.delete }} {{ evidence.name }}"/>
             </li>
           </ul>
         </div>

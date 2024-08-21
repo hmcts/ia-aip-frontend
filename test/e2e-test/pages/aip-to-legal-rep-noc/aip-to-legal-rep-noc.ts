@@ -40,7 +40,7 @@ module.exports = {
           await I.amOnPage(exuiBaseUrl);
           await I.waitForElement('#username', 30);
           await I.fillField('#username', config.get('testAccounts.testLawFirmAUsername'));
-          await I.fillField('#password', config.get('testAccounts.testLawFirmAPassword'));
+          await I.fillField('#password', process.env.TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD);
           await I.click('Sign in');
         }
       }

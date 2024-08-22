@@ -1276,7 +1276,7 @@
           "links": [
             {
               "title": "Useful documents",
-              "text": "Hearing bundles",
+              "text": "Hearing bundle",
               "href": "{{ paths.common.hearingBundleViewer }}"
             }
           ]

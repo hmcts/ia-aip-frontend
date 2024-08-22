@@ -187,7 +187,7 @@ function getAsyncStitchingEvent(req: Request): any[] {
         dateObject: new Date(hearingBundle.dateUploaded),
         text: textForTimeline,
         links: [{
-          ...i18n.pages.overviewPage.timeline.listCase.links[0],
+          ...i18n.pages.overviewPage.timeline.asyncStitchingComplete.links[0],
           href: paths.common.hearingBundleViewer
         }]
       };

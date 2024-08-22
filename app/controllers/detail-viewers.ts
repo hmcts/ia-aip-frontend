@@ -903,11 +903,17 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
     let title: string;
     let subtitle1: string | null = null;
     let subtitle2: string | null = null;
-
-    hearingBundles.sort((a, b) => moment(b.dateTimeUploaded)
-      .diff(moment(a.dateTimeUploaded)));
+    hearingBundles.sort((a, b) => {
+      if (a.dateTimeUploaded && b.dateTimeUploaded) {
+        return moment(b.dateTimeUploaded).diff(moment(a.dateTimeUploaded));
+      } else {
+        return moment(b.dateUploaded).diff(moment(a.dateUploaded));
+      }
+    });
     hearingBundles.forEach((hearingBundle: Evidence) => {
-      const dateTimeUploaded: string = moment(hearingBundle.dateTimeUploaded).format(dateTimeFormat);
+      const dateTimeUploaded: string = hearingBundle.dateTimeUploaded
+        ? moment(hearingBundle.dateTimeUploaded).format(dateTimeFormat)
+        : moment(hearingBundle.dateUploaded).format(dayMonthYearFormat);
       const documentLink: string = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`;
       const summaryRows: SummaryRow[] = [
         addSummaryRow(i18n.pages.detailViewers.hearingBundle.dateUploaded, [dateTimeUploaded]),

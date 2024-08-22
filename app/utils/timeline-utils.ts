@@ -184,6 +184,7 @@ function getAsyncStitchingEvent(req: Request): any[] {
       return {
         date: moment(hearingBundle.dateUploaded).format('DD MMMM YYYY'),
         dateTimeObject: new Date(hearingBundle.dateTimeUploaded),
+        dateObject: new Date(hearingBundle.dateUploaded),
         text: textForTimeline,
         links: [{
           ...i18n.pages.overviewPage.timeline.listCase.links[0],
@@ -191,6 +192,7 @@ function getAsyncStitchingEvent(req: Request): any[] {
         }]
       };
     })
+    .sort((a: any, b: any) => b.dateObject - a.dateObject)
     .sort((a: any, b: any) => b.dateTimeObject - a.dateTimeObject);
 }
 

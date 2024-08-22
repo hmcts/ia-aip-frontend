@@ -420,7 +420,8 @@ function filterEventsForHearingRequirementsSection(req: Request) {
   const targetEvents = [
     Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
     Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
-    Events.RECORD_ADJOURNMENT_DETAILS.id
+    Events.RECORD_ADJOURNMENT_DETAILS.id,
+    Events.STITCHING_BUNDLE_COMPLETE.id
   ];
 
   return req.session.appeal.history.filter(event =>

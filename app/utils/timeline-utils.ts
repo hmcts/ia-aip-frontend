@@ -32,8 +32,8 @@ function constructEventObject(event: HistoryEvent, req: Request) {
   if (isUploadEvidenceEventByLegalRep(req, event)) {
     eventContent = i18n.pages.overviewPage.timeline[event.id]['providedByLr'];
   } else if (Events.RESIDENT_JUDGE_FTPA_DECISION.id === event.id
-      || Events.LEADERSHIP_JUDGE_FTPA_DECISION.id === event.id
-      || Events.DECIDE_FTPA_APPLICATION.id === event.id) {
+    || Events.LEADERSHIP_JUDGE_FTPA_DECISION.id === event.id
+    || Events.DECIDE_FTPA_APPLICATION.id === event.id) {
     const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
     eventContent = i18n.pages.overviewPage.timeline['decideFtpa'][ftpaApplicantType];
   }
@@ -44,12 +44,12 @@ function constructEventObject(event: HistoryEvent, req: Request) {
   }
 
   let eventObject = eventContent
-      ? {
-        date: moment(event.createdDate).format('DD MMMM YYYY'),
-        dateObject: new Date(event.createdDate),
-        text: eventContent.text || null,
-        links: eventContent.links
-      } : null;
+    ? {
+      date: moment(event.createdDate).format('DD MMMM YYYY'),
+      dateObject: new Date(event.createdDate),
+      text: eventContent.text || null,
+      links: eventContent.links
+    } : null;
 
   if (event.id === Events.RECORD_OUT_OF_TIME_DECISION.id) {
     eventObject.text = i18n.pages.overviewPage.timeline[event.id].type[req.session.appeal.outOfTimeDecisionType];
@@ -81,13 +81,13 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
     : events.filter(event => eventsToLookFor.includes(event.id));
 
   return filteredEvents
-      .map(event => constructEventObject(event, req));
+    .map(event => constructEventObject(event, req));
 }
 
 function getApplicationEvents(req: Request): any[] {
   const applicationEvents = isReadonlyApplicationEnabled(req)
-      ? req.session.appeal.makeAnApplications
-      : getAppellantApplications(req.session.appeal.makeAnApplications);
+    ? req.session.appeal.makeAnApplications
+    : getAppellantApplications(req.session.appeal.makeAnApplications);
   const makeDirectionsFlatMap = applicationEvents ? applicationEvents.flatMap(application => {
     const makeAnApplicationContent = i18n.pages.overviewPage.timeline.makeAnApplication[getApplicant(application.value)];
     const request = {
@@ -141,23 +141,57 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
 function getDirectionHistory(req: Request): any[] {
   if (isNonStandardDirectionEnabled(req)) {
     return (req.session.appeal.directions || [])
-        .filter(direction => (
-            direction.directionType === 'sendDirection'
-            && (direction.parties === 'appellant' || direction.parties === 'respondent')))
-        .map(direction => {
-          return {
-            date: moment(direction.dateSent).format('DD MMMM YYYY'),
-            dateObject: new Date(direction.dateSent),
-            text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
-            links: [{
-              ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
-              href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
-            }]
-          };
-        });
+      .filter(direction => (
+        direction.directionType === 'sendDirection'
+        && (direction.parties === 'appellant' || direction.parties === 'respondent')))
+      .map(direction => {
+        return {
+          date: moment(direction.dateSent).format('DD MMMM YYYY'),
+          dateObject: new Date(direction.dateSent),
+          text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
+          links: [{
+            ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
+            href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
+          }]
+        };
+      });
   } else {
     return [];
   }
+}
+
+function getAsyncStitchingEvent(req: Request): any[] {
+  let hearingBundles: Evidence[] = [];
+  let hearingBundleTags: string[] = ['hearingBundle', 'updatedHearingBundle'];
+  if (req.session.appeal.hearingDocuments) {
+    hearingBundles = req.session.appeal.hearingDocuments.filter((doc: Evidence) => hearingBundleTags.includes(doc.tag));
+  }
+  if (req.session.appeal.reheardHearingDocumentsCollection) {
+    req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {
+      if (collection.value) {
+        let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
+          .filter(doc => hearingBundleTags.includes(doc.tag));
+        hearingBundles.push(...filteredCollection);
+      }
+    });
+  }
+
+  return hearingBundles
+    .map(hearingBundle => {
+      const textForTimeline: string = hearingBundle.tag === 'updatedHearingBundle'
+        ? i18n.pages.overviewPage.timeline.asyncStitchingComplete.textForUpdateBundle
+        : i18n.pages.overviewPage.timeline.asyncStitchingComplete.text;
+      return {
+        date: moment(hearingBundle.dateUploaded).format('DD MMMM YYYY'),
+        dateTimeObject: new Date(hearingBundle.dateTimeUploaded),
+        text: textForTimeline,
+        links: [{
+          ...i18n.pages.overviewPage.timeline.listCase.links[0],
+          href: paths.common.hearingBundleViewer
+        }]
+      };
+    })
+    .sort((a: any, b: any) => b.dateTimeObject - a.dateTimeObject);
 }
 
 function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
@@ -233,11 +267,15 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
-  const appealHearingRequirementsSection = constructSection(
+  let appealHearingRequirementsSection = constructSection(
     eventsAndStates.appealHearingRequirementsSectionEvents,
     filterEventsForHearingRequirementsSection(req),
     null, req
   );
+  const asyncStitchingEvent = getAsyncStitchingEvent(req);
+  appealHearingRequirementsSection = appealHearingRequirementsSection.concat(asyncStitchingEvent)
+    .sort((a: any, b: any) => b.dateObject - a.dateObject);
+
   const appealArgumentSection = constructSection(
     eventsAndStates.appealArgumentSectionEvents,
     req.session.appeal.history.filter(event => !isUploadEvidenceEventByLegalRep(req, event)),
@@ -279,9 +317,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 }
 
 function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
-  hearingBundleFeatureEnabled: boolean,
-  ftpaFeatureEnabled: boolean,
-  ftpaSetAsideFeatureEnabled: boolean) {
+                            hearingBundleFeatureEnabled: boolean,
+                            ftpaFeatureEnabled: boolean,
+                            ftpaSetAsideFeatureEnabled: boolean) {
   const appealHearingRequirementsSectionEvents = [
     Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
     Events.STITCHING_BUNDLE_COMPLETE.id,
@@ -306,16 +344,16 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
 
   if (ftpaFeatureEnabled) {
     appealDecisionSectionEvents.push(
-        Events.APPLY_FOR_FTPA_APPELLANT.id,
-        Events.APPLY_FOR_FTPA_RESPONDENT.id,
-        Events.LEADERSHIP_JUDGE_FTPA_DECISION.id,
-        Events.RESIDENT_JUDGE_FTPA_DECISION.id
+      Events.APPLY_FOR_FTPA_APPELLANT.id,
+      Events.APPLY_FOR_FTPA_RESPONDENT.id,
+      Events.LEADERSHIP_JUDGE_FTPA_DECISION.id,
+      Events.RESIDENT_JUDGE_FTPA_DECISION.id
     );
   }
 
   if (ftpaSetAsideFeatureEnabled) {
     appealDecisionSectionEvents.push(
-        Events.DECIDE_FTPA_APPLICATION.id
+      Events.DECIDE_FTPA_APPLICATION.id
     );
   }
 
@@ -398,5 +436,6 @@ export {
   getUpdateTribunalDecisionDocumentHistory,
   constructSection,
   getEventsAndStates,
+  getAsyncStitchingEvent,
   filterEventsForHearingRequirementsSection
 };

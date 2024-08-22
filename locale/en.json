@@ -1272,6 +1272,7 @@
         },
         "asyncStitchingComplete": {
           "text": "A hearing bundle is ready to view.",
+          "textForUpdateBundle": "An updated hearing bundle is ready to view.",
           "links": [
             {
               "title": "Useful documents",
@@ -2026,10 +2027,9 @@
       "hearingBundle": {
         "title": "Hearing bundle",
         "titlePlural": "Hearing bundles",
-        "originalSubtitle": "Hearing bundle",
-        "originalSubtitlePlural": "Hearing bundles",
-        "amendedSubtitle": "Amended hearing bundle",
-        "amendedSubtitlePlural": "Amended hearing bundles",
+        "subtitle": "Hearing bundle",
+        "previousSubtitle": "Previous hearing bundle",
+        "previousSubtitlePlural": "Previous hearing bundles",
         "dateUploaded": "Date uploaded",
         "document": "Document"
       },

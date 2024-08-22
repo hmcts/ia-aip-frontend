@@ -67,6 +67,7 @@ interface Evidence {
   suppliedBy?: string;
   description?: string;
   dateUploaded?: string;
+  dateTimeUploaded?: string;
   uploadedBy?: string;
 }
 
@@ -116,6 +117,7 @@ interface Appeal {
   hearingRequirements?: HearingRequirements;
   respondentDocuments?: Evidence[];
   hearingDocuments?: Evidence[];
+  reheardHearingDocuments?: Evidence[];
   cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];

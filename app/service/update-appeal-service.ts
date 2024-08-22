@@ -629,12 +629,12 @@ export default class UpdateAppealService {
         date: listHearingDate
       },
       ...caseData.respondentDocuments && { respondentDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.respondentDocuments, documentMap) },
-      ...caseData.hearingDocuments && { hearingDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.hearingDocuments, documentMap) },
       ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments, documentMap) },
       ...caseData.additionalEvidenceDocuments && { additionalEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.additionalEvidenceDocuments, documentMap) },
       ...caseData.addendumEvidenceDocuments && { addendumEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.addendumEvidenceDocuments, documentMap) },
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.hearingDocuments && { hearingDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.hearingDocuments, documentMap) },
+      ...caseData.reheardHearingDocuments && { reheardHearingDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.reheardHearingDocuments, documentMap) },
       ...caseData.finalDecisionAndReasonsDocuments && { finalDecisionAndReasonsDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.finalDecisionAndReasonsDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
@@ -1331,6 +1331,7 @@ export default class UpdateAppealService {
     });
     return ccdCQ;
   }
+
   private mapAppealClarifyingQuestionsToCcd(clarifyingQuestions: ClarifyingQuestion<Evidence>[], documentMap: DocumentMap[]): ClarifyingQuestion<Collection<SupportingDocument>>[] {
     const ccdCQ = clarifyingQuestions.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
       let supportingEvidence: Collection<SupportingDocument>[];
@@ -1347,6 +1348,7 @@ export default class UpdateAppealService {
     });
     return ccdCQ;
   }
+
   // TODO: remove method if not needed
   private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
 

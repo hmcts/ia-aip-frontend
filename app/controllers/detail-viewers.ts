@@ -8,7 +8,7 @@ import { paths } from '../paths';
 import { DocumentManagementService } from '../service/document-management-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
-import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
+import { dateTimeFormat, dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { getFee } from '../utils/payments-utils';
 import { appealHasNoRemissionOption, appealHasRemissionOption } from '../utils/remission-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
@@ -58,8 +58,8 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     }
 
     const address = application.personalDetails.address
-      && _.isEmpty(application.personalDetails.address)
-        ? null : application.personalDetails.address;
+    && _.isEmpty(application.personalDetails.address)
+      ? null : application.personalDetails.address;
 
     rowsCont = [
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [formatDate(toIsoDate(application.dateLetterSent))], null),
@@ -164,6 +164,7 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
   }
   return rows;
 }
+
 async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   const { application } = req.session.appeal;
   const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
@@ -632,16 +633,16 @@ function getRespondentApplicationDetails(application: Collection<Application<Evi
   };
 
   return decision === 'Pending'
-      ? {
-        ...options,
-        whatNextList: whatNextPending
-      } : {
-        ...options,
-        response,
-        whatNext: whatNextDecided,
-        responseTitle: i18n.pages.detailViewers.makeAnApplication.respondent.response.title,
-        responseDescription: i18n.pages.detailViewers.makeAnApplication.respondent.response.description
-      };
+    ? {
+      ...options,
+      whatNextList: whatNextPending
+    } : {
+      ...options,
+      response,
+      whatNext: whatNextDecided,
+      responseTitle: i18n.pages.detailViewers.makeAnApplication.respondent.response.title,
+      responseDescription: i18n.pages.detailViewers.makeAnApplication.respondent.response.description
+    };
 }
 
 function getAppellantApplicationDetails(application: Collection<Application<Evidence>>) {
@@ -663,8 +664,8 @@ function getMakeAnApplicationDecisionWhatNext(makeAnApplicationEvent: Collection
     const questionKey = applicationType.parent ? applicationType.parent : applicationType.code;
     const decisionKey = data.decision.toLowerCase();
     const whatNextSource = data.applicant === 'Respondent'
-        ? i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext
-        : i18n.pages.detailViewers.makeAnApplication.appellant.whatNext;
+      ? i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext
+      : i18n.pages.detailViewers.makeAnApplication.appellant.whatNext;
     return whatNextSource[questionKey][decisionKey] ? whatNextSource[questionKey][decisionKey] : whatNextSource.default[decisionKey];
   }
   return null;
@@ -673,7 +674,18 @@ function getMakeAnApplicationDecisionWhatNext(makeAnApplicationEvent: Collection
 function getCmaRequirementsViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
-    const { interpreter, stepFree, hearingLoop, multiEvidence, sexAppointment, privateAppointment, physicalOrMental, pastExperiences, anythingElse, dateToAvoid } = setupCmaRequirementsViewer(req);
+    const {
+      interpreter,
+      stepFree,
+      hearingLoop,
+      multiEvidence,
+      sexAppointment,
+      privateAppointment,
+      physicalOrMental,
+      pastExperiences,
+      anythingElse,
+      dateToAvoid
+    } = setupCmaRequirementsViewer(req);
     return res.render('detail-viewers/cma-requirements-details-viewer.njk', {
       previousPage: previousPage,
       interpreter: interpreter,
@@ -875,58 +887,52 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
     const previousPage: string = paths.common.overview;
     let hearingBundles: Evidence[] = [];
     if (req.session.appeal.hearingDocuments) {
-      hearingBundles = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'hearingBundle');
+      hearingBundles = req.session.appeal.hearingDocuments
+        .filter(doc => doc.tag === 'hearingBundle' || doc.tag === 'updatedHearingBundle');
     }
     if (req.session.appeal.reheardHearingDocumentsCollection) {
       req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {
         if (collection.value) {
           let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
-              .filter(doc => doc.tag === 'hearingBundle');
+            .filter(doc => doc.tag === 'hearingBundle' || doc.tag === 'updatedHearingBundle');
           hearingBundles.push(...filteredCollection);
         }
       });
     }
-    let originalBundleData: SummaryRow[] = [];
-    let amendedBundleData: SummaryRow[] = [];
+    let bundleData: SummaryRow[] = [];
     let title: string;
     let subtitle1: string | null = null;
     let subtitle2: string | null = null;
 
-    const amendedRegexPattern: RegExp = /^[^\r\n-]*-[^\r\n]*-amended-\d{1,2}.*-hearing-bundle.*$/;
-    hearingBundles.sort((a, b) => moment(b.dateUploaded, 'YYYY-MM-DD').diff(moment(a.dateUploaded, 'YYYY-MM-DD')));
+    hearingBundles.sort((a, b) => moment(b.dateTimeUploaded)
+      .diff(moment(a.dateTimeUploaded)));
     hearingBundles.forEach((hearingBundle: Evidence) => {
-      const dateUploaded: string = moment(hearingBundle.dateUploaded).format(dayMonthYearFormat);
+      const dateTimeUploaded: string = moment(hearingBundle.dateTimeUploaded).format(dateTimeFormat);
       const documentLink: string = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`;
-      const isAmendedHearingBundle: boolean = amendedRegexPattern.test(hearingBundle.name);
       const summaryRows: SummaryRow[] = [
-        addSummaryRow(i18n.pages.detailViewers.hearingBundle.dateUploaded, [dateUploaded]),
+        addSummaryRow(i18n.pages.detailViewers.hearingBundle.dateUploaded, [dateTimeUploaded]),
         addSummaryRow(i18n.pages.detailViewers.hearingBundle.document, [documentLink])
       ];
-      if (isAmendedHearingBundle) {
-        amendedBundleData.push(...summaryRows);
-      } else {
-        originalBundleData.push(...summaryRows);
-      }
+      bundleData.push(...summaryRows);
     });
-    if (originalBundleData.length > 0) {
-      subtitle1 = originalBundleData.length > 2
-          ? i18n.pages.detailViewers.hearingBundle.originalSubtitlePlural
-          : i18n.pages.detailViewers.hearingBundle.originalSubtitle;
+    const latestBundle: SummaryRow[] = [bundleData[0], bundleData[1]];
+    let previousBundles: SummaryRow[] = null;
+    if (bundleData.length > 2) {
+      subtitle1 = i18n.pages.detailViewers.hearingBundle.subtitle;
+      previousBundles = bundleData.slice(2);
+      subtitle2 = bundleData.length > 4
+        ? i18n.pages.detailViewers.hearingBundle.previousSubtitlePlural
+        : i18n.pages.detailViewers.hearingBundle.previousSubtitle;
     }
-    if (amendedBundleData.length > 0) {
-      subtitle2 = amendedBundleData.length > 2
-          ? i18n.pages.detailViewers.hearingBundle.amendedSubtitlePlural
-          : i18n.pages.detailViewers.hearingBundle.amendedSubtitle;
-    }
-    title = originalBundleData.length + amendedBundleData.length > 2
-        ? i18n.pages.detailViewers.hearingBundle.titlePlural
-        : i18n.pages.detailViewers.hearingBundle.title;
+    title = bundleData.length > 2
+      ? i18n.pages.detailViewers.hearingBundle.titlePlural
+      : i18n.pages.detailViewers.hearingBundle.title;
     return res.render('templates/details-viewer-hearing-bundles.njk', {
       title: title,
       subtitle1: subtitle1,
-      data1: originalBundleData,
+      data1: latestBundle,
       subtitle2: subtitle2,
-      data2: amendedBundleData,
+      data2: previousBundles,
       previousPage
     });
   } catch (error) {
@@ -946,14 +952,14 @@ function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunc
     const data = [];
 
     if (ftpaGrounds && ftpaGrounds.length) {
-      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [ formatTextForCYA(ftpaGrounds) ]));
+      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [formatTextForCYA(ftpaGrounds)]));
     }
     attachFtpaDocuments(ftpaEvidenceDocuments, data, i18n.pages.detailViewers.ftpaApplication.evidence);
     if (ftpaAppellantApplicationDate) {
-      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [ formatTextForCYA(moment(ftpaAppellantApplicationDate).format(dayMonthYearFormat)) ]));
+      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [formatTextForCYA(moment(ftpaAppellantApplicationDate).format(dayMonthYearFormat))]));
     }
     if (ftpaOutOfTimeApplicationReason && ftpaOutOfTimeApplicationReason.length) {
-      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [ formatTextForCYA(ftpaOutOfTimeApplicationReason) ]));
+      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [formatTextForCYA(ftpaOutOfTimeApplicationReason)]));
     }
     attachFtpaDocuments(ftpaOutOfTimeApplicationDocuments, data, i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence);
 
@@ -1008,22 +1014,22 @@ async function getFtpaRespondentDecisionDetails(req: Request, res: Response, nex
       attachFtpaDocuments(ftpaEvidenceDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.evidence);
     }
     if (ftpaApplicationDate) {
-      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [ formatTextForCYA(moment(ftpaApplicationDate).format(dayMonthYearFormat)) ]));
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [formatTextForCYA(moment(ftpaApplicationDate).format(dayMonthYearFormat))]));
     }
     if (ftpaOutOfTimeApplicationReason && ftpaOutOfTimeApplicationReason.length && isGrantedOrPartiallyGranted) {
-      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [ formatTextForCYA(ftpaOutOfTimeApplicationReason) ]));
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [formatTextForCYA(ftpaOutOfTimeApplicationReason)]));
     }
     if (isGrantedOrPartiallyGranted) {
       attachFtpaDocuments(ftpaOutOfTimeApplicationDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence);
     }
     if (ftpaDecision && ftpaDecision.length) {
-      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decision, [ formatTextForCYA(i18n.pages.detailViewers.ftpaDecision.decisionOutcomeType[ftpaDecision]) ]));
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decision, [formatTextForCYA(i18n.pages.detailViewers.ftpaDecision.decisionOutcomeType[ftpaDecision])]));
       if (ftpaSetAsideFeatureEnabled) {
         if (ftpaDecision === 'reheardRule35') {
           attachFtpaDocuments(ftpaR35RespondentDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
         } else if (ftpaDecision === 'remadeRule31' || ftpaDecision === 'remadeRule32') {
           if (ftpaRespondentDecisionRemadeRule32Text && ftpaRespondentDecisionRemadeRule32Text.length) {
-            data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decisionReasons, [ formatTextForCYA(ftpaRespondentDecisionRemadeRule32Text) ]));
+            data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decisionReasons, [formatTextForCYA(ftpaRespondentDecisionRemadeRule32Text)]));
           }
         }
       }
@@ -1035,7 +1041,7 @@ async function getFtpaRespondentDecisionDetails(req: Request, res: Response, nex
       attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
     }
     if (ftpaDecisionDate) {
-      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.date, [ formatTextForCYA(moment(ftpaDecisionDate).format(dayMonthYearFormat)) ]));
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.date, [formatTextForCYA(moment(ftpaDecisionDate).format(dayMonthYearFormat))]));
     }
 
     return res.render('ftpa-application/ftpa-decision-details-viewer.njk', {
@@ -1071,24 +1077,24 @@ async function getFtpaAppellantDecisionDetails(req: Request, res: Response, next
     };
 
     if (ftpaGrounds) {
-      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [ formatTextForCYA(ftpaGrounds) ]));
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [formatTextForCYA(ftpaGrounds)]));
     }
     attachFtpaDocuments(ftpaEvidenceDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.evidence);
     if (ftpaApplicationDate) {
-      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [ formatTextForCYA(moment(ftpaApplicationDate).format(dayMonthYearFormat)) ]));
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [formatTextForCYA(moment(ftpaApplicationDate).format(dayMonthYearFormat))]));
     }
     if (ftpaOutOfTimeApplicationReason && ftpaOutOfTimeApplicationReason.length) {
-      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [ formatTextForCYA(ftpaOutOfTimeApplicationReason) ]));
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [formatTextForCYA(ftpaOutOfTimeApplicationReason)]));
     }
     attachFtpaDocuments(ftpaOutOfTimeApplicationDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence);
     if (ftpaDecision && ftpaDecision.length) {
-      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decision, [ formatTextForCYA(i18n.pages.detailViewers.ftpaDecision.decisionOutcomeType[ftpaDecision]) ]));
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decision, [formatTextForCYA(i18n.pages.detailViewers.ftpaDecision.decisionOutcomeType[ftpaDecision])]));
       if (ftpaSetAsideFeatureEnabled) {
         if (ftpaDecision === 'reheardRule35') {
           attachFtpaDocuments(ftpaR35AppellantDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
         } else if (ftpaDecision === 'remadeRule31' || ftpaDecision === 'remadeRule32') {
           if (ftpaAppellantDecisionRemadeRule32Text && ftpaAppellantDecisionRemadeRule32Text.length) {
-            data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decisionReasons, [ formatTextForCYA(ftpaAppellantDecisionRemadeRule32Text) ]));
+            data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decisionReasons, [formatTextForCYA(ftpaAppellantDecisionRemadeRule32Text)]));
           }
         }
       }
@@ -1100,7 +1106,7 @@ async function getFtpaAppellantDecisionDetails(req: Request, res: Response, next
       attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
     }
     if (ftpaDecisionDate) {
-      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.date, [ formatTextForCYA(moment(ftpaDecisionDate).format(dayMonthYearFormat)) ]));
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.date, [formatTextForCYA(moment(ftpaDecisionDate).format(dayMonthYearFormat))]));
     }
 
     return res.render('ftpa-application/ftpa-decision-details-viewer.njk', {

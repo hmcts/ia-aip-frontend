@@ -8,6 +8,7 @@ import {
   getApplicationEvents,
   getDirectionHistory,
   getEventsAndStates,
+  getAsyncStitchingEvent,
   getSubmitClarifyingQuestionsEvents,
   getUpdateTribunalDecisionDocumentHistory,
   getUpdateTribunalDecisionHistory
@@ -968,6 +969,69 @@ describe('timeline-utils', () => {
     it('should return relevant events when ftpa set aside feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, false, true);
       expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(3);
+    });
+  });
+
+  describe('getAsyncStitchingEvent', () => {
+    it('should return an empty array when there are no hearing documents', () => {
+      const result = getAsyncStitchingEvent(req as Request);
+      expect(result).to.be.an('array').that.is.empty;
+    });
+
+    it('should return filtered hearing notices from hearingDocuments', () => {
+      req.session.appeal.hearingDocuments = [
+        { tag: 'hearingBundle', fileId: 'some-id-0123', dateUploaded: '2024-01-05' },
+        { tag: 'updatedHearingBundle', fileId: 'some-id-2345', dateUploaded: '2024-01-01' },
+        { tag: 'other', fileId: 'some-id-1234', dateUploaded: '2024-01-02' }
+      ];
+
+      const result = getAsyncStitchingEvent(req as Request);
+      expect(result).to.have.lengthOf(2);
+      expect(result[0]).to.include({ date: '05 January 2024' });
+      expect(result[1]).to.include({ date: '01 January 2024' });
+    });
+
+    it('should return filtered hearing notices from reheardHearingDocumentsCollection', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [
+        {
+          value: {
+            reheardHearingDocs: [
+              { tag: 'hearingBundle', fileId: 'some-id-2345', dateUploaded: '2024-03-03' },
+              { tag: 'updatedHearingBundle', fileId: 'some-id-4567', dateUploaded: '2024-03-10' },
+              { tag: 'other', fileId: 'some-id-3456', dateUploaded: '2024-04-04' }
+            ]
+          }
+        }
+      ];
+
+      const result = getAsyncStitchingEvent(req as Request);
+      expect(result).to.have.lengthOf(2);
+      expect(result[0]).to.include({ date: '10 March 2024' });
+      expect(result[1]).to.include({ date: '03 March 2024' });
+    });
+
+    it('should handle both hearingDocuments and reheardHearingDocumentsCollection', () => {
+      req.session.appeal.hearingDocuments = [
+        { tag: 'hearingBundle', fileId: 'some-id-4567', dateUploaded: '2024-01-01' },
+        { tag: 'updatedHearingBundle', fileId: 'some-id-2345', dateUploaded: '2024-01-03' }
+      ];
+      req.session.appeal.reheardHearingDocumentsCollection = [
+        {
+          value: {
+            reheardHearingDocs: [
+              { tag: 'hearingBundle', fileId: 'some-id-5678', dateUploaded: '2024-03-03' },
+              { tag: 'updatedHearingBundle', fileId: 'some-id-4567', dateUploaded: '2024-03-10' }
+            ]
+          }
+        }
+      ];
+
+      const result = getAsyncStitchingEvent(req as Request);
+      expect(result).to.have.lengthOf(4);
+      expect(result[0]).to.include({ date: '10 March 2024' });
+      expect(result[1]).to.include({ date: '03 March 2024' });
+      expect(result[2]).to.include({ date: '03 January 2024' });
+      expect(result[3]).to.include({ date: '01 January 2024' });
     });
   });
 });

@@ -6,9 +6,9 @@ import Logger from '../../../app/utils/logger';
 import {
   constructSection, filterEventsForHearingRequirementsSection,
   getApplicationEvents,
+  getAsyncStitchingEvent,
   getDirectionHistory,
   getEventsAndStates,
-  getAsyncStitchingEvent,
   getSubmitClarifyingQuestionsEvents,
   getUpdateTribunalDecisionDocumentHistory,
   getUpdateTribunalDecisionHistory

@@ -5,7 +5,7 @@ import moment from 'moment';
  */
 const dayMonthYearFormat = 'DD MMMM YYYY';
 const timeFormat = 'h:mm a';
-const dateTimeFormat = 'DD MMMM YYYY h:mm a';
+const dateTimeFormat = 'DD MMMM YYYY HH:mm';
 
 export const addDaysToDate = (days: number) => {
   return moment().add(days,'days').format(dayMonthYearFormat);

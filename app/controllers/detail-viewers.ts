@@ -8,7 +8,7 @@ import { paths } from '../paths';
 import { DocumentManagementService } from '../service/document-management-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
-import { dateTimeFormat, dayMonthYearFormat, formatDate } from '../utils/date-utils';
+import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { getFee } from '../utils/payments-utils';
 import { appealHasNoRemissionOption, appealHasRemissionOption } from '../utils/remission-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';

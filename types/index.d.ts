@@ -67,6 +67,7 @@ interface Evidence {
   suppliedBy?: string;
   description?: string;
   dateUploaded?: string;
+  dateTimeUploaded?: string;
   uploadedBy?: string;
 }
 

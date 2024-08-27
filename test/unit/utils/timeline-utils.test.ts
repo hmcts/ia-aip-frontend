@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { Events } from '../../../app/data/events';
 import { States } from '../../../app/data/states';
+import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import {
@@ -13,6 +14,7 @@ import {
   getUpdateTribunalDecisionDocumentHistory,
   getUpdateTribunalDecisionHistory
 } from '../../../app/utils/timeline-utils';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 
@@ -1006,8 +1008,8 @@ describe('timeline-utils', () => {
 
       const result = getListCaseEvent(req as Request);
       expect(result).to.have.lengthOf(2);
-      expect(result[0]).to.include({ date: '03 March 2024' });
-      expect(result[1]).to.include({ date: '10 March 2024' });
+      expect(result[0]).to.include({ date: '10 March 2024' });
+      expect(result[1]).to.include({ date: '03 March 2024' });
     });
 
     it('should handle both hearingDocuments and reheardHearingDocumentsCollection', () => {
@@ -1028,10 +1030,38 @@ describe('timeline-utils', () => {
 
       const result = getListCaseEvent(req as Request);
       expect(result).to.have.lengthOf(4);
-      expect(result[0]).to.include({ date: '01 January 2024' });
-      expect(result[1]).to.include({ date: '03 January 2024' });
-      expect(result[2]).to.include({ date: '03 March 2024' });
-      expect(result[3]).to.include({ date: '10 March 2024' });
+      expect(result[0]).to.include({ date: '10 March 2024' });
+      expect(result[1]).to.include({ date: '03 March 2024' });
+      expect(result[2]).to.include({ date: '03 January 2024' });
+      expect(result[3]).to.include({ date: '01 January 2024' });
+    });
+
+    it('should handle both hearingDocuments and reheardHearingDocumentsCollection by time', () => {
+      req.session.appeal.hearingDocuments = [
+        { tag: 'hearingNotice', fileId: 'some-id-4567', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T17:00:00.000000' },
+        { tag: 'hearingNoticeRelisted', fileId: 'some-id-2345', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T12:00:00.000000' }
+      ];
+      req.session.appeal.reheardHearingDocumentsCollection = [
+        {
+          value: {
+            reheardHearingDocs: [
+              { tag: 'reheardHearingNotice', fileId: 'some-id-5678', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T15:00:00.000000' },
+              { tag: 'reheardHearingNoticeRelisted', fileId: 'some-id-7891', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T17:00:52.000000' }
+            ]
+          }
+        }
+      ];
+
+      const result = getListCaseEvent(req as Request);
+      expect(result).to.have.lengthOf(4);
+      expect(result[0].links[0].href).to.equal(paths.common.hearingNoticeViewer
+        .replace(':id', 'some-id-7891'));
+      expect(result[1].links[0].href).to.equal(paths.common.hearingNoticeViewer
+        .replace(':id', 'some-id-4567'));
+      expect(result[2].links[0].href).to.equal(paths.common.hearingNoticeViewer
+        .replace(':id', 'some-id-5678'));
+      expect(result[3].links[0].href).to.equal(paths.common.hearingNoticeViewer
+        .replace(':id', 'some-id-2345'));
     });
   });
 });

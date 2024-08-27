@@ -1331,6 +1331,7 @@ export default class UpdateAppealService {
     });
     return ccdCQ;
   }
+
   private mapAppealClarifyingQuestionsToCcd(clarifyingQuestions: ClarifyingQuestion<Evidence>[], documentMap: DocumentMap[]): ClarifyingQuestion<Collection<SupportingDocument>>[] {
     const ccdCQ = clarifyingQuestions.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
       let supportingEvidence: Collection<SupportingDocument>[];
@@ -1347,6 +1348,7 @@ export default class UpdateAppealService {
     });
     return ccdCQ;
   }
+
   // TODO: remove method if not needed
   private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
 
@@ -1399,7 +1401,8 @@ export default class UpdateAppealService {
           document_binary_url: `${documentUrl}/binary`
         },
         description: evidence.description,
-        dateUploaded: evidence.dateUploaded
+        dateUploaded: evidence.dateUploaded,
+        dateTimeUploaded: evidence.dateTimeUploaded
       }
     };
   }
@@ -1432,7 +1435,8 @@ export default class UpdateAppealService {
       ...doc.value.tag && { tag: doc.value.tag },
       ...doc.value.suppliedBy && { suppliedBy: doc.value.suppliedBy },
       ...doc.value.description && { description: doc.value.description },
-      ...doc.value.dateUploaded && { dateUploaded: doc.value.dateUploaded }
+      ...doc.value.dateUploaded && { dateUploaded: doc.value.dateUploaded },
+      ...doc.value.dateTimeUploaded && { dateTimeUploaded: doc.value.dateTimeUploaded }
     };
   }
 

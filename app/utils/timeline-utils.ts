@@ -177,6 +177,13 @@ function getListCaseEvent(req: Request): any[] {
       }
     });
   }
+  hearingNotices.sort((a, b) => {
+    if (a.dateTimeUploaded && b.dateTimeUploaded) {
+      return moment(b.dateTimeUploaded).diff(moment(a.dateTimeUploaded));
+    } else {
+      return moment(b.dateUploaded).diff(moment(a.dateUploaded));
+    }
+  });
 
   return hearingNotices
         .map(hearingNotice => {

@@ -571,6 +571,7 @@ export default class UpdateAppealService {
       appealCreatedDate: ccdCase.created_date,
       appealLastModified: ccdCase.last_modified,
       appealReferenceNumber: caseData.appealReferenceNumber,
+      ccdReferenceNumber: caseData.ccdReferenceNumberForDisplay,
       removeAppealFromOnlineReason: caseData.removeAppealFromOnlineReason,
       removeAppealFromOnlineDate: formatDate(caseData.removeAppealFromOnlineDate),
       isDecisionAllowed: caseData.isDecisionAllowed,

@@ -106,17 +106,17 @@ function buildWitnessesSectionSummaryList(hearingRequirements: HearingRequiremen
 function buildWitnessNamesList(witnessesRows: SummaryRow[], witnessNames: WitnessName[], visibleChangeLink: boolean) {
   if (witnessesRows && witnessesRows.length > 1) {
     witnessesRows.push(
-      getSummaryRow(visibleChangeLink,
+      getSummaryRow(false,
         i18n.common.cya.questionRowTitle,
-        [i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.cya],
-        paths.submitHearingRequirements.hearingWitnessNames
+        [i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.cya]
       )
     );
     witnessNames.forEach((name: WitnessName) => {
       witnessesRows.push(
         addSummaryRow(
-          '',
-          [formatWitnessName(name)]
+          i18n.common.cya.answerRowTitle,
+          [formatWitnessName(name)],
+          paths.submitHearingRequirements.hearingWitnessNames
         )
       );
     });

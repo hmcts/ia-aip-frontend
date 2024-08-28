@@ -168,27 +168,34 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Witnesses names'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'sabah u din irfan'
               },
               'actions': {
                 'items': [{
                   'href': '/hearing-witness-names',
                   'text': 'Change',
-                  'visuallyHiddenText': 'Question'
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
               'key': {
-                'text': ''
-              },
-              'value': {
-                'html': 'sabah u din irfan'
-              }
-            }, {
-              'key': {
-                'text': ''
+                'text': 'Answer'
               },
               'value': {
                 'html': 'John Smith'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witness-names',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {

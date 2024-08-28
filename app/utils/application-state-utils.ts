@@ -53,6 +53,7 @@ interface DoThisNextSection {
   decision?: string;
   feeForAppeal?: string;
   feeLeftToPay?: string;
+  ccdReferenceNumberForDisplay?: string;
   remissionRejectedDatePlus14days?: string;
   utAppealReferenceNumber?: string;
   sourceOfRemittal?: string;
@@ -788,6 +789,10 @@ function eventByLegalRep(req: Request, eventId: string, state: string): boolean 
     && event.user.id !== req.idam.userDetails.uid).length > 0;
 }
 
+export function formatCcdReferenceNumberForDisplay(reference: string): string {
+  return reference.replace(/ /g, '-');
+}
+
 function getRemissionDecisionParagraphs(req: Request) {
   let doThisNextSection: DoThisNextSection;
   const remissionDecision = req.session.appeal.application.remissionDecision;
@@ -831,6 +836,7 @@ function getRemissionDecisionParagraphs(req: Request) {
       };
       doThisNextSection.feeForAppeal = getFee(req.session.appeal).calculated_amount;
       doThisNextSection.remissionRejectedDatePlus14days = req.session.appeal.application.remissionRejectedDatePlus14days;
+      doThisNextSection.ccdReferenceNumberForDisplay = formatCcdReferenceNumberForDisplay(req.session.appeal.application.ccdReferenceNumberForDisplay);
       break;
     default:
       throw new Error(`Remission decision type ${remissionDecision} is not presented`);

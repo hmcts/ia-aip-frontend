@@ -75,6 +75,7 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
 function showAppealRequestSection(appealStatus: string, featureEnabled: boolean) {
   const showAppealRequestsStates = [
     States.APPEAL_SUBMITTED.id,
+    States.PENDING_PAYMENT.id,
     States.AWAITING_RESPONDENT_EVIDENCE.id,
     States.AWAITING_REASONS_FOR_APPEAL.id,
     States.REASONS_FOR_APPEAL_SUBMITTED.id,

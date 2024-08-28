@@ -590,6 +590,7 @@ export default class UpdateAppealService {
       readonlyApplicationEnabled: true,
       sourceOfRemittal: caseData.sourceOfRemittal,
       application: {
+        ccdReferenceNumberForDisplay: caseData.ccdReferenceNumberForDisplay,
         appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appellantInUk: caseData.appellantInUk,
@@ -699,6 +700,7 @@ export default class UpdateAppealService {
       ...caseData.feeVersion && { feeVersion: caseData.feeVersion },
       ...caseData.feeAmountGbp && { feeAmountGbp: caseData.feeAmountGbp },
       ...caseData.newFeeAmount && { newFeeAmount: caseData.newFeeAmount },
+      ...caseData.ccdReferenceNumberForDisplay && { ccdReferenceNumberForDisplay: caseData.ccdReferenceNumberForDisplay },
       ...caseData.ftpaApplicantType && { ftpaApplicantType: caseData.ftpaApplicantType },
       ...caseData.ftpaAppellantEvidenceDocuments && { ftpaAppellantEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantEvidenceDocuments, documentMap) },
       ...caseData.ftpaAppellantGroundsDocuments && { ftpaAppellantGroundsDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantGroundsDocuments, documentMap) },

@@ -4,6 +4,7 @@
   },
   "compilerOptions": {
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "sourceMap": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
@@ -14,5 +15,9 @@
       "./types",
       "./node_modules/@types"
     ]
-  }
+  },
+  "include": [
+    "src/**/*.ts",
+    "types/**/*.d.ts"
+  ]
 }

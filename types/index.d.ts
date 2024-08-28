@@ -109,6 +109,7 @@ interface Appeal {
   appealCreatedDate?: string;
   appealLastModified?: string;
   appealReferenceNumber?: string;
+  ccdReferenceNumber?: string;
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   application: AppealApplication;

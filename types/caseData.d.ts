@@ -40,6 +40,7 @@ interface CaseData {
   appealType: string;
   homeOfficeReferenceNumber: string;
   appealReferenceNumber: string;
+  ccdReferenceNumberForDisplay: string;
   removeAppealFromOnlineReason: string;
   removeAppealFromOnlineDate: string;
   homeOfficeDecisionDate: string;

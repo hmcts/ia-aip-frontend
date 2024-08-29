@@ -200,10 +200,10 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
           )
         );
 
-        [needInterpreterWitnessnesSummaryString].forEach((needInterpreterWitness) => {
+        ((needInterpreterWitnessnesSummaryString.split(Delimiter.BREAK_LINE)).filter(Boolean)).forEach((needInterpreterWitness) => {
           interpreterRows.push(
             addSummaryRow(i18n.common.cya.answerRowTitle,
-              [needInterpreterWitness.replace(Delimiter.BREAK_LINE, '')],
+              [needInterpreterWitness],
               paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds
             )
           );

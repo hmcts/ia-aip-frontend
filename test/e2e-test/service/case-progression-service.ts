@@ -540,6 +540,15 @@ module.exports = {
       await I.handleNextStep('Length', 'listCaseWithoutHearingRequirements/listCaseWithoutHearingRequirementslistCaseWithoutHearing', onlineCaseReference);
       await I.selectOption('#listCaseHearingLength', '1 hour');
       await I.click('Continue');
+      await I.waitForText('What hearing channel type is required?', 30);
+      await I.checkOption('#hearingChannel_INTER');
+      await I.click('Continue');
+      await I.waitForText('Is the appeal suitable to float', 30);
+      await I.checkOption('No');
+      await I.click('Continue');
+      await I.waitForText('Are there any additional instructions for the hearing?', 30);
+      await I.checkOption('No');
+      await I.click('Continue');
       await I.waitForText('Check your answers', 30);
       await I.click('Submit');
       await I.waitForText("You've recorded the agreed hearing adjustments", 30);

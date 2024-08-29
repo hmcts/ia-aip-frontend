@@ -23,12 +23,8 @@ if (testUrl.includes('localhost')) {
 module.exports = {
   legalRepCreateCase(I) {
     When(/^I create a new case and submit it$/, async () => {
-      await I.retry(3).amOnPage(exuiBaseUrl + 'cases/case-filter');
+      await I.retry(3).amOnPage(exuiBaseUrl + 'cases/case-create/IA/Asylum/startAppeal/startAppealchecklist');
       await I.waitForElement('#cc-jurisdiction option[value="IA"]', 60);
-      await I.selectOption('#cc-jurisdiction', 'Immigration & Asylum');
-      await I.selectOption('#cc-case-type', 'Appeal* master');
-      await I.selectOption('#cc-event', 'Start your appeal');
-      await I.click('Start');
       await I.waitForText('Tell us about your client', 60);
       await I.click('#checklist_checklist2-isNotDetained');
       await I.click('Continue');
@@ -83,8 +79,10 @@ module.exports = {
       await I.selectOption('#hasOtherAppeals', 'No');
       await I.click('Continue');
       await I.waitForText('Legal representative details', 60);
-      await I.fillField('#legalRepName', 'legal rep name');
+      await I.fillField('#legalRepName', 'legal rep given name');
+      await I.fillField('#legalRepFamilyName', 'legal rep family name');
       await I.fillField('#legalRepReferenceNumber', '017102');
+      await I.fillField('#legalRepMobilePhoneNumber', '07827289432');
       await I.click('Continue');
       await I.waitForText('Hearing type', 60);
       await I.click('#rpDcAppealHearingOption-decisionWithHearing');

@@ -109,7 +109,7 @@ interface Appeal {
   appealCreatedDate?: string;
   appealLastModified?: string;
   appealReferenceNumber?: string;
-  ccdReferenceNumberForDisplay?: string;
+  ccdReferenceNumber?: string;
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   application: AppealApplication;
@@ -325,7 +325,6 @@ interface AppealApplication {
   refundRequested?: boolean;
   remissionDecision?: string;
   amountLeftToPay?: string;
-  ccdReferenceNumberForDisplay?: string;
   remissionDecisionReason?: string;
   previousRemissionDetails?: RemissionDetails[];
   remissionRejectedDatePlus14days?: string;

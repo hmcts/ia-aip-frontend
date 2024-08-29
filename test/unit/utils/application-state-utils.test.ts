@@ -4,7 +4,6 @@ import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import {
-  formatCcdReferenceNumberForDisplay,
   getAppealApplicationNextStep,
   getAppealStatus,
   getMoveAppealOfflineDate,
@@ -1986,10 +1985,10 @@ describe('application-state-utils', () => {
       .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
     req.session.appeal.appealStatus = 'appealSubmitted';
+    req.session.appeal.ccdReferenceNumber = '1111 2222 3333 4444';
     req.session.appeal.application.remissionDecision = 'partiallyApproved';
     req.session.appeal.application.amountLeftToPay = '4000';
     req.session.appeal.application.remissionRejectedDatePlus14days = '2022-03-12';
-    req.session.appeal.application.ccdReferenceNumberForDisplay = '1234 1234 1234 1234';
     req.session.appeal.history = [
       {
         'id': 'recordRemissionDecision',
@@ -2006,13 +2005,13 @@ describe('application-state-utils', () => {
       cta: {},
       deadline: '07 March 2020',
       feeLeftToPay: '40',
-      ccdReferenceNumberForDisplay: '1234-1234-1234-1234',
       remissionRejectedDatePlus14days: '2022-03-12',
+      ccdReferenceNumber: '1111-2222-3333-4444',
       descriptionParagraphs: [
         'The fee for this appeal is £{{ applicationNextStep.feeLeftToPay }}.',
         'If you do not pay the fee by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.',
         '<b>How to pay the fee</b>',
-        '1. Call the Tribunal on 0300 123 1711, then select option 4<br />2. Provide your 16-digit online case reference number: {{ applicationNextStep.ccdReferenceNumberForDisplay }}<br />3. Make the payment with a debit or credit card'
+        '1. Call the Tribunal on 0300 123 1711, then select option 4<br />2. Provide your 16-digit online case reference number: {{ applicationNextStep.ccdReferenceNumber }}<br />3. Make the payment with a debit or credit card'
       ],
       allowedAskForMoreTime: false
     });
@@ -2104,11 +2103,5 @@ describe('application-state-utils', () => {
         expect(isAddendumEvidenceUploadState(stateId)).to.be.false;
       }
     }
-  });
-
-  describe('formatCcdReferenceNumberForDisplay', () => {
-    it('should return correct formatted ccdReferenceNumberForDisplay', () => {
-      expect(formatCcdReferenceNumberForDisplay('1234 1234 1234 1234')).to.eql('1234-1234-1234-1234');
-    });
   });
 });

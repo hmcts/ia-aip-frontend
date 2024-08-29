@@ -194,16 +194,17 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
 
       if (hearingRequirements.witnessNames && hearingRequirements.witnessNames.length >= 2) {
         interpreterRows.push(
-          getSummaryRow(visibleChangeLink,
+          getSummaryRow(false,
             i18n.common.cya.questionRowTitle,
             [i18n.pages.hearingRequirements.accessNeedsSection.witnesessInterpreterNeeds.title],
-            paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds
           )
         );
 
         interpreterRows.push(
           getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
-            [needInterpreterWitnessnesSummaryString])
+            [needInterpreterWitnessnesSummaryString],
+            paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds
+          )
         );
       }
 

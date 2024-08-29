@@ -315,19 +315,19 @@ describe('Hearing Requirements Check and Send controller', () => {
               'value': {
                 'html': 'Select which witnesses need an interpreter'
               },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-witnesses-interpreter-needs',
-                  'text': 'Change',
-                  'visuallyHiddenText': 'Question'
-                }]
-              }
             }, {
               'key': {
                 'text': 'Answer'
               },
               'value': {
                 'html': 'John Smith<br>'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witnesses-interpreter-needs',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {

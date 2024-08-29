@@ -320,7 +320,7 @@ describe('Hearing Requirements Check and Send controller', () => {
                 'text': 'Answer'
               },
               'value': {
-                'html': 'John Smith<br>'
+                'html': 'John Smith'
               },
               'actions': {
                 'items': [{

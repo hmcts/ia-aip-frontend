@@ -200,12 +200,14 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
           )
         );
 
-        interpreterRows.push(
-          getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
-            [needInterpreterWitnessnesSummaryString],
-            paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds
-          )
-        );
+        [needInterpreterWitnessnesSummaryString].forEach((needInterpreterWitness) => {
+          interpreterRows.push(
+            addSummaryRow(i18n.common.cya.answerRowTitle,
+              [needInterpreterWitness.replace(Delimiter.BREAK_LINE, '')],
+              paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds
+            )
+          );
+        });
       }
 
       needInterpreterWitnessnesComponent.forEach((witnessComponent) => {

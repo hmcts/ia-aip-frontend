@@ -305,7 +305,14 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
                 'text': 'Answer'
               },
               'value': {
-                'html': 'John Smith<br>'
+                'html': 'John Smith'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witnesses-interpreter-needs',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {
@@ -819,7 +826,14 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
                 'text': 'Answer'
               },
               'value': {
-                'html': 'John Smith<br>'
+                'html': 'John Smith'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witnesses-interpreter-needs',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {
@@ -1302,7 +1316,14 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
                 'text': 'Answer'
               },
               'value': {
-                'html': 'John Smith<br>'
+                'html': 'John Smith'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witnesses-interpreter-needs',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {

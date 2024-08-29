@@ -155,6 +155,7 @@ interface Appeal {
   feeVersion?: string;
   feeAmountGbp?: string;
   newFeeAmount?: string;
+  previousFeeAmountGbp?: string;
   additionalEvidenceDocuments?: Evidence[];
   addendumEvidenceDocuments?: Evidence[];
   additionalEvidence?: AdditionalEvidenceDocument[];

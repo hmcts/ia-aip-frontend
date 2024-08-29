@@ -136,6 +136,7 @@ interface CaseData {
   feeVersion?: string;
   feeAmountGbp?: string;
   newFeeAmount?: string;
+  previousFeeAmountGbp?: string;
   pcqId?: string;
   isWitnessesAttending?: 'Yes' | 'No';
   isEvidenceFromOutsideUkInCountry?: 'Yes' | 'No';

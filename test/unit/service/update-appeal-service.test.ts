@@ -180,7 +180,8 @@ describe('update-appeal-service', () => {
       manageFeeRefundedAmount: '1000',
       manageFeeRequestedAmount: '1500',
       paidAmount: '2000',
-      newFeeAmount: '2000'
+      newFeeAmount: '2000',
+      previousFeeAmountGbp: '2000'
     };
 
   });
@@ -242,6 +243,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.manageFeeRequestedAmount).eq('1500');
       expect(req.session.appeal.application.paidAmount).eq('2000');
       expect(req.session.appeal.newFeeAmount).eq('2000');
+      expect(req.session.appeal.previousFeeAmountGbp).eq('2000');
     });
 
     it('load time extensions when no time extensions', async () => {

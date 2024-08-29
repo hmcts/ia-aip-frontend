@@ -314,7 +314,7 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Select which witnesses need an interpreter'
-              },
+              }
             }, {
               'key': {
                 'text': 'Answer'

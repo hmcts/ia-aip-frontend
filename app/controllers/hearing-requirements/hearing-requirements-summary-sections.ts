@@ -196,7 +196,7 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
         interpreterRows.push(
           getSummaryRow(false,
             i18n.common.cya.questionRowTitle,
-            [i18n.pages.hearingRequirements.accessNeedsSection.witnesessInterpreterNeeds.title],
+            [i18n.pages.hearingRequirements.accessNeedsSection.witnesessInterpreterNeeds.title]
           )
         );
 

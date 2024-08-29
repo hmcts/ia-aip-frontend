@@ -846,6 +846,11 @@ describe('Confirmation Page Controller', () => {
     expect(result).to.equal(true);
   });
 
+  it('showAppealRequests should return true when in paymentPending state', () => {
+    const result = showAppealRequestSection(States.PENDING_PAYMENT.id, true);
+    expect(result).to.equal(true);
+  });
+
   it('showAppealRequests should return false when in ended state', () => {
     const result = showAppealRequestSection(States.ENDED.id, true);
     expect(result).to.equal(false);

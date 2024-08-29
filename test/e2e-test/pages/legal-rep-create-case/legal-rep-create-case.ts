@@ -24,7 +24,6 @@ module.exports = {
   legalRepCreateCase(I) {
     When(/^I create a new case and submit it$/, async () => {
       await I.retry(3).amOnPage(exuiBaseUrl + 'cases/case-create/IA/Asylum/startAppeal/startAppealchecklist');
-      await I.waitForElement('#cc-jurisdiction option[value="IA"]', 60);
       await I.waitForText('Tell us about your client', 60);
       await I.click('#checklist_checklist2-isNotDetained');
       await I.click('Continue');

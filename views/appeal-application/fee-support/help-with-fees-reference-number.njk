@@ -40,7 +40,7 @@
             }) }}
             {% if refundJourney %}
                 {{ continueButton() }}
-                {{ canelButton() }}
+                {{ cancelButtonWithAttributes(previousPage, errors) }}
             {% else %}
                 {{ saveButtons() }}
             {% endif %}

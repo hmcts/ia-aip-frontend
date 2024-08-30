@@ -40,6 +40,7 @@ interface CaseData {
   appealType: string;
   homeOfficeReferenceNumber: string;
   appealReferenceNumber: string;
+  ccdReferenceNumberForDisplay: string;
   removeAppealFromOnlineReason: string;
   removeAppealFromOnlineDate: string;
   homeOfficeDecisionDate: string;
@@ -135,6 +136,7 @@ interface CaseData {
   feeVersion?: string;
   feeAmountGbp?: string;
   newFeeAmount?: string;
+  previousFeeAmountGbp?: string;
   pcqId?: string;
   isWitnessesAttending?: 'Yes' | 'No';
   isEvidenceFromOutsideUkInCountry?: 'Yes' | 'No';

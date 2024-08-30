@@ -27,6 +27,7 @@ describe('update-appeal-service', () => {
   const serviceToken = 'serviceToken';
   const caseId = 'caseId';
   const appealReferenceNumber = 'PA/1234/2022';
+  const ccdReferenceNumberForDisplay = '1111 2222 3333 4444';
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -80,6 +81,7 @@ describe('update-appeal-service', () => {
       'journeyType': 'aip',
       'homeOfficeReferenceNumber': 'A1234567',
       'appealReferenceNumber': 'PA/1234/2022',
+      'ccdReferenceNumberForDisplay': '1111 2222 3333 4444',
       'homeOfficeDecisionDate': '2019-01-02',
       'appellantFamilyName': 'Pedro',
       'appellantGivenNames': 'Jimenez',
@@ -178,7 +180,8 @@ describe('update-appeal-service', () => {
       manageFeeRefundedAmount: '1000',
       manageFeeRequestedAmount: '1500',
       paidAmount: '2000',
-      newFeeAmount: '2000'
+      newFeeAmount: '2000',
+      previousFeeAmountGbp: '2000'
     };
 
   });
@@ -199,6 +202,7 @@ describe('update-appeal-service', () => {
       await updateAppealService.loadAppeal(req as Request);
       expect(req.session.appeal.ccdCaseId).eq(caseId);
       expect(req.session.appeal.appealReferenceNumber).eq(appealReferenceNumber);
+      expect(req.session.appeal.ccdReferenceNumber).eq(ccdReferenceNumberForDisplay);
       expect(req.session.appeal.application.appealType).eq('protection');
       expect(req.session.appeal.application.homeOfficeRefNumber).eq('A1234567');
       expect(req.session.appeal.application.personalDetails.familyName).eq('Pedro');
@@ -239,6 +243,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.manageFeeRequestedAmount).eq('1500');
       expect(req.session.appeal.application.paidAmount).eq('2000');
       expect(req.session.appeal.newFeeAmount).eq('2000');
+      expect(req.session.appeal.previousFeeAmountGbp).eq('2000');
     });
 
     it('load time extensions when no time extensions', async () => {

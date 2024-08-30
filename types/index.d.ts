@@ -109,6 +109,7 @@ interface Appeal {
   appealCreatedDate?: string;
   appealLastModified?: string;
   appealReferenceNumber?: string;
+  ccdReferenceNumber?: string;
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   application: AppealApplication;
@@ -154,6 +155,7 @@ interface Appeal {
   feeVersion?: string;
   feeAmountGbp?: string;
   newFeeAmount?: string;
+  previousFeeAmountGbp?: string;
   additionalEvidenceDocuments?: Evidence[];
   addendumEvidenceDocuments?: Evidence[];
   additionalEvidence?: AdditionalEvidenceDocument[];

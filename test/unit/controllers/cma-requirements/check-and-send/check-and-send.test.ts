@@ -311,7 +311,7 @@ describe('CMA Requirements Check and Send controller', () => {
               key: { text: 'Answer' },
               value: { html: 'Yes' }
             }, {
-              actions: { items: [ { href: '/appointment-dates-avoid-enter/0?edit', text: 'Change', visuallyHiddenText: 'Dates to avoid' } ] },
+              actions: { items: [ { href: '/appointment-dates-avoid-enter/0?edit', text: 'Change', visuallyHiddenText: 'Answer' } ] },
               key: { text: 'Dates to avoid' },
               value: {
                 html: '<b>Date</b><br><pre>08 July 2020</pre><br><b>Reason</b><br><pre>Reason 1 for "Why can you not go to the appointment on this date?"</pre>'

@@ -848,7 +848,7 @@ describe('Hearing Requirements Check and Send controller', () => {
                 'items': [{
                   'href': '/hearing-dates-avoid-enter/0?edit',
                   'text': 'Change',
-                  'visuallyHiddenText': 'Dates to avoid'
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -1409,7 +1409,7 @@ describe('Hearing Requirements Check and Send controller', () => {
                 'items': [{
                   'href': '/hearing-dates-avoid-enter/0?edit',
                   'text': 'Change',
-                  'visuallyHiddenText': 'Dates to avoid'
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {

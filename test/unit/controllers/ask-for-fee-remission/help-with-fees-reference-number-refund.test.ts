@@ -84,7 +84,8 @@ describe('Help with fees reference number refund Controller', function () {
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         formAction: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
         helpWithFeesReferenceNumber,
-        refundJourney: true
+        refundJourney: true,
+        errors: null
       });
     });
 

@@ -18,7 +18,8 @@ async function getHelpWithFeesRefNumber(req: Request, res: Response, next: NextF
       previousPage: previousPage,
       formAction: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
       helpWithFeesReferenceNumber,
-      refundJourney: true
+      refundJourney: true,
+      errors: req.session.validationErrors || null
     });
   } catch (error) {
     next(error);

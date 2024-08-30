@@ -371,6 +371,7 @@ module.exports = {
       await I.fillField('#listCaseHearingDate-day', '10');
       await I.fillField('#listCaseHearingDate-month', '10');
       await I.fillField('#listCaseHearingDate-year', '2025');
+      await I.click('#isRemoteHearing_No');
       await I.click('Continue');
       await I.waitForText('Check your answers', 30);
       await I.click('List case');

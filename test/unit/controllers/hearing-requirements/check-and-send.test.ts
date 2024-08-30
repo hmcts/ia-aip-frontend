@@ -320,11 +320,88 @@ describe('Hearing Requirements Check and Send controller', () => {
                 'text': 'Answer'
               },
               'value': {
+                'html': 'sabah u din irfan'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witnesses-interpreter-needs',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
                 'html': 'John Smith'
               },
               'actions': {
                 'items': [{
                   'href': '/hearing-witnesses-interpreter-needs',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'What kind of interpreter will sabah u din irfan need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Spoken language interpreter<br>Sign language interpreter'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-interpreter-types?selectedWitnesses=0',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Which spoken language interpreter does sabah u din irfan need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Japanese'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-interpreter-spoken-language-selection?selectedWitnesses=0',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Which sign language interpreter does sabah u din irfan need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'sabah u din irfan input sign language manually'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-interpreter-sign-language-selection?selectedWitnesses=0',
                   'text': 'Change',
                   'visuallyHiddenText': 'Answer'
                 }]
@@ -801,6 +878,11 @@ describe('Hearing Requirements Check and Send controller', () => {
       req.session.appeal.hearingRequirements.witness2InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
       req.session.appeal.hearingRequirements.witness2InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Japanese', code: 'jpn' } } };
       req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
+
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'sabah u din irfan', 'label': 'sabah u din irfan' }], 'list_items': [{ 'code': 'sabah u din irfan', 'label': 'sabah u din irfan' }] };
+      req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      req.session.appeal.hearingRequirements.witness1InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Japanese', code: 'jpn' } } };
+      req.session.appeal.hearingRequirements.witness1InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'sabah u din irfan input sign language manually' };
       getCheckAndSendPage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);

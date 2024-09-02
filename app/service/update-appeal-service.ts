@@ -1410,7 +1410,7 @@ export default class UpdateAppealService {
     });
   }
 
-  private mapHearingOtherNeedsFromCCDCase(caseData, hearingRequirements) {
+  private mapHearingOtherNeedsFromCCDCase(caseData, hearingRequirements: HearingRequirements) {
 
     if (!_.has(hearingRequirements, 'otherNeeds')) {
       hearingRequirements.otherNeeds = {};

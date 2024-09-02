@@ -333,25 +333,25 @@ interface AccessNeeds {
 }
 
 interface OtherNeeds {
-  multimediaEvidence: boolean;
-  bringOwnMultimediaEquipment: boolean;
-  bringOwnMultimediaEquipmentReason: string;
-  singleSexAppointment: boolean;
-  singleSexTypeAppointment: 'All female' | 'All male';
-  singleSexAppointmentReason: string;
-  privateAppointment: boolean;
-  privateAppointmentReason: string;
-  healthConditions: boolean;
-  healthConditionsReason: string;
-  pastExperiences: boolean;
-  pastExperiencesReason: string;
-  anythingElse: boolean;
-  anythingElseReason: string;
+  multimediaEvidence?: boolean;
+  bringOwnMultimediaEquipment?: boolean;
+  bringOwnMultimediaEquipmentReason?: string;
+  singleSexAppointment?: boolean;
+  singleSexTypeAppointment?: 'All female' | 'All male';
+  singleSexAppointmentReason?: string;
+  privateAppointment?: boolean;
+  privateAppointmentReason?: string;
+  healthConditions?: boolean;
+  healthConditionsReason?: string;
+  pastExperiences?: boolean;
+  pastExperiencesReason?: string;
+  anythingElse?: boolean;
+  anythingElseReason?: string;
 }
 
 interface HearingOtherNeeds extends OtherNeeds {
-  remoteVideoCall: boolean;
-  remoteVideoCallDescription: string;
+  remoteVideoCall?: boolean;
+  remoteVideoCallDescription?: string;
 }
 
 interface DatesToAvoid {

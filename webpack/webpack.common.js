@@ -1,7 +1,7 @@
 const { merge } = require('webpack-merge');
 const nodeExternals = require('webpack-node-externals');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
 const path = require('path');
 
@@ -85,7 +85,7 @@ const clientConfig = {
                 },
                 {
                     test: /\.(sa|sc|c)ss$/,
-                    use: [MiniCssExtractPlugin.loader, "css-loader", 'sass-loader'],
+                    use: [MiniCSSExtractPlugin.loader, "css-loader", 'sass-loader'],
                 }
             ]
         },
@@ -102,7 +102,7 @@ const clientConfig = {
                 }
             ]
         }),
-        new MiniCssExtractPlugin({
+        new MiniCSSExtractPlugin({
             filename: '[name].css',
             //chunkFilename: '[id].css' // Optional: For chunked CSS files
         })

@@ -16,8 +16,7 @@ module.exports = {
 
     When(/^I enter text message number "([^"]*)"$/, async (phoneNumber) => {
       await I.checkOption('#contactDetails-2');
-      await I.waitForElement('#text-message-value', 10);
-      await I.fillField({ xpath: "//input[@id='text-message-value']" }, phoneNumber);
+      await I.fillField('#text-message-value', phoneNumber);
     });
 
     Then(/^I check the "([^"]*)" option$/, async (option) => {

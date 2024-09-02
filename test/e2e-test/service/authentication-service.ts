@@ -2,9 +2,9 @@ import { getUserToken } from './idam-service';
 
 const config = require('config');
 const caseOfficerUserName = config.get('testAccounts.testCaseOfficerUserName');
-const caseOfficerPassword = config.get('testAccounts.testCaseOfficerPassword');
+const caseOfficerPassword = process.env.TEST_CASEOFFICER_PASSWORD;
 const homeOfficeGenericUsername = config.get('testAccounts.testHomeOfficeGenericUserName');
-const homeOfficeGenericPassword = config.get('testAccounts.testHomeOfficeGenericPassword');
+const homeOfficeGenericPassword = process.env.TEST_HOMEOFFICE_GENERIC_PASSWORD;
 
 export class AuthenticationService {
 

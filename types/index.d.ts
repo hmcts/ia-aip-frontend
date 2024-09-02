@@ -331,6 +331,7 @@ interface AppealApplication {
   remissionRejectedDatePlus14days?: string;
   isLateRemissionRequest?: boolean;
   feeUpdateTribunalAction?: string;
+  feeUpdateReason?: string;
   manageFeeRefundedAmount?: string;
   manageFeeRequestedAmount?: string;
   paidAmount?: string;

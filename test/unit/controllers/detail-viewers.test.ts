@@ -1128,6 +1128,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.application.feeUpdateReason = 'decisionTypeChanged';
       req.session.appeal.feeWithHearing = '140';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
@@ -1163,6 +1164,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.application.feeUpdateReason = 'decisionTypeChanged';
       req.session.appeal.feeWithHearing = '140';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
@@ -1199,6 +1201,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.application.feeUpdateReason = 'feeRemissionChanged';
       req.session.appeal.feeWithHearing = '140';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
@@ -1210,7 +1213,7 @@ describe('DetailViewController', () => {
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows = [
         { key: { text: 'Fee amount' }, value: { html: '£14' } },
         { key: { text: 'Fee amount paid' }, value: { html: '£14' } },
-        { key: { text: 'Reason for fee change' }, value: { html: 'Decision type changed' } },
+        { key: { text: 'Reason for fee change' }, value: { html: 'Fee remission changed' } },
         { key: { text: 'Payment status' }, value: {  html: 'To be refunded' } },
         { key: { text: 'Amount to be refunded' }, value: { html: '£10' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
@@ -1234,6 +1237,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.application.feeUpdateReason = 'feeRemissionChanged';
       req.session.appeal.feeWithHearing = '140';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
@@ -1246,7 +1250,7 @@ describe('DetailViewController', () => {
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows = [
         { key: { text: 'Fee amount' }, value: { html: '£14' } },
         { key: { text: 'Fee amount paid' }, value: { html: '£8' } },
-        { key: { text: 'Reason for fee change' }, value: { html: 'Decision type changed' } },
+        { key: { text: 'Reason for fee change' }, value: { html: 'Fee remission changed' } },
         { key: { text: 'Payment status' }, value: {  html: 'To be refunded' } },
         { key: { text: 'Amount to be refunded' }, value: { html: '£10' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
@@ -1270,6 +1274,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.application.feeUpdateReason = 'appealNotValid';
       req.session.appeal.feeWithHearing = '140';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
@@ -1280,7 +1285,7 @@ describe('DetailViewController', () => {
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows = [
         { key: { text: 'Fee amount' }, value: { html: '£14' } },
         { key: { text: 'Fee amount paid' }, value: { html: '£14' } },
-        { key: { text: 'Reason for fee change' }, value: { html: 'Decision type changed' } },
+        { key: { text: 'Reason for fee change' }, value: { html: 'Appeal not valid' } },
         { key: { text: 'Payment status' }, value: {  html: 'Paid' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
       ];
@@ -1303,6 +1308,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.application.feeUpdateReason = 'appealNotValid';
       req.session.appeal.feeWithHearing = '140';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
@@ -1315,7 +1321,7 @@ describe('DetailViewController', () => {
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows = [
         { key: { text: 'Fee amount' }, value: { html: '£14' } },
         { key: { text: 'Fee amount paid' }, value: { html: '£8' } },
-        { key: { text: 'Reason for fee change' }, value: { html: 'Decision type changed' } },
+        { key: { text: 'Reason for fee change' }, value: { html: 'Appeal not valid' } },
         { key: { text: 'Payment status' }, value: {  html: 'Paid' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
       ];
@@ -1341,11 +1347,12 @@ describe('DetailViewController', () => {
       req.session.appeal.newFeeAmount = '1400';
       req.session.appeal.application.paidAmount = '1400';
       req.session.appeal.application.feeUpdateTribunalAction = 'noAction';
+      req.session.appeal.application.feeUpdateReason = 'appealWithdrawn';
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows = [
         { key: { text: 'Fee amount' }, value: { html: '£14' } },
         { key: { text: 'Fee amount paid' }, value: { html: '£14' } },
-        { key: { text: 'Reason for fee change' }, value: { html: 'Decision type changed' } },
+        { key: { text: 'Reason for fee change' }, value: { html: 'Appeal withdrawn' } },
         { key: { text: 'Payment status' }, value: {  html: 'Paid' } }
       ];
 

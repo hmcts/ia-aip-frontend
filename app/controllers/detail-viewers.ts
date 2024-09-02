@@ -365,20 +365,21 @@ async function addPreviousRemissionDetails(req: Request, application: AppealAppl
 }
 
 function addFeeUpdatePaymentSection(application: AppealApplication, feeDetailsRows: any[], fee: { code: string; calculated_amount: any; version: string }, paymentStatus: string, feeAmountGbp: string, previousFeeAmountGbp: string) {
+  const { feeUpdateReason = null } = application;
   if (application.feeUpdateTribunalAction === 'additionalPayment') {
     feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmountPaid, [calculateAmountToPounds(previousFeeAmountGbp ? previousFeeAmountGbp : feeAmountGbp ? feeAmountGbp : application.paidAmount)]) : null);
-    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForFeeChange, [i18n.pages.checkYourAnswers.rowTitles.decisionTypeChanged], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForFeeChange, [i18n.pages.checkYourAnswers.rowTitles[feeUpdateReason]], null));
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [i18n.pages.checkYourAnswers.rowTitles.additionalPaymentRequested], null));
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToPay, [calculateAmountToPounds(application.manageFeeRequestedAmount)], null));
 
   } else if (application.feeUpdateTribunalAction === 'refund') {
     feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmountPaid, [calculateAmountToPounds(previousFeeAmountGbp ? previousFeeAmountGbp : feeAmountGbp ? feeAmountGbp : application.paidAmount)]) : null);
-    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForFeeChange, [i18n.pages.checkYourAnswers.rowTitles.decisionTypeChanged], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForFeeChange, [i18n.pages.checkYourAnswers.rowTitles[feeUpdateReason]], null));
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [i18n.pages.checkYourAnswers.rowTitles.toBeRefunded], null));
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToBeRefund, [calculateAmountToPounds(application.manageFeeRefundedAmount)], null));
   } else if (application.feeUpdateTribunalAction === 'noAction') {
     feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmountPaid, [calculateAmountToPounds(previousFeeAmountGbp ? previousFeeAmountGbp : feeAmountGbp ? feeAmountGbp : application.paidAmount)]) : null);
-    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForFeeChange, [i18n.pages.checkYourAnswers.rowTitles.decisionTypeChanged], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForFeeChange, [i18n.pages.checkYourAnswers.rowTitles[feeUpdateReason]], null));
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
   }
 }

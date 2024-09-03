@@ -46,8 +46,6 @@ function getConfirmationPaidPage(updateAppealService: UpdateAppealService) {
       const isPaPayLater = application.appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater';
       const daysToWait: number = config.get('daysToWait.afterSubmission');
       const appealWithRemissionOption = appealHasRemissionOption(application);
-      const isLatePayingImmediately = payingImmediately && isLate;
-      const isNotLatePayingImmediately = payingImmediately && !isLate;
 
       if (isPaPayLater) {
         await updateRefundConfirmationAppliedStatus(req, updateAppealService);
@@ -60,12 +58,8 @@ function getConfirmationPaidPage(updateAppealService: UpdateAppealService) {
       } else if (isPaPayNow) {
         res.render('templates/confirmation-page.njk', {
           date: addDaysToDate(daysToWait),
-          title: isNotLatePayingImmediately ? i18n.pages.successPage.inTime.panel
-            : isLatePayingImmediately ? i18n.pages.successPage.outOfTime.panel
-              : i18n.pages.confirmationPaidLater.title,
-          whatNextListItems: isLatePayingImmediately ? i18n.pages.confirmationPaid.contentLate
-            : isNotLatePayingImmediately ? i18n.pages.confirmationPaid.content
-              : i18n.pages.confirmationPaidLater.content,
+          title: getPaPayNowTitle(payingImmediately, isLate),
+          whatNextListItems: getPaPayNowWhatNextItems(payingImmediately, isLate),
           thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
           appealWithRemissionOption
         });
@@ -107,6 +101,18 @@ function setConfirmationController(middleware: Middleware[], updateAppealService
   router.get(paths.appealSubmitted.confirmation, middleware, getConfirmationPage);
   router.get(paths.common.confirmationPayment, middleware, getConfirmationPaidPage(updateAppealService));
   return router;
+}
+
+function getPaPayNowTitle(payingImmediately: boolean, isLate: boolean) {
+  return payingImmediately
+      ? (isLate ? i18n.pages.successPage.outOfTime.panel : i18n.pages.successPage.inTime.panel)
+      : i18n.pages.confirmationPaidLater.title;
+}
+
+function getPaPayNowWhatNextItems(payingImmediately: boolean, isLate: boolean) {
+  return payingImmediately
+      ? (isLate ? i18n.pages.confirmationPaid.contentLate : i18n.pages.confirmationPaid.content)
+      : i18n.pages.confirmationPaidLater.content;
 }
 
 export {

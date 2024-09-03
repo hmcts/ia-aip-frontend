@@ -46,6 +46,8 @@ function getConfirmationPaidPage(updateAppealService: UpdateAppealService) {
       const isPaPayLater = application.appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater';
       const daysToWait: number = config.get('daysToWait.afterSubmission');
       const appealWithRemissionOption = appealHasRemissionOption(application);
+      const isLatePayingImmediately = payingImmediately && isLate;
+      const isNotLatePayingImmediately = payingImmediately && !isLate;
 
       if (isPaPayLater) {
         await updateRefundConfirmationAppliedStatus(req, updateAppealService);
@@ -58,11 +60,11 @@ function getConfirmationPaidPage(updateAppealService: UpdateAppealService) {
       } else if (isPaPayNow) {
         res.render('templates/confirmation-page.njk', {
           date: addDaysToDate(daysToWait),
-          title: (payingImmediately && !isLate) ? i18n.pages.successPage.inTime.panel
-            : (payingImmediately && isLate) ? i18n.pages.successPage.outOfTime.panel
+          title: isNotLatePayingImmediately ? i18n.pages.successPage.inTime.panel
+            : isLatePayingImmediately ? i18n.pages.successPage.outOfTime.panel
               : i18n.pages.confirmationPaidLater.title,
-          whatNextListItems: (payingImmediately && isLate) ? i18n.pages.confirmationPaid.contentLate
-            : (payingImmediately && !isLate) ? i18n.pages.confirmationPaid.content
+          whatNextListItems: isLatePayingImmediately ? i18n.pages.confirmationPaid.contentLate
+            : isNotLatePayingImmediately ? i18n.pages.confirmationPaid.content
               : i18n.pages.confirmationPaidLater.content,
           thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
           appealWithRemissionOption

@@ -124,6 +124,7 @@ async function getAppealApplicationNextStep(req: Request) {
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
   const dlrmFeeRemissionFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
   const deadLineDate = getDeadline(currentAppealStatus, req, dlrmFeeRemissionFlag, ftpaSetAsideFeatureEnabled);
+  const isLateRemissionRequest = req.session.appeal.application.isLateRemissionRequest;
 
   let descriptionParagraphs;
   let respondBy;
@@ -155,7 +156,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'appealSubmitted':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req) && !isLateRemissionRequest) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
         doThisNextSection = getFeeRemissionParagraph(deadLineDate);
@@ -175,34 +176,28 @@ async function getAppealApplicationNextStep(req: Request) {
       }
       break;
     case 'listing':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
-        doThisNextSection = getRemissionDecisionParagraphs(req);
-      } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
-      } else {
-        const paragraphs = eventByLegalRep(req, Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, 'listing')
-          ? [
-            i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction1,
-            i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction2,
-            i18n.pages.overviewPage.doThisNext.listing.dueDate
-          ]
-          : [
-            i18n.pages.overviewPage.doThisNext.listing.detailsSent,
-            i18n.pages.overviewPage.doThisNext.listing.dueDate
-          ];
-        doThisNextSection = {
-          descriptionParagraphs: paragraphs,
-          info: {
-            title: i18n.pages.overviewPage.doThisNext.listing.info.title,
-            url: i18n.pages.overviewPage.doThisNext.listing.info.url
-          },
-          cta: null,
-          allowedAskForMoreTime: false
-        };
-      }
+      const paragraphs = eventByLegalRep(req, Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, 'listing')
+        ? [
+          i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction1,
+          i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction2,
+          i18n.pages.overviewPage.doThisNext.listing.dueDate
+        ]
+        : [
+          i18n.pages.overviewPage.doThisNext.listing.detailsSent,
+          i18n.pages.overviewPage.doThisNext.listing.dueDate
+        ];
+      doThisNextSection = {
+        descriptionParagraphs: paragraphs,
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.listing.info.title,
+          url: i18n.pages.overviewPage.doThisNext.listing.info.url
+        },
+        cta: null,
+        allowedAskForMoreTime: false
+      };
       break;
     case 'lateAppealSubmitted':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req) && !isLateRemissionRequest) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag &&
         requestFeeRemissionEventIsTheLatest(req)) {
@@ -232,24 +227,18 @@ async function getAppealApplicationNextStep(req: Request) {
       }
       break;
     case 'awaitingRespondentEvidence':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
-        doThisNextSection = getRemissionDecisionParagraphs(req);
-      } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
-      } else {
-        doThisNextSection = {
-          descriptionParagraphs: [
-            i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
-            i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
-          ],
-          info: {
-            title: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.title,
-            url: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.url
-          },
-          cta: null,
-          allowedAskForMoreTime: false
-        };
-      }
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
+          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.url
+        },
+        cta: null,
+        allowedAskForMoreTime: false
+      };
       break;
     case 'lateAppealRejected':
       doThisNextSection = {
@@ -331,35 +320,23 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'caseUnderReview':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
-        doThisNextSection = getRemissionDecisionParagraphs(req);
-      } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
-      } else {
-        doThisNextSection = {
-          descriptionParagraphs: [
-            i18n.pages.overviewPage.doThisNext.caseUnderReview.detailsSent,
-            i18n.pages.overviewPage.doThisNext.caseUnderReview.dueDate
-          ],
-          cta: null,
-          allowedAskForMoreTime: false
-        };
-      }
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.caseUnderReview.detailsSent,
+          i18n.pages.overviewPage.doThisNext.caseUnderReview.dueDate
+        ],
+        cta: null,
+        allowedAskForMoreTime: false
+      };
       break;
     case 'respondentReview':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
-        doThisNextSection = getRemissionDecisionParagraphs(req);
-      } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
-      } else {
-        doThisNextSection = {
-          descriptionParagraphs: [
-            i18n.pages.overviewPage.doThisNext.respondentReview.detailsSent,
-            i18n.pages.overviewPage.doThisNext.respondentReview.dueDate
-          ],
-          info: i18n.pages.overviewPage.doThisNext.respondentReview.info
-        };
-      }
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.respondentReview.detailsSent,
+          i18n.pages.overviewPage.doThisNext.respondentReview.dueDate
+        ],
+        info: i18n.pages.overviewPage.doThisNext.respondentReview.info
+      };
       break;
     case 'decisionWithdrawn':
       doThisNextSection = {
@@ -434,37 +411,31 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'submitHearingRequirements':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
-        doThisNextSection = getRemissionDecisionParagraphs(req);
-      } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
-      } else {
-        descriptionParagraphs = [
-          i18n.pages.overviewPage.doThisNext.submitHearingRequirements.description,
-          i18n.pages.overviewPage.doThisNext.submitHearingRequirements.description2
-        ];
-        respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
-        if (pendingTimeExtension) {
-          descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.submitHearingRequirements.descriptionAskForMoreTime];
-          respondBy = i18n.pages.overviewPage.doThisNext.submitHearingRequirements.respondByTextAskForMoreTime;
-        } else if (decisionGranted) {
-          respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
-        } else if (decisionRefused) {
-          respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
-        }
-        doThisNextSection = {
-          descriptionParagraphs,
-          info: {
-            title: i18n.pages.overviewPage.doThisNext.submitHearingRequirements.info.title,
-            url: i18n.pages.overviewPage.doThisNext.submitHearingRequirements.info.url
-          },
-          cta: {
-            url: paths.submitHearingRequirements.taskList,
-            respondBy
-          },
-          allowedAskForMoreTime: true
-        };
+      descriptionParagraphs = [
+        i18n.pages.overviewPage.doThisNext.submitHearingRequirements.description,
+        i18n.pages.overviewPage.doThisNext.submitHearingRequirements.description2
+      ];
+      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
+      if (pendingTimeExtension) {
+        descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.submitHearingRequirements.descriptionAskForMoreTime];
+        respondBy = i18n.pages.overviewPage.doThisNext.submitHearingRequirements.respondByTextAskForMoreTime;
+      } else if (decisionGranted) {
+        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      } else if (decisionRefused) {
+        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
       }
+      doThisNextSection = {
+        descriptionParagraphs,
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.submitHearingRequirements.info.title,
+          url: i18n.pages.overviewPage.doThisNext.submitHearingRequirements.info.url
+        },
+        cta: {
+          url: paths.submitHearingRequirements.taskList,
+          respondBy
+        },
+        allowedAskForMoreTime: true
+      };
       break;
     case 'clarifyingQuestionsAnswersSubmitted':
       doThisNextSection = {
@@ -517,42 +488,36 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'prepareForHearing':
     case 'finalBundling':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
-        doThisNextSection = getRemissionDecisionParagraphs(req);
-      } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
-      } else {
-        const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
-        if (!hearingBundleFeatureEnabled) {
-          return {
-            descriptionParagraphs: [
-              i18n.pages.overviewPage.doThisNext.nothingToDo
-            ]
-          };
-        }
-        const description = eventByLegalRep(req, Events.CREATE_CASE_SUMMARY.id, 'finalBundling')
-          ? i18n.pages.overviewPage.doThisNext.prepareForHearing.providedByLr.description
-          : i18n.pages.overviewPage.doThisNext.prepareForHearing.description;
-
-        doThisNextSection = {
+      const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
+      if (!hearingBundleFeatureEnabled) {
+        return {
           descriptionParagraphs: [
-            description,
-            i18n.pages.overviewPage.doThisNext.prepareForHearing.date,
-            i18n.pages.overviewPage.doThisNext.prepareForHearing.time,
-            i18n.pages.overviewPage.doThisNext.prepareForHearing.hearingCentre,
-            i18n.pages.overviewPage.doThisNext.prepareForHearing.hearingNotice
-          ],
-          info: {
-            title: i18n.pages.overviewPage.doThisNext.prepareForHearing.info.title,
-            url: i18n.pages.overviewPage.doThisNext.prepareForHearing.info.url
-          },
-          cta: {},
-          allowedAskForMoreTime: false,
-          date: getHearingDate(req),
-          time: getHearingTime(req),
-          hearingCentre: getHearingCentre(req)
+            i18n.pages.overviewPage.doThisNext.nothingToDo
+          ]
         };
       }
+      const description = eventByLegalRep(req, Events.CREATE_CASE_SUMMARY.id, 'finalBundling')
+        ? i18n.pages.overviewPage.doThisNext.prepareForHearing.providedByLr.description
+        : i18n.pages.overviewPage.doThisNext.prepareForHearing.description;
+
+      doThisNextSection = {
+        descriptionParagraphs: [
+          description,
+          i18n.pages.overviewPage.doThisNext.prepareForHearing.date,
+          i18n.pages.overviewPage.doThisNext.prepareForHearing.time,
+          i18n.pages.overviewPage.doThisNext.prepareForHearing.hearingCentre,
+          i18n.pages.overviewPage.doThisNext.prepareForHearing.hearingNotice
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.prepareForHearing.info.title,
+          url: i18n.pages.overviewPage.doThisNext.prepareForHearing.info.url
+        },
+        cta: {},
+        allowedAskForMoreTime: false,
+        date: getHearingDate(req),
+        time: getHearingTime(req),
+        hearingCentre: getHearingCentre(req)
+      };
       break;
     case 'decidedWithoutHearing':
       doThisNextSection = {
@@ -605,86 +570,74 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'preHearing':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
-        doThisNextSection = getRemissionDecisionParagraphs(req);
-      } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
-      } else {
-        doThisNextSection = {
-          descriptionParagraphs: [
-            i18n.pages.overviewPage.doThisNext.preHearing.hearingBundle,
-            i18n.pages.overviewPage.doThisNext.preHearing.hearingBundleLink,
-            i18n.pages.overviewPage.doThisNext.preHearing.hearingDetails,
-            i18n.pages.overviewPage.doThisNext.preHearing.hearingDateTimeCentre
-          ],
-          info: {
-            title: i18n.pages.overviewPage.doThisNext.preHearing.info.title,
-            url: i18n.pages.overviewPage.doThisNext.preHearing.info.url
-          }
-        };
-      }
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.preHearing.hearingBundle,
+          i18n.pages.overviewPage.doThisNext.preHearing.hearingBundleLink,
+          i18n.pages.overviewPage.doThisNext.preHearing.hearingDetails,
+          i18n.pages.overviewPage.doThisNext.preHearing.hearingDateTimeCentre
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.preHearing.info.title,
+          url: i18n.pages.overviewPage.doThisNext.preHearing.info.url
+        }
+      };
       break;
     case 'decided':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
-        doThisNextSection = getRemissionDecisionParagraphs(req);
-      } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
+      let decidedDescriptionParagraphs;
+      let decidedInfo;
+      let decision;
+
+      if (ftpaEnabled) {
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.decision,
+          i18n.pages.overviewPage.doThisNext.decided.descriptionFtpaEnabled
+        ];
+
+        decidedInfo = {
+          title: i18n.pages.overviewPage.doThisNext.decided.info.titleFtpaEnabled,
+          text: i18n.pages.overviewPage.doThisNext.decided.info.text,
+          url: i18n.pages.overviewPage.doThisNext.decided.info.urlFtpaEnabled
+        };
+
       } else {
-        let decidedDescriptionParagraphs;
-        let decidedInfo;
-        let decision;
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.decision,
+          i18n.pages.overviewPage.doThisNext.decided.description
+        ];
 
-        if (ftpaEnabled) {
-          decidedDescriptionParagraphs = [
-            i18n.pages.overviewPage.doThisNext.decided.decision,
-            i18n.pages.overviewPage.doThisNext.decided.descriptionFtpaEnabled
-          ];
-
-          decidedInfo = {
-            title: i18n.pages.overviewPage.doThisNext.decided.info.titleFtpaEnabled,
-            text: i18n.pages.overviewPage.doThisNext.decided.info.text,
-            url: i18n.pages.overviewPage.doThisNext.decided.info.urlFtpaEnabled
-          };
-
-        } else {
-          decidedDescriptionParagraphs = [
-            i18n.pages.overviewPage.doThisNext.decided.decision,
-            i18n.pages.overviewPage.doThisNext.decided.description
-          ];
-
-          decidedInfo = {
-            title: i18n.pages.overviewPage.doThisNext.decided.info.title,
-            url: i18n.pages.overviewPage.doThisNext.decided.info.url
-          };
-        }
-
-        if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.updatedAppealDecision) {
-          decision = req.session.appeal.updatedAppealDecision.toLowerCase();
-          decidedDescriptionParagraphs = [
-            i18n.pages.overviewPage.doThisNext.decided.decision,
-            i18n.pages.overviewPage.doThisNext.decided.updatedDescriptionFtpaEnabled
-          ];
-        } else if (isUpdateTribunalDecideWithRule32(req, ftpaSetAsideFeatureEnabled)) {
-          decidedDescriptionParagraphs = [
-            i18n.pages.overviewPage.doThisNext.decided.underRule32.description,
-            i18n.pages.overviewPage.doThisNext.decided.underRule32.url
-          ];
-          decidedInfo = {
-            title: i18n.pages.overviewPage.doThisNext.decided.underRule32.info.title,
-            text: i18n.pages.overviewPage.doThisNext.decided.underRule32.info.text
-          };
-        } else {
-          decision = req.session.appeal.isDecisionAllowed;
-        }
-
-        doThisNextSection = {
-          decision: decision,
-          descriptionParagraphs: decidedDescriptionParagraphs,
-          info: decidedInfo,
-          cta: {},
-          allowedAskForMoreTime: false
+        decidedInfo = {
+          title: i18n.pages.overviewPage.doThisNext.decided.info.title,
+          url: i18n.pages.overviewPage.doThisNext.decided.info.url
         };
       }
+
+      if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.updatedAppealDecision) {
+        decision = req.session.appeal.updatedAppealDecision.toLowerCase();
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.decision,
+          i18n.pages.overviewPage.doThisNext.decided.updatedDescriptionFtpaEnabled
+        ];
+      } else if (isUpdateTribunalDecideWithRule32(req, ftpaSetAsideFeatureEnabled)) {
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.underRule32.description,
+          i18n.pages.overviewPage.doThisNext.decided.underRule32.url
+        ];
+        decidedInfo = {
+          title: i18n.pages.overviewPage.doThisNext.decided.underRule32.info.title,
+          text: i18n.pages.overviewPage.doThisNext.decided.underRule32.info.text
+        };
+      } else {
+        decision = req.session.appeal.isDecisionAllowed;
+      }
+
+      doThisNextSection = {
+        decision: decision,
+        descriptionParagraphs: decidedDescriptionParagraphs,
+        info: decidedInfo,
+        cta: {},
+        allowedAskForMoreTime: false
+      };
       break;
     case 'pendingPayment':
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {

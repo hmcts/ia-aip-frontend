@@ -177,6 +177,7 @@ describe('update-appeal-service', () => {
       isHearingLoopNeeded: 'true',
       hearingCentre: 'birmingham',
       feeUpdateTribunalAction: 'refund',
+      feeUpdateReason: 'feeRemissionChanged',
       manageFeeRefundedAmount: '1000',
       manageFeeRequestedAmount: '1500',
       paidAmount: '2000',
@@ -239,6 +240,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.sponsorNameForDisplay).eq('ABC XYZ');
       expect(req.session.appeal.application.sponsorAuthorisation).eq('ABC XYZ');
       expect(req.session.appeal.application.feeUpdateTribunalAction).eq('refund');
+      expect(req.session.appeal.application.feeUpdateReason).eq('feeRemissionChanged');
       expect(req.session.appeal.application.manageFeeRefundedAmount).eq('1000');
       expect(req.session.appeal.application.manageFeeRequestedAmount).eq('1500');
       expect(req.session.appeal.application.paidAmount).eq('2000');

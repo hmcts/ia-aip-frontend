@@ -644,6 +644,7 @@ export default class UpdateAppealService {
         remissionDecisionReason: caseData.remissionDecisionReason,
         isLateRemissionRequest: caseData.isLateRemissionRequest ? yesNoToBool(caseData.isLateRemissionRequest) : undefined,
         feeUpdateTribunalAction: caseData.feeUpdateTribunalAction,
+        feeUpdateReason: caseData.feeUpdateReason,
         manageFeeRefundedAmount: caseData.manageFeeRefundedAmount,
         manageFeeRequestedAmount: caseData.manageFeeRequestedAmount,
         paidAmount: caseData.paidAmount,

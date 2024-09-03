@@ -262,6 +262,7 @@ interface CaseData {
   remissionDecisionReason?: string;
   isLateRemissionRequest?: string;
   feeUpdateTribunalAction?: string;
+  feeUpdateReason?: string;
   manageFeeRefundedAmount?: string;
   manageFeeRequestedAmount?: string;
   paidAmount?: string;

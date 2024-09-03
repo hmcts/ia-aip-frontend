@@ -58,12 +58,8 @@ function getConfirmationPaidPage(updateAppealService: UpdateAppealService) {
       } else if (isPaPayNow) {
         res.render('templates/confirmation-page.njk', {
           date: addDaysToDate(daysToWait),
-          title: (payingImmediately && !isLate) ? i18n.pages.successPage.inTime.panel
-            : (payingImmediately && isLate) ? i18n.pages.successPage.outOfTime.panel
-              : i18n.pages.confirmationPaidLater.title,
-          whatNextListItems: (payingImmediately && isLate) ? i18n.pages.confirmationPaid.contentLate
-            : (payingImmediately && !isLate) ? i18n.pages.confirmationPaid.content
-              : i18n.pages.confirmationPaidLater.content,
+          title: getPaPayNowTitle(payingImmediately, isLate),
+          whatNextListItems: getPaPayNowWhatNextItems(payingImmediately, isLate),
           thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
           appealWithRemissionOption
         });
@@ -105,6 +101,18 @@ function setConfirmationController(middleware: Middleware[], updateAppealService
   router.get(paths.appealSubmitted.confirmation, middleware, getConfirmationPage);
   router.get(paths.common.confirmationPayment, middleware, getConfirmationPaidPage(updateAppealService));
   return router;
+}
+
+function getPaPayNowTitle(payingImmediately: boolean, isLate: boolean) {
+  return payingImmediately
+      ? (isLate ? i18n.pages.successPage.outOfTime.panel : i18n.pages.successPage.inTime.panel)
+      : i18n.pages.confirmationPaidLater.title;
+}
+
+function getPaPayNowWhatNextItems(payingImmediately: boolean, isLate: boolean) {
+  return payingImmediately
+      ? (isLate ? i18n.pages.confirmationPaid.contentLate : i18n.pages.confirmationPaid.content)
+      : i18n.pages.confirmationPaidLater.content;
 }
 
 export {

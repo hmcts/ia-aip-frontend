@@ -2207,12 +2207,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@promptbook/utils@npm:0.68.0":
-  version: 0.68.0
-  resolution: "@promptbook/utils@npm:0.68.0"
+"@promptbook/utils@npm:0.70.0-1":
+  version: 0.70.0-1
+  resolution: "@promptbook/utils@npm:0.70.0-1"
   dependencies:
     spacetrim: 0.11.39
-  checksum: e6591cf55c8612efcb6935a6b744337e402720f9f225c72c809af4f23671c33740d1935053a29421e478311ae7f67f91cfc57e3b94c8d3e461f9242a2c4ba4e2
+  checksum: 837f302bc570445449137c57d4580a544c21acab44fb191902ad50bf6aaec29ef8327e9054803379177c539e7cbce1488bd7213da2f8e50a714ab62546e93175
   languageName: node
   linkType: hard
 
@@ -7699,7 +7699,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"elliptic@npm:6.5.7":
+"elliptic@npm:^6.5.3, elliptic@npm:^6.5.5":
   version: 6.5.7
   resolution: "elliptic@npm:6.5.7"
   dependencies:
@@ -8403,13 +8403,13 @@ __metadata:
   linkType: hard
 
 "fast-xml-parser@npm:^4.0.12, fast-xml-parser@npm:^4.2.4, fast-xml-parser@npm:^4.4.1":
-  version: 4.4.1
-  resolution: "fast-xml-parser@npm:4.4.1"
+  version: 4.5.0
+  resolution: "fast-xml-parser@npm:4.5.0"
   dependencies:
     strnum: ^1.0.5
   bin:
     fxparser: src/cli/cli.js
-  checksum: f440c01cd141b98789ae777503bcb6727393296094cc82924ae9f88a5b971baa4eec7e65306c7e07746534caa661fc83694ff437d9012dc84dee39dfbfaab947
+  checksum: 696dc98da46f0f48eb26dfe1640a53043ea64f2420056374e62abbb5e620f092f8df3c3ff3195505a2eefab2057db3bf0ebaac63557f277934f6cce4e7da027c
   languageName: node
   linkType: hard
 
@@ -11193,13 +11193,13 @@ __metadata:
   linkType: hard
 
 "locate-app@npm:^2.1.0":
-  version: 2.4.35
-  resolution: "locate-app@npm:2.4.35"
+  version: 2.4.37
+  resolution: "locate-app@npm:2.4.37"
   dependencies:
-    "@promptbook/utils": 0.68.0
+    "@promptbook/utils": 0.70.0-1
     type-fest: 2.13.0
     userhome: 1.0.0
-  checksum: a21afc2c197f74dede345dbce00634cbfb52fe150380b0a5d946f1e97ee175fb052a1d76756a22ecda2874a02591fc01312a4d96e14209e5c9df8dc9f8616980
+  checksum: 26f48e63a9f8ff8ffbd1c30c5d7e8752bc7a3dc63ebab12e3e08daa7fc1bf7bba2c0196d739118f1955deaeb97ce378e18317eb14c8b018848e47c88c3a1c705
   languageName: node
   linkType: hard
 
@@ -13841,9 +13841,9 @@ __metadata:
   linkType: hard
 
 "picocolors@npm:^1.0.0, picocolors@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "picocolors@npm:1.0.1"
-  checksum: fa68166d1f56009fc02a34cdfd112b0dd3cf1ef57667ac57281f714065558c01828cdf4f18600ad6851cbe0093952ed0660b1e0156bddf2184b6aaf5817553a5
+  version: 1.1.0
+  resolution: "picocolors@npm:1.1.0"
+  checksum: a64d653d3a188119ff45781dfcdaeedd7625583f45280aea33fcb032c7a0d3959f2368f9b192ad5e8aade75b74dbd954ffe3106c158509a45e4c18ab379a2acd
   languageName: node
   linkType: hard
 

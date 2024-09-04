@@ -866,8 +866,10 @@ export default class UpdateAppealService {
 
       caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
 
-      caseData.refundRequested = appeal.application.refundRequested ? YesOrNo.YES : YesOrNo.NO;
-      caseData.isLateRemissionRequest = appeal.application.isLateRemissionRequest ? YesOrNo.YES : YesOrNo.NO;
+      if (paymentsFlag) {
+        caseData.refundRequested = appeal.application.refundRequested ? YesOrNo.YES : YesOrNo.NO;
+        caseData.isLateRemissionRequest = appeal.application.isLateRemissionRequest ? YesOrNo.YES : YesOrNo.NO;
+      }
 
       caseData.remissionDecision = null;
       if (appeal.application.remissionDecision) {

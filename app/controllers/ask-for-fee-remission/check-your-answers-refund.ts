@@ -34,7 +34,7 @@ function postCheckYourAnswersRefund(updateAppealService: UpdateAppealService) {
         }
       };
 
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.REQUEST_FEE_REMISSION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], refundFeatureEnabled);
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.REQUEST_FEE_REMISSION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true, refundFeatureEnabled);
 
       req.session.appeal = {
         ...req.session.appeal,

@@ -869,53 +869,52 @@ export default class UpdateAppealService {
       if (paymentsFlag) {
         caseData.refundRequested = appeal.application.refundRequested ? YesOrNo.YES : YesOrNo.NO;
         caseData.isLateRemissionRequest = appeal.application.isLateRemissionRequest ? YesOrNo.YES : YesOrNo.NO;
-      }
+        caseData.remissionDecision = null;
+        if (appeal.application.remissionDecision) {
+          caseData.remissionDecision = appeal.application.remissionDecision;
+        }
 
-      caseData.remissionDecision = null;
-      if (appeal.application.remissionDecision) {
-        caseData.remissionDecision = appeal.application.remissionDecision;
-      }
+        caseData.lateRemissionOption = null;
+        if (appeal.application.lateRemissionOption) {
+          caseData.lateRemissionOption = appeal.application.lateRemissionOption;
+        }
 
-      caseData.lateRemissionOption = null;
-      if (appeal.application.lateRemissionOption) {
-        caseData.lateRemissionOption = appeal.application.lateRemissionOption;
-      }
+        caseData.lateAsylumSupportRefNumber = null;
+        if (appeal.application.lateAsylumSupportRefNumber) {
+          caseData.lateAsylumSupportRefNumber = appeal.application.lateAsylumSupportRefNumber;
+        }
 
-      caseData.lateAsylumSupportRefNumber = null;
-      if (appeal.application.lateAsylumSupportRefNumber) {
-        caseData.lateAsylumSupportRefNumber = appeal.application.lateAsylumSupportRefNumber;
-      }
+        caseData.lateHelpWithFeesOption = null;
+        if (appeal.application.lateHelpWithFeesOption) {
+          caseData.lateHelpWithFeesOption = appeal.application.lateHelpWithFeesOption;
+        }
 
-      caseData.lateHelpWithFeesOption = null;
-      if (appeal.application.lateHelpWithFeesOption) {
-        caseData.lateHelpWithFeesOption = appeal.application.lateHelpWithFeesOption;
-      }
+        caseData.lateHelpWithFeesRefNumber = null;
+        if (appeal.application.lateHelpWithFeesRefNumber) {
+          caseData.lateHelpWithFeesRefNumber = appeal.application.lateHelpWithFeesRefNumber;
+        }
 
-      caseData.lateHelpWithFeesRefNumber = null;
-      if (appeal.application.lateHelpWithFeesRefNumber) {
-        caseData.lateHelpWithFeesRefNumber = appeal.application.lateHelpWithFeesRefNumber;
-      }
+        caseData.lateLocalAuthorityLetters = null;
+        if (appeal.application.lateLocalAuthorityLetters) {
+          const evidences: Evidence[] = appeal.application.lateLocalAuthorityLetters;
 
-      caseData.lateLocalAuthorityLetters = null;
-      if (appeal.application.lateLocalAuthorityLetters) {
-        const evidences: Evidence[] = appeal.application.lateLocalAuthorityLetters;
-
-        caseData.lateLocalAuthorityLetters = evidences.map((evidence: Evidence) => {
-          const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
-          return {
-            ...evidence.fileId && { id: evidence.fileId },
-            value: {
-              dateUploaded: evidence.dateUploaded || '',
-              description: evidence.description,
-              tag: 'additionalEvidence',
-              document: {
-                document_filename: evidence.name,
-                document_url: documentLocationUrl,
-                document_binary_url: `${documentLocationUrl}/binary`
+          caseData.lateLocalAuthorityLetters = evidences.map((evidence: Evidence) => {
+            const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+            return {
+              ...evidence.fileId && { id: evidence.fileId },
+              value: {
+                dateUploaded: evidence.dateUploaded || '',
+                description: evidence.description,
+                tag: 'additionalEvidence',
+                document: {
+                  document_filename: evidence.name,
+                  document_url: documentLocationUrl,
+                  document_binary_url: `${documentLocationUrl}/binary`
+                }
               }
-            }
-          } as Collection<DocumentWithMetaData>;
-        });
+            } as Collection<DocumentWithMetaData>;
+          });
+        }
       }
 
       if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {

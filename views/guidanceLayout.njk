@@ -35,6 +35,14 @@
 {% block header %}
 {% endblock%}
 
+{% block main %}
+  <div class="govuk-width-container {{ containerClasses }}">
+    {% block beforeContent %}{% endblock %}
+    <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %} tabindex=”-1”>
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+{% endblock %}
 
 {% block footer %}
 {% endblock%}

@@ -728,7 +728,7 @@ describe('update-appeal-service', () => {
         emptyApplication.application.contactDetails.email = 'abc@example.net';
         emptyApplication.application.contactDetails.wantsSms = true;
         emptyApplication.application.contactDetails.phone = '07123456789';
-        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
+        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
 
         expect(caseData).eql(
           {
@@ -776,7 +776,7 @@ describe('update-appeal-service', () => {
       it('converts contactDetails only email', () => {
         emptyApplication.application.contactDetails.wantsEmail = true;
         emptyApplication.application.contactDetails.email = 'abc@example.net';
-        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
+        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
 
         expect(caseData).eql(
           {
@@ -823,7 +823,7 @@ describe('update-appeal-service', () => {
       it('converts contactDetails only phone', () => {
         emptyApplication.application.contactDetails.wantsSms = true;
         emptyApplication.application.contactDetails.phone = '07123456789';
-        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
+        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
 
         expect(caseData).eql(
           {
@@ -906,7 +906,7 @@ describe('update-appeal-service', () => {
 
       emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
 
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
 
       expect(caseData).to.deep.eq(
         {
@@ -960,7 +960,7 @@ describe('update-appeal-service', () => {
         }
       ];
 
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
       expect(caseData).to.deep.eq({
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
@@ -1010,7 +1010,7 @@ describe('update-appeal-service', () => {
         }
       ];
 
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
       expect(caseData).to.deep.eq({
         'journeyType': 'aip',
         'appellantInUk': 'undefined',

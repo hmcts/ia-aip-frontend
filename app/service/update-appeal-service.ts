@@ -104,12 +104,12 @@ export default class UpdateAppealService {
     return updatedAppeal;
   }
 
-  async submitEventRefactored(event, appeal: Appeal, uid: string, userToken: string, paymentsFlag = false): Promise<Appeal> {
+  async submitEventRefactored(event, appeal: Appeal, uid: string, userToken: string, paymentsFlag = false, refundFlag = false): Promise<Appeal> {
     const securityHeaders: SecurityHeaders = {
       userToken: `Bearer ${userToken}`,
       serviceToken: await this._s2sService.getServiceToken()
     };
-    const caseData: CaseData = this.convertToCcdCaseData(appeal, paymentsFlag);
+    const caseData: CaseData = this.convertToCcdCaseData(appeal, paymentsFlag, refundFlag);
     const updatedCcdCase: CcdCaseDetails = {
       id: appeal.ccdCaseId,
       state: appeal.appealStatus,
@@ -736,7 +736,7 @@ export default class UpdateAppealService {
     return appeal;
   }
 
-  convertToCcdCaseData(appeal: Appeal, paymentsFlag = false) {
+  convertToCcdCaseData(appeal: Appeal, paymentsFlag = false, refundFlag = false) {
     let caseData = {
       journeyType: 'aip'
     } as CaseData;
@@ -866,7 +866,7 @@ export default class UpdateAppealService {
 
       caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
 
-      if (paymentsFlag) {
+      if (paymentsFlag && refundFlag) {
         caseData.refundRequested = appeal.application.refundRequested ? YesOrNo.YES : YesOrNo.NO;
         caseData.isLateRemissionRequest = appeal.application.isLateRemissionRequest ? YesOrNo.YES : YesOrNo.NO;
         caseData.remissionDecision = null;

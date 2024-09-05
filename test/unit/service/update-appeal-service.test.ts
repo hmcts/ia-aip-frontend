@@ -728,7 +728,7 @@ describe('update-appeal-service', () => {
         emptyApplication.application.contactDetails.email = 'abc@example.net';
         emptyApplication.application.contactDetails.wantsSms = true;
         emptyApplication.application.contactDetails.phone = '07123456789';
-        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
 
         expect(caseData).eql(
           {
@@ -738,14 +738,20 @@ describe('update-appeal-service', () => {
             gwfReferenceNumber: null,
             isHearingLoopNeeded: null,
             isHearingRoomNeeded: null,
+            isLateRemissionRequest: 'No',
             asylumSupportRefNumber: null,
+            decisionHearingFeeOption: null,
             feeSupportPersisted: 'No',
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
             localAuthorityLetters: null,
+            paAppealTypeAipPaymentOption: null,
+            pcqId: null,
             refundConfirmationApplied: 'No',
+            refundRequested: 'No',
             remissionDecision: null,
             remissionOption: null,
+            rpDcAppealHearingOption: null,
             lateAsylumSupportRefNumber: null,
             lateHelpWithFeesOption: null,
             lateHelpWithFeesRefNumber: null,
@@ -770,7 +776,7 @@ describe('update-appeal-service', () => {
       it('converts contactDetails only email', () => {
         emptyApplication.application.contactDetails.wantsEmail = true;
         emptyApplication.application.contactDetails.email = 'abc@example.net';
-        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
 
         expect(caseData).eql(
           {
@@ -779,14 +785,20 @@ describe('update-appeal-service', () => {
             gwfReferenceNumber: null,
             isHearingLoopNeeded: null,
             isHearingRoomNeeded: null,
+            isLateRemissionRequest: 'No',
             asylumSupportRefNumber: null,
+            decisionHearingFeeOption: null,
             feeSupportPersisted: 'No',
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
             localAuthorityLetters: null,
+            paAppealTypeAipPaymentOption: null,
+            pcqId: null,
             refundConfirmationApplied: 'No',
+            refundRequested: 'No',
             remissionDecision: null,
             remissionOption: null,
+            rpDcAppealHearingOption: null,
             lateAsylumSupportRefNumber: null,
             lateHelpWithFeesOption: null,
             lateHelpWithFeesRefNumber: null,
@@ -811,7 +823,7 @@ describe('update-appeal-service', () => {
       it('converts contactDetails only phone', () => {
         emptyApplication.application.contactDetails.wantsSms = true;
         emptyApplication.application.contactDetails.phone = '07123456789';
-        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
 
         expect(caseData).eql(
           {
@@ -821,14 +833,20 @@ describe('update-appeal-service', () => {
             gwfReferenceNumber: null,
             isHearingLoopNeeded: null,
             isHearingRoomNeeded: null,
+            isLateRemissionRequest: 'No',
             asylumSupportRefNumber: null,
+            decisionHearingFeeOption: null,
             feeSupportPersisted: 'No',
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
             localAuthorityLetters: null,
+            paAppealTypeAipPaymentOption: null,
+            pcqId: null,
             refundConfirmationApplied: 'No',
+            refundRequested: 'No',
             remissionDecision: null,
             remissionOption: null,
+            rpDcAppealHearingOption: null,
             lateAsylumSupportRefNumber: null,
             lateHelpWithFeesOption: null,
             lateHelpWithFeesRefNumber: null,
@@ -853,7 +871,7 @@ describe('update-appeal-service', () => {
     it('converts time extension when no previous time extensions or current time extensions', () => {
       emptyApplication.askForMoreTime = {};
 
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
 
       expect(caseData).contains(
         {
@@ -888,7 +906,7 @@ describe('update-appeal-service', () => {
 
       emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
 
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
 
       expect(caseData).to.deep.eq(
         {
@@ -897,12 +915,17 @@ describe('update-appeal-service', () => {
           'gwfReferenceNumber': null,
           'isHearingLoopNeeded': null,
           'isHearingRoomNeeded': null,
+          'isLateRemissionRequest': 'No',
           'asylumSupportRefNumber': null,
+          'decisionHearingFeeOption': null,
           'feeSupportPersisted': 'No',
           'helpWithFeesOption': null,
           'helpWithFeesRefNumber': null,
           'localAuthorityLetters': null,
+          'paAppealTypeAipPaymentOption': null,
+          'pcqId': null,
           'refundConfirmationApplied': 'No',
+          'refundRequested': 'No',
           'remissionDecision': null,
           'remissionOption': null,
           'lateAsylumSupportRefNumber': null,
@@ -911,6 +934,7 @@ describe('update-appeal-service', () => {
           'lateLocalAuthorityLetters': null,
           'lateRemissionOption': null,
           'reviewTimeExtensionRequired': 'Yes',
+          'rpDcAppealHearingOption': null,
           'submitTimeExtensionReason': 'more time reason',
           'submitTimeExtensionEvidence': [
             {
@@ -936,7 +960,7 @@ describe('update-appeal-service', () => {
         }
       ];
 
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
       expect(caseData).to.deep.eq({
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
@@ -944,12 +968,18 @@ describe('update-appeal-service', () => {
         'isHearingLoopNeeded': null,
         'isHearingRoomNeeded': null,
         'asylumSupportRefNumber': null,
+        'decisionHearingFeeOption': null,
         'feeSupportPersisted': 'No',
         'helpWithFeesOption': null,
         'helpWithFeesRefNumber': null,
+        'paAppealTypeAipPaymentOption': null,
+        'pcqId': null,
+        'isLateRemissionRequest': 'No',
         'localAuthorityLetters': null,
+        'refundRequested': 'No',
         'remissionDecision': null,
         'remissionOption': null,
+        'rpDcAppealHearingOption': null,
         'lateAsylumSupportRefNumber': null,
         'lateHelpWithFeesOption': null,
         'lateHelpWithFeesRefNumber': null,
@@ -980,21 +1010,27 @@ describe('update-appeal-service', () => {
         }
       ];
 
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
       expect(caseData).to.deep.eq({
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
         'gwfReferenceNumber': null,
         'isHearingLoopNeeded': null,
         'isHearingRoomNeeded': null,
+        'isLateRemissionRequest': 'No',
         'asylumSupportRefNumber': null,
+        'decisionHearingFeeOption': null,
         'feeSupportPersisted': 'No',
         'helpWithFeesOption': null,
         'helpWithFeesRefNumber': null,
         'localAuthorityLetters': null,
+        'paAppealTypeAipPaymentOption': null,
+        'pcqId': null,
         'refundConfirmationApplied': 'No',
+        'refundRequested': 'No',
         'remissionDecision': null,
         'remissionOption': null,
+        'rpDcAppealHearingOption': null,
         'lateAsylumSupportRefNumber': null,
         'lateHelpWithFeesOption': null,
         'lateHelpWithFeesRefNumber': null,
@@ -1835,26 +1871,6 @@ describe('update-appeal-service', () => {
           }
         ],
         'feeSupportPersisted': 'Yes',
-        'remissionDecision': 'approved',
-        'lateRemissionOption': 'test',
-        'lateAsylumSupportRefNumber': 'test',
-        'lateHelpWithFeesOption': 'test',
-        'lateHelpWithFeesRefNumber': 'HWF-123',
-        'lateLocalAuthorityLetters': [
-          {
-            'id': '00000000-0000-0000-0000-000000000000',
-            'value': {
-              'dateUploaded': '2020-01-01',
-              'description': 'Some evidence 1',
-              'tag': 'additionalEvidence',
-              'document': {
-                'document_filename': 'somefile.png',
-                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
-                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
-              }
-            }
-          }
-        ],
         'appellantEmailAddress': 'email@example.net',
         'subscriptions': [
           {

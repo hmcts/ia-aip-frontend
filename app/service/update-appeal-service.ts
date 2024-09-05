@@ -915,6 +915,7 @@ export default class UpdateAppealService {
             } as Collection<DocumentWithMetaData>;
           });
         }
+        caseData.refundConfirmationApplied = appeal.application.refundConfirmationApplied ? YesOrNo.YES : YesOrNo.NO;
       }
 
       if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
@@ -988,7 +989,6 @@ export default class UpdateAppealService {
         }
       }
 
-      caseData.refundConfirmationApplied = appeal.application.refundConfirmationApplied ? YesOrNo.YES : YesOrNo.NO;
     }
 
     if (_.has(appeal, 'reasonsForAppeal')) {

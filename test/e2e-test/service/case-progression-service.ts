@@ -371,6 +371,7 @@ module.exports = {
       await I.fillField('#listCaseHearingDate-day', '10');
       await I.fillField('#listCaseHearingDate-month', '10');
       await I.fillField('#listCaseHearingDate-year', '2025');
+      await I.click('#isRemoteHearing_No');
       await I.click('Continue');
       await I.waitForText('Check your answers', 30);
       await I.click('List case');
@@ -539,6 +540,15 @@ module.exports = {
       await I.selectOption('#next-step', 'List without requirements');
       await I.handleNextStep('Length', 'listCaseWithoutHearingRequirements/listCaseWithoutHearingRequirementslistCaseWithoutHearing', onlineCaseReference);
       await I.selectOption('#listCaseHearingLength', '1 hour');
+      await I.click('Continue');
+      await I.waitForText('What hearing channel type is required?', 30);
+      await I.checkOption('#hearingChannel_INTER');
+      await I.click('Continue');
+      await I.waitForText('Is the appeal suitable to float', 30);
+      await I.checkOption('No');
+      await I.click('Continue');
+      await I.waitForText('Are there any additional instructions for the hearing?', 30);
+      await I.checkOption('No');
       await I.click('Continue');
       await I.waitForText('Check your answers', 30);
       await I.click('Submit');

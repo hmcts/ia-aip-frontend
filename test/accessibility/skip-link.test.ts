@@ -1,9 +1,8 @@
 import nunjucks from 'nunjucks';
 import i18n from '../../locale/en.json';
 const { expect } = require('chai');
-import { JSDOM } from 'jsdom';
 
-describe('"Skip to Main Content" link rendering', () => {
+describe('"Skip to main content" link rendering', () => {
 
   const env = nunjucks.configure([
     'node_modules/govuk-frontend',
@@ -18,14 +17,14 @@ describe('"Skip to Main Content" link rendering', () => {
 
   const skipToMainContentLink = '<a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>';
 
-  it('should render the "Skip to Main Content" link in layout.njk with href="#main-content"', () => {
+  it('should render the "Skip to main content" link in layout.njk with href="#main-content"', () => {
 
     const rendered = env.render('layout.njk');
 
     expect(rendered).to.include(skipToMainContentLink);
   });
 
-  it('should render the "Skip to Main Content" link in guidanceLayout.njk with href="#main-content"', () => {
+  it('should render the "Skip to main content" link in guidanceLayout.njk with href="#main-content"', () => {
 
     const rendered = env.render('guidanceLayout.njk');
 

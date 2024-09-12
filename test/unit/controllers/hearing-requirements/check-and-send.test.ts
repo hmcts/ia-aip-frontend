@@ -158,7 +158,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-witnesses?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -167,26 +168,34 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Witnesses names'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'sabah u din irfan'
               },
               'actions': {
                 'items': [{
                   'href': '/hearing-witness-names',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
               'key': {
-                'text': ''
-              },
-              'value': {
-                'html': 'sabah u din irfan'
-              }
-            }, {
-              'key': {
-                'text': ''
+                'text': 'Answer'
               },
               'value': {
                 'html': 'John Smith'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witness-names',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {
@@ -205,7 +214,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-outside-uk?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -231,7 +241,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-interpreter-support-appellant-Witnesses',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -251,7 +262,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-interpreter-types',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -271,7 +283,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-interpreter-spoken-language-selection',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -291,7 +304,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-interpreter-sign-language-selection',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -300,11 +314,19 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Select which witnesses need an interpreter'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'sabah u din irfan'
               },
               'actions': {
                 'items': [{
                   'href': '/hearing-witnesses-interpreter-needs',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -312,7 +334,77 @@ describe('Hearing Requirements Check and Send controller', () => {
                 'text': 'Answer'
               },
               'value': {
-                'html': 'John Smith<br>'
+                'html': 'John Smith'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witnesses-interpreter-needs',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'What kind of interpreter will sabah u din irfan need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Spoken language interpreter<br>Sign language interpreter'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-interpreter-types?selectedWitnesses=0',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Which spoken language interpreter does sabah u din irfan need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Japanese'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-interpreter-spoken-language-selection?selectedWitnesses=0',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Which sign language interpreter does sabah u din irfan need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'sabah u din irfan input sign language manually'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-interpreter-sign-language-selection?selectedWitnesses=0',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {
@@ -331,7 +423,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-interpreter-types?selectedWitnesses=1',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -351,7 +444,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-interpreter-spoken-language-selection?selectedWitnesses=1',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -371,7 +465,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-interpreter-sign-language-selection?selectedWitnesses=1',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -394,7 +489,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-step-free-access?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -417,7 +513,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-hearing-loop?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -443,7 +540,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-multimedia-evidence?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -463,7 +561,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-multimedia-evidence-equipment?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -486,7 +585,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-single-sex?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -506,7 +606,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-single-sex-type?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -526,7 +627,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-single-sex-type-male?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -549,7 +651,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-private?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -569,7 +672,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-private-reason?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -592,7 +696,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-physical-mental-health?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -612,7 +717,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-physical-mental-health-reasons?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -635,7 +741,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-past-experiences?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -655,7 +762,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-past-experiences-reasons?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -678,7 +786,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-anything-else?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -698,7 +807,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-anything-else-reasons?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -723,7 +833,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-dates-avoid?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -736,7 +847,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-dates-avoid-enter/0?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -749,7 +861,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-dates-avoid-enter/1?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -765,6 +878,11 @@ describe('Hearing Requirements Check and Send controller', () => {
       req.session.appeal.hearingRequirements.witness2InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
       req.session.appeal.hearingRequirements.witness2InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Japanese', code: 'jpn' } } };
       req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
+
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'sabah u din irfan', 'label': 'sabah u din irfan' }], 'list_items': [{ 'code': 'sabah u din irfan', 'label': 'sabah u din irfan' }] };
+      req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      req.session.appeal.hearingRequirements.witness1InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Japanese', code: 'jpn' } } };
+      req.session.appeal.hearingRequirements.witness1InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'sabah u din irfan input sign language manually' };
       getCheckAndSendPage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);
@@ -797,7 +915,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-witnesses?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -817,7 +936,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-outside-uk?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -843,7 +963,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-interpreter?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -863,7 +984,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-interpreter-types',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -883,7 +1005,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-interpreter-spoken-language-selection',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -903,7 +1026,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-interpreter-sign-language-selection',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -926,7 +1050,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-step-free-access?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -949,7 +1074,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-hearing-loop?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -975,7 +1101,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-multimedia-evidence?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -995,7 +1122,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-multimedia-evidence-equipment?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -1018,7 +1146,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-single-sex?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -1038,7 +1167,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-single-sex-type?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -1058,7 +1188,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-single-sex-type-male?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -1081,7 +1212,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-private?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -1101,7 +1233,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-private-reason?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -1124,7 +1257,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-physical-mental-health?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -1144,7 +1278,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-physical-mental-health-reasons?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -1167,7 +1302,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-past-experiences?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -1187,7 +1323,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-past-experiences-reasons?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -1210,7 +1347,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-anything-else?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -1230,7 +1368,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-anything-else-reasons?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]
@@ -1255,7 +1394,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-dates-avoid?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -1268,7 +1408,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-dates-avoid-enter/0?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }, {
@@ -1281,7 +1422,8 @@ describe('Hearing Requirements Check and Send controller', () => {
               'actions': {
                 'items': [{
                   'href': '/hearing-dates-avoid-enter/1?edit',
-                  'text': 'Change'
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
                 }]
               }
             }]

@@ -20,7 +20,7 @@ describe('JWT Utils', () => {
     const expectedResponse = {
       'key': { 'text': 'Name' },
       'value': { 'html': 'value1<br>value2' },
-      'actions': { 'items': [ { 'href': '/href', 'text': 'Change' } ] }
+      'actions': { 'items': [ { 'href': '/href', 'text': 'Change', 'visuallyHiddenText' : i18n.pages.checkYourAnswers.rowTitles.name } ] }
     };
 
     expect(result).to.deep.equal(expectedResponse);
@@ -33,7 +33,7 @@ describe('JWT Utils', () => {
     const expectedResponse = {
       'key': { 'text': 'Name' },
       'value': { 'html': 'value1 value2' },
-      'actions': { 'items': [ { 'href': '/href', 'text': 'Change' } ] }
+      'actions': { 'items': [ { 'href': '/href', 'text': 'Change', 'visuallyHiddenText' : i18n.pages.checkYourAnswers.rowTitles.name } ] }
     };
 
     expect(result).to.deep.equal(expectedResponse);
@@ -46,7 +46,7 @@ describe('JWT Utils', () => {
     const expectedResponse = {
       'key': { 'text': 'Name' },
       'value': { 'html': 'value1<br>value2' },
-      'actions': { 'items': [ { 'href': '/href', 'text': 'Change' } ] }
+      'actions': { 'items': [ { 'href': '/href', 'text': 'Change', 'visuallyHiddenText' : i18n.pages.checkYourAnswers.rowTitles.name } ] }
     };
 
     expect(result).to.deep.equal(expectedResponse);

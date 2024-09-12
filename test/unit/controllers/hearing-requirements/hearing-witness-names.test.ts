@@ -14,7 +14,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
-  let summaryList = [{ summaryRows: [{ key: { text: 'GivenName1 GivenName2 FamilyName' }, value: { html : '' }, actions: { items: [ { href: '/hearing-witness-names/remove?name=GivenName1%20GivenName2%20FamilyName' , text : 'Remove' }] } } ], title: 'Added witnesses' } ];
+  let summaryList = [{ summaryRows: [{ key: { text: 'GivenName1 GivenName2 FamilyName' }, value: { html : '' }, actions: { items: [ { href: '/hearing-witness-names/remove?name=GivenName1%20GivenName2%20FamilyName' , text : 'Remove', visuallyHiddenText: 'GivenName1 GivenName2 FamilyName' }] } } ], title: 'Added witnesses' } ];
   const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
   beforeEach(() => {
@@ -94,7 +94,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       summaryList[0].summaryRows = [];
       for (let i: number = 0; i < 10; i++) {
         witnessNames.push({ 'witnessGivenNames': 'GivenName' + i + ' GivenName' + i, 'witnessFamilyName': 'FamilyName' });
-        summaryList[0].summaryRows.push({ key: { text: 'GivenName' + i + ' GivenName' + i + ' FamilyName' }, value: { html: '' }, actions: { items: [{ href: '/hearing-witness-names/remove?name=GivenName' + i + '%20GivenName' + i + '%20FamilyName', text: 'Remove' }] } });
+        summaryList[0].summaryRows.push({ key: { text: 'GivenName' + i + ' GivenName' + i + ' FamilyName' }, value: { html: '' }, actions: { items: [{ href: '/hearing-witness-names/remove?name=GivenName' + i + '%20GivenName' + i + '%20FamilyName', text: 'Remove', visuallyHiddenText: 'GivenName' + i + ' GivenName' + i + ' FamilyName' }] } });
       }
 
       req.session.appeal.hearingRequirements.witnessNames = witnessNames;

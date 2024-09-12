@@ -106,17 +106,17 @@ function buildWitnessesSectionSummaryList(hearingRequirements: HearingRequiremen
 function buildWitnessNamesList(witnessesRows: SummaryRow[], witnessNames: WitnessName[], visibleChangeLink: boolean) {
   if (witnessesRows && witnessesRows.length > 1) {
     witnessesRows.push(
-      getSummaryRow(visibleChangeLink,
+      getSummaryRow(false,
         i18n.common.cya.questionRowTitle,
-        [i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.cya],
-        paths.submitHearingRequirements.hearingWitnessNames
+        [i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.cya]
       )
     );
     witnessNames.forEach((name: WitnessName) => {
       witnessesRows.push(
         addSummaryRow(
-          '',
-          [formatWitnessName(name)]
+          i18n.common.cya.answerRowTitle,
+          [formatWitnessName(name)],
+          paths.submitHearingRequirements.hearingWitnessNames
         )
       );
     });
@@ -194,17 +194,20 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
 
       if (hearingRequirements.witnessNames && hearingRequirements.witnessNames.length >= 2) {
         interpreterRows.push(
-          getSummaryRow(visibleChangeLink,
+          getSummaryRow(false,
             i18n.common.cya.questionRowTitle,
-            [i18n.pages.hearingRequirements.accessNeedsSection.witnesessInterpreterNeeds.title],
-            paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds
+            [i18n.pages.hearingRequirements.accessNeedsSection.witnesessInterpreterNeeds.title]
           )
         );
 
-        interpreterRows.push(
-          getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
-            [needInterpreterWitnessnesSummaryString])
-        );
+        ((needInterpreterWitnessnesSummaryString.split(Delimiter.BREAK_LINE)).filter(Boolean)).forEach((needInterpreterWitness) => {
+          interpreterRows.push(
+            addSummaryRow(i18n.common.cya.answerRowTitle,
+              [needInterpreterWitness],
+              paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds
+            )
+          );
+        });
       }
 
       needInterpreterWitnessnesComponent.forEach((witnessComponent) => {

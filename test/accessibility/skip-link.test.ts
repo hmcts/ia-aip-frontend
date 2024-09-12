@@ -18,6 +18,7 @@ function renderNunjucksEnvironment(layoutFileName: string): string {
 
   return rendered;
 }
+
 describe('"Skip to main content" link rendering', () => {
 
   const skipToMainContentLink = '<a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>';

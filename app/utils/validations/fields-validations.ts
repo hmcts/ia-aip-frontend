@@ -29,8 +29,8 @@ function validate(obj: object, schema: any, abortEarly: boolean = false): Valida
   const result = schema.validate(obj, { abortEarly });
   if (result.error) {
     return result.error.details.reduce((acc, curr): ValidationError => {
-      const key = curr.context.key || (curr.context.peers ? curr.context.peers.join('-') : curr.context.peers);
-      const href = curr.context.key || (curr.context.peers ? curr.context.peers[0] : curr.context.peers);
+      const key = curr.context.key || (curr.context.peers ? curr.context.peers.join('-') : curr.context.peers) || (curr.context.details[0].context.key);
+      const href = curr.context.key || (curr.context.peers ? curr.context.peers[0] : curr.context.peers) || (curr.context.details[0].context.key);
       acc[key] = {
         key: key,
         text: curr.message,

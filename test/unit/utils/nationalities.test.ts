@@ -10,7 +10,7 @@ describe('Nationalities', () => {
     const options = [
       {
         text: 'Please select a nationality',
-        value: '',
+        value: '""',
         selected: false
       }, {
         text: 'Afghanistan',
@@ -30,7 +30,7 @@ describe('Nationalities', () => {
     const options = [
       {
         text: 'Please select a nationality',
-        value: '',
+        value: '""',
         selected: false
       }, {
         text: 'Afghanistan',

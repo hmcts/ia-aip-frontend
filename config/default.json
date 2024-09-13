@@ -109,7 +109,17 @@
     "northShieldsEmail": "IA_HEARING_CENTRE_NORTH_SHIELDS_EMAIL",
     "birminghamEmail": "IA_HEARING_CENTRE_BIRMINGHAM_EMAIL",
     "hattonCrossEmail": "IA_HEARING_CENTRE_HATTON_CROSS_EMAIL",
-    "glasgowEmail": "IA_HEARING_CENTRE_GLASGOW_EMAIL"
+    "glasgowEmail": "IA_HEARING_CENTRE_GLASGOW_EMAIL",
+    "nthTyneMagsEmail": "IA_HEARING_CENTRE_NTH_TYNE_MAGS_EMAIL",
+    "harmondsworthEmail": "IA_HEARING_CENTRE_HARMONDSWORTH_EMAIL",
+    "mccCrownSquareEmail": "IA_HEARING_CENTRE_MCC_CROWN_SQUARE_EMAIL",
+    "bradfordKeighleyEmail": "IA_HEARING_CENTRE_BRADFORD_KEIGHLEY_EMAIL",
+    "manchesterMagsEmail": "IA_HEARING_CENTRE_MANCHESTER_MAGS_EMAIL",
+    "mccMinshullEmail": "IA_HEARING_CENTRE_MCC_MINSHULL_EMAIL",
+    "yarlsWoodEmail": "IA_HEARING_CENTRE_YARLS_WOOD_EMAIL",
+    "leedsMagsEmail": "IA_HEARING_CENTRE_LEEDS_MAGS_EMAIL",
+    "hendonEmail": "IA_HEARING_CENTRE_HENDON_EMAIL",
+    "alloaSherrifEmail": "IA_HEARING_CENTRE_ALLOA_SHERRIF_EMAIL"
   },
   "pcq": {
     "url": "PCQ_URL",

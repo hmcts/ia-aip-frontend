@@ -26,6 +26,16 @@ const setupSecrets = () => {
   setSecret('secrets.ia.hearing-centre-birmingham-email', 'hearingCentres.birminghamEmail');
   setSecret('secrets.ia.hearing-centre-hattoncross-email', 'hearingCentres.hattoncrossEmail');
   setSecret('secrets.ia.hearing-centre-glasgow-email', 'hearingCentres.glasgowEmail');
+  setSecret('secrets.ia.hearing-centre-harmondsworth-email', 'hearingCentres.harmondsworthEmail');
+  setSecret('secrets.ia.hearing-centre-hendon-email', 'hearingCentres.hendonEmail');
+  setSecret('secrets.ia.hearing-centre-yarls-wood-email', 'hearingCentres.yarlsWoodEmail');
+  setSecret('secrets.ia.hearing-centre-bradford-keighley-email', 'hearingCentres.bradfordKeighleyEmail');
+  setSecret('secrets.ia.hearing-centre-mcc-minshull-email', 'hearingCentres.mccMinshullEmail');
+  setSecret('secrets.ia.hearing-centre-mcc-crown-square-email', 'hearingCentres.mccCrownSquareEmail');
+  setSecret('secrets.ia.hearing-centre-manchester-mags-email', 'hearingCentres.manchesterMagsEmail');
+  setSecret('secrets.ia.hearing-centre-nth-tyne-mags-email', 'hearingCentres.nthTyneMagsEmail');
+  setSecret('secrets.ia.hearing-centre-leeds-mags-email', 'hearingCentres.leedsMagsEmail');
+  setSecret('secrets.ia.hearing-centre-alloa-sherrif-email', 'hearingCentres.alloaSherrifEmail');
   setSecret('secrets.ia.pcq-token-key', 'pcq.tokenKey');
   setSecret('secrets.ia.system-username', 'systemUser.username');
   set(config, 'systemUser.password', 'secrets.ia.system-password');

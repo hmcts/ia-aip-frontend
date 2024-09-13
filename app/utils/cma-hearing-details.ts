@@ -47,6 +47,26 @@ function getHearingCentre(req: Request): string {
       return 'Belfast';
     case 'coventry':
       return 'Coventry Magistrates Court';
+    case 'nthTyneMags':
+      return 'NEEDS_UPDATING'
+    case 'harmondsworth':
+      return 'NEEDS_UPDATING'
+    case 'mccCrownSquare':
+      return 'NEEDS_UPDATING'
+    case 'bradfordKeighley':
+      return 'NEEDS_UPDATING'
+    case 'manchesterMags':
+      return 'NEEDS_UPDATING'
+    case 'mccMinshull':
+      return 'NEEDS_UPDATING'
+    case 'yarlsWood':
+      return 'NEEDS_UPDATING'
+    case 'leedsMags':
+      return 'NEEDS_UPDATING'
+    case 'hendon':
+      return 'NEEDS_UPDATING'
+    case 'alloaSherrif':
+      return 'NEEDS_UPDATING'
     case 'remoteHearing':
       return 'The hearing will take place by video call';
     default:
@@ -73,7 +93,29 @@ function getHearingCentreEmail(req: Request): string {
       return config.get('hearingCentres.hattonCrossEmail');
     case 'glasgow':
     case 'glasgowTribunalsCentre':
+    case 'belfast':
       return config.get('hearingCentres.glasgowEmail');
+    case 'nthTyneMags':
+      return config.get('hearingCentres.nthTyneMagsEmail')
+    case 'harmondsworth':
+      return config.get('hearingCentres.harmondsworthEmail')
+    case 'mccCrownSquare':
+      return config.get('hearingCentres.mccCrownSquareEmail')
+    case 'bradfordKeighley':
+      return config.get('hearingCentres.bradfordKeighleyEmail')
+    case 'manchesterMags':
+      return config.get('hearingCentres.manchesterMagsEmail')
+    case 'mccMinshull':
+      return config.get('hearingCentres.mccMinshullEmail')
+    case 'yarlsWood':
+      return config.get('hearingCentres.yarlsWoodEmail')
+    case 'leedsMags':
+      return config.get('hearingCentres.leedsMagsEmail')
+    case 'hendon':
+      return config.get('hearingCentres.hendonEmail')
+    case 'alloaSherrif':
+      return config.get('hearingCentres.alloaSherrifEmail')
+
     default:
       return '';
   }

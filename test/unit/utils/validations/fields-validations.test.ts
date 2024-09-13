@@ -1083,7 +1083,6 @@ describe('fields-validations', () => {
     });
   });
 
-
   it('should fail validation and return "string.empty if deportation option is not selected" ', () => {
     const object = { };
     const validationResult = deportationOrderOptionsValidation(object);

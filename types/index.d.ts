@@ -1,6 +1,7 @@
 interface Href {
   href: string;
   text: string;
+  visuallyHiddenText?: string;
 }
 
 interface SummarySection {

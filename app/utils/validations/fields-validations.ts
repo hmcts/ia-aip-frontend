@@ -90,7 +90,7 @@ function homeOfficeNumberValidation(obj: object) {
   }
 
   const schema = Joi.object({
-    homeOfficeRefNumber: Joi.string().required().regex(/^(([0-9]{1,9})|([0-9]{4}\-[0-9]{4}\-[0-9]{4}\-[0-9]{4}))$/).messages({
+    homeOfficeRefNumber: Joi.string().required().regex(/^((\d{1,9})|(\d{4}\-\d{4}\-\d{4}\-\d{4}))$/).messages({
       'string.empty': i18n.validationErrors.homeOfficeReference.required,
       'string.pattern.base': i18n.validationErrors.homeOfficeReference.invalid
     })
@@ -196,16 +196,17 @@ function sponsorNamesValidation(obj: object) {
 
 function witnessNameValidation(obj: object) {
   const schema = Joi.object({
-    witnessName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.witnessName })
+    witnessName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.witnessName }),
+    witnessFamilyName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.witnessFamilyName })
   }).unknown();
   return validate(obj, schema);
 }
 
-function witnessNamesValidation(obj: object) {
+function witnessesValidation(obj: object) {
   const schema = Joi.object({
-    witnessName: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.witnessName })
+    witnesses: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.witnesses })
   }).unknown();
-  return validate({ witnessName: obj }, schema);
+  return validate({ witnesses: obj }, schema);
 }
 
 function interpreterLanguagesValidation(obj: object) {
@@ -213,6 +214,45 @@ function interpreterLanguagesValidation(obj: object) {
     language: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.hearingRequirements.accessNeeds.addLanguageDialect })
   }).unknown();
   return validate({ language: obj }, schema);
+}
+
+function interpreterSupportSelectionValidation(obj: object) {
+  const schema = Joi.object({
+    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.hearingRequirements.interpreterSuuport.selectOneOption })
+  }).unknown();
+  return validate(obj, schema);
+}
+
+function witenessesInterpreterNeedsValidation(obj: object) {
+  const schema = Joi.object({
+    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.hearingRequirements.witnessesInterpreterNeeds.selectOneOption })
+  }).unknown();
+  return validate(obj, schema);
+}
+
+function interpreterTypesSelectionValidation(obj: object) {
+  const schema = Joi.object({
+    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.hearingRequirements.interpreterType.selectOneOption })
+  }).unknown();
+  return validate(obj, schema);
+}
+
+function interpreterLanguageSelectionValidation(obj: object) {
+  const schema = Joi.object({
+    languageRefData: Joi.string().empty(''),
+    languageManualEntry: Joi.string().empty(''),
+    'languageManualEntryDescription': Joi.alternatives().conditional(
+      'languageManualEntry', {
+      is: 'Yes',
+      then: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.hearingRequirements.interpreterLanguageSelection.enterLanguageManually }),
+      otherwise: Joi.any()
+    })
+  }).xor('languageRefData', 'languageManualEntry').messages({
+    'object.missing': i18n.validationErrors.hearingRequirements.interpreterLanguageSelection.selectLanguage,
+    'object.xor': i18n.validationErrors.hearingRequirements.interpreterLanguageSelection.selectOneOptionOnly
+  })
+    .unknown();
+  return validate(obj, schema);
 }
 
 function contactDetailsValidation(obj: object) {
@@ -595,7 +635,7 @@ export {
   dateOfBirthValidation,
   dropdownValidation,
   appellantNamesValidation,
-  witnessNamesValidation,
+  witnessesValidation,
   witnessNameValidation,
   postcodeValidation,
   nationalityValidation,
@@ -614,6 +654,10 @@ export {
   isDateInRange,
   decisionTypeValidation,
   interpreterLanguagesValidation,
+  interpreterSupportSelectionValidation,
+  witenessesInterpreterNeedsValidation,
+  interpreterTypesSelectionValidation,
+  interpreterLanguageSelectionValidation,
   hasSponsorValidation,
   sponsorNamesValidation,
   sponsorAddressValidation,

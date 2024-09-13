@@ -1,0 +1,64 @@
+{% set pageTitleName = i18n.pages.hearingRequirements.accessNeedsSection.interpreterSupportAppellantWitnesess.pageTitle | eval %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% block content %}
+
+    {% if errorList %}
+        {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+    {% endif %}
+
+    {% call govukFieldset({
+        legend: {
+            text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSupportAppellantWitnesess.pageTitle ,
+            classes: "govuk-fieldset__legend--xl",
+            isPageHeading: true
+        }
+     })
+   %}
+
+    <p>
+        <div>{{ i18n.pages.hearingRequirements.accessNeedsSection.interpreterSupportAppellantWitnesess.text | safe }}</div>
+    </p>
+
+    <form action="{{ paths.submitHearingRequirements.hearingInterpreterSupportAppellantWitnesses }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {{ govukCheckboxes({
+            idPrefix: "interpreterSupport",
+            name: "selections",
+            hint: {
+                text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSupportAppellantWitnesess.hint
+            },
+            items: [
+                {
+                    value: "isInterpreterServicesNeeded",
+                    text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSupportAppellantWitnesess.interpreterSupportAppellant,
+                    checked: isInterpreterServicesNeeded
+                },
+                {
+                    value: "isAnyWitnessInterpreterRequired",
+                    text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSupportAppellantWitnesess.interpreterSupportWitnesses,
+                    checked: isAnyWitnessInterpreterRequired
+                },
+                {
+                divider: "or"
+                },
+                {
+                value: "noInterpreterRequired",
+                text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSupportAppellantWitnesess.noSupportNeeded,
+                checked: noInterpreterRequired,
+                behaviour: "exclusive"
+                }
+            ]
+        }) }}
+
+        {{ saveButtons() }}
+    </form>
+
+    {{ contactUs() }}
+    {% endcall %}
+{% endblock %}

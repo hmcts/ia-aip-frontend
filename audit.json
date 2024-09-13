@@ -16,6 +16,8 @@
   "10017_Cross-Domain JavaScript Source File Inclusion_https://immigration-appeal.aat.platform.hmcts.net/terms-and-conditions_GET":"ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/eligibility_GET":"ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/start-appeal_GET":"ignore",
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/accessibility-statement_GET":"ignore",
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=0_GET":"ignore",
   "10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/start-appeal_GET":"ignore",
   "10055_CSP: X-WebKit-CSP_https://immigration-appeal.aat.platform.hmcts.net/start-appeal_GET":"ignore",
   "90027_Cookie Slack Detector_https://immigration-appeal.aat.platform.hmcts.net_GET":"ignore",
@@ -167,4 +169,5 @@
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/sitemap.xml_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/robots.txt_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/assets/images/favicon.ico_GET": "ignore",
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/privacy-policy_GET": "ignore",
   "10049_Non-Storable Content_https://immigration-appeal.aat.platform.hmcts.net/assets/images/hmcts-logo-compress.svg_GET":  "ignore"}

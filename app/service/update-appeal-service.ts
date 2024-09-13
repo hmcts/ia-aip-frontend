@@ -163,6 +163,7 @@ export default class UpdateAppealService {
     let documentMap: DocumentMap[] = [];
     let updatedDecisionAndReasons: DecisionAndReasons[] = null;
     let rule32NoticeDocs: Evidence = null;
+    let remittalDocuments: RemittalDetails[] = null;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -246,6 +247,26 @@ export default class UpdateAppealService {
           ...ccdDecisionAndReasons.value,
           coverLetterDocument: coverLetterDocument,
           documentAndReasonsDocument: documentAndReasonsDocument
+        };
+      });
+    }
+
+    if (caseData.remittalDocuments) {
+      remittalDocuments = caseData.remittalDocuments.map((ccdRemittalDetails: Collection<CcdRemittalDetails>): RemittalDetails => {
+        let decisionDocument: Evidence;
+        let otherRemittalDocs: Evidence[];
+        if (ccdRemittalDetails.value.decisionDocument && ccdRemittalDetails.value.decisionDocument.document) {
+          decisionDocument = this.mapSupportingDocumentToEvidence(ccdRemittalDetails.value.decisionDocument.document, documentMap);
+        }
+        if (ccdRemittalDetails.value.otherRemittalDocs) {
+          otherRemittalDocs = this.mapDocsWithMetadataToEvidenceArray(ccdRemittalDetails.value.otherRemittalDocs, documentMap);
+        }
+
+        return {
+          id: ccdRemittalDetails.id,
+          ...ccdRemittalDetails.value,
+          decisionDocument: decisionDocument,
+          otherRemittalDocs: otherRemittalDocs
         };
       });
     }
@@ -417,8 +438,12 @@ export default class UpdateAppealService {
       hearingRequirements.witnessesOutsideUK = yesNoToBool(caseData.isEvidenceFromOutsideUkInCountry);
     }
     if (caseData.witnessDetails && caseData.witnessDetails.length) {
-      hearingRequirements.witnessNames = caseData.witnessDetails.map((witnessDetail) => {
-        return witnessDetail.value.witnessName;
+      hearingRequirements.witnessNames = caseData.witnessDetails.map(detail => {
+        return {
+          witnessPartyId: detail.value.witnessPartyId,
+          witnessGivenNames: detail.value.witnessName,
+          witnessFamilyName: detail.value.witnessFamilyName
+        };
       });
     }
 
@@ -432,6 +457,54 @@ export default class UpdateAppealService {
 
     if (caseData.isInterpreterServicesNeeded) {
       hearingRequirements.isInterpreterServicesNeeded = yesNoToBool(caseData.isInterpreterServicesNeeded);
+    }
+
+    if (caseData.appellantInterpreterLanguageCategory) {
+      hearingRequirements.appellantInterpreterLanguageCategory = caseData.appellantInterpreterLanguageCategory;
+    }
+
+    if (caseData.appellantInterpreterSpokenLanguage) {
+      hearingRequirements.appellantInterpreterSpokenLanguage = caseData.appellantInterpreterSpokenLanguage;
+    }
+
+    if (caseData.appellantInterpreterSignLanguage) {
+      hearingRequirements.appellantInterpreterSignLanguage = caseData.appellantInterpreterSignLanguage;
+    }
+
+    if (caseData.isAnyWitnessInterpreterRequired) {
+      hearingRequirements.isAnyWitnessInterpreterRequired = yesNoToBool(caseData.isAnyWitnessInterpreterRequired);
+    }
+
+    for (let index = 0; index < 10; index++) {
+      let witnessString = 'witness' + (index + 1);
+      let witnessObj = caseData[witnessString] as WitnessDetails;
+      if (witnessObj) {
+        hearingRequirements[witnessString] = {
+          witnessPartyId: witnessObj.witnessPartyId,
+          witnessName: witnessObj.witnessName,
+          witnessFamilyName: witnessObj.witnessFamilyName
+        };
+      }
+
+      let witnessListElementString = 'witnessListElement' + (index + 1);
+      if (caseData[witnessListElementString]) {
+        hearingRequirements[witnessListElementString] = caseData[witnessListElementString];
+      }
+
+      let witnessInterpreterLanguageCategoryString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
+      if (caseData[witnessInterpreterLanguageCategoryString]) {
+        hearingRequirements[witnessInterpreterLanguageCategoryString] = caseData[witnessInterpreterLanguageCategoryString];
+      }
+
+      let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
+      if (caseData[witnessInterpreterSpokenLanguageFieldString]) {
+        hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = caseData[witnessInterpreterSpokenLanguageFieldString];
+      }
+
+      let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
+      if (caseData[witnessInterpreterSignLanguageFieldString]) {
+        hearingRequirements[witnessInterpreterSignLanguageFieldString] = caseData[witnessInterpreterSignLanguageFieldString];
+      }
     }
 
     if (caseData.interpreterLanguage) {
@@ -489,6 +562,7 @@ export default class UpdateAppealService {
       ftpaApplicationRespondentDocument: ftpaApplicationRespondentDocument,
       ftpaApplicationAppellantDocument: ftpaApplicationAppellantDocument,
       readonlyApplicationEnabled: true,
+      sourceOfRemittal: caseData.sourceOfRemittal,
       application: {
         appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
@@ -540,6 +614,7 @@ export default class UpdateAppealService {
       },
       ...(_.has(caseData, 'directions')) && { directions },
       ...(_.has(caseData, 'correctedDecisionAndReasons')) && { updatedDecisionAndReasons },
+      ...(_.has(caseData, 'remittalDocuments')) && { remittalDocuments },
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
       ...caseData.clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers: this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers, documentMap) },
       cmaRequirements,
@@ -862,7 +937,7 @@ export default class UpdateAppealService {
         }
 
         if (_.get(accessNeeds, 'isInterpreterServicesNeeded')) {
-          if (_.has(accessNeeds, 'interpreterLanguage')) {
+          if (_.has(accessNeeds, 'interpreterLanguage') && (_.has(accessNeeds.interpreterLanguage, 'language') || _.has(accessNeeds.interpreterLanguage, 'languageDialect'))) {
             caseData.interpreterLanguage = [{
               value: {
                 language: accessNeeds.interpreterLanguage.language,
@@ -972,10 +1047,12 @@ export default class UpdateAppealService {
       }
 
       if (_.has(appeal.hearingRequirements, 'witnessNames')) {
-        caseData.witnessDetails = appeal.hearingRequirements.witnessNames.map(witnessName => {
+        caseData.witnessDetails = appeal.hearingRequirements.witnessNames.map(name => {
           return {
             value: {
-              witnessName: witnessName
+              witnessPartyId: name.witnessPartyId,
+              witnessName: name.witnessGivenNames,
+              witnessFamilyName: name.witnessFamilyName
             } as WitnessDetails
           } as Collection<WitnessDetails>;
         });
@@ -983,6 +1060,18 @@ export default class UpdateAppealService {
 
       if (_.has(appeal.hearingRequirements, 'isInterpreterServicesNeeded')) {
         caseData.isInterpreterServicesNeeded = boolToYesNo(appeal.hearingRequirements.isInterpreterServicesNeeded);
+
+        if (_.has(appeal.hearingRequirements, 'appellantInterpreterLanguageCategory')) {
+          caseData.appellantInterpreterLanguageCategory = appeal.hearingRequirements.appellantInterpreterLanguageCategory;
+        }
+
+        if (_.has(appeal.hearingRequirements, 'appellantInterpreterSpokenLanguage')) {
+          caseData.appellantInterpreterSpokenLanguage = appeal.hearingRequirements.appellantInterpreterSpokenLanguage;
+        }
+
+        if (_.has(appeal.hearingRequirements, 'appellantInterpreterSignLanguage')) {
+          caseData.appellantInterpreterSignLanguage = appeal.hearingRequirements.appellantInterpreterSignLanguage;
+        }
 
         if (_.has(appeal.hearingRequirements, 'interpreterLanguages')) {
           caseData.interpreterLanguage = appeal.hearingRequirements.interpreterLanguages.map(interpreterLanguage => {
@@ -993,6 +1082,47 @@ export default class UpdateAppealService {
               } as AdditionalLanguage
             } as Collection<AdditionalLanguage>;
           });
+        }
+      }
+
+      if (_.has(appeal.hearingRequirements, 'isAnyWitnessInterpreterRequired')) {
+        caseData.isAnyWitnessInterpreterRequired = boolToYesNo(appeal.hearingRequirements.isAnyWitnessInterpreterRequired);
+
+        for (let index = 0; index < 10; index++) {
+
+          if (_.has(appeal.hearingRequirements, 'witnessNames')) {
+            let witnessString = 'witness' + (index + 1);
+            let witnessObj: WitnessName = appeal.hearingRequirements.witnessNames[index];
+            if (witnessObj) {
+              caseData[witnessString] = {
+                witnessPartyId: witnessObj.witnessPartyId,
+                witnessName: witnessObj.witnessGivenNames,
+                witnessFamilyName: witnessObj.witnessFamilyName
+              };
+            } else {
+              caseData[witnessString] = null;
+            }
+          }
+
+          let witnessListElementString = 'witnessListElement' + (index + 1);
+          if (_.has(appeal.hearingRequirements, witnessListElementString)) {
+            caseData[witnessListElementString] = appeal.hearingRequirements[witnessListElementString];
+          }
+
+          let witnessInterpreterLanguageCategoryString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
+          if (_.has(appeal.hearingRequirements, witnessInterpreterLanguageCategoryString)) {
+            caseData[witnessInterpreterLanguageCategoryString] = appeal.hearingRequirements[witnessInterpreterLanguageCategoryString];
+          }
+
+          let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
+          if (_.has(appeal.hearingRequirements, witnessInterpreterSpokenLanguageFieldString)) {
+            caseData[witnessInterpreterSpokenLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSpokenLanguageFieldString];
+          }
+
+          let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
+          if (_.has(appeal.hearingRequirements, witnessInterpreterSignLanguageFieldString)) {
+            caseData[witnessInterpreterSignLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSignLanguageFieldString];
+          }
         }
       }
 

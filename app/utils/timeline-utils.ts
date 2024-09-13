@@ -38,6 +38,11 @@ function constructEventObject(event: HistoryEvent, req: Request) {
     eventContent = i18n.pages.overviewPage.timeline['decideFtpa'][ftpaApplicantType];
   }
 
+  if (Events.MARK_APPEAL_AS_REMITTED.id === event.id) {
+    const sourceOfRemittal = req.session.appeal.sourceOfRemittal;
+    eventContent = i18n.pages.overviewPage.timeline[event.id][sourceOfRemittal];
+  }
+
   let eventObject = eventContent
       ? {
         date: moment(event.createdDate).format('DD MMMM YYYY'),
@@ -230,9 +235,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
   const appealHearingRequirementsSection = constructSection(
     eventsAndStates.appealHearingRequirementsSectionEvents,
-    req.session.appeal.history.filter(event =>
-      ![Events.UPLOAD_ADDITIONAL_EVIDENCE.id, Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id].includes(event.id)
-      || isUploadEvidenceEventByLegalRep(req, event)),
+    filterEventsForHearingRequirementsSection(req),
     null, req
   );
   const appealArgumentSection = constructSection(
@@ -299,7 +302,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
     Events.RECORD_OUT_OF_TIME_DECISION.id,
     Events.MARK_AS_READY_FOR_UT_TRANSFER.id
   ];
-  const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id];
+  const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id, Events.MARK_APPEAL_AS_REMITTED.id];
 
   if (ftpaFeatureEnabled) {
     appealDecisionSectionEvents.push(
@@ -332,7 +335,10 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
   ];
 
   if (hearingBundleFeatureEnabled) {
-    appealHearingRequirementsSectionEvents.push(Events.LIST_CASE.id);
+    appealHearingRequirementsSectionEvents.push(
+      Events.LIST_CASE.id,
+      Events.RECORD_ADJOURNMENT_DETAILS.id
+    );
   }
 
   if (uploadAddendumEvidenceFeatureEnabled) {
@@ -364,6 +370,25 @@ function isUploadEvidenceEventByLegalRep(req: Request, event: HistoryEvent) {
   ].includes(event.id) && event.user.id !== req.idam.userDetails.uid;
 }
 
+function isRecordAdjournmentEventAndCaseAdjourned(req: Request, event: HistoryEvent) {
+  const caseAdjourned = req.session.appeal.appealStatus === States.ADJOURNED.id;
+
+  return (event.id === Events.RECORD_ADJOURNMENT_DETAILS.id) && caseAdjourned;
+}
+
+function filterEventsForHearingRequirementsSection(req: Request) {
+  const targetEvents = [
+    Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+    Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
+    Events.RECORD_ADJOURNMENT_DETAILS.id
+  ];
+
+  return req.session.appeal.history.filter(event =>
+    isUploadEvidenceEventByLegalRep(req, event)
+    || isRecordAdjournmentEventAndCaseAdjourned(req, event)
+    || !targetEvents.includes(event.id));
+}
+
 export {
   getAppealApplicationHistory,
   getSubmitClarifyingQuestionsEvents,
@@ -372,5 +397,6 @@ export {
   getUpdateTribunalDecisionHistory,
   getUpdateTribunalDecisionDocumentHistory,
   constructSection,
-  getEventsAndStates
+  getEventsAndStates,
+  filterEventsForHearingRequirementsSection
 };

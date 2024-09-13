@@ -1,3 +1,4 @@
+import { JSDOM } from 'jsdom';
 import CookiesBanner from '../../../client/cookies-banner';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -8,6 +9,8 @@ describe('Cookies Banner', () => {
   let addEventListenerStub: sinon.SinonStub;
   let initAnalyticsCookieStub: sinon.SinonStub;
   let cookiesBanner: CookiesBanner;
+  let dom;
+  let document;
   const html = `<div id="cookie-banner">
       <button id="acceptCookies">Accept</button>
       <button id="rejectCookies">Reject</button>
@@ -19,13 +22,16 @@ describe('Cookies Banner', () => {
     </div>`;
 
   before(() => {
+    dom = new JSDOM(html, { url: 'http://localhost' });
+    document = dom.window.document;
     cookiesBanner = new CookiesBanner();
   });
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    document.body.innerHTML = html;
-    window.gtag = sandbox.stub();
+    global.document = document;
+    global.window = dom.window;
+    global.window.gtag = sandbox.stub();
     hideCookieBannerSpy = sandbox.spy(CookiesBanner.prototype, 'hideCookieBanner');
     showCookieBannerSpy = sandbox.spy(CookiesBanner.prototype, 'showCookieBanner');
     sandbox.stub(CookiesBanner.prototype, 'removeCookie');
@@ -105,7 +111,7 @@ describe('Cookies Banner', () => {
     });
   });
 
-  describe('Analytics and Performance selections should bet set from cookies', () => {
+  describe('Analytics and Performance selections should be set from cookies', () => {
     it('should set the consent to yes from cookies', () => {
       cookiesBanner.addCookie('analytics_consent', 'yes');
       cookiesBanner.addCookie('apm_consent', 'yes');

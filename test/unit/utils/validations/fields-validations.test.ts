@@ -9,7 +9,11 @@ import {
   helpWithFeesRefNumberValidation,
   helpWithFeesValidation,
   homeOfficeNumberValidation,
+  interpreterLanguageSelectionValidation,
+  interpreterSupportSelectionValidation,
+  interpreterTypesSelectionValidation,
   isDateInRange,
+  postcodeValidation,
   reasonForAppealDecisionValidation,
   remissionOptionsValidation,
   selectedRequiredValidation,
@@ -17,6 +21,7 @@ import {
   sponsorContactDetailsValidation,
   statementOfTruthValidation,
   textAreaValidation,
+  witenessesInterpreterNeedsValidation,
   yesOrNoRequiredValidation
 } from '../../../../app/utils/validations/fields-validations';
 import i18n from '../../../../locale/en.json';
@@ -445,6 +450,53 @@ describe('fields-validations', () => {
         'text-message-value': '¢07899999999'
       }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
     });
+
+    it('should return null for valid postcodes', () => {
+      const validPostcodes = ['SW1A 1AA', 'M1 1AE', 'B33 8TH', 'CR2 6XH', 'M300HB', 'DN551PT'];
+      validPostcodes.forEach(postcode => {
+        const result = postcodeValidation({ postcode });
+        expect(result).to.equal(null);
+      });
+    });
+
+    it('should return an error for invalid postcodes', () => {
+      const invalidPostcodes = ['123', 'ABCDE', 'SW1A 1A', 'M1 1', 'M300HNT'];
+      invalidPostcodes.forEach(postcode => {
+        const result = postcodeValidation({ postcode });
+        expect(result).not.to.equal(null);
+        expect(result.postcode.text).to.equal('Enter a valid postcode');
+      });
+    });
+
+    it('should return an error if postcode is empty', () => {
+      const result = postcodeValidation({ postcode: '' });
+      expect(result).not.to.equal(null);
+      expect(result.postcode.text).to.equal('Enter your postcode');
+    });
+
+    it('should return null for valid postcodes with unusual formats', () => {
+      const validPostcodes = ['GX11 1AA', 'WC2H 7LT'];
+      validPostcodes.forEach(postcode => {
+        const result = postcodeValidation({ postcode });
+        expect(result).to.equal(null);
+      });
+    });
+
+    it('should return null for valid postcodes with leading or trailing whitespaces', () => {
+      const validPostcodes = [' SW1A 1AA ', ' M1 1AE ', ' B33 8TH ', ' CR2 6XH ', ' DN55 1PT '];
+      validPostcodes.forEach(postcode => {
+        const result = postcodeValidation({ postcode });
+        expect(result).to.equal(null);
+      });
+    });
+
+    it('should return null for valid postcodes in different cases', () => {
+      const validPostcodes = ['sw1a 1aa', 'M1 1AE', 'b33 8th', 'Cr2 6xH', 'dn55 1Pt'];
+      validPostcodes.forEach(postcode => {
+        const result = postcodeValidation({ postcode });
+        expect(result).to.equal(null);
+      });
+    });
   });
 
   describe('sponsorContactDetailsValidation', () => {
@@ -642,29 +694,6 @@ describe('fields-validations', () => {
         'href': '#answer',
         'key': 'answer',
         'text': 'error message'
-      };
-      expect(validationResult).to.deep.equal(expectedResponse);
-    });
-  });
-
-  describe('reasonForAppealDecisionValidation', () => {
-    it('should validate if statement present', () => {
-      const object = { 'applicationReason': 'some reason text here' };
-      const validationResult = reasonForAppealDecisionValidation(object);
-      expect(validationResult).to.equal(null);
-    });
-
-    it('should fail validation and return "string.empty" type', () => {
-      const object = { 'applicationReason': '' };
-      const validationResult = reasonForAppealDecisionValidation(object);
-      const expectedResponse = {
-
-        applicationReason: {
-          href: '#applicationReason',
-          key: 'applicationReason',
-          text: 'Enter the reasons you think the Home Office decision is wrong'
-        }
-
       };
       expect(validationResult).to.deep.equal(expectedResponse);
     });
@@ -959,6 +988,101 @@ describe('fields-validations', () => {
       });
     });
   });
+
+  describe('interpreterSupportSelectionValidation', () => {
+    it('should validate interpreter support selection', () => {
+      const validationResult = interpreterSupportSelectionValidation({ selections: 'isInterpreterServicesNeeded' });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validate when selection is blank', () => {
+      const validationResult = interpreterSupportSelectionValidation({ selections: '' });
+      expect(validationResult).to.deep.equal({
+        selections: {
+          key: 'selections',
+          text: 'You must select at least one option',
+          href: '#selections'
+        }
+      });
+    });
+  });
+
+  describe('witenessesInterpreterNeedsValidation', () => {
+    it('should validate witness selection', () => {
+      const validationResult = witenessesInterpreterNeedsValidation({ selections: 'witness 1' });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validate when selection is blank', () => {
+      const validationResult = witenessesInterpreterNeedsValidation({ selections: '' });
+      expect(validationResult).to.deep.equal({
+        selections: {
+          key: 'selections',
+          text: 'You must select at least one witness',
+          href: '#selections'
+        }
+      });
+    });
+  });
+
+  describe('interpreterTypesSelectionValidation', () => {
+    it('should validate interpreter type selection', () => {
+      const validationResult = interpreterTypesSelectionValidation({ selections: 'spokenLanguageInterpreter' });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validate when selection is blank', () => {
+      const validationResult = interpreterTypesSelectionValidation({ selections: '' });
+      expect(validationResult).to.deep.equal({
+        selections: {
+          key: 'selections',
+          text: 'You must select at least one kind of interpreter',
+          href: '#selections'
+        }
+      });
+    });
+  });
+
+  describe('interpreterLanguageSelectionValidation', () => {
+    it('should fail validate when interpreter language Selection are blank', () => {
+      const validationResult = interpreterLanguageSelectionValidation({ languageManualEntry: '', languageManualEntryDescription: '', languageRefData: '' });
+      expect(validationResult).to.deep.equal({
+        'languageRefData-languageManualEntry': {
+          key: 'languageRefData-languageManualEntry',
+          text: 'Please select the language you need to request',
+          href: '#languageRefData'
+        }
+      });
+    });
+
+    it('should fail validate when user selected manually input with empty language detail', () => {
+      const validationResult = interpreterLanguageSelectionValidation({ languageManualEntry: 'Yes', languageManualEntryDescription: '', languageRefData: '' });
+      expect(validationResult).to.deep.equal({
+        languageManualEntryDescription: {
+          key: 'languageManualEntryDescription',
+          text: 'Please enter the detail of the language you need to request',
+          href: '#languageManualEntryDescription'
+        }
+      });
+    });
+
+    it('should fail validate when user selected both option', () => {
+      const validationResult = interpreterLanguageSelectionValidation({ languageManualEntry: 'Yes', languageManualEntryDescription: 'language', languageRefData: 'language' });
+      expect(validationResult).to.deep.equal({
+        'languageRefData-languageManualEntry': {
+          key: 'languageRefData-languageManualEntry',
+          text: 'Fill in only one field',
+          href: '#languageRefData'
+        }
+      });
+    });
+
+    it('should validate interpreter support selection', () => {
+      const validationResult = interpreterLanguageSelectionValidation({ languageManualEntry: 'Yes', languageManualEntryDescription: 'language', languageRefData: '' });
+      expect(validationResult).to.equal(null);
+    });
+  });
+
 
   it('should fail validation and return "string.empty if deportation option is not selected" ', () => {
     const object = { };

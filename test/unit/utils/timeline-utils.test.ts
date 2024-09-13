@@ -1,9 +1,10 @@
 import { Request } from 'express';
 import { Events } from '../../../app/data/events';
+import { States } from '../../../app/data/states';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import {
-  constructSection,
+  constructSection, filterEventsForHearingRequirementsSection,
   getApplicationEvents,
   getDirectionHistory,
   getEventsAndStates,
@@ -56,6 +57,50 @@ describe('timeline-utils', () => {
 
   describe('constructSection', () => {
 
+    it('Should construct the remittals section', () => {
+      const { appeal } = req.session;
+      const remittalSection = [Events.MARK_APPEAL_AS_REMITTED.id];
+      const testData = [
+        {
+          sourceOfRemittal: 'Upper Tribunal',
+          description: 'Upper Tribunal scenario'
+        },
+        {
+          sourceOfRemittal: 'Court of Appeal',
+          description: 'Court of Appeal scenario'
+        }
+      ];
+
+      const history = [
+        {
+          'id': 'markAppealAsRemitted',
+          'createdDate': '2020-04-14T14:53:26.099'
+        }
+      ] as HistoryEvent[];
+
+      testData.forEach(({
+                          sourceOfRemittal,
+                          description
+                        }) => {
+        it(`should be ${description}`, () => {
+          appeal.sourceOfRemittal = sourceOfRemittal;
+          const result = constructSection(remittalSection, history, null, req as Request);
+          expect(result).to.deep.eq(
+            [{
+              'date': '14 April 2020',
+              'dateObject': new Date('2020-04-14T14:53:26.099'),
+              'text': `The ${sourceOfRemittal} decided the appeal will be heard again by the First-tier Tribunal.`,
+              'links': [{
+                'title': 'Useful documents',
+                'text': `${sourceOfRemittal} documents`,
+                'href': '{{ paths.common.remittalDocumentsViewer }}'
+              }]
+            }]
+          );
+        });
+      });
+    });
+
     it('Should construct the appeal details section', () => {
       req.session.appeal.timeExtensionEventsMap = [];
       const appealDetailsSection = [Events.SUBMIT_APPEAL.id];
@@ -103,6 +148,175 @@ describe('timeline-utils', () => {
       ] as HistoryEvent[];
       req.session.appeal.history = history;
       const result = constructSection(appealHearingRequirementsSectionEvents, req.session.appeal.history, null, req as Request);
+
+      expect(result).to.deep.eq(
+        [{
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'More evidence was provided.',
+          'links': [{
+            'title': 'What was provided',
+            'text': 'Your evidence',
+            'href': '{{ paths.common.lrEvidence }}'
+          }]
+        }, {
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'More evidence was provided.',
+          'links': [{
+            'title': 'What was provided',
+            'text': 'Your evidence',
+            'href': '{{ paths.common.yourAddendumEvidence }}'
+          }]
+        }]
+      );
+    });
+
+    it('Should construct the appeal hearing requirements section when case is adjourned with record ajournment details event', () => {
+      req.session.appeal.timeExtensionEventsMap = [];
+      req.session.appeal.appealStatus = States.ADJOURNED.id;
+      req.idam.userDetails.uid = 'user-id';
+      const appealHearingRequirementsSectionEvents = [
+        Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+        Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
+        Events.RECORD_ADJOURNMENT_DETAILS.id
+      ];
+      const history = [
+        {
+          'id': 'uploadAdditionalEvidence',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        },
+        {
+          'id': 'uploadAdditionalEvidence',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'user-id'
+          }
+        },
+        {
+          'id': 'listCase',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        },
+        {
+          'id': 'uploadAddendumEvidenceLegalRep',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        },
+        {
+          'id': 'uploadAddendumEvidenceLegalRep',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'user-id'
+          }
+        },
+        {
+          'id': 'recordAdjournmentDetails',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        }
+      ] as HistoryEvent[];
+      req.session.appeal.history = history;
+      const result = constructSection(
+          appealHearingRequirementsSectionEvents, filterEventsForHearingRequirementsSection(req as Request), null, req as Request);
+
+      expect(result).to.deep.eq(
+        [{
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'More evidence was provided.',
+          'links': [{
+            'title': 'What was provided',
+            'text': 'Your evidence',
+            'href': '{{ paths.common.lrEvidence }}'
+          }]
+        }, {
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'More evidence was provided.',
+          'links': [{
+            'title': 'What was provided',
+            'text': 'Your evidence',
+            'href': '{{ paths.common.yourAddendumEvidence }}'
+          }]
+        }, {
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'Your hearing was adjourned.',
+          'links': [{
+            'title': 'Useful documents',
+            'text': 'Notice of Adjourned Hearing',
+            'href': '{{ paths.common.hearingAdjournmentNoticeViewer }}'
+          }]
+        }]
+      );
+    });
+
+    it('Should construct the appeal hearing requirements section when case is not adjourned with record ajournment details event', () => {
+      req.session.appeal.timeExtensionEventsMap = [];
+      req.session.appeal.appealStatus = States.PRE_HEARING.id;
+      req.idam.userDetails.uid = 'user-id';
+      const appealHearingRequirementsSectionEvents = [
+        Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+        Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
+        Events.RECORD_ADJOURNMENT_DETAILS.id
+      ];
+      const history = [
+        {
+          'id': 'uploadAdditionalEvidence',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        },
+        {
+          'id': 'uploadAdditionalEvidence',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'user-id'
+          }
+        },
+        {
+          'id': 'listCase',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        },
+        {
+          'id': 'uploadAddendumEvidenceLegalRep',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        },
+        {
+          'id': 'uploadAddendumEvidenceLegalRep',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'user-id'
+          }
+        },
+        {
+          'id': 'recordAdjournmentDetails',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        }
+      ] as HistoryEvent[];
+      req.session.appeal.history = history;
+      const result = constructSection(
+          appealHearingRequirementsSectionEvents, filterEventsForHearingRequirementsSection(req as Request), null, req as Request);
 
       expect(result).to.deep.eq(
         [{
@@ -728,12 +942,12 @@ describe('timeline-utils', () => {
 
     it('should return relevant events when hearingBundle feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, true, false, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(4);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(5);
     });
 
     it('should return relevant events when hearingBundle and uploadAddendumEvidence features enabled', () => {
       const eventsAndStates = getEventsAndStates(true, true, false, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(5);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(6);
     });
 
     it('should return relevant events when hearingBundle feature disabled', () => {
@@ -743,17 +957,17 @@ describe('timeline-utils', () => {
 
     it('should return relevant events when ftpa feature disabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, false, false);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(1);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(2);
     });
 
     it('should return relevant events when ftpa feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, true, false);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(5);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(6);
     });
 
     it('should return relevant events when ftpa set aside feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, false, true);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(2);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(3);
     });
   });
 });

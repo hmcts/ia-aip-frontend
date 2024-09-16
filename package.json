@@ -56,7 +56,7 @@
     "copy-webpack-plugin": "^5.1.2",
     "cross-env": "^7.0.3",
     "csurf": "^1.11.0",
-    "dompurify": "^2.2.9",
+    "dompurify": "^2.5.4",
     "dyson": "^3.0.4",
     "expect-ct": "^0.3.0",
     "express": "^4.19.2",

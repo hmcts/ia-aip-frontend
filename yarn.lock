@@ -5943,10 +5943,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:^2.2.9":
-  version: 2.2.9
-  resolution: "dompurify@npm:2.2.9"
-  checksum: a7a8332ac7984c772176523fb239364873e70c3df62c9c16427851caaece04ee888d165cf89c8f25a94f59a9cf812e0a3f6dee5f4127d3ca593381d1bc74e53a
+"dompurify@npm:^2.5.4":
+  version: 2.5.6
+  resolution: "dompurify@npm:2.5.6"
+  checksum: 1d329fe79928aa86c61539b758bdbc53df58dd90bdc5b74032a2a3a22a436e84178d8f6ad8b022c8f6fac46b26d6e7e553c0cd131a37ed5105bbed6bf87be226
   languageName: node
   linkType: hard
 
@@ -8175,7 +8175,7 @@ __metadata:
     css-loader: ^3.6.0
     csurf: ^1.11.0
     cucumber: ^6.0.3
-    dompurify: ^2.2.9
+    dompurify: ^2.5.4
     dotenv-extended: ^2.9.0
     dyson: ^3.0.4
     expect-ct: ^0.3.0

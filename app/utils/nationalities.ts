@@ -9,7 +9,7 @@ function getNationalitiesOptions(countriesList: any[], nationality: string, defa
   });
   options.unshift({
     text: defaultText,
-    value: '""',
+    value: '',
     selected: false
   });
   return options;

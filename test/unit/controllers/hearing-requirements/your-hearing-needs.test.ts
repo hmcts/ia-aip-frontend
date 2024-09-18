@@ -156,17 +156,31 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               }
             }, {
               'key': {
-                'text': ''
+                'text': 'Answer'
               },
               'value': {
                 'html': 'sabah u din irfan'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witness-names',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {
-                'text': ''
+                'text': 'Answer'
               },
               'value': {
                 'html': 'John Smith'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witness-names',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {
@@ -291,7 +305,14 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
                 'text': 'Answer'
               },
               'value': {
-                'html': 'John Smith<br>'
+                'html': 'John Smith'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witnesses-interpreter-needs',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {
@@ -656,17 +677,31 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               }
             }, {
               'key': {
-                'text': ''
+                'text': 'Answer'
               },
               'value': {
                 'html': 'sabah u din irfan'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witness-names',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {
-                'text': ''
+                'text': 'Answer'
               },
               'value': {
                 'html': 'John Smith'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witness-names',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {
@@ -791,7 +826,14 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
                 'text': 'Answer'
               },
               'value': {
-                'html': 'John Smith<br>'
+                'html': 'John Smith'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witnesses-interpreter-needs',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {
@@ -1159,17 +1201,31 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               }
             }, {
               'key': {
-                'text': ''
+                'text': 'Answer'
               },
               'value': {
                 'html': 'sabah u din irfan'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witness-names',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {
-                'text': ''
+                'text': 'Answer'
               },
               'value': {
                 'html': 'John Smith'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witness-names',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {
@@ -1260,7 +1316,14 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
                 'text': 'Answer'
               },
               'value': {
-                'html': 'John Smith<br>'
+                'html': 'John Smith'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-witnesses-interpreter-needs',
+                  'text': 'Change',
+                  'visuallyHiddenText': 'Answer'
+                }]
               }
             }, {
               'key': {

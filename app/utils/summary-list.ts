@@ -1,5 +1,6 @@
 import exp from 'constants';
 import i18n from '../../locale/en.json';
+import { paths } from '../paths';
 
 export enum Delimiter {
   SPACE = ' ',
@@ -21,7 +22,8 @@ export function addSummaryRow(key?: string, values?: (number | string | string[]
       items: [
         {
           href: href,
-          text: text || i18n.common.links.change
+          text: text || i18n.common.links.change,
+          visuallyHiddenText: (href.includes(paths.submitHearingRequirements.hearingDatesToAvoidEnterDate) || href.includes(paths.awaitingCmaRequirements.datesToAvoidEnterDate) || (!key)) ? 'Answer' : key
         }
       ]
     };

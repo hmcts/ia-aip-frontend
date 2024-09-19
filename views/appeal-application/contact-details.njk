@@ -63,10 +63,8 @@
   <form action="{{ paths.appealStarted.contactDetails }}" method="post" novalidate>
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukCheckboxes({
-      formGroup: {
-        attributes: {
-          classes: "testing"
-        }
+      attributes: {
+        id: "selections"
       },
       idPrefix: "contactDetails",
       name: "selections",

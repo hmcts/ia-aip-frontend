@@ -132,11 +132,12 @@ describe('fields-validations', () => {
 
     it('fields must be in past', () => {
       const notValidDate = { day: '1', month: '1', year: '5000' };
+
       const validations = dateValidation(notValidDate, errors);
 
       expect(validations).to.deep.equal(
         {
-          date: createError('date', errors.inPast)
+          year: createError('year', errors.inPast)
         });
     });
 

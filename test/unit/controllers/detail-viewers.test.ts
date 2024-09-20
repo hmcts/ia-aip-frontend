@@ -1,5 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import { application, NextFunction, Request, Response } from 'express';
 import {
+  addFeeSupportStatus,
   getAppealDetailsViewer,
   getApplicationTitle,
   getCmaRequirementsViewer,
@@ -4927,6 +4928,102 @@ describe('DetailViewController', () => {
 
         await getRemittalDocumentsViewer(req as Request, res as Response, next);
         expect(next).to.have.been.calledWith(error);
+      });
+    });
+  });
+
+  describe('Amount to refund', () => {
+    const fee = { code: 'test', calculated_amount: 80, version: '1' };
+    beforeEach(() => {
+      const historyEvent = {
+        id: 'paymentAppeal',
+        event: {
+          eventName: '',
+          description: ''
+        },
+        user: {
+          id: '',
+          lastName: '',
+          firstName: ''
+        },
+        createdDate: '2021-06-15T14:23:34.581353',
+        caseTypeVersion: 1,
+        state: {
+          id: '',
+          name: ''
+        },
+        data: '' } as HistoryEvent;
+      req.session.appeal.history = [historyEvent];
+    });
+
+    it('should add amount to refund row for approved remission decision if it is not upfront remission', () => {
+      req.session.appeal.application.refundRequested = true;
+      req.session.appeal.application.remissionDecision = 'approved';
+      const feeDetailRows = [];
+
+      addFeeSupportStatus(true, feeDetailRows, req as Request, req.session.appeal.application, fee);
+
+      expect(feeDetailRows).to.be.an('array').that.is.not.empty;
+      expect(feeDetailRows).to.deep.include({
+        'key': {
+          'text': 'Amount to refund'
+        },
+        'value': {
+          'html': '£80'
+        }
+      });
+    });
+
+    it('should add amount to refund row for partiallyApproved remission decision if it is not upfront remission', () => {
+      req.session.appeal.application.refundRequested = true;
+      req.session.appeal.application.remissionDecision = 'partiallyApproved';
+      req.session.appeal.application.amountLeftToPay = '4000';
+      const feeDetailRows = [];
+
+      addFeeSupportStatus(true, feeDetailRows, req as Request, req.session.appeal.application, fee);
+
+      expect(feeDetailRows).to.be.an('array').that.is.not.empty;
+      expect(feeDetailRows).to.deep.include({
+        'key': {
+          'text': 'Amount to refund'
+        },
+        'value': {
+          'html': '£40'
+        }
+      });
+    });
+
+    it('should not add amount to refund row for partiallyApproved remission decision if it is upfront remission', () => {
+      req.session.appeal.application.refundRequested = false;
+      req.session.appeal.application.remissionDecision = 'partiallyApproved';
+      const feeDetailRows = [];
+
+      addFeeSupportStatus(true, feeDetailRows, req as Request, req.session.appeal.application, fee);
+
+      expect(feeDetailRows).to.not.deep.include({
+        'key': {
+          'text': 'Amount to refund'
+        },
+        'value': {
+          'text': '£80'
+        }
+      });
+    });
+
+    it('should not add amount to refund row for approved remission decision if it is upfront remission', () => {
+      req.session.appeal.application.refundRequested = false;
+      req.session.appeal.application.remissionDecision = 'partiallyApproved';
+      const feeDetailRows = [];
+
+      addFeeSupportStatus(true, feeDetailRows, req as Request, req.session.appeal.application, fee);
+
+      expect(feeDetailRows).to.not.deep.include({
+        'key': {
+          'text': 'Amount to refund'
+        },
+        'value': {
+          'text': '£80'
+        }
       });
     });
   });

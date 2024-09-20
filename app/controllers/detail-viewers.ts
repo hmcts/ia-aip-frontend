@@ -281,6 +281,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     feeHistoryRows
   };
 }
+
 async function addPaymentDetails(req: Request, application: AppealApplication, feeDetailsRows: any[]) {
   const fee = getFee(req.session.appeal);
   const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
@@ -381,12 +382,17 @@ function addFeeSupportStatus(refundFeatureEnabled: boolean, feeDetailsRows: any[
     if (application.remissionDecision === 'approved') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
           ['Fee support request granted'], null));
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToRefund, [`£${fee.calculated_amount}`], null));
+      if (application.refundRequested) {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToRefund, [`£${fee.calculated_amount}`], null));
+      }
+
     } else if (application.remissionDecision === 'partiallyApproved') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
           ['Fee support request partially granted'], null));
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [application.remissionDecisionReason], null));
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToRefund, [getAmountToRefund(fee.calculated_amount, application.amountLeftToPay)], null));
+      if (application.refundRequested) {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToRefund, [getAmountToRefund(fee.calculated_amount, application.amountLeftToPay)], null));
+      }
     } else if (application.remissionDecision === 'rejected') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
           ['Fee support requested refused'], null));
@@ -1429,5 +1435,6 @@ export {
   getDirectionHistory,
   getRespondentApplicationSummaryRows,
   getUpdatedDecisionAndReasonsViewer,
-  getRemittalDocumentsViewer
+  getRemittalDocumentsViewer,
+  addFeeSupportStatus
 };

@@ -142,10 +142,10 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
       'any.required': errors.missing,
       'number.base': errors.incorrectFormat,
       'number.integer': errors.incorrectFormat,
-      'number.min': errors.incorrectFormat
+      'number.min': errors.incorrectFormat,
+      'date.less': errors.inPast
     }),
     date: Joi.date().less('now').messages({
-      'date.less': errors.inPast,
       'date.base': errors.incorrectFormat
     })
   }).unknown(true);

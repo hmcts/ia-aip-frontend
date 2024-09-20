@@ -63,9 +63,6 @@
   <form action="{{ paths.appealStarted.contactDetails }}" method="post" novalidate>
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukCheckboxes({
-      attributes: {
-        id: "selections"
-      },
       idPrefix: "contactDetails",
       name: "selections",
       fieldset: {
@@ -97,8 +94,8 @@
         }
       ],
       errorMessage: {
-        text: i18n.validationErrors.atLeastOneOption if errors['selections'] == 0
-      }
+        text: i18n.validationErrors.atLeastOneOption
+      } if errors['selections'] == 0
     }) }}
     {{ govukInsetText({
       text: i18n.pages.contactDetails.minorsHelp

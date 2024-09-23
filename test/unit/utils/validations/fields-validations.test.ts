@@ -154,7 +154,7 @@ describe('fields-validations', () => {
           year: createError('year', errors.inPast)
         });
 
-      const notValidMonth = { day: '1', month: currentDate.getMonth() < 12 ? (currentDate.getMonth() + 2) : '1', year: currentDate.getFullYear() };
+      const notValidMonth = { day: '1', month: (currentDate.getMonth() + 1) < 12 ? (currentDate.getMonth() + 2) : '1', year: currentDate.getFullYear() };
 
       const monthValidations = dateValidation(notValidMonth, errors);
 

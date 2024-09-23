@@ -355,6 +355,32 @@ describe('Out of Country Controller', function () {
       });
     });
 
+    it('should fail validation and render ooc-protection-departure-date.njk with a validation error with month in future', async () => {
+      const currentDate = new Date();
+
+      req.body['day'] = 1;
+      req.body['month'] = currentDate.getMonth() < 12 ? (currentDate.getMonth() + 2) : 1;
+      req.body['year'] = currentDate.getFullYear();
+
+      const expectedError: ValidationError = {
+        key: 'month',
+        text: 'The date must be in the past',
+        href: '#month'
+      };
+
+      await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
+        error: { month: expectedError },
+        errorList: [expectedError],
+        dateClientLeaveUk: {
+          ...req.body
+        },
+        previousPage: paths.appealStarted.typeOfAppeal
+      });
+    });
+
     it('postOocProtectionDepartureDate should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'dateClientLeaveUk': undefined };

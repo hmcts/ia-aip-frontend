@@ -359,7 +359,7 @@ describe('Out of Country Controller', function () {
       const currentDate = new Date();
 
       req.body['day'] = 1;
-      req.body['month'] = currentDate.getMonth() < 12 ? (currentDate.getMonth() + 2) : 1;
+      req.body['month'] = (currentDate.getMonth() + 1) < 12 ? (currentDate.getMonth() + 2) : 1;
       req.body['year'] = currentDate.getFullYear();
 
       const expectedError: ValidationError = {

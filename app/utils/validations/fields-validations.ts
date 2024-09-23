@@ -119,7 +119,7 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
   const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
     moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';
 
-  const currentYear: number = new Date().getFullYear();
+  const currentDate = new Date();
 
   const toValidate = {
     ...obj,
@@ -133,9 +133,8 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
       'number.min': errors.incorrectFormat,
       'number.max': errors.incorrectFormat
     }).custom((value, helpers) => {
-      const date = new Date(value);
-      if (date > new Date()) {
-        return helpers.error('number.max');
+      if ((value > currentDate.getDate()) && (year === currentDate.getFullYear()) && (month === (currentDate.getMonth() + 1))) {
+        return helpers.message(errors.inPast);
       }
       return value;
     }),
@@ -146,13 +145,12 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
       'number.min': errors.incorrectFormat,
       'number.max': errors.incorrectFormat
     }).custom((value, helpers) => {
-      const date = new Date(value);
-      if (date > new Date()) {
-        return helpers.error('number.max');
+      if ((value > (currentDate.getMonth() + 1)) && (year === currentDate.getFullYear())) {
+        return helpers.message(errors.inPast);
       }
       return value;
     }),
-    year: Joi.number().empty('').required().integer().min(1900).max(currentYear + 1).required().messages({
+    year: Joi.number().empty('').required().integer().min(1900).max(currentDate.getFullYear()).required().messages({
       'any.required': errors.missing,
       'number.base': errors.incorrectFormat,
       'number.integer': errors.incorrectFormat,

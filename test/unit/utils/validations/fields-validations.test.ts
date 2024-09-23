@@ -131,13 +131,45 @@ describe('fields-validations', () => {
     });
 
     it('fields must be in past', () => {
-      const notValidDate = { day: '1', month: '1', year: '5000' };
+      const currentDate = new Date();
 
-      const validations = dateValidation(notValidDate, errors);
+      let tomorrowDate = new Date();
+      tomorrowDate.setDate(currentDate.getDate() + 1);
 
-      expect(validations).to.deep.equal(
+      const notValidYear1 = { day: '1', month: '1', year: '5000' };
+
+      const yearValidations1 = dateValidation(notValidYear1, errors);
+
+      expect(yearValidations1).to.deep.equal(
         {
           year: createError('year', errors.inPast)
+        });
+
+      const notValidYear2 = { day: currentDate.getDate(), month: currentDate.getMonth() + 1, year: currentDate.getFullYear() + 1 };
+
+      const yearValidations2 = dateValidation(notValidYear2, errors);
+
+      expect(yearValidations2).to.deep.equal(
+        {
+          year: createError('year', errors.inPast)
+        });
+
+      const notValidMonth = { day: '1', month: currentDate.getMonth() < 12 ? (currentDate.getMonth() + 2) : '1', year: currentDate.getFullYear() };
+
+      const monthValidations = dateValidation(notValidMonth, errors);
+
+      expect(monthValidations).to.deep.equal(
+        {
+          month: createError('month', errors.inPast)
+        });
+
+      const notValidDay = { day: tomorrowDate.getDate(), month: tomorrowDate.getMonth() + 1, year: currentDate.getFullYear() };
+
+      const dayValidations = dateValidation(notValidDay, errors);
+
+      expect(dayValidations).to.deep.equal(
+        {
+          day: createError('day', errors.inPast)
         });
     });
 

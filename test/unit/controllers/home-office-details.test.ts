@@ -492,11 +492,11 @@ describe('Home Office Details Controller', function () {
       req.body['year'] = moment().year() + 1;
       const dateError = {
         text: 'The date letter was sent must be in the past',
-        href: '#date',
-        key: 'date'
+        href: '#year',
+        key: 'year'
       };
       const error = {
-        date: dateError
+        year: dateError
       };
       const errorList = [dateError];
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

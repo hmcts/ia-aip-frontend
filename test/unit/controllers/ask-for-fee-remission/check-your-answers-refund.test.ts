@@ -171,18 +171,11 @@ describe('CYA Refund Controller', function () {
     it('should render check-and-send.njk', async () => {
       req.session.appeal.application.lateRemissionOption = 'feeWaiverFromHo';
       const summaryRows = [{
-        'key': {
-          'text': 'Fee statement'
-        },
-        'value': {
-          'html': 'I got a fee waiver from the Home Office for my application to stay in the UK'
-        },
-        'actions': {
-          'items': [
-            {
-              'href': '/fee-support-refund?edit',
-              'text': 'Change'
-            }
+        key: { text: 'Fee statement' },
+        value: { html: 'I got a fee waiver from the Home Office for my application to stay in the UK' },
+        actions: {
+          items: [
+            { href: '/fee-support-refund?edit', text: 'Change', 'visuallyHiddenText': 'Fee statement' }
           ]
         }
       }];

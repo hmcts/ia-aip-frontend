@@ -228,7 +228,7 @@ describe('Ask for more time Controller', function () {
           key: { text: 'Question' },
           value: { html: 'How much time do you need and why do you need it?' }
         }, {
-          actions: { items: [{ href: '/ask-for-more-time', text: 'Change' }] },
+          actions: { items: [{ href: '/ask-for-more-time', text: 'Change', visuallyHiddenText: 'Answer' }] },
           key: { text: 'Answer' },
           value: { html: formatTextForCYA(req.session.appeal.makeAnApplicationDetails) }
         }]
@@ -251,11 +251,11 @@ describe('Ask for more time Controller', function () {
           key: { text: 'Question' },
           value: { html: 'How much time do you need and why do you need it?' }
         }, {
-          actions: { items: [{ href: '/ask-for-more-time', text: 'Change' }] },
+          actions: { items: [{ href: '/ask-for-more-time', text: 'Change', visuallyHiddenText: 'Answer' }] },
           key: { text: 'Answer' },
           value: { html: formatTextForCYA(req.session.appeal.makeAnApplicationDetails) }
         }, {
-          actions: { items: [{ href: paths.common.askForMoreTimeSupportingEvidenceUpload, text: 'Change' }] },
+          actions: { items: [{ href: paths.common.askForMoreTimeSupportingEvidenceUpload, text: 'Change', visuallyHiddenText: 'Supporting evidence' }] },
           key: { text: 'Supporting evidence' },
           value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/fileId\'>name.txt</a>' }
         }]

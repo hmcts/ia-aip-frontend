@@ -20,7 +20,7 @@
           </a>
         </td>
         <td class="govuk-table__cell">
-          <a class="govuk-link" href="{{ cta }}?id={{ evidence.fileId }}">{{ i18n.components.evidenceList.delete }}</a>
+          <a class="govuk-link" href="{{ cta }}?id={{ evidence.fileId }}">{{ i18n.components.evidenceList.delete }}<span class="govuk-visually-hidden"> {{ evidence.name }}</span></a>
         </td>
       </tr>
     {% else %}

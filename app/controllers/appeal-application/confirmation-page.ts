@@ -66,6 +66,7 @@ function getConfirmationPaidPage(updateAppealService: UpdateAppealService) {
           appealWithRemissionOption
         });
       } else {
+        await updateRefundConfirmationAppliedStatus(req, updateAppealService);
         res.render('templates/confirmation-page.njk', {
           date: addDaysToDate(daysToWait),
           title: isLate ? i18n.pages.successPage.outOfTime.panel : i18n.pages.successPage.inTime.panel,

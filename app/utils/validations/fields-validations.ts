@@ -133,6 +133,9 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
       'number.min': errors.incorrectFormat,
       'number.max': errors.incorrectFormat
     }).custom((value, helpers) => {
+      if ((date === 'invalid Date') && (typeof day === 'number' && typeof month === 'number' && typeof year === 'number') && (year <= currentDate.getFullYear()) && (month > 0) && (month < 13)) {
+        return helpers.message(errors.incorrectFormat);
+      }
       if ((value > currentDate.getDate()) && (Number(year) === currentDate.getFullYear()) && (month === (currentDate.getMonth() + 1))) {
         return helpers.message(errors.inPast);
       }

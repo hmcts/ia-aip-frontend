@@ -163,13 +163,22 @@ describe('fields-validations', () => {
           month: createError('month', errors.inPast)
         });
 
-      const notValidDay = { day: tomorrowDate.getDate(), month: tomorrowDate.getMonth() + 1, year: currentDate.getFullYear() };
+      const notValidDay = { day: tomorrowDate.getDate(), month: tomorrowDate.getMonth() + 1, year: tomorrowDate.getFullYear() };
 
       const dayValidations = dateValidation(notValidDay, errors);
 
       expect(dayValidations).to.deep.equal(
         {
           day: createError('day', errors.inPast)
+        });
+
+      const notValidDay2 = { day: 31, month: 4, year: 2024 };
+
+      const dayValidations2 = dateValidation(notValidDay2, errors);
+
+      expect(dayValidations2).to.deep.equal(
+        {
+          day: createError('day', errors.incorrectFormat)
         });
     });
 

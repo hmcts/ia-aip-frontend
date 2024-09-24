@@ -269,9 +269,9 @@ function interpreterLanguageSelectionValidation(obj: object) {
 
 function contactDetailsValidation(obj: object) {
   const schema = Joi.object({
-    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.contactDetails.selectOneOption }),
+    contactDetails: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.contactDetails.selectOneOption }),
     'email-value': Joi.alternatives().conditional(
-      'selections', {
+      'contactDetails', {
       is: Joi.string().regex(/email/),
       then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
         .email({ minDomainSegments: 2, allowUnicode: false }).messages({
@@ -281,7 +281,7 @@ function contactDetailsValidation(obj: object) {
       otherwise: Joi.any()
     }),
     'text-message-value': Joi.alternatives().conditional(
-      'selections', {
+      'contactDetails', {
       is: Joi.string().regex(/text-message/),
       then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
         .messages({
@@ -292,7 +292,6 @@ function contactDetailsValidation(obj: object) {
       otherwise: Joi.any()
     })
   }).unknown();
-
   return validate(obj, schema);
 }
 
@@ -508,9 +507,9 @@ function sponsorAddressValidation(obj: object): null | ValidationErrors {
 
 function sponsorContactDetailsValidation(obj: object) {
   const schema = Joi.object({
-    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorContactDetails.selectOneOption }),
+    sponsorContactDetails: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorContactDetails.selectOneOption }),
     'email-value': Joi.alternatives().conditional(
-        'selections', {
+        'sponsorContactDetails', {
           is: Joi.string().regex(/email/),
           then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
               .email({ minDomainSegments: 2, allowUnicode: false }).messages({
@@ -520,7 +519,7 @@ function sponsorContactDetailsValidation(obj: object) {
           otherwise: Joi.any()
         }),
     'text-message-value': Joi.alternatives().conditional(
-        'selections', {
+        'sponsorContactDetails', {
           is: Joi.string().regex(/text-message/),
           then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164').defaultCountry('GB')
               .messages({

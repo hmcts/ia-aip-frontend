@@ -329,51 +329,51 @@ describe('fields-validations', () => {
     }
 
     it('should fail validation if no type of contact details found', () => {
-      testContactDetailsValidation({ selections: '' }, 'selections', 'Select at least one of the contact options');
+      testContactDetailsValidation({ contactDetails: '' }, 'contactDetails', 'Select at least one of the contact options');
     });
 
     it('should fail validation if no email entered', () => {
-      testContactDetailsValidation({ selections: 'email' }, 'email-value', 'Enter an email address');
-      testContactDetailsValidation({ selections: 'email', 'email-value': '' }, 'email-value', 'Enter an email address');
+      testContactDetailsValidation({ contactDetails: 'email' }, 'email-value', 'Enter an email address');
+      testContactDetailsValidation({ contactDetails: 'email', 'email-value': '' }, 'email-value', 'Enter an email address');
     });
 
     it('should fail validation if email not in correct format', () => {
       testContactDetailsValidation(
-        { selections: 'email', 'email-value': 'not an email' },
+        { contactDetails: 'email', 'email-value': 'not an email' },
         'email-value',
         'Enter an email address in the correct format, like name@example.com'
       );
     });
 
     it('should pass validation when an email is entered', () => {
-      const validationResult = contactDetailsValidation({ selections: 'email', 'email-value': 'foo@bar.com' });
+      const validationResult = contactDetailsValidation({ contactDetails: 'email', 'email-value': 'foo@bar.com' });
       expect(validationResult).to.equal(null);
     });
 
     it('should fail validation if no mobile phone number entered entered', () => {
       testContactDetailsValidation({
-        selections: 'text-message',
+        contactDetails: 'text-message',
         'text-message-value': ''
       }, 'text-message-value', 'Enter a phone number');
     });
 
     it('should fail validation if mobile phone number not incorrect format', () => {
       testContactDetailsValidation({
-        selections: 'text-message',
+        contactDetails: 'text-message',
         'text-message-value': 'qwerty'
       }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
     });
 
     it('should fail validation if mobile phone number not a mobile phone number', () => {
       testContactDetailsValidation({
-        selections: 'text-message',
+        contactDetails: 'text-message',
         'text-message-value': '01277222222'
       }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
     });
 
     it('should pass validation when a mobile phone number is entered', () => {
       const validationResult = contactDetailsValidation({
-        selections: 'text-message',
+        contactDetails: 'text-message',
         'text-message-value': '07899999999'
       });
       expect(validationResult).to.equal(null);
@@ -409,7 +409,7 @@ describe('fields-validations', () => {
         '+54 911-1234-5678'];
       phoneNumbers.forEach((phoneNumber: string) => {
         let validationResult = contactDetailsValidation({
-          selections: 'text-message',
+          contactDetails: 'text-message',
           'text-message-value': phoneNumber
         });
         expect(validationResult, `${phoneNumber} failed validation`).to.equal(null);
@@ -418,7 +418,7 @@ describe('fields-validations', () => {
 
     it('should pass validation when an email and mobile phone number is entered', () => {
       const validationResult = contactDetailsValidation({
-        selections: 'email,text-message',
+        contactDetails: 'email,text-message',
         'email-value': 'foo@bar.com',
         'text-message-value': '07899999999'
       });
@@ -427,7 +427,7 @@ describe('fields-validations', () => {
 
     it('should pass validation when an invalid email entered but only text-message selected', () => {
       const validationResult = contactDetailsValidation({
-        selections: 'text-message',
+        contactDetails: 'text-message',
         'email-value': 'invalid',
         'text-message-value': '07899999999'
       });
@@ -436,7 +436,7 @@ describe('fields-validations', () => {
 
     it('should pass validation when an invalid mobile number entered but only email selected', () => {
       const validationResult = contactDetailsValidation({
-        selections: 'email',
+        contactDetails: 'email',
         'email-value': 'foo@bar.com',
         'text-message-value': 'invalid'
       });
@@ -445,7 +445,7 @@ describe('fields-validations', () => {
 
     it('should fail validation when an email and mobile phone number are not entered', () => {
       const validationResult = contactDetailsValidation({
-        selections: 'email,text-message',
+        contactDetails: 'email,text-message',
         'email-value': '',
         'text-message-value': ''
       });
@@ -465,21 +465,21 @@ describe('fields-validations', () => {
 
     it('should fail validation if phone number ends with a non digit', () => {
       testContactDetailsValidation({
-        selections: 'text-message',
+        contactDetails: 'text-message',
         'text-message-value': '0127722222a'
       }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
     });
 
     it('should fail validation if mobile phone number has multiple +44', () => {
       testContactDetailsValidation({
-        selections: 'text-message',
+        contactDetails: 'text-message',
         'text-message-value': '+++447899999999'
       }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
     });
 
     it('should fail validation if phone number starts with anything but + or a digit', () => {
       testContactDetailsValidation({
-        selections: 'text-message',
+        contactDetails: 'text-message',
         'text-message-value': '¢07899999999'
       }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
     });
@@ -545,72 +545,72 @@ describe('fields-validations', () => {
     }
 
     it('should fail validation if no type of contact details found', () => {
-      testSponsorContactDetailsValidation({ selections: '' }, 'selections', 'Select at least one of the contact options');
+      testSponsorContactDetailsValidation({ sponsorContactDetails: '' }, 'sponsorContactDetails', 'Select at least one of the contact options');
     });
 
     it('should fail validation if no email entered', () => {
-      testSponsorContactDetailsValidation({ selections: 'email' }, 'email-value', 'Enter an email address');
-      testSponsorContactDetailsValidation({ selections: 'email', 'email-value': '' }, 'email-value', 'Enter an email address');
+      testSponsorContactDetailsValidation({ sponsorContactDetails: 'email' }, 'email-value', 'Enter an email address');
+      testSponsorContactDetailsValidation({ sponsorContactDetails: 'email', 'email-value': '' }, 'email-value', 'Enter an email address');
     });
 
     it('should fail validation if email not in correct format', () => {
       testSponsorContactDetailsValidation(
-          { selections: 'email', 'email-value': 'not an email' },
+          { sponsorContactDetails: 'email', 'email-value': 'not an email' },
           'email-value',
           'Enter an email address in the correct format, like name@example.com'
       );
     });
 
     it('should pass validation when an email is entered', () => {
-      const validationResult = contactDetailsValidation({ selections: 'email', 'email-value': 'foo@bar.com' });
+      const validationResult = sponsorContactDetailsValidation({ sponsorContactDetails: 'email', 'email-value': 'foo@bar.com' });
       expect(validationResult).to.equal(null);
     });
 
     it('should fail validation if no mobile phone number entered entered', () => {
       testSponsorContactDetailsValidation({
-        selections: 'text-message',
+        sponsorContactDetails: 'text-message',
         'text-message-value': ''
       }, 'text-message-value', 'Enter a phone number');
     });
 
     it('should fail validation if mobile phone number not incorrect format', () => {
       testSponsorContactDetailsValidation({
-        selections: 'text-message',
+        sponsorContactDetails: 'text-message',
         'text-message-value': 'qwerty'
       }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
 
     it('should fail validation if mobile phone number not a mobile phone number', () => {
       testSponsorContactDetailsValidation({
-        selections: 'text-message',
+        sponsorContactDetails: 'text-message',
         'text-message-value': '01277222222'
       }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
 
     it('should fail validation if mobile phone number is a +44 but missing +', () => {
       testSponsorContactDetailsValidation({
-        selections: 'text-message',
+        sponsorContactDetails: 'text-message',
         'text-message-value': '447899999999'
       }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
 
     it('should fail validation if mobile phone number has multiple +44', () => {
       testSponsorContactDetailsValidation({
-        selections: 'text-message',
+        sponsorContactDetails: 'text-message',
         'text-message-value': '+++447899999999'
       }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
 
     it('should fail validation if mobile phone number starts with 0044', () => {
       testSponsorContactDetailsValidation({
-        selections: 'text-message',
+        sponsorContactDetails: 'text-message',
         'text-message-value': '00447899999999'
       }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
 
     it('should pass validation when a mobile phone number is entered', () => {
       const validationResult = sponsorContactDetailsValidation({
-        selections: 'text-message',
+        sponsorContactDetails: 'text-message',
         'text-message-value': '07899999999'
       });
       expect(validationResult).to.equal(null);
@@ -645,7 +645,7 @@ describe('fields-validations', () => {
         '+54 911 1234 5678'];
       phoneNumbers.forEach((phoneNumber: string) => {
         testSponsorContactDetailsValidation({
-          selections: 'text-message',
+          sponsorContactDetails: 'text-message',
           'text-message-value': phoneNumber
         }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
       });
@@ -653,7 +653,7 @@ describe('fields-validations', () => {
 
     it('should pass validation when an email and mobile phone number is entered', () => {
       const validationResult = sponsorContactDetailsValidation({
-        selections: 'email,text-message',
+        sponsorContactDetails: 'email,text-message',
         'email-value': 'foo@bar.com',
         'text-message-value': '07899999999'
       });
@@ -662,7 +662,7 @@ describe('fields-validations', () => {
 
     it('should pass validation when an invalid email entered but only text-message selected', () => {
       const validationResult = sponsorContactDetailsValidation({
-        selections: 'text-message',
+        sponsorContactDetails: 'text-message',
         'email-value': 'invalid',
         'text-message-value': '07899999999'
       });
@@ -671,7 +671,7 @@ describe('fields-validations', () => {
 
     it('should pass validation when an invalid mobile number entered but only email selected', () => {
       const validationResult = sponsorContactDetailsValidation({
-        selections: 'email',
+        sponsorContactDetails: 'email',
         'email-value': 'foo@bar.com',
         'text-message-value': 'invalid'
       });
@@ -680,7 +680,7 @@ describe('fields-validations', () => {
 
     it('should fail validation when an email and mobile phone number are not entered', () => {
       const validationResult = sponsorContactDetailsValidation({
-        selections: 'email,text-message',
+        sponsorContactDetails: 'email,text-message',
         'email-value': '',
         'text-message-value': ''
       });
@@ -700,14 +700,14 @@ describe('fields-validations', () => {
 
     it('should fail validation if phone number ends with a non digit', () => {
       testSponsorContactDetailsValidation({
-        selections: 'text-message',
+        sponsorContactDetails: 'text-message',
         'text-message-value': '0127722222a'
       }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
 
     it('should fail validation if phone number starts with anything but + or a digit', () => {
       testSponsorContactDetailsValidation({
-        selections: 'text-message',
+        sponsorContactDetails: 'text-message',
         'text-message-value': '¢07899999999'
       }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });

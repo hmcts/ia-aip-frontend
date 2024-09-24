@@ -130,7 +130,7 @@ describe('fields-validations', () => {
         });
     });
 
-    it('fields must be in past', () => {
+    it('fields must be valid and be in past', () => {
       const currentDate = new Date();
 
       let tomorrowDate = new Date();
@@ -163,11 +163,11 @@ describe('fields-validations', () => {
           month: createError('month', errors.inPast)
         });
 
-      const notValidDay = { day: tomorrowDate.getDate(), month: tomorrowDate.getMonth() + 1, year: tomorrowDate.getFullYear() };
+      const notValidDay1 = { day: tomorrowDate.getDate(), month: tomorrowDate.getMonth() + 1, year: tomorrowDate.getFullYear() };
 
-      const dayValidations = dateValidation(notValidDay, errors);
+      const dayValidations1 = dateValidation(notValidDay1, errors);
 
-      expect(dayValidations).to.deep.equal(
+      expect(dayValidations1).to.deep.equal(
         {
           day: createError('day', errors.inPast)
         });

@@ -309,6 +309,12 @@ describe('Confirmation Page Controller', () => {
     appeal.appealStatus = States.APPEAL_SUBMITTED.id;
     appeal.application.appealType = 'refusalOfEu';
 
+    updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      application: {
+        refundConfirmationApplied: false
+      }
+    } as Appeal);
+
     await getConfirmationPaidPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
       date: addDaysToDate(5),
@@ -317,6 +323,8 @@ describe('Confirmation Page Controller', () => {
       thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
       appealWithRemissionOption: false
     });
+    expect(updateAppealService.submitEventRefactored).to.have.been.calledOnce;
+    expect(req.session.appeal.application.refundConfirmationApplied).to.be.false;
   });
 
   it('getConfirmationPaidPage should render confirmation.njk for a late EA appeal', async () => {
@@ -326,6 +334,12 @@ describe('Confirmation Page Controller', () => {
     appeal.appealStatus = States.APPEAL_SUBMITTED.id;
     appeal.application.appealType = 'refusalOfEu';
 
+    updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      application: {
+        refundConfirmationApplied: false
+      }
+    } as Appeal);
+
     await getConfirmationPaidPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
       date: addDaysToDate(5),
@@ -334,6 +348,8 @@ describe('Confirmation Page Controller', () => {
       thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
       appealWithRemissionOption: false
     });
+    expect(updateAppealService.submitEventRefactored).to.have.been.calledOnce;
+    expect(req.session.appeal.application.refundConfirmationApplied).to.be.false;
   });
 
   it('getConfirmationPage should render confirmation.njk for an appeal with the remission option', () => {

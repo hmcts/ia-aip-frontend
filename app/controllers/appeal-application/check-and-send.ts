@@ -376,13 +376,18 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
       let event;
       let redirectUrl;
       const paymentDetails = JSON.parse(await paymentService.getPaymentDetails(req, req.session.appeal.paymentReference));
+      const dlrmRefundFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
 
       if (paymentDetails.status === 'Success') {
         const appeal: Appeal = {
           ...req.session.appeal,
           paymentStatus: 'Paid',
           paymentDate: paymentDetails.status_histories.filter(event => event.status === 'Success')[0].date_created,
-          isFeePaymentEnabled: 'Yes'
+          isFeePaymentEnabled: 'Yes',
+          application: {
+            ...req.session.appeal.application,
+            refundConfirmationApplied: false
+          }
         };
         req.app.locals.logger.trace(`Payment success`, 'Finishing payment');
         if (req.session.appeal.appealStatus === 'appealStarted') {
@@ -392,7 +397,7 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
           event = Events.PAYMENT_APPEAL;
           redirectUrl = paths.common.confirmationPayment;
         }
-        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true, dlrmRefundFlag);
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated
@@ -406,24 +411,6 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
     } catch (error) {
       next(error);
     }
-  };
-}
-
-async function updateRefundConfirmationAppliedStatus(req: Request) {
-  const event = req.session.appeal.appealStatus === 'appealStarted' ? Events.EDIT_APPEAL : Events.PAYMENT_APPEAL;
-
-  const appeal: Appeal = {
-    ...req.session.appeal,
-    application: {
-      ...req.session.appeal.application,
-      refundConfirmationApplied: false
-    }
-  };
-
-  const appealUpdated: Appeal = await this.updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true);
-  req.session.appeal = {
-    ...req.session.appeal,
-    ...appealUpdated
   };
 }
 
@@ -443,6 +430,5 @@ export {
   getCheckAndSend,
   getFinishPayment,
   getPayLater,
-  postCheckAndSend,
-  updateRefundConfirmationAppliedStatus
+  postCheckAndSend
 };

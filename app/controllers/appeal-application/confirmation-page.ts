@@ -50,7 +50,6 @@ function getConfirmationPaidPage(updateAppealService: UpdateAppealService) {
       const appealWithRemissionOption = appealHasRemissionOption(application);
 
       if (isPaPayLater) {
-        await updateRefundConfirmationAppliedStatus(req, updateAppealService);
         res.render('templates/confirmation-page.njk', {
           date: addDaysToDate(daysToWait),
           title: i18n.pages.confirmationPaid.title,
@@ -66,7 +65,6 @@ function getConfirmationPaidPage(updateAppealService: UpdateAppealService) {
           appealWithRemissionOption
         });
       } else {
-        await updateRefundConfirmationAppliedStatus(req, updateAppealService);
         res.render('templates/confirmation-page.njk', {
           date: addDaysToDate(daysToWait),
           title: isLate ? i18n.pages.successPage.outOfTime.panel : i18n.pages.successPage.inTime.panel,
@@ -78,26 +76,6 @@ function getConfirmationPaidPage(updateAppealService: UpdateAppealService) {
     } catch (e) {
       next(e);
     }
-  };
-}
-
-async function updateRefundConfirmationAppliedStatus(req: Request, updateAppealService: UpdateAppealService) {
-  const event = req.session.appeal.appealStatus === 'appealStarted' ? Events.EDIT_APPEAL : Events.PAYMENT_APPEAL;
-
-  const appeal: Appeal = {
-    ...req.session.appeal,
-    application: {
-      ...req.session.appeal.application,
-      refundConfirmationApplied: false
-    }
-  };
-
-  const dlrmRefundFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
-
-  const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true, dlrmRefundFlag);
-  req.session.appeal = {
-    ...req.session.appeal,
-    ...appealUpdated
   };
 }
 
@@ -123,6 +101,5 @@ function getPaPayNowWhatNextItems(payingImmediately: boolean, isLate: boolean) {
 export {
   setConfirmationController,
   getConfirmationPage,
-  getConfirmationPaidPage,
-  updateRefundConfirmationAppliedStatus
+  getConfirmationPaidPage
 };

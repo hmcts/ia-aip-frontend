@@ -133,10 +133,10 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
       'number.min': errors.incorrectFormat,
       'number.max': errors.incorrectFormat
     }).custom((value, helpers) => {
-      if ((date === 'invalid Date') && (typeof day === 'number' && typeof month === 'number' && typeof year === 'number') && (year <= currentDate.getFullYear()) && (month > 0) && (month < 13)) {
+      if ((date === 'invalid Date') && (!isNaN(Number(day)) && !isNaN(Number(month)) && !isNaN(Number(year))) && (year <= currentDate.getFullYear()) && (month > 0) && (month < 13)) {
         return helpers.message(errors.incorrectFormat);
       }
-      if ((value > currentDate.getDate()) && (Number(year) === currentDate.getFullYear()) && (month === (currentDate.getMonth() + 1))) {
+      if ((value > currentDate.getDate()) && (Number(year) === currentDate.getFullYear()) && (Number(month) === (currentDate.getMonth() + 1))) {
         return helpers.message(errors.inPast);
       }
       return value;
@@ -148,7 +148,7 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
       'number.min': errors.incorrectFormat,
       'number.max': errors.incorrectFormat
     }).custom((value, helpers) => {
-      if ((value > (currentDate.getMonth() + 1)) && (Number(year) === currentDate.getFullYear())) {
+      if ((Number(value) > (currentDate.getMonth() + 1)) && (Number(year) === currentDate.getFullYear())) {
         return helpers.message(errors.inPast);
       }
       return value;

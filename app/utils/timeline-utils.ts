@@ -266,6 +266,7 @@ function getUpdateTribunalDecisionDocumentHistory(req: Request, ftpaSetAsideFeat
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
+  const { application } = req.session.appeal;
   const ccdService = updateAppealService.getCcdService();
   req.session.appeal.history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
 

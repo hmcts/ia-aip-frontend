@@ -1174,7 +1174,7 @@ describe('application-state-utils', () => {
         '<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}',
         '<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}',
         '<span class=\"govuk-!-font-weight-bold\">Location:</span> {{ applicationNextStep.hearingCentre }} ',
-        'You can now access your <a href=\'{{ paths.common.hearingNoticeViewer }}\'>Notice of Hearing</a>.  It includes important<br>details about the hearing and you should read it carefully.'
+        'You can now access your <a href=\'{{ paths.common.latestHearingNoticeViewer }}\'>Notice of Hearing</a>.  It includes important<br>details about the hearing and you should read it carefully.'
       ],
       'info': {
         'title': 'Helpful Information',

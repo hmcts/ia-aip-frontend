@@ -1102,7 +1102,7 @@
           "date": "<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}",
           "time": "<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}",
           "hearingCentre": "<span class=\"govuk-!-font-weight-bold\">Location:</span> {{ applicationNextStep.hearingCentre }} ",
-          "hearingNotice": "You can now access your <a href='{{ paths.common.hearingNoticeViewer }}'>Notice of Hearing</a>.  It includes important<br>details about the hearing and you should read it carefully.",
+          "hearingNotice": "You can now access your <a href='{{ paths.common.latestHearingNoticeViewer }}'>Notice of Hearing</a>.  It includes important<br>details about the hearing and you should read it carefully.",
           "info": {
             "title": "Helpful Information",
             "url": "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"

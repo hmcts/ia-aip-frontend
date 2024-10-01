@@ -9,6 +9,7 @@ interface DocumentWithMetaData {
   uploadedBy?: string;
   description?: string;
   dateUploaded?: string;
+  dateTimeUploaded?: string;
   tag?: string;
   document: SupportingDocument;
 }
@@ -61,7 +62,6 @@ interface CaseData {
   reasonsForAppealDateUploaded?: string;
   reasonsForAppealDocuments: Collection<DocumentWithMetaData>[];
   respondentDocuments: Collection<RespondentEvidenceDocument>[];
-  hearingDocuments: Collection<RespondentEvidenceDocument>[];
   timeExtensions: Collection<CcdTimeExtension>[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: Collection<CcdDirection>[];
@@ -69,6 +69,7 @@ interface CaseData {
   submitTimeExtensionReason?: string;
   submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
   clarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
+  reheardHearingDocumentsCollection?: ReheardHearingDocs<Collection<DocumentWithMetaData>>[];
   isInterpreterServicesNeeded?: string;
   isAnyWitnessInterpreterRequired?: string;
   appellantInterpreterLanguageCategory?: string[];
@@ -107,6 +108,7 @@ interface CaseData {
   legalRepresentativeDocuments?: Collection<DocumentWithMetaData>[];
   tribunalDocuments?: Collection<DocumentWithMetaData>[];
   hearingDocuments?: Collection<DocumentWithMetaData>[];
+  reheardHearingDocuments?: Collection<DocumentWithMetaData>[];
   finalDecisionAndReasonsDocuments?: Collection<DocumentWithMetaData>[];
   hearingCentre?: string;
   outOfTimeDecisionType?: string;

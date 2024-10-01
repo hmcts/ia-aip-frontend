@@ -247,6 +247,7 @@ interface CaseData {
   correctedDecisionAndReasons: Collection<CcdDecisionAndReasons>[];
   sourceOfRemittal?: string;
   remittalDocuments: Collection<CcdRemittalDetails>[];
+  deportationOrderOptions?: string;
 }
 
 interface Application<T> {

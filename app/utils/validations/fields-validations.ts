@@ -613,6 +613,16 @@ function helpWithFeesRefNumberValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function deportationOrderOptionsValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.deportationOrder
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
 export {
   createStructuredError,
   contactDetailsValidation,
@@ -658,5 +668,6 @@ export {
   remissionOptionsValidation,
   asylumSupportValidation,
   helpWithFeesValidation,
-  helpWithFeesRefNumberValidation
+  helpWithFeesRefNumberValidation,
+  deportationOrderOptionsValidation
 };

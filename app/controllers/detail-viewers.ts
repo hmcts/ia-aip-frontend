@@ -10,7 +10,14 @@ import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { getFee } from '../utils/payments-utils';
-import { appealHasNoRemissionOption, appealHasRemissionOption } from '../utils/remission-utils';
+import {
+  appealHasNoRemissionOption,
+  appealHasRemissionOption,
+  getDecisionReasonRowForAppealDetails,
+  getFeeSupportStatusForAppealDetails,
+  getPaymentStatusRow,
+  paymentForAppealHasBeenMade
+} from '../utils/remission-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import {
   boolToYesNo,
@@ -173,9 +180,12 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   });
   const appellantInUk = application.appellantInUk && application.appellantInUk === 'Yes';
   const hasSponsor = application.appellantInUk && application.appellantInUk === 'No' && application.hasSponsor && application.hasSponsor === 'Yes';
+  const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+
   let aboutAppealRows = [];
   let personalDetailsRows = [];
   let feeDetailsRows = [];
+  let feeHistoryRows = [];
 
   // about appeal section
   aboutAppealRows.push(
@@ -237,9 +247,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
 
   // fee section
   if (appealHasRemissionOption(application)) {
-    const fee = getFee(req.session.appeal);
-    feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
-    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, ['Fee support requested'], null));
+    await addPaymentDetails(req, application, feeDetailsRows);
     if (application.remissionOption === 'asylumSupportFromHo') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [application.asylumSupportRefNumber], null));
     } else if (application.remissionOption === 'feeWaiverFromHo') {
@@ -249,21 +257,163 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
         return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
       });
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
-    } else if (application.remissionOption === 'noneOfTheseStatements') {
+    } else if (application.remissionOption === 'noneOfTheseStatements' || application.remissionOption === 'iWantToGetHelpWithFees') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [application.helpWithFeesRefNumber], null));
     }
-  } else if (appealHasNoRemissionOption(application)) {
+    if (application.previousRemissionDetails) {
+      await addPreviousRemissionDetails(req, application, feeHistoryRows);
+    }
+  } else {
+    const { paymentStatus = null, feeAmountGbp = null, newFeeAmount = null } = req.session.appeal;
     const fee = getFee(req.session.appeal);
-    feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
-    const { paymentStatus = null } = req.session.appeal;
-    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+    if (application.feeUpdateTribunalAction) {
+      feeDetailsRows.push(newFeeAmount ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [calculateAmountToPounds(newFeeAmount)]) : null);
+      addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, feeAmountGbp, null);
+    } else if (appealHasNoRemissionOption(application)) {
+      feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+    }
   }
 
   return {
     aboutAppealRows,
     personalDetailsRows,
-    feeDetailsRows
+    feeDetailsRows,
+    feeHistoryRows
   };
+}
+
+async function addPaymentDetails(req: Request, application: AppealApplication, feeDetailsRows: any[]) {
+  const fee = getFee(req.session.appeal);
+  const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+  const { paymentStatus = null, newFeeAmount = null, previousFeeAmountGbp = null } = req.session.appeal;
+  if (application.feeUpdateTribunalAction) {
+    feeDetailsRows.push(newFeeAmount ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [calculateAmountToPounds(newFeeAmount)]) : null);
+    addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, null, previousFeeAmountGbp);
+  } else {
+    feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
+    addPaymentStatusTitle(refundFeatureEnabled, feeDetailsRows, req);
+    addFeeSupportStatus(refundFeatureEnabled, feeDetailsRows, req, application, fee);
+  }
+}
+
+function getAmountToRefund(calculatedAmount, amountLeftToPay) {
+  return '£' + (calculatedAmount - amountLeftToPay / 100);
+}
+function calculateAmountToPounds(amount) {
+  return '£' + (amount / 100);
+}
+
+async function addPreviousRemissionDetails(req: Request, application: AppealApplication, feeHistoryRows: any[]) {
+  const fee = getFee(req.session.appeal);
+  const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+
+  application.previousRemissionDetails.forEach((remissionDetail: RemissionDetails, index: number) => {
+    const row = [];
+    row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateOfApplication,
+      [getRecordRemissionDate(req, index, application.previousRemissionDetails.length)], null));
+    if (remissionDetail.asylumSupportReference) {
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [remissionDetail.asylumSupportReference], null));
+    }
+    if (remissionDetail.localAuthorityLetters && remissionDetail.localAuthorityLetters.length > 0) {
+      const localAuthorityLetterDocs = remissionDetail.localAuthorityLetters.map((doc: Evidence) => {
+        return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
+      });
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
+    }
+    if (remissionDetail.helpWithFeesReferenceNumber) {
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [remissionDetail.helpWithFeesReferenceNumber], null));
+    }
+    if (refundFeatureEnabled) {
+      if (remissionDetail.remissionDecision === 'Approved') {
+        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+          ['Fee support request granted'], null));
+        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToRefund, [`£${fee.calculated_amount}`], null));
+      } else if (remissionDetail.remissionDecision === 'Partially approved') {
+        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+          ['Fee support request partially granted'], null));
+        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [remissionDetail.remissionDecisionReason], null));
+        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToRefund, [getAmountToRefund(fee.calculated_amount, remissionDetail.amountLeftToPay)], null));
+      } else if (remissionDetail.remissionDecision === 'Rejected') {
+        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+          ['Fee support requested refused'], null));
+        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [remissionDetail.remissionDecisionReason], null));
+      }
+    }
+    feeHistoryRows.push(row);
+  });
+}
+
+function addFeeUpdatePaymentSection(application: AppealApplication, feeDetailsRows: any[], fee: { code: string; calculated_amount: any; version: string }, paymentStatus: string, feeAmountGbp: string, previousFeeAmountGbp: string) {
+  const { feeUpdateReason = null } = application;
+  if (application.feeUpdateTribunalAction === 'additionalPayment') {
+    addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows, fee, previousFeeAmountGbp, feeAmountGbp);
+    addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows, fee, feeUpdateReason);
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [i18n.pages.checkYourAnswers.rowTitles.additionalPaymentRequested], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToPay, [calculateAmountToPounds(application.manageFeeRequestedAmount)], null));
+
+  } else if (application.feeUpdateTribunalAction === 'refund') {
+    addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows, fee, previousFeeAmountGbp, feeAmountGbp);
+    addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows, fee, feeUpdateReason);
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [i18n.pages.checkYourAnswers.rowTitles.toBeRefunded], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToBeRefund, [calculateAmountToPounds(application.manageFeeRefundedAmount)], null));
+  } else if (application.feeUpdateTribunalAction === 'noAction') {
+    addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows, fee, previousFeeAmountGbp, feeAmountGbp);
+    addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows, fee, feeUpdateReason);
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+  }
+}
+
+function addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows: any[], fee: { code: string; calculated_amount: any; version: string }, previousFeeAmountGbp: string, feeAmountGbp: string) {
+  feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmountPaid, [calculateAmountToPounds(previousFeeAmountGbp ? previousFeeAmountGbp : feeAmountGbp ? feeAmountGbp : application.paidAmount)]) : null);
+}
+
+function addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows: any[], fee: { code: string; calculated_amount: any; version: string }, feeUpdateReason: string) {
+  feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForFeeChange, [i18n.pages.checkYourAnswers.rowTitles[feeUpdateReason]], null));
+}
+
+function addPaymentStatusTitle(refundFeatureEnabled: boolean, feeDetailsRows: any[], req: Request) {
+  if (refundFeatureEnabled) {
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [getPaymentStatusRow(req)], null));
+  }
+}
+
+function addFeeSupportStatus(refundFeatureEnabled: boolean, feeDetailsRows: any[], req: Request, application: AppealApplication, fee: { code: string; calculated_amount: any; version: string }) {
+  if (refundFeatureEnabled && paymentForAppealHasBeenMade(req)) {
+    if (application.remissionDecision === 'approved') {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+          ['Fee support request granted'], null));
+      if (application.refundRequested) {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToRefund, [`£${fee.calculated_amount}`], null));
+      }
+
+    } else if (application.remissionDecision === 'partiallyApproved') {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+          ['Fee support request partially granted'], null));
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [application.remissionDecisionReason], null));
+      if (application.refundRequested) {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToRefund, [getAmountToRefund(fee.calculated_amount, application.amountLeftToPay)], null));
+      }
+    } else if (application.remissionDecision === 'rejected') {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+          ['Fee support requested refused'], null));
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [application.remissionDecisionReason], null));
+    }
+  } else if (refundFeatureEnabled && !paymentForAppealHasBeenMade(req)) {
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, [getFeeSupportStatusForAppealDetails(req)], null));
+    feeDetailsRows.push(...getDecisionReasonRowForAppealDetails(req));
+  } else {
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, [getFeeSupportStatusForAppealDetails(req)], null));
+  }
+}
+
+function getRecordRemissionDate(req: Request, index: number, previousRemissionDetailsSize: number): String {
+  const recordRemissionDecissionEvents = req.session.appeal.history.filter(entry => entry.id === 'recordRemissionDecision');
+  if (recordRemissionDecissionEvents.length === previousRemissionDetailsSize) {
+    return moment(recordRemissionDecissionEvents[index].createdDate).format(dayMonthYearFormat);
+  } else if (recordRemissionDecissionEvents.length > previousRemissionDetailsSize) {
+    return moment(recordRemissionDecissionEvents[index + 1].createdDate).format(dayMonthYearFormat);
+  }
 }
 
 function setupAnswersReasonsForAppeal(req: Request, fromLegalRep: boolean): Array<any> {
@@ -1343,5 +1493,6 @@ export {
   getDirectionHistory,
   getRespondentApplicationSummaryRows,
   getUpdatedDecisionAndReasonsViewer,
-  getRemittalDocumentsViewer
+  getRemittalDocumentsViewer,
+  addFeeSupportStatus
 };

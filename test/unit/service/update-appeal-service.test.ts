@@ -2228,5 +2228,114 @@ describe('update-appeal-service', () => {
       });
     });
 
+    describe('reheardHearingDocuments', () => {
+      const caseData: Partial<CaseData> = {
+        'reheardHearingDocumentsCollection': [
+          {
+            'id': '2',
+            'value': {
+              'reheardHearingDocs': [
+                {
+                  'id': '3',
+                  'value': {
+                    'tag': 'hearingBundle',
+                    'document': {
+                      'document_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/b74d55c7-2640-436a-a0d2-57d078fad6db',
+                      'document_filename': 'PA 62793 2024-González-remitted-hearing-bundle.pdf',
+                      'document_binary_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/b74d55c7-2640-436a-a0d2-57d078fad6db/binary'
+                    },
+                    'description': '',
+                    'dateUploaded': '2024-06-18'
+                  }
+                },
+                {
+                  'id': '2',
+                  'value': {
+                    'tag': 'caseSummary',
+                    'document': {
+                      'document_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/c0e08c6e-82b5-439d-bcd3-4b3fae39cc4d',
+                      'document_filename': 'mockFile.pdf',
+                      'document_binary_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/c0e08c6e-82b5-439d-bcd3-4b3fae39cc4d/binary'
+                    },
+                    'description': 'case summary reheard 2',
+                    'dateUploaded': '2024-06-18'
+                  }
+                },
+                {
+                  'id': '1',
+                  'value': {
+                    'tag': 'reheardHearingNotice',
+                    'document': {
+                      'document_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/0ae399f0-060e-4eaf-9d66-3d5f8594582a',
+                      'document_filename': 'PA 62793 2024-Gonzlez-hearing-notice.PDF',
+                      'document_binary_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/0ae399f0-060e-4eaf-9d66-3d5f8594582a/binary'
+                    },
+                    'suppliedBy': '',
+                    'description': '',
+                    'dateUploaded': '2024-06-18'
+                  }
+                }
+              ]
+            }
+          },
+          {
+            'id': '1',
+            'value': {
+              'reheardHearingDocs': [
+                {
+                  'id': '3',
+                  'value': {
+                    'tag': 'hearingBundle',
+                    'document': {
+                      'document_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/9ec402f6-2685-4c07-b2cb-9804c4b446c0',
+                      'document_filename': 'PA 62793 2024-González-remitted-hearing-bundle.pdf',
+                      'document_binary_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/9ec402f6-2685-4c07-b2cb-9804c4b446c0/binary'
+                    },
+                    'description': '',
+                    'dateUploaded': '2024-06-18'
+                  }
+                },
+                {
+                  'id': '2',
+                  'value': {
+                    'tag': 'caseSummary',
+                    'document': {
+                      'document_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/e6f5a697-474f-45d3-b47e-3f36295fafe9',
+                      'document_filename': 'set-aside-makeapplication-decideftpaapplication-updatetribunaldecision-aat 1.pdf',
+                      'document_binary_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/e6f5a697-474f-45d3-b47e-3f36295fafe9/binary'
+                    },
+                    'description': 'test',
+                    'dateUploaded': '2024-06-11'
+                  }
+                },
+                {
+                  'id': '1',
+                  'value': {
+                    'tag': 'reheardHearingNotice',
+                    'document': {
+                      'document_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/130e0a7b-54e7-4f88-8355-bfe2d0fd452a',
+                      'document_filename': 'PA 62793 2024-Gonzlez-hearing-notice.PDF',
+                      'document_binary_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/130e0a7b-54e7-4f88-8355-bfe2d0fd452a/binary'
+                    },
+                    'suppliedBy': '',
+                    'description': '',
+                    'dateUploaded': '2024-06-11'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map docs to reheard hearing bundle documents', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.reheardHearingDocumentsCollection).to.be.length(2);
+      });
+    });
+
   });
 });

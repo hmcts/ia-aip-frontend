@@ -235,29 +235,36 @@
   {{ header() }}
 {% endblock %}
 
-{% block beforeContent %}
-  {% set feedbackLink = [
-      "<a href=",
-      i18n.phaseBanner.feedbackSurveyLik.href,
-      " target='_blank' rel='noopener noreferrer'>",
-      i18n.phaseBanner.feedbackSurveyLik.text,
-      "</a>"
-    ] | join() %}
+{% block main %}
+  <div class="govuk-width-container {{ containerClasses }}">
+    {% block beforeContent %}
+      {% set feedbackLink = [
+          "<a href=",
+          i18n.phaseBanner.feedbackSurveyLik.href,
+          " target='_blank' rel='noopener noreferrer'>",
+          i18n.phaseBanner.feedbackSurveyLik.text,
+          "</a>"
+        ] | join() %}
 
-  {{ timeoutModal() }}
-  {{ govukPhaseBanner({
-    tag: {
-      text: i18n.phaseBanner.version
-    },
-    html: i18n.phaseBanner.text[0] + feedbackLink + i18n.phaseBanner.text[1] | safe
-  }) }}
-  {% if previousPage %}
-    {{ govukBackLink({
-      text: i18n.components.back.back,
-      href: previousPage if not previousPage.attributes,
-      attributes: previousPage.attributes if previousPage.attributes
-    }) }}
-  {% endif %}
+      {{ timeoutModal() }}
+      {{ govukPhaseBanner({
+        tag: {
+          text: i18n.phaseBanner.version
+        },
+        html: i18n.phaseBanner.text[0] + feedbackLink + i18n.phaseBanner.text[1] | safe
+      }) }}
+      {% if previousPage %}
+        {{ govukBackLink({
+          text: i18n.components.back.back,
+          href: previousPage if not previousPage.attributes,
+          attributes: previousPage.attributes if previousPage.attributes
+        }) }}
+      {% endif %}
+    {% endblock %}
+    <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %} tabindex="-1">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
 {% endblock %}
 
 {% block footer %}

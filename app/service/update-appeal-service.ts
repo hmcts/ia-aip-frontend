@@ -692,6 +692,7 @@ export default class UpdateAppealService {
     return appeal;
   }
 
+// BEGIN-NOSCAN
   convertToCcdCaseData(appeal: Appeal, paymentsFlag = false) {
     let caseData = {
       journeyType: 'aip'
@@ -1219,6 +1220,7 @@ export default class UpdateAppealService {
     };
     return caseData;
   }
+// END-NOSCAN
 
   mapAdditionalEvidenceDocumentsToDocumentsCaseData = (evidences: AdditionalEvidenceDocument[], documentMap: DocumentMap[], description = 'additionalEvidenceDocument'): Collection<Document>[] => {
     return evidences.map((evidence: AdditionalEvidenceDocument) => {

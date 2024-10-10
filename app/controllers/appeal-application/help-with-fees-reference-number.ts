@@ -34,8 +34,8 @@ function postHelpWithFeesRefNumber(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
-    async function persistAppeal(appeal: Appeal) {
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+    async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], drlmSetAsideFlag);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -68,7 +68,7 @@ function postHelpWithFeesRefNumber(updateAppealService: UpdateAppealService) {
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
       appeal.application.feeSupportPersisted = true;
       resetJourneyValues(appeal.application);
-      await persistAppeal(appeal);
+      await persistAppeal(appeal, dlrmFeeRemissionFlag);
       const defaultRedirect = paths.appealStarted.taskList;
       let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);

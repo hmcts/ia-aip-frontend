@@ -49,7 +49,30 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 withPipeline("nodejs", product, component) {
 
   afterAlways('checkout') { sh 'yarn cache clean' }
-  afterAlways('build') { sh 'yarn build' }
+  afterAlways('build') {
+    sh 'yarn build'
+
+    stage('Unit Tests') {
+      yarnBuilder.yarn('test:unit')
+      publishHTML target: [
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "mochawesome-report",
+              reportFiles          : "mochawesome.html",
+              reportName           : "Unit & Smoke Test Report"
+      ]
+      publishHTML target: [
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "test/coverage/html",
+              reportFiles          : "index.html",
+              reportName           : "Code Coverage Report"
+      ]
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
+    }
+  }
 
   loadVaultSecrets(secrets)
 

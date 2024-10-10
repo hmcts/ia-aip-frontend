@@ -1,11 +1,15 @@
 import { Request } from 'express';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import {
-  constructSection, filterEventsForHearingRequirementsSection,
+  constructSection,
+  filterEventsForHearingRequirementsSection,
+  getAppealApplicationHistory,
   getApplicationEvents,
   getDirectionHistory,
   getEventsAndStates,
@@ -1062,6 +1066,205 @@ describe('timeline-utils', () => {
         .replace(':id', 'some-id-5678'));
       expect(result[3].links[0].href).to.equal(paths.common.hearingNoticeViewer
         .replace(':id', 'some-id-2345'));
+    });
+  });
+
+  describe('getAppealApplicationHistory', () => {
+    it('should return the correct sections when paymentStatus is "Paid" and refundFeatureEnabled is true', async () => {
+
+      const history = [
+        {
+          'id': 'uploadAdditionalEvidence',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        },
+        {
+          'id': 'uploadAddendumEvidenceLegalRep',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        }
+      ] as HistoryEvent[];
+
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+      req.session.appeal.application.isLateRemissionRequest = true;
+
+      const fakeUpdateAppealService = {
+        getAuthenticationService: sinon.stub().returns({
+          getSecurityHeaders: sinon.stub().resolves({ /* fake security headers */ })
+        }),
+        getCcdService: sinon.stub().returns({
+          getCaseHistory: sinon.stub().resolves(history)
+        })
+      };
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+
+      const expectedResult = [
+        {
+          'date': '03 April 2024',
+          'dateObject': new Date('2024-04-03T08:00:30.233Z'),
+          'text': 'You asked the Tribunal for a fee remission.',
+          'links': [
+            {
+              'title': 'What you sent',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        }
+      ];
+
+      const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
+      expect(result.appealRemissionSection).to.deep.eq(expectedResult);
+    });
+
+    it('should return the correct sections when fee remission is decided', async () => {
+
+      const history = [
+        {
+          'id': 'recordRemissionDecision',
+          'createdDate': '2024-03-07'
+        }
+      ] as HistoryEvent[];
+
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+      req.session.appeal.application.remissionDecision = 'approved';
+      req.session.appeal.application.isLateRemissionRequest = true;
+
+      const fakeUpdateAppealService = {
+        getAuthenticationService: sinon.stub().returns({
+          getSecurityHeaders: sinon.stub().resolves({ /* fake security headers */ })
+        }),
+        getCcdService: sinon.stub().returns({
+          getCaseHistory: sinon.stub().resolves(history)
+        })
+      };
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+
+      const expectedResult = [
+        {
+          'date': '07 March 2024',
+          'dateObject': new Date('2024-03-07'),
+          'text': 'Your request for fee support was decided.',
+          'links': [
+            {
+              'title': 'What the Tribunal said',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        },
+        {
+          'date': '03 April 2024',
+          'dateObject': new Date('2024-04-03T08:00:30.233Z'),
+          'text': 'You asked the Tribunal for a fee remission.',
+          'links': [
+            {
+              'title': 'What you sent',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        }
+      ];
+
+      const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
+      expect(result.appealRemissionDecisionSection).to.deep.eq(expectedResult);
+    });
+
+    it('should return the correct sections when manageAFeeUpdate event is in history with remission', async () => {
+      const date1 = new Date('2024-04-14');
+      const history = [
+        {
+          'id': 'manageFeeUpdate',
+          'createdDate': date1
+        },
+        {
+          'id': 'recordRemissionDecision',
+          'createdDate': '2024-04-13T14:53:26.099'
+        }
+      ] as HistoryEvent[];
+
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+      req.session.appeal.application.remissionDecision = 'approved';
+
+      const fakeUpdateAppealService = {
+        getAuthenticationService: sinon.stub().returns({
+          getSecurityHeaders: sinon.stub().resolves({ /* fake security headers */ })
+        }),
+        getCcdService: sinon.stub().returns({
+          getCaseHistory: sinon.stub().resolves(history)
+        })
+      };
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+
+      const expectedResult = [
+        {
+          'date': '14 April 2024',
+          'dateObject': date1,
+          'text': 'The fee for this appeal has changed.',
+          'links': [
+            {
+              'title': 'What\'s changed',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        }
+      ];
+
+      const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
+      expect(result.appealRemissionDecisionSection).to.deep.eq(expectedResult);
+    });
+
+    it('should return the correct sections when manageAFeeUpdate event is in history without remission', async () => {
+      const date1 = new Date('2024-04-14');
+      const history = [
+        {
+          'id': 'manageFeeUpdate',
+          'createdDate': date1
+        }
+      ];
+
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
+
+      const fakeUpdateAppealService = {
+        getAuthenticationService: sinon.stub().returns({
+          getSecurityHeaders: sinon.stub().resolves({ /* fake security headers */ })
+        }),
+        getCcdService: sinon.stub().returns({
+          getCaseHistory: sinon.stub().resolves(history)
+        })
+      };
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+
+      const expectedResult = [
+        {
+          'date': '14 April 2024',
+          'dateObject': date1,
+          'text': 'The fee for this appeal has changed.',
+          'links': [
+            {
+              'title': 'What\'s changed',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        }
+      ];
+
+      const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
+      expect(result.appealRemissionDecisionSection).to.deep.eq(expectedResult);
     });
   });
 });

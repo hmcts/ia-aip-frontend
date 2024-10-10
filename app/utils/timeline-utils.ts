@@ -322,11 +322,6 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const listCaseEvent = getListCaseEvent(req);
   appealHearingRequirementsSection = appealHearingRequirementsSection.concat(listCaseEvent)
         .sort((a: any, b: any) => b.dateObject - a.dateObject);
-  let appealHearingRequirementsSection = constructSection(
-    eventsAndStates.appealHearingRequirementsSectionEvents,
-    filterEventsForHearingRequirementsSection(req),
-    null, req
-  );
   const asyncStitchingEvent = getAsyncStitchingEvent(req);
   appealHearingRequirementsSection = appealHearingRequirementsSection.concat(asyncStitchingEvent)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);

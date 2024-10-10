@@ -83,6 +83,7 @@ function setupHearingRequirementsFeatureToggleController(middleware: Middleware[
 function setupHearingBundleFeatureToggleController(middleware: Middleware[]): Router {
   const router = Router();
   router.get(paths.common.hearingNoticeViewer, middleware, hearingBundleFeatureMiddleware, getHearingNoticeViewer);
+  router.get(paths.common.latestHearingNoticeViewer, middleware, hearingBundleFeatureMiddleware, getHearingNoticeViewer);
   router.get(paths.common.decisionAndReasonsViewer, middleware, hearingBundleFeatureMiddleware, getDecisionAndReasonsViewer);
   router.get(paths.common.hearingAdjournmentNoticeViewer, middleware, hearingBundleFeatureMiddleware, getHearingAdjournmentNoticeViewer);
 

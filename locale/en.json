@@ -308,7 +308,21 @@
         "feeSupportType": "Fee support type",
         "localAuthorityLetter": "Local Authority letter",
         "helpWithFeesReferenceNumber": "Help with fees reference number",
-        "paymentStatus": "Payment status"
+        "amountToRefund": "Amount to refund",
+        "feeToRefund": "Fee to refund",
+        "paymentStatus": "Payment status",
+        "reasonForDecision": "Reason for decision",
+        "feeToPay": "Fee to pay",
+        "dateOfApplication": "Date of application",
+        "feeAmountPaid": "Fee amount paid",
+        "reasonForFeeChange": "Reason for fee change",
+        "decisionTypeChanged": "Decision type changed",
+        "feeRemissionChanged": "Fee remission changed",
+        "appealNotValid": "Appeal not valid",
+        "appealWithdrawn": "Appeal withdrawn",
+        "amountToBeRefund": "Amount to be refunded",
+        "additionalPaymentRequested": "Additional payment requested",
+        "toBeRefunded": "To be refunded"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",
@@ -874,6 +888,7 @@
       "noLongerRepresentingMyself": "I am no longer representing myself",
       "iWantTo": "I want to...",
       "withdrawAppeal": "Withdraw my appeal",
+      "askForFeeRemission": "Ask for a fee remission",
       "appealRequests": {
         "sectionHeading": "Appeal requests",
         "askToChangeDetails": "Ask to change some of your details",
@@ -1101,7 +1116,7 @@
           "date": "<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}",
           "time": "<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}",
           "hearingCentre": "<span class=\"govuk-!-font-weight-bold\">Location:</span> {{ applicationNextStep.hearingCentre }} ",
-          "hearingNotice": "You can now access your <a href='{{ paths.common.hearingNoticeViewer }}'>Notice of Hearing</a>.  It includes important<br>details about the hearing and you should read it carefully.",
+          "hearingNotice": "You can now access your <a href='{{ paths.common.latestHearingNoticeViewer }}'>Notice of Hearing</a>.  It includes important<br>details about the hearing and you should read it carefully.",
           "info": {
             "title": "Helpful Information",
             "url": "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
@@ -1260,6 +1275,34 @@
         },
         "remitted": {
           "decision": "The {{ applicationNextStep.sourceOfRemittal }} has decided that this appeal will be heard again by the First-tier Tribunal. <br><br> <a href={{ paths.common.remittalDocumentsViewer }}>See the {{ applicationNextStep.sourceOfRemittal }} documents</a> <br><br> <b>What happens next</b> <br><br> There will be a new hearing for this appeal. The Tribunal will contact you to let you know what to do next. <br><br> You can <a href={{ paths.common.provideMoreEvidenceForm }}>provide more evidence for this appeal</a> to the Tribunal, if you have it."
+        },
+        "remissionDecided": {
+          "approved": {
+            "detailsSent": "Your appeal details have been sent to the Tribunal.",
+            "legalOfficerCheck": "A Legal Officer will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
+            "helpFulInfo": "<b>Helpful information</b>",
+            "href": "<a href={{ paths.common.tribunalCaseworker }}>What is a Tribunal Caseworker?</a>"
+          },
+          "rejected": {
+            "feeForAppeal": "The fee for this appeal is £{{ applicationNextStep.feeForAppeal }}.",
+            "dueDate": "If you do not pay the fee by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.",
+            "payForAppeal": "<a href={{ paths.common.payLater }}>Pay for the appeal</a>"
+          },
+          "partiallyApproved": {
+            "feeForAppeal": "The fee for this appeal is £{{ applicationNextStep.feeLeftToPay }}.",
+            "dueDate": "If you do not pay the fee by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.",
+            "howToPay": "<b>How to pay the fee</b>",
+            "bulletText": "1. Call the Tribunal on 0300 123 1711, then select option 4<br />2. Provide your 16-digit online case reference number: {{ applicationNextStep.ccdReferenceNumber }}<br />3. Make the payment with a debit or credit card"
+          },
+          "feeSupportRequested": "Fee support requested",
+          "feeSupportStatusApproved": "Fee support request approved",
+          "feeSupportStatusRefused": "Fee support request refused",
+          "feeSupportStatusPartiallyApproved": "Fee support partially approved",
+          "paymentPending": {
+            "decisionApprovedPaymentStatus": "No payment needed",
+            "decisionPartiallyApprovedPaymentStatus": "Not paid",
+            "decisionRejectedPaymentStatus": "Not paid"
+          }
         }
       },
       "timeline": {
@@ -1268,7 +1311,8 @@
           "appealDecisionSection": "Your appeal decision",
           "appealHearingRequirementsSection": "Your hearing details",
           "appealArgumentSection": "Your appeal argument",
-          "appealDetailsSection": "Your appeal details"
+          "appealDetailsSection": "Your appeal details",
+          "appealRemissionSection": "Your appeal details"
         },
         "asyncStitchingComplete": {
           "text": "A hearing bundle is ready to view.",
@@ -1388,6 +1432,16 @@
               "title": "Helpful information",
               "text": "What is a Tribunal Caseworker?",
               "href": "{{ paths.common.tribunalCaseworker }}"
+            }
+          ]
+        },
+        "manageFeeUpdate": {
+          "text": "The fee for this appeal has changed.",
+          "links": [
+            {
+              "title": "What's changed",
+              "text": "Your appeal details",
+              "href": "{{ paths.common.appealDetailsViewer }}"
             }
           ]
         },
@@ -1587,6 +1641,16 @@
             }
           ]
         },
+        "refundAppeal": {
+          "text": "You asked the Tribunal for a fee remission.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your appeal details",
+              "href": "{{ paths.common.appealDetailsViewer }}"
+            }
+          ]
+        },
         "listCase": {
           "text": "Your hearing was listed.",
           "textForEditListCase": "Your hearing details were updated.",
@@ -1709,6 +1773,16 @@
               ]
             }
           }
+        },
+        "feeRemissionDecision": {
+          "text": "Your request for fee support was decided.",
+          "links": [
+            {
+              "title": "What the Tribunal said",
+              "text": "Your appeal details",
+              "href": "{{ paths.common.appealDetailsViewer }}"
+            }
+          ]
         },
         "markAppealAsRemitted": {
           "Upper Tribunal": {
@@ -2917,7 +2991,6 @@
           "content": [
             "We’re always looking to improve the accessibility of this website. If you find any problems not listed on this page, or think we’re not meeting accessibility requirements, contact:",
             "<ul><li>email <a class=\"govuk-link\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a></li><li>call +44 (0) 300 123 1711</li><li>Opening Hours - Monday to Friday, 8:30am to 5pm</li></ul>"
-
           ]
         },
         {
@@ -2947,7 +3020,6 @@
             "This website is partially compliant with the <a class='govuk-link' target='_blank' rel='noopener noreferrer' href='https://www.w3.org/TR/WCAG21/'>Web Content Accessibility Guidelines version 2.1</a> AA standard, due to the non-compliances, listed below."
           ]
         },
-
         {
           "title": "Non-accessible content",
           "content": [
@@ -3768,7 +3840,7 @@
     },
     "remissionOptionPage": {
       "title": "Do you have to pay the fee?",
-      "hint" : "<p>The fee for this appeal is £{{ fee }}. You do not have to pay the fee if one of the following statements applies to you.</p><p>Select one</p>",
+      "hint": "<p>The fee for this appeal is £{{ fee }}. You do not have to pay the fee if one of the following statements applies to you.</p><p>Select one</p>",
       "options": {
         "asylumSupportFromHo": {
           "value": "asylumSupportFromHo",
@@ -3789,13 +3861,23 @@
         "noneOfTheseStatements": {
           "value": "noneOfTheseStatements",
           "text": "None of these statements apply to me",
-          "hint":  "You may still be able to get help to pay the fee"
+          "hint": "You may still be able to get help to pay the fee"
+        },
+        "iWantToGetHelpWithFees": {
+          "value": "iWantToGetHelpWithFees",
+          "text": "I want to get help with fees"
         }
-      }
+      },
+      "refundTitle": "Why are you asking for a fee remission?",
+      "refundParagraph1": "You do not have to pay a fee in certain circumstances. For example, if you get asylum support. This is called a fee remission.",
+      "refundParagraph2": "If you believe you did not have to pay the fee for this appeal, you can ask the Tribunal to give your money back.",
+      "refundParagraph3": "Select the reason you believe you did not have to pay the fee.",
+      "selectOne": "<p>Select one</p>",
+      "noneOfTheseStatements": "None of these statements apply to me"
     },
     "asylumSupportPage": {
       "title": "What is your asylum support reference number?",
-      "legend1": "The Tribunal will check your reference number is valid after your submit your appeal.",
+      "legend1": "The Tribunal will check your reference number is valid after you submit your appeal.",
       "legend2": "If you do not know your reference number, contact <a href=\"https://www.migranthelpuk.org/\" target=\"_blank\">Migrant Help (opens in a new tab)</a> on 0808 8010 503 or <a href='mailto:proofofsupport@migranthelpuk.org' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>proofofsupport@migranthelpuk.org</a>.",
       "attentionNotice": "Your asylum support reference number is not your Home Office reference number",
       "asylumSupportReferenceNumberLabel": "Enter your asylum support reference number",
@@ -3804,7 +3886,8 @@
     "feeWaiverPage": {
       "title": "Home Office fee waiver",
       "legend1": "You do not have to pay the fee for this appeal if you got a fee waiver for the application to the Home Office that you are now appealing.",
-      "legend2": "The Tribunal will check with the Home Office that you had a fee waiver after you submit the appeal."
+      "legend2": "The Tribunal will check with the Home Office that you had a fee waiver after you submit the appeal.",
+      "legendForRefund": "The Tribunal will check with the Home Office that you had a fee waiver."
     },
     "uploadLocalAuthorityLetter": {
       "title": "Upload local authority letter",
@@ -3841,11 +3924,13 @@
         }
       },
       "checkAndSendWantToApply": "I want to apply for help with fees",
-      "checkAndSendWillPayForAppeal": "I want to pay for the appeal now"
+      "checkAndSendWillPayForAppeal": "I want to pay for the appeal now",
+      "refundsNote": "The fee you paid for this appeal is £{{ fee }}. You may be able to get a full or partial refund if you:"
     },
     "stepsToHelpWithFees": {
       "title": "Apply for help with fees",
       "tips": "Follow these steps to submit a help with fees application along with this appeal.",
+      "tipsRefund": "Follow these steps to submit a help with fees application.",
       "bullet1": "Go to <a href=\"https://helpwithcourtfees.service.gov.uk/checklist/\" target=\"_blank\">apply for help with fees (opens in a new tab)</a>",
       "bullet2": "When you are asked to enter a court or tribunal form number, enter IAFT-1",
       "bullet3": "Make a note of the help with fees reference number you get when you complete your help with fees application",
@@ -3857,6 +3942,12 @@
       "paragraph": "You will have received this number when you applied for help with fees. This reference must not have been used for a previous appeal.",
       "helpWithFeesReferenceNumberLabel": "Enter your help with fees reference number",
       "hint": "For example, HWF-A1B-23C"
+    },
+    "feeSupportConfirmationPage": {
+      "title": "You have asked the Tribunal for a fee remission",
+      "whatHappensNext": "What happens next",
+      "bullet1": "A Legal Officer will check the information you sent and let you know if your fee will be refunded",
+      "bullet2": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might take longer than that"
     }
   },
   "error": {

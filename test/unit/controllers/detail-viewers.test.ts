@@ -1,5 +1,7 @@
-import { NextFunction, Request, Response } from 'express';
+import { application, NextFunction, Request, Response } from 'express';
 import {
+  addFeeSupportStatus,
+  findDocumentInReheardHearingDocCollection,
   getAppealDetailsViewer,
   getApplicationTitle,
   getCmaRequirementsViewer,
@@ -10,6 +12,7 @@ import {
   getFtpaDecisionDetails,
   getHearingAdjournmentNoticeViewer,
   getHearingBundle,
+  getHearingNoticeDocument,
   getHearingNoticeViewer,
   getHoEvidenceDetailsViewer,
   getHomeOfficeResponse,
@@ -40,7 +43,7 @@ import { expectedEventsWithCmaRequirements } from '../mockData/events/expectatio
 
 const express = require('express');
 
-describe('Detail viewer Controller', () => {
+describe('DetailViewController', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -609,7 +612,8 @@ describe('Detail viewer Controller', () => {
           { key: { text: 'Address' }, value: { html: '60 GREAT PORTLAND STREET  LONDON United Kingdom W1W 7RT' } },
           { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } }
         ],
-        'feeDetailsRows': []
+        'feeDetailsRows': [],
+        'feeHistoryRows': []
       };
     });
 
@@ -661,8 +665,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and has' +
-      ' sponsor not in Uk', async () => {
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and has sponsor not in Uk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows[0].value.html = 'No'; // appellant in uk
@@ -759,6 +762,35 @@ describe('Detail viewer Controller', () => {
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
       req.session.appeal.feeWithHearing = '140';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission and and DLRM fee' +
+      ' refund flags are ON and remissionOption is asylumSupportFromHo', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Payment status' }, value: { html: 'Paid' } },
+        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
@@ -892,6 +924,458 @@ describe('Detail viewer Controller', () => {
       res.render = sandbox.stub().throws(error);
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    describe('Remission decision', async () => {
+      const previousRemissionDetails = [{
+        id: '1',
+        feeAmount: '1000',
+        amountRemitted: '1000',
+        amountLeftToPay: '1000',
+        remissionDecision: 'Approved',
+        asylumSupportReference: 'refNum'
+      } as RemissionDetails, {
+        id: '1',
+        feeAmount: '1000',
+        amountRemitted: '1000',
+        amountLeftToPay: '1000',
+        remissionDecision: 'Partially approved',
+        remissionDecisionReason: 'Decision 1',
+        helpWithFeesReferenceNumber: 'Help with fees'
+      } as RemissionDetails, {
+        id: '1',
+        feeAmount: '2000',
+        amountRemitted: '1000',
+        amountLeftToPay: '1000',
+        remissionDecision: 'Rejected',
+        remissionDecisionReason: 'Decision 2',
+        localAuthorityLetters: [{
+          id: '1',
+          fileId: 'file Id 1',
+          name: 'file_1_name',
+          tag: 'tag1'
+        }] as Evidence[]
+      } as RemissionDetails ];
+
+      const expectedSummaryRowsWithDlrmFeeRemission = {
+        'aboutAppealRows': [
+          { key: { text: 'In the UK' }, value: { html: 'Yes' } },
+          { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
+          { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
+          { key: { text: 'Home Office decision letter' },
+            value: {
+              html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>"
+            }
+          },
+          { key: { text: 'Sponsor' }, value: { html: 'No' } },
+          { key: { text: 'Appeal type' }, value: { html: 'Protection' } },
+          { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
+          { key: { text: 'Reason for late appeal' }, value: { html: 'a reason for being late' } },
+          { key: { text: 'Supporting evidence' },
+            value: {
+              html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>"
+            }
+          }
+        ],
+        'personalDetailsRows': [
+          { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
+          { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
+          { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+          { key: { text: 'Address' }, value: { html: '60 GREAT PORTLAND STREET  LONDON United Kingdom W1W 7RT' } },
+          { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } }
+        ],
+        'feeDetailsRows': [
+          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Payment status' }, value: {  html: 'No payment needed' } },
+          { key: { text: 'Fee support status' }, value: { html: 'Fee support request approved' } },
+          { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+        ],
+        'feeHistoryRows': [
+          [
+            { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
+            { key: { text: 'Asylum Support reference number' }, value: { html: 'refNum' } },
+            { key: { text: 'Fee support status' }, value: {  html: 'Fee support request granted' } },
+            { key: { text: 'Fee to refund' }, value: { html: '£140' } }
+          ],
+          [
+            { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
+            { key: { text: 'Help with fees reference number' }, value: { html: 'Help with fees' } },
+            { key: { text: 'Fee support status' }, value: {  html: 'Fee support request partially granted' } },
+            { key: { text: 'Reason for decision' }, value: {  html: 'Decision 1' } },
+            { key: { text: 'Fee to refund' }, value: { html: '£130' } }
+          ], [
+            { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
+            { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" } },
+            { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested refused' } },
+            { key: { text: 'Reason for decision' }, value: {  html: 'Decision 2' } }
+          ]
+        ]
+      };
+      const historyEvent = {
+        id: 'recordRemissionDecision',
+        event: {
+          eventName: '',
+          description: ''
+        },
+        user: {
+          id: '',
+          lastName: '',
+          firstName: ''
+        },
+        createdDate: '2021-06-15T14:23:34.581353',
+        caseTypeVersion: 1,
+        state: {
+          id: '',
+          name: ''
+        },
+        data: '' } as HistoryEvent;
+
+      it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and there are previousRemissionDetails', async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+          .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+          .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+        req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.paymentStatus = 'Paid';
+        req.session.appeal.application.remissionDecision = 'approved';
+
+        req.session.appeal.application.previousRemissionDetails = previousRemissionDetails;
+        req.session.appeal.history = [ historyEvent, historyEvent, historyEvent ];
+
+        await getAppealDetailsViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+          title: i18n.pages.detailViewers.appealDetails.title,
+          aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+          personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+          feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+          previousPage: paths.common.overview,
+          data: expectedSummaryRowsWithDlrmFeeRemission
+        });
+      });
+      it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and there is no remission decision yet', async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+          .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+          .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+        req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.paymentStatus = 'Paid';
+        req.session.appeal.application.previousRemissionDetails = previousRemissionDetails;
+        req.session.appeal.history = [ historyEvent, historyEvent, historyEvent ];
+
+        const feeDetails = [
+          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Payment status' }, value: {  html: 'Paid' } },
+          { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+          { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+        ];
+        const expectedSummaryRowsWithDlrmFeeRemissionCustom = {
+          ...expectedSummaryRowsWithDlrmFeeRemission,
+          'feeDetailsRows': feeDetails
+        };
+        await getAppealDetailsViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+          title: i18n.pages.detailViewers.appealDetails.title,
+          aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+          personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+          feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+          previousPage: paths.common.overview,
+          data: expectedSummaryRowsWithDlrmFeeRemissionCustom
+        });
+      });
+
+      it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and there are previousRemissionDetails and recordRemissionDecision are more than previousRemissionDetails', async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+          .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+          .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+        req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.paymentStatus = 'Paid';
+        req.session.appeal.application.remissionDecision = 'approved';
+
+        req.session.appeal.application.previousRemissionDetails = previousRemissionDetails;
+
+        const historyEventDayBefore = {
+          id: 'recordRemissionDecision',
+          event: {
+            eventName: '',
+            description: ''
+          },
+          user: {
+            id: '',
+            lastName: '',
+            firstName: ''
+          },
+          createdDate: '2021-06-14T14:23:34.581353',
+          caseTypeVersion: 1,
+          state: {
+            id: '',
+            name: ''
+          },
+          data: '' } as HistoryEvent;
+        req.session.appeal.history = [ historyEventDayBefore, historyEvent, historyEvent, historyEvent ];
+
+        await getAppealDetailsViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+          title: i18n.pages.detailViewers.appealDetails.title,
+          aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+          personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+          feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+          previousPage: paths.common.overview,
+          data: expectedSummaryRowsWithDlrmFeeRemission
+        });
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and feeUpdateTribunalAction is additionalPayment', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.application.feeUpdateReason = 'decisionTypeChanged';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.newFeeAmount = '1400';
+      req.session.appeal.application.paidAmount = '1400';
+      req.session.appeal.application.remissionDecision = 'approved';
+      req.session.appeal.application.feeUpdateTribunalAction = 'additionalPayment';
+      req.session.appeal.application.manageFeeRequestedAmount = '1000';
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows = [
+        { key: { text: 'Fee amount' }, value: { html: '£14' } },
+        { key: { text: 'Fee amount paid' }, value: { html: '£14' } },
+        { key: { text: 'Reason for fee change' }, value: { html: 'Decision type changed' } },
+        { key: { text: 'Payment status' }, value: {  html: 'Additional payment requested' } },
+        { key: { text: 'Fee to pay' }, value: { html: '£10' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      ];
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and feeUpdateTribunalAction is additionalPayment with previousFeeAmount', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.application.feeUpdateReason = 'decisionTypeChanged';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.newFeeAmount = '1400';
+      req.session.appeal.previousFeeAmountGbp = '800';
+      req.session.appeal.application.paidAmount = '1400';
+      req.session.appeal.application.remissionDecision = 'approved';
+      req.session.appeal.application.feeUpdateTribunalAction = 'additionalPayment';
+      req.session.appeal.application.manageFeeRequestedAmount = '1000';
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows = [
+        { key: { text: 'Fee amount' }, value: { html: '£14' } },
+        { key: { text: 'Fee amount paid' }, value: { html: '£8' } },
+        { key: { text: 'Reason for fee change' }, value: { html: 'Decision type changed' } },
+        { key: { text: 'Payment status' }, value: {  html: 'Additional payment requested' } },
+        { key: { text: 'Fee to pay' }, value: { html: '£10' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      ];
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and feeUpdateTribunalAction is refund', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.application.feeUpdateReason = 'feeRemissionChanged';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.newFeeAmount = '1400';
+      req.session.appeal.application.paidAmount = '1400';
+      req.session.appeal.application.remissionDecision = 'approved';
+      req.session.appeal.application.feeUpdateTribunalAction = 'refund';
+      req.session.appeal.application.manageFeeRefundedAmount = '1000';
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows = [
+        { key: { text: 'Fee amount' }, value: { html: '£14' } },
+        { key: { text: 'Fee amount paid' }, value: { html: '£14' } },
+        { key: { text: 'Reason for fee change' }, value: { html: 'Fee remission changed' } },
+        { key: { text: 'Payment status' }, value: {  html: 'To be refunded' } },
+        { key: { text: 'Amount to be refunded' }, value: { html: '£10' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      ];
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and feeUpdateTribunalAction is refund with previousFeeAmount', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.application.feeUpdateReason = 'feeRemissionChanged';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.newFeeAmount = '1400';
+      req.session.appeal.previousFeeAmountGbp = '800';
+      req.session.appeal.application.paidAmount = '1400';
+      req.session.appeal.application.remissionDecision = 'approved';
+      req.session.appeal.application.feeUpdateTribunalAction = 'refund';
+      req.session.appeal.application.manageFeeRefundedAmount = '1000';
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows = [
+        { key: { text: 'Fee amount' }, value: { html: '£14' } },
+        { key: { text: 'Fee amount paid' }, value: { html: '£8' } },
+        { key: { text: 'Reason for fee change' }, value: { html: 'Fee remission changed' } },
+        { key: { text: 'Payment status' }, value: {  html: 'To be refunded' } },
+        { key: { text: 'Amount to be refunded' }, value: { html: '£10' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      ];
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and feeUpdateTribunalAction is no noAction', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.application.feeUpdateReason = 'appealNotValid';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.newFeeAmount = '1400';
+      req.session.appeal.application.paidAmount = '1400';
+      req.session.appeal.application.remissionDecision = 'approved';
+      req.session.appeal.application.feeUpdateTribunalAction = 'noAction';
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows = [
+        { key: { text: 'Fee amount' }, value: { html: '£14' } },
+        { key: { text: 'Fee amount paid' }, value: { html: '£14' } },
+        { key: { text: 'Reason for fee change' }, value: { html: 'Appeal not valid' } },
+        { key: { text: 'Payment status' }, value: {  html: 'Paid' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      ];
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and feeUpdateTribunalAction is no noAction with previousFeeAmount', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.application.feeUpdateReason = 'appealNotValid';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.newFeeAmount = '1400';
+      req.session.appeal.previousFeeAmountGbp = '800';
+
+      req.session.appeal.application.paidAmount = '1400';
+      req.session.appeal.application.remissionDecision = 'approved';
+      req.session.appeal.application.feeUpdateTribunalAction = 'noAction';
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows = [
+        { key: { text: 'Fee amount' }, value: { html: '£14' } },
+        { key: { text: 'Fee amount paid' }, value: { html: '£8' } },
+        { key: { text: 'Reason for fee change' }, value: { html: 'Appeal not valid' } },
+        { key: { text: 'Payment status' }, value: {  html: 'Paid' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      ];
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and feeUpdateTribunalAction is no noAction but it has no remission', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.newFeeAmount = '1400';
+      req.session.appeal.application.paidAmount = '1400';
+      req.session.appeal.application.feeUpdateTribunalAction = 'noAction';
+      req.session.appeal.application.feeUpdateReason = 'appealWithdrawn';
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows = [
+        { key: { text: 'Fee amount' }, value: { html: '£14' } },
+        { key: { text: 'Fee amount paid' }, value: { html: '£14' } },
+        { key: { text: 'Reason for fee change' }, value: { html: 'Appeal withdrawn' } },
+        { key: { text: 'Payment status' }, value: {  html: 'Paid' } }
+      ];
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
     });
   });
 
@@ -1806,6 +2290,7 @@ describe('Detail viewer Controller', () => {
     };
     it('should render templates/details-viewer.njk with hearing notice document', () => {
       req.session.appeal.hearingDocuments = [document];
+      req.params.id = 'a3d396eb-277d-4b66-81c8-627f57212ec8';
       const expectedSummaryRows = [
         {
           key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -1831,6 +2316,602 @@ describe('Detail viewer Controller', () => {
         getHearingNoticeViewer(req as Request, res as Response, next);
         expect(next).to.have.been.calledWith(error);
       });
+    });
+  });
+
+  describe('should render reheard notice of hearing', () => {
+    const document = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-hearing-notice.PDF',
+      id: '1',
+      tag: 'hearingNotice',
+      dateUploaded: '2021-06-01'
+    };
+
+    const reheardHearingDocumentsCollection = {
+      'id': '1',
+      'value': {
+        'reheardHearingDocs': [
+          {
+            fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+            name: 'PA 50002 2021-perez-hearing-notice.PDF',
+            id: '1',
+            tag: 'reheardHearingNotice',
+            dateUploaded: '2021-06-01'
+          }
+        ]
+      }
+    };
+    it('should render templates/details-viewer.njk with hearing notice document', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      req.params.id = 'a3d396eb-277d-4b66-81c8-627f57212ec8';
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '01 June 2021' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/${document.fileId}'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+
+      it('should catch error and call next with it', () => {
+        req.session.appeal.hearingDocuments = [document];
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        getHearingNoticeViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
+  });
+
+  describe('should render latest notice of hearing', () => {
+    const document = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-hearing-notice.PDF',
+      id: '1',
+      tag: 'hearingNotice',
+      dateUploaded: '2021-06-01'
+    };
+    const documentRelisted = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-hearing-notice.PDF',
+      id: '1',
+      tag: 'hearingNoticeRelisted',
+      dateUploaded: '2021-06-01'
+    };
+
+    const reheardHearingDocumentsCollection = {
+      'id': '1',
+      'value': {
+        'reheardHearingDocs': [
+          {
+            fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec7',
+            name: 'PA 50002 2021-perez-hearing-notice.PDF',
+            id: '1',
+            tag: 'reheardHearingNotice',
+            dateUploaded: '2021-06-02'
+          },
+          {
+            fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec7',
+            name: 'PA 50002 2021-perez-hearing-notice.PDF',
+            id: '2',
+            tag: 'reheardHearingNoticeRelisted',
+            dateUploaded: '2021-06-03'
+          }
+        ]
+      }
+    };
+    it('should render hearing notice if latest', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      document.dateUploaded = '2021-06-05';
+      req.session.appeal.hearingDocuments = [document, documentRelisted];
+      req.params.id = 'latest';
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '05 June 2021' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+
+      it('should render reheard hearing notice if latest', () => {
+        req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+        req.session.appeal.hearingDocuments = [document];
+        req.params.id = 'latest';
+        const expectedSummaryRows = [
+          {
+            key: { text: i18n.pages.detailViewers.common.dateUploaded },
+            value: { html: '01 June 2021' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.document },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec7'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+          }];
+
+        getHearingNoticeViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+          title: i18n.pages.detailViewers.hearingNotice.title,
+          data: expectedSummaryRows,
+          previousPage: paths.common.overview
+        });
+
+        it('should catch error and call next with it', () => {
+          req.session.appeal.hearingDocuments = [document];
+          const error = new Error('an error');
+          res.render = sandbox.stub().throws(error);
+
+          getHearingNoticeViewer(req as Request, res as Response, next);
+          expect(next).to.have.been.calledWith(error);
+        });
+      });
+    });
+    it('should render hearing notice if latest', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      document.dateUploaded = '2021-06-05';
+      req.session.appeal.hearingDocuments = [document, documentRelisted];
+      req.params.id = 'latest';
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '05 June 2021' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+    it('should render old stored reheard edited hearing notice if latest', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      req.session.appeal.hearingDocuments = [document];
+      documentRelisted.dateUploaded = '2022-06-01';
+      req.session.appeal.reheardHearingDocuments = [documentRelisted];
+      req.params.id = 'latest';
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '01 June 2022' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+  });
+
+  describe('findDocumentInReheardHearingDocCollection', () => {
+    it('should return the document if it exists in the collection', () => {
+      const collections = [
+        { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+      ];
+      const result = findDocumentInReheardHearingDocCollection(collections, '123');
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should return undefined if the document does not exist in the collection', () => {
+      const collections = [
+        { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+      ];
+      const result = findDocumentInReheardHearingDocCollection(collections, '456');
+      expect(result).to.be.undefined;
+    });
+
+    it('should handle collections with undefined values', () => {
+      const collections = [
+        { value: undefined },
+        { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+      ];
+      const result = findDocumentInReheardHearingDocCollection(collections, '123');
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should handle empty collections', () => {
+      const collections: any[] = [];
+      const result = findDocumentInReheardHearingDocCollection(collections, '123');
+      expect(result).to.be.undefined;
+    });
+  });
+
+  describe('getHearingNoticeDocument', () => {
+    it('should return the document if it exists in primary hearing documents', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [{ fileId: '123' }],
+            reheardHearingDocumentsCollection: []
+          }
+        },
+        params: { id: '123' }
+      };
+      const result = getHearingNoticeDocument(req);
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should return the document if it exists in reheard hearing documents', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [],
+            reheardHearingDocumentsCollection: [
+              { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+            ]
+          }
+        },
+        params: { id: '123' }
+      };
+      const result = getHearingNoticeDocument(req);
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should throw an error if the document does not exist in any collection', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [],
+            reheardHearingDocumentsCollection: []
+          }
+        },
+        params: { id: '123' }
+      };
+      expect(() => getHearingNoticeDocument(req)).to.throw('No hearing notice with {fileId: 123} found.');
+    });
+
+    it('should handle undefined reheard hearing documents collection', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [],
+            reheardHearingDocumentsCollection: undefined
+          }
+        },
+        params: { id: '123' }
+      };
+      expect(() => getHearingNoticeDocument(req)).to.throw('No hearing notice with {fileId: 123} found.');
+    });
+
+    it('should handle undefined primary hearing documents', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: undefined,
+            reheardHearingDocumentsCollection: [
+              { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+            ]
+          }
+        },
+        params: { id: '123' }
+      };
+      const result = getHearingNoticeDocument(req);
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+  });
+
+  describe('should render reheard notice of hearing', () => {
+    const document = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-hearing-notice.PDF',
+      id: '1',
+      tag: 'hearingNotice',
+      dateUploaded: '2021-06-01'
+    };
+
+    const reheardHearingDocumentsCollection = {
+      'id': '1',
+      'value': {
+        'reheardHearingDocs': [
+          {
+            fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+            name: 'PA 50002 2021-perez-hearing-notice.PDF',
+            id: '1',
+            tag: 'reheardHearingNotice',
+            dateUploaded: '2021-06-01'
+          }
+        ]
+      }
+    };
+    it('should render templates/details-viewer.njk with hearing notice document', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      req.params.id = 'a3d396eb-277d-4b66-81c8-627f57212ec8';
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '01 June 2021' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/${document.fileId}'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+
+      it('should catch error and call next with it', () => {
+        req.session.appeal.hearingDocuments = [document];
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        getHearingNoticeViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
+  });
+
+  describe('should render latest notice of hearing', () => {
+    const document = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-hearing-notice.PDF',
+      id: '1',
+      tag: 'hearingNotice',
+      dateUploaded: '2021-06-01'
+    };
+    const documentRelisted = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-hearing-notice.PDF',
+      id: '1',
+      tag: 'hearingNoticeRelisted',
+      dateUploaded: '2021-06-01'
+    };
+
+    const reheardHearingDocumentsCollection = {
+      'id': '1',
+      'value': {
+        'reheardHearingDocs': [
+          {
+            fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec7',
+            name: 'PA 50002 2021-perez-hearing-notice.PDF',
+            id: '1',
+            tag: 'reheardHearingNotice',
+            dateUploaded: '2021-06-02'
+          },
+          {
+            fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec7',
+            name: 'PA 50002 2021-perez-hearing-notice.PDF',
+            id: '2',
+            tag: 'reheardHearingNoticeRelisted',
+            dateUploaded: '2021-06-03'
+          }
+        ]
+      }
+    };
+    it('should render hearing notice if latest', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      document.dateUploaded = '2021-06-05';
+      req.session.appeal.hearingDocuments = [document, documentRelisted];
+      req.params.id = 'latest';
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '05 June 2021' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+
+      it('should render reheard hearing notice if latest', () => {
+        req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+        req.session.appeal.hearingDocuments = [document];
+        req.params.id = 'latest';
+        const expectedSummaryRows = [
+          {
+            key: { text: i18n.pages.detailViewers.common.dateUploaded },
+            value: { html: '01 June 2021' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.document },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec7'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+          }];
+
+        getHearingNoticeViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+          title: i18n.pages.detailViewers.hearingNotice.title,
+          data: expectedSummaryRows,
+          previousPage: paths.common.overview
+        });
+
+        it('should catch error and call next with it', () => {
+          req.session.appeal.hearingDocuments = [document];
+          const error = new Error('an error');
+          res.render = sandbox.stub().throws(error);
+
+          getHearingNoticeViewer(req as Request, res as Response, next);
+          expect(next).to.have.been.calledWith(error);
+        });
+      });
+    });
+    it('should render hearing notice if latest', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      document.dateUploaded = '2021-06-05';
+      req.session.appeal.hearingDocuments = [document, documentRelisted];
+      req.params.id = 'latest';
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '05 June 2021' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+    it('should render old stored reheard edited hearing notice if latest', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [reheardHearingDocumentsCollection];
+      req.session.appeal.hearingDocuments = [document];
+      documentRelisted.dateUploaded = '2022-06-01';
+      req.session.appeal.reheardHearingDocuments = [documentRelisted];
+      req.params.id = 'latest';
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '01 June 2022' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+  });
+
+  describe('findDocumentInReheardHearingDocCollection', () => {
+    it('should return the document if it exists in the collection', () => {
+      const collections = [
+        { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+      ];
+      const result = findDocumentInReheardHearingDocCollection(collections, '123');
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should return undefined if the document does not exist in the collection', () => {
+      const collections = [
+        { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+      ];
+      const result = findDocumentInReheardHearingDocCollection(collections, '456');
+      expect(result).to.be.undefined;
+    });
+
+    it('should handle collections with undefined values', () => {
+      const collections = [
+        { value: undefined },
+        { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+      ];
+      const result = findDocumentInReheardHearingDocCollection(collections, '123');
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should handle empty collections', () => {
+      const collections: any[] = [];
+      const result = findDocumentInReheardHearingDocCollection(collections, '123');
+      expect(result).to.be.undefined;
+    });
+  });
+
+  describe('getHearingNoticeDocument', () => {
+    it('should return the document if it exists in primary hearing documents', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [{ fileId: '123' }],
+            reheardHearingDocumentsCollection: []
+          }
+        },
+        params: { id: '123' }
+      };
+      const result = getHearingNoticeDocument(req);
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should return the document if it exists in reheard hearing documents', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [],
+            reheardHearingDocumentsCollection: [
+              { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+            ]
+          }
+        },
+        params: { id: '123' }
+      };
+      const result = getHearingNoticeDocument(req);
+      expect(result).to.deep.equal({ fileId: '123' });
+    });
+
+    it('should throw an error if the document does not exist in any collection', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [],
+            reheardHearingDocumentsCollection: []
+          }
+        },
+        params: { id: '123' }
+      };
+      expect(() => getHearingNoticeDocument(req)).to.throw('No hearing notice with {fileId: 123} found.');
+    });
+
+    it('should handle undefined reheard hearing documents collection', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: [],
+            reheardHearingDocumentsCollection: undefined
+          }
+        },
+        params: { id: '123' }
+      };
+      expect(() => getHearingNoticeDocument(req)).to.throw('No hearing notice with {fileId: 123} found.');
+    });
+
+    it('should handle undefined primary hearing documents', () => {
+      const req = {
+        session: {
+          appeal: {
+            hearingDocuments: undefined,
+            reheardHearingDocumentsCollection: [
+              { value: { reheardHearingDocs: [{ fileId: '123' }] } }
+            ]
+          }
+        },
+        params: { id: '123' }
+      };
+      const result = getHearingNoticeDocument(req);
+      expect(result).to.deep.equal({ fileId: '123' });
     });
   });
 
@@ -4345,6 +5426,136 @@ describe('Detail viewer Controller', () => {
     });
   });
 
+  describe('should render updated decision and reasons page', () => {
+    const documents = [
+      {
+        fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+        name: 'PA 50012 2022-bond20-Decision-and-reasons-FINAL.pdf',
+        id: '2',
+        tag: 'finalDecisionAndReasonsPdf',
+        dateUploaded: '2022-01-26'
+      },
+      {
+        fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+        name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter.PDF',
+        id: '1',
+        tag: 'decisionAndReasonsCoverLetter',
+        dateUploaded: '2022-01-26'
+      }
+    ];
+    const updatedDecisionAndReasons: DecisionAndReasons[] = [
+      {
+        id: '2',
+        documentAndReasonsDocument: {
+          fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+          name: 'PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf'
+        },
+        updatedDecisionDate: '2023-12-15',
+        dateCoverLetterDocumentUploaded: '2023-12-15',
+        dateDocumentAndReasonsDocumentUploaded: '2023-12-15',
+        summariseChanges: 'Summarise explanation',
+        coverLetterDocument: {
+          fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+          name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF'
+        }
+      },
+      {
+        id: '1',
+        updatedDecisionDate: '2023-10-15',
+        dateCoverLetterDocumentUploaded: '2023-10-15',
+        coverLetterDocument: {
+          fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+          name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF'
+        }
+      }
+    ];
+    it('should render templates/updated-details-viewer.njk with updated decision and reasons collection', async () => {
+      req.session.appeal.finalDecisionAndReasonsDocuments = documents;
+      req.session.appeal.updatedDecisionAndReasons = updatedDecisionAndReasons;
+      const expectedSummaryRows = {
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.common.dateUploaded },
+            value: { html: '26 January 2022' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.document },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.dateUploaded },
+            value: { html: '26 January 2022' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.document },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>` }
+          }
+        ]
+      };
+
+      const expectedSummaryList: SummaryList[] = [
+        {
+          summaryRows: [
+            {
+              key: { text: i18n.pages.detailViewers.common.dateUploaded },
+              value: { html: '15 December 2023' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.document },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.dateUploaded },
+              value: { html: '15 December 2023' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.document },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.decisionsAndReasons.summariseChanges },
+              value: { html: 'Summarise explanation' }
+            }
+          ],
+          title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + '1'
+        },
+        {
+          summaryRows: [
+            {
+              key: { text: i18n.pages.detailViewers.common.dateUploaded },
+              value: { html: '15 October 2023' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.document },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
+            }
+          ],
+          title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + '2'
+        }
+      ];
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/updated-details-viewer.njk', {
+        title: i18n.pages.detailViewers.decisionsAndReasons.title,
+        originalSubTitle: i18n.pages.detailViewers.decisionsAndReasons.originalSubTitle,
+        description: i18n.pages.detailViewers.decisionsAndReasons.description,
+        data: expectedSummaryRows,
+        updatedDecisions: expectedSummaryList,
+        previousPage: paths.common.overview
+      });
+
+      it('should catch error and call next with it', async () => {
+        req.session.appeal.finalDecisionAndReasonsDocuments = documents;
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
+  });
+
   describe('should render remittal documents page', () => {
     const remittalDocuments: RemittalDetails[] = [
       {
@@ -4455,4 +5666,99 @@ describe('Detail viewer Controller', () => {
     });
   });
 
+  describe('Amount to refund', () => {
+    const fee = { code: 'test', calculated_amount: 80, version: '1' };
+    beforeEach(() => {
+      const historyEvent = {
+        id: 'paymentAppeal',
+        event: {
+          eventName: '',
+          description: ''
+        },
+        user: {
+          id: '',
+          lastName: '',
+          firstName: ''
+        },
+        createdDate: '2021-06-15T14:23:34.581353',
+        caseTypeVersion: 1,
+        state: {
+          id: '',
+          name: ''
+        },
+        data: '' } as HistoryEvent;
+      req.session.appeal.history = [historyEvent];
+    });
+
+    it('should add amount to refund row for approved remission decision if it is not upfront remission', () => {
+      req.session.appeal.application.refundRequested = true;
+      req.session.appeal.application.remissionDecision = 'approved';
+      const feeDetailRows = [];
+
+      addFeeSupportStatus(true, feeDetailRows, req as Request, req.session.appeal.application, fee);
+
+      expect(feeDetailRows).to.be.an('array').that.is.not.empty;
+      expect(feeDetailRows).to.deep.include({
+        'key': {
+          'text': 'Amount to refund'
+        },
+        'value': {
+          'html': '£80'
+        }
+      });
+    });
+
+    it('should add amount to refund row for partiallyApproved remission decision if it is not upfront remission', () => {
+      req.session.appeal.application.refundRequested = true;
+      req.session.appeal.application.remissionDecision = 'partiallyApproved';
+      req.session.appeal.application.amountLeftToPay = '4000';
+      const feeDetailRows = [];
+
+      addFeeSupportStatus(true, feeDetailRows, req as Request, req.session.appeal.application, fee);
+
+      expect(feeDetailRows).to.be.an('array').that.is.not.empty;
+      expect(feeDetailRows).to.deep.include({
+        'key': {
+          'text': 'Amount to refund'
+        },
+        'value': {
+          'html': '£40'
+        }
+      });
+    });
+
+    it('should not add amount to refund row for partiallyApproved remission decision if it is upfront remission', () => {
+      req.session.appeal.application.refundRequested = false;
+      req.session.appeal.application.remissionDecision = 'partiallyApproved';
+      const feeDetailRows = [];
+
+      addFeeSupportStatus(true, feeDetailRows, req as Request, req.session.appeal.application, fee);
+
+      expect(feeDetailRows).to.not.deep.include({
+        'key': {
+          'text': 'Amount to refund'
+        },
+        'value': {
+          'text': '£80'
+        }
+      });
+    });
+
+    it('should not add amount to refund row for approved remission decision if it is upfront remission', () => {
+      req.session.appeal.application.refundRequested = false;
+      req.session.appeal.application.remissionDecision = 'partiallyApproved';
+      const feeDetailRows = [];
+
+      addFeeSupportStatus(true, feeDetailRows, req as Request, req.session.appeal.application, fee);
+
+      expect(feeDetailRows).to.not.deep.include({
+        'key': {
+          'text': 'Amount to refund'
+        },
+        'value': {
+          'text': '£80'
+        }
+      });
+    });
+  });
 });

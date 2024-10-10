@@ -1,3 +1,4 @@
+/* tslint:disable:no-console */
 import { Request } from 'express';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
@@ -8,11 +9,12 @@ import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { transferredToUpperTribunal } from './application-state-utils';
+import { appealHasRemissionOption, paymentForAppealHasBeenMade } from './remission-utils';
 import {
   getAppellantApplications,
   getApplicant,
   getFtpaApplicantType,
+  getLatestUpdateRemissionDecionsEventHistory,
   getLatestUpdateTribunalDecisionHistory,
   isFtpaFeatureEnabled,
   isNonStandardDirectionEnabled,
@@ -32,8 +34,8 @@ function constructEventObject(event: HistoryEvent, req: Request) {
   if (isUploadEvidenceEventByLegalRep(req, event)) {
     eventContent = i18n.pages.overviewPage.timeline[event.id]['providedByLr'];
   } else if (Events.RESIDENT_JUDGE_FTPA_DECISION.id === event.id
-    || Events.LEADERSHIP_JUDGE_FTPA_DECISION.id === event.id
-    || Events.DECIDE_FTPA_APPLICATION.id === event.id) {
+        || Events.LEADERSHIP_JUDGE_FTPA_DECISION.id === event.id
+        || Events.DECIDE_FTPA_APPLICATION.id === event.id) {
     const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
     eventContent = i18n.pages.overviewPage.timeline['decideFtpa'][ftpaApplicantType];
   }
@@ -44,12 +46,12 @@ function constructEventObject(event: HistoryEvent, req: Request) {
   }
 
   let eventObject = eventContent
-    ? {
-      date: moment(event.createdDate).format('DD MMMM YYYY'),
-      dateObject: new Date(event.createdDate),
-      text: eventContent.text || null,
-      links: eventContent.links
-    } : null;
+        ? {
+          date: moment(event.createdDate).format('DD MMMM YYYY'),
+          dateObject: new Date(event.createdDate),
+          text: eventContent.text || null,
+          links: eventContent.links
+        } : null;
 
   if (event.id === Events.RECORD_OUT_OF_TIME_DECISION.id) {
     eventObject.text = i18n.pages.overviewPage.timeline[event.id].type[req.session.appeal.outOfTimeDecisionType];
@@ -77,17 +79,17 @@ function constructEventObject(event: HistoryEvent, req: Request) {
  */
 function constructSection(eventsToLookFor: string[], events: HistoryEvent[], states: string[] | null, req: Request) {
   const filteredEvents = states
-    ? events.filter(event => eventsToLookFor.includes(event.id) && states.includes(event.state.id))
-    : events.filter(event => eventsToLookFor.includes(event.id));
+        ? events.filter(event => eventsToLookFor.includes(event.id) && states.includes(event.state.id))
+        : events.filter(event => eventsToLookFor.includes(event.id));
 
   return filteredEvents
-    .map(event => constructEventObject(event, req));
+        .map(event => constructEventObject(event, req));
 }
 
 function getApplicationEvents(req: Request): any[] {
   const applicationEvents = isReadonlyApplicationEnabled(req)
-    ? req.session.appeal.makeAnApplications
-    : getAppellantApplications(req.session.appeal.makeAnApplications);
+        ? req.session.appeal.makeAnApplications
+        : getAppellantApplications(req.session.appeal.makeAnApplications);
   const makeDirectionsFlatMap = applicationEvents ? applicationEvents.flatMap(application => {
     const makeAnApplicationContent = i18n.pages.overviewPage.timeline.makeAnApplication[getApplicant(application.value)];
     const request = {
@@ -141,23 +143,64 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
 function getDirectionHistory(req: Request): any[] {
   if (isNonStandardDirectionEnabled(req)) {
     return (req.session.appeal.directions || [])
-      .filter(direction => (
-        direction.directionType === 'sendDirection'
-        && (direction.parties === 'appellant' || direction.parties === 'respondent')))
-      .map(direction => {
-        return {
-          date: moment(direction.dateSent).format('DD MMMM YYYY'),
-          dateObject: new Date(direction.dateSent),
-          text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
-          links: [{
-            ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
-            href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
-          }]
-        };
-      });
+            .filter(direction => (
+                direction.directionType === 'sendDirection'
+                && (direction.parties === 'appellant' || direction.parties === 'respondent')))
+            .map(direction => {
+              return {
+                date: moment(direction.dateSent).format('DD MMMM YYYY'),
+                dateObject: new Date(direction.dateSent),
+                text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
+                links: [{
+                  ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
+                  href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
+                }]
+              };
+            });
   } else {
     return [];
   }
+}
+
+function getListCaseEvent(req: Request): any[] {
+  let hearingNotices: Evidence[] = [];
+  let hearingNoticeTags: string[] = ['hearingNotice', 'hearingNoticeRelisted',
+    'reheardHearingNotice', 'reheardHearingNoticeRelisted'];
+  if (req.session.appeal.hearingDocuments) {
+    hearingNotices = req.session.appeal.hearingDocuments.filter((doc: Evidence) => hearingNoticeTags.includes(doc.tag));
+  }
+  if (req.session.appeal.reheardHearingDocumentsCollection) {
+    req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {
+      if (collection.value) {
+        let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
+                    .filter(doc => hearingNoticeTags.includes(doc.tag));
+        hearingNotices.push(...filteredCollection);
+      }
+    });
+  }
+  hearingNotices.sort((a, b) => {
+    if (a.dateTimeUploaded && b.dateTimeUploaded) {
+      return moment(b.dateTimeUploaded).diff(moment(a.dateTimeUploaded));
+    } else {
+      return moment(b.dateUploaded).diff(moment(a.dateUploaded));
+    }
+  });
+
+  return hearingNotices
+        .map(hearingNotice => {
+          const textForTimeline: string = hearingNotice.tag.includes('Relisted')
+              ? i18n.pages.overviewPage.timeline.listCase.textForEditListCase
+              : i18n.pages.overviewPage.timeline.listCase.text;
+          return {
+            date: moment(hearingNotice.dateUploaded).format('DD MMMM YYYY'),
+            dateObject: new Date(hearingNotice.dateUploaded),
+            text: textForTimeline || null,
+            links: [{
+              ...i18n.pages.overviewPage.timeline.listCase.links[0],
+              href: paths.common.hearingNoticeViewer.replace(':id', hearingNotice.fileId)
+            }]
+          };
+        });
 }
 
 function getAsyncStitchingEvent(req: Request): any[] {
@@ -259,6 +302,7 @@ function getUpdateTribunalDecisionDocumentHistory(req: Request, ftpaSetAsideFeat
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
+  const { application } = req.session.appeal;
   const ccdService = updateAppealService.getCcdService();
   req.session.appeal.history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
 
@@ -266,9 +310,18 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
   const ftpaFeatureEnabled: boolean = await isFtpaFeatureEnabled(req);
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
-  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled);
+  const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled, refundFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
+  let appealHearingRequirementsSection = constructSection(
+        eventsAndStates.appealHearingRequirementsSectionEvents,
+        filterEventsForHearingRequirementsSection(req),
+        null, req
+    );
+  const listCaseEvent = getListCaseEvent(req);
+  appealHearingRequirementsSection = appealHearingRequirementsSection.concat(listCaseEvent)
+        .sort((a: any, b: any) => b.dateObject - a.dateObject);
   let appealHearingRequirementsSection = constructSection(
     eventsAndStates.appealHearingRequirementsSectionEvents,
     filterEventsForHearingRequirementsSection(req),
@@ -279,49 +332,108 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   const appealArgumentSection = constructSection(
-    eventsAndStates.appealArgumentSectionEvents,
-    req.session.appeal.history.filter(event => !isUploadEvidenceEventByLegalRep(req, event)),
-    eventsAndStates.appealArgumentSectionStates, req
-  );
+        eventsAndStates.appealArgumentSectionEvents,
+        req.session.appeal.history.filter(event => !isUploadEvidenceEventByLegalRep(req, event)),
+        eventsAndStates.appealArgumentSectionStates, req
+    );
   const appealDetailsSection = constructSection(eventsAndStates.appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
   const applicationEvents = getApplicationEvents(req);
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
+  const directionsHistory = getDirectionHistory(req);
   let paymentEvent = [];
-  if (paymentStatus === 'Paid') {
-    paymentEvent = [{
-      date: moment(paymentDate).format('DD MMMM YYYY'),
-      dateObject: new Date(paymentDate),
-      text: i18n.pages.overviewPage.timeline.paymentAppeal.text || null,
-      links: i18n.pages.overviewPage.timeline.paymentAppeal.links
-    }];
+  let appealRemissionSection: any[];
+  let appealRemissionDecisionSection: any[];
+  let manageAFeeUpdate: any[];
+  let argumentSection: any[];
+  const manageAFeeUpdateEvents = req.session.appeal.history.filter(event => Events.MANAGE_A_FEE_UPDATE.id.includes(event.id));
+
+  if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application) && application.isLateRemissionRequest) {
+    const remissionEvent = getApplicationHistoryRemissionEvent(paymentDate);
+    appealRemissionSection = appealArgumentSection.concat(applicationEvents, remissionEvent, submitCQHistory, directionsHistory)
+      .sort((a: any, b: any) => b.dateObject - a.dateObject);
+  } else if (paymentStatus === 'Paid' && refundFeatureEnabled && !application.isLateRemissionRequest && manageAFeeUpdateEvents.length > 0) {
+    manageAFeeUpdate = getApplicationHistoryManageAFeeUpdate(manageAFeeUpdateEvents);
+  } else if (paymentStatus === 'Paid' && paymentForAppealHasBeenMade(req)) {
+    paymentEvent = getApplicationHistoryPaymentEvent(paymentDate);
   }
 
-  const directionsHistory = getDirectionHistory(req);
-
-  const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
+  argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
+
+  appealRemissionDecisionSection = getApplicationHistoryAppealRemissionSection(req, manageAFeeUpdate, refundFeatureEnabled, appealRemissionSection, application, applicationEvents, submitCQHistory, directionsHistory);
 
   const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
   const updatedTribunalDecisionDocumentHistory = getUpdateTribunalDecisionDocumentHistory(req, ftpaSetAsideFeatureEnabled);
   const combinedAppealDecisionSection = appealDecisionSection.concat(updatedTribunalDecisionHistory, updatedTribunalDecisionDocumentHistory)
-    .sort((a: any, b: any) => b.dateObject - a.dateObject);
+        .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   return {
     ...(combinedAppealDecisionSection && combinedAppealDecisionSection.length > 0) &&
-    { appealDecisionSection: combinedAppealDecisionSection },
+        { appealDecisionSection: combinedAppealDecisionSection },
     ...(appealHearingRequirementsSection && appealHearingRequirementsSection.length > 0) &&
-    { appealHearingRequirementsSection: appealHearingRequirementsSection },
+        { appealHearingRequirementsSection: appealHearingRequirementsSection },
     appealArgumentSection: argumentSection,
-    appealDetailsSection: appealDetailsSection
+    appealDetailsSection: appealDetailsSection,
+    ...(appealRemissionSection && appealRemissionSection.length > 0) &&
+    { appealRemissionSection: appealRemissionSection },
+    ...(appealRemissionDecisionSection && appealRemissionDecisionSection.length > 0) &&
+    { appealRemissionDecisionSection: appealRemissionDecisionSection }
   };
+}
+
+function getApplicationHistoryRemissionEvent(paymentDate: string) {
+  return [{
+    date: moment(paymentDate).format('DD MMMM YYYY'),
+    dateObject: new Date(paymentDate),
+    text: i18n.pages.overviewPage.timeline.refundAppeal.text || null,
+    links: i18n.pages.overviewPage.timeline.refundAppeal.links
+  }];
+}
+
+function getApplicationHistoryManageAFeeUpdate(manageAFeeUpdateEvents) {
+  return [{
+    date: moment(manageAFeeUpdateEvents[0].createdDate).format('DD MMMM YYYY'),
+    dateObject: new Date(manageAFeeUpdateEvents[0].createdDate),
+    text: i18n.pages.overviewPage.timeline.manageFeeUpdate.text || null,
+    links: i18n.pages.overviewPage.timeline.manageFeeUpdate.links
+  }];
+}
+
+function getApplicationHistoryPaymentEvent(paymentDate) {
+  return [{
+    date: moment(paymentDate).format('DD MMMM YYYY'),
+    dateObject: new Date(paymentDate),
+    text: i18n.pages.overviewPage.timeline.paymentAppeal.text || null,
+    links: i18n.pages.overviewPage.timeline.paymentAppeal.links
+  }];
+}
+
+function getApplicationHistoryAppealRemissionSection(req, manageAFeeUpdate, refundFeatureEnabled, appealRemissionSection, application, applicationEvents, submitCQHistory, directionsHistory) {
+  if (manageAFeeUpdate) {
+    return manageAFeeUpdate;
+  } else if (refundFeatureEnabled && application.remissionDecision) {
+    const latestUpdateRemissionDecisionHistory = getLatestUpdateRemissionDecionsEventHistory(req, refundFeatureEnabled);
+    const decisionRemissionEvent = [{
+      date: moment(latestUpdateRemissionDecisionHistory.createdDate).format('DD MMMM YYYY'),
+      dateObject: new Date(latestUpdateRemissionDecisionHistory.createdDate),
+      text: i18n.pages.overviewPage.timeline.feeRemissionDecision.text || null,
+      links: i18n.pages.overviewPage.timeline.feeRemissionDecision.links
+    }];
+    if (appealRemissionSection) {
+      return decisionRemissionEvent.concat(appealRemissionSection);
+    } else {
+      return decisionRemissionEvent.concat(applicationEvents, submitCQHistory, directionsHistory);
+    }
+  }
 }
 
 function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
                             hearingBundleFeatureEnabled: boolean,
                             ftpaFeatureEnabled: boolean,
-                            ftpaSetAsideFeatureEnabled: boolean) {
+                            ftpaSetAsideFeatureEnabled: boolean,
+                            refundFeatureEnabled: boolean = false) {
   const appealHearingRequirementsSectionEvents = [
     Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
     Events.STITCHING_BUNDLE_COMPLETE.id,
@@ -346,17 +458,17 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
 
   if (ftpaFeatureEnabled) {
     appealDecisionSectionEvents.push(
-      Events.APPLY_FOR_FTPA_APPELLANT.id,
-      Events.APPLY_FOR_FTPA_RESPONDENT.id,
-      Events.LEADERSHIP_JUDGE_FTPA_DECISION.id,
-      Events.RESIDENT_JUDGE_FTPA_DECISION.id
-    );
+            Events.APPLY_FOR_FTPA_APPELLANT.id,
+            Events.APPLY_FOR_FTPA_RESPONDENT.id,
+            Events.LEADERSHIP_JUDGE_FTPA_DECISION.id,
+            Events.RESIDENT_JUDGE_FTPA_DECISION.id
+        );
   }
 
   if (ftpaSetAsideFeatureEnabled) {
     appealDecisionSectionEvents.push(
-      Events.DECIDE_FTPA_APPLICATION.id
-    );
+            Events.DECIDE_FTPA_APPLICATION.id
+        );
   }
 
   const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id, Events.PAY_AND_SUBMIT_APPEAL.id];
@@ -376,18 +488,18 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
 
   if (hearingBundleFeatureEnabled) {
     appealHearingRequirementsSectionEvents.push(
-      Events.LIST_CASE.id,
-      Events.RECORD_ADJOURNMENT_DETAILS.id
-    );
+            Events.LIST_CASE.id,
+            Events.RECORD_ADJOURNMENT_DETAILS.id
+        );
   }
 
   if (uploadAddendumEvidenceFeatureEnabled) {
     appealArgumentSectionEvents.push(
-      Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
-      Events.UPLOAD_ADDENDUM_EVIDENCE_HOME_OFFICE.id,
-      Events.UPLOAD_ADDENDUM_EVIDENCE.id,
-      Events.UPLOAD_ADDENDUM_EVIDENCE_ADMIN_OFFICER.id
-    );
+            Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
+            Events.UPLOAD_ADDENDUM_EVIDENCE_HOME_OFFICE.id,
+            Events.UPLOAD_ADDENDUM_EVIDENCE.id,
+            Events.UPLOAD_ADDENDUM_EVIDENCE_ADMIN_OFFICER.id
+        );
 
     appealHearingRequirementsSectionEvents.push(Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id);
 
@@ -421,24 +533,26 @@ function filterEventsForHearingRequirementsSection(req: Request) {
     Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
     Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
     Events.RECORD_ADJOURNMENT_DETAILS.id,
-    Events.STITCHING_BUNDLE_COMPLETE.id
+    Events.STITCHING_BUNDLE_COMPLETE.id,
+    Events.LIST_CASE.id
   ];
 
   return req.session.appeal.history.filter(event =>
-    isUploadEvidenceEventByLegalRep(req, event)
-    || isRecordAdjournmentEventAndCaseAdjourned(req, event)
-    || !targetEvents.includes(event.id));
+        isUploadEvidenceEventByLegalRep(req, event)
+        || isRecordAdjournmentEventAndCaseAdjourned(req, event)
+        || !targetEvents.includes(event.id));
 }
 
 export {
-  getAppealApplicationHistory,
-  getSubmitClarifyingQuestionsEvents,
-  getApplicationEvents,
-  getDirectionHistory,
-  getUpdateTribunalDecisionHistory,
-  getUpdateTribunalDecisionDocumentHistory,
-  constructSection,
-  getEventsAndStates,
-  getAsyncStitchingEvent,
-  filterEventsForHearingRequirementsSection
+    getAppealApplicationHistory,
+    getSubmitClarifyingQuestionsEvents,
+    getApplicationEvents,
+    getDirectionHistory,
+    getUpdateTribunalDecisionHistory,
+    getUpdateTribunalDecisionDocumentHistory,
+    constructSection,
+    getEventsAndStates,
+    getAsyncStitchingEvent,
+    filterEventsForHearingRequirementsSection,
+    getListCaseEvent
 };

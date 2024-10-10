@@ -31,3 +31,11 @@ export function payLaterForApplicationNeeded(req: Request): boolean {
   const payLaterProtection = appealStatus !== States.APPEAL_STARTED.id && appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater' && paymentStatus !== 'Paid';
   return payLaterProtection;
 }
+
+export function convertToAmountOfMoneyDividedBy100(amount: string): string {
+  const parsedAmountValue = parseFloat(amount);
+  if (isNaN(parsedAmountValue)) {
+    throw new Error('Amount value is not available');
+  }
+  return (parsedAmountValue / 100).toString();
+}

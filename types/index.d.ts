@@ -1,6 +1,7 @@
 interface Href {
   href: string;
   text: string;
+  visuallyHiddenText?: string;
 }
 
 interface SummarySection {
@@ -110,6 +111,7 @@ interface Appeal {
   appealCreatedDate?: string;
   appealLastModified?: string;
   appealReferenceNumber?: string;
+  ccdReferenceNumber?: string;
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   application: AppealApplication;
@@ -156,6 +158,8 @@ interface Appeal {
   feeDescription?: string;
   feeVersion?: string;
   feeAmountGbp?: string;
+  newFeeAmount?: string;
+  previousFeeAmountGbp?: string;
   additionalEvidenceDocuments?: Evidence[];
   addendumEvidenceDocuments?: Evidence[];
   additionalEvidence?: AdditionalEvidenceDocument[];
@@ -316,6 +320,26 @@ interface AppealApplication {
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
   localAuthorityLetters?: Evidence[];
+
+  lateRemissionOption?: string;
+  lateAsylumSupportRefNumber?: string;
+  lateHelpWithFeesOption?: string;
+  lateHelpWithFeesRefNumber?: string;
+  lateLocalAuthorityLetters?: Evidence[];
+
+  refundRequested?: boolean;
+  remissionDecision?: string;
+  amountLeftToPay?: string;
+  remissionDecisionReason?: string;
+  previousRemissionDetails?: RemissionDetails[];
+  remissionRejectedDatePlus14days?: string;
+  isLateRemissionRequest?: boolean;
+  feeUpdateTribunalAction?: string;
+  feeUpdateReason?: string;
+  manageFeeRefundedAmount?: string;
+  manageFeeRequestedAmount?: string;
+  paidAmount?: string;
+  refundConfirmationApplied?: boolean;
 }
 
 interface CmaRequirements {
@@ -531,6 +555,20 @@ interface DecisionAndReasons {
   dateDocumentAndReasonsDocumentUploaded?: string;
   documentAndReasonsDocument?: Evidence;
   summariseChanges?: string;
+}
+
+interface RemissionDetails {
+  id?: string;
+  feeAmount?: string;
+  amountRemitted?: string;
+  amountLeftToPay?: string;
+  feeRemissionType?: string;
+  remissionDecision?: string;
+  asylumSupportReference?: string;
+  remissionDecisionReason?: string;
+  helpWithFeesReferenceNumber?: string;
+  helpWithFeesOption?: string;
+  localAuthorityLetters?: Evidence[];
 }
 
 interface RemittalDetails {

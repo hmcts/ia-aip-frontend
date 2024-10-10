@@ -160,8 +160,8 @@ describe('Nationality details Controller', function () {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const nationalitiesOptions = getNationalitiesOptions(countryList, '', 'Please select a nationality');
       const error = {
-        href: '#undefined',
-        key: undefined,
+        href: '#nationality',
+        key: 'nationality',
         text: i18n.validationErrors.nationality.selectNationality
       };
 
@@ -169,7 +169,7 @@ describe('Nationality details Controller', function () {
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
         {
           errorList: [ error ],
-          errors: { undefined: error },
+          errors: { nationality: error },
           nationalitiesOptions,
           previousPage: paths.appealStarted.dob
         });

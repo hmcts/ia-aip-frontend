@@ -25,9 +25,10 @@ const PIP_VALIDATION_FAILED: PipValidation = {
 
 export function validateAccessCode(caseDetails, accessCode: string): boolean {
   if (caseDetails.appellantPinInPost) {
+    logger.trace(`Received call to validate pin in post for case id - '${caseDetails.id}', Pin entered: '${accessCode}', Pin used?: '${caseDetails.appellantPinInPost.pinUsed}', Expiry Date?: '${caseDetails.appellantPinInPost.expiryDate}'`, logLabel);
     const expiryDate: Date = new Date(caseDetails.appellantPinInPost.expiryDate);
-    logger.trace(`Received call to validate appellantPinInPost file for user with id: '${userId}', accessCode: '${accessCode}', expiryDate: '${expiryDate}'`, logLabel);
     if (new Date(Date.now()) <= expiryDate) {
+      logger.trace(`Verifying pin in post for case id -  '${caseDetails.id}', AccessCode in case data: '${caseDetails.appellantPinInPost.accessCode}'`, logLabel);
       return caseDetails.appellantPinInPost.pinUsed === 'No'
         && caseDetails.appellantPinInPost.accessCode === accessCode;
     }
@@ -65,10 +66,8 @@ export default class CcdSystemService {
       }
     ).then(function (response) {
       if (validateAccessCode(response.data.case_data, accessCode)) {
-        logger.trace(`AppellantPinInPost validated successfully for case reference: '${caseId}'`, logLabel);
         return getPipValidationSuccess(response.data.id, response.data.case_data);
       }
-      logger.trace(`AppellantPinInPost validation failed for case reference: '${caseId}'`, logLabel);
       return PIP_VALIDATION_FAILED;
     }).catch(function (error) {
       logger.exception(error, logLabel);

@@ -62,8 +62,7 @@ describe('DetailViewController', () => {
               bringOwnMultimediaEquipment: false
             }
           },
-          application: {
-          }
+          application: {}
         }
       } as Partial<Express.Session>,
       cookies: {},
@@ -589,7 +588,8 @@ describe('DetailViewController', () => {
           { key: { text: 'In the UK' }, value: { html: 'Yes' } },
           { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
           { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
-          { key: { text: 'Home Office decision letter' },
+          {
+            key: { text: 'Home Office decision letter' },
             value: {
               html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>"
             }
@@ -598,7 +598,8 @@ describe('DetailViewController', () => {
           { key: { text: 'Appeal type' }, value: { html: 'Protection' } },
           { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
           { key: { text: 'Reason for late appeal' }, value: { html: 'a reason for being late' } },
-          { key: { text: 'Supporting evidence' },
+          {
+            key: { text: 'Supporting evidence' },
             value: {
               html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>"
             }
@@ -669,9 +670,12 @@ describe('DetailViewController', () => {
 
       expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows[0].value.html = 'No'; // appellant in uk
       expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows[4].value.html = 'Yes'; // sponsor
-      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows.splice(5,0,
+      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows.splice(5, 0,
         { key: { text: 'Sponsor\'s name' }, value: { html: 'Sponsor Name' } },
-        { key: { text: 'Sponsor\'s address' }, value: { html: '60 GREAT PORTLAND STREET<br>LONDON<br>United Kingdom<br>W1W 7RT' } },
+        {
+          key: { text: 'Sponsor\'s address' },
+          value: { html: '60 GREAT PORTLAND STREET<br>LONDON<br>United Kingdom<br>W1W 7RT' }
+        },
         { key: { text: 'Sponsor\'s contact details' }, value: { html: 'test@email.com<br>7759991234' } },
         { key: { text: 'Sponsor has access to information' }, value: { html: 'Sponsor authorisation' } }
       );
@@ -681,7 +685,7 @@ describe('DetailViewController', () => {
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
         { key: { text: 'Fee amount' }, value: { html: '£140' } },
-        { key: { text: 'Payment status' }, value: {  html: 'Paid' } }
+        { key: { text: 'Payment status' }, value: { html: 'Paid' } }
       );
 
       req.session.appeal.application.appellantInUk = 'No';
@@ -724,7 +728,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
         { key: { text: 'Fee amount' }, value: { html: '£140' } },
-        { key: { text: 'Payment status' }, value: {  html: 'Paid' } }
+        { key: { text: 'Payment status' }, value: { html: 'Paid' } }
       );
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
@@ -750,7 +754,7 @@ describe('DetailViewController', () => {
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
         { key: { text: 'Fee amount' }, value: { html: '£140' } },
-        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } },
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
       );
 
@@ -805,20 +809,24 @@ describe('DetailViewController', () => {
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
         { key: { text: 'Fee amount' }, value: { html: '£140' } },
-        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } },
-        { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank'" +
-              " rel='noopener noreferrer' href='/view/document/docName1'>document 1</a><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/docName2'>document 2</a>" } }
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+        {
+          key: { text: 'Local Authority letter' }, value: {
+            html: "<a class='govuk-link' target='_blank'" +
+              " rel='noopener noreferrer' href='/view/document/docName1'>document 1</a><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/docName2'>document 2</a>"
+          }
+        }
       );
       req.session.appeal.feeWithHearing = '140';
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'parentGetSupportFromLocalAuthority';
       req.session.appeal.application.localAuthorityLetters = [
         {
-          fileId : 'docName1',
+          fileId: 'docName1',
           name: 'document 1'
         },
         {
-          fileId : 'docName2',
+          fileId: 'docName2',
           name: 'document 2'
         }
       ];
@@ -840,8 +848,8 @@ describe('DetailViewController', () => {
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
         { key: { text: 'Fee amount' }, value: { html: '£140' } },
-        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } },
-        { key: { text: 'Help with fees reference number' }, value: {  html: 'helpWithFeesRefNumberValue' } }
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+        { key: { text: 'Help with fees reference number' }, value: { html: 'helpWithFeesRefNumberValue' } }
       );
       req.session.appeal.feeWithHearing = '140';
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
@@ -866,7 +874,7 @@ describe('DetailViewController', () => {
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
         { key: { text: 'Fee amount' }, value: { html: '£20' } },
-        { key: { text: 'Payment status' }, value: {  html: 'Paid' } }
+        { key: { text: 'Payment status' }, value: { html: 'Paid' } }
       );
       req.session.appeal.feeWithHearing = '20';
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
@@ -1502,7 +1510,10 @@ describe('DetailViewController', () => {
         { key: { text: 'In the UK' }, value: { html: 'No' } },
         { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
         { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
-        { key: { text: 'Home Office decision letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>" } },
+        {
+          key: { text: 'Home Office decision letter' },
+          value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>" }
+        },
         { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
         { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
         { key: { text: 'Nationality' }, value: { html: 'Albania' } },
@@ -1510,12 +1521,18 @@ describe('DetailViewController', () => {
         { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } },
         { key: { text: 'Sponsor' }, value: { html: 'Yes' } },
         { key: { text: 'Sponsor\'s name' }, value: { html: 'Frank Smith' } },
-        { key: { text: 'Sponsor\'s address' }, value: { html: '60 GREAT PORTLAND STREET<br>LONDON<br>United Kingdom<br>W1W 7RT' } },
+        {
+          key: { text: 'Sponsor\'s address' },
+          value: { html: '60 GREAT PORTLAND STREET<br>LONDON<br>United Kingdom<br>W1W 7RT' }
+        },
         { key: { text: 'Sponsor\'s contact details' }, value: { html: 'frank@email.com<br>7759999999' } },
         { key: { text: 'Sponsor has access to information' }, value: { html: 'Yes' } },
         { key: { text: 'Appeal type' }, value: { html: 'Protection' } },
         { key: { text: 'Reason for late appeal' }, value: { html: 'a reason for being late' } },
-        { key: { text: 'Supporting evidence' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>" } }
+        {
+          key: { text: 'Supporting evidence' },
+          value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>" }
+        }
       ];
     });
 
@@ -1705,7 +1722,10 @@ describe('DetailViewController', () => {
         { key: { text: 'In the UK' }, value: { html: 'No' } },
         { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
         { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
-        { key: { text: 'Home Office decision letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>" } },
+        {
+          key: { text: 'Home Office decision letter' },
+          value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>" }
+        },
         { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
         { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
         { key: { text: 'Nationality' }, value: { html: 'Albania' } },
@@ -1714,7 +1734,10 @@ describe('DetailViewController', () => {
         { key: { text: 'Sponsor' }, value: { html: 'No' } },
         { key: { text: 'Appeal type' }, value: { html: 'Protection' } },
         { key: { text: 'Reason for late appeal' }, value: { html: 'a reason for being late' } },
-        { key: { text: 'Supporting evidence' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>" } }
+        {
+          key: { text: 'Supporting evidence' },
+          value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>" }
+        }
       ];
     });
 
@@ -2054,62 +2077,168 @@ describe('DetailViewController', () => {
   });
 
   describe('getHearingBundle', () => {
-    beforeEach(() => {
-      req.session.appeal.hearingDocuments = [
-        {
-          fileId: 'uuid',
-          name: 'filename',
-          description: 'description here',
-          dateUploaded: '2020-02-21',
-          id: '2',
-          tag: 'hearingBundle'
-        }
-      ];
-    });
-    it('should render details-viewer template', () => {
-      getHearingBundle(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
-        title: i18n.pages.detailViewers.hearingBundle.title,
-        data: sinon.match.array,
-        previousPage: paths.common.overview
+    let hearingBundle = {
+      fileId: 'uuid',
+      name: 'filename',
+      description: 'description here',
+      dateUploaded: '2020-02-21',
+      dateTimeUploaded: '2020-02-21T10:17:16.426082848',
+      id: '2',
+      tag: 'hearingBundle'
+    };
+    let updatedBundle1 = {
+      fileId: 'uuid',
+      name: 'filename',
+      description: 'description here',
+      dateUploaded: '2020-02-21',
+      dateTimeUploaded: '2020-02-21T10:17:16.426082848',
+      id: '3',
+      tag: 'updatedHearingBundle'
+    };
+    let updatedBundle2 = {
+      fileId: 'uuid',
+      name: 'filename',
+      description: 'description here',
+      dateUploaded: '2020-02-21',
+      dateTimeUploaded: '2020-02-21T10:17:16.426082848',
+      id: '4',
+      tag: 'updatedHearingBundle'
+    };
+    let updatedReheardBundle1 = {
+      fileId: 'uuid',
+      name: 'filename',
+      description: 'description here',
+      dateUploaded: '2020-02-21',
+      dateTimeUploaded: '2020-02-21T10:17:16.426082848',
+      id: '5',
+      tag: 'updatedHearingBundle'
+    };
+    let updatedReheardBundle2 = {
+      fileId: 'uuid',
+      name: 'filename',
+      description: 'description here',
+      dateUploaded: '2020-02-21',
+      dateTimeUploaded: '2020-02-21T10:17:16.426082848',
+      id: '4',
+      tag: 'updatedHearingBundle'
+    };
+    let reheardHearingDocCollection1 = {
+      id: '1',
+      value: {
+        reheardHearingDocs: [hearingBundle]
+      }
+    };
+    let reheardHearingDocCollection2 = {
+      id: '2',
+      value: {
+        reheardHearingDocs: [hearingBundle, updatedReheardBundle1]
+      }
+    };
+    let reheardHearingDocCollection3 = {
+      id: '3',
+      value: {
+        reheardHearingDocs: [hearingBundle, updatedReheardBundle1, updatedReheardBundle2]
+      }
+    };
+    let reheardHearingDocCollection4 = {
+      id: '4',
+      value: {
+        reheardHearingDocs: [updatedReheardBundle1]
+      }
+    };
+
+    let tests = [
+      { hearingDocs: [hearingBundle], reheardHearingDocs: null, title: 'hearing bundle' },
+      { hearingDocs: [hearingBundle, updatedBundle1], reheardHearingDocs: null, title: 'hearing and updated bundle' },
+      { hearingDocs: [updatedBundle1], reheardHearingDocs: null, title: 'updated bundle' },
+      {
+        hearingDocs: [hearingBundle, updatedBundle1, updatedBundle2],
+        reheardHearingDocs: null,
+        title: 'multiple updated bundles'
+      },
+      { hearingDocs: null, reheardHearingDocs: [reheardHearingDocCollection1], title: 'reheard bundle' },
+      { hearingDocs: null, reheardHearingDocs: [reheardHearingDocCollection4], title: 'reheard updated bundle' },
+      {
+        hearingDocs: null,
+        reheardHearingDocs: [reheardHearingDocCollection2],
+        title: 'reheard hearing and updated bundle'
+      },
+      {
+        hearingDocs: null,
+        reheardHearingDocs: [reheardHearingDocCollection3],
+        title: 'multiple reheard updated bundles'
+      },
+      {
+        hearingDocs: [hearingBundle],
+        reheardHearingDocs: [reheardHearingDocCollection1],
+        title: 'multiple regular and reheard bundle'
+      },
+      {
+        hearingDocs: [updatedBundle1],
+        reheardHearingDocs: [reheardHearingDocCollection4],
+        title: 'multiple regular and reheard updated bundles'
+      },
+      {
+        hearingDocs: [hearingBundle, updatedBundle1],
+        reheardHearingDocs: [reheardHearingDocCollection2],
+        title: 'multiple regular and reheard non-updated and updated bundles'
+      },
+      {
+        hearingDocs: null,
+        reheardHearingDocs: [reheardHearingDocCollection1, reheardHearingDocCollection1],
+        title: 'multiple rehearings and one bundle for each'
+      }
+    ];
+    let title = i18n.pages.detailViewers.hearingBundle.title;
+    let titlePlural = i18n.pages.detailViewers.hearingBundle.titlePlural;
+    let subtitle = i18n.pages.detailViewers.hearingBundle.subtitle;
+    let previousSubtitle = i18n.pages.detailViewers.hearingBundle.previousSubtitle;
+    let previousSubtitlePlural = i18n.pages.detailViewers.hearingBundle.previousSubtitlePlural;
+    let expectedOutput = [
+      { title: title, subtitle1: null, data1: 2, subtitle2: null, data2: null },
+      { title: titlePlural, subtitle1: subtitle, data1: 2, subtitle2: previousSubtitle, data2: 2 },
+      { title: title, subtitle1: null, data1: 2, subtitle2: null, data2: null },
+      { title: titlePlural, subtitle1: subtitle, data1: 2, subtitle2: previousSubtitlePlural, data2: 4 },
+      { title: title, subtitle1: null, data1: 2, subtitle2: null, data2: null },
+      { title: title, subtitle1: null, data1: 2, subtitle2: null, data2: null },
+      { title: titlePlural, subtitle1: subtitle, data1: 2, subtitle2: previousSubtitle, data2: 2 },
+      { title: titlePlural, subtitle1: subtitle, data1: 2, subtitle2: previousSubtitlePlural, data2: 4 },
+      { title: titlePlural, subtitle1: subtitle, data1: 2, subtitle2: previousSubtitle, data2: 2 },
+      { title: titlePlural, subtitle1: subtitle, data1: 2, subtitle2: previousSubtitle, data2: 2 },
+      { title: titlePlural, subtitle1: subtitle, data1: 2, subtitle2: previousSubtitlePlural, data2: 6 },
+      { title: titlePlural, subtitle1: subtitle, data1: 2, subtitle2: previousSubtitle, data2: 2 }
+    ];
+
+    function sinonArrayMatcher(value: number) {
+      return sinon.match.array.and(sinon.match((array) => array.length === value));
+    }
+
+    tests.forEach(function (test, index) {
+      describe('getHearingBundle with ' + test.title, () => {
+        beforeEach(() => {
+          req.session.appeal.hearingDocuments = test.hearingDocs;
+          req.session.appeal.reheardHearingDocumentsCollection = test.reheardHearingDocs;
+        });
+
+        it('should render details-viewer template', function () {
+          getHearingBundle(req as Request, res as Response, next);
+          expect(res.render).to.have.been.calledWith('templates/details-viewer-hearing-bundles.njk', {
+            title: expectedOutput[index].title,
+            subtitle1: expectedOutput[index].subtitle1,
+            data1: sinonArrayMatcher(expectedOutput[index].data1),
+            subtitle2: expectedOutput[index].subtitle2,
+            data2: expectedOutput[index].data2 ? sinonArrayMatcher(expectedOutput[index].data2) : null,
+            previousPage: paths.common.overview
+          });
+        });
+
+        it('should catch exception and call next with the error', function () {
+          const error = new Error('an error');
+          res.render = sandbox.stub().throws(error);
+          getHearingBundle(req as Request, res as Response, next);
+          expect(next).to.have.been.calledOnce.calledWith(error);
+        });
       });
-    });
-
-    it('getHearingBundle should catch exception and call next with the error', () => {
-      const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
-      getHearingBundle(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-  });
-
-  describe('getHearingBundle', () => {
-    beforeEach(() => {
-      req.session.appeal.hearingDocuments = [
-        {
-          fileId: 'uuid',
-          name: 'filename',
-          description: 'description here',
-          dateUploaded: '2020-02-21',
-          id: '2',
-          tag: 'hearingBundle'
-        }
-      ];
-    });
-    it('should render details-viewer template', () => {
-      getHearingBundle(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
-        title: i18n.pages.detailViewers.hearingBundle.title,
-        data: sinon.match.array,
-        previousPage: paths.common.overview
-      });
-    });
-
-    it('getHearingBundle should catch exception and call next with the error', () => {
-      const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
-      getHearingBundle(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
@@ -3423,7 +3552,10 @@ describe('DetailViewController', () => {
             html: '<b>Date</b><br><pre>2020-09-06</pre><br><b>Reason</b><br><pre>Also Away</pre>'
           }
         }],
-        hearingLoop: [{ key: { text: 'Question' }, value: { html: 'Hearing loop' } }, { key: { text: 'Answer' }, value: { html: 'Yes' } }],
+        hearingLoop: [{ key: { text: 'Question' }, value: { html: 'Hearing loop' } }, {
+          key: { text: 'Answer' },
+          value: { html: 'Yes' }
+        }],
         interpreter: [{
           key: { text: 'Question' },
           value: { html: 'Will you need an interpreter at the appointment?' }
@@ -3476,7 +3608,10 @@ describe('DetailViewController', () => {
           key: { text: 'Question' },
           value: { html: 'Tell us why you need an {{ appointmentType }} appointment' }
         }, { key: { text: 'Answer' }, value: { html: '' } }],
-        stepFree: [{ key: { text: 'Question' }, value: { html: 'Step free access' } }, { key: { text: 'Answer' }, value: { html: 'Yes' } }]
+        stepFree: [{ key: { text: 'Question' }, value: { html: 'Step free access' } }, {
+          key: { text: 'Answer' },
+          value: { html: 'Yes' }
+        }]
       });
     });
 
@@ -3785,9 +3920,9 @@ describe('DetailViewController', () => {
         ...req.session.appeal,
         ftpaAppellantGrounds: 'ftpaAppellantGrounds',
         ftpaAppellantApplicationDate: '2023-03-20',
-        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantEvidenceDocuments: [...documents],
         ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
-        ftpaAppellantOutOfTimeDocuments: [ ...documents ]
+        ftpaAppellantOutOfTimeDocuments: [...documents]
       };
       const expectedSummaryRows = [
         {
@@ -3826,9 +3961,9 @@ describe('DetailViewController', () => {
         ...req.session.appeal,
         ftpaAppellantGrounds: 'ftpaAppellantGrounds',
         ftpaAppellantApplicationDate: '2023-03-20',
-        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantEvidenceDocuments: [...documents],
         ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
-        ftpaAppellantOutOfTimeDocuments: [ ...documents ]
+        ftpaAppellantOutOfTimeDocuments: [...documents]
       };
       res.render = sandbox.stub().throws(error);
 
@@ -3854,13 +3989,13 @@ describe('DetailViewController', () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
-        ftpaRespondentGroundsDocuments: [ ...documents ],
+        ftpaRespondentGroundsDocuments: [...documents],
         ftpaRespondentApplicationDate: '2023-03-20',
-        ftpaRespondentEvidenceDocuments: [ ...documents ],
+        ftpaRespondentEvidenceDocuments: [...documents],
         ftpaRespondentOutOfTimeExplanation: 'ftpaRespondentOutOfTimeExplanation',
-        ftpaRespondentOutOfTimeDocuments: [ ...documents ],
+        ftpaRespondentOutOfTimeDocuments: [...documents],
         ftpaRespondentDecisionDate: '2023-03-20',
-        ftpaRespondentDecisionDocument: [ ...documents ],
+        ftpaRespondentDecisionDocument: [...documents],
         ftpaRespondentDecisionOutcomeType: 'granted'
       };
 
@@ -3917,13 +4052,13 @@ describe('DetailViewController', () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
-        ftpaRespondentGroundsDocuments: [ ...documents ],
+        ftpaRespondentGroundsDocuments: [...documents],
         ftpaRespondentApplicationDate: '2023-03-20',
-        ftpaRespondentEvidenceDocuments: [ ...documents ],
+        ftpaRespondentEvidenceDocuments: [...documents],
         ftpaRespondentOutOfTimeExplanation: 'ftpaRespondentOutOfTimeExplanation',
-        ftpaRespondentOutOfTimeDocuments: [ ...documents ],
+        ftpaRespondentOutOfTimeDocuments: [...documents],
         ftpaRespondentDecisionDate: '2023-03-20',
-        ftpaRespondentDecisionDocument: [ ...documents ],
+        ftpaRespondentDecisionDocument: [...documents],
         ftpaRespondentDecisionOutcomeType: 'partiallyGranted'
       };
 
@@ -3981,13 +4116,13 @@ describe('DetailViewController', () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
-        ftpaRespondentGroundsDocuments: [ ...documents ],
+        ftpaRespondentGroundsDocuments: [...documents],
         ftpaRespondentApplicationDate: '2023-03-20',
-        ftpaRespondentEvidenceDocuments: [ ...documents ],
+        ftpaRespondentEvidenceDocuments: [...documents],
         ftpaRespondentOutOfTimeExplanation: 'ftpaRespondentOutOfTimeExplanation',
-        ftpaRespondentOutOfTimeDocuments: [ ...documents ],
+        ftpaRespondentOutOfTimeDocuments: [...documents],
         ftpaRespondentDecisionDate: '2023-03-20',
-        ftpaRespondentDecisionDocument: [ ...documents ],
+        ftpaRespondentDecisionDocument: [...documents],
         ftpaRespondentDecisionOutcomeType: 'notAdmitted'
       };
 
@@ -4031,7 +4166,7 @@ describe('DetailViewController', () => {
         ftpaApplicantType: 'respondent',
         ftpaRespondentApplicationDate: '2023-03-20',
         ftpaRespondentDecisionDate: '2023-03-20',
-        ftpaRespondentDecisionDocument: [ ...documents ],
+        ftpaRespondentDecisionDocument: [...documents],
         ftpaRespondentDecisionOutcomeType: 'refused'
       };
 
@@ -4075,7 +4210,7 @@ describe('DetailViewController', () => {
         ftpaApplicantType: 'respondent',
         ftpaRespondentApplicationDate: '2023-03-20',
         ftpaRespondentDecisionDate: '2023-03-20',
-        ftpaRespondentDecisionDocument: [ ...documents ],
+        ftpaRespondentDecisionDocument: [...documents],
         ftpaRespondentRjDecisionOutcomeType: 'refused'
       };
 
@@ -4119,11 +4254,11 @@ describe('DetailViewController', () => {
         ftpaApplicantType: 'appellant',
         ftpaAppellantGrounds: 'ftpaAppellantGrounds',
         ftpaAppellantApplicationDate: '2023-03-20',
-        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantEvidenceDocuments: [...documents],
         ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
-        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeDocuments: [...documents],
         ftpaAppellantDecisionDate: '2023-03-20',
-        ftpaAppellantDecisionDocument: [ ...documents ],
+        ftpaAppellantDecisionDocument: [...documents],
         ftpaAppellantDecisionOutcomeType: 'granted'
       };
       documents[0].name = 'FTPA_Appellant_Doc.PDF';
@@ -4185,11 +4320,11 @@ describe('DetailViewController', () => {
         ftpaApplicantType: 'appellant',
         ftpaAppellantGrounds: 'ftpaAppellantGrounds',
         ftpaAppellantApplicationDate: '2023-03-20',
-        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantEvidenceDocuments: [...documents],
         ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
-        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeDocuments: [...documents],
         ftpaAppellantDecisionDate: '2023-03-20',
-        ftpaAppellantDecisionDocument: [ ...documents ],
+        ftpaAppellantDecisionDocument: [...documents],
         ftpaAppellantRjDecisionOutcomeType: 'granted'
       };
       documents[0].name = 'FTPA_Appellant_Doc.PDF';
@@ -4251,9 +4386,9 @@ describe('DetailViewController', () => {
         ftpaApplicantType: 'appellant',
         ftpaAppellantGrounds: 'ftpaAppellantGrounds',
         ftpaAppellantApplicationDate: '2023-03-20',
-        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantEvidenceDocuments: [...documents],
         ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
-        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeDocuments: [...documents],
         ftpaAppellantDecisionDate: '2023-03-20',
         ftpaAppellantDecisionDocument: [],
         ftpaAppellantRjDecisionOutcomeType: 'reheardRule35',
@@ -4457,9 +4592,9 @@ describe('DetailViewController', () => {
         ftpaApplicantType: 'appellant',
         ftpaAppellantGrounds: 'ftpaAppellantGrounds',
         ftpaAppellantApplicationDate: '2023-03-20',
-        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantEvidenceDocuments: [...documents],
         ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
-        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeDocuments: [...documents],
         ftpaAppellantDecisionDate: '2023-03-20',
         ftpaAppellantDecisionDocument: [],
         ftpaAppellantRjDecisionOutcomeType: 'remadeRule31',
@@ -4523,9 +4658,9 @@ describe('DetailViewController', () => {
         ftpaApplicantType: 'appellant',
         ftpaAppellantGrounds: 'ftpaAppellantGrounds',
         ftpaAppellantApplicationDate: '2023-03-20',
-        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantEvidenceDocuments: [...documents],
         ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
-        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeDocuments: [...documents],
         ftpaAppellantDecisionDate: '2023-03-20',
         ftpaAppellantDecisionDocument: [],
         ftpaAppellantRjDecisionOutcomeType: 'remadeRule32',
@@ -4589,9 +4724,9 @@ describe('DetailViewController', () => {
         ftpaApplicantType: 'appellant',
         ftpaAppellantGrounds: 'ftpaAppellantGrounds',
         ftpaAppellantApplicationDate: '2023-03-20',
-        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantEvidenceDocuments: [...documents],
         ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
-        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeDocuments: [...documents],
         ftpaAppellantDecisionDate: '2023-03-20',
         ftpaAppellantDecisionDocument: [],
         ftpaApplicationAppellantDocument: document,
@@ -4657,9 +4792,9 @@ describe('DetailViewController', () => {
         ftpaApplicantType: 'appellant',
         ftpaAppellantGrounds: 'ftpaAppellantGrounds',
         ftpaAppellantApplicationDate: '2023-03-20',
-        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantEvidenceDocuments: [...documents],
         ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
-        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeDocuments: [...documents],
         ftpaAppellantDecisionDate: '2023-03-20',
         ftpaAppellantDecisionDocument: [],
         ftpaApplicationAppellantDocument: document,
@@ -4819,11 +4954,11 @@ describe('DetailViewController', () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
-        ftpaRespondentGroundsDocuments: [ ...documents ],
+        ftpaRespondentGroundsDocuments: [...documents],
         ftpaRespondentApplicationDate: '2023-03-20',
-        ftpaRespondentEvidenceDocuments: [ ...documents ],
+        ftpaRespondentEvidenceDocuments: [...documents],
         ftpaRespondentOutOfTimeExplanation: 'ftpaRespondentOutOfTimeExplanation',
-        ftpaRespondentOutOfTimeDocuments: [ ...documents ],
+        ftpaRespondentOutOfTimeDocuments: [...documents],
         ftpaRespondentDecisionDate: '2023-03-20',
         ftpaRespondentDecisionDocument: [],
         ftpaApplicationRespondentDocument: document,
@@ -4887,11 +5022,11 @@ describe('DetailViewController', () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
-        ftpaRespondentGroundsDocuments: [ ...documents ],
+        ftpaRespondentGroundsDocuments: [...documents],
         ftpaRespondentApplicationDate: '2023-03-20',
-        ftpaRespondentEvidenceDocuments: [ ...documents ],
+        ftpaRespondentEvidenceDocuments: [...documents],
         ftpaRespondentOutOfTimeExplanation: 'ftpaRespondentOutOfTimeExplanation',
-        ftpaRespondentOutOfTimeDocuments: [ ...documents ],
+        ftpaRespondentOutOfTimeDocuments: [...documents],
         ftpaRespondentDecisionDate: '2023-03-20',
         ftpaRespondentDecisionDocument: [],
         ftpaApplicationRespondentDocument: document,
@@ -5052,13 +5187,13 @@ describe('DetailViewController', () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
-        ftpaRespondentGroundsDocuments: [ ...documents ],
+        ftpaRespondentGroundsDocuments: [...documents],
         ftpaRespondentApplicationDate: '2023-03-20',
-        ftpaRespondentEvidenceDocuments: [ ...documents ],
+        ftpaRespondentEvidenceDocuments: [...documents],
         ftpaRespondentOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
-        ftpaRespondentOutOfTimeDocuments: [ ...documents ],
+        ftpaRespondentOutOfTimeDocuments: [...documents],
         ftpaRespondentDecisionDate: '2023-03-20',
-        ftpaRespondentDecisionDocument: [ ...documents ],
+        ftpaRespondentDecisionDocument: [...documents],
         ftpaRespondentDecisionOutcomeType: 'refused',
         ftpaApplicationRespondentDocument: document
       };

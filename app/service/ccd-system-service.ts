@@ -25,10 +25,10 @@ const PIP_VALIDATION_FAILED: PipValidation = {
 
 export function validateAccessCode(caseDetails, accessCode: string): boolean {
   if (caseDetails.appellantPinInPost) {
-    logger.trace(`4 - Received call to validate pin in post for case id - '${caseDetails.id}', Pin entered: '${accessCode}', Pin used?: '${caseDetails.appellantPinInPost.pinUsed}', Expiry Date?: '${caseDetails.appellantPinInPost.expiryDate}'`, logLabel);
+    logger.trace(`6 - Received call to validate pin in post for case id - '${caseDetails.id}', Pin entered: '${accessCode}', Pin used?: '${caseDetails.appellantPinInPost.pinUsed}', Expiry Date?: '${caseDetails.appellantPinInPost.expiryDate}'`, logLabel);
     const expiryDate: Date = new Date(caseDetails.appellantPinInPost.expiryDate);
     if (new Date(Date.now()) <= expiryDate) {
-      logger.trace(`5 - Verifying pin in post expiry date for case id -  '${caseDetails.id}', AccessCode in case data: '${caseDetails.appellantPinInPost.accessCode}'`, logLabel);
+      logger.trace(`7 - Verifying pin in post expiry date for case id -  '${caseDetails.id}', AccessCode in case data: '${caseDetails.appellantPinInPost.accessCode}'`, logLabel);
       return caseDetails.appellantPinInPost.pinUsed === 'No'
         && caseDetails.appellantPinInPost.accessCode === accessCode;
     }
@@ -57,18 +57,20 @@ export default class CcdSystemService {
 
   async pipValidation(caseId: string, accessCode: string): Promise<PipValidation> {
     const userToken = await this._authenticationService.getCaseworkSystemToken();
+    logger.trace(`1 - User token in pipValidation: '${userToken}' for case id - '${caseId}', Pin entered: '${accessCode}'`, logLabel);
     const userId = await this._authenticationService.getCaseworkSystemUUID(userToken);
+    logger.trace(`2 - UserId - getCaseworkSystemUUID in pipValidation: '${userId}' for case id - '${caseId}', Pin entered: '${accessCode}'`, logLabel);
     const headers = await this.getHeaders(userToken);
 
-    logger.trace(`1 - Received request to start representing for case id - '${caseId}', Pin entered: '${accessCode}'`, logLabel);
-    logger.trace(`2 - axios.get URL: ${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`, logLabel);
+    logger.trace(`3 - Received request to start representing for case id - '${caseId}', Pin entered: '${accessCode}'`, logLabel);
+    logger.trace(`4 - axios.get URL: ${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`, logLabel);
     return axios.get(
       `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`, {
         headers: headers
       }
     ).then(function (response) {
       if (validateAccessCode(response.data.case_data, accessCode)) {
-        logger.trace(`3 - axios.get response: ${response.data.id}`, logLabel);
+        logger.trace(`5 - axios.get response: ${response.data.id}`, logLabel);
         return getPipValidationSuccess(response.data.id, response.data.case_data);
       }
       return PIP_VALIDATION_FAILED;

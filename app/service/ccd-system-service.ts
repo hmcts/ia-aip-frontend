@@ -61,14 +61,14 @@ export default class CcdSystemService {
     const headers = await this.getHeaders(userToken);
 
     logger.trace(`1 - Received request to start representing for case id - '${caseId}', Pin entered: '${accessCode}'`, logLabel);
-    logger.trace(`2 - axios.get URL: ${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`);
+    logger.trace(`2 - axios.get URL: ${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`, logLabel);
     return axios.get(
       `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`, {
         headers: headers
       }
     ).then(function (response) {
       if (validateAccessCode(response.data.case_data, accessCode)) {
-        logger.trace(`3 - axios.get response: ${response.data.id}`);
+        logger.trace(`3 - axios.get response: ${response.data.id}`, logLabel);
         return getPipValidationSuccess(response.data.id, response.data.case_data);
       }
       return PIP_VALIDATION_FAILED;

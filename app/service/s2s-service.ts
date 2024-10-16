@@ -73,10 +73,14 @@ export default class S2SService implements IS2SService {
       proxyConfig = { proxy: { host: proxyHost, port: proxyPort } };
     }
     let res;
-    try {
-      res = await axios.post(request.uri, request.body, proxyConfig);
-    } catch (err) {
-      logger.exception(err, logLabel);
+    for (let i = 0; i < 5; i++) {
+      try {
+        res = await axios.post(request.uri, request.body, proxyConfig);
+        break;
+      } catch (err) {
+        logger.exception(err, logLabel);
+        i++;
+      }
     }
     if (res && res.data) {
       this.serviceToken = res.data;

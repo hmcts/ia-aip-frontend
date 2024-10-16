@@ -33,17 +33,20 @@ export class SystemAuthenticationService {
     idamParams.append('username', usernameSystemCaseworker);
     idamParams.append('password', passwordSystemCaseworker);
     idamParams.append('scope', idamScope);
-
+    logger.trace(`System User Token: client_id: '${idamClientId}' client_secret - '${idamClientSecret}', username: '${usernameSystemCaseworker}', password: '${passwordSystemCaseworker}', scope: '${idamScope}'`, logLabel);
     return axios.post(`${idamBaseUrl}/o/token`, idamParams)
       .then(function (response) {
+        logger.trace(`access_token from idam response '${response.data.acces_token}'`, logLabel);
         return response.data.access_token;
       })
       .catch(function (error) {
+        logger.trace(`Error retrieving acces_token from idam response '${error}'`, logLabel);
         logger.exception(error, logLabel);
       });
   }
 
   async getCaseworkSystemUUID(accessToken: string): Promise<string> {
+    logger.trace(`Caseworker System User UUID: idam accessToken: '${accessToken}'`, logLabel);
     if (this.systemCaseworkerId === undefined) {
       this.systemCaseworkerId = await this.requestCaseworkSystemUUID(accessToken);
     }
@@ -56,8 +59,10 @@ export class SystemAuthenticationService {
         Authorization: `Bearer ${accessToken}`
       }
     }).then(function (response) {
+      logger.trace(`Request Caseworker System UUID: '${response.data.uid}'`, logLabel);
       return response.data.uid;
     }).catch(function (error) {
+      logger.trace(`Error in response - Request Caseworker System UUID: '${error}'`, logLabel);
       logger.exception(error, logLabel);
     });
   }

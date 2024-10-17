@@ -246,7 +246,7 @@ describe('Personal Details Controller', function () {
       req.body.day = 1;
       req.body.month = 1;
       req.body.year = 9999;
-      const errorDate = createError('date', i18n.validationErrors.dateOfBirth.inPast);
+      const errorDate = createError('year', i18n.validationErrors.dateOfBirth.inPast);
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
@@ -255,7 +255,7 @@ describe('Personal Details Controller', function () {
         {
           dob: { ...req.body },
           errors: {
-            date: errorDate
+            year: errorDate
           },
           errorList: [ errorDate ],
           previousPage: paths.appealStarted.name

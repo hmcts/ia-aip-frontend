@@ -35,14 +35,16 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       if (!req.body.selections) {
-        req.body.selections = '';
+        req.body.contactDetails = '';
+      } else {
+        req.body.contactDetails = req.body.selections;
       }
       const validation = contactDetailsValidation(req.body);
       const contactDetails = {
-        email: req.body.selections.includes('email') ? req.body['email-value'] : null,
-        wantsEmail: req.body.selections.includes('email'),
-        phone: req.body.selections.includes('text-message') ? req.body['text-message-value'].replace(/\s/g, '') : null,
-        wantsSms: req.body.selections.includes('text-message')
+        email: req.body.contactDetails.includes('email') ? req.body['email-value'] : null,
+        wantsEmail: req.body.contactDetails.includes('email'),
+        phone: req.body.contactDetails.includes('text-message') ? req.body['text-message-value'].replace(/\s/g, '') : null,
+        wantsSms: req.body.contactDetails.includes('text-message')
       };
       if (validation) {
         return res.render('appeal-application/contact-details.njk', {
@@ -281,14 +283,16 @@ function postSponsorContactDetails(updateAppealService: UpdateAppealService) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       if (!req.body.selections) {
-        req.body.selections = '';
+        req.body.sponsorContactDetails = '';
+      } else {
+        req.body.sponsorContactDetails = req.body.selections;
       }
       const validation = sponsorContactDetailsValidation(req.body);
       const sponsorContactDetails = {
-        email: req.body.selections.includes('email') ? req.body['email-value'] : null,
-        wantsEmail: req.body.selections.includes('email'),
-        phone: req.body.selections.includes('text-message') ? req.body['text-message-value'].replace(/\s/g, '') : null,
-        wantsSms: req.body.selections.includes('text-message')
+        email: req.body.sponsorContactDetails.includes('email') ? req.body['email-value'] : null,
+        wantsEmail: req.body.sponsorContactDetails.includes('email'),
+        phone: req.body.sponsorContactDetails.includes('text-message') ? req.body['text-message-value'].replace(/\s/g, '') : null,
+        wantsSms: req.body.sponsorContactDetails.includes('text-message')
 
       };
       if (validation) {

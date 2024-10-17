@@ -74,6 +74,7 @@ export default class S2SService implements IS2SService {
     }
     let res;
     for (let i = 0; i < 5; i++) {
+      logger.trace(`Test::: Generating S2S token - '${i}'`, logLabel);
       try {
         res = await axios.post(request.uri, request.body, proxyConfig);
         break;

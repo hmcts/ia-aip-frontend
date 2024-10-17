@@ -41,7 +41,8 @@
     "secret": "IDAM_SECRET"
   },
   "systemUser": {
-    "username": "IA_SYSTEM_USERNAME"
+    "username": "IA_SYSTEM_USERNAME",
+    "password": "IA_SYSTEM_PASSWORD"
   },
   "payments": {
     "apiUrl": "PAYMENTS_API_URL"

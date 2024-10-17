@@ -287,6 +287,7 @@ function getCheckAndSend(paymentService: PaymentService) {
     try {
       const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
       const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, defaultFlag);
+      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
       const { application } = req.session.appeal;
       const hasRemissionOption = appealHasRemissionOption(application);
       const summaryRows = await createSummaryRowsFrom(req);
@@ -305,6 +306,7 @@ function getCheckAndSend(paymentService: PaymentService) {
         ...(paymentsFlag && payNow) && { fee: fee.calculated_amount },
         ...(paymentsFlag && !appealPaid) && { payNow },
         ...(paymentsFlag && appealPaid) && { appealPaid },
+        ...(dlrmFeeRemissionFlag) && { dlrmFeeRemissionFlag },
         ...(hasRemissionOption) && { hasRemissionOption }
       });
     } catch (error) {
@@ -374,13 +376,18 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
       let event;
       let redirectUrl;
       const paymentDetails = JSON.parse(await paymentService.getPaymentDetails(req, req.session.appeal.paymentReference));
+      const dlrmRefundFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
 
       if (paymentDetails.status === 'Success') {
         const appeal: Appeal = {
           ...req.session.appeal,
           paymentStatus: 'Paid',
           paymentDate: paymentDetails.status_histories.filter(event => event.status === 'Success')[0].date_created,
-          isFeePaymentEnabled: 'Yes'
+          isFeePaymentEnabled: 'Yes',
+          application: {
+            ...req.session.appeal.application,
+            refundConfirmationApplied: false
+          }
         };
         req.app.locals.logger.trace(`Payment success`, 'Finishing payment');
         if (req.session.appeal.appealStatus === 'appealStarted') {
@@ -390,7 +397,7 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
           event = Events.PAYMENT_APPEAL;
           redirectUrl = paths.common.confirmationPayment;
         }
-        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true, dlrmRefundFlag);
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated

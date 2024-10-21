@@ -68,6 +68,7 @@ interface Evidence {
   suppliedBy?: string;
   description?: string;
   dateUploaded?: string;
+  dateTimeUploaded?: string;
   uploadedBy?: string;
 }
 
@@ -110,6 +111,7 @@ interface Appeal {
   appealCreatedDate?: string;
   appealLastModified?: string;
   appealReferenceNumber?: string;
+  ccdReferenceNumber?: string;
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   application: AppealApplication;
@@ -117,6 +119,7 @@ interface Appeal {
   hearingRequirements?: HearingRequirements;
   respondentDocuments?: Evidence[];
   hearingDocuments?: Evidence[];
+  reheardHearingDocuments?: Evidence[];
   cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];
@@ -126,6 +129,7 @@ interface Appeal {
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+  reheardHearingDocumentsCollection?: ReheardHearingDocs<Evidence>[];
   hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
@@ -154,6 +158,8 @@ interface Appeal {
   feeDescription?: string;
   feeVersion?: string;
   feeAmountGbp?: string;
+  newFeeAmount?: string;
+  previousFeeAmountGbp?: string;
   additionalEvidenceDocuments?: Evidence[];
   addendumEvidenceDocuments?: Evidence[];
   additionalEvidence?: AdditionalEvidenceDocument[];
@@ -314,6 +320,26 @@ interface AppealApplication {
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
   localAuthorityLetters?: Evidence[];
+
+  lateRemissionOption?: string;
+  lateAsylumSupportRefNumber?: string;
+  lateHelpWithFeesOption?: string;
+  lateHelpWithFeesRefNumber?: string;
+  lateLocalAuthorityLetters?: Evidence[];
+
+  refundRequested?: boolean;
+  remissionDecision?: string;
+  amountLeftToPay?: string;
+  remissionDecisionReason?: string;
+  previousRemissionDetails?: RemissionDetails[];
+  remissionRejectedDatePlus14days?: string;
+  isLateRemissionRequest?: boolean;
+  feeUpdateTribunalAction?: string;
+  feeUpdateReason?: string;
+  manageFeeRefundedAmount?: string;
+  manageFeeRequestedAmount?: string;
+  paidAmount?: string;
+  refundConfirmationApplied?: boolean;
 }
 
 interface CmaRequirements {
@@ -504,6 +530,13 @@ interface ClarifyingQuestion<T> {
   };
 }
 
+interface ReheardHearingDocs<T> {
+  id?: string;
+  value: {
+    reheardHearingDocs?: T[];
+  };
+}
+
 interface AdditionalLanguage {
   language?: string;
   languageDialect?: string;
@@ -522,6 +555,20 @@ interface DecisionAndReasons {
   dateDocumentAndReasonsDocumentUploaded?: string;
   documentAndReasonsDocument?: Evidence;
   summariseChanges?: string;
+}
+
+interface RemissionDetails {
+  id?: string;
+  feeAmount?: string;
+  amountRemitted?: string;
+  amountLeftToPay?: string;
+  feeRemissionType?: string;
+  remissionDecision?: string;
+  asylumSupportReference?: string;
+  remissionDecisionReason?: string;
+  helpWithFeesReferenceNumber?: string;
+  helpWithFeesOption?: string;
+  localAuthorityLetters?: Evidence[];
 }
 
 interface RemittalDetails {

@@ -27,6 +27,7 @@ describe('update-appeal-service', () => {
   const serviceToken = 'serviceToken';
   const caseId = 'caseId';
   const appealReferenceNumber = 'PA/1234/2022';
+  const ccdReferenceNumberForDisplay = '1111 2222 3333 4444';
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -80,6 +81,7 @@ describe('update-appeal-service', () => {
       'journeyType': 'aip',
       'homeOfficeReferenceNumber': 'A1234567',
       'appealReferenceNumber': 'PA/1234/2022',
+      'ccdReferenceNumberForDisplay': '1111 2222 3333 4444',
       'homeOfficeDecisionDate': '2019-01-02',
       'appellantFamilyName': 'Pedro',
       'appellantGivenNames': 'Jimenez',
@@ -173,7 +175,14 @@ describe('update-appeal-service', () => {
       isInterpreterServicesNeeded: 'false',
       isHearingRoomNeeded: 'true',
       isHearingLoopNeeded: 'true',
-      hearingCentre: 'birmingham'
+      hearingCentre: 'birmingham',
+      feeUpdateTribunalAction: 'refund',
+      feeUpdateReason: 'feeRemissionChanged',
+      manageFeeRefundedAmount: '1000',
+      manageFeeRequestedAmount: '1500',
+      paidAmount: '2000',
+      newFeeAmount: '2000',
+      previousFeeAmountGbp: '2000'
     };
 
   });
@@ -194,6 +203,7 @@ describe('update-appeal-service', () => {
       await updateAppealService.loadAppeal(req as Request);
       expect(req.session.appeal.ccdCaseId).eq(caseId);
       expect(req.session.appeal.appealReferenceNumber).eq(appealReferenceNumber);
+      expect(req.session.appeal.ccdReferenceNumber).eq(ccdReferenceNumberForDisplay);
       expect(req.session.appeal.application.appealType).eq('protection');
       expect(req.session.appeal.application.homeOfficeRefNumber).eq('A1234567');
       expect(req.session.appeal.application.personalDetails.familyName).eq('Pedro');
@@ -229,6 +239,13 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.sponsorFamilyName).eq('ABC XYZ');
       expect(req.session.appeal.application.sponsorNameForDisplay).eq('ABC XYZ');
       expect(req.session.appeal.application.sponsorAuthorisation).eq('ABC XYZ');
+      expect(req.session.appeal.application.feeUpdateTribunalAction).eq('refund');
+      expect(req.session.appeal.application.feeUpdateReason).eq('feeRemissionChanged');
+      expect(req.session.appeal.application.manageFeeRefundedAmount).eq('1000');
+      expect(req.session.appeal.application.manageFeeRequestedAmount).eq('1500');
+      expect(req.session.appeal.application.paidAmount).eq('2000');
+      expect(req.session.appeal.newFeeAmount).eq('2000');
+      expect(req.session.appeal.previousFeeAmountGbp).eq('2000');
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -711,7 +728,7 @@ describe('update-appeal-service', () => {
         emptyApplication.application.contactDetails.email = 'abc@example.net';
         emptyApplication.application.contactDetails.wantsSms = true;
         emptyApplication.application.contactDetails.phone = '07123456789';
-        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
 
         expect(caseData).eql(
           {
@@ -721,6 +738,25 @@ describe('update-appeal-service', () => {
             gwfReferenceNumber: null,
             isHearingLoopNeeded: null,
             isHearingRoomNeeded: null,
+            isLateRemissionRequest: 'No',
+            asylumSupportRefNumber: null,
+            decisionHearingFeeOption: null,
+            feeSupportPersisted: 'No',
+            helpWithFeesOption: null,
+            helpWithFeesRefNumber: null,
+            localAuthorityLetters: null,
+            paAppealTypeAipPaymentOption: null,
+            pcqId: null,
+            refundConfirmationApplied: 'No',
+            refundRequested: 'No',
+            remissionDecision: null,
+            remissionOption: null,
+            rpDcAppealHearingOption: null,
+            lateAsylumSupportRefNumber: null,
+            lateHelpWithFeesOption: null,
+            lateHelpWithFeesRefNumber: null,
+            lateLocalAuthorityLetters: null,
+            lateRemissionOption: null,
             journeyType: 'aip',
             subscriptions: [
               {
@@ -740,7 +776,7 @@ describe('update-appeal-service', () => {
       it('converts contactDetails only email', () => {
         emptyApplication.application.contactDetails.wantsEmail = true;
         emptyApplication.application.contactDetails.email = 'abc@example.net';
-        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
 
         expect(caseData).eql(
           {
@@ -749,6 +785,25 @@ describe('update-appeal-service', () => {
             gwfReferenceNumber: null,
             isHearingLoopNeeded: null,
             isHearingRoomNeeded: null,
+            isLateRemissionRequest: 'No',
+            asylumSupportRefNumber: null,
+            decisionHearingFeeOption: null,
+            feeSupportPersisted: 'No',
+            helpWithFeesOption: null,
+            helpWithFeesRefNumber: null,
+            localAuthorityLetters: null,
+            paAppealTypeAipPaymentOption: null,
+            pcqId: null,
+            refundConfirmationApplied: 'No',
+            refundRequested: 'No',
+            remissionDecision: null,
+            remissionOption: null,
+            rpDcAppealHearingOption: null,
+            lateAsylumSupportRefNumber: null,
+            lateHelpWithFeesOption: null,
+            lateHelpWithFeesRefNumber: null,
+            lateLocalAuthorityLetters: null,
+            lateRemissionOption: null,
             appellantEmailAddress: 'abc@example.net',
             subscriptions: [
               {
@@ -768,7 +823,7 @@ describe('update-appeal-service', () => {
       it('converts contactDetails only phone', () => {
         emptyApplication.application.contactDetails.wantsSms = true;
         emptyApplication.application.contactDetails.phone = '07123456789';
-        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
 
         expect(caseData).eql(
           {
@@ -778,6 +833,25 @@ describe('update-appeal-service', () => {
             gwfReferenceNumber: null,
             isHearingLoopNeeded: null,
             isHearingRoomNeeded: null,
+            isLateRemissionRequest: 'No',
+            asylumSupportRefNumber: null,
+            decisionHearingFeeOption: null,
+            feeSupportPersisted: 'No',
+            helpWithFeesOption: null,
+            helpWithFeesRefNumber: null,
+            localAuthorityLetters: null,
+            paAppealTypeAipPaymentOption: null,
+            pcqId: null,
+            refundConfirmationApplied: 'No',
+            refundRequested: 'No',
+            remissionDecision: null,
+            remissionOption: null,
+            rpDcAppealHearingOption: null,
+            lateAsylumSupportRefNumber: null,
+            lateHelpWithFeesOption: null,
+            lateHelpWithFeesRefNumber: null,
+            lateLocalAuthorityLetters: null,
+            lateRemissionOption: null,
             subscriptions: [
               {
                 value: {
@@ -797,7 +871,7 @@ describe('update-appeal-service', () => {
     it('converts time extension when no previous time extensions or current time extensions', () => {
       emptyApplication.askForMoreTime = {};
 
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true);
 
       expect(caseData).contains(
         {
@@ -832,7 +906,7 @@ describe('update-appeal-service', () => {
 
       emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
 
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
 
       expect(caseData).to.deep.eq(
         {
@@ -841,7 +915,26 @@ describe('update-appeal-service', () => {
           'gwfReferenceNumber': null,
           'isHearingLoopNeeded': null,
           'isHearingRoomNeeded': null,
+          'isLateRemissionRequest': 'No',
+          'asylumSupportRefNumber': null,
+          'decisionHearingFeeOption': null,
+          'feeSupportPersisted': 'No',
+          'helpWithFeesOption': null,
+          'helpWithFeesRefNumber': null,
+          'localAuthorityLetters': null,
+          'paAppealTypeAipPaymentOption': null,
+          'pcqId': null,
+          'refundConfirmationApplied': 'No',
+          'refundRequested': 'No',
+          'remissionDecision': null,
+          'remissionOption': null,
+          'lateAsylumSupportRefNumber': null,
+          'lateHelpWithFeesOption': null,
+          'lateHelpWithFeesRefNumber': null,
+          'lateLocalAuthorityLetters': null,
+          'lateRemissionOption': null,
           'reviewTimeExtensionRequired': 'Yes',
+          'rpDcAppealHearingOption': null,
           'submitTimeExtensionReason': 'more time reason',
           'submitTimeExtensionEvidence': [
             {
@@ -856,6 +949,7 @@ describe('update-appeal-service', () => {
         }
       );
     });
+
     it('converts time extension to makeAnApplicationEvidence', () => {
       emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
       emptyApplication.makeAnApplicationEvidence = [
@@ -866,13 +960,31 @@ describe('update-appeal-service', () => {
         }
       ];
 
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
       expect(caseData).to.deep.eq({
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
         'gwfReferenceNumber': null,
         'isHearingLoopNeeded': null,
         'isHearingRoomNeeded': null,
+        'asylumSupportRefNumber': null,
+        'decisionHearingFeeOption': null,
+        'feeSupportPersisted': 'No',
+        'helpWithFeesOption': null,
+        'helpWithFeesRefNumber': null,
+        'paAppealTypeAipPaymentOption': null,
+        'pcqId': null,
+        'isLateRemissionRequest': 'No',
+        'localAuthorityLetters': null,
+        'refundRequested': 'No',
+        'remissionDecision': null,
+        'remissionOption': null,
+        'rpDcAppealHearingOption': null,
+        'lateAsylumSupportRefNumber': null,
+        'lateHelpWithFeesOption': null,
+        'lateHelpWithFeesRefNumber': null,
+        'lateLocalAuthorityLetters': null,
+        'lateRemissionOption': null,
         'makeAnApplicationEvidence': [
           {
             'id': 'id',
@@ -882,7 +994,8 @@ describe('update-appeal-service', () => {
               'document_url': 'someurl'
             }
           }
-        ]
+        ],
+        'refundConfirmationApplied': 'No'
       });
     });
     it('converts uploadTheNoticeOfDecisionDocs', () => {
@@ -897,13 +1010,32 @@ describe('update-appeal-service', () => {
         }
       ];
 
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
       expect(caseData).to.deep.eq({
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
         'gwfReferenceNumber': null,
         'isHearingLoopNeeded': null,
         'isHearingRoomNeeded': null,
+        'isLateRemissionRequest': 'No',
+        'asylumSupportRefNumber': null,
+        'decisionHearingFeeOption': null,
+        'feeSupportPersisted': 'No',
+        'helpWithFeesOption': null,
+        'helpWithFeesRefNumber': null,
+        'localAuthorityLetters': null,
+        'paAppealTypeAipPaymentOption': null,
+        'pcqId': null,
+        'refundConfirmationApplied': 'No',
+        'refundRequested': 'No',
+        'remissionDecision': null,
+        'remissionOption': null,
+        'rpDcAppealHearingOption': null,
+        'lateAsylumSupportRefNumber': null,
+        'lateHelpWithFeesOption': null,
+        'lateHelpWithFeesRefNumber': null,
+        'lateLocalAuthorityLetters': null,
+        'lateRemissionOption': null,
         'uploadTheNoticeOfDecisionDocs': [
           {
             'id': 'fileId',
@@ -1221,6 +1353,61 @@ describe('update-appeal-service', () => {
       });
     });
 
+    describe('previousRemissionDetails', () => {
+      const caseData: Partial<CaseData> = {
+        previousRemissionDetails:
+        [{
+          id: '1',
+          value: {
+            feeAmount: '2000',
+            amountRemitted: '1000',
+            amountLeftToPay: '1000',
+            feeRemissionType: 'type1',
+            remissionDecision: 'decission1',
+            asylumSupportReference: 'refNumber1',
+            remissionDecisionReason: 'decission',
+            helpWithFeesReferenceNumber: 'refNumber2',
+            helpWithFeesOption: 'helpOption',
+            localAuthorityLetters: [
+              {
+                id: 'fa35dcae-ae4c-462d-9cce-6878326875b0',
+                value: {
+                  tag: 'additionalEvidence',
+                  document: {
+                    document_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4',
+                    document_filename: '1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf',
+                    document_binary_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4/binary'
+                  },
+                  dateUploaded: ''
+                }
+              }
+            ]
+          } as RemissionDetailsData
+        }] as RemissionDetailsCollection[]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map previousRemissionDetails', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.application.previousRemissionDetails[0].id).to.be.equals('1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].feeAmount).to.be.equals('2000');
+        expect(mappedAppeal.application.previousRemissionDetails[0].amountRemitted).to.be.equals('1000');
+        expect(mappedAppeal.application.previousRemissionDetails[0].amountLeftToPay).to.be.equals('1000');
+        expect(mappedAppeal.application.previousRemissionDetails[0].feeRemissionType).to.be.equals('type1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].remissionDecision).to.be.equals('decission1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].asylumSupportReference).to.be.equals('refNumber1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].remissionDecisionReason).to.be.equals('decission');
+        expect(mappedAppeal.application.previousRemissionDetails[0].helpWithFeesReferenceNumber).to.be.equals('refNumber2');
+        expect(mappedAppeal.application.previousRemissionDetails[0].helpWithFeesOption).to.be.equals('helpOption');
+        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].id).to.be.equals('fa35dcae-ae4c-462d-9cce-6878326875b0');
+        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].name).to.be.equals('1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].tag).to.be.equals('additionalEvidence');
+
+      });
+    });
+
     describe('ftpaApplicationRespondentDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaApplicationRespondentDocument':
@@ -1419,6 +1606,55 @@ describe('update-appeal-service', () => {
     });
   });
 
+  describe('map the refundConfirmationApplied from Yes value', () => {
+    const testData = [
+      {
+        value: 'Yes',
+        expectation: true
+      },
+      {
+        value: 'No',
+        expectation: false
+      },
+      {
+        value: null,
+        expectation: undefined
+      }
+    ];
+
+    testData.forEach(({ value, expectation }) => {
+      it(`mapped value should be ${expectation}`, () => {
+        const caseData: Partial<CaseData> = {
+          'refundConfirmationApplied': value
+        };
+
+        const appeal: Partial<CcdCaseDetails> = {
+          case_data: caseData as CaseData
+        };
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.application.refundConfirmationApplied).to.be.eq(expectation);
+      });
+    });
+  });
+
+  describe('remissionRejectedDatePlus14days and amountLeftToPay mappings', () => {
+    const caseData: Partial<CaseData> = {
+      'remissionRejectedDatePlus14days': '2022-01-26',
+      'amountLeftToPay': '4000'
+    };
+
+    const appeal: Partial<CcdCaseDetails> = {
+      case_data: caseData as CaseData
+    };
+
+    it('should map remissionRejectedDatePlus14days and amountLeftToPay', () => {
+      const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+      expect(mappedAppeal.application.amountLeftToPay).eq('4000');
+      expect(mappedAppeal.application.remissionRejectedDatePlus14days).eq('2022-01-26');
+    });
+  });
+
   describe('submitEvent', () => {
     let expectedCaseData: Partial<CaseData>;
     let ccdService2: Partial<CcdService>;
@@ -1512,7 +1748,19 @@ describe('update-appeal-service', () => {
                 dateUploaded: '2020-01-01',
                 'description': 'Some evidence 1',
                 'tag': 'additionalEvidence'
-              }]
+              }],
+              lateRemissionOption: 'test',
+              lateAsylumSupportRefNumber: 'test',
+              lateHelpWithFeesOption: 'test',
+              lateHelpWithFeesRefNumber: 'HWF-123',
+              lateLocalAuthorityLetters: [{
+                name: 'somefile.png',
+                fileId: '00000000-0000-0000-0000-000000000000',
+                dateUploaded: '2020-01-01',
+                'description': 'Some evidence 1',
+                'tag': 'additionalEvidence'
+              }],
+              remissionDecision: 'approved'
             } as AppealApplication,
             reasonsForAppeal: {
               applicationReason: 'I\'ve decided to appeal because ...',
@@ -1639,7 +1887,6 @@ describe('update-appeal-service', () => {
         'sponsorGivenNames': 'ABC XYZ',
         'sponsorFamilyName': 'ABC XYZ',
         'sponsorNameForDisplay': 'ABC XYZ',
-        'sponsorAuthorisation': 'ABC XYZ',
         'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
         'reasonsForAppealDocuments': [
           {
@@ -1978,6 +2225,115 @@ describe('update-appeal-service', () => {
       it('should map docs to decision and Reasons documents', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
         expect(mappedAppeal.finalDecisionAndReasonsDocuments).to.be.length(2);
+      });
+    });
+
+    describe('reheardHearingDocuments', () => {
+      const caseData: Partial<CaseData> = {
+        'reheardHearingDocumentsCollection': [
+          {
+            'id': '2',
+            'value': {
+              'reheardHearingDocs': [
+                {
+                  'id': '3',
+                  'value': {
+                    'tag': 'hearingBundle',
+                    'document': {
+                      'document_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/b74d55c7-2640-436a-a0d2-57d078fad6db',
+                      'document_filename': 'PA 62793 2024-González-remitted-hearing-bundle.pdf',
+                      'document_binary_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/b74d55c7-2640-436a-a0d2-57d078fad6db/binary'
+                    },
+                    'description': '',
+                    'dateUploaded': '2024-06-18'
+                  }
+                },
+                {
+                  'id': '2',
+                  'value': {
+                    'tag': 'caseSummary',
+                    'document': {
+                      'document_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/c0e08c6e-82b5-439d-bcd3-4b3fae39cc4d',
+                      'document_filename': 'mockFile.pdf',
+                      'document_binary_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/c0e08c6e-82b5-439d-bcd3-4b3fae39cc4d/binary'
+                    },
+                    'description': 'case summary reheard 2',
+                    'dateUploaded': '2024-06-18'
+                  }
+                },
+                {
+                  'id': '1',
+                  'value': {
+                    'tag': 'reheardHearingNotice',
+                    'document': {
+                      'document_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/0ae399f0-060e-4eaf-9d66-3d5f8594582a',
+                      'document_filename': 'PA 62793 2024-Gonzlez-hearing-notice.PDF',
+                      'document_binary_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/0ae399f0-060e-4eaf-9d66-3d5f8594582a/binary'
+                    },
+                    'suppliedBy': '',
+                    'description': '',
+                    'dateUploaded': '2024-06-18'
+                  }
+                }
+              ]
+            }
+          },
+          {
+            'id': '1',
+            'value': {
+              'reheardHearingDocs': [
+                {
+                  'id': '3',
+                  'value': {
+                    'tag': 'hearingBundle',
+                    'document': {
+                      'document_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/9ec402f6-2685-4c07-b2cb-9804c4b446c0',
+                      'document_filename': 'PA 62793 2024-González-remitted-hearing-bundle.pdf',
+                      'document_binary_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/9ec402f6-2685-4c07-b2cb-9804c4b446c0/binary'
+                    },
+                    'description': '',
+                    'dateUploaded': '2024-06-18'
+                  }
+                },
+                {
+                  'id': '2',
+                  'value': {
+                    'tag': 'caseSummary',
+                    'document': {
+                      'document_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/e6f5a697-474f-45d3-b47e-3f36295fafe9',
+                      'document_filename': 'set-aside-makeapplication-decideftpaapplication-updatetribunaldecision-aat 1.pdf',
+                      'document_binary_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/e6f5a697-474f-45d3-b47e-3f36295fafe9/binary'
+                    },
+                    'description': 'test',
+                    'dateUploaded': '2024-06-11'
+                  }
+                },
+                {
+                  'id': '1',
+                  'value': {
+                    'tag': 'reheardHearingNotice',
+                    'document': {
+                      'document_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/130e0a7b-54e7-4f88-8355-bfe2d0fd452a',
+                      'document_filename': 'PA 62793 2024-Gonzlez-hearing-notice.PDF',
+                      'document_binary_url': 'http://dm-store-aat.service.core-compute-aat.internal/documents/130e0a7b-54e7-4f88-8355-bfe2d0fd452a/binary'
+                    },
+                    'suppliedBy': '',
+                    'description': '',
+                    'dateUploaded': '2024-06-11'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map docs to reheard hearing bundle documents', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.reheardHearingDocumentsCollection).to.be.length(2);
       });
     });
 

@@ -52,7 +52,8 @@
     "caseType": "Asylum"
   },
   "systemUser": {
-    "username": "IA_SYSTEM_USERNAME"
+    "username": "IA_SYSTEM_USERNAME",
+    "password": "IA_SYSTEM_PASSWORD"
   },
   "launchDarkly": {
     "sdkKey": "LAUNCH_DARKLY_SDK_KEY"
@@ -88,7 +89,8 @@
     "pendingPayment": 14,
     "afterReasonsForAppeal": 14,
     "afterCQSubmission": 7,
-    "outOfCountry": 28
+    "outOfCountry": 28,
+    "fromRemissionAppliedDate": 14
   },
   "features": {
     "askForMoreTime": false,

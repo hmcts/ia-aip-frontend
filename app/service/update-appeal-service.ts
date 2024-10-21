@@ -104,12 +104,12 @@ export default class UpdateAppealService {
     return updatedAppeal;
   }
 
-  async submitEventRefactored(event, appeal: Appeal, uid: string, userToken: string, paymentsFlag = false): Promise<Appeal> {
+  async submitEventRefactored(event, appeal: Appeal, uid: string, userToken: string, paymentsFlag = false, refundFlag = false): Promise<Appeal> {
     const securityHeaders: SecurityHeaders = {
       userToken: `Bearer ${userToken}`,
       serviceToken: await this._s2sService.getServiceToken()
     };
-    const caseData: CaseData = this.convertToCcdCaseData(appeal, paymentsFlag);
+    const caseData: CaseData = this.convertToCcdCaseData(appeal, paymentsFlag, refundFlag);
     const updatedCcdCase: CcdCaseDetails = {
       id: appeal.ccdCaseId,
       state: appeal.appealStatus,
@@ -163,6 +163,7 @@ export default class UpdateAppealService {
     let documentMap: DocumentMap[] = [];
     let updatedDecisionAndReasons: DecisionAndReasons[] = null;
     let rule32NoticeDocs: Evidence = null;
+    let previousRemissionDetails: RemissionDetails[] = null;
     let remittalDocuments: RemittalDetails[] = null;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
@@ -540,12 +541,37 @@ export default class UpdateAppealService {
       rule32NoticeDocs = this.mapSupportingDocumentToEvidence(caseData.rule32NoticeDocument, documentMap);
     }
 
+    if (caseData.previousRemissionDetails) {
+      const previousRemissionDetailsData = caseData.previousRemissionDetails || [];
+      previousRemissionDetails = previousRemissionDetailsData.map(remissionDetail => {
+        let localAuthorityLetters = [];
+        if (remissionDetail.value.localAuthorityLetters && remissionDetail.value.localAuthorityLetters.length > 0) {
+          let documentMapLocalAuthorityLetters: DocumentMap[] = [];
+          localAuthorityLetters = this.mapDocsWithMetadataToEvidenceArray(remissionDetail.value.localAuthorityLetters, documentMapLocalAuthorityLetters);
+        }
+        return {
+          id: remissionDetail.id,
+          feeAmount: remissionDetail.value.feeAmount,
+          amountRemitted: remissionDetail.value.amountRemitted,
+          amountLeftToPay: remissionDetail.value.amountLeftToPay,
+          feeRemissionType: remissionDetail.value.feeRemissionType,
+          remissionDecision: remissionDetail.value.remissionDecision,
+          asylumSupportReference: remissionDetail.value.asylumSupportReference,
+          remissionDecisionReason: remissionDetail.value.remissionDecisionReason,
+          helpWithFeesReferenceNumber: remissionDetail.value.helpWithFeesReferenceNumber,
+          helpWithFeesOption: remissionDetail.value.helpWithFeesOption,
+          localAuthorityLetters: localAuthorityLetters
+        } as RemissionDetails;
+      });
+    }
+
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
       appealCreatedDate: ccdCase.created_date,
       appealLastModified: ccdCase.last_modified,
       appealReferenceNumber: caseData.appealReferenceNumber,
+      ccdReferenceNumber: caseData.ccdReferenceNumberForDisplay,
       removeAppealFromOnlineReason: caseData.removeAppealFromOnlineReason,
       removeAppealFromOnlineDate: formatDate(caseData.removeAppealFromOnlineDate),
       isDecisionAllowed: caseData.isDecisionAllowed,
@@ -604,7 +630,25 @@ export default class UpdateAppealService {
         helpWithFeesOption: caseData.helpWithFeesOption,
         helpWithFeesRefNumber: caseData.helpWithFeesRefNumber,
         ...caseData.localAuthorityLetters && { localAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.localAuthorityLetters, documentMap) },
-        feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined
+        feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined,
+        refundRequested: caseData.refundRequested ? yesNoToBool(caseData.refundRequested) : undefined,
+        remissionDecision: caseData.remissionDecision,
+        lateRemissionOption: caseData.lateRemissionOption,
+        lateAsylumSupportRefNumber: caseData.lateAsylumSupportRefNumber,
+        lateHelpWithFeesOption: caseData.lateHelpWithFeesOption,
+        lateHelpWithFeesRefNumber: caseData.lateHelpWithFeesRefNumber,
+        ...caseData.lateLocalAuthorityLetters && { lateLocalAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.lateLocalAuthorityLetters, documentMap) },
+        ...caseData.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: caseData.remissionRejectedDatePlus14days },
+        ...caseData.amountLeftToPay && { amountLeftToPay: caseData.amountLeftToPay },
+        previousRemissionDetails: previousRemissionDetails,
+        remissionDecisionReason: caseData.remissionDecisionReason,
+        isLateRemissionRequest: caseData.isLateRemissionRequest ? yesNoToBool(caseData.isLateRemissionRequest) : undefined,
+        feeUpdateTribunalAction: caseData.feeUpdateTribunalAction,
+        feeUpdateReason: caseData.feeUpdateReason,
+        manageFeeRefundedAmount: caseData.manageFeeRefundedAmount,
+        manageFeeRequestedAmount: caseData.manageFeeRequestedAmount,
+        paidAmount: caseData.paidAmount,
+        refundConfirmationApplied: caseData.refundConfirmationApplied ? yesNoToBool(caseData.refundConfirmationApplied) : undefined
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -616,6 +660,7 @@ export default class UpdateAppealService {
       ...(_.has(caseData, 'remittalDocuments')) && { remittalDocuments },
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
       ...caseData.clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers: this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers, documentMap) },
+      ...caseData.reheardHearingDocumentsCollection && { reheardHearingDocumentsCollection: this.mapCcdReheardHearingDocsToAppeal(caseData.reheardHearingDocumentsCollection, documentMap) },
       cmaRequirements,
       hearingRequirements,
       askForMoreTime: {
@@ -628,12 +673,12 @@ export default class UpdateAppealService {
         date: listHearingDate
       },
       ...caseData.respondentDocuments && { respondentDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.respondentDocuments, documentMap) },
-      ...caseData.hearingDocuments && { hearingDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.hearingDocuments, documentMap) },
       ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments, documentMap) },
       ...caseData.additionalEvidenceDocuments && { additionalEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.additionalEvidenceDocuments, documentMap) },
       ...caseData.addendumEvidenceDocuments && { addendumEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.addendumEvidenceDocuments, documentMap) },
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.hearingDocuments && { hearingDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.hearingDocuments, documentMap) },
+      ...caseData.reheardHearingDocuments && { reheardHearingDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.reheardHearingDocuments, documentMap) },
       ...caseData.finalDecisionAndReasonsDocuments && { finalDecisionAndReasonsDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.finalDecisionAndReasonsDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
@@ -655,6 +700,8 @@ export default class UpdateAppealService {
       ...caseData.feeDescription && { feeDescription: caseData.feeDescription },
       ...caseData.feeVersion && { feeVersion: caseData.feeVersion },
       ...caseData.feeAmountGbp && { feeAmountGbp: caseData.feeAmountGbp },
+      ...caseData.newFeeAmount && { newFeeAmount: caseData.newFeeAmount },
+      ...caseData.previousFeeAmountGbp && { previousFeeAmountGbp: caseData.previousFeeAmountGbp },
       ...caseData.ftpaApplicantType && { ftpaApplicantType: caseData.ftpaApplicantType },
       ...caseData.ftpaAppellantEvidenceDocuments && { ftpaAppellantEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantEvidenceDocuments, documentMap) },
       ...caseData.ftpaAppellantGroundsDocuments && { ftpaAppellantGroundsDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantGroundsDocuments, documentMap) },
@@ -690,7 +737,7 @@ export default class UpdateAppealService {
     return appeal;
   }
 
-  convertToCcdCaseData(appeal: Appeal, paymentsFlag = false) {
+  convertToCcdCaseData(appeal: Appeal, paymentsFlag = false, refundFlag = false) {
     let caseData = {
       journeyType: 'aip'
     } as CaseData;
@@ -776,22 +823,27 @@ export default class UpdateAppealService {
         caseData.appealType = appeal.application.appealType;
       }
 
+      caseData.remissionOption = null;
       if (appeal.application.remissionOption) {
         caseData.remissionOption = appeal.application.remissionOption;
       }
 
+      caseData.asylumSupportRefNumber = null;
       if (appeal.application.asylumSupportRefNumber) {
         caseData.asylumSupportRefNumber = appeal.application.asylumSupportRefNumber;
       }
 
+      caseData.helpWithFeesOption = null;
       if (appeal.application.helpWithFeesOption) {
         caseData.helpWithFeesOption = appeal.application.helpWithFeesOption;
       }
 
+      caseData.helpWithFeesRefNumber = null;
       if (appeal.application.helpWithFeesRefNumber) {
         caseData.helpWithFeesRefNumber = appeal.application.helpWithFeesRefNumber;
       }
 
+      caseData.localAuthorityLetters = null;
       if (appeal.application.localAuthorityLetters) {
         const evidences: Evidence[] = appeal.application.localAuthorityLetters;
 
@@ -800,7 +852,7 @@ export default class UpdateAppealService {
           return {
             ...evidence.fileId && { id: evidence.fileId },
             value: {
-              dateUploaded: evidence.dateUploaded,
+              dateUploaded: evidence.dateUploaded || '',
               description: evidence.description,
               tag: 'additionalEvidence',
               document: {
@@ -813,8 +865,58 @@ export default class UpdateAppealService {
         });
       }
 
-      if (appeal.application.feeSupportPersisted) {
-        caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
+      caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
+
+      if (paymentsFlag && refundFlag) {
+        caseData.refundRequested = appeal.application.refundRequested ? YesOrNo.YES : YesOrNo.NO;
+        caseData.isLateRemissionRequest = appeal.application.isLateRemissionRequest ? YesOrNo.YES : YesOrNo.NO;
+        caseData.remissionDecision = null;
+        if (appeal.application.remissionDecision) {
+          caseData.remissionDecision = appeal.application.remissionDecision;
+        }
+
+        caseData.lateRemissionOption = null;
+        if (appeal.application.lateRemissionOption) {
+          caseData.lateRemissionOption = appeal.application.lateRemissionOption;
+        }
+
+        caseData.lateAsylumSupportRefNumber = null;
+        if (appeal.application.lateAsylumSupportRefNumber) {
+          caseData.lateAsylumSupportRefNumber = appeal.application.lateAsylumSupportRefNumber;
+        }
+
+        caseData.lateHelpWithFeesOption = null;
+        if (appeal.application.lateHelpWithFeesOption) {
+          caseData.lateHelpWithFeesOption = appeal.application.lateHelpWithFeesOption;
+        }
+
+        caseData.lateHelpWithFeesRefNumber = null;
+        if (appeal.application.lateHelpWithFeesRefNumber) {
+          caseData.lateHelpWithFeesRefNumber = appeal.application.lateHelpWithFeesRefNumber;
+        }
+
+        caseData.lateLocalAuthorityLetters = null;
+        if (appeal.application.lateLocalAuthorityLetters) {
+          const evidences: Evidence[] = appeal.application.lateLocalAuthorityLetters;
+
+          caseData.lateLocalAuthorityLetters = evidences.map((evidence: Evidence) => {
+            const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+            return {
+              ...evidence.fileId && { id: evidence.fileId },
+              value: {
+                dateUploaded: evidence.dateUploaded || '',
+                description: evidence.description,
+                tag: 'additionalEvidence',
+                document: {
+                  document_filename: evidence.name,
+                  document_url: documentLocationUrl,
+                  document_binary_url: `${documentLocationUrl}/binary`
+                }
+              }
+            } as Collection<DocumentWithMetaData>;
+          });
+        }
+        caseData.refundConfirmationApplied = appeal.application.refundConfirmationApplied ? YesOrNo.YES : YesOrNo.NO;
       }
 
       if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
@@ -886,11 +988,8 @@ export default class UpdateAppealService {
           }
           caseData.sponsorSubscriptions = [{ value: sponsorSubscription }];
         }
-
-        if (appeal.application.sponsorAuthorisation) {
-          caseData.sponsorAuthorisation = appeal.application.sponsorAuthorisation;
-        }
       }
+
     }
 
     if (_.has(appeal, 'reasonsForAppeal')) {
@@ -1186,6 +1285,9 @@ export default class UpdateAppealService {
       ...appeal.clarifyingQuestionsAnswers && {
         clarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.clarifyingQuestionsAnswers, appeal.documentMap)
       },
+      ...appeal.reheardHearingDocumentsCollection && {
+        reheardHearingDocumentsCollection: this.mapAppealReheardHearingDocsToCcd(appeal.reheardHearingDocumentsCollection, appeal.documentMap)
+      },
       ...appeal.application.homeOfficeLetter && {
         uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
       },
@@ -1206,7 +1308,9 @@ export default class UpdateAppealService {
       },
       ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },
       ...appeal.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: appeal.ftpaAppellantOutOfTimeExplanation },
-      ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime }
+      ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime },
+      ...appeal.application.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: appeal.application.remissionRejectedDatePlus14days },
+      ...appeal.application.amountLeftToPay && { amountLeftToPay: appeal.application.amountLeftToPay }
     };
     return caseData;
   }
@@ -1296,6 +1400,38 @@ export default class UpdateAppealService {
     });
   }
 
+  private mapCcdReheardHearingDocsToAppeal(reheardHearingDocumentsCollection: ReheardHearingDocs<Collection<DocumentWithMetaData>>[], documentMap: DocumentMap[]): ReheardHearingDocs<Evidence>[] {
+    return reheardHearingDocumentsCollection.map(doc => {
+      let evidencesList: Evidence[] = [];
+      if (doc.value.reheardHearingDocs) {
+        evidencesList = doc.value.reheardHearingDocs.map(e => this.mapDocWithMetadataToEvidence(e, documentMap));
+      }
+      return {
+        id: doc.id,
+        value: {
+          reheardHearingDocs: evidencesList
+        }
+      };
+    });
+  }
+
+  private mapAppealReheardHearingDocsToCcd(reheardHearingDocs: ReheardHearingDocs<Evidence>[], documentMap: DocumentMap[]): ReheardHearingDocs<Collection<DocumentWithMetaData>>[] {
+    const ccdCQ = reheardHearingDocs.map((answer: ReheardHearingDocs<Evidence>): ReheardHearingDocs<Collection<DocumentWithMetaData>> => {
+      let reheardHearingDocs: Collection<DocumentWithMetaData>[];
+      if (answer.value.reheardHearingDocs) {
+        reheardHearingDocs = answer.value.reheardHearingDocs.map(evidence => this.mapEvidenceToReheardHearingDocs(evidence, documentMap));
+      }
+      return {
+        ...answer,
+        value: {
+          ...answer.value,
+          ...answer.value.reheardHearingDocs && { reheardHearingDocs }
+        }
+      };
+    });
+    return ccdCQ;
+  }
+
   private mapAppealClarifyingQuestionsToCcd(clarifyingQuestions: ClarifyingQuestion<Evidence>[], documentMap: DocumentMap[]): ClarifyingQuestion<Collection<SupportingDocument>>[] {
     const ccdCQ = clarifyingQuestions.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
       let supportingEvidence: Collection<SupportingDocument>[];
@@ -1312,6 +1448,7 @@ export default class UpdateAppealService {
     });
     return ccdCQ;
   }
+
   // TODO: remove method if not needed
   private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
 
@@ -1352,6 +1489,24 @@ export default class UpdateAppealService {
     };
   }
 
+  private mapEvidenceToReheardHearingDocs(evidence: Evidence, documentMap: DocumentMap[]): Collection<DocumentWithMetaData> {
+    const documentUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
+    return {
+      id: evidence.id,
+      value: {
+        tag: evidence.tag,
+        document: {
+          document_filename: evidence.name,
+          document_url: documentUrl,
+          document_binary_url: `${documentUrl}/binary`
+        },
+        description: evidence.description,
+        dateUploaded: evidence.dateUploaded,
+        dateTimeUploaded: evidence.dateTimeUploaded
+      }
+    };
+  }
+
   private mapToTimeExtensionEvidenceCollection(evidences: Evidence[], appeal: Appeal): TimeExtensionEvidenceCollection[] {
     return evidences ? evidences.map((evidence) => {
       const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
@@ -1366,19 +1521,23 @@ export default class UpdateAppealService {
   }
 
   private mapDocsWithMetadataToEvidenceArray = (docs: Collection<DocumentWithMetaData>[], documentMap: DocumentMap[]): Evidence[] => {
-    const evidences = docs.map((doc: Collection<DocumentWithMetaData>): Evidence => {
-      const fileId = this._documentManagementService.addToDocumentMapper(doc.value.document.document_url, documentMap);
-      return {
-        fileId,
-        name: doc.value.document.document_filename,
-        ...doc.id && { id: doc.id },
-        ...doc.value.tag && { tag: doc.value.tag },
-        ...doc.value.suppliedBy && { suppliedBy: doc.value.suppliedBy },
-        ...doc.value.description && { description: doc.value.description },
-        ...doc.value.dateUploaded && { dateUploaded: doc.value.dateUploaded }
-      };
+    return docs.map((doc: Collection<DocumentWithMetaData>): Evidence => {
+      return this.mapDocWithMetadataToEvidence(doc, documentMap);
     });
-    return evidences;
+  }
+
+  private mapDocWithMetadataToEvidence = (doc: Collection<DocumentWithMetaData>, documentMap: DocumentMap[]): Evidence => {
+    const fileId = this._documentManagementService.addToDocumentMapper(doc.value.document.document_url, documentMap);
+    return {
+      fileId,
+      name: doc.value.document.document_filename,
+      ...doc.id && { id: doc.id },
+      ...doc.value.tag && { tag: doc.value.tag },
+      ...doc.value.suppliedBy && { suppliedBy: doc.value.suppliedBy },
+      ...doc.value.description && { description: doc.value.description },
+      ...doc.value.dateUploaded && { dateUploaded: doc.value.dateUploaded },
+      ...doc.value.dateTimeUploaded && { dateTimeUploaded: doc.value.dateTimeUploaded }
+    };
   }
 
   private mapAdditionalEvidenceToDocumentWithDescriptionArray = (docs: AdditionalEvidence[], documentMap: DocumentMap[]): Evidence[] => {

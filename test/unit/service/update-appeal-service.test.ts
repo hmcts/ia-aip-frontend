@@ -1887,6 +1887,7 @@ describe('update-appeal-service', () => {
         'sponsorGivenNames': 'ABC XYZ',
         'sponsorFamilyName': 'ABC XYZ',
         'sponsorNameForDisplay': 'ABC XYZ',
+        'sponsorAuthorisation': 'ABC XYZ',
         'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
         'reasonsForAppealDocuments': [
           {

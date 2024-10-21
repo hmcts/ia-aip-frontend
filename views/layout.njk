@@ -110,19 +110,6 @@
   <a class="cancel-button" href="{{ previousPage }}">{{ i18n.common.buttons.cancel }}</a>
 {% endmacro %}
 
-{% macro cancelButtonWithAttributes(previousPage, errors=None) %}
-  {# Check if errors is present #}
-  {% if error or errors %}
-    <a class="cancel-button" href="javascript:void(0);" onclick="history.go(-1); return false;">
-      {{ i18n.common.buttons.cancel }}
-    </a>
-  {% else %}
-    <a class="cancel-button" href="#" onclick="{{ previousPage.attributes.onclick }}">
-      {{ i18n.common.buttons.cancel }}
-    </a>
-  {% endif %}
-{% endmacro %}
-
 {% macro saveAndContinueButton() %}
   {{ govukButton({
     text: "Save and continue"

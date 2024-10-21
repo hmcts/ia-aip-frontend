@@ -10,16 +10,11 @@
             errorList: errorList
         }) }}
     {% endif %}
-    <form method="post" action={{ formAction }}>
+    <form method="post" action={{ paths.awaitingReasonsForAppeal.stepsToApplyForHelpWithFees }}>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <h1 class="govuk-heading-xl">{{ i18n.pages.stepsToHelpWithFees.title }}</h1>
         <div>
-            {% if refundJourney %}
-                <p>{{ i18n.pages.stepsToHelpWithFees.tipsRefund }}</p>
-            {% else %}
-                <p>{{ i18n.pages.stepsToHelpWithFees.tips }}</p>
-            {% endif %}
-
+            <p>{{ i18n.pages.stepsToHelpWithFees.tips }}</p>
             <ol class="govuk-list govuk-list--number">
                 <li> {{ i18n.pages.stepsToHelpWithFees.bullet1 | safe }} </li>
                 <li> {{ i18n.pages.stepsToHelpWithFees.bullet2 }} </li>
@@ -29,18 +24,20 @@
             </ol>
         </div>
 
-        {% if refundJourney %}
-            {{ continueButton() }}
-            {{ canelButton() }}
-        {% else %}
-            {{ continueButton() }}
+        <div class="save-buttons__container">
+            {{ govukButton({
+                name: 'continue',
+                text: i18n.common.buttons.continue,
+                classes: "govuk-!-margin-right-1"
+            }) }}
+
             {{ govukButton({
                 text: i18n.common.buttons.saveForLater,
                 name: "saveForLater",
                 value: "saveForLater",
                 classes: "govuk-button--secondary"
             }) }}
-        {% endif %}
+        </div>
     </form>
     {{ contactUs() }}
 {% endblock %}

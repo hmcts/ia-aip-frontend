@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { any } from 'joi';
 import * as paymentsApi from '../../../app/api/payments-api';
 import { paths } from '../../../app/paths';
 import { AuthenticationService } from '../../../app/service/authentication-service';
@@ -46,11 +45,7 @@ describe('Payments Service', () => {
       },
       session: {
         appeal: {
-          ccdCaseId: 'aCcdCaseId',
-          application: {
-            contactDetails: {},
-            personalDetails: {}
-          }
+          ccdCaseId: 'aCcdCaseId'
         }
       }
     } as Partial<Request>;
@@ -92,7 +87,6 @@ describe('Payments Service', () => {
 
     it('should initiate a payment if payment reference is present and status is Success initiatePayment', async () => {
       req.session.appeal.paymentReference = 'aRef';
-      req.session.appeal.application.refundConfirmationApplied = false;
       paymentDetailsStub = sandbox.stub(paymentsApi, 'paymentDetails').resolves(JSON.stringify({ status: 'Success' }));
       await paymentService.initiatePayment(req as Request, res as Response, 'aFee');
 

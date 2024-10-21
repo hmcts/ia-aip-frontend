@@ -9,18 +9,17 @@ import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { appealHasRemissionOption, paymentForAppealHasBeenMade } from './remission-utils';
+import { transferredToUpperTribunal } from './application-state-utils';
 import {
-  getAppellantApplications,
-  getApplicant,
-  getFtpaApplicantType,
-  getLatestUpdateRemissionDecionsEventHistory,
-  getLatestUpdateTribunalDecisionHistory,
-  isFtpaFeatureEnabled,
-  isNonStandardDirectionEnabled,
-  isReadonlyApplicationEnabled,
-  isUpdateTribunalDecideWithRule31,
-  isUpdateTribunalDecideWithRule32
+    getAppellantApplications,
+    getApplicant,
+    getFtpaApplicantType,
+    getLatestUpdateTribunalDecisionHistory,
+    isFtpaFeatureEnabled,
+    isNonStandardDirectionEnabled,
+    isReadonlyApplicationEnabled,
+    isUpdateTribunalDecideWithRule31,
+    isUpdateTribunalDecideWithRule32
 } from './utils';
 
 /**
@@ -266,7 +265,6 @@ function getUpdateTribunalDecisionDocumentHistory(req: Request, ftpaSetAsideFeat
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
-  const { application } = req.session.appeal;
   const ccdService = updateAppealService.getCcdService();
   req.session.appeal.history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
 
@@ -274,8 +272,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
   const ftpaFeatureEnabled: boolean = await isFtpaFeatureEnabled(req);
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
-  const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
-  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled, refundFeatureEnabled);
+  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
   let appealHearingRequirementsSection = constructSection(
@@ -296,28 +293,20 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const applicationEvents = getApplicationEvents(req);
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
-  const directionsHistory = getDirectionHistory(req);
   let paymentEvent = [];
-  let appealRemissionSection: any[];
-  let appealRemissionDecisionSection: any[];
-  let manageAFeeUpdate: any[];
-  let argumentSection: any[];
-  const manageAFeeUpdateEvents = req.session.appeal.history.filter(event => Events.MANAGE_A_FEE_UPDATE.id.includes(event.id));
-
-  if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application) && application.isLateRemissionRequest) {
-    const remissionEvent = getApplicationHistoryRemissionEvent(paymentDate);
-    appealRemissionSection = appealArgumentSection.concat(applicationEvents, remissionEvent, submitCQHistory, directionsHistory)
-      .sort((a: any, b: any) => b.dateObject - a.dateObject);
-  } else if (paymentStatus === 'Paid' && refundFeatureEnabled && !application.isLateRemissionRequest && manageAFeeUpdateEvents.length > 0) {
-    manageAFeeUpdate = getApplicationHistoryManageAFeeUpdate(manageAFeeUpdateEvents);
-  } else if (paymentStatus === 'Paid' && paymentForAppealHasBeenMade(req)) {
-    paymentEvent = getApplicationHistoryPaymentEvent(paymentDate);
+  if (paymentStatus === 'Paid') {
+    paymentEvent = [{
+      date: moment(paymentDate).format('DD MMMM YYYY'),
+      dateObject: new Date(paymentDate),
+      text: i18n.pages.overviewPage.timeline.paymentAppeal.text || null,
+      links: i18n.pages.overviewPage.timeline.paymentAppeal.links
+    }];
   }
 
-  argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
-    .sort((a: any, b: any) => b.dateObject - a.dateObject);
+  const directionsHistory = getDirectionHistory(req);
 
-  appealRemissionDecisionSection = getApplicationHistoryAppealRemissionSection(req, manageAFeeUpdate, refundFeatureEnabled, appealRemissionSection, application, applicationEvents, submitCQHistory, directionsHistory);
+  const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
+        .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
   const updatedTribunalDecisionDocumentHistory = getUpdateTribunalDecisionDocumentHistory(req, ftpaSetAsideFeatureEnabled);
@@ -330,65 +319,14 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     ...(appealHearingRequirementsSection && appealHearingRequirementsSection.length > 0) &&
         { appealHearingRequirementsSection: appealHearingRequirementsSection },
     appealArgumentSection: argumentSection,
-    appealDetailsSection: appealDetailsSection,
-    ...(appealRemissionSection && appealRemissionSection.length > 0) &&
-    { appealRemissionSection: appealRemissionSection },
-    ...(appealRemissionDecisionSection && appealRemissionDecisionSection.length > 0) &&
-    { appealRemissionDecisionSection: appealRemissionDecisionSection }
+    appealDetailsSection: appealDetailsSection
   };
-}
-
-function getApplicationHistoryRemissionEvent(paymentDate: string) {
-  return [{
-    date: moment(paymentDate).format('DD MMMM YYYY'),
-    dateObject: new Date(paymentDate),
-    text: i18n.pages.overviewPage.timeline.refundAppeal.text || null,
-    links: i18n.pages.overviewPage.timeline.refundAppeal.links
-  }];
-}
-
-function getApplicationHistoryManageAFeeUpdate(manageAFeeUpdateEvents) {
-  return [{
-    date: moment(manageAFeeUpdateEvents[0].createdDate).format('DD MMMM YYYY'),
-    dateObject: new Date(manageAFeeUpdateEvents[0].createdDate),
-    text: i18n.pages.overviewPage.timeline.manageFeeUpdate.text || null,
-    links: i18n.pages.overviewPage.timeline.manageFeeUpdate.links
-  }];
-}
-
-function getApplicationHistoryPaymentEvent(paymentDate) {
-  return [{
-    date: moment(paymentDate).format('DD MMMM YYYY'),
-    dateObject: new Date(paymentDate),
-    text: i18n.pages.overviewPage.timeline.paymentAppeal.text || null,
-    links: i18n.pages.overviewPage.timeline.paymentAppeal.links
-  }];
-}
-
-function getApplicationHistoryAppealRemissionSection(req, manageAFeeUpdate, refundFeatureEnabled, appealRemissionSection, application, applicationEvents, submitCQHistory, directionsHistory) {
-  if (manageAFeeUpdate) {
-    return manageAFeeUpdate;
-  } else if (refundFeatureEnabled && application.remissionDecision) {
-    const latestUpdateRemissionDecisionHistory = getLatestUpdateRemissionDecionsEventHistory(req, refundFeatureEnabled);
-    const decisionRemissionEvent = [{
-      date: moment(latestUpdateRemissionDecisionHistory.createdDate).format('DD MMMM YYYY'),
-      dateObject: new Date(latestUpdateRemissionDecisionHistory.createdDate),
-      text: i18n.pages.overviewPage.timeline.feeRemissionDecision.text || null,
-      links: i18n.pages.overviewPage.timeline.feeRemissionDecision.links
-    }];
-    if (appealRemissionSection) {
-      return decisionRemissionEvent.concat(appealRemissionSection);
-    } else {
-      return decisionRemissionEvent.concat(applicationEvents, submitCQHistory, directionsHistory);
-    }
-  }
 }
 
 function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
                             hearingBundleFeatureEnabled: boolean,
                             ftpaFeatureEnabled: boolean,
-                            ftpaSetAsideFeatureEnabled: boolean,
-                            refundFeatureEnabled: boolean = false) {
+                            ftpaSetAsideFeatureEnabled: boolean) {
   const appealHearingRequirementsSectionEvents = [
     Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
     Events.STITCHING_BUNDLE_COMPLETE.id,

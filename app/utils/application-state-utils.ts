@@ -16,8 +16,7 @@ import {
 } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline, getDueDateForAppellantToRespondToFtpaDecision } from './event-deadline-date-finder';
-import { convertToAmountOfMoneyDividedBy100, getFee } from './payments-utils';
-import { appealHasRemissionOption, hasFeeRemissionDecision } from './remission-utils';
+import { appealHasNoRemissionOption, appealHasRemissionOption } from './remission-utils';
 
 interface DoThisNextSection {
   descriptionParagraphs: string[];
@@ -51,12 +50,8 @@ interface DoThisNextSection {
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   decision?: string;
-  feeForAppeal?: string;
-  feeLeftToPay?: string;
-  remissionRejectedDatePlus14days?: string;
   utAppealReferenceNumber?: string;
   sourceOfRemittal?: string;
-  ccdReferenceNumber?: string;
 }
 
 /**
@@ -123,8 +118,6 @@ async function getAppealApplicationNextStep(req: Request) {
   const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
   const dlrmFeeRemissionFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-  const deadLineDate = getDeadline(currentAppealStatus, req, dlrmFeeRemissionFlag, ftpaSetAsideFeatureEnabled);
-  const isLateRemissionRequest = req.session.appeal.application.isLateRemissionRequest;
 
   let descriptionParagraphs;
   let respondBy;
@@ -156,10 +149,18 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'appealSubmitted':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req) && !isLateRemissionRequest) {
-        doThisNextSection = getRemissionDecisionParagraphs(req);
-      } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
+      if (dlrmFeeRemissionFlag &&
+        !appealHasNoRemissionOption(req.session.appeal.application)) {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.feeDetails,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.tribunalCheck,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.dueDate
+          ],
+          cta: null,
+          allowedAskForMoreTime: false
+        };
       } else {
         doThisNextSection = {
           descriptionParagraphs: [
@@ -197,10 +198,8 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'lateAppealSubmitted':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req) && !isLateRemissionRequest) {
-        doThisNextSection = getRemissionDecisionParagraphs(req);
-      } else if (dlrmFeeRemissionFlag &&
-        requestFeeRemissionEventIsTheLatest(req)) {
+      if (dlrmFeeRemissionFlag &&
+        !appealHasNoRemissionOption(req.session.appeal.application)) {
         doThisNextSection = {
           descriptionParagraphs: [
             i18n.pages.overviewPage.doThisNext.lateAppealSubmittedDlrmFeeRemission.detailsSent,
@@ -560,7 +559,8 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'appealTakenOffline':
       doThisNextSection = {
-        descriptionParagraphs: [],
+        descriptionParagraphs: [
+        ],
         info: {
           title: i18n.pages.overviewPage.doThisNext.appealTakenOffline.info.title,
           url: i18n.pages.overviewPage.doThisNext.appealTakenOffline.info.description
@@ -584,6 +584,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'decided':
+
       let decidedDescriptionParagraphs;
       let decidedInfo;
       let decision;
@@ -640,9 +641,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'pendingPayment':
-      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
-        doThisNextSection = getRemissionDecisionParagraphs(req);
-      } else if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
+      if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
         doThisNextSection = {
           descriptionParagraphs: [
             i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
@@ -673,8 +672,8 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'ftpaSubmitted':
       doThisNextSection = {
         descriptionParagraphs: (ftpaEnabled)
-          ? i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description[ftpaApplicantType]
-          : [`Nothing to do next`]
+            ? i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description[ftpaApplicantType]
+            : [ `Nothing to do next` ]
       };
       break;
     case 'ftpaDecided':
@@ -699,7 +698,7 @@ async function getAppealApplicationNextStep(req: Request) {
         }
       } else {
         doThisNextSection = {
-          descriptionParagraphs: [`Nothing to do next`]
+          descriptionParagraphs: [ `Nothing to do next` ]
         };
       }
       break;
@@ -719,7 +718,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
   }
-  doThisNextSection.deadline = deadLineDate;
+  doThisNextSection.deadline = getDeadline(currentAppealStatus, req, dlrmFeeRemissionFlag, ftpaSetAsideFeatureEnabled);
   return doThisNextSection;
 }
 
@@ -741,84 +740,6 @@ function eventByLegalRep(req: Request, eventId: string, state: string): boolean 
     && event.user.id !== req.idam.userDetails.uid).length > 0;
 }
 
-function getRemissionDecisionParagraphs(req: Request) {
-  let doThisNextSection: DoThisNextSection;
-  const remissionDecision = req.session.appeal.application.remissionDecision;
-  switch (remissionDecision) {
-    case 'approved':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.remissionDecided.approved.detailsSent,
-          i18n.pages.overviewPage.doThisNext.remissionDecided.approved.legalOfficerCheck,
-          i18n.pages.overviewPage.doThisNext.remissionDecided.approved.helpFulInfo,
-          i18n.pages.overviewPage.doThisNext.remissionDecided.approved.href
-        ],
-        cta: null,
-        allowedAskForMoreTime: false
-      };
-      break;
-    case 'partiallyApproved':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApproved.feeForAppeal,
-          i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApproved.dueDate,
-          i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApproved.howToPay,
-          i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApproved.bulletText
-        ],
-        cta: {},
-        allowedAskForMoreTime: false
-      };
-      doThisNextSection.feeLeftToPay = convertToAmountOfMoneyDividedBy100(req.session.appeal.application.amountLeftToPay);
-      doThisNextSection.remissionRejectedDatePlus14days = req.session.appeal.application.remissionRejectedDatePlus14days;
-      doThisNextSection.ccdReferenceNumber = req.session.appeal.ccdReferenceNumber.split(' ').join('-');
-      break;
-    case 'rejected':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.remissionDecided.rejected.feeForAppeal,
-          i18n.pages.overviewPage.doThisNext.remissionDecided.rejected.dueDate,
-          i18n.pages.overviewPage.doThisNext.remissionDecided.rejected.payForAppeal
-        ],
-        cta: {},
-        allowedAskForMoreTime: false
-      };
-      doThisNextSection.feeForAppeal = getFee(req.session.appeal).calculated_amount;
-      doThisNextSection.remissionRejectedDatePlus14days = req.session.appeal.application.remissionRejectedDatePlus14days;
-      break;
-    default:
-      throw new Error(`Remission decision type ${remissionDecision} is not presented`);
-  }
-  return doThisNextSection;
-}
-
-function getFeeRemissionParagraph(deadLineDate: string) {
-  let doThisNextSection: DoThisNextSection;
-  doThisNextSection = {
-    descriptionParagraphs: [
-      i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
-      i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.feeDetails,
-      i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.tribunalCheck,
-      i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.dueDate
-    ],
-    cta: null,
-    allowedAskForMoreTime: false
-  };
-  doThisNextSection.deadline = deadLineDate;
-  return doThisNextSection;
-}
-
-function remissionDecisionEventIsTheLatest(req: Request) {
-  return hasFeeRemissionDecision(req) && isEventLatestInHistoryList(req, Events.RECORD_REMISSION_DECISION.id);
-}
-
-function requestFeeRemissionEventIsTheLatest(req: Request) {
-  return appealHasRemissionOption(req.session.appeal.application) && isEventLatestInHistoryList(req, Events.REQUEST_FEE_REMISSION.id);
-}
-
-function isEventLatestInHistoryList(req: Request, eventId: string) {
-  return req.session.appeal.history && req.session.appeal.history.length > 0 ? req.session.appeal.history[0].id === eventId : false;
-}
-
 function transferredToUpperTribunal(req: Request): boolean {
   return req.session.appeal.utAppealReferenceNumber == null ? false : true;
 }
@@ -830,11 +751,5 @@ export {
   getMoveAppealOfflineDate,
   isAddendumEvidenceUploadState,
   eventByLegalRep,
-  transferredToUpperTribunal,
-  isEventLatestInHistoryList,
-  requestFeeRemissionEventIsTheLatest,
-  remissionDecisionEventIsTheLatest,
-  getFeeRemissionParagraph,
-  getRemissionDecisionParagraphs
-
+  transferredToUpperTribunal
 };

@@ -14,13 +14,7 @@
   <form action="{{ formAction }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     <h1 class="govuk-heading-xl">{{ i18n.pages.helpWithFees.title }}</h1>
-
-    {% if refundJourney %}
-      <p>{{ question.helpWithFeesHint }}</p>
-    {% else %}
-      <p>{{ i18n.pages.helpWithFees.tips }}</p>
-    {% endif %}
-
+    <p>{{ i18n.pages.helpWithFees.tips }}</p>
 
     <ul class="govuk-list govuk-list--bullet">
       <li>{{ i18n.pages.helpWithFees.tipsBullet1 }}</li>
@@ -43,9 +37,6 @@
 
     {% if saveAndContinueOnly %}
       {{ saveAndContinueButton() }}
-    {% elif continueCancelButtons %}
-      {{ continueButton() }}
-      {{ canelButton() }}
     {% else %}
       {% if saveAndContinue %}
         {{ saveButtons() }}

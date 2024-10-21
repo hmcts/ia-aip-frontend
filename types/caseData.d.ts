@@ -41,7 +41,6 @@ interface CaseData {
   appealType: string;
   homeOfficeReferenceNumber: string;
   appealReferenceNumber: string;
-  ccdReferenceNumberForDisplay: string;
   removeAppealFromOnlineReason: string;
   removeAppealFromOnlineDate: string;
   homeOfficeDecisionDate: string;
@@ -137,8 +136,6 @@ interface CaseData {
   feeDescription?: string;
   feeVersion?: string;
   feeAmountGbp?: string;
-  newFeeAmount?: string;
-  previousFeeAmountGbp?: string;
   pcqId?: string;
   isWitnessesAttending?: 'Yes' | 'No';
   isEvidenceFromOutsideUkInCountry?: 'Yes' | 'No';
@@ -248,29 +245,8 @@ interface CaseData {
   helpWithFeesRefNumber?: string;
   localAuthorityLetters?: Collection<DocumentWithMetaData>[];
   correctedDecisionAndReasons: Collection<CcdDecisionAndReasons>[];
-
-  //Late remission(refund) values:
-  lateRemissionOption?: string;
-  lateAsylumSupportRefNumber?: string;
-  lateHelpWithFeesOption?: string;
-  lateHelpWithFeesRefNumber?: string;
-  lateLocalAuthorityLetters?: Collection<DocumentWithMetaData>[];
-
-  refundRequested?: string;
-  remissionDecision?: string;
-  previousRemissionDetails?: RemissionDetailsCollection[];
-  remissionRejectedDatePlus14days?: string;
-  amountLeftToPay?: string;
-  remissionDecisionReason?: string;
-  isLateRemissionRequest?: string;
-  feeUpdateTribunalAction?: string;
-  feeUpdateReason?: string;
-  manageFeeRefundedAmount?: string;
-  manageFeeRequestedAmount?: string;
-  paidAmount?: string;
   sourceOfRemittal?: string;
   remittalDocuments: Collection<CcdRemittalDetails>[];
-  refundConfirmationApplied?: string;
 }
 
 interface Application<T> {
@@ -421,24 +397,6 @@ interface CcdRemittalDetails {
 interface DynamicList {
   value?: Value;
   list_items?: Value[];
-}
-
-interface RemissionDetailsCollection {
-  id?: number | string;
-  value?: RemissionDetailsData;
-}
-
-interface RemissionDetailsData {
-  feeAmount?: string;
-  amountRemitted?: string;
-  amountLeftToPay?: string;
-  feeRemissionType?: string;
-  remissionDecision?: string;
-  asylumSupportReference?: string;
-  remissionDecisionReason?: string;
-  helpWithFeesReferenceNumber?: string;
-  helpWithFeesOption?: string;
-  localAuthorityLetters?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
 }
 
 interface InterpreterLanguageRefData {

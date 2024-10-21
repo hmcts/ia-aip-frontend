@@ -46,8 +46,8 @@ function postLocalAuthorityLetter(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
-    async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], drlmSetAsideFlag);
+    async function persistAppeal(appeal: Appeal) {
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -59,7 +59,7 @@ function postLocalAuthorityLetter(updateAppealService: UpdateAppealService) {
       if (authLetterUploads.length > 0) {
         req.session.appeal.application.feeSupportPersisted = true;
         resetJourneyValues(req.session.appeal.application);
-        await persistAppeal(req.session.appeal, dlrmFeeRemissionFlag);
+        await persistAppeal(req.session.appeal);
         const redirectTo = req.session.appeal.application.isEdit ? paths.appealStarted.checkAndSend : paths.appealStarted.taskList;
         return res.redirect(redirectTo);
       } else {

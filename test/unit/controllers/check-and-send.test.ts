@@ -170,7 +170,7 @@ describe('createSummaryRowsFrom', () => {
       it(`should be ${description}`, () => {
         req.session.appeal.application.helpWithFeesOption = input;
         const helpWithFeesRow = addSummaryRow('Help with fees', [expectedResponse], paths.appealStarted.helpWithFees + editParameter);
-        mockedRows.push(helpWithFeesRow);
+        mockedRows.push(localAuthorityLettersRow);
         expect(rows).to.be.deep.equal(mockedRows);
         mockedRows.pop();
       });
@@ -323,19 +323,7 @@ describe('Check and Send Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
-        dlrmFeeRemissionFlag: true,
         hasRemissionOption: true
-      });
-    });
-
-    it('should render check-and-send-page.njk, dlrmFeeRemissionFlag with dlrmFeeRemissionFlag flag is ON', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-      req.session.appeal = createDummyAppealApplication();
-      await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
-        summaryRows: sinon.match.any,
-        previousPage: paths.appealStarted.taskList,
-        dlrmFeeRemissionFlag: true
       });
     });
 
@@ -511,19 +499,12 @@ describe('Check and Send Controller', () => {
   });
 
   describe('getFinishPayment', () => {
-    beforeEach(() => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
-    });
-
     it('should finish a payment and redirect to confirmation', async () => {
       req.session.appeal.paymentReference = 'aReference';
       updateAppealService.submitEventRefactored = sandbox.stub().resolves({
         paymentStatus: 'Paid',
         paymentDate: 'aDate',
-        isFeePaymentEnabled: 'Yes',
-        application: {
-          refundConfirmationApplied: false
-        }
+        isFeePaymentEnabled: 'Yes'
       } as Partial<Appeal>);
 
       await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
@@ -531,7 +512,6 @@ describe('Check and Send Controller', () => {
       expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
       expect(req.session.appeal.paymentDate).to.be.eql('aDate');
       expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
-      expect(req.session.appeal.application.refundConfirmationApplied).to.be.eql(false);
       expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.confirmation);
     });
 
@@ -541,10 +521,7 @@ describe('Check and Send Controller', () => {
       updateAppealService.submitEventRefactored = sandbox.stub().resolves({
         paymentStatus: 'Paid',
         paymentDate: 'aDate',
-        isFeePaymentEnabled: 'Yes',
-        application: {
-          refundConfirmationApplied: false
-        }
+        isFeePaymentEnabled: 'Yes'
       } as Partial<Appeal>);
 
       await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
@@ -552,7 +529,6 @@ describe('Check and Send Controller', () => {
       expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
       expect(req.session.appeal.paymentDate).to.be.eql('aDate');
       expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
-      expect(req.session.appeal.application.refundConfirmationApplied).to.be.eql(false);
       expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayment);
     });
 
@@ -562,10 +538,7 @@ describe('Check and Send Controller', () => {
       updateAppealService.submitEventRefactored = sandbox.stub().resolves({
         paymentStatus: 'Paid',
         paymentDate: 'aDate',
-        isFeePaymentEnabled: 'Yes',
-        application: {
-          refundConfirmationApplied: false
-        }
+        isFeePaymentEnabled: 'Yes'
       } as Partial<Appeal>);
 
       await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
@@ -573,7 +546,6 @@ describe('Check and Send Controller', () => {
       expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
       expect(req.session.appeal.paymentDate).to.be.eql('aDate');
       expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
-      expect(req.session.appeal.application.refundConfirmationApplied).to.be.eql(false);
       expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayment);
     });
 

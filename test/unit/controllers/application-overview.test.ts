@@ -1,12 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { SinonStub } from 'sinon';
 import {
   checkAppealEnded,
   checkEnableProvideMoreEvidenceSection,
   getAppealRefNumber,
   getAppellantName,
-  getApplicationOverview,
-  getHearingDetails,
+  getApplicationOverview, getHearingDetails,
   isAppealInProgress,
   isPostDecisionState,
   setupApplicationOverviewController,
@@ -130,7 +128,6 @@ describe('Confirmation Page Controller', () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
       .withArgs(req as Request, FEATURE_FLAGS.MAKE_APPLICATION, false).resolves(true)
       .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(true)
-      .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true)
       .withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(true);
 
     next = sandbox.stub() as NextFunction;
@@ -146,7 +143,7 @@ describe('Confirmation Page Controller', () => {
     expect(routerGetStub).to.have.been.calledWith(paths.common.overview);
   });
 
-  it('getApplicationOverview should render application-overview.njk with options and IDAM name#2', async () => {
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name', async () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
@@ -204,8 +201,6 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false,
-      showAskForSomethingInEndedState: false,
       isPostDecisionState: false
     });
   });
@@ -257,26 +252,10 @@ describe('Confirmation Page Controller', () => {
       completed: true
     }];
 
-    const appNextStep = {
-      decision: 'allowed',
-      descriptionParagraphs: [
-        'A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>',
-        '<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>'
-      ],
-      info: {
-        title: 'Appeal Information',
-        text: 'If you disagree with this decision, you have until <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.',
-        url: '<a href="{{ paths.ftpa.ftpaApplication }}">Apply for permission to appeal to the Upper Tribunal</a>'
-      },
-      cta: {},
-      allowedAskForMoreTime: false,
-      deadline: '13 March 2024'
-    };
-
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'PA/12345/2025',
-      applicationNextStep: appNextStep,
+      applicationNextStep: sinon.match.any,
       history: expectedHistory,
       stages: expectedStages,
       saved: false,
@@ -294,8 +273,6 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: true,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false,
-      showAskForSomethingInEndedState: false,
       isPostDecisionState: true
     });
   });
@@ -349,26 +326,10 @@ describe('Confirmation Page Controller', () => {
       completed: true
     }];
 
-    const appNextStep = {
-      decision: 'allowed',
-      descriptionParagraphs: [
-        'A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>',
-        '<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>'
-      ],
-      info: {
-        title: 'Appeal Information',
-        text: 'If you disagree with this decision, you have until <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.',
-        url: '<a href="{{ paths.ftpa.ftpaApplication }}">Apply for permission to appeal to the Upper Tribunal</a>'
-      },
-      cta: {},
-      allowedAskForMoreTime: false,
-      deadline: '13 March 2024'
-    };
-
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'PA/12345/2025',
-      applicationNextStep: appNextStep,
+      applicationNextStep: sinon.match.any,
       history: expectedHistory,
       stages: expectedStages,
       saved: false,
@@ -381,18 +342,77 @@ describe('Confirmation Page Controller', () => {
       showAppealRequests: true,
       showAppealRequestsInAppealEndedStatus: false,
       showHearingRequests: false,
-      showPayLaterLink: false,
+      showPayLaterLink: true,
       ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: true,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false,
-      showAskForSomethingInEndedState: false,
       isPostDecisionState: true
     });
   });
 
-  it('getApplicationOverview should render application-overview.njk with options and IDAM name#1', async () => {
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name and no events', async () => {
+    req.idam = {
+      userDetails: {
+        uid: 'anId',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer',
+        sub: 'email@test.com'
+      }
+    };
+    req.session.appeal.appealStatus = 'appealStarted';
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    const expectedStages = [{
+      title: 'Your appeal<br/> details',
+      ariaLabel: 'Your appeal details stage',
+      active: true,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> argument',
+      ariaLabel: 'Your appeal argument stage',
+      active: false,
+      completed: false
+    }, {
+      title: 'Your hearing<br/> details',
+      ariaLabel: 'Your hearing details stage',
+      active: false,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> decision',
+      ariaLabel: 'Your appeal decision stage',
+      active: false,
+      completed: false
+    }];
+
+    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+      name: 'Alex Developer',
+      appealRefNumber: undefined,
+      applicationNextStep: expectedNextStep,
+      history: expectedHistory,
+      stages: expectedStages,
+      saved: false,
+      ended: false,
+      transferredToUt: false,
+      askForMoreTimeInFlight: false,
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false,
+      showAppealRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
+      showHearingRequests: false,
+      showPayLaterLink: false,
+      ftpaFeatureEnabled: true,
+      hearingDetails: null,
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false,
+      isPostDecisionState: false
+    });
+  });
+
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name', async () => {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -450,72 +470,6 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false,
-      showAskForSomethingInEndedState: false,
-      isPostDecisionState: false
-    });
-  });
-
-  it('getApplicationOverview should render application-overview.njk with options and IDAM name and no events', async () => {
-    req.idam = {
-      userDetails: {
-        uid: 'anId',
-        name: 'Alex Developer',
-        given_name: 'Alex',
-        family_name: 'Developer',
-        sub: 'email@test.com'
-      }
-    };
-    req.session.appeal.appealStatus = 'appealStarted';
-    req.session.appeal.appealReferenceNumber = 'appealNumber';
-
-    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-    const expectedStages = [{
-      title: 'Your appeal<br/> details',
-      ariaLabel: 'Your appeal details stage',
-      active: true,
-      completed: false
-    }, {
-      title: 'Your appeal<br/> argument',
-      ariaLabel: 'Your appeal argument stage',
-      active: false,
-      completed: false
-    }, {
-      title: 'Your hearing<br/> details',
-      ariaLabel: 'Your hearing details stage',
-      active: false,
-      completed: false
-    }, {
-      title: 'Your appeal<br/> decision',
-      ariaLabel: 'Your appeal decision stage',
-      active: false,
-      completed: false
-    }];
-
-    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
-      name: 'Alex Developer',
-      appealRefNumber: 'appealNumber',
-      applicationNextStep: expectedNextStep,
-      history: expectedHistory,
-      stages: expectedStages,
-      saved: false,
-      ended: false,
-      transferredToUt: false,
-      askForMoreTimeInFlight: false,
-      askForMoreTime: false,
-      saveAndAskForMoreTime: false,
-      provideMoreEvidenceSection: false,
-      showAppealRequests: false,
-      showAppealRequestsInAppealEndedStatus: false,
-      showHearingRequests: false,
-      showPayLaterLink: false,
-      ftpaFeatureEnabled: true,
-      hearingDetails: null,
-      showChangeRepresentation: false,
-      showFtpaApplicationLink: false,
-      showAskForFeeRemission: false,
-      showAskForSomethingInEndedState: false,
       isPostDecisionState: false
     });
   });
@@ -591,31 +545,8 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false,
-      showAskForSomethingInEndedState: false,
       isPostDecisionState: false
     });
-  });
-
-  it('should render with only showAskForFeeRemission property', async function() {
-    req.idam = {
-      userDetails: {
-        uid: 'user-id',
-        name: 'Alex Developer',
-        given_name: 'Alex',
-        family_name: 'Developer',
-        sub: 'email@test.com'
-      }
-    };
-    req.session.appeal.appealStatus = 'appealStarted';
-    req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
-    req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
-    req.session.appeal.paymentStatus = 'Paid';
-
-    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-    expect(res.render).to.have.been.calledOnce;
-    expect(res.render).to.have.been.calledWith('application-overview.njk', sinon.match.has('showAskForFeeRemission', true));
   });
 
   it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and entered name', async () => {
@@ -690,37 +621,8 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false,
-      showAskForSomethingInEndedState: false,
       isPostDecisionState: false
     });
-  });
-
-  it('should render showAskForSomethingInEndedState property when the state in ended', async () => {
-    req.idam = {
-      userDetails: {
-        uid: 'user-id',
-        name: 'Alex Developer',
-        given_name: 'Alex',
-        family_name: 'Developer',
-        sub: 'email@test.com'
-      }
-    };
-    req.session.appeal.appealStatus = 'ended';
-    req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
-    req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
-    req.session.appeal.application.personalDetails.givenNames = 'Appellant';
-    req.session.appeal.application.personalDetails.familyName = 'Name';
-    req.session.appeal.hearing = {
-      hearingCentre: 'taylorHouse',
-      date: '2024-04-09T20:30:00.000',
-      time: '240'
-    };
-
-    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-    expect(res.render).to.have.been.calledOnce;
-    expect(res.render).to.have.been.calledWith('application-overview.njk', sinon.match.has('showAskForSomethingInEndedState', true));
   });
 
   it('getApplicationOverview should catch an exception and call next()', async () => {
@@ -843,11 +745,6 @@ describe('Confirmation Page Controller', () => {
 
   it('showAppealRequests should return true when in appealSubmitted state', () => {
     const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, true);
-    expect(result).to.equal(true);
-  });
-
-  it('showAppealRequests should return true when in paymentPending state', () => {
-    const result = showAppealRequestSection(States.PENDING_PAYMENT.id, true);
     expect(result).to.equal(true);
   });
 
@@ -1076,89 +973,5 @@ describe('Confirmation Page Controller', () => {
     };
     const result = showFtpaApplicationLink(appeal, true);
     expect(result).to.equal(true);
-  });
-
-  describe('getApplicationOverview with DLRM refund enabled paymentLink', function () {
-    const tests = [
-      { args: 'approved', expected: false },
-      { args: 'partiallyApproved', expected: false },
-      { args: 'rejected', expected: true }
-    ];
-
-    tests.forEach(({ args, expected }) => {
-      it(`getApplicationOverview with DLRM refund enabled and remissionOption ${args} should render application-overview.njk with option showPayLaterLink ${expected}`, async function () {
-        const recordRemissionEvent = [{
-          'id': 'recordRemissionDecision',
-          'createdDate': '2024-03-07T15:36:26.099'
-        } as HistoryEvent];
-        mockCcdService = {
-          getCaseHistory: sandbox.stub().returns(recordRemissionEvent)
-        } as Partial<CcdService>;
-
-        updateAppealService = {
-          getAuthenticationService: sandbox.stub().returns(mockAuthenticationService),
-          getCcdService: sandbox.stub().returns(mockCcdService)
-        };
-
-        req.session.appeal.appealStatus = 'appealSubmitted';
-        req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
-        req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
-        req.session.appeal.application.personalDetails.givenNames = 'Appellant';
-        req.session.appeal.application.personalDetails.familyName = 'Name';
-        req.session.appeal.application.appealType = 'protection';
-        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
-        req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
-        req.session.appeal.application.remissionDecision = args;
-
-        await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-        const stubRender = res.render as SinonStub;
-        expect(stubRender.getCall(0).args[0]).to.equal('application-overview.njk');
-        expect(stubRender.getCall(0).args[1].showPayLaterLink).to.equal(expected);
-      });
-    });
-  });
-
-  describe('getApplicationOverview with DLRM refund enabled paymentLink and refund confirmation completed', function () {
-    const tests = [
-      { refundConfirmation: false, status: 'Paid', expected: false },
-      { refundConfirmation: true, status: 'Paid', expected: true },
-      { refundConfirmation: false, status: 'Payment pending', expected: true }
-    ];
-
-    tests.forEach(({ refundConfirmation, status, expected }) => {
-      it(`getApplicationOverview with DLRM refund enabled and refundConfirmation is ${refundConfirmation} and paymentStatus is ${status} should render application-overview.njk with option showPayLaterLink ${expected}`, async function () {
-        const recordRemissionEvent = [{
-          'id': 'recordRemissionDecision',
-          'createdDate': '2024-03-07T15:36:26.099'
-        } as HistoryEvent];
-        mockCcdService = {
-          getCaseHistory: sandbox.stub().returns(recordRemissionEvent)
-        } as Partial<CcdService>;
-
-        updateAppealService = {
-          getAuthenticationService: sandbox.stub().returns(mockAuthenticationService),
-          getCcdService: sandbox.stub().returns(mockCcdService)
-        };
-
-        req.session.appeal.appealStatus = 'appealSubmitted';
-        req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
-        req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
-        req.session.appeal.application.personalDetails.givenNames = 'Appellant';
-        req.session.appeal.application.personalDetails.familyName = 'Name';
-        req.session.appeal.application.appealType = 'protection';
-        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
-        req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
-        req.session.appeal.application.remissionDecision = 'rejected';
-        req.session.appeal.application.refundConfirmationApplied = refundConfirmation;
-        req.session.appeal.paymentStatus = status;
-
-        await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-        const stubRender = res.render as SinonStub;
-        expect(stubRender.getCall(0).args[0]).to.equal('application-overview.njk');
-        expect(stubRender.getCall(0).args[1].showPayLaterLink).to.equal(expected);
-      });
-    });
   });
 });

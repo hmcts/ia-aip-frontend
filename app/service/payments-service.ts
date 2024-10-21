@@ -56,7 +56,7 @@ export default class PaymentService {
       const paymentDetails = JSON.parse(await this.getPaymentDetails(req, req.session.appeal.paymentReference));
       if (paymentDetails.status === 'Initiated') {
         req.app.locals.logger.trace(`Payment already initiated, cancel payment should go here`, 'Payments Service');
-      } else if (!req.session.appeal.application.refundConfirmationApplied && paymentDetails.status === 'Success') {
+      } else if (paymentDetails.status === 'Success') {
         return res.redirect(paths.common.finishPayment);
       }
     }

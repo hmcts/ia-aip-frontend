@@ -12,8 +12,7 @@
             errorList: errorList
         }) }}
     {% endif %}
-
-    <form action="{{ formAction }}" method="post">
+    <form action="{{ paths.appealStarted.asylumSupport }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% call govukFieldset({
             legend: {
@@ -45,12 +44,8 @@
                     text:  errors['asylumSupportRefNumber'].text
                 } if errors['asylumSupportRefNumber']
             }) }}
-            {% if refundJourney %}
-                {{ continueButton() }}
-                {{ canelButton() }}
-            {% else %}
-                {{ saveButtons() }}
-            {% endif %}
+
+            {{ saveButtons() }}
         {% endcall %}
     </form>
     {{ contactUs() }}

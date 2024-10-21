@@ -226,27 +226,9 @@ export const Events = {
     summary: 'Decide FTPA application',
     description: 'Decide FTPA application'
   },
-  REQUEST_FEE_REMISSION: {
-    id: 'requestFeeRemission',
-    description: 'Request fee remission'
-  },
-  RECORD_REMISSION_DECISION: {
-    id: 'recordRemissionDecision',
-    description: 'Record remission decision'
-  },
-  MANAGE_A_FEE_UPDATE: {
-    id: 'manageFeeUpdate',
-    summary: 'Manage a fee update',
-    description: 'Manage a fee update'
-  },
   MARK_APPEAL_AS_REMITTED: {
     id: 'markAppealAsRemitted',
     summary: 'Mark appeal as remitted',
     description: 'Mark appeal as remitted'
-  },
-  MARK_APPEAL_PAID: {
-    id: 'markAppealPaid',
-    summary: 'Mark appeal as paid',
-    description: 'Make a paid'
   }
 };

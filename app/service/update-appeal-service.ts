@@ -696,67 +696,50 @@ export default class UpdateAppealService {
     let caseData = {
       journeyType: 'aip'
     } as CaseData;
-    if (_.has(appeal, 'application')) {
-      this.mapToCCDCaseAppealApplication(appeal, caseData);
-    }
 
-    if (_.has(appeal, 'reasonsForAppeal')) {
-      this.mapToCCDCaseReasonsForAppeal(appeal, caseData);
-    }
+    const mappingFunctions = [
+      { key: 'application', func: this.mapToCCDCaseAppealApplication },
+      { key: 'reasonsForAppeal', func: this.mapToCCDCaseReasonsForAppeal },
+      { key: 'cmaRequirements', func: this.mapToCCDCaseCmaRequirements },
+      { key: 'hearingRequirements', func: this.mapToCCDCaseHearingRequirements }
+    ];
 
-    if (_.has(appeal, 'cmaRequirements')) {
-      this.mapToCCDCaseCmaRequirements(appeal, caseData);
-    }
-
-    if (_.has(appeal, 'hearingRequirements')) {
-      this.mapToCCDCaseHearingRequirements(appeal, caseData);
-    }
+    mappingFunctions.forEach(({ key, func }) => {
+      if (_.has(appeal, key)) {
+        func.call(this, appeal, caseData);
+      }
+    });
 
     const askForMoreTime = appeal.askForMoreTime;
     if (askForMoreTime && askForMoreTime.reason) {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
+
     caseData = {
       ...caseData,
-      ...appeal.application.personalDetails.stateless && { appellantStateless: appeal.application.personalDetails.stateless },
-      ...paymentsFlag && { rpDcAppealHearingOption: appeal.application.rpDcAppealHearingOption || null },
-      ...paymentsFlag && { decisionHearingFeeOption: appeal.application.decisionHearingFeeOption || null },
-      ...appeal.paymentReference && { paymentReference: appeal.paymentReference },
-      ...appeal.paymentStatus && { paymentStatus: appeal.paymentStatus },
-      ...appeal.paymentDate && { paymentDate: appeal.paymentDate },
-      ...appeal.isFeePaymentEnabled && { isFeePaymentEnabled: appeal.isFeePaymentEnabled },
-      ...paymentsFlag && { paAppealTypeAipPaymentOption: appeal.paAppealTypeAipPaymentOption || null },
-      ...paymentsFlag && { pcqId: appeal.pcqId || null },
-      ...appeal.draftClarifyingQuestionsAnswers && {
-        draftClarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap)
-      },
-      ...appeal.clarifyingQuestionsAnswers && {
-        clarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.clarifyingQuestionsAnswers, appeal.documentMap)
-      },
-      ...appeal.reheardHearingDocumentsCollection && {
-        reheardHearingDocumentsCollection: this.mapAppealReheardHearingDocsToCcd(appeal.reheardHearingDocumentsCollection, appeal.documentMap)
-      },
-      ...appeal.application.homeOfficeLetter && {
-        uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
-      },
-      ...appeal.additionalEvidence && {
-        additionalEvidence: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.additionalEvidence, appeal.documentMap)
-      },
-      ...appeal.addendumEvidence && {
-        addendumEvidence: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.addendumEvidence, appeal.documentMap)
-      },
-      ...appeal.makeAnApplicationTypes && { makeAnApplicationTypes: appeal.makeAnApplicationTypes },
-      ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails },
-      ...appeal.makeAnApplicationEvidence && { makeAnApplicationEvidence: this.mapAppealEvidencesToDocumentsCaseData(appeal.makeAnApplicationEvidence, appeal.documentMap) },
-      ...appeal.ftpaAppellantEvidenceDocuments && {
-        ftpaAppellantEvidenceDocuments: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantEvidenceDocuments, appeal.documentMap, 'ftpaAppellantEvidenceDocuments')
-      },
-      ...appeal.ftpaAppellantOutOfTimeDocuments && {
-        ftpaAppellantOutOfTimeDocuments: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantOutOfTimeDocuments, appeal.documentMap, 'ftpaAppellantOutOfTimeDocuments')
-      },
-      ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },
-      ...appeal.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: appeal.ftpaAppellantOutOfTimeExplanation },
-      ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime }
+      ...this.addIfExists('appellantStateless', appeal.application.personalDetails.stateless),
+      ...this.addIfExists('rpDcAppealHearingOption', paymentsFlag ? appeal.application.rpDcAppealHearingOption || null : undefined),
+      ...this.addIfExists('decisionHearingFeeOption', paymentsFlag ? appeal.application.decisionHearingFeeOption || null : undefined),
+      ...this.addIfExists('paymentReference', appeal.paymentReference),
+      ...this.addIfExists('paymentStatus', appeal.paymentStatus),
+      ...this.addIfExists('paymentDate', appeal.paymentDate),
+      ...this.addIfExists('isFeePaymentEnabled', appeal.isFeePaymentEnabled),
+      ...this.addIfExists('paAppealTypeAipPaymentOption', paymentsFlag ? appeal.paAppealTypeAipPaymentOption || null : undefined),
+      ...this.addIfExists('pcqId', paymentsFlag ? appeal.pcqId || null : undefined),
+      ...this.addIfExists('draftClarifyingQuestionsAnswers', appeal.draftClarifyingQuestionsAnswers && this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap)),
+      ...this.addIfExists('clarifyingQuestionsAnswers', appeal.clarifyingQuestionsAnswers && this.mapAppealClarifyingQuestionsToCcd(appeal.clarifyingQuestionsAnswers, appeal.documentMap)),
+      ...this.addIfExists('reheardHearingDocumentsCollection', appeal.reheardHearingDocumentsCollection && this.mapAppealReheardHearingDocsToCcd(appeal.reheardHearingDocumentsCollection, appeal.documentMap)),
+      ...this.addIfExists('uploadTheNoticeOfDecisionDocs', appeal.application.homeOfficeLetter && this.mapUploadTheNoticeOfDecisionDocs(appeal.application.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')),
+      ...this.addIfExists('additionalEvidence', appeal.additionalEvidence && this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.additionalEvidence, appeal.documentMap)),
+      ...this.addIfExists('addendumEvidence', appeal.addendumEvidence && this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.addendumEvidence, appeal.documentMap)),
+      ...this.addIfExists('makeAnApplicationTypes', appeal.makeAnApplicationTypes),
+      ...this.addIfExists('makeAnApplicationDetails', appeal.makeAnApplicationDetails),
+      ...this.addIfExists('makeAnApplicationEvidence', appeal.makeAnApplicationEvidence && this.mapAppealEvidencesToDocumentsCaseData(appeal.makeAnApplicationEvidence, appeal.documentMap)),
+      ...this.addIfExists('ftpaAppellantEvidenceDocuments', appeal.ftpaAppellantEvidenceDocuments && this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantEvidenceDocuments, appeal.documentMap, 'ftpaAppellantEvidenceDocuments')),
+      ...this.addIfExists('ftpaAppellantOutOfTimeDocuments', appeal.ftpaAppellantOutOfTimeDocuments && this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantOutOfTimeDocuments, appeal.documentMap, 'ftpaAppellantOutOfTimeDocuments')),
+      ...this.addIfExists('ftpaAppellantGrounds', appeal.ftpaAppellantGrounds),
+      ...this.addIfExists('ftpaAppellantOutOfTimeExplanation', appeal.ftpaAppellantOutOfTimeExplanation),
+      ...this.addIfExists('ftpaAppellantSubmissionOutOfTime', appeal.ftpaAppellantSubmissionOutOfTime)
     };
     return caseData;
   }
@@ -1635,5 +1618,9 @@ export default class UpdateAppealService {
     if (_.has(appeal, 'isDecisionAllowed')) {
       caseData.isDecisionAllowed = appeal.isDecisionAllowed;
     }
+  }
+
+  private addIfExists(key: string, value: any): Record<string, any> {
+    return value ? { [key]: value } : {};
   }
 }

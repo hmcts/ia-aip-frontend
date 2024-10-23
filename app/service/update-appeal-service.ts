@@ -711,7 +711,7 @@ export default class UpdateAppealService {
     });
 
     const askForMoreTime = appeal.askForMoreTime;
-    if (askForMoreTime?.reason) {
+    if (askForMoreTime && askForMoreTime.reason) {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
 

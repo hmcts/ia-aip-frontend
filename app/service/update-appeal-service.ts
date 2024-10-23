@@ -988,6 +988,10 @@ export default class UpdateAppealService {
           }
           caseData.sponsorSubscriptions = [{ value: sponsorSubscription }];
         }
+
+        if (appeal.application.sponsorAuthorisation) {
+          caseData.sponsorAuthorisation = appeal.application.sponsorAuthorisation;
+        }
       }
 
     }

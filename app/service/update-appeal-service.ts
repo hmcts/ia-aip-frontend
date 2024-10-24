@@ -1498,87 +1498,117 @@ export default class UpdateAppealService {
     }
   }
 
-  private mapToCCDCaseCmaRequirements(appeal, caseData) {
-    // Access Needs Section
+  private mapAccessNeeds(appeal, caseData) {
     if (_.has(appeal, 'cmaRequirements.accessNeeds')) {
       const { accessNeeds } = appeal.cmaRequirements;
-      if (_.has(accessNeeds, 'isInterpreterServicesNeeded')) {
-        caseData.isInterpreterServicesNeeded = boolToYesNo(accessNeeds.isInterpreterServicesNeeded);
-      }
+      this.mapAccessNeedsInterpreterServices(accessNeeds, caseData);
+      this.mapAccessNeedsHearingRequirements(accessNeeds, caseData);
+    }
+  }
 
-      if (_.get(accessNeeds, 'isInterpreterServicesNeeded')) {
-        if (_.has(accessNeeds, 'interpreterLanguage') && (_.has(accessNeeds.interpreterLanguage, 'language') || _.has(accessNeeds.interpreterLanguage, 'languageDialect'))) {
-          caseData.interpreterLanguage = [{
-            value: {
-              language: accessNeeds.interpreterLanguage.language,
-              languageDialect: accessNeeds.interpreterLanguage.languageDialect || null
-            }
-          }];
-        }
-      }
-
-      if (_.has(accessNeeds, 'isHearingLoopNeeded')) {
-        caseData.isHearingLoopNeeded = boolToYesNo(accessNeeds.isHearingLoopNeeded);
-      }
-
-      if (_.has(accessNeeds, 'isHearingRoomNeeded')) {
-        caseData.isHearingRoomNeeded = boolToYesNo(accessNeeds.isHearingRoomNeeded);
-      }
+  private mapAccessNeedsInterpreterServices(accessNeeds, caseData) {
+    if (_.has(accessNeeds, 'isInterpreterServicesNeeded')) {
+      caseData.isInterpreterServicesNeeded = boolToYesNo(accessNeeds.isInterpreterServicesNeeded);
     }
 
-    // Other Needs Section
+    if (_.get(accessNeeds, 'isInterpreterServicesNeeded')) {
+      if (_.has(accessNeeds, 'interpreterLanguage') && (_.has(accessNeeds.interpreterLanguage, 'language') || _.has(accessNeeds.interpreterLanguage, 'languageDialect'))) {
+        caseData.interpreterLanguage = [{
+          value: {
+            language: accessNeeds.interpreterLanguage.language,
+            languageDialect: accessNeeds.interpreterLanguage.languageDialect || null
+          }
+        }];
+      }
+    }
+  }
+
+  private mapAccessNeedsHearingRequirements(accessNeeds, caseData) {
+    if (_.has(accessNeeds, 'isHearingLoopNeeded')) {
+      caseData.isHearingLoopNeeded = boolToYesNo(accessNeeds.isHearingLoopNeeded);
+    }
+
+    if (_.has(accessNeeds, 'isHearingRoomNeeded')) {
+      caseData.isHearingRoomNeeded = boolToYesNo(accessNeeds.isHearingRoomNeeded);
+    }
+  }
+
+  private mapOtherNeeds(appeal, caseData) {
     if (_.has(appeal, 'cmaRequirements.otherNeeds')) {
       const { otherNeeds } = appeal.cmaRequirements;
+      this.mapOtherNeedsMultimediaEvidence(otherNeeds, caseData);
+      this.mapOtherNeedsSingleSexAppointment(otherNeeds, caseData);
+      this.mapOtherNeedsPrivateAppointment(otherNeeds, caseData);
+      this.mapOtherNeedsHealthConditions(otherNeeds, caseData);
+      this.mapOtherNeedsPastExperiences(otherNeeds, caseData);
+      this.mapOtherNeedsAnythingElse(otherNeeds, caseData);
+    }
+  }
 
-      if (_.has(otherNeeds, 'multimediaEvidence')) {
-        caseData.multimediaEvidence = boolToYesNo(otherNeeds.multimediaEvidence);
+  private mapOtherNeedsMultimediaEvidence(otherNeeds, caseData) {
+    if (_.has(otherNeeds, 'multimediaEvidence')) {
+      caseData.multimediaEvidence = boolToYesNo(otherNeeds.multimediaEvidence);
 
-        if (!otherNeeds.bringOwnMultimediaEquipment && !isEmpty(otherNeeds.bringOwnMultimediaEquipmentReason)) {
-          caseData.multimediaEvidenceDescription = otherNeeds.bringOwnMultimediaEquipmentReason;
-        }
+      if (!otherNeeds.bringOwnMultimediaEquipment && !isEmpty(otherNeeds.bringOwnMultimediaEquipmentReason)) {
+        caseData.multimediaEvidenceDescription = otherNeeds.bringOwnMultimediaEquipmentReason;
       }
-      if (_.has(otherNeeds, 'singleSexAppointment')) {
-        caseData.singleSexCourt = boolToYesNo(otherNeeds.singleSexAppointment);
+    }
+  }
 
-        if (otherNeeds.singleSexAppointment && otherNeeds.singleSexTypeAppointment) {
-          caseData.singleSexCourtType = otherNeeds.singleSexTypeAppointment;
-          if (!isEmpty(otherNeeds.singleSexAppointmentReason)) {
-            caseData.singleSexCourtTypeDescription = otherNeeds.singleSexAppointmentReason;
-          }
-        }
-      }
+  private mapOtherNeedsSingleSexAppointment(otherNeeds, caseData) {
+    if (_.has(otherNeeds, 'singleSexAppointment')) {
+      caseData.singleSexCourt = boolToYesNo(otherNeeds.singleSexAppointment);
 
-      if (_.has(otherNeeds, 'privateAppointment')) {
-        caseData.inCameraCourt = boolToYesNo(otherNeeds.privateAppointment);
-
-        if (otherNeeds.privateAppointment && !isEmpty(otherNeeds.privateAppointmentReason)) {
-          caseData.inCameraCourtDescription = otherNeeds.privateAppointmentReason;
-        }
-      }
-      if (_.has(otherNeeds, 'healthConditions')) {
-        caseData.physicalOrMentalHealthIssues = boolToYesNo(otherNeeds.healthConditions);
-
-        if (otherNeeds.healthConditions && !isEmpty(otherNeeds.healthConditionsReason)) {
-          caseData.physicalOrMentalHealthIssuesDescription = otherNeeds.healthConditionsReason;
-        }
-      }
-      if (_.has(otherNeeds, 'pastExperiences')) {
-        caseData.pastExperiences = boolToYesNo(otherNeeds.pastExperiences);
-
-        if (otherNeeds.pastExperiences && !isEmpty(otherNeeds.pastExperiencesReason)) {
-          caseData.pastExperiencesDescription = otherNeeds.pastExperiencesReason;
-        }
-      }
-
-      if (_.has(otherNeeds, 'anythingElse')) {
-        caseData.additionalRequests = boolToYesNo(otherNeeds.anythingElse);
-
-        if (otherNeeds.pastExperiences && !isEmpty(otherNeeds.anythingElseReason)) {
-          caseData.additionalRequestsDescription = otherNeeds.anythingElseReason;
+      if (otherNeeds.singleSexAppointment && otherNeeds.singleSexTypeAppointment) {
+        caseData.singleSexCourtType = otherNeeds.singleSexTypeAppointment;
+        if (!isEmpty(otherNeeds.singleSexAppointmentReason)) {
+          caseData.singleSexCourtTypeDescription = otherNeeds.singleSexAppointmentReason;
         }
       }
     }
-    // Dates To avoid Section
+  }
+
+  private mapOtherNeedsPrivateAppointment(otherNeeds, caseData) {
+    if (_.has(otherNeeds, 'privateAppointment')) {
+      caseData.inCameraCourt = boolToYesNo(otherNeeds.privateAppointment);
+
+      if (otherNeeds.privateAppointment && !isEmpty(otherNeeds.privateAppointmentReason)) {
+        caseData.inCameraCourtDescription = otherNeeds.privateAppointmentReason;
+      }
+    }
+  }
+
+  private mapOtherNeedsHealthConditions(otherNeeds, caseData) {
+    if (_.has(otherNeeds, 'healthConditions')) {
+      caseData.physicalOrMentalHealthIssues = boolToYesNo(otherNeeds.healthConditions);
+
+      if (otherNeeds.healthConditions && !isEmpty(otherNeeds.healthConditionsReason)) {
+        caseData.physicalOrMentalHealthIssuesDescription = otherNeeds.healthConditionsReason;
+      }
+    }
+  }
+
+  private mapOtherNeedsPastExperiences(otherNeeds, caseData) {
+    if (_.has(otherNeeds, 'pastExperiences')) {
+      caseData.pastExperiences = boolToYesNo(otherNeeds.pastExperiences);
+
+      if (otherNeeds.pastExperiences && !isEmpty(otherNeeds.pastExperiencesReason)) {
+        caseData.pastExperiencesDescription = otherNeeds.pastExperiencesReason;
+      }
+    }
+  }
+
+  private mapOtherNeedsAnythingElse(otherNeeds, caseData) {
+    if (_.has(otherNeeds, 'anythingElse')) {
+      caseData.additionalRequests = boolToYesNo(otherNeeds.anythingElse);
+
+      if (otherNeeds.anythingElse && !isEmpty(otherNeeds.anythingElseReason)) {
+        caseData.additionalRequestsDescription = otherNeeds.anythingElseReason;
+      }
+    }
+  }
+
+  private mapCmaRequirementsDatesToAvoid(appeal, caseData) {
     if (_.has(appeal, 'cmaRequirements.datesToAvoid')) {
       const { datesToAvoid } = appeal.cmaRequirements;
 
@@ -1586,19 +1616,21 @@ export default class UpdateAppealService {
         caseData.datesToAvoidYesNo = boolToYesNo(datesToAvoid.isDateCannotAttend);
 
         if (datesToAvoid.isDateCannotAttend && datesToAvoid.dates && datesToAvoid.dates.length) {
-          caseData.datesToAvoid = datesToAvoid.dates.map(date => {
-
-            return {
-              value: {
-                dateToAvoid: toIsoDate(date.date),
-                dateToAvoidReason: date.reason
-              } as DateToAvoid
-            } as Collection<DateToAvoid>;
-          }
-          );
+          caseData.datesToAvoid = datesToAvoid.dates.map(date => ({
+            value: {
+              dateToAvoid: toIsoDate(date.date),
+              dateToAvoidReason: date.reason
+            } as DateToAvoid
+          } as Collection<DateToAvoid>));
         }
       }
     }
+  }
+
+  private mapToCCDCaseCmaRequirements(appeal, caseData) {
+    this.mapAccessNeeds(appeal, caseData);
+    this.mapOtherNeeds(appeal, caseData);
+    this.mapCmaRequirementsDatesToAvoid(appeal, caseData);
   }
 
   private mapToCCDCaseHearingRequirements(appeal, caseData) {

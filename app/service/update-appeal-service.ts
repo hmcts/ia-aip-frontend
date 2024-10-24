@@ -49,6 +49,7 @@ export default class UpdateAppealService {
   async loadAppeal(req: Request) {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
     const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
+    
     req.session.ccdCaseId = ccdCase.id;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
   }
@@ -1573,7 +1574,7 @@ export default class UpdateAppealService {
     });
   }
 
-  private mapHearingOtherNeedsFromCCDCase(caseData, hearingRequirements) {
+  private mapHearingOtherNeedsFromCCDCase(caseData, hearingRequirements: HearingRequirements) {
 
     if (!_.has(hearingRequirements, 'otherNeeds')) {
       hearingRequirements.otherNeeds = {};

@@ -1543,7 +1543,6 @@ export default class UpdateAppealService {
     }
   }
 
-  private addToCaseDataIfExists(key: string, value: any): Record<string, any> {
   private mapToCCDCaseCmaRequirements(appeal, caseData) {
     this.mapAccessNeeds(appeal, caseData);
     this.mapOtherNeeds(appeal, caseData);

@@ -64,6 +64,10 @@ export function boolToYesNo(value: boolean) {
   return value === true ? 'Yes' : 'No';
 }
 
+export function extendedBoolToYesNo(value: boolean) {
+  return value ? 'Yes' : 'No';
+}
+
 export function yesNoToBool(answer: string): boolean {
   return answer ? answer.toLowerCase() === 'yes' : false;
 }

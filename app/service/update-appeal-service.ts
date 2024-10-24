@@ -1687,4 +1687,8 @@ export default class UpdateAppealService {
       target[targetKey] = source[sourceKey];
     }
   }
+
+  private addToCaseDataIfExists(key: string, value: any): Record<string, any> {
+    return value ? { [key]: value } : {};
+  }
 }

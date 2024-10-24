@@ -1,6 +1,11 @@
 import { expect } from 'chai';
 import { Request } from 'express';
-import { getFee, payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../../../app/utils/payments-utils';
+import {
+  convertToAmountOfMoneyDividedBy100,
+  getFee,
+  payLaterForApplicationNeeded,
+  payNowForApplicationNeeded
+} from '../../../app/utils/payments-utils';
 import { sinon } from '../../utils/testUtils';
 
 describe('payment-utils', () => {
@@ -113,6 +118,16 @@ describe('payment-utils', () => {
       });
 
       expect(payLater).to.eql(false);
+    });
+  });
+
+  describe('convertToAmountOfMoneyDividedBy100', () => {
+    it('should return correct converted amount of money', () => {
+      expect(convertToAmountOfMoneyDividedBy100('4000')).to.eql('40');
+    });
+
+    it('should throw an error for invalid input', () => {
+      expect(() => convertToAmountOfMoneyDividedBy100('invalid')).to.throw('Amount value is not available');
     });
   });
 });

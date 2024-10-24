@@ -7,7 +7,11 @@ import {
   getAppealApplicationNextStep,
   getAppealStatus,
   getMoveAppealOfflineDate,
-  getMoveAppealOfflineReason, isAddendumEvidenceUploadState
+  getMoveAppealOfflineReason,
+  isAddendumEvidenceUploadState,
+  isEventLatestInHistoryList,
+  remissionDecisionEventIsTheLatest,
+  requestFeeRemissionEventIsTheLatest
 } from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
@@ -161,7 +165,7 @@ describe('application-state-utils', () => {
       req.session.appeal.application.remissionOption = null;
 
       req.session.appeal.appealStatus = 'appealSubmitted';
-
+      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
@@ -207,14 +211,56 @@ describe('application-state-utils', () => {
       ' next section\'', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
         .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-
-      req.session.appeal.appealStatus = 'appealSubmitted';
-      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
+      const { appeal } = req.session;
+      appeal.appealStatus = 'appealSubmitted';
+      appeal.application.remissionOption = 'asylumSupportFromHo';
+      appeal.history = [
+        {
+          'id': 'requestFeeRemission',
+          'createdDate': '2020-02-22T15:36:26.099'
+        },
+        {
+          'id': 'submitAppeal',
+          'createdDate': '2020-02-22T15:36:26.099'
+        }
+      ] as HistoryEvent[];
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         cta: null,
-        deadline: '22 February 2020',
+        deadline: '07 March 2020',
+        descriptionParagraphs: [
+          'Your appeal details have been sent to the Tribunal.',
+          'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+          'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
+          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+        ],
+        allowedAskForMoreTime: false
+      });
+    });
+
+    it('when application status is appealSubmitted with fee and flag is enabled should get correct \'Do This' +
+      ' next section\'', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      const { appeal } = req.session;
+      appeal.appealStatus = 'appealSubmitted';
+      appeal.application.remissionOption = 'feeWaiverFromHo';
+      appeal.history = [
+        {
+          'id': 'requestFeeRemission',
+          'createdDate': '2020-02-22T15:36:26.099'
+        },
+        {
+          'id': 'submitAppeal',
+          'createdDate': '2020-02-22T15:36:26.099'
+        }
+      ] as HistoryEvent[];
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        cta: null,
+        deadline: '07 March 2020',
         descriptionParagraphs: [
           'Your appeal details have been sent to the Tribunal.',
           'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
@@ -328,12 +374,22 @@ describe('application-state-utils', () => {
 
       req.session.appeal.application.isAppealLate = true;
       req.session.appeal.appealStatus = 'lateAppealSubmitted';
-      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+      req.session.appeal.history = [
+        {
+          'id': 'requestFeeRemission',
+          'createdDate': '2020-02-22T15:36:26.099'
+        },
+        {
+          'id': 'submitAppeal',
+          'createdDate': '2020-02-22T15:36:26.099'
+        }
+      ] as HistoryEvent[];
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         cta: null,
-        deadline: '22 February 2020',
+        deadline: '07 March 2020',
         descriptionParagraphs: [
           'Your appeal details have been sent to the Tribunal.',
           'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
@@ -1465,6 +1521,76 @@ describe('application-state-utils', () => {
         'There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing.'
       ]
     };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application is decided as remadeRule31 for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'remadeRule31';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'cta': {},
+      'descriptionParagraphs': [
+        'A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>',
+        '<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>',
+        '<b>What happens next</b>',
+        'The Tribunal will contact you when the review of your appeal decision is complete.'
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application is decided as remadeRule32 for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'remadeRule32';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'cta': {},
+      'descriptionParagraphs': [
+        'A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>',
+        '<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>',
+        '<b>What happens next</b>',
+        'The Tribunal will contact you when the review of your appeal decision is complete.'
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application is decided as reheardRule35 for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'reheardRule35';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'cta': {},
+      'descriptionParagraphs': [
+        'A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided that this appeal should be heard again by the First-tier Tribunal.',
+        'The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.',
+        '<a href={{ paths.common.ftpaDecisionViewer }}>Read the decision and reasons document</a>',
+        '<b>What happens next</b>',
+        'There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing.'
+      ]
+    };
     expect(result).to.eql(expected);
   });
 
@@ -1728,6 +1854,239 @@ describe('application-state-utils', () => {
     };
 
     expect(result).to.eql(expected);
+  });
+
+  it('check isEventLatestInHistoryList work as expected', async () => {
+    const { appeal } = req.session;
+    const testData = [
+      {
+        history: undefined,
+        expectedResponse: false,
+        evenId: null,
+        description: 'False'
+      },
+      {
+        history: [],
+        expectedResponse: false,
+        evenId: null,
+        description: 'False'
+      },
+      {
+        history: [],
+        expectedResponse: false,
+        evenId: null,
+        description: 'False'
+      },
+      {
+        history: [
+          {
+            'id': 'submit',
+            'createdDate': '2022-01-11T16:00:00.000'
+          },
+          {
+            'id': 'decisionWithoutHearing',
+            'createdDate': '2022-01-11T16:00:00.000'
+          }
+        ] as HistoryEvent[],
+        expectedResponse: false,
+        evenId: 'decisionWithoutHearing',
+        description: 'False'
+      },
+      {
+        history: [
+          {
+            'id': 'decisionWithoutHearing',
+            'createdDate': '2022-01-11T16:00:00.000'
+          }
+        ] as HistoryEvent[],
+        expectedResponse: true,
+        evenId: 'decisionWithoutHearing',
+        description: 'True'
+      }
+    ];
+
+    testData.forEach(({ history, expectedResponse, evenId, description }) => {
+      it(`should be ${description}`, () => {
+        appeal.history = history;
+        expect(isEventLatestInHistoryList(req as Request, evenId)).to.be.deep.equal(expectedResponse);
+      });
+    });
+  });
+
+  it('check remissionDecisionEventIsTheLatest work as expected', async () => {
+    const { appeal } = req.session;
+    appeal.application.remissionDecision = 'approved';
+    appeal.history = [
+      {
+        'id': 'recordRemissionDecision',
+        'createdDate': '2020-02-22T15:36:26.099'
+      },
+      {
+        'id': 'submitAppeal',
+        'createdDate': '2020-02-22T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+
+    expect(remissionDecisionEventIsTheLatest(req as Request)).to.be.deep.equal(true);
+  });
+
+  it('check requestFeeRemissionEventIsTheLatest work as expected', async () => {
+    const { appeal } = req.session;
+    appeal.application.remissionOption = 'feeWaiverFromHo';
+    appeal.history = [
+      {
+        'id': 'requestFeeRemission',
+        'createdDate': '2020-02-22T15:36:26.099'
+      },
+      {
+        'id': 'submitAppeal',
+        'createdDate': '2020-02-22T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+
+    expect(requestFeeRemissionEventIsTheLatest(req as Request)).to.be.deep.equal(true);
+  });
+
+  it('when application status is appealSubmitted with decision Approved for fee refund and flag is enabled should get correct \'Do This' +
+    ' next section\'', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+    const { appeal } = req.session;
+    appeal.appealStatus = 'appealSubmitted';
+    appeal.application.remissionDecision = 'approved';
+    appeal.history = [
+      {
+        'id': 'recordRemissionDecision',
+        'createdDate': '2020-02-22T15:36:26.099'
+      },
+      {
+        'id': 'submitAppeal',
+        'createdDate': '2020-02-22T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql({
+      cta: null,
+      deadline: '07 March 2020',
+      descriptionParagraphs: [
+        'Your appeal details have been sent to the Tribunal.',
+        'A Legal Officer will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.',
+        '<b>Helpful information</b>',
+        '<a href={{ paths.common.tribunalCaseworker }}>What is a Tribunal Caseworker?</a>'
+      ],
+      allowedAskForMoreTime: false
+    });
+  });
+
+  it('when application status is appealSubmitted with decision partially approved for fee refund and flag is enabled should get correct \'Do This' +
+    ' next section\'', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+    req.session.appeal.appealStatus = 'appealSubmitted';
+    req.session.appeal.ccdReferenceNumber = '1111 2222 3333 4444';
+    req.session.appeal.application.remissionDecision = 'partiallyApproved';
+    req.session.appeal.application.amountLeftToPay = '4000';
+    req.session.appeal.application.remissionRejectedDatePlus14days = '2022-03-12';
+    req.session.appeal.history = [
+      {
+        'id': 'recordRemissionDecision',
+        'createdDate': '2020-02-22T15:36:26.099'
+      },
+      {
+        'id': 'submitAppeal',
+        'createdDate': '2020-02-22T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql({
+      cta: {},
+      deadline: '07 March 2020',
+      feeLeftToPay: '40',
+      remissionRejectedDatePlus14days: '2022-03-12',
+      ccdReferenceNumber: '1111-2222-3333-4444',
+      descriptionParagraphs: [
+        'The fee for this appeal is £{{ applicationNextStep.feeLeftToPay }}.',
+        'If you do not pay the fee by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.',
+        '<b>How to pay the fee</b>',
+        '1. Call the Tribunal on 0300 123 1711, then select option 4<br />2. Provide your 16-digit online case reference number: {{ applicationNextStep.ccdReferenceNumber }}<br />3. Make the payment with a debit or credit card'
+      ],
+      allowedAskForMoreTime: false
+    });
+  });
+
+  it('when application status is appealSubmitted with decision rejected for fee refund and flag is enabled should get correct \'Do This' +
+    ' next section\'', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+    req.session.appeal.appealStatus = 'appealSubmitted';
+    req.session.appeal.application.remissionDecision = 'rejected';
+    req.session.appeal.feeWithHearing = '140';
+    req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+    req.session.appeal.application.remissionRejectedDatePlus14days = '2022-03-12';
+    req.session.appeal.history = [
+      {
+        'id': 'recordRemissionDecision',
+        'createdDate': '2020-02-22T15:36:26.099'
+      },
+      {
+        'id': 'submitAppeal',
+        'createdDate': '2020-02-22T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql({
+      cta: {},
+      deadline: '07 March 2020',
+      feeForAppeal: '140',
+      remissionRejectedDatePlus14days: '2022-03-12',
+      descriptionParagraphs: [
+        'The fee for this appeal is £{{ applicationNextStep.feeForAppeal }}.',
+        'If you do not pay the fee by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.',
+        '<a href={{ paths.common.payLater }}>Pay for the appeal</a>'
+      ],
+      allowedAskForMoreTime: false
+    });
+  });
+
+  it('when application status is pendingPayment with decision rejected for fee refund and flag is enabled should get correct \'Do This' +
+    ' next section\'', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+    req.session.appeal.appealStatus = 'pendingPayment';
+    req.session.appeal.application.remissionDecision = 'rejected';
+    req.session.appeal.feeWithHearing = '140';
+    req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+    req.session.appeal.application.remissionRejectedDatePlus14days = '2022-03-12';
+    req.session.appeal.history = [
+      {
+        'id': 'recordRemissionDecision',
+        'createdDate': '2020-02-22T15:36:26.099'
+      },
+      {
+        'id': 'submitAppeal',
+        'createdDate': '2020-02-22T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql({
+      cta: {},
+      deadline: '07 March 2020',
+      feeForAppeal: '140',
+      remissionRejectedDatePlus14days: '2022-03-12',
+      descriptionParagraphs: [
+        'The fee for this appeal is £{{ applicationNextStep.feeForAppeal }}.',
+        'If you do not pay the fee by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.',
+        '<a href={{ paths.common.payLater }}>Pay for the appeal</a>'
+      ],
+      allowedAskForMoreTime: false
+    });
   });
 
   it('isAddendumEvidenceUploadState', async () => {

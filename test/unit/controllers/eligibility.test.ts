@@ -185,6 +185,20 @@ describe('Type of appeal Controller', () => {
       expect(res.redirect).to.have.been.calledWith(`${paths.common.eligible}?id=${finalQuestionId}`);
     });
 
+    it('redirects to eligible page if all answers eligible OOC', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(true);
+      const finalQuestionId = i18n.eligibilityOOCFlag.length - 1;
+      req.body = {
+        questionId: finalQuestionId + '',
+        answer: i18n.eligibilityOOCFlag[finalQuestionId].eligibleAnswer
+      };
+      req.session.eligibility = {};
+
+      await eligibilityQuestionPost(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(`${paths.common.eligible}?id=${finalQuestionId}`);
+    });
+
     it('stores answer in session', async () => {
       req.body = {
         questionId: '0',

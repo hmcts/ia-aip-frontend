@@ -492,13 +492,109 @@ describe('Home Office Details Controller', function () {
       req.body['year'] = moment().year() + 1;
       const dateError = {
         text: 'The date letter was sent must be in the past',
-        href: '#date',
-        key: 'date'
+        href: '#year',
+        key: 'year'
       };
       const error = {
-        date: dateError
+        year: dateError
       };
       const errorList = [dateError];
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk',
+        {
+          error,
+          errorList,
+          dateLetterSent: { ...req.body },
+          previousPage: paths.appealStarted.details
+        }
+      );
+    });
+
+    it('should fail validation and render a validation error with month in future', async () => {
+      const currentDate = new Date();
+
+      req.body['day'] = 1;
+      req.body['month'] = (currentDate.getMonth() + 1) < 12 ? (currentDate.getMonth() + 2) : 1;
+      req.body['year'] = currentDate.getFullYear();
+
+      const expectedError: ValidationError = {
+        key: 'month',
+        text: 'The date letter was sent must be in the past',
+        href: '#month'
+      };
+
+      const error = {
+        month: expectedError
+      };
+      const errorList = [expectedError];
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk',
+        {
+          error,
+          errorList,
+          dateLetterSent: { ...req.body },
+          previousPage: paths.appealStarted.details
+        }
+      );
+    });
+
+    it('should fail validation and render a validation error with day in future', async () => {
+      const currentDate = new Date();
+
+      let tomorrowDate = new Date();
+      tomorrowDate.setDate(currentDate.getDate() + 1);
+
+      req.body['day'] = tomorrowDate.getDate();
+      req.body['month'] = tomorrowDate.getMonth() + 1;
+      req.body['year'] = tomorrowDate.getFullYear();
+
+      const expectedError: ValidationError = {
+        key: 'day',
+        text: 'The date letter was sent must be in the past',
+        href: '#day'
+      };
+
+      const error = {
+        day: expectedError
+      };
+      const errorList = [expectedError];
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk',
+        {
+          error,
+          errorList,
+          dateLetterSent: { ...req.body },
+          previousPage: paths.appealStarted.details
+        }
+      );
+    });
+
+    it('should fail validation and render a validation error with invalid date', async () => {
+      const currentDate = new Date();
+
+      let tomorrowDate = new Date();
+      tomorrowDate.setDate(currentDate.getDate() + 1);
+
+      req.body['day'] = 31;
+      req.body['month'] = 9;
+      req.body['year'] = 2024;
+
+      const expectedError: ValidationError = {
+        key: 'day',
+        text: 'Enter the date in the correct format',
+        href: '#day'
+      };
+
+      const error = {
+        day: expectedError
+      };
+      const errorList = [expectedError];
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;

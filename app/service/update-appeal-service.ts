@@ -1533,6 +1533,18 @@ export default class UpdateAppealService {
     }
   }
 
+  private mapToCCDCaseHearingRequirements(appeal, caseData) {
+    this.mapToCCDAttendance(appeal, caseData);
+    this.mapToCCDWitnesses(appeal, caseData);
+    this.mapToCCDInterpreterRequirements(appeal, caseData);
+    this.mapToCCDWitnessInterpreterRequirements(appeal, caseData);
+    this.mapToCCDCaseHearingRoomNeeded(appeal, caseData);
+    this.mapToCCDCaseHearingLoopNeeded(appeal, caseData);
+    this.mapToCCDOtherNeeds(appeal, caseData);
+    this.mapToCCDDatesToAvoid(appeal, caseData);
+    this.mapToCCDDecisionAllowed(appeal, caseData);
+  }
+
   private mapOtherNeeds(appeal, caseData) {
     if (_.has(appeal, 'cmaRequirements.otherNeeds')) {
       const { otherNeeds } = appeal.cmaRequirements;
@@ -1633,7 +1645,7 @@ export default class UpdateAppealService {
     this.mapCmaRequirementsDatesToAvoid(appeal, caseData);
   }
 
-  private mapToCCDCaseHearingRequirements(appeal, caseData) {
+  private mapToCCDAttendance(appeal, caseData) {
     if (_.has(appeal.hearingRequirements, 'witnessesOnHearing')) {
       caseData.isWitnessesAttending = boolToYesNo(appeal.hearingRequirements.witnessesOnHearing);
     }
@@ -1643,11 +1655,12 @@ export default class UpdateAppealService {
     if (_.has(appeal.hearingRequirements, 'isAppellantGivingOralEvidence')) {
       caseData.isAppellantGivingOralEvidence = boolToYesNo(appeal.hearingRequirements.isAppellantGivingOralEvidence);
     }
-
     if (_.has(appeal.hearingRequirements, 'witnessesOutsideUK')) {
       caseData.isEvidenceFromOutsideUkInCountry = boolToYesNo(appeal.hearingRequirements.witnessesOutsideUK);
     }
+  }
 
+  private mapToCCDWitnesses(appeal, caseData) {
     if (_.has(appeal.hearingRequirements, 'witnessNames')) {
       caseData.witnessDetails = appeal.hearingRequirements.witnessNames.map(name => {
         return {
@@ -1659,22 +1672,21 @@ export default class UpdateAppealService {
         } as Collection<WitnessDetails>;
       });
     }
+  }
 
+  private mapToCCDInterpreterRequirements(appeal, caseData) {
     if (_.has(appeal.hearingRequirements, 'isInterpreterServicesNeeded')) {
       caseData.isInterpreterServicesNeeded = boolToYesNo(appeal.hearingRequirements.isInterpreterServicesNeeded);
 
       if (_.has(appeal.hearingRequirements, 'appellantInterpreterLanguageCategory')) {
         caseData.appellantInterpreterLanguageCategory = appeal.hearingRequirements.appellantInterpreterLanguageCategory;
       }
-
       if (_.has(appeal.hearingRequirements, 'appellantInterpreterSpokenLanguage')) {
         caseData.appellantInterpreterSpokenLanguage = appeal.hearingRequirements.appellantInterpreterSpokenLanguage;
       }
-
       if (_.has(appeal.hearingRequirements, 'appellantInterpreterSignLanguage')) {
         caseData.appellantInterpreterSignLanguage = appeal.hearingRequirements.appellantInterpreterSignLanguage;
       }
-
       if (_.has(appeal.hearingRequirements, 'interpreterLanguages')) {
         caseData.interpreterLanguage = appeal.hearingRequirements.interpreterLanguages.map(interpreterLanguage => {
           return {
@@ -1686,12 +1698,13 @@ export default class UpdateAppealService {
         });
       }
     }
+  }
 
+  private mapToCCDWitnessInterpreterRequirements(appeal, caseData) {
     if (_.has(appeal.hearingRequirements, 'isAnyWitnessInterpreterRequired')) {
       caseData.isAnyWitnessInterpreterRequired = boolToYesNo(appeal.hearingRequirements.isAnyWitnessInterpreterRequired);
 
       for (let index = 0; index < 10; index++) {
-
         if (_.has(appeal.hearingRequirements, 'witnessNames')) {
           let witnessString = 'witness' + (index + 1);
           let witnessObj: WitnessName = appeal.hearingRequirements.witnessNames[index];
@@ -1705,57 +1718,58 @@ export default class UpdateAppealService {
             caseData[witnessString] = null;
           }
         }
-
         let witnessListElementString = 'witnessListElement' + (index + 1);
         if (_.has(appeal.hearingRequirements, witnessListElementString)) {
           caseData[witnessListElementString] = appeal.hearingRequirements[witnessListElementString];
         }
-
         let witnessInterpreterLanguageCategoryString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
         if (_.has(appeal.hearingRequirements, witnessInterpreterLanguageCategoryString)) {
           caseData[witnessInterpreterLanguageCategoryString] = appeal.hearingRequirements[witnessInterpreterLanguageCategoryString];
         }
-
         let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
         if (_.has(appeal.hearingRequirements, witnessInterpreterSpokenLanguageFieldString)) {
           caseData[witnessInterpreterSpokenLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSpokenLanguageFieldString];
         }
-
         let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
         if (_.has(appeal.hearingRequirements, witnessInterpreterSignLanguageFieldString)) {
           caseData[witnessInterpreterSignLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSignLanguageFieldString];
         }
       }
     }
+  }
 
+  private mapToCCDCaseHearingRoomNeeded(appeal, caseData) {
     caseData.isHearingRoomNeeded = null;
     if (_.has(appeal.hearingRequirements, 'isHearingRoomNeeded')) {
       if (appeal.hearingRequirements.isHearingRoomNeeded != null) {
         caseData.isHearingRoomNeeded = boolToYesNo(appeal.hearingRequirements.isHearingRoomNeeded);
       }
     }
+  }
 
+  private mapToCCDCaseHearingLoopNeeded(appeal, caseData) {
     caseData.isHearingLoopNeeded = null;
     if (_.has(appeal.hearingRequirements, 'isHearingLoopNeeded')) {
       if (appeal.hearingRequirements.isHearingLoopNeeded != null) {
         caseData.isHearingLoopNeeded = boolToYesNo(appeal.hearingRequirements.isHearingLoopNeeded);
       }
     }
+  }
 
+  private mapToCCDOtherNeeds(appeal, caseData) {
     if (_.has(appeal, 'hearingRequirements.otherNeeds')) {
       this.mapToCCDCaseHearingRequirementsOtherNeeds(appeal, caseData);
     }
+  }
 
-    // Dates To avoid Section
+  private mapToCCDDatesToAvoid(appeal, caseData) {
     if (_.has(appeal, 'hearingRequirements.datesToAvoid')) {
       const { datesToAvoid } = appeal.hearingRequirements;
 
       if (_.has(datesToAvoid, 'isDateCannotAttend')) {
         caseData.datesToAvoidYesNo = boolToYesNo(datesToAvoid.isDateCannotAttend);
-
         if (datesToAvoid.isDateCannotAttend && datesToAvoid.dates && datesToAvoid.dates.length) {
           caseData.datesToAvoid = datesToAvoid.dates.map(date => {
-
             return {
               value: {
                 dateToAvoid: toIsoDate(date.date),
@@ -1766,7 +1780,9 @@ export default class UpdateAppealService {
         }
       }
     }
+  }
 
+  private mapToCCDDecisionAllowed(appeal, caseData) {
     if (_.has(appeal, 'isDecisionAllowed')) {
       caseData.isDecisionAllowed = appeal.isDecisionAllowed;
     }

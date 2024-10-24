@@ -1211,28 +1211,21 @@ export default class UpdateAppealService {
     return docUrl;
   }
 
-  private mapToCCDCaseAppealApplication(appeal, caseData, paymentsFlag: boolean, refundFlag: boolean) {
-
-    if (appeal.application.homeOfficeRefNumber) {
-      caseData.homeOfficeReferenceNumber = appeal.application.homeOfficeRefNumber;
-    }
-    caseData.appellantInUk = String(appeal.application.appellantInUk);
-
-    if (appeal.application.outsideUkWhenApplicationMade) {
-      caseData.outsideUkWhenApplicationMade = yesNoToBool(appeal.application.outsideUkWhenApplicationMade) ? YesOrNo.YES : YesOrNo.NO;
-    }
-
-    caseData.gwfReferenceNumber = appeal.application.gwfReferenceNumber;
-
+  private mapToCCDCaseDateLetterSent(appeal, caseData) {
     if (appeal.application.dateLetterSent && appeal.application.dateLetterSent.year) {
       caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.dateLetterSent);
       caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
     }
+  }
+
+  private mapToCCDCaseDecisionLetterReceived(appeal, caseData) {
     if (appeal.application.decisionLetterReceivedDate && appeal.application.decisionLetterReceivedDate.year) {
       caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.decisionLetterReceivedDate);
       caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
     }
+  }
 
+  private mapToCCDCaseApplicationOotDetails(appeal, caseData) {
     if (appeal.application.isAppealLate) {
       caseData.recordedOutOfTimeDecision = 'No';
       if (_.has(appeal.application.lateAppeal, 'reason')) {
@@ -1249,22 +1242,35 @@ export default class UpdateAppealService {
         caseData.applicationOutOfTimeDocument = null;
       }
     }
+  }
 
-    if (appeal.application.personalDetails && appeal.application.personalDetails.givenNames) {
-      caseData.appellantGivenNames = appeal.application.personalDetails.givenNames;
+  private mapToCCDCasePesonalDetails(appeal, caseData) {
+    if (appeal.application.personalDetails) {
+      if (appeal.application.personalDetails.givenNames) {
+        caseData.appellantGivenNames = appeal.application.personalDetails.givenNames;
+      }
+      if (appeal.application.personalDetails.familyName) {
+        caseData.appellantFamilyName = appeal.application.personalDetails.familyName;
+      }
+      if (appeal.application.personalDetails.dob && appeal.application.personalDetails.dob.year) {
+        caseData.appellantDateOfBirth = toIsoDate(appeal.application.personalDetails.dob);
+      }
     }
-    if (appeal.application.personalDetails && appeal.application.personalDetails.familyName) {
-      caseData.appellantFamilyName = appeal.application.personalDetails.familyName;
-    }
-    if (appeal.application.personalDetails.dob && appeal.application.personalDetails.dob.year) {
-      caseData.appellantDateOfBirth = toIsoDate(appeal.application.personalDetails.dob);
-    }
+  }
+
+  private mapToCCDCaseClientLeaveUkDate(appeal, caseData) {
     if (appeal.application.dateClientLeaveUk && appeal.application.dateClientLeaveUk.year) {
       caseData.dateClientLeaveUk = toIsoDate(appeal.application.dateClientLeaveUk);
     }
+  }
+
+  private mapToCCDCaseDecisionLetterReceivedDate(appeal, caseData) {
     if (appeal.application.decisionLetterReceivedDate && appeal.application.decisionLetterReceivedDate.year) {
       caseData.decisionLetterReceivedDate = toIsoDate(appeal.application.decisionLetterReceivedDate);
     }
+  }
+
+  private mapToCCDCaseNationalities(appeal, caseData) {
     if (appeal.application.personalDetails && appeal.application.personalDetails.nationality) {
       caseData.appellantNationalities = [
         {
@@ -1274,6 +1280,9 @@ export default class UpdateAppealService {
         }
       ];
     }
+  }
+
+  private mapToCCDCasePersonalDetailsAddress(appeal, caseData) {
     if (_.has(appeal.application.personalDetails, 'address.line1')) {
       caseData.appellantAddress = {
         AddressLine1: appeal.application.personalDetails.address.line1,
@@ -1285,40 +1294,36 @@ export default class UpdateAppealService {
       };
       caseData.appellantHasFixedAddress = 'Yes';
     }
+  }
 
-    if (appeal.application.appellantOutOfCountryAddress) {
-      caseData.appellantOutOfCountryAddress = appeal.application.appellantOutOfCountryAddress;
-    }
-
-    if (appeal.application.appealType) {
-      caseData.appealType = appeal.application.appealType;
-    }
-
-    caseData.remissionOption = null;
-    if (appeal.application.remissionOption) {
-      caseData.remissionOption = appeal.application.remissionOption;
-    }
-
-    caseData.asylumSupportRefNumber = null;
-    if (appeal.application.asylumSupportRefNumber) {
-      caseData.asylumSupportRefNumber = appeal.application.asylumSupportRefNumber;
-    }
-
-    caseData.helpWithFeesOption = null;
-    if (appeal.application.helpWithFeesOption) {
-      caseData.helpWithFeesOption = appeal.application.helpWithFeesOption;
-    }
-
-    caseData.helpWithFeesRefNumber = null;
-    if (appeal.application.helpWithFeesRefNumber) {
-      caseData.helpWithFeesRefNumber = appeal.application.helpWithFeesRefNumber;
-    }
-
-    caseData.localAuthorityLetters = null;
+  private mapToCCDLocalAuthorityLetters(appeal, caseData) {
     if (appeal.application.localAuthorityLetters) {
       const evidences: Evidence[] = appeal.application.localAuthorityLetters;
 
       caseData.localAuthorityLetters = evidences.map((evidence: Evidence) => {
+        const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+        return {
+          ...evidence.fileId && { id: evidence.fileId },
+          value: {
+            dateUploaded: evidence.dateUploaded,
+            description: evidence.description,
+            tag: 'additionalEvidence',
+            document: {
+              document_filename: evidence.name,
+              document_url: documentLocationUrl,
+              document_binary_url: `${documentLocationUrl}/binary`
+            }
+          }
+        } as Collection<DocumentWithMetaData>;
+      });
+    }
+  }
+
+  private mapToCCDLateLocalAuthorityLetters(appeal, caseData) {
+    if (appeal.application.lateLocalAuthorityLetters) {
+      const evidences: Evidence[] = appeal.application.lateLocalAuthorityLetters;
+
+      caseData.lateLocalAuthorityLetters = evidences.map((evidence: Evidence) => {
         const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
         return {
           ...evidence.fileId && { id: evidence.fileId },
@@ -1335,138 +1340,132 @@ export default class UpdateAppealService {
         } as Collection<DocumentWithMetaData>;
       });
     }
+  }
+
+  private mapToCCDCaseContactDetails(appeal, caseData) {
+    const subscription: Subscription = {
+      subscriber: Subscriber.APPELLANT,
+      wantsEmail: YesOrNo.NO,
+      email: null,
+      wantsSms: YesOrNo.NO,
+      mobileNumber: null
+    };
+
+    if (appeal.application.contactDetails.wantsEmail === true && appeal.application.contactDetails.email) {
+      subscription.wantsEmail = YesOrNo.YES;
+      subscription.email = appeal.application.contactDetails.email;
+      caseData.appellantEmailAddress = appeal.application.contactDetails.email;
+    }
+    if (appeal.application.contactDetails.wantsSms === true && appeal.application.contactDetails.phone) {
+      subscription.wantsSms = YesOrNo.YES;
+      subscription.mobileNumber = appeal.application.contactDetails.phone;
+      caseData.appellantPhoneNumber = appeal.application.contactDetails.phone;
+    }
+    caseData.subscriptions = [{ value: subscription }];
+  }
+
+  private mapToCCDCaseSponsorAddress(appeal, caseData) {
+    if (appeal.application.sponsorAddress) {
+      caseData.sponsorAddress = {
+        AddressLine1: appeal.appeal.application.sponsorAddress.line1,
+        AddressLine2: appeal.application.sponsorAddress.line2,
+        PostTown: appeal.application.sponsorAddress.city,
+        County: appeal.application.sponsorAddress.county,
+        PostCode: appeal.application.sponsorAddress.postcode,
+        Country: 'United Kingdom'
+      };
+    }
+  }
+
+  private mapToCCDCaseSponsorDetails(appeal, caseData) {
+    const sponsorSubscription: Subscription = {
+      subscriber: Subscriber.SUPPORTER,
+      wantsEmail: YesOrNo.NO,
+      email: null,
+      wantsSms: YesOrNo.NO,
+      mobileNumber: null
+    };
+
+    if (appeal.application.sponsorContactDetails.wantsEmail === true && appeal.application.sponsorContactDetails.email) {
+      sponsorSubscription.wantsEmail = YesOrNo.YES;
+      sponsorSubscription.email = appeal.application.sponsorContactDetails.email;
+      caseData.sponsorEmail = appeal.application.sponsorContactDetails.email;
+    }
+    if (appeal.application.sponsorContactDetails.wantsSms === true && appeal.application.sponsorContactDetails.phone) {
+      sponsorSubscription.wantsSms = YesOrNo.YES;
+      sponsorSubscription.mobileNumber = appeal.application.sponsorContactDetails.phone;
+      caseData.sponsorMobileNumber = appeal.application.sponsorContactDetails.phone;
+    }
+    caseData.sponsorSubscriptions = [{ value: sponsorSubscription }];
+  }
+
+  private mapToCCDCaseAppealApplication(appeal, caseData, paymentsFlag: boolean, refundFlag: boolean) {
+    const { application } = appeal;
+
+    this.assignSinglePropertyIfExists(application, 'homeOfficeRefNumber', caseData, 'homeOfficeReferenceNumber');
+    caseData.appellantInUk = String(appeal.application.appellantInUk);
+    this.assignSinglePropertyIfExistsWithYesNoToBoolFunction(application, 'outsideUkWhenApplicationMade', caseData, 'outsideUkWhenApplicationMade');
+    caseData.gwfReferenceNumber = appeal.application.gwfReferenceNumber;
+
+    this.mapToCCDCaseDateLetterSent(appeal, caseData);
+    this.mapToCCDCaseDecisionLetterReceived(appeal, caseData);
+    this.mapToCCDCaseApplicationOotDetails(appeal, caseData);
+    this.mapToCCDCasePesonalDetails(appeal, caseData);
+    this.mapToCCDCaseClientLeaveUkDate(appeal, caseData);
+    this.mapToCCDCaseDecisionLetterReceivedDate(appeal, caseData);
+    this.mapToCCDCaseNationalities(appeal, caseData);
+    this.mapToCCDCasePersonalDetailsAddress(appeal, caseData);
+    this.assignSinglePropertyIfExists(application, 'appellantOutOfCountryAddress', caseData, 'appellantOutOfCountryAddress');
+    this.assignSinglePropertyIfExists(application, 'appealType', caseData, 'appealType');
+
+    caseData.remissionOption = null;
+    caseData.asylumSupportRefNumber = null;
+    caseData.helpWithFeesOption = null;
+    caseData.helpWithFeesRefNumber = null;
+    caseData.localAuthorityLetters = null;
+
+    this.assignSinglePropertyIfExists(application, 'remissionOption', caseData, 'remissionOption');
+    this.assignSinglePropertyIfExists(application, 'asylumSupportRefNumber', caseData, 'asylumSupportRefNumber');
+    this.assignSinglePropertyIfExists(application, 'helpWithFeesOption', caseData, 'helpWithFeesOption');
+    this.assignSinglePropertyIfExists(application, 'helpWithFeesRefNumber', caseData, 'helpWithFeesRefNumber');
+    this.mapToCCDLocalAuthorityLetters(appeal, caseData);
 
     caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
 
     if (paymentsFlag && refundFlag) {
       caseData.refundRequested = appeal.application.refundRequested ? YesOrNo.YES : YesOrNo.NO;
       caseData.isLateRemissionRequest = appeal.application.isLateRemissionRequest ? YesOrNo.YES : YesOrNo.NO;
+
       caseData.remissionDecision = null;
-      if (appeal.application.remissionDecision) {
-        caseData.remissionDecision = appeal.application.remissionDecision;
-      }
-
       caseData.lateRemissionOption = null;
-      if (appeal.application.lateRemissionOption) {
-        caseData.lateRemissionOption = appeal.application.lateRemissionOption;
-      }
-
       caseData.lateAsylumSupportRefNumber = null;
-      if (appeal.application.lateAsylumSupportRefNumber) {
-        caseData.lateAsylumSupportRefNumber = appeal.application.lateAsylumSupportRefNumber;
-      }
-
       caseData.lateHelpWithFeesOption = null;
-      if (appeal.application.lateHelpWithFeesOption) {
-        caseData.lateHelpWithFeesOption = appeal.application.lateHelpWithFeesOption;
-      }
-
       caseData.lateHelpWithFeesRefNumber = null;
-      if (appeal.application.lateHelpWithFeesRefNumber) {
-        caseData.lateHelpWithFeesRefNumber = appeal.application.lateHelpWithFeesRefNumber;
-      }
-
       caseData.lateLocalAuthorityLetters = null;
-      if (appeal.application.lateLocalAuthorityLetters) {
-        const evidences: Evidence[] = appeal.application.lateLocalAuthorityLetters;
 
-        caseData.lateLocalAuthorityLetters = evidences.map((evidence: Evidence) => {
-          const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
-          return {
-            ...evidence.fileId && { id: evidence.fileId },
-            value: {
-              dateUploaded: evidence.dateUploaded || '',
-              description: evidence.description,
-              tag: 'additionalEvidence',
-              document: {
-                document_filename: evidence.name,
-                document_url: documentLocationUrl,
-                document_binary_url: `${documentLocationUrl}/binary`
-              }
-            }
-          } as Collection<DocumentWithMetaData>;
-        });
-      }
+      this.assignSinglePropertyIfExists(application, 'remissionDecision', caseData, 'remissionDecision');
+      this.assignSinglePropertyIfExists(application, 'lateRemissionOption', caseData, 'lateRemissionOption');
+      this.assignSinglePropertyIfExists(application, 'lateAsylumSupportRefNumber', caseData, 'lateAsylumSupportRefNumber');
+      this.assignSinglePropertyIfExists(application, 'lateHelpWithFeesOption', caseData, 'lateHelpWithFeesOption');
+      this.assignSinglePropertyIfExists(application, 'lateHelpWithFeesRefNumber', caseData, 'lateHelpWithFeesRefNumber');
+      this.mapToCCDLateLocalAuthorityLetters(appeal, caseData);
       caseData.refundConfirmationApplied = appeal.application.refundConfirmationApplied ? YesOrNo.YES : YesOrNo.NO;
     }
 
     if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
-      const subscription: Subscription = {
-        subscriber: Subscriber.APPELLANT,
-        wantsEmail: YesOrNo.NO,
-        email: null,
-        wantsSms: YesOrNo.NO,
-        mobileNumber: null
-      };
-
-      if (appeal.application.contactDetails.wantsEmail === true && appeal.application.contactDetails.email) {
-        subscription.wantsEmail = YesOrNo.YES;
-        subscription.email = appeal.application.contactDetails.email;
-        caseData.appellantEmailAddress = appeal.application.contactDetails.email;
-      }
-      if (appeal.application.contactDetails.wantsSms === true && appeal.application.contactDetails.phone) {
-        subscription.wantsSms = YesOrNo.YES;
-        subscription.mobileNumber = appeal.application.contactDetails.phone;
-        caseData.appellantPhoneNumber = appeal.application.contactDetails.phone;
-      }
-      caseData.subscriptions = [{ value: subscription }];
-
-      if (appeal.application.hasSponsor) {
-        caseData.hasSponsor = appeal.application.hasSponsor;
-      }
-
-      if (appeal.application.sponsorGivenNames) {
-        caseData.sponsorGivenNames = appeal.application.sponsorGivenNames;
-      }
-
-      if (appeal.application.sponsorFamilyName) {
-        caseData.sponsorFamilyName = appeal.application.sponsorFamilyName;
-      }
-
-      if (appeal.application.sponsorNameForDisplay) {
-        caseData.sponsorNameForDisplay = appeal.application.sponsorNameForDisplay;
-      }
-
-      if (appeal.application.sponsorAddress) {
-        caseData.sponsorAddress = {
-          AddressLine1: appeal.application.sponsorAddress.line1,
-          AddressLine2: appeal.application.sponsorAddress.line2,
-          PostTown: appeal.application.sponsorAddress.city,
-          County: appeal.application.sponsorAddress.county,
-          PostCode: appeal.application.sponsorAddress.postcode,
-          Country: 'United Kingdom'
-        };
-      }
+      this.mapToCCDCaseContactDetails(appeal, caseData);
+      this.assignSinglePropertyIfExists(application, 'hasSponsor', caseData, 'hasSponsor');
+      this.assignSinglePropertyIfExists(application, 'sponsorGivenNames', caseData, 'sponsorGivenNames');
+      this.assignSinglePropertyIfExists(application, 'sponsorFamilyName', caseData, 'sponsorFamilyName');
+      this.assignSinglePropertyIfExists(application, 'sponsorNameForDisplay', caseData, 'sponsorNameForDisplay');
+      this.mapToCCDCaseSponsorAddress(appeal, caseData);
 
       if (appeal.application.sponsorContactDetails && (appeal.application.sponsorContactDetails.email || appeal.application.sponsorContactDetails.phone)) {
-        const sponsorSubscription: Subscription = {
-          subscriber: Subscriber.SUPPORTER,
-          wantsEmail: YesOrNo.NO,
-          email: null,
-          wantsSms: YesOrNo.NO,
-          mobileNumber: null
-        };
-
-        if (appeal.application.sponsorContactDetails.wantsEmail === true && appeal.application.sponsorContactDetails.email) {
-          sponsorSubscription.wantsEmail = YesOrNo.YES;
-          sponsorSubscription.email = appeal.application.sponsorContactDetails.email;
-          caseData.sponsorEmail = appeal.application.sponsorContactDetails.email;
-        }
-        if (appeal.application.sponsorContactDetails.wantsSms === true && appeal.application.sponsorContactDetails.phone) {
-          sponsorSubscription.wantsSms = YesOrNo.YES;
-          sponsorSubscription.mobileNumber = appeal.application.sponsorContactDetails.phone;
-          caseData.sponsorMobileNumber = appeal.application.sponsorContactDetails.phone;
-        }
-        caseData.sponsorSubscriptions = [{ value: sponsorSubscription }];
+        this.mapToCCDCaseSponsorDetails(appeal, caseData);
       }
-
-      if (appeal.application.sponsorAuthorisation) {
-        caseData.sponsorAuthorisation = appeal.application.sponsorAuthorisation;
-      }
+      this.assignSinglePropertyIfExists(application, 'sponsorAuthorisation', caseData, 'sponsorAuthorisation');
     }
-    if (appeal.application.deportationOrderOptions) {
-      caseData.deportationOrderOptions = appeal.application.deportationOrderOptions;
-    }
+    this.assignSinglePropertyIfExists(application, 'deportationOrderOptions', caseData, 'deportationOrderOptions');
   }
 
   private mapToCCDCaseReasonsForAppeal(appeal, caseData) {
@@ -1785,6 +1784,18 @@ export default class UpdateAppealService {
   private mapToCCDDecisionAllowed(appeal, caseData) {
     if (_.has(appeal, 'isDecisionAllowed')) {
       caseData.isDecisionAllowed = appeal.isDecisionAllowed;
+    }
+  }
+
+  private assignSinglePropertyIfExists(source, sourceKey, target, targetKey) {
+    if (source[sourceKey]) {
+      target[targetKey] = source[sourceKey];
+    }
+  }
+
+  private assignSinglePropertyIfExistsWithYesNoToBoolFunction(source, sourceKey, target, targetKey) {
+    if (source[sourceKey]) {
+      target[targetKey] = yesNoToBool(source[sourceKey]) ? YesOrNo.YES : YesOrNo.NO;
     }
   }
 }

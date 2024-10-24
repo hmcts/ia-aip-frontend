@@ -4,7 +4,7 @@ import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { formatDate } from '../utils/date-utils';
-import { boolToYesNo, documentIdToDocStoreUrl, toIsoDate, yesNoToBool } from '../utils/utils';
+import { boolToYesNo, documentIdToDocStoreUrl, extendedBoolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { DocumentManagementService } from './document-management-service';
@@ -1433,8 +1433,8 @@ export default class UpdateAppealService {
     caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
 
     if (paymentsFlag && refundFlag) {
-      caseData.refundRequested = appeal.application.refundRequested ? YesOrNo.YES : YesOrNo.NO;
-      caseData.isLateRemissionRequest = appeal.application.isLateRemissionRequest ? YesOrNo.YES : YesOrNo.NO;
+      caseData.refundRequested = extendedBoolToYesNo(appeal.application.refundRequested);
+      caseData.isLateRemissionRequest = extendedBoolToYesNo(appeal.application.isLateRemissionRequest);
 
       caseData.remissionDecision = null;
       caseData.lateRemissionOption = null;
@@ -1449,7 +1449,7 @@ export default class UpdateAppealService {
       this.assignSinglePropertyIfExists(application, 'lateHelpWithFeesOption', caseData, 'lateHelpWithFeesOption');
       this.assignSinglePropertyIfExists(application, 'lateHelpWithFeesRefNumber', caseData, 'lateHelpWithFeesRefNumber');
       this.mapToCCDLateLocalAuthorityLetters(appeal, caseData);
-      caseData.refundConfirmationApplied = appeal.application.refundConfirmationApplied ? YesOrNo.YES : YesOrNo.NO;
+      caseData.refundConfirmationApplied = extendedBoolToYesNo(appeal.application.refundConfirmationApplied);
     }
 
     if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
@@ -1707,33 +1707,36 @@ export default class UpdateAppealService {
         if (_.has(appeal.hearingRequirements, 'witnessNames')) {
           let witnessString = 'witness' + (index + 1);
           let witnessObj: WitnessName = appeal.hearingRequirements.witnessNames[index];
-          if (witnessObj) {
-            caseData[witnessString] = {
-              witnessPartyId: witnessObj.witnessPartyId,
-              witnessName: witnessObj.witnessGivenNames,
-              witnessFamilyName: witnessObj.witnessFamilyName
-            };
-          } else {
-            caseData[witnessString] = null;
-          }
+          caseData[witnessString] = witnessObj ? {
+            witnessPartyId: witnessObj.witnessPartyId,
+            witnessName: witnessObj.witnessGivenNames,
+            witnessFamilyName: witnessObj.witnessFamilyName
+          } : null;
         }
-        let witnessListElementString = 'witnessListElement' + (index + 1);
-        if (_.has(appeal.hearingRequirements, witnessListElementString)) {
-          caseData[witnessListElementString] = appeal.hearingRequirements[witnessListElementString];
-        }
-        let witnessInterpreterLanguageCategoryString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
-        if (_.has(appeal.hearingRequirements, witnessInterpreterLanguageCategoryString)) {
-          caseData[witnessInterpreterLanguageCategoryString] = appeal.hearingRequirements[witnessInterpreterLanguageCategoryString];
-        }
-        let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
-        if (_.has(appeal.hearingRequirements, witnessInterpreterSpokenLanguageFieldString)) {
-          caseData[witnessInterpreterSpokenLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSpokenLanguageFieldString];
-        }
-        let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
-        if (_.has(appeal.hearingRequirements, witnessInterpreterSignLanguageFieldString)) {
-          caseData[witnessInterpreterSignLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSignLanguageFieldString];
-        }
+        this.assignWitnessPropertiesToCCDCaseData(index, appeal, caseData);
       }
+    }
+  }
+
+  private assignWitnessPropertiesToCCDCaseData(index, appeal, caseData) {
+    const witnessListElementString = 'witnessListElement' + (index + 1);
+    if (_.has(appeal.hearingRequirements, witnessListElementString)) {
+      caseData[witnessListElementString] = appeal.hearingRequirements[witnessListElementString];
+    }
+
+    const witnessInterpreterLanguageCategoryString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
+    if (_.has(appeal.hearingRequirements, witnessInterpreterLanguageCategoryString)) {
+      caseData[witnessInterpreterLanguageCategoryString] = appeal.hearingRequirements[witnessInterpreterLanguageCategoryString];
+    }
+
+    const witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
+    if (_.has(appeal.hearingRequirements, witnessInterpreterSpokenLanguageFieldString)) {
+      caseData[witnessInterpreterSpokenLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSpokenLanguageFieldString];
+    }
+
+    const witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
+    if (_.has(appeal.hearingRequirements, witnessInterpreterSignLanguageFieldString)) {
+      caseData[witnessInterpreterSignLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSignLanguageFieldString];
     }
   }
 

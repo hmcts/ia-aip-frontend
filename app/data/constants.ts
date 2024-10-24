@@ -12,6 +12,7 @@ export const FEATURE_FLAGS = {
   USE_CCD_DOCUMENT_AM: 'use-ccd-document-am',
   DLRM_FEE_REMISSION_FEATURE_FLAG: 'dlrm-fee-remission-feature-flag',
   DLRM_SETASIDE_FEATURE_FLAG: 'dlrm-setaside-feature-flag',
+  DLRM_REFUND_FEATURE_FLAG: 'dlrm-refund-feature-flag',
   DLRM_INTERNAL_FEATURE_FLAG: 'dlrm-internal-feature-flag'
 };
 

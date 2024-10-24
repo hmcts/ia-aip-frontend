@@ -127,13 +127,13 @@ describe('Contact details Controller', () => {
         };
 
         const error: ValidationError = {
-          href: '#selections',
-          key: 'selections',
+          href: '#contactDetails',
+          key: 'contactDetails',
           text: i18n.validationErrors.contactDetails.selectOneOption
         };
         const expectedData = {
           contactDetails: contactDetailsExpectation,
-          errors: { 'selections': error },
+          errors: { 'contactDetails': error },
           errorList: [ error ],
           previousPage: paths.appealStarted.taskList
         };
@@ -778,13 +778,13 @@ describe('Contact details Controller', () => {
         };
 
         const error: ValidationError = {
-          href: '#selections',
-          key: 'selections',
+          href: '#sponsorContactDetails',
+          key: 'sponsorContactDetails',
           text: i18n.validationErrors.contactDetails.selectOneOption
         };
         const expectedData = {
           sponsorContactDetails: sponsorContactDetailsExpectation,
-          errors: { 'selections': error },
+          errors: { 'sponsorContactDetails': error },
           errorList: [ error ],
           previousPage: paths.appealStarted.sponsorAddress
         };

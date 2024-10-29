@@ -9,6 +9,7 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { expect, sinon, validateUuid } from '../../utils/testUtils';
+import { boolean } from "joi";
 
 describe('update-appeal-service', () => {
   let sandbox: sinon.SinonSandbox;
@@ -1290,6 +1291,39 @@ describe('update-appeal-service', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
         expect(mappedAppeal.ftpaR35AppellantDocument.name).eq('FTPA_R35_DOCUMENT.PDF');
+      });
+    });
+
+    describe('isWitnessesAttending, isAppellantAttendingTheHearing, isAppellantGivingOralEvidence, isEvidenceFromOutsideUkInCountry', () => {
+      const testData = [
+        {
+          value: 'Yes',
+          expectation: true
+        },
+        {
+          value: 'No',
+          expectation: false
+        }
+      ];
+
+      testData.forEach(({ value, expectation }) => {
+        it(`mapped value should be ${expectation}`, () => {
+          const caseData: Partial<CaseData> = {
+            'isWitnessesAttending': value as 'Yes' | 'No',
+            'isAppellantAttendingTheHearing': value as 'Yes' | 'No',
+            'isAppellantGivingOralEvidence': value as 'Yes' | 'No',
+            'isEvidenceFromOutsideUkInCountry': value as 'Yes' | 'No'
+          };
+
+          const appeal: Partial<CcdCaseDetails> = {
+            case_data: caseData as CaseData
+          };
+          const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+          expect(mappedAppeal.hearingRequirements.witnessesOnHearing).to.be.eq(expectation);
+          expect(mappedAppeal.hearingRequirements.isAppellantAttendingTheHearing).to.be.eq(expectation);
+          expect(mappedAppeal.hearingRequirements.isAppellantGivingOralEvidence).to.be.eq(expectation);
+          expect(mappedAppeal.hearingRequirements.witnessesOutsideUK).to.be.eq(expectation);
+        });
       });
     });
 

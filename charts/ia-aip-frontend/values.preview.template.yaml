@@ -16,6 +16,7 @@ nodejs:
     PCQ_URL: https://pcq.aat.platform.hmcts.net
     PCQ_RETURN_URL: https://${SERVICE_FQDN}/about-appeal
     NODE_ENV: development
+    TEST: 1
   keyVaults:
     ia:
       secrets:

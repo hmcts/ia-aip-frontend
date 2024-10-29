@@ -322,7 +322,8 @@
         "appealWithdrawn": "Appeal withdrawn",
         "amountToBeRefund": "Amount to be refunded",
         "additionalPaymentRequested": "Additional payment requested",
-        "toBeRefunded": "To be refunded"
+        "toBeRefunded": "To be refunded",
+        "deportationOrder": "Deportation order"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",
@@ -3943,6 +3944,22 @@
       "whatHappensNext": "What happens next",
       "bullet1": "A Legal Officer will check the information you sent and let you know if your fee will be refunded",
       "bullet2": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might take longer than that"
+    },
+    "deportationOrder": {
+      "title": "Has a deportation order been made against you?",
+      "tips": "This information helps the tribunal manage your appeal",
+      "options": {
+        "yes": {
+          "text": "Yes",
+          "value": "Yes"
+        },
+        "no": {
+          "text": "No",
+          "value": "No"
+        }
+      },
+      "cyaPageRowValueWhenYesSelected": "Deportation order has been made",
+      "cyaPageRowValueWhenNoSelected": "Deportation order has not been made"
     }
   },
   "error": {
@@ -4201,7 +4218,8 @@
       "ftpaReason": "Enter the reasons you think the Tribunal's decision is wrong?",
       "ftpaEvidenceQuestion": "Select Yes if you want to provide supporting evidence",
       "ftpaOutOfTimeReason": "Enter the reason the application is late"
-    }
+    },
+    "deportationOrder": "Select yes if a deportation order has been made"
   },
   "components": {
     "evidenceList": {

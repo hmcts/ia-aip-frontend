@@ -3,7 +3,7 @@ import {
   askForMoreTimeValidation,
   asylumSupportValidation,
   contactDetailsValidation,
-  dateValidation,
+  dateValidation, deportationOrderOptionsValidation,
   DOBValidation,
   emailValidation,
   helpWithFeesRefNumberValidation,
@@ -1125,4 +1125,16 @@ describe('fields-validations', () => {
     });
   });
 
+  it('should fail validation and return "string.empty if deportation option is not selected" ', () => {
+    const object = { };
+    const validationResult = deportationOrderOptionsValidation(object);
+    const expectedResponse = {
+      answer: {
+        href: '#answer',
+        key: 'answer',
+        text: 'Select yes if a deportation order has been made'
+      }
+    };
+    expect(validationResult).to.deep.equal(expectedResponse);
+  });
 });

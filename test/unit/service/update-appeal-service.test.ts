@@ -9,7 +9,6 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { expect, sinon, validateUuid } from '../../utils/testUtils';
-import { boolean } from "joi";
 
 describe('update-appeal-service', () => {
   let sandbox: sinon.SinonSandbox;

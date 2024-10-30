@@ -4,7 +4,7 @@ import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { formatDate } from '../utils/date-utils';
-import { boolToYesNo, documentIdToDocStoreUrl, toIsoDate, yesNoToBool } from '../utils/utils';
+import { boolToYesNo, documentIdToDocStoreUrl, extendedBoolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { DocumentManagementService } from './document-management-service';
@@ -432,9 +432,6 @@ export default class UpdateAppealService {
     if (caseData.isAppellantGivingOralEvidence) {
       hearingRequirements.isAppellantGivingOralEvidence = yesNoToBool(caseData.isAppellantGivingOralEvidence);
     }
-    if (caseData.isWitnessesAttending) {
-      hearingRequirements.witnessesOnHearing = yesNoToBool(caseData.isWitnessesAttending);
-    }
     if (caseData.isEvidenceFromOutsideUkInCountry) {
       hearingRequirements.witnessesOutsideUK = yesNoToBool(caseData.isEvidenceFromOutsideUkInCountry);
     }
@@ -648,7 +645,8 @@ export default class UpdateAppealService {
         manageFeeRefundedAmount: caseData.manageFeeRefundedAmount,
         manageFeeRequestedAmount: caseData.manageFeeRequestedAmount,
         paidAmount: caseData.paidAmount,
-        refundConfirmationApplied: caseData.refundConfirmationApplied ? yesNoToBool(caseData.refundConfirmationApplied) : undefined
+        refundConfirmationApplied: caseData.refundConfirmationApplied ? yesNoToBool(caseData.refundConfirmationApplied) : undefined,
+        deportationOrderOptions: caseData.deportationOrderOptions
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -742,526 +740,19 @@ export default class UpdateAppealService {
       journeyType: 'aip'
     } as CaseData;
     if (_.has(appeal, 'application')) {
-      if (appeal.application.homeOfficeRefNumber) {
-        caseData.homeOfficeReferenceNumber = appeal.application.homeOfficeRefNumber;
-      }
-      caseData.appellantInUk = String(appeal.application.appellantInUk);
-
-      if (appeal.application.outsideUkWhenApplicationMade) {
-        caseData.outsideUkWhenApplicationMade = yesNoToBool(appeal.application.outsideUkWhenApplicationMade) ? YesOrNo.YES : YesOrNo.NO;
-      }
-
-      caseData.gwfReferenceNumber = appeal.application.gwfReferenceNumber;
-
-      if (appeal.application.dateLetterSent && appeal.application.dateLetterSent.year) {
-        caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.dateLetterSent);
-        caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
-      }
-      if (appeal.application.decisionLetterReceivedDate && appeal.application.decisionLetterReceivedDate.year) {
-        caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.decisionLetterReceivedDate);
-        caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
-      }
-
-      if (appeal.application.isAppealLate) {
-        caseData.recordedOutOfTimeDecision = 'No';
-        if (_.has(appeal.application.lateAppeal, 'reason')) {
-          caseData.applicationOutOfTimeExplanation = appeal.application.lateAppeal.reason;
-        }
-        if (_.has(appeal.application.lateAppeal, 'evidence')) {
-          const documentLocationUrl: string = documentIdToDocStoreUrl(appeal.application.lateAppeal.evidence.fileId, appeal.documentMap);
-          caseData.applicationOutOfTimeDocument = {
-            document_filename: appeal.application.lateAppeal.evidence.name,
-            document_url: documentLocationUrl,
-            document_binary_url: `${documentLocationUrl}/binary`
-          };
-        } else {
-          caseData.applicationOutOfTimeDocument = null;
-        }
-      }
-
-      if (appeal.application.personalDetails && appeal.application.personalDetails.givenNames) {
-        caseData.appellantGivenNames = appeal.application.personalDetails.givenNames;
-      }
-      if (appeal.application.personalDetails && appeal.application.personalDetails.familyName) {
-        caseData.appellantFamilyName = appeal.application.personalDetails.familyName;
-      }
-      if (appeal.application.personalDetails.dob && appeal.application.personalDetails.dob.year) {
-        caseData.appellantDateOfBirth = toIsoDate(appeal.application.personalDetails.dob);
-      }
-      if (appeal.application.dateClientLeaveUk && appeal.application.dateClientLeaveUk.year) {
-        caseData.dateClientLeaveUk = toIsoDate(appeal.application.dateClientLeaveUk);
-      }
-      if (appeal.application.decisionLetterReceivedDate && appeal.application.decisionLetterReceivedDate.year) {
-        caseData.decisionLetterReceivedDate = toIsoDate(appeal.application.decisionLetterReceivedDate);
-      }
-      if (appeal.application.personalDetails && appeal.application.personalDetails.nationality) {
-        caseData.appellantNationalities = [
-          {
-            value: {
-              code: appeal.application.personalDetails.nationality
-            }
-          }
-        ];
-      }
-      if (_.has(appeal.application.personalDetails, 'address.line1')) {
-        caseData.appellantAddress = {
-          AddressLine1: appeal.application.personalDetails.address.line1,
-          AddressLine2: appeal.application.personalDetails.address.line2,
-          PostTown: appeal.application.personalDetails.address.city,
-          County: appeal.application.personalDetails.address.county,
-          PostCode: appeal.application.personalDetails.address.postcode,
-          Country: 'United Kingdom'
-        };
-        caseData.appellantHasFixedAddress = 'Yes';
-      }
-
-      if (appeal.application.appellantOutOfCountryAddress) {
-        caseData.appellantOutOfCountryAddress = appeal.application.appellantOutOfCountryAddress;
-      }
-
-      if (appeal.application.appealType) {
-        caseData.appealType = appeal.application.appealType;
-      }
-
-      caseData.remissionOption = null;
-      if (appeal.application.remissionOption) {
-        caseData.remissionOption = appeal.application.remissionOption;
-      }
-
-      caseData.asylumSupportRefNumber = null;
-      if (appeal.application.asylumSupportRefNumber) {
-        caseData.asylumSupportRefNumber = appeal.application.asylumSupportRefNumber;
-      }
-
-      caseData.helpWithFeesOption = null;
-      if (appeal.application.helpWithFeesOption) {
-        caseData.helpWithFeesOption = appeal.application.helpWithFeesOption;
-      }
-
-      caseData.helpWithFeesRefNumber = null;
-      if (appeal.application.helpWithFeesRefNumber) {
-        caseData.helpWithFeesRefNumber = appeal.application.helpWithFeesRefNumber;
-      }
-
-      caseData.localAuthorityLetters = null;
-      if (appeal.application.localAuthorityLetters) {
-        const evidences: Evidence[] = appeal.application.localAuthorityLetters;
-
-        caseData.localAuthorityLetters = evidences.map((evidence: Evidence) => {
-          const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
-          return {
-            ...evidence.fileId && { id: evidence.fileId },
-            value: {
-              dateUploaded: evidence.dateUploaded || '',
-              description: evidence.description,
-              tag: 'additionalEvidence',
-              document: {
-                document_filename: evidence.name,
-                document_url: documentLocationUrl,
-                document_binary_url: `${documentLocationUrl}/binary`
-              }
-            }
-          } as Collection<DocumentWithMetaData>;
-        });
-      }
-
-      caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
-
-      if (paymentsFlag && refundFlag) {
-        caseData.refundRequested = appeal.application.refundRequested ? YesOrNo.YES : YesOrNo.NO;
-        caseData.isLateRemissionRequest = appeal.application.isLateRemissionRequest ? YesOrNo.YES : YesOrNo.NO;
-        caseData.remissionDecision = null;
-        if (appeal.application.remissionDecision) {
-          caseData.remissionDecision = appeal.application.remissionDecision;
-        }
-
-        caseData.lateRemissionOption = null;
-        if (appeal.application.lateRemissionOption) {
-          caseData.lateRemissionOption = appeal.application.lateRemissionOption;
-        }
-
-        caseData.lateAsylumSupportRefNumber = null;
-        if (appeal.application.lateAsylumSupportRefNumber) {
-          caseData.lateAsylumSupportRefNumber = appeal.application.lateAsylumSupportRefNumber;
-        }
-
-        caseData.lateHelpWithFeesOption = null;
-        if (appeal.application.lateHelpWithFeesOption) {
-          caseData.lateHelpWithFeesOption = appeal.application.lateHelpWithFeesOption;
-        }
-
-        caseData.lateHelpWithFeesRefNumber = null;
-        if (appeal.application.lateHelpWithFeesRefNumber) {
-          caseData.lateHelpWithFeesRefNumber = appeal.application.lateHelpWithFeesRefNumber;
-        }
-
-        caseData.lateLocalAuthorityLetters = null;
-        if (appeal.application.lateLocalAuthorityLetters) {
-          const evidences: Evidence[] = appeal.application.lateLocalAuthorityLetters;
-
-          caseData.lateLocalAuthorityLetters = evidences.map((evidence: Evidence) => {
-            const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
-            return {
-              ...evidence.fileId && { id: evidence.fileId },
-              value: {
-                dateUploaded: evidence.dateUploaded || '',
-                description: evidence.description,
-                tag: 'additionalEvidence',
-                document: {
-                  document_filename: evidence.name,
-                  document_url: documentLocationUrl,
-                  document_binary_url: `${documentLocationUrl}/binary`
-                }
-              }
-            } as Collection<DocumentWithMetaData>;
-          });
-        }
-        caseData.refundConfirmationApplied = appeal.application.refundConfirmationApplied ? YesOrNo.YES : YesOrNo.NO;
-      }
-
-      if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
-        const subscription: Subscription = {
-          subscriber: Subscriber.APPELLANT,
-          wantsEmail: YesOrNo.NO,
-          email: null,
-          wantsSms: YesOrNo.NO,
-          mobileNumber: null
-        };
-
-        if (appeal.application.contactDetails.wantsEmail === true && appeal.application.contactDetails.email) {
-          subscription.wantsEmail = YesOrNo.YES;
-          subscription.email = appeal.application.contactDetails.email;
-          caseData.appellantEmailAddress = appeal.application.contactDetails.email;
-        }
-        if (appeal.application.contactDetails.wantsSms === true && appeal.application.contactDetails.phone) {
-          subscription.wantsSms = YesOrNo.YES;
-          subscription.mobileNumber = appeal.application.contactDetails.phone;
-          caseData.appellantPhoneNumber = appeal.application.contactDetails.phone;
-        }
-        caseData.subscriptions = [{ value: subscription }];
-
-        if (appeal.application.hasSponsor) {
-          caseData.hasSponsor = appeal.application.hasSponsor;
-        }
-
-        if (appeal.application.sponsorGivenNames) {
-          caseData.sponsorGivenNames = appeal.application.sponsorGivenNames;
-        }
-
-        if (appeal.application.sponsorFamilyName) {
-          caseData.sponsorFamilyName = appeal.application.sponsorFamilyName;
-        }
-
-        if (appeal.application.sponsorNameForDisplay) {
-          caseData.sponsorNameForDisplay = appeal.application.sponsorNameForDisplay;
-        }
-
-        if (appeal.application.sponsorAddress) {
-          caseData.sponsorAddress = {
-            AddressLine1: appeal.application.sponsorAddress.line1,
-            AddressLine2: appeal.application.sponsorAddress.line2,
-            PostTown: appeal.application.sponsorAddress.city,
-            County: appeal.application.sponsorAddress.county,
-            PostCode: appeal.application.sponsorAddress.postcode,
-            Country: 'United Kingdom'
-          };
-        }
-
-        if (appeal.application.sponsorContactDetails && (appeal.application.sponsorContactDetails.email || appeal.application.sponsorContactDetails.phone)) {
-          const sponsorSubscription: Subscription = {
-            subscriber: Subscriber.SUPPORTER,
-            wantsEmail: YesOrNo.NO,
-            email: null,
-            wantsSms: YesOrNo.NO,
-            mobileNumber: null
-          };
-
-          if (appeal.application.sponsorContactDetails.wantsEmail === true && appeal.application.sponsorContactDetails.email) {
-            sponsorSubscription.wantsEmail = YesOrNo.YES;
-            sponsorSubscription.email = appeal.application.sponsorContactDetails.email;
-            caseData.sponsorEmail = appeal.application.sponsorContactDetails.email;
-          }
-          if (appeal.application.sponsorContactDetails.wantsSms === true && appeal.application.sponsorContactDetails.phone) {
-            sponsorSubscription.wantsSms = YesOrNo.YES;
-            sponsorSubscription.mobileNumber = appeal.application.sponsorContactDetails.phone;
-            caseData.sponsorMobileNumber = appeal.application.sponsorContactDetails.phone;
-          }
-          caseData.sponsorSubscriptions = [{ value: sponsorSubscription }];
-        }
-      }
-
+      this.mapToCCDCaseAppealApplication(appeal, caseData, paymentsFlag, refundFlag);
     }
 
     if (_.has(appeal, 'reasonsForAppeal')) {
-      if (appeal.reasonsForAppeal.applicationReason) {
-        caseData.reasonsForAppealDecision = appeal.reasonsForAppeal.applicationReason;
-      }
-      if (appeal.reasonsForAppeal.evidences) {
-        const evidences: Evidence[] = appeal.reasonsForAppeal.evidences;
-
-        caseData.reasonsForAppealDocuments = evidences.map((evidence) => {
-          const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
-          return {
-            value: {
-              dateUploaded: evidence.dateUploaded,
-              description: evidence.description,
-              tag: 'additionalEvidence',
-              document: {
-                document_filename: evidence.name,
-                document_url: documentLocationUrl,
-                document_binary_url: `${documentLocationUrl}/binary`
-              }
-            } as DocumentWithMetaData
-          };
-        });
-
-        if (appeal.reasonsForAppeal.uploadDate) {
-          caseData.reasonsForAppealDateUploaded = appeal.reasonsForAppeal.uploadDate;
-        }
-      }
+      this.mapToCCDCaseReasonsForAppeal(appeal, caseData);
     }
 
     if (_.has(appeal, 'cmaRequirements')) {
-
-      // Access Needs Section
-      if (_.has(appeal, 'cmaRequirements.accessNeeds')) {
-        const { accessNeeds } = appeal.cmaRequirements;
-        if (_.has(accessNeeds, 'isInterpreterServicesNeeded')) {
-          caseData.isInterpreterServicesNeeded = boolToYesNo(accessNeeds.isInterpreterServicesNeeded);
-        }
-
-        if (_.get(accessNeeds, 'isInterpreterServicesNeeded')) {
-          if (_.has(accessNeeds, 'interpreterLanguage') && (_.has(accessNeeds.interpreterLanguage, 'language') || _.has(accessNeeds.interpreterLanguage, 'languageDialect'))) {
-            caseData.interpreterLanguage = [{
-              value: {
-                language: accessNeeds.interpreterLanguage.language,
-                languageDialect: accessNeeds.interpreterLanguage.languageDialect || null
-              }
-            }];
-          }
-        }
-
-        if (_.has(accessNeeds, 'isHearingLoopNeeded')) {
-          caseData.isHearingLoopNeeded = boolToYesNo(accessNeeds.isHearingLoopNeeded);
-        }
-
-        if (_.has(accessNeeds, 'isHearingRoomNeeded')) {
-          caseData.isHearingRoomNeeded = boolToYesNo(accessNeeds.isHearingRoomNeeded);
-        }
-      }
-
-      // Other Needs Section
-      if (_.has(appeal, 'cmaRequirements.otherNeeds')) {
-        const { otherNeeds } = appeal.cmaRequirements;
-
-        if (_.has(otherNeeds, 'multimediaEvidence')) {
-          caseData.multimediaEvidence = boolToYesNo(otherNeeds.multimediaEvidence);
-
-          if (!otherNeeds.bringOwnMultimediaEquipment && !isEmpty(otherNeeds.bringOwnMultimediaEquipmentReason)) {
-            caseData.multimediaEvidenceDescription = otherNeeds.bringOwnMultimediaEquipmentReason;
-          }
-        }
-        if (_.has(otherNeeds, 'singleSexAppointment')) {
-          caseData.singleSexCourt = boolToYesNo(otherNeeds.singleSexAppointment);
-
-          if (otherNeeds.singleSexAppointment && otherNeeds.singleSexTypeAppointment) {
-            caseData.singleSexCourtType = otherNeeds.singleSexTypeAppointment;
-            if (!isEmpty(otherNeeds.singleSexAppointmentReason)) {
-              caseData.singleSexCourtTypeDescription = otherNeeds.singleSexAppointmentReason;
-            }
-          }
-        }
-
-        if (_.has(otherNeeds, 'privateAppointment')) {
-          caseData.inCameraCourt = boolToYesNo(otherNeeds.privateAppointment);
-
-          if (otherNeeds.privateAppointment && !isEmpty(otherNeeds.privateAppointmentReason)) {
-            caseData.inCameraCourtDescription = otherNeeds.privateAppointmentReason;
-          }
-        }
-        if (_.has(otherNeeds, 'healthConditions')) {
-          caseData.physicalOrMentalHealthIssues = boolToYesNo(otherNeeds.healthConditions);
-
-          if (otherNeeds.healthConditions && !isEmpty(otherNeeds.healthConditionsReason)) {
-            caseData.physicalOrMentalHealthIssuesDescription = otherNeeds.healthConditionsReason;
-          }
-        }
-        if (_.has(otherNeeds, 'pastExperiences')) {
-          caseData.pastExperiences = boolToYesNo(otherNeeds.pastExperiences);
-
-          if (otherNeeds.pastExperiences && !isEmpty(otherNeeds.pastExperiencesReason)) {
-            caseData.pastExperiencesDescription = otherNeeds.pastExperiencesReason;
-          }
-        }
-
-        if (_.has(otherNeeds, 'anythingElse')) {
-          caseData.additionalRequests = boolToYesNo(otherNeeds.anythingElse);
-
-          if (otherNeeds.pastExperiences && !isEmpty(otherNeeds.anythingElseReason)) {
-            caseData.additionalRequestsDescription = otherNeeds.anythingElseReason;
-          }
-        }
-      }
-      // Dates To avoid Section
-      if (_.has(appeal, 'cmaRequirements.datesToAvoid')) {
-        const { datesToAvoid } = appeal.cmaRequirements;
-
-        if (_.has(datesToAvoid, 'isDateCannotAttend')) {
-          caseData.datesToAvoidYesNo = boolToYesNo(datesToAvoid.isDateCannotAttend);
-
-          if (datesToAvoid.isDateCannotAttend && datesToAvoid.dates && datesToAvoid.dates.length) {
-            caseData.datesToAvoid = datesToAvoid.dates.map(date => {
-
-              return {
-                value: {
-                  dateToAvoid: toIsoDate(date.date),
-                  dateToAvoidReason: date.reason
-                } as DateToAvoid
-              } as Collection<DateToAvoid>;
-            }
-            );
-          }
-        }
-      }
+      this.mapToCCDCaseCmaRequirements(appeal, caseData);
     }
 
     if (_.has(appeal, 'hearingRequirements')) {
-      if (_.has(appeal.hearingRequirements, 'witnessesOnHearing')) {
-        caseData.isWitnessesAttending = boolToYesNo(appeal.hearingRequirements.witnessesOnHearing);
-      }
-      if (_.has(appeal.hearingRequirements, 'isAppellantAttendingTheHearing')) {
-        caseData.isAppellantAttendingTheHearing = boolToYesNo(appeal.hearingRequirements.isAppellantAttendingTheHearing);
-      }
-      if (_.has(appeal.hearingRequirements, 'isAppellantGivingOralEvidence')) {
-        caseData.isAppellantGivingOralEvidence = boolToYesNo(appeal.hearingRequirements.isAppellantGivingOralEvidence);
-      }
-
-      if (_.has(appeal.hearingRequirements, 'witnessesOutsideUK')) {
-        caseData.isEvidenceFromOutsideUkInCountry = boolToYesNo(appeal.hearingRequirements.witnessesOutsideUK);
-      }
-
-      if (_.has(appeal.hearingRequirements, 'witnessNames')) {
-        caseData.witnessDetails = appeal.hearingRequirements.witnessNames.map(name => {
-          return {
-            value: {
-              witnessPartyId: name.witnessPartyId,
-              witnessName: name.witnessGivenNames,
-              witnessFamilyName: name.witnessFamilyName
-            } as WitnessDetails
-          } as Collection<WitnessDetails>;
-        });
-      }
-
-      if (_.has(appeal.hearingRequirements, 'isInterpreterServicesNeeded')) {
-        caseData.isInterpreterServicesNeeded = boolToYesNo(appeal.hearingRequirements.isInterpreterServicesNeeded);
-
-        if (_.has(appeal.hearingRequirements, 'appellantInterpreterLanguageCategory')) {
-          caseData.appellantInterpreterLanguageCategory = appeal.hearingRequirements.appellantInterpreterLanguageCategory;
-        }
-
-        if (_.has(appeal.hearingRequirements, 'appellantInterpreterSpokenLanguage')) {
-          caseData.appellantInterpreterSpokenLanguage = appeal.hearingRequirements.appellantInterpreterSpokenLanguage;
-        }
-
-        if (_.has(appeal.hearingRequirements, 'appellantInterpreterSignLanguage')) {
-          caseData.appellantInterpreterSignLanguage = appeal.hearingRequirements.appellantInterpreterSignLanguage;
-        }
-
-        if (_.has(appeal.hearingRequirements, 'interpreterLanguages')) {
-          caseData.interpreterLanguage = appeal.hearingRequirements.interpreterLanguages.map(interpreterLanguage => {
-            return {
-              value: {
-                language: interpreterLanguage.language,
-                languageDialect: interpreterLanguage.languageDialect || null
-              } as AdditionalLanguage
-            } as Collection<AdditionalLanguage>;
-          });
-        }
-      }
-
-      if (_.has(appeal.hearingRequirements, 'isAnyWitnessInterpreterRequired')) {
-        caseData.isAnyWitnessInterpreterRequired = boolToYesNo(appeal.hearingRequirements.isAnyWitnessInterpreterRequired);
-
-        for (let index = 0; index < 10; index++) {
-
-          if (_.has(appeal.hearingRequirements, 'witnessNames')) {
-            let witnessString = 'witness' + (index + 1);
-            let witnessObj: WitnessName = appeal.hearingRequirements.witnessNames[index];
-            if (witnessObj) {
-              caseData[witnessString] = {
-                witnessPartyId: witnessObj.witnessPartyId,
-                witnessName: witnessObj.witnessGivenNames,
-                witnessFamilyName: witnessObj.witnessFamilyName
-              };
-            } else {
-              caseData[witnessString] = null;
-            }
-          }
-
-          let witnessListElementString = 'witnessListElement' + (index + 1);
-          if (_.has(appeal.hearingRequirements, witnessListElementString)) {
-            caseData[witnessListElementString] = appeal.hearingRequirements[witnessListElementString];
-          }
-
-          let witnessInterpreterLanguageCategoryString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
-          if (_.has(appeal.hearingRequirements, witnessInterpreterLanguageCategoryString)) {
-            caseData[witnessInterpreterLanguageCategoryString] = appeal.hearingRequirements[witnessInterpreterLanguageCategoryString];
-          }
-
-          let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
-          if (_.has(appeal.hearingRequirements, witnessInterpreterSpokenLanguageFieldString)) {
-            caseData[witnessInterpreterSpokenLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSpokenLanguageFieldString];
-          }
-
-          let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
-          if (_.has(appeal.hearingRequirements, witnessInterpreterSignLanguageFieldString)) {
-            caseData[witnessInterpreterSignLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSignLanguageFieldString];
-          }
-        }
-      }
-
-      caseData.isHearingRoomNeeded = null;
-      if (_.has(appeal.hearingRequirements, 'isHearingRoomNeeded')) {
-        if (appeal.hearingRequirements.isHearingRoomNeeded != null) {
-          caseData.isHearingRoomNeeded = boolToYesNo(appeal.hearingRequirements.isHearingRoomNeeded);
-        }
-      }
-
-      caseData.isHearingLoopNeeded = null;
-      if (_.has(appeal.hearingRequirements, 'isHearingLoopNeeded')) {
-        if (appeal.hearingRequirements.isHearingLoopNeeded != null) {
-          caseData.isHearingLoopNeeded = boolToYesNo(appeal.hearingRequirements.isHearingLoopNeeded);
-        }
-      }
-
-      if (_.has(appeal, 'hearingRequirements.otherNeeds')) {
-        this.mapToCCDCaseHearingRequirementsOtherNeeds(appeal, caseData);
-      }
-
-      // Dates To avoid Section
-      if (_.has(appeal, 'hearingRequirements.datesToAvoid')) {
-        const { datesToAvoid } = appeal.hearingRequirements;
-
-        if (_.has(datesToAvoid, 'isDateCannotAttend')) {
-          caseData.datesToAvoidYesNo = boolToYesNo(datesToAvoid.isDateCannotAttend);
-
-          if (datesToAvoid.isDateCannotAttend && datesToAvoid.dates && datesToAvoid.dates.length) {
-            caseData.datesToAvoid = datesToAvoid.dates.map(date => {
-
-              return {
-                value: {
-                  dateToAvoid: toIsoDate(date.date),
-                  dateToAvoidReason: date.reason
-                } as DateToAvoid
-              } as Collection<DateToAvoid>;
-            });
-          }
-        }
-      }
-
-      if (_.has(appeal, 'isDecisionAllowed')) {
-        caseData.isDecisionAllowed = appeal.isDecisionAllowed;
-      }
+      this.mapToCCDCaseHearingRequirements(appeal, caseData);
     }
 
     const askForMoreTime = appeal.askForMoreTime;
@@ -1715,5 +1206,596 @@ export default class UpdateAppealService {
       return `${process.env.DOC_MANAGEMENT_URL}/documents${docUrl.substring(docUrl.lastIndexOf('/'))}`;
     }
     return docUrl;
+  }
+
+  private mapToCCDCaseDateLetterSent(appeal, caseData) {
+    if (appeal.application.dateLetterSent && appeal.application.dateLetterSent.year) {
+      caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.dateLetterSent);
+      caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
+    }
+  }
+
+  private mapToCCDCaseDecisionLetterReceived(appeal, caseData) {
+    if (appeal.application.decisionLetterReceivedDate && appeal.application.decisionLetterReceivedDate.year) {
+      caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.decisionLetterReceivedDate);
+      caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
+    }
+  }
+
+  private mapToCCDCaseApplicationOotDetails(appeal, caseData) {
+    if (appeal.application.isAppealLate) {
+      caseData.recordedOutOfTimeDecision = 'No';
+      if (_.has(appeal.application.lateAppeal, 'reason')) {
+        caseData.applicationOutOfTimeExplanation = appeal.application.lateAppeal.reason;
+      }
+      if (_.has(appeal.application.lateAppeal, 'evidence')) {
+        const documentLocationUrl: string = documentIdToDocStoreUrl(appeal.application.lateAppeal.evidence.fileId, appeal.documentMap);
+        caseData.applicationOutOfTimeDocument = {
+          document_filename: appeal.application.lateAppeal.evidence.name,
+          document_url: documentLocationUrl,
+          document_binary_url: `${documentLocationUrl}/binary`
+        };
+      } else {
+        caseData.applicationOutOfTimeDocument = null;
+      }
+    }
+  }
+
+  private mapToCCDCasePesonalDetails(appeal, caseData) {
+    if (appeal.application.personalDetails) {
+      if (appeal.application.personalDetails.givenNames) {
+        caseData.appellantGivenNames = appeal.application.personalDetails.givenNames;
+      }
+      if (appeal.application.personalDetails.familyName) {
+        caseData.appellantFamilyName = appeal.application.personalDetails.familyName;
+      }
+      if (appeal.application.personalDetails.dob && appeal.application.personalDetails.dob.year) {
+        caseData.appellantDateOfBirth = toIsoDate(appeal.application.personalDetails.dob);
+      }
+    }
+  }
+
+  private mapToCCDCaseClientLeaveUkDate(appeal, caseData) {
+    if (appeal.application.dateClientLeaveUk && appeal.application.dateClientLeaveUk.year) {
+      caseData.dateClientLeaveUk = toIsoDate(appeal.application.dateClientLeaveUk);
+    }
+  }
+
+  private mapToCCDCaseDecisionLetterReceivedDate(appeal, caseData) {
+    if (appeal.application.decisionLetterReceivedDate && appeal.application.decisionLetterReceivedDate.year) {
+      caseData.decisionLetterReceivedDate = toIsoDate(appeal.application.decisionLetterReceivedDate);
+    }
+  }
+
+  private mapToCCDCaseNationalities(appeal, caseData) {
+    if (appeal.application.personalDetails && appeal.application.personalDetails.nationality) {
+      caseData.appellantNationalities = [
+        {
+          value: {
+            code: appeal.application.personalDetails.nationality
+          }
+        }
+      ];
+    }
+  }
+
+  private mapToCCDCasePersonalDetailsAddress(appeal, caseData) {
+    if (_.has(appeal.application.personalDetails, 'address.line1')) {
+      caseData.appellantAddress = {
+        AddressLine1: appeal.application.personalDetails.address.line1,
+        AddressLine2: appeal.application.personalDetails.address.line2,
+        PostTown: appeal.application.personalDetails.address.city,
+        County: appeal.application.personalDetails.address.county,
+        PostCode: appeal.application.personalDetails.address.postcode,
+        Country: 'United Kingdom'
+      };
+      caseData.appellantHasFixedAddress = 'Yes';
+    }
+  }
+
+  private mapToCCDLocalAuthorityLetters(appeal, caseData) {
+    if (appeal.application.localAuthorityLetters) {
+      const evidences: Evidence[] = appeal.application.localAuthorityLetters;
+
+      caseData.localAuthorityLetters = evidences.map((evidence: Evidence) => {
+        const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+        return {
+          ...evidence.fileId && { id: evidence.fileId },
+          value: {
+            dateUploaded: evidence.dateUploaded,
+            description: evidence.description,
+            tag: 'additionalEvidence',
+            document: {
+              document_filename: evidence.name,
+              document_url: documentLocationUrl,
+              document_binary_url: `${documentLocationUrl}/binary`
+            }
+          }
+        } as Collection<DocumentWithMetaData>;
+      });
+    }
+  }
+
+  private mapToCCDLateLocalAuthorityLetters(appeal, caseData) {
+    if (appeal.application.lateLocalAuthorityLetters) {
+      const evidences: Evidence[] = appeal.application.lateLocalAuthorityLetters;
+
+      caseData.lateLocalAuthorityLetters = evidences.map((evidence: Evidence) => {
+        const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+        return {
+          ...evidence.fileId && { id: evidence.fileId },
+          value: {
+            dateUploaded: evidence.dateUploaded || '',
+            description: evidence.description,
+            tag: 'additionalEvidence',
+            document: {
+              document_filename: evidence.name,
+              document_url: documentLocationUrl,
+              document_binary_url: `${documentLocationUrl}/binary`
+            }
+          }
+        } as Collection<DocumentWithMetaData>;
+      });
+    }
+  }
+
+  private mapToCCDCaseContactDetails(appeal, caseData) {
+    const subscription: Subscription = {
+      subscriber: Subscriber.APPELLANT,
+      wantsEmail: YesOrNo.NO,
+      email: null,
+      wantsSms: YesOrNo.NO,
+      mobileNumber: null
+    };
+
+    if (appeal.application.contactDetails.wantsEmail === true && appeal.application.contactDetails.email) {
+      subscription.wantsEmail = YesOrNo.YES;
+      subscription.email = appeal.application.contactDetails.email;
+      caseData.appellantEmailAddress = appeal.application.contactDetails.email;
+    }
+    if (appeal.application.contactDetails.wantsSms === true && appeal.application.contactDetails.phone) {
+      subscription.wantsSms = YesOrNo.YES;
+      subscription.mobileNumber = appeal.application.contactDetails.phone;
+      caseData.appellantPhoneNumber = appeal.application.contactDetails.phone;
+    }
+    caseData.subscriptions = [{ value: subscription }];
+  }
+
+  private mapToCCDCaseSponsorAddress(appeal, caseData) {
+    if (appeal.application.sponsorAddress) {
+      caseData.sponsorAddress = {
+        AddressLine1: appeal.appeal.application.sponsorAddress.line1,
+        AddressLine2: appeal.application.sponsorAddress.line2,
+        PostTown: appeal.application.sponsorAddress.city,
+        County: appeal.application.sponsorAddress.county,
+        PostCode: appeal.application.sponsorAddress.postcode,
+        Country: 'United Kingdom'
+      };
+    }
+  }
+
+  private mapToCCDCaseSponsorDetails(appeal, caseData) {
+    const sponsorSubscription: Subscription = {
+      subscriber: Subscriber.SUPPORTER,
+      wantsEmail: YesOrNo.NO,
+      email: null,
+      wantsSms: YesOrNo.NO,
+      mobileNumber: null
+    };
+
+    if (appeal.application.sponsorContactDetails.wantsEmail === true && appeal.application.sponsorContactDetails.email) {
+      sponsorSubscription.wantsEmail = YesOrNo.YES;
+      sponsorSubscription.email = appeal.application.sponsorContactDetails.email;
+      caseData.sponsorEmail = appeal.application.sponsorContactDetails.email;
+    }
+    if (appeal.application.sponsorContactDetails.wantsSms === true && appeal.application.sponsorContactDetails.phone) {
+      sponsorSubscription.wantsSms = YesOrNo.YES;
+      sponsorSubscription.mobileNumber = appeal.application.sponsorContactDetails.phone;
+      caseData.sponsorMobileNumber = appeal.application.sponsorContactDetails.phone;
+    }
+    caseData.sponsorSubscriptions = [{ value: sponsorSubscription }];
+  }
+
+  private mapToCCDCaseAppealApplication(appeal, caseData, paymentsFlag: boolean, refundFlag: boolean) {
+    const { application } = appeal;
+
+    this.assignSinglePropertyIfExists(application, 'homeOfficeRefNumber', caseData, 'homeOfficeReferenceNumber');
+    caseData.appellantInUk = String(appeal.application.appellantInUk);
+    this.assignSinglePropertyIfExistsWithYesNoToBoolFunction(application, 'outsideUkWhenApplicationMade', caseData, 'outsideUkWhenApplicationMade');
+    caseData.gwfReferenceNumber = appeal.application.gwfReferenceNumber;
+
+    this.mapToCCDCaseDateLetterSent(appeal, caseData);
+    this.mapToCCDCaseDecisionLetterReceived(appeal, caseData);
+    this.mapToCCDCaseApplicationOotDetails(appeal, caseData);
+    this.mapToCCDCasePesonalDetails(appeal, caseData);
+    this.mapToCCDCaseClientLeaveUkDate(appeal, caseData);
+    this.mapToCCDCaseDecisionLetterReceivedDate(appeal, caseData);
+    this.mapToCCDCaseNationalities(appeal, caseData);
+    this.mapToCCDCasePersonalDetailsAddress(appeal, caseData);
+    this.assignSinglePropertyIfExists(application, 'appellantOutOfCountryAddress', caseData, 'appellantOutOfCountryAddress');
+    this.assignSinglePropertyIfExists(application, 'appealType', caseData, 'appealType');
+
+    caseData.remissionOption = null;
+    caseData.asylumSupportRefNumber = null;
+    caseData.helpWithFeesOption = null;
+    caseData.helpWithFeesRefNumber = null;
+    caseData.localAuthorityLetters = null;
+
+    this.assignSinglePropertyIfExists(application, 'remissionOption', caseData, 'remissionOption');
+    this.assignSinglePropertyIfExists(application, 'asylumSupportRefNumber', caseData, 'asylumSupportRefNumber');
+    this.assignSinglePropertyIfExists(application, 'helpWithFeesOption', caseData, 'helpWithFeesOption');
+    this.assignSinglePropertyIfExists(application, 'helpWithFeesRefNumber', caseData, 'helpWithFeesRefNumber');
+    this.mapToCCDLocalAuthorityLetters(appeal, caseData);
+
+    caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
+
+    if (paymentsFlag && refundFlag) {
+      caseData.refundRequested = extendedBoolToYesNo(appeal.application.refundRequested);
+      caseData.isLateRemissionRequest = extendedBoolToYesNo(appeal.application.isLateRemissionRequest);
+
+      caseData.remissionDecision = null;
+      caseData.lateRemissionOption = null;
+      caseData.lateAsylumSupportRefNumber = null;
+      caseData.lateHelpWithFeesOption = null;
+      caseData.lateHelpWithFeesRefNumber = null;
+      caseData.lateLocalAuthorityLetters = null;
+
+      this.assignSinglePropertyIfExists(application, 'remissionDecision', caseData, 'remissionDecision');
+      this.assignSinglePropertyIfExists(application, 'lateRemissionOption', caseData, 'lateRemissionOption');
+      this.assignSinglePropertyIfExists(application, 'lateAsylumSupportRefNumber', caseData, 'lateAsylumSupportRefNumber');
+      this.assignSinglePropertyIfExists(application, 'lateHelpWithFeesOption', caseData, 'lateHelpWithFeesOption');
+      this.assignSinglePropertyIfExists(application, 'lateHelpWithFeesRefNumber', caseData, 'lateHelpWithFeesRefNumber');
+      this.mapToCCDLateLocalAuthorityLetters(appeal, caseData);
+      caseData.refundConfirmationApplied = extendedBoolToYesNo(appeal.application.refundConfirmationApplied);
+    }
+
+    if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
+      this.mapToCCDCaseContactDetails(appeal, caseData);
+      this.assignSinglePropertyIfExists(application, 'hasSponsor', caseData, 'hasSponsor');
+      this.assignSinglePropertyIfExists(application, 'sponsorGivenNames', caseData, 'sponsorGivenNames');
+      this.assignSinglePropertyIfExists(application, 'sponsorFamilyName', caseData, 'sponsorFamilyName');
+      this.assignSinglePropertyIfExists(application, 'sponsorNameForDisplay', caseData, 'sponsorNameForDisplay');
+      this.mapToCCDCaseSponsorAddress(appeal, caseData);
+
+      if (appeal.application.sponsorContactDetails && (appeal.application.sponsorContactDetails.email || appeal.application.sponsorContactDetails.phone)) {
+        this.mapToCCDCaseSponsorDetails(appeal, caseData);
+      }
+      this.assignSinglePropertyIfExists(application, 'sponsorAuthorisation', caseData, 'sponsorAuthorisation');
+    }
+    this.assignSinglePropertyIfExists(application, 'deportationOrderOptions', caseData, 'deportationOrderOptions');
+  }
+
+  private mapToCCDCaseReasonsForAppeal(appeal, caseData) {
+    if (appeal.reasonsForAppeal.applicationReason) {
+      caseData.reasonsForAppealDecision = appeal.reasonsForAppeal.applicationReason;
+    }
+    if (appeal.reasonsForAppeal.evidences) {
+      const evidences: Evidence[] = appeal.reasonsForAppeal.evidences;
+
+      caseData.reasonsForAppealDocuments = evidences.map((evidence) => {
+        const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+        return {
+          value: {
+            dateUploaded: evidence.dateUploaded,
+            description: evidence.description,
+            tag: 'additionalEvidence',
+            document: {
+              document_filename: evidence.name,
+              document_url: documentLocationUrl,
+              document_binary_url: `${documentLocationUrl}/binary`
+            }
+          } as DocumentWithMetaData
+        };
+      });
+
+      if (appeal.reasonsForAppeal.uploadDate) {
+        caseData.reasonsForAppealDateUploaded = appeal.reasonsForAppeal.uploadDate;
+      }
+    }
+  }
+
+  private mapAccessNeeds(appeal, caseData) {
+    if (_.has(appeal, 'cmaRequirements.accessNeeds')) {
+      const { accessNeeds } = appeal.cmaRequirements;
+      this.mapAccessNeedsInterpreterServices(accessNeeds, caseData);
+      this.mapAccessNeedsHearingRequirements(accessNeeds, caseData);
+    }
+  }
+
+  private mapAccessNeedsInterpreterServices(accessNeeds, caseData) {
+    if (_.has(accessNeeds, 'isInterpreterServicesNeeded')) {
+      caseData.isInterpreterServicesNeeded = boolToYesNo(accessNeeds.isInterpreterServicesNeeded);
+    }
+
+    if (_.get(accessNeeds, 'isInterpreterServicesNeeded')) {
+      if (_.has(accessNeeds, 'interpreterLanguage') && (_.has(accessNeeds.interpreterLanguage, 'language') || _.has(accessNeeds.interpreterLanguage, 'languageDialect'))) {
+        caseData.interpreterLanguage = [{
+          value: {
+            language: accessNeeds.interpreterLanguage.language,
+            languageDialect: accessNeeds.interpreterLanguage.languageDialect || null
+          }
+        }];
+      }
+    }
+  }
+
+  private mapAccessNeedsHearingRequirements(accessNeeds, caseData) {
+    if (_.has(accessNeeds, 'isHearingLoopNeeded')) {
+      caseData.isHearingLoopNeeded = boolToYesNo(accessNeeds.isHearingLoopNeeded);
+    }
+
+    if (_.has(accessNeeds, 'isHearingRoomNeeded')) {
+      caseData.isHearingRoomNeeded = boolToYesNo(accessNeeds.isHearingRoomNeeded);
+    }
+  }
+
+  private mapToCCDCaseHearingRequirements(appeal, caseData) {
+    this.mapToCCDAttendance(appeal, caseData);
+    this.mapToCCDWitnesses(appeal, caseData);
+    this.mapToCCDInterpreterRequirements(appeal, caseData);
+    this.mapToCCDWitnessInterpreterRequirements(appeal, caseData);
+    this.mapToCCDCaseHearingRoomNeeded(appeal, caseData);
+    this.mapToCCDCaseHearingLoopNeeded(appeal, caseData);
+    this.mapToCCDOtherNeeds(appeal, caseData);
+    this.mapToCCDDatesToAvoid(appeal, caseData);
+    this.mapToCCDDecisionAllowed(appeal, caseData);
+  }
+
+  private mapOtherNeeds(appeal, caseData) {
+    if (_.has(appeal, 'cmaRequirements.otherNeeds')) {
+      const { otherNeeds } = appeal.cmaRequirements;
+      this.mapOtherNeedsMultimediaEvidence(otherNeeds, caseData);
+      this.mapOtherNeedsSingleSexAppointment(otherNeeds, caseData);
+      this.mapOtherNeedsPrivateAppointment(otherNeeds, caseData);
+      this.mapOtherNeedsHealthConditions(otherNeeds, caseData);
+      this.mapOtherNeedsPastExperiences(otherNeeds, caseData);
+      this.mapOtherNeedsAnythingElse(otherNeeds, caseData);
+    }
+  }
+
+  private mapOtherNeedsMultimediaEvidence(otherNeeds, caseData) {
+    if (_.has(otherNeeds, 'multimediaEvidence')) {
+      caseData.multimediaEvidence = boolToYesNo(otherNeeds.multimediaEvidence);
+
+      if (!otherNeeds.bringOwnMultimediaEquipment && !isEmpty(otherNeeds.bringOwnMultimediaEquipmentReason)) {
+        caseData.multimediaEvidenceDescription = otherNeeds.bringOwnMultimediaEquipmentReason;
+      }
+    }
+  }
+
+  private mapOtherNeedsSingleSexAppointment(otherNeeds, caseData) {
+    if (_.has(otherNeeds, 'singleSexAppointment')) {
+      caseData.singleSexCourt = boolToYesNo(otherNeeds.singleSexAppointment);
+
+      if (otherNeeds.singleSexAppointment && otherNeeds.singleSexTypeAppointment) {
+        caseData.singleSexCourtType = otherNeeds.singleSexTypeAppointment;
+        if (!isEmpty(otherNeeds.singleSexAppointmentReason)) {
+          caseData.singleSexCourtTypeDescription = otherNeeds.singleSexAppointmentReason;
+        }
+      }
+    }
+  }
+
+  private mapOtherNeedsPrivateAppointment(otherNeeds, caseData) {
+    if (_.has(otherNeeds, 'privateAppointment')) {
+      caseData.inCameraCourt = boolToYesNo(otherNeeds.privateAppointment);
+
+      if (otherNeeds.privateAppointment && !isEmpty(otherNeeds.privateAppointmentReason)) {
+        caseData.inCameraCourtDescription = otherNeeds.privateAppointmentReason;
+      }
+    }
+  }
+
+  private mapOtherNeedsHealthConditions(otherNeeds, caseData) {
+    if (_.has(otherNeeds, 'healthConditions')) {
+      caseData.physicalOrMentalHealthIssues = boolToYesNo(otherNeeds.healthConditions);
+
+      if (otherNeeds.healthConditions && !isEmpty(otherNeeds.healthConditionsReason)) {
+        caseData.physicalOrMentalHealthIssuesDescription = otherNeeds.healthConditionsReason;
+      }
+    }
+  }
+
+  private mapOtherNeedsPastExperiences(otherNeeds, caseData) {
+    if (_.has(otherNeeds, 'pastExperiences')) {
+      caseData.pastExperiences = boolToYesNo(otherNeeds.pastExperiences);
+
+      if (otherNeeds.pastExperiences && !isEmpty(otherNeeds.pastExperiencesReason)) {
+        caseData.pastExperiencesDescription = otherNeeds.pastExperiencesReason;
+      }
+    }
+  }
+
+  private mapOtherNeedsAnythingElse(otherNeeds, caseData) {
+    if (_.has(otherNeeds, 'anythingElse')) {
+      caseData.additionalRequests = boolToYesNo(otherNeeds.anythingElse);
+
+      if (otherNeeds.anythingElse && !isEmpty(otherNeeds.anythingElseReason)) {
+        caseData.additionalRequestsDescription = otherNeeds.anythingElseReason;
+      }
+    }
+  }
+
+  private mapCmaRequirementsDatesToAvoid(appeal, caseData) {
+    if (_.has(appeal, 'cmaRequirements.datesToAvoid')) {
+      const { datesToAvoid } = appeal.cmaRequirements;
+
+      if (_.has(datesToAvoid, 'isDateCannotAttend')) {
+        caseData.datesToAvoidYesNo = boolToYesNo(datesToAvoid.isDateCannotAttend);
+
+        if (datesToAvoid.isDateCannotAttend && datesToAvoid.dates && datesToAvoid.dates.length) {
+          caseData.datesToAvoid = datesToAvoid.dates.map(date => ({
+            value: {
+              dateToAvoid: toIsoDate(date.date),
+              dateToAvoidReason: date.reason
+            } as DateToAvoid
+          } as Collection<DateToAvoid>));
+        }
+      }
+    }
+  }
+
+  private mapToCCDCaseCmaRequirements(appeal, caseData) {
+    this.mapAccessNeeds(appeal, caseData);
+    this.mapOtherNeeds(appeal, caseData);
+    this.mapCmaRequirementsDatesToAvoid(appeal, caseData);
+  }
+
+  private mapToCCDAttendance(appeal, caseData) {
+    if (_.has(appeal.hearingRequirements, 'witnessesOnHearing')) {
+      caseData.isWitnessesAttending = boolToYesNo(appeal.hearingRequirements.witnessesOnHearing);
+    }
+    if (_.has(appeal.hearingRequirements, 'isAppellantAttendingTheHearing')) {
+      caseData.isAppellantAttendingTheHearing = boolToYesNo(appeal.hearingRequirements.isAppellantAttendingTheHearing);
+    }
+    if (_.has(appeal.hearingRequirements, 'isAppellantGivingOralEvidence')) {
+      caseData.isAppellantGivingOralEvidence = boolToYesNo(appeal.hearingRequirements.isAppellantGivingOralEvidence);
+    }
+    if (_.has(appeal.hearingRequirements, 'witnessesOutsideUK')) {
+      caseData.isEvidenceFromOutsideUkInCountry = boolToYesNo(appeal.hearingRequirements.witnessesOutsideUK);
+    }
+  }
+
+  private mapToCCDWitnesses(appeal, caseData) {
+    if (_.has(appeal.hearingRequirements, 'witnessNames')) {
+      caseData.witnessDetails = appeal.hearingRequirements.witnessNames.map(name => {
+        return {
+          value: {
+            witnessPartyId: name.witnessPartyId,
+            witnessName: name.witnessGivenNames,
+            witnessFamilyName: name.witnessFamilyName
+          } as WitnessDetails
+        } as Collection<WitnessDetails>;
+      });
+    }
+  }
+
+  private mapToCCDInterpreterRequirements(appeal, caseData) {
+    if (_.has(appeal.hearingRequirements, 'isInterpreterServicesNeeded')) {
+      caseData.isInterpreterServicesNeeded = boolToYesNo(appeal.hearingRequirements.isInterpreterServicesNeeded);
+
+      if (_.has(appeal.hearingRequirements, 'appellantInterpreterLanguageCategory')) {
+        caseData.appellantInterpreterLanguageCategory = appeal.hearingRequirements.appellantInterpreterLanguageCategory;
+      }
+      if (_.has(appeal.hearingRequirements, 'appellantInterpreterSpokenLanguage')) {
+        caseData.appellantInterpreterSpokenLanguage = appeal.hearingRequirements.appellantInterpreterSpokenLanguage;
+      }
+      if (_.has(appeal.hearingRequirements, 'appellantInterpreterSignLanguage')) {
+        caseData.appellantInterpreterSignLanguage = appeal.hearingRequirements.appellantInterpreterSignLanguage;
+      }
+      if (_.has(appeal.hearingRequirements, 'interpreterLanguages')) {
+        caseData.interpreterLanguage = appeal.hearingRequirements.interpreterLanguages.map(interpreterLanguage => {
+          return {
+            value: {
+              language: interpreterLanguage.language,
+              languageDialect: interpreterLanguage.languageDialect || null
+            } as AdditionalLanguage
+          } as Collection<AdditionalLanguage>;
+        });
+      }
+    }
+  }
+
+  private mapToCCDWitnessInterpreterRequirements(appeal, caseData) {
+    if (_.has(appeal.hearingRequirements, 'isAnyWitnessInterpreterRequired')) {
+      caseData.isAnyWitnessInterpreterRequired = boolToYesNo(appeal.hearingRequirements.isAnyWitnessInterpreterRequired);
+
+      for (let index = 0; index < 10; index++) {
+        if (_.has(appeal.hearingRequirements, 'witnessNames')) {
+          let witnessString = 'witness' + (index + 1);
+          let witnessObj: WitnessName = appeal.hearingRequirements.witnessNames[index];
+          caseData[witnessString] = witnessObj ? {
+            witnessPartyId: witnessObj.witnessPartyId,
+            witnessName: witnessObj.witnessGivenNames,
+            witnessFamilyName: witnessObj.witnessFamilyName
+          } : null;
+        }
+        this.assignWitnessPropertiesToCCDCaseData(index, appeal, caseData);
+      }
+    }
+  }
+
+  private assignWitnessPropertiesToCCDCaseData(index, appeal, caseData) {
+    const witnessListElementString = 'witnessListElement' + (index + 1);
+    if (_.has(appeal.hearingRequirements, witnessListElementString)) {
+      caseData[witnessListElementString] = appeal.hearingRequirements[witnessListElementString];
+    }
+
+    const witnessInterpreterLanguageCategoryString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
+    if (_.has(appeal.hearingRequirements, witnessInterpreterLanguageCategoryString)) {
+      caseData[witnessInterpreterLanguageCategoryString] = appeal.hearingRequirements[witnessInterpreterLanguageCategoryString];
+    }
+
+    const witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
+    if (_.has(appeal.hearingRequirements, witnessInterpreterSpokenLanguageFieldString)) {
+      caseData[witnessInterpreterSpokenLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSpokenLanguageFieldString];
+    }
+
+    const witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
+    if (_.has(appeal.hearingRequirements, witnessInterpreterSignLanguageFieldString)) {
+      caseData[witnessInterpreterSignLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSignLanguageFieldString];
+    }
+  }
+
+  private mapToCCDCaseHearingRoomNeeded(appeal, caseData) {
+    caseData.isHearingRoomNeeded = null;
+    if (_.has(appeal.hearingRequirements, 'isHearingRoomNeeded')) {
+      if (appeal.hearingRequirements.isHearingRoomNeeded != null) {
+        caseData.isHearingRoomNeeded = boolToYesNo(appeal.hearingRequirements.isHearingRoomNeeded);
+      }
+    }
+  }
+
+  private mapToCCDCaseHearingLoopNeeded(appeal, caseData) {
+    caseData.isHearingLoopNeeded = null;
+    if (_.has(appeal.hearingRequirements, 'isHearingLoopNeeded')) {
+      if (appeal.hearingRequirements.isHearingLoopNeeded != null) {
+        caseData.isHearingLoopNeeded = boolToYesNo(appeal.hearingRequirements.isHearingLoopNeeded);
+      }
+    }
+  }
+
+  private mapToCCDOtherNeeds(appeal, caseData) {
+    if (_.has(appeal, 'hearingRequirements.otherNeeds')) {
+      this.mapToCCDCaseHearingRequirementsOtherNeeds(appeal, caseData);
+    }
+  }
+
+  private mapToCCDDatesToAvoid(appeal, caseData) {
+    if (_.has(appeal, 'hearingRequirements.datesToAvoid')) {
+      const { datesToAvoid } = appeal.hearingRequirements;
+
+      if (_.has(datesToAvoid, 'isDateCannotAttend')) {
+        caseData.datesToAvoidYesNo = boolToYesNo(datesToAvoid.isDateCannotAttend);
+        if (datesToAvoid.isDateCannotAttend && datesToAvoid.dates && datesToAvoid.dates.length) {
+          caseData.datesToAvoid = datesToAvoid.dates.map(date => {
+            return {
+              value: {
+                dateToAvoid: toIsoDate(date.date),
+                dateToAvoidReason: date.reason
+              } as DateToAvoid
+            } as Collection<DateToAvoid>;
+          });
+        }
+      }
+    }
+  }
+
+  private mapToCCDDecisionAllowed(appeal, caseData) {
+    if (_.has(appeal, 'isDecisionAllowed')) {
+      caseData.isDecisionAllowed = appeal.isDecisionAllowed;
+    }
+  }
+
+  private assignSinglePropertyIfExists(source, sourceKey, target, targetKey) {
+    if (source[sourceKey]) {
+      target[targetKey] = source[sourceKey];
+    }
+  }
+
+  private assignSinglePropertyIfExistsWithYesNoToBoolFunction(source, sourceKey, target, targetKey) {
+    if (source[sourceKey]) {
+      target[targetKey] = yesNoToBool(source[sourceKey]) ? YesOrNo.YES : YesOrNo.NO;
+    }
   }
 }

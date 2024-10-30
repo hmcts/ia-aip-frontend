@@ -63,12 +63,13 @@ export default class CcdSystemService {
         headers: headers
       }
     ).then(function (response) {
+      logger.trace(`Pin in Post validation successful for case id - '${caseId}'`, logLabel);
       if (validateAccessCode(response.data.case_data, accessCode)) {
         return getPipValidationSuccess(response.data.id, response.data.case_data);
       }
       return PIP_VALIDATION_FAILED;
     }).catch(function (error) {
-      logger.exception(error, logLabel);
+      logger.exception(`Appellant Pin in Post validation failed for case id - '${caseId}', Pin entered - '${accessCode}', error - '${error}'`, logLabel);
       return PIP_VALIDATION_FAILED;
     });
   }

@@ -13,9 +13,8 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import PaymentService from '../../../app/service/payments-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
-import { addSummaryRow } from '../../../app/utils/summary-list';
+import { addSummaryRow, Delimiter } from '../../../app/utils/summary-list';
 import { formatTextForCYA } from '../../../app/utils/utils';
-import { helpWithFeesRefNumberValidation } from '../../../app/utils/validations/fields-validations';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { createDummyAppealApplication } from '../mockData/mock-appeal';
@@ -171,6 +170,40 @@ describe('createSummaryRowsFrom', () => {
         req.session.appeal.application.helpWithFeesOption = input;
         const helpWithFeesRow = addSummaryRow('Help with fees', [expectedResponse], paths.appealStarted.helpWithFees + editParameter);
         mockedRows.push(helpWithFeesRow);
+        expect(rows).to.be.deep.equal(mockedRows);
+        mockedRows.pop();
+      });
+    });
+  });
+
+  it('should create deportation order rows', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false).resolves(true);
+    const editParameter = '?edit';
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+
+    const deportationOrderRow = { key: { text: 'Deportation order' }, value: { html: 'Deportation order has not been made' }, actions: { items: [{ href: '/deportation-order?edit', text: 'Change' }] } };
+
+    let mockedRows: SummaryRow[] = getMockedSummaryRows().splice(14,0, deportationOrderRow);
+    mockedRows.splice(1, 0, deportationOrderRow);
+
+    const testData = [
+      {
+        input: 'Yes',
+        expectedResponse: 'Deportation order has been made',
+        description: 'Deportation order has been made'
+      },
+      {
+        input: 'No',
+        expectedResponse: 'Deportation order has not been made',
+        description: 'Deportation order has not been made'
+      }
+    ];
+
+    testData.forEach(({ input, expectedResponse, description }) => {
+      it(`should be ${description}`, () => {
+        req.session.appeal.application.deportationOrderOptions = input;
+        const deportationRow = addSummaryRow('Deportation order', [expectedResponse], paths.appealStarted.deportationOrder + editParameter);
+        mockedRows.push(deportationRow);
         expect(rows).to.be.deep.equal(mockedRows);
         mockedRows.pop();
       });

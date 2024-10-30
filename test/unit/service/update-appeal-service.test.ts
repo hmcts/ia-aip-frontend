@@ -191,6 +191,14 @@ describe('update-appeal-service', () => {
     sandbox.restore();
   });
 
+  it('should return the CcdService instance', () => {
+    expect(updateAppealService.getCcdService()).eq(ccdService);
+  });
+
+  it('should return the AuthenticationService instance', () => {
+    expect(updateAppealService.getAuthenticationService()).eq(authenticationService);
+  });
+
   describe('loadAppeal', () => {
     it('set case details', async () => {
       ccdServiceMock.expects('loadOrCreateCase')
@@ -1293,6 +1301,39 @@ describe('update-appeal-service', () => {
       });
     });
 
+    describe('isWitnessesAttending, isAppellantAttendingTheHearing, isAppellantGivingOralEvidence, isEvidenceFromOutsideUkInCountry', () => {
+      const testData = [
+        {
+          value: 'Yes',
+          expectation: true
+        },
+        {
+          value: 'No',
+          expectation: false
+        }
+      ];
+
+      testData.forEach(({ value, expectation }) => {
+        it(`mapped value should be ${expectation}`, () => {
+          const caseData: Partial<CaseData> = {
+            'isWitnessesAttending': value as 'Yes' | 'No',
+            'isAppellantAttendingTheHearing': value as 'Yes' | 'No',
+            'isAppellantGivingOralEvidence': value as 'Yes' | 'No',
+            'isEvidenceFromOutsideUkInCountry': value as 'Yes' | 'No'
+          };
+
+          const appeal: Partial<CcdCaseDetails> = {
+            case_data: caseData as CaseData
+          };
+          const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+          expect(mappedAppeal.hearingRequirements.witnessesOnHearing).to.be.eq(expectation);
+          expect(mappedAppeal.hearingRequirements.isAppellantAttendingTheHearing).to.be.eq(expectation);
+          expect(mappedAppeal.hearingRequirements.isAppellantGivingOralEvidence).to.be.eq(expectation);
+          expect(mappedAppeal.hearingRequirements.witnessesOutsideUK).to.be.eq(expectation);
+        });
+      });
+    });
+
     describe('ftpaR35RespondentDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaR35RespondentDocument':
@@ -1655,6 +1696,50 @@ describe('update-appeal-service', () => {
     });
   });
 
+  describe('mapAdditionalEvidenceDocumentsToDocumentsCaseData', () => {
+    it('should map additional evidence documents to documents case data', () => {
+      const evidences: AdditionalEvidenceDocument[] = [
+        { fileId: '1', name: 'doc1.pdf', description: 'Document 1' },
+        { fileId: '2', name: 'doc2.pdf' } // No description provided
+      ];
+
+      const documentMap: DocumentMap[] = [
+        { id: '1', url: 'http://example.com/doc1' },
+        { id: '2', url: 'http://example.com/doc2' }
+      ];
+
+      // @ts-ignore
+      const expected: Collection<Document>[] = [
+        {
+          id: '1',
+          value: {
+            description: 'Document 1',
+            document: {
+              document_filename: 'doc1.pdf',
+              document_url: 'http://example.com/doc1',
+              document_binary_url: 'http://example.com/doc1/binary'
+            }
+          }
+        },
+        {
+          id: '2',
+          value: {
+            description: 'additionalEvidenceDocument',
+            document: {
+              document_filename: 'doc2.pdf',
+              document_url: 'http://example.com/doc2',
+              document_binary_url: 'http://example.com/doc2/binary'
+            }
+          }
+        }
+      ];
+
+      const result = updateAppealService.mapAdditionalEvidenceDocumentsToDocumentsCaseData(evidences, documentMap);
+
+      expect(result).to.be.length(2);
+    });
+  });
+
   describe('submitEvent', () => {
     let expectedCaseData: Partial<CaseData>;
     let ccdService2: Partial<CcdService>;
@@ -1760,7 +1845,8 @@ describe('update-appeal-service', () => {
                 'description': 'Some evidence 1',
                 'tag': 'additionalEvidence'
               }],
-              remissionDecision: 'approved'
+              remissionDecision: 'approved',
+              deportationOrderOptions: 'Yes'
             } as AppealApplication,
             reasonsForAppeal: {
               applicationReason: 'I\'ve decided to appeal because ...',
@@ -1887,6 +1973,8 @@ describe('update-appeal-service', () => {
         'sponsorGivenNames': 'ABC XYZ',
         'sponsorFamilyName': 'ABC XYZ',
         'sponsorNameForDisplay': 'ABC XYZ',
+        'sponsorAuthorisation': 'ABC XYZ',
+        'deportationOrderOptions': 'Yes',
         'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
         'reasonsForAppealDocuments': [
           {
@@ -2337,5 +2425,73 @@ describe('update-appeal-service', () => {
       });
     });
 
+    describe('isHearingRoomNeeded', () => {
+      const testData = [
+        {
+          value: 'Yes',
+          expectation: true
+        },
+        {
+          value: 'No',
+          expectation: false
+        }
+      ];
+
+      testData.forEach(({ value, expectation }) => {
+        it(`mapped value should be ${expectation}`, () => {
+          const caseData: Partial<CaseData> = {
+            'isHearingRoomNeeded': value as 'Yes' | 'No'
+          };
+
+          const appeal: Partial<CcdCaseDetails> = {
+            case_data: caseData as CaseData
+          };
+          const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+          expect(mappedAppeal.hearingRequirements.isHearingRoomNeeded).to.be.eq(expectation);
+        });
+      });
+    });
+
+    describe('isHearingLoopNeeded', () => {
+      const testData = [
+        {
+          value: 'Yes',
+          expectation: true
+        },
+        {
+          value: 'No',
+          expectation: false
+        }
+      ];
+
+      testData.forEach(({ value, expectation }) => {
+        it(`mapped value should be ${expectation}`, () => {
+          const caseData: Partial<CaseData> = {
+            'isHearingLoopNeeded': value as 'Yes' | 'No'
+          };
+
+          const appeal: Partial<CcdCaseDetails> = {
+            case_data: caseData as CaseData
+          };
+          const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+          expect(mappedAppeal.hearingRequirements.isHearingLoopNeeded).to.be.eq(expectation);
+        });
+      });
+    });
+
+    describe('isDecisionAllowed', () => {
+      it(`isDecisionAllowed value should be mapped`, () => {
+        const caseData: Partial<CaseData> = {
+          'isDecisionAllowed': 'Allowed'
+        };
+
+        const appeal: Partial<CcdCaseDetails> = {
+          case_data: caseData as CaseData
+        };
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.isDecisionAllowed).to.be.eq('Allowed');
+      });
+
+    });
   });
 });

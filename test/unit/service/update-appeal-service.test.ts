@@ -2425,5 +2425,73 @@ describe('update-appeal-service', () => {
       });
     });
 
+    describe('isHearingRoomNeeded', () => {
+      const testData = [
+        {
+          value: 'Yes',
+          expectation: true
+        },
+        {
+          value: 'No',
+          expectation: false
+        }
+      ];
+
+      testData.forEach(({ value, expectation }) => {
+        it(`mapped value should be ${expectation}`, () => {
+          const caseData: Partial<CaseData> = {
+            'isHearingRoomNeeded': value as 'Yes' | 'No'
+          };
+
+          const appeal: Partial<CcdCaseDetails> = {
+            case_data: caseData as CaseData
+          };
+          const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+          expect(mappedAppeal.hearingRequirements.isHearingRoomNeeded).to.be.eq(expectation);
+        });
+      });
+    });
+
+    describe('isHearingLoopNeeded', () => {
+      const testData = [
+        {
+          value: 'Yes',
+          expectation: true
+        },
+        {
+          value: 'No',
+          expectation: false
+        }
+      ];
+
+      testData.forEach(({ value, expectation }) => {
+        it(`mapped value should be ${expectation}`, () => {
+          const caseData: Partial<CaseData> = {
+            'isHearingLoopNeeded': value as 'Yes' | 'No'
+          };
+
+          const appeal: Partial<CcdCaseDetails> = {
+            case_data: caseData as CaseData
+          };
+          const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+          expect(mappedAppeal.hearingRequirements.isHearingLoopNeeded).to.be.eq(expectation);
+        });
+      });
+    });
+
+    describe('isDecisionAllowed', () => {
+      it(`isDecisionAllowed value should be mapped`, () => {
+        const caseData: Partial<CaseData> = {
+          'isDecisionAllowed': 'Allowed'
+        };
+
+        const appeal: Partial<CcdCaseDetails> = {
+          case_data: caseData as CaseData
+        };
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.isDecisionAllowed).to.be.eq('Allowed');
+      });
+
+    });
   });
 });

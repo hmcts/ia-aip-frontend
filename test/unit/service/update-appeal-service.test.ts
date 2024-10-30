@@ -191,6 +191,14 @@ describe('update-appeal-service', () => {
     sandbox.restore();
   });
 
+  it('should return the CcdService instance', () => {
+    expect(updateAppealService.getCcdService()).eq(ccdService);
+  });
+
+  it('should return the AuthenticationService instance', () => {
+    expect(updateAppealService.getAuthenticationService()).eq(authenticationService);
+  });
+
   describe('loadAppeal', () => {
     it('set case details', async () => {
       ccdServiceMock.expects('loadOrCreateCase')
@@ -1685,6 +1693,50 @@ describe('update-appeal-service', () => {
 
       expect(mappedAppeal.application.amountLeftToPay).eq('4000');
       expect(mappedAppeal.application.remissionRejectedDatePlus14days).eq('2022-01-26');
+    });
+  });
+
+  describe('mapAdditionalEvidenceDocumentsToDocumentsCaseData', () => {
+    it('should map additional evidence documents to documents case data', () => {
+      const evidences: AdditionalEvidenceDocument[] = [
+        { fileId: '1', name: 'doc1.pdf', description: 'Document 1' },
+        { fileId: '2', name: 'doc2.pdf' } // No description provided
+      ];
+
+      const documentMap: DocumentMap[] = [
+        { id: '1', url: 'http://example.com/doc1' },
+        { id: '2', url: 'http://example.com/doc2' }
+      ];
+
+      // @ts-ignore
+      const expected: Collection<Document>[] = [
+        {
+          id: '1',
+          value: {
+            description: 'Document 1',
+            document: {
+              document_filename: 'doc1.pdf',
+              document_url: 'http://example.com/doc1',
+              document_binary_url: 'http://example.com/doc1/binary'
+            }
+          }
+        },
+        {
+          id: '2',
+          value: {
+            description: 'additionalEvidenceDocument',
+            document: {
+              document_filename: 'doc2.pdf',
+              document_url: 'http://example.com/doc2',
+              document_binary_url: 'http://example.com/doc2/binary'
+            }
+          }
+        }
+      ];
+
+      const result = updateAppealService.mapAdditionalEvidenceDocumentsToDocumentsCaseData(evidences, documentMap);
+
+      expect(result).to.be.length(2);
     });
   });
 

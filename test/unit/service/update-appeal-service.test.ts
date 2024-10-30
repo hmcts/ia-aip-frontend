@@ -900,38 +900,38 @@ describe('update-appeal-service', () => {
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData).to.deep.eq(
-          {
-            'journeyType': 'aip',
-            'appellantInUk': 'undefined',
-            'gwfReferenceNumber': null,
-            'remissionOption': null,
-            'asylumSupportRefNumber': null,
-            'helpWithFeesOption': null,
-            'helpWithFeesRefNumber': null,
-            'localAuthorityLetters': null,
-            'feeSupportPersisted': 'No',
-            'isHearingRoomNeeded': null,
-            'isHearingLoopNeeded': null,
-            'draftClarifyingQuestionsAnswers': [
-              {
-                'id': '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
-                'value': {
-                  'dateSent': '2020-04-23',
-                  'dueDate': '2020-05-07',
-                  'question': 'Give us some more information about:\n- What are their ages?\n  - What are their names?',
-                  'directionId': 'directionId'
-                }
-              },
-              {
-                'value': {
-                  'dateSent': '2020-04-23',
-                  'dueDate': '2020-05-07',
-                  'question': 'Do you want to tell us anything else about your case?',
-                  'directionId': 'directionId'
-                }
+        {
+          'journeyType': 'aip',
+          'appellantInUk': 'undefined',
+          'gwfReferenceNumber': null,
+          'remissionOption': null,
+          'asylumSupportRefNumber': null,
+          'helpWithFeesOption': null,
+          'helpWithFeesRefNumber': null,
+          'localAuthorityLetters': null,
+          'feeSupportPersisted': 'No',
+          'isHearingRoomNeeded': null,
+          'isHearingLoopNeeded': null,
+          'draftClarifyingQuestionsAnswers': [
+            {
+              'id': '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
+              'value': {
+                'dateSent': '2020-04-23',
+                'dueDate': '2020-05-07',
+                'question': 'Give us some more information about:\n- What are their ages?\n  - What are their names?',
+                'directionId': 'directionId'
               }
-            ]
-          }
+            },
+            {
+              'value': {
+                'dateSent': '2020-04-23',
+                'dueDate': '2020-05-07',
+                'question': 'Do you want to tell us anything else about your case?',
+                'directionId': 'directionId'
+              }
+            }
+          ]
+        }
       );
     });
 

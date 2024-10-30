@@ -1364,7 +1364,7 @@ export default class UpdateAppealService {
   private mapToCCDCaseSponsorAddress(appeal, caseData) {
     if (appeal.application.sponsorAddress) {
       caseData.sponsorAddress = {
-        AddressLine1: appeal.appeal.application.sponsorAddress.line1,
+        AddressLine1: appeal.application.sponsorAddress.line1,
         AddressLine2: appeal.application.sponsorAddress.line2,
         PostTown: appeal.application.sponsorAddress.city,
         County: appeal.application.sponsorAddress.county,

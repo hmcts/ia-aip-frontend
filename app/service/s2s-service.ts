@@ -73,7 +73,7 @@ export default class S2SService implements IS2SService {
       proxyConfig = { proxy: { host: proxyHost, port: proxyPort } };
     }
     let res;
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       try {
         res = await axios.post(request.uri, request.body, proxyConfig);
         break;
@@ -95,7 +95,7 @@ export default class S2SService implements IS2SService {
    * If it has expired it refreshes the token and returns it.
    */
   async getServiceToken() {
-    if (isJWTExpired(this.serviceToken)) {
+    if (!this.serviceToken || isJWTExpired(this.serviceToken)) {
       logger.trace('Token expired Attempting to acquire a new one.', logLabel);
       await this.requestServiceToken();
     }

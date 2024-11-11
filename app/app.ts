@@ -1,3 +1,4 @@
+import { Express as loggingExpress, Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
 import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
@@ -6,6 +7,7 @@ import express from 'express';
 import helmet from 'helmet';
 import webpack from 'webpack';
 import webpackDevMiddleware, { Options } from 'webpack-dev-middleware';
+import { LoggerInstance } from 'winston';
 import internationalization from '../locale/en.json';
 import webpackDevConfig from '../webpack/webpack.dev.js';
 import { configureIdam, configureLogger, configureNunjucks, configureS2S } from './app-config';
@@ -20,6 +22,7 @@ import { setupSession } from './session';
 import { getUrl } from './utils/url-utils';
 
 const uuid = require('uuid');
+const logger: LoggerInstance = Logger.getLogger('app.ts');
 
 function createApp() {
   const app: express.Application = express();
@@ -148,6 +151,7 @@ function configureHelmet(app) {
     }
   }));
   app.use(helmet.noCache());
+  app.use(loggingExpress.accessLogger());
 }
 
 export {

@@ -1,7 +1,9 @@
+import { Logger } from '@hmcts/nodejs-logging';
 import axios from 'axios';
+import { LoggerInstance } from 'winston';
 import { setupSecrets } from '../setupSecrets';
 import { isJWTExpired } from '../utils/jwt-utils';
-import Logger, { getLogLabel } from '../utils/logger';
+// import Logger, { getLogLabel } from '../utils/logger';
 
 const config = setupSecrets();
 
@@ -12,8 +14,9 @@ const proxyHost: string = config.get('proxy.host');
 const proxyPort: number = config.get('proxy.port');
 const microServiceName: string = config.get('s2s.microserviceName');
 
-const logger: Logger = new Logger();
-const logLabel: string = getLogLabel(__filename);
+const logger: LoggerInstance = Logger.getLogger('s2s-service.ts');
+// const logger: Logger = new Logger();
+// const logLabel: string = getLogLabel(__filename);
 
 interface IS2SService {
   buildRequest: () => {};
@@ -24,7 +27,7 @@ interface IS2SService {
 
 export default class S2SService implements IS2SService {
   private static instance: S2SService;
-  private initialization;
+  private initialization: Promise<void>;
   private serviceToken: string;
 
   public static getInstance(): S2SService {
@@ -66,27 +69,27 @@ export default class S2SService implements IS2SService {
    * Note: This token is stored in memory and this token is only valid for 3 hours.
    */
   async requestServiceToken() {
-    logger.trace('Attempting to request a S2S token', logLabel);
+    logger.info('Attempting to request a S2S token');
     const request = await this.buildRequest();
     let proxyConfig;
     if (process.env.NODE_ENV === 'development' && !s2sUrl.startsWith('http://localhost')) {
       proxyConfig = { proxy: { host: proxyHost, port: proxyPort } };
     }
     let res;
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       try {
         res = await axios.post(request.uri, request.body, proxyConfig);
         break;
       } catch (err) {
-        logger.exception(err, logLabel);
+        logger.error(err);
         i++;
       }
     }
     if (res && res.data) {
       this.serviceToken = res.data;
-      logger.trace('Received S2S token and stored token', logLabel);
+      logger.info('Received S2S token and stored token');
     } else {
-      logger.exception('Could not retrieve S2S token', logLabel);
+      logger.info('Could not retrieve S2S token');
     }
   }
 

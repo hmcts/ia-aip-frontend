@@ -1,4 +1,4 @@
-import { Express as loggingExpress, LoggerJs } from '@hmcts/nodejs-logging';
+import { Express as loggingExpress, Logger as LoggerJs } from '@hmcts/nodejs-logging';
 import config from 'config';
 import cookieParser from 'cookie-parser';
 import csurf from 'csurf';

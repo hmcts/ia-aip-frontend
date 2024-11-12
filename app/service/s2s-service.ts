@@ -1,4 +1,4 @@
-import { LoggerJs } from '@hmcts/nodejs-logging';
+import { Logger as LoggerJs } from '@hmcts/nodejs-logging';
 import axios from 'axios';
 import { LoggerInstance } from 'winston';
 import { setupSecrets } from '../setupSecrets';

@@ -1,4 +1,4 @@
-import { LoggerJs } from '@hmcts/nodejs-logging';
+import { Logger as LoggerJs } from '@hmcts/nodejs-logging';
 import { LoggerInstance } from 'winston';
 import { jwtRepack } from './jwt-repack';
 import Logger, { getLogLabel } from './logger';

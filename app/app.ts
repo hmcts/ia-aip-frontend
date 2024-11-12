@@ -1,4 +1,4 @@
-import { Express as loggingExpress, Logger } from '@hmcts/nodejs-logging';
+import { Express as loggingExpress, LoggerJs } from '@hmcts/nodejs-logging';
 import config from 'config';
 import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
@@ -22,7 +22,7 @@ import { setupSession } from './session';
 import { getUrl } from './utils/url-utils';
 
 const uuid = require('uuid');
-const logger: LoggerInstance = Logger.getLogger('app.ts');
+const loggerInstance: LoggerInstance = LoggerJs.getLogger('app.ts');
 
 function createApp() {
   const app: express.Application = express();

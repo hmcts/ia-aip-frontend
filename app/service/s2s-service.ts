@@ -1,9 +1,9 @@
-import { Logger } from '@hmcts/nodejs-logging';
+import { LoggerJs } from '@hmcts/nodejs-logging';
 import axios from 'axios';
 import { LoggerInstance } from 'winston';
 import { setupSecrets } from '../setupSecrets';
 import { isJWTExpired } from '../utils/jwt-utils';
-// import Logger, { getLogLabel } from '../utils/logger';
+import Logger, { getLogLabel } from '../utils/logger';
 
 const config = setupSecrets();
 
@@ -14,9 +14,9 @@ const proxyHost: string = config.get('proxy.host');
 const proxyPort: number = config.get('proxy.port');
 const microServiceName: string = config.get('s2s.microserviceName');
 
-const logger: LoggerInstance = Logger.getLogger('s2s-service.ts');
-// const logger: Logger = new Logger();
-// const logLabel: string = getLogLabel(__filename);
+const loggerInstance: LoggerInstance = LoggerJs.getLogger('s2s-service.ts');
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 
 interface IS2SService {
   buildRequest: () => {};
@@ -27,7 +27,7 @@ interface IS2SService {
 
 export default class S2SService implements IS2SService {
   private static instance: S2SService;
-  private initialization: Promise<void>;
+  private initialization;
   private serviceToken: string;
 
   public static getInstance(): S2SService {
@@ -69,7 +69,8 @@ export default class S2SService implements IS2SService {
    * Note: This token is stored in memory and this token is only valid for 3 hours.
    */
   async requestServiceToken() {
-    logger.info('Attempting to request a S2S token');
+    loggerInstance.info('Attempting to request a S2S token');
+    logger.trace('Attempting to request a S2S token', logLabel);
     const request = await this.buildRequest();
     let proxyConfig;
     if (process.env.NODE_ENV === 'development' && !s2sUrl.startsWith('http://localhost')) {
@@ -81,15 +82,18 @@ export default class S2SService implements IS2SService {
         res = await axios.post(request.uri, request.body, proxyConfig);
         break;
       } catch (err) {
-        logger.error(err);
+        logger.exception(err, logLabel);
+        loggerInstance.error(err);
         i++;
       }
     }
     if (res && res.data) {
       this.serviceToken = res.data;
-      logger.info('Received S2S token and stored token');
+      logger.trace('Received S2S token and stored token', logLabel);
+      loggerInstance.info('Received S2S token and stored token');
     } else {
-      logger.info('Could not retrieve S2S token');
+      logger.exception('Could not retrieve S2S token', logLabel);
+      loggerInstance.info('Could not retrieve S2S token');
     }
   }
 
@@ -100,6 +104,7 @@ export default class S2SService implements IS2SService {
   async getServiceToken() {
     if (isJWTExpired(this.serviceToken)) {
       logger.trace('Token expired Attempting to acquire a new one.', logLabel);
+      loggerInstance.info('Token expired Attempting to acquire a new one.');
       await this.requestServiceToken();
     }
     return `Bearer ${this.serviceToken}`;

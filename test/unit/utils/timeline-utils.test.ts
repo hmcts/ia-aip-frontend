@@ -1,17 +1,24 @@
 import { Request } from 'express';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import { States } from '../../../app/data/states';
+import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import {
-  constructSection, filterEventsForHearingRequirementsSection,
+  constructSection,
+  filterEventsForHearingRequirementsSection,
+  getAppealApplicationHistory,
   getApplicationEvents,
   getDirectionHistory,
   getEventsAndStates,
+  getListCaseEvent,
   getSubmitClarifyingQuestionsEvents,
   getUpdateTribunalDecisionDocumentHistory,
   getUpdateTribunalDecisionHistory
 } from '../../../app/utils/timeline-utils';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 
@@ -968,6 +975,296 @@ describe('timeline-utils', () => {
     it('should return relevant events when ftpa set aside feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, false, true);
       expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(3);
+    });
+  });
+
+  describe('getListCaseEvent', () => {
+    it('should return an empty array when there are no hearing documents', () => {
+      const result = getListCaseEvent(req as Request);
+      expect(result).to.be.an('array').that.is.empty;
+    });
+
+    it('should return filtered hearing notices from hearingDocuments', () => {
+      req.session.appeal.hearingDocuments = [
+        { tag: 'hearingNotice', fileId: 'some-id-0123', dateUploaded: '2024-01-05' },
+        { tag: 'hearingNoticeRelisted', fileId: 'some-id-2345', dateUploaded: '2024-01-01' },
+        { tag: 'other', fileId: 'some-id-1234', dateUploaded: '2024-01-02' }
+      ];
+
+      const result = getListCaseEvent(req as Request);
+      expect(result).to.have.lengthOf(2);
+      expect(result[0]).to.include({ date: '05 January 2024' });
+      expect(result[1]).to.include({ date: '01 January 2024' });
+    });
+
+    it('should return filtered hearing notices from reheardHearingDocumentsCollection', () => {
+      req.session.appeal.reheardHearingDocumentsCollection = [
+        {
+          value: {
+            reheardHearingDocs: [
+              { tag: 'reheardHearingNotice', fileId: 'some-id-2345', dateUploaded: '2024-03-03' },
+              { tag: 'reheardHearingNoticeRelisted', fileId: 'some-id-4567', dateUploaded: '2024-03-10' },
+              { tag: 'other', fileId: 'some-id-3456', dateUploaded: '2024-04-04' }
+            ]
+          }
+        }
+      ];
+
+      const result = getListCaseEvent(req as Request);
+      expect(result).to.have.lengthOf(2);
+      expect(result[0]).to.include({ date: '10 March 2024' });
+      expect(result[1]).to.include({ date: '03 March 2024' });
+    });
+
+    it('should handle both hearingDocuments and reheardHearingDocumentsCollection', () => {
+      req.session.appeal.hearingDocuments = [
+        { tag: 'hearingNotice', fileId: 'some-id-4567', dateUploaded: '2024-01-01' },
+        { tag: 'hearingNoticeRelisted', fileId: 'some-id-2345', dateUploaded: '2024-01-03' }
+      ];
+      req.session.appeal.reheardHearingDocumentsCollection = [
+        {
+          value: {
+            reheardHearingDocs: [
+              { tag: 'reheardHearingNotice', fileId: 'some-id-5678', dateUploaded: '2024-03-03' },
+              { tag: 'reheardHearingNoticeRelisted', fileId: 'some-id-4567', dateUploaded: '2024-03-10' }
+            ]
+          }
+        }
+      ];
+
+      const result = getListCaseEvent(req as Request);
+      expect(result).to.have.lengthOf(4);
+      expect(result[0]).to.include({ date: '10 March 2024' });
+      expect(result[1]).to.include({ date: '03 March 2024' });
+      expect(result[2]).to.include({ date: '03 January 2024' });
+      expect(result[3]).to.include({ date: '01 January 2024' });
+    });
+
+    it('should handle both hearingDocuments and reheardHearingDocumentsCollection by time', () => {
+      req.session.appeal.hearingDocuments = [
+        { tag: 'hearingNotice', fileId: 'some-id-4567', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T17:00:00.000000' },
+        { tag: 'hearingNoticeRelisted', fileId: 'some-id-2345', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T12:00:00.000000' }
+      ];
+      req.session.appeal.reheardHearingDocumentsCollection = [
+        {
+          value: {
+            reheardHearingDocs: [
+              { tag: 'reheardHearingNotice', fileId: 'some-id-5678', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T15:00:00.000000' },
+              { tag: 'reheardHearingNoticeRelisted', fileId: 'some-id-7891', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T17:00:52.000000' }
+            ]
+          }
+        }
+      ];
+
+      const result = getListCaseEvent(req as Request);
+      expect(result).to.have.lengthOf(4);
+      expect(result[0].links[0].href).to.equal(paths.common.hearingNoticeViewer
+        .replace(':id', 'some-id-7891'));
+      expect(result[1].links[0].href).to.equal(paths.common.hearingNoticeViewer
+        .replace(':id', 'some-id-4567'));
+      expect(result[2].links[0].href).to.equal(paths.common.hearingNoticeViewer
+        .replace(':id', 'some-id-5678'));
+      expect(result[3].links[0].href).to.equal(paths.common.hearingNoticeViewer
+        .replace(':id', 'some-id-2345'));
+    });
+  });
+
+  describe('getAppealApplicationHistory', () => {
+    it('should return the correct sections when paymentStatus is "Paid" and refundFeatureEnabled is true', async () => {
+
+      const history = [
+        {
+          'id': 'uploadAdditionalEvidence',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        },
+        {
+          'id': 'uploadAddendumEvidenceLegalRep',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        }
+      ] as HistoryEvent[];
+
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+      req.session.appeal.application.isLateRemissionRequest = true;
+
+      const fakeUpdateAppealService = {
+        getAuthenticationService: sinon.stub().returns({
+          getSecurityHeaders: sinon.stub().resolves({ /* fake security headers */ })
+        }),
+        getCcdService: sinon.stub().returns({
+          getCaseHistory: sinon.stub().resolves(history)
+        })
+      };
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+
+      const expectedResult = [
+        {
+          'date': '03 April 2024',
+          'dateObject': new Date('2024-04-03T08:00:30.233Z'),
+          'text': 'You asked the Tribunal for a fee remission.',
+          'links': [
+            {
+              'title': 'What you sent',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        }
+      ];
+
+      const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
+      expect(result.appealRemissionSection).to.deep.eq(expectedResult);
+    });
+
+    it('should return the correct sections when fee remission is decided', async () => {
+
+      const history = [
+        {
+          'id': 'recordRemissionDecision',
+          'createdDate': '2024-03-07'
+        }
+      ] as HistoryEvent[];
+
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+      req.session.appeal.application.remissionDecision = 'approved';
+      req.session.appeal.application.isLateRemissionRequest = true;
+
+      const fakeUpdateAppealService = {
+        getAuthenticationService: sinon.stub().returns({
+          getSecurityHeaders: sinon.stub().resolves({ /* fake security headers */ })
+        }),
+        getCcdService: sinon.stub().returns({
+          getCaseHistory: sinon.stub().resolves(history)
+        })
+      };
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+
+      const expectedResult = [
+        {
+          'date': '07 March 2024',
+          'dateObject': new Date('2024-03-07'),
+          'text': 'Your request for fee support was decided.',
+          'links': [
+            {
+              'title': 'What the Tribunal said',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        },
+        {
+          'date': '03 April 2024',
+          'dateObject': new Date('2024-04-03T08:00:30.233Z'),
+          'text': 'You asked the Tribunal for a fee remission.',
+          'links': [
+            {
+              'title': 'What you sent',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        }
+      ];
+
+      const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
+      expect(result.appealRemissionDecisionSection).to.deep.eq(expectedResult);
+    });
+
+    it('should return the correct sections when manageAFeeUpdate event is in history with remission', async () => {
+      const date1 = new Date('2024-04-14');
+      const history = [
+        {
+          'id': 'manageFeeUpdate',
+          'createdDate': date1
+        },
+        {
+          'id': 'recordRemissionDecision',
+          'createdDate': '2024-04-13T14:53:26.099'
+        }
+      ] as HistoryEvent[];
+
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+      req.session.appeal.application.remissionDecision = 'approved';
+
+      const fakeUpdateAppealService = {
+        getAuthenticationService: sinon.stub().returns({
+          getSecurityHeaders: sinon.stub().resolves({ /* fake security headers */ })
+        }),
+        getCcdService: sinon.stub().returns({
+          getCaseHistory: sinon.stub().resolves(history)
+        })
+      };
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+
+      const expectedResult = [
+        {
+          'date': '14 April 2024',
+          'dateObject': date1,
+          'text': 'The fee for this appeal has changed.',
+          'links': [
+            {
+              'title': 'What\'s changed',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        }
+      ];
+
+      const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
+      expect(result.appealRemissionDecisionSection).to.deep.eq(expectedResult);
+    });
+
+    it('should return the correct sections when manageAFeeUpdate event is in history without remission', async () => {
+      const date1 = new Date('2024-04-14');
+      const history = [
+        {
+          'id': 'manageFeeUpdate',
+          'createdDate': date1
+        }
+      ];
+
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
+
+      const fakeUpdateAppealService = {
+        getAuthenticationService: sinon.stub().returns({
+          getSecurityHeaders: sinon.stub().resolves({ /* fake security headers */ })
+        }),
+        getCcdService: sinon.stub().returns({
+          getCaseHistory: sinon.stub().resolves(history)
+        })
+      };
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+
+      const expectedResult = [
+        {
+          'date': '14 April 2024',
+          'dateObject': date1,
+          'text': 'The fee for this appeal has changed.',
+          'links': [
+            {
+              'title': 'What\'s changed',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        }
+      ];
+
+      const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
+      expect(result.appealRemissionDecisionSection).to.deep.eq(expectedResult);
     });
   });
 });

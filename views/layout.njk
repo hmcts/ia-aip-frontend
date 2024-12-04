@@ -28,7 +28,7 @@
     {{ govukButton({
       name: button1.name if button1.name else 'saveAndContinue',
       text: button1.text if button1.text else i18n.common.buttons.saveAndContinue,
-      classes: "govuk-!-margin-right-1"
+      classes: "govuk-!-margin-right-3"
     }) }}
 
     {{ govukButton({
@@ -108,6 +108,19 @@
 
 {% macro canelButton() %}
   <a class="cancel-button" href="{{ previousPage }}">{{ i18n.common.buttons.cancel }}</a>
+{% endmacro %}
+
+{% macro cancelButtonWithAttributes(previousPage, errors=None) %}
+  {# Check if errors is present #}
+  {% if error or errors %}
+    <a class="cancel-button" href="javascript:void(0);" onclick="history.go(-1); return false;">
+      {{ i18n.common.buttons.cancel }}
+    </a>
+  {% else %}
+    <a class="cancel-button" href="#" onclick="{{ previousPage.attributes.onclick }}">
+      {{ i18n.common.buttons.cancel }}
+    </a>
+  {% endif %}
 {% endmacro %}
 
 {% macro saveAndContinueButton() %}
@@ -222,29 +235,36 @@
   {{ header() }}
 {% endblock %}
 
-{% block beforeContent %}
-  {% set feedbackLink = [
-      "<a href=",
-      i18n.phaseBanner.feedbackSurveyLik.href,
-      " target='_blank' rel='noopener noreferrer'>",
-      i18n.phaseBanner.feedbackSurveyLik.text,
-      "</a>"
-    ] | join() %}
+{% block main %}
+  <div class="govuk-width-container {{ containerClasses }}">
+    {% block beforeContent %}
+      {% set feedbackLink = [
+          "<a href=",
+          i18n.phaseBanner.feedbackSurveyLik.href,
+          " target='_blank' rel='noopener noreferrer'>",
+          i18n.phaseBanner.feedbackSurveyLik.text,
+          "</a>"
+        ] | join() %}
 
-  {{ timeoutModal() }}
-  {{ govukPhaseBanner({
-    tag: {
-      text: i18n.phaseBanner.version
-    },
-    html: i18n.phaseBanner.text[0] + feedbackLink + i18n.phaseBanner.text[1] | safe
-  }) }}
-  {% if previousPage %}
-    {{ govukBackLink({
-      text: i18n.components.back.back,
-      href: previousPage if not previousPage.attributes,
-      attributes: previousPage.attributes if previousPage.attributes
-    }) }}
-  {% endif %}
+      {{ timeoutModal() }}
+      {{ govukPhaseBanner({
+        tag: {
+          text: i18n.phaseBanner.version
+        },
+        html: i18n.phaseBanner.text[0] + feedbackLink + i18n.phaseBanner.text[1] | safe
+      }) }}
+      {% if previousPage %}
+        {{ govukBackLink({
+          text: i18n.components.back.back,
+          href: previousPage if not previousPage.attributes,
+          attributes: previousPage.attributes if previousPage.attributes
+        }) }}
+      {% endif %}
+    {% endblock %}
+    <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %} tabindex="-1">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
 {% endblock %}
 
 {% block footer %}

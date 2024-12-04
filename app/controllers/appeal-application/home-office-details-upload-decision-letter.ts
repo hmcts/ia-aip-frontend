@@ -2,10 +2,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
+import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { PageSetup } from '../../interfaces/PageSetup';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
+import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
@@ -40,11 +42,21 @@ function getHomeOfficeDecisionLetter(req: Request, res: Response, next: NextFunc
   }
 }
 
-function postHomeOfficeDecisionLetter(req: Request, res: Response, next: NextFunction) {
+async function postHomeOfficeDecisionLetter(req: Request, res: Response, next: NextFunction) {
   try {
+    const dlrmInternalFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false);
     const decisionLetterUploads = req.session.appeal.application.homeOfficeLetter || [];
     if (decisionLetterUploads.length > 0) {
-      const redirectTo = req.session.appeal.application.isEdit ? paths.appealStarted.checkAndSend : paths.appealStarted.taskList;
+
+      let redirectTo = '';
+      if (req.session.appeal.application.isEdit) {
+        redirectTo = paths.appealStarted.checkAndSend;
+      } else if (dlrmInternalFeatureFlag) {
+        redirectTo = paths.appealStarted.deportationOrder;
+      } else {
+        redirectTo = paths.appealStarted.taskList;
+      }
+
       return res.redirect(redirectTo);
     } else {
       return res.redirect(`${paths.appealStarted.homeOfficeDecisionLetter}?error=noFileSelected`);

@@ -64,6 +64,10 @@ export function boolToYesNo(value: boolean) {
   return value === true ? 'Yes' : 'No';
 }
 
+export function extendedBoolToYesNo(value: boolean) {
+  return value ? 'Yes' : 'No';
+}
+
 export function yesNoToBool(answer: string): boolean {
   return answer ? answer.toLowerCase() === 'yes' : false;
 }
@@ -153,6 +157,19 @@ export function isUpdateTribunalDecideWithRule32(req: Request, ftpaSetAsideFeatu
 export function getLatestUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): HistoryEvent {
   return isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) ? req.session.appeal.history
     .filter(history => history.id === Events.UPDATE_TRIBUNAL_DECISION.id)
+    .sort((a: any, b: any) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())[0] : null;
+}
+
+export function isRemissionDecisionDecided(req: Request, refundFeatureEnabled: boolean = false): boolean {
+  return (refundFeatureEnabled &&
+    req.session.appeal.history &&
+    req.session.appeal.history.find(event => event.id === Events.RECORD_REMISSION_DECISION.id) !== undefined &&
+    !!req.session.appeal.application.remissionDecision);
+}
+
+export function getLatestUpdateRemissionDecionsEventHistory(req: Request, refundFeatureEnabled: boolean = false): HistoryEvent {
+  return isRemissionDecisionDecided(req, refundFeatureEnabled) ? req.session.appeal.history
+    .filter(history => history.id === Events.RECORD_REMISSION_DECISION.id)
     .sort((a: any, b: any) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())[0] : null;
 }
 

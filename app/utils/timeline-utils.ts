@@ -89,8 +89,7 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
 function getApplicationEvents(req: Request): any[] {
   const applicationEvents = isReadonlyApplicationEnabled(req)
         ? req.session.appeal.makeAnApplications
-        : getAppellantApplications(req.session.appeal.makeAnApplications);
-  
+        : getAppellantApplications(req.session.appeal.makeAnApplications);  
   const makeDirectionsFlatMap = applicationEvents ? applicationEvents.flatMap(application => {
     const makeAnApplicationContent = i18n.pages.overviewPage.timeline.makeAnApplication[getApplicant(application.value)];
     const request = {

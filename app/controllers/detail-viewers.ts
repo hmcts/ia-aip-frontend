@@ -8,7 +8,7 @@ import { paths } from '../paths';
 import { DocumentManagementService } from '../service/document-management-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
-import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
+import { dateTimeFormat, dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { getFee } from '../utils/payments-utils';
 import {
   appealHasNoRemissionOption,
@@ -1089,17 +1089,60 @@ function getHomeOfficeResponse(req: Request, res: Response, next: NextFunction) 
 function getHearingBundle(req: Request, res: Response, next: NextFunction) {
   try {
     const previousPage: string = paths.common.overview;
-    const hearingBundleDocuments = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'hearingBundle');
-
-    const hearingBundle = hearingBundleDocuments.shift();
-    const data = [
-      addSummaryRow(i18n.pages.detailViewers.hearingBundle.dateUploaded, [moment(hearingBundle.dateUploaded).format(dayMonthYearFormat)]),
-      addSummaryRow(i18n.pages.detailViewers.hearingBundle.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`])
-    ];
-
-    return res.render('templates/details-viewer.njk', {
-      title: i18n.pages.detailViewers.hearingBundle.title,
-      data,
+    let hearingBundles: Evidence[] = [];
+    if (req.session.appeal.hearingDocuments) {
+      hearingBundles = req.session.appeal.hearingDocuments
+        .filter(doc => doc.tag === 'hearingBundle' || doc.tag === 'updatedHearingBundle');
+    }
+    if (req.session.appeal.reheardHearingDocumentsCollection) {
+      req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {
+        if (collection.value) {
+          let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
+            .filter(doc => doc.tag === 'hearingBundle' || doc.tag === 'updatedHearingBundle');
+          hearingBundles.push(...filteredCollection);
+        }
+      });
+    }
+    let bundleData: SummaryRow[] = [];
+    let title: string;
+    let subtitle1: string | null = null;
+    let subtitle2: string | null = null;
+    hearingBundles.sort((a, b) => {
+      if (a.dateTimeUploaded && b.dateTimeUploaded) {
+        return moment(b.dateTimeUploaded).diff(moment(a.dateTimeUploaded));
+      } else {
+        return moment(b.dateUploaded).diff(moment(a.dateUploaded));
+      }
+    });
+    hearingBundles.forEach((hearingBundle: Evidence) => {
+      const dateTimeUploaded: string = hearingBundle.dateTimeUploaded
+        ? moment(hearingBundle.dateTimeUploaded).format(dateTimeFormat)
+        : moment(hearingBundle.dateUploaded).format(dayMonthYearFormat);
+      const documentLink: string = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`;
+      const summaryRows: SummaryRow[] = [
+        addSummaryRow(i18n.pages.detailViewers.hearingBundle.dateUploaded, [dateTimeUploaded]),
+        addSummaryRow(i18n.pages.detailViewers.hearingBundle.document, [documentLink])
+      ];
+      bundleData.push(...summaryRows);
+    });
+    const latestBundle: SummaryRow[] = [bundleData[0], bundleData[1]];
+    let previousBundles: SummaryRow[] = null;
+    if (bundleData.length > 2) {
+      subtitle1 = i18n.pages.detailViewers.hearingBundle.subtitle;
+      previousBundles = bundleData.slice(2);
+      subtitle2 = bundleData.length > 4
+        ? i18n.pages.detailViewers.hearingBundle.previousSubtitlePlural
+        : i18n.pages.detailViewers.hearingBundle.previousSubtitle;
+    }
+    title = bundleData.length > 2
+      ? i18n.pages.detailViewers.hearingBundle.titlePlural
+      : i18n.pages.detailViewers.hearingBundle.title;
+    return res.render('templates/details-viewer-hearing-bundles.njk', {
+      title: title,
+      subtitle1: subtitle1,
+      data1: latestBundle,
+      subtitle2: subtitle2,
+      data2: previousBundles,
       previousPage
     });
   } catch (error) {

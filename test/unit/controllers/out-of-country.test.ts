@@ -357,22 +357,34 @@ describe('Out of Country Controller', function () {
 
     it('should fail validation and render ooc-protection-departure-date.njk with a validation error with month in future', async () => {
       const currentDate = new Date();
+      const futureMonth = (currentDate.getMonth() + 1) < 12 ? (currentDate.getMonth() + 2) : 1;
+      const futureYear = (currentDate.getMonth() + 1) < 12 ? currentDate.getFullYear() : currentDate.getFullYear() + 1;
 
       req.body['day'] = 1;
-      req.body['month'] = (currentDate.getMonth() + 1) < 12 ? (currentDate.getMonth() + 2) : 1;
-      req.body['year'] = currentDate.getFullYear();
+      req.body['month'] = futureMonth;
+      req.body['year'] = futureYear;
 
-      const expectedError: ValidationError = {
+      const futureMonthError: ValidationError = {
         key: 'month',
         text: 'The date must be in the past',
         href: '#month'
       };
 
+      const futureYearError: ValidationError = {
+        key: 'year',
+        text: 'The date must be in the past',
+        href: '#year'
+      };
+
+      const expectedError = (futureMonth === 1 && futureYear === currentDate.getFullYear() + 1)
+        ? futureYearError
+        : futureMonthError;
+
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
-        error: { month: expectedError },
+        error: { [expectedError.key]: expectedError },
         errorList: [expectedError],
         dateClientLeaveUk: {
           ...req.body

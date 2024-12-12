@@ -1,0 +1,112 @@
+testUrl: https://localhost:3000
+httpProxy: false
+proxy: 
+  host: proxyout.reform.hmcts.net
+  port: 8080
+appInsights: 
+  instrumentationKey: 
+trackingScripts: false
+node: 
+  protocol: http
+  hostname: localhost
+  port: 3000
+ssl: 
+  hpkp: 
+    maxAge: 3600
+    sha256s: AbCdEf123=
+    sha256sBackup: ZyXwVu456=
+microservice: iac
+session: 
+  useRedis: true
+  useLogger: false
+  redis: 
+    url: redis://127.0.0.1:6379
+    secret: defaultsecret
+    ttlInSeconds: 1200
+  cookie: 
+    secret: defaultcookiesecret
+    maxAgeInMs: 1200000
+    secure: true
+s2s: 
+  microserviceName: S2S_MICROSERVICE_NAME
+  secret: S2S_SECRET
+  url: S2S_URL
+idam: 
+  apiUrl: IDAM_API_URL
+  webUrl: IDAM_WEB_URL
+  secret: IDAM_SECRET
+ccd: 
+  apiUrl: CCD_API_URL
+  jurisdictionId: IA
+  caseType: Asylum
+systemUser: 
+  username: IA_SYSTEM_USERNAME
+  password: IA_SYSTEM_PASSWORD
+launchDarkly: 
+  sdkKey: LAUNCH_DARKLY_SDK_KEY
+documentManagement: 
+  apiUrl: DOC_MANAGEMENT_URL
+cdamDocumentManagement: 
+  apiUrl: CASE_DOCUMENT_AM_URL
+addressLookup: 
+  token: ADDRESS_LOOKUP_TOKEN
+  url: https://api.os.uk
+saucelabs: 
+  secret: SAUCELABS_SECRET
+functionalTests: *.feature
+showTests: false
+maxCharacters: 50000
+evidenceUpload: 
+  maxFileSizeInMb: 100
+  supportedFormats: [
+    .jpg .jpeg .bmp .tif .tiff .png
+    .pdf .txt .doc .dot .docx .dotx
+    .xls .xlt .xla .xlsx .xltx .xlsb
+    .ppt .pot .pps .ppa .pptx .potx
+    .ppsx .rtf .csv
+  ]
+daysToWait: 
+  afterSubmission: 5
+  pendingPayment: 14
+  afterReasonsForAppeal: 14
+  afterCQSubmission: 7
+  outOfCountry: 28
+  fromRemissionAppliedDate: 14
+features: 
+  askForMoreTime: false
+  timelineEnabled: false
+testAccounts: 
+  testCaseOfficerUserName: TEST_CASEOFFICER_USERNAME
+  testHomeOfficeGenericUserName: TEST_HOMEOFFICE_GENERIC_USERNAME
+  testAdminOfficerUserName: TEST_ADMINOFFICER_USERNAME
+  testJudgeUserName: TEST_JUDGE_X_USERNAME
+  testLawFirmAUsername: TEST_LAW_FIRM_SHARE_CASE_A_USERNAME
+hearingCentres: 
+  bradfordEmail: IA_HEARING_CENTRE_BRADFORD_EMAIL
+  manchesterEmail: IA_HEARING_CENTRE_MANCHESTER_EMAIL
+  newportEmail: IA_HEARING_CENTRE_NEWPORT_EMAIL
+  taylorHouseEmail: IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL
+  northShieldsEmail: IA_HEARING_CENTRE_NORTH_SHIELDS_EMAIL
+  birminghamEmail: IA_HEARING_CENTRE_BIRMINGHAM_EMAIL
+  hattonCrossEmail: IA_HEARING_CENTRE_HATTON_CROSS_EMAIL
+  glasgowEmail: IA_HEARING_CENTRE_GLASGOW_EMAIL
+pcq: 
+  url: PCQ_URL
+  health: /health
+  path: /service-endpoint
+  returnUrl: PCQ_RETURN_URL
+  tokenKey: PCQ_TOKEN_KEY
+docmosis: 
+  renderUrl: DOCMOSIS_RENDER_URL
+  accessKey: DOCMOSIS_ACCESS_KEY
+  templates: 
+    noticeOfChangeDetails: TB-IAC-GNO-ENG-00804.docx
+customerServices: 
+  telephone: IA_CUSTOMER_SERVICES_TELEPHONE
+  email: IA_CUSTOMER_SERVICES_EMAIL
+refData: 
+  apiUrl: REF_DATA_API_URL
+govNotify: 
+  accessKey: GOV_NOTIFY_KEY
+  
+

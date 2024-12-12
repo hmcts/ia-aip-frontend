@@ -1,7 +1,7 @@
-testUrl: https://localhost:3000
+testUrl: 'https://localhost:3000'
 httpProxy: false
 proxy: 
-  host: proxyout.reform.hmcts.net
+  host: 'proxyout.reform.hmcts.net'
   port: 8080
 appInsights: 
   instrumentationKey: 
@@ -13,14 +13,14 @@ node:
 ssl: 
   hpkp: 
     maxAge: 3600
-    sha256s: AbCdEf123=
-    sha256sBackup: ZyXwVu456=
-microservice: iac
+    sha256s: 'AbCdEf123='
+    sha256sBackup: 'ZyXwVu456='
+microservice: 'iac'
 session: 
   useRedis: true
   useLogger: false
   redis: 
-    url: redis://127.0.0.1:6379
+    url: 'redis://127.0.0.1:6379'
     secret: defaultsecret
     ttlInSeconds: 1200
   cookie: 
@@ -50,10 +50,10 @@ cdamDocumentManagement:
   apiUrl: CASE_DOCUMENT_AM_URL
 addressLookup: 
   token: ADDRESS_LOOKUP_TOKEN
-  url: https://api.os.uk
+  url: 'https://api.os.uk'
 saucelabs: 
   secret: SAUCELABS_SECRET
-functionalTests: *.feature
+functionalTests: '*.feature'
 showTests: false
 maxCharacters: 50000
 evidenceUpload: 
@@ -92,15 +92,15 @@ hearingCentres:
   glasgowEmail: IA_HEARING_CENTRE_GLASGOW_EMAIL
 pcq: 
   url: PCQ_URL
-  health: /health
-  path: /service-endpoint
+  health: '/health'
+  path: '/service-endpoint'
   returnUrl: PCQ_RETURN_URL
   tokenKey: PCQ_TOKEN_KEY
 docmosis: 
   renderUrl: DOCMOSIS_RENDER_URL
   accessKey: DOCMOSIS_ACCESS_KEY
   templates: 
-    noticeOfChangeDetails: TB-IAC-GNO-ENG-00804.docx
+    noticeOfChangeDetails: 'TB-IAC-GNO-ENG-00804.docx'
 customerServices: 
   telephone: IA_CUSTOMER_SERVICES_TELEPHONE
   email: IA_CUSTOMER_SERVICES_EMAIL

@@ -191,6 +191,14 @@ describe('update-appeal-service', () => {
     sandbox.restore();
   });
 
+  it('should return the CcdService instance', () => {
+    expect(updateAppealService.getCcdService()).eq(ccdService);
+  });
+
+  it('should return the AuthenticationService instance', () => {
+    expect(updateAppealService.getAuthenticationService()).eq(authenticationService);
+  });
+
   describe('loadAppeal', () => {
     it('set case details', async () => {
       ccdServiceMock.expects('loadOrCreateCase')
@@ -868,6 +876,127 @@ describe('update-appeal-service', () => {
       });
     });
 
+    it('converts empty application', () => {
+      emptyApplication.draftClarifyingQuestionsAnswers = [
+        {
+          id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?',
+            directionId: 'directionId'
+          }
+        },
+        {
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Do you want to tell us anything else about your case?',
+            directionId: 'directionId'
+          }
+        }
+      ];
+
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData).to.deep.eq(
+        {
+          'journeyType': 'aip',
+          'appellantInUk': 'undefined',
+          'gwfReferenceNumber': null,
+          'remissionOption': null,
+          'asylumSupportRefNumber': null,
+          'helpWithFeesOption': null,
+          'helpWithFeesRefNumber': null,
+          'localAuthorityLetters': null,
+          'feeSupportPersisted': 'No',
+          'isHearingRoomNeeded': null,
+          'isHearingLoopNeeded': null,
+          'draftClarifyingQuestionsAnswers': [
+            {
+              'id': '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
+              'value': {
+                'dateSent': '2020-04-23',
+                'dueDate': '2020-05-07',
+                'question': 'Give us some more information about:\n- What are their ages?\n  - What are their names?',
+                'directionId': 'directionId'
+              }
+            },
+            {
+              'value': {
+                'dateSent': '2020-04-23',
+                'dueDate': '2020-05-07',
+                'question': 'Do you want to tell us anything else about your case?',
+                'directionId': 'directionId'
+              }
+            }
+          ]
+        }
+      );
+    });
+
+    it('mapToCCDCaseSponsorAddress', () => {
+      emptyApplication.application.contactDetails.wantsEmail = true;
+      emptyApplication.application.contactDetails.email = 'abc@example.net';
+      emptyApplication.application.sponsorAddress = {
+        line1: '60 GREAT PORTLAND STREET',
+        line2: '',
+        city: 'LONDON',
+        county: 'Greater London',
+        postcode: 'W1W 7RT'
+      };
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
+
+      expect(caseData).to.deep.eq(
+        {
+          'journeyType': 'aip',
+          'appellantInUk': 'undefined',
+          'gwfReferenceNumber': null,
+          'remissionOption': null,
+          'asylumSupportRefNumber': null,
+          'helpWithFeesOption': null,
+          'helpWithFeesRefNumber': null,
+          'localAuthorityLetters': null,
+          'feeSupportPersisted': 'No',
+          'refundRequested': 'No',
+          'isLateRemissionRequest': 'No',
+          'remissionDecision': null,
+          'lateRemissionOption': null,
+          'lateAsylumSupportRefNumber': null,
+          'lateHelpWithFeesOption': null,
+          'lateHelpWithFeesRefNumber': null,
+          'lateLocalAuthorityLetters': null,
+          'refundConfirmationApplied': 'No',
+          'appellantEmailAddress': 'abc@example.net',
+          'subscriptions': [
+            {
+              'value': {
+                'subscriber': 'appellant',
+                'wantsEmail': 'Yes',
+                'email': 'abc@example.net',
+                'wantsSms': 'No',
+                'mobileNumber': null
+              }
+            }
+          ],
+          'sponsorAddress': {
+            'AddressLine1': '60 GREAT PORTLAND STREET',
+            'AddressLine2': '',
+            'PostTown': 'LONDON',
+            'County': 'Greater London',
+            'PostCode': 'W1W 7RT',
+            'Country': 'United Kingdom'
+          },
+          'isHearingRoomNeeded': null,
+          'isHearingLoopNeeded': null,
+          'rpDcAppealHearingOption': null,
+          'decisionHearingFeeOption': null,
+          'paAppealTypeAipPaymentOption': null,
+          'pcqId': null
+        }
+      );
+    });
+
     it('converts time extension when no previous time extensions or current time extensions', () => {
       emptyApplication.askForMoreTime = {};
 
@@ -1293,6 +1422,39 @@ describe('update-appeal-service', () => {
       });
     });
 
+    describe('isWitnessesAttending, isAppellantAttendingTheHearing, isAppellantGivingOralEvidence, isEvidenceFromOutsideUkInCountry', () => {
+      const testData = [
+        {
+          value: 'Yes',
+          expectation: true
+        },
+        {
+          value: 'No',
+          expectation: false
+        }
+      ];
+
+      testData.forEach(({ value, expectation }) => {
+        it(`mapped value should be ${expectation}`, () => {
+          const caseData: Partial<CaseData> = {
+            'isWitnessesAttending': value as 'Yes' | 'No',
+            'isAppellantAttendingTheHearing': value as 'Yes' | 'No',
+            'isAppellantGivingOralEvidence': value as 'Yes' | 'No',
+            'isEvidenceFromOutsideUkInCountry': value as 'Yes' | 'No'
+          };
+
+          const appeal: Partial<CcdCaseDetails> = {
+            case_data: caseData as CaseData
+          };
+          const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+          expect(mappedAppeal.hearingRequirements.witnessesOnHearing).to.be.eq(expectation);
+          expect(mappedAppeal.hearingRequirements.isAppellantAttendingTheHearing).to.be.eq(expectation);
+          expect(mappedAppeal.hearingRequirements.isAppellantGivingOralEvidence).to.be.eq(expectation);
+          expect(mappedAppeal.hearingRequirements.witnessesOutsideUK).to.be.eq(expectation);
+        });
+      });
+    });
+
     describe('ftpaR35RespondentDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaR35RespondentDocument':
@@ -1655,6 +1817,50 @@ describe('update-appeal-service', () => {
     });
   });
 
+  describe('mapAdditionalEvidenceDocumentsToDocumentsCaseData', () => {
+    it('should map additional evidence documents to documents case data', () => {
+      const evidences: AdditionalEvidenceDocument[] = [
+        { fileId: '1', name: 'doc1.pdf', description: 'Document 1' },
+        { fileId: '2', name: 'doc2.pdf' } // No description provided
+      ];
+
+      const documentMap: DocumentMap[] = [
+        { id: '1', url: 'http://example.com/doc1' },
+        { id: '2', url: 'http://example.com/doc2' }
+      ];
+
+      // @ts-ignore
+      const expected: Collection<Document>[] = [
+        {
+          id: '1',
+          value: {
+            description: 'Document 1',
+            document: {
+              document_filename: 'doc1.pdf',
+              document_url: 'http://example.com/doc1',
+              document_binary_url: 'http://example.com/doc1/binary'
+            }
+          }
+        },
+        {
+          id: '2',
+          value: {
+            description: 'additionalEvidenceDocument',
+            document: {
+              document_filename: 'doc2.pdf',
+              document_url: 'http://example.com/doc2',
+              document_binary_url: 'http://example.com/doc2/binary'
+            }
+          }
+        }
+      ];
+
+      const result = updateAppealService.mapAdditionalEvidenceDocumentsToDocumentsCaseData(evidences, documentMap);
+
+      expect(result).to.be.length(2);
+    });
+  });
+
   describe('submitEvent', () => {
     let expectedCaseData: Partial<CaseData>;
     let ccdService2: Partial<CcdService>;
@@ -1760,7 +1966,8 @@ describe('update-appeal-service', () => {
                 'description': 'Some evidence 1',
                 'tag': 'additionalEvidence'
               }],
-              remissionDecision: 'approved'
+              remissionDecision: 'approved',
+              deportationOrderOptions: 'Yes'
             } as AppealApplication,
             reasonsForAppeal: {
               applicationReason: 'I\'ve decided to appeal because ...',
@@ -1887,6 +2094,8 @@ describe('update-appeal-service', () => {
         'sponsorGivenNames': 'ABC XYZ',
         'sponsorFamilyName': 'ABC XYZ',
         'sponsorNameForDisplay': 'ABC XYZ',
+        'sponsorAuthorisation': 'ABC XYZ',
+        'deportationOrderOptions': 'Yes',
         'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
         'reasonsForAppealDocuments': [
           {
@@ -2334,6 +2543,114 @@ describe('update-appeal-service', () => {
       it('should map docs to reheard hearing bundle documents', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
         expect(mappedAppeal.reheardHearingDocumentsCollection).to.be.length(2);
+      });
+    });
+
+    describe('isHearingRoomNeeded', () => {
+      const testData = [
+        {
+          value: 'Yes',
+          expectation: true
+        },
+        {
+          value: 'No',
+          expectation: false
+        }
+      ];
+
+      testData.forEach(({ value, expectation }) => {
+        it(`mapped value should be ${expectation}`, () => {
+          const caseData: Partial<CaseData> = {
+            'isHearingRoomNeeded': value as 'Yes' | 'No'
+          };
+
+          const appeal: Partial<CcdCaseDetails> = {
+            case_data: caseData as CaseData
+          };
+          const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+          expect(mappedAppeal.hearingRequirements.isHearingRoomNeeded).to.be.eq(expectation);
+        });
+      });
+    });
+
+    describe('isHearingLoopNeeded', () => {
+      const testData = [
+        {
+          value: 'Yes',
+          expectation: true
+        },
+        {
+          value: 'No',
+          expectation: false
+        }
+      ];
+
+      testData.forEach(({ value, expectation }) => {
+        it(`mapped value should be ${expectation}`, () => {
+          const caseData: Partial<CaseData> = {
+            'isHearingLoopNeeded': value as 'Yes' | 'No'
+          };
+
+          const appeal: Partial<CcdCaseDetails> = {
+            case_data: caseData as CaseData
+          };
+          const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+          expect(mappedAppeal.hearingRequirements.isHearingLoopNeeded).to.be.eq(expectation);
+        });
+      });
+    });
+
+    describe('isDecisionAllowed', () => {
+      it(`isDecisionAllowed value should be mapped`, () => {
+        const caseData: Partial<CaseData> = {
+          'isDecisionAllowed': 'Allowed'
+        };
+
+        const appeal: Partial<CcdCaseDetails> = {
+          case_data: caseData as CaseData
+        };
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.isDecisionAllowed).to.be.eq('Allowed');
+      });
+
+    });
+
+    describe('mapToCCDDatesToAvoid', () => {
+      const caseData: Partial<CaseData> = {
+        'datesToAvoidYesNo': 'Yes',
+        datesToAvoid: [{
+          value: {
+            dateToAvoid: '2024-10-30',
+            dateToAvoidReason: 'Medical appointment'
+          }
+        }, {
+          value: { dateToAvoid: '2024-11-05',
+            dateToAvoidReason: 'Family event' }
+        }]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+
+      it('should map dates to avoid correctly when dates are provided', () => {
+        updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(caseData.datesToAvoidYesNo).eq('Yes');
+        expect(caseData.datesToAvoid).to.be.eql([
+          {
+            value: {
+              dateToAvoid: '2024-10-30',
+              dateToAvoidReason: 'Medical appointment'
+            }
+          },
+          {
+            value: {
+              dateToAvoid: '2024-11-05',
+              dateToAvoidReason: 'Family event'
+            }
+          }
+        ]);
       });
     });
 

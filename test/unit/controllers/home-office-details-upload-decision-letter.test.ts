@@ -8,8 +8,10 @@ import {
   uploadHomeOfficeDecisionLetter,
   validate
 } from '../../../app/controllers/appeal-application/home-office-details-upload-decision-letter';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { createStructuredError } from '../../../app/utils/validations/fields-validations';
@@ -132,14 +134,25 @@ describe('Home office decision letter', function () {
 
   describe('postHomeOfficeDecisionLetter', () => {
     it('should redirect to \'/home-office-upload-decision-letter\' if no home office letter upload', async () => {
-      postHomeOfficeDecisionLetter(req as Request, res as Response, next);
+      await postHomeOfficeDecisionLetter(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(`${paths.appealStarted.homeOfficeDecisionLetter}?error=noFileSelected`);
     });
 
-    it('should redirect to \'/about-appeal\' if home office letter upload present and not in editing mode', async () => {
+    it('should redirect to \'/deportation-order\' if home office letter upload present and not in editing mode', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false).resolves(true);
+
       req.session.appeal.application.homeOfficeLetter = [{ fileId: 'id', name: 'name' } as Evidence];
-      postHomeOfficeDecisionLetter(req as Request, res as Response, next);
+      await postHomeOfficeDecisionLetter(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.deportationOrder);
+    });
+
+    it('should redirect to \'/about-appeal\' if dlrm-internal flag is switched off', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false).resolves(false);
+
+      req.session.appeal.application.homeOfficeLetter = [{ fileId: 'id', name: 'name' } as Evidence];
+      await postHomeOfficeDecisionLetter(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
     });
@@ -147,7 +160,7 @@ describe('Home office decision letter', function () {
     it('should redirect to \'/check-answers\' if home office letter upload present and in editing mode', async () => {
       req.session.appeal.application.isEdit = true;
       req.session.appeal.application.homeOfficeLetter = [{ fileId: 'id', name: 'name' } as Evidence];
-      postHomeOfficeDecisionLetter(req as Request, res as Response, next);
+      await postHomeOfficeDecisionLetter(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
@@ -157,7 +170,7 @@ describe('Home office decision letter', function () {
       res.redirect = sandbox.stub().throws(error);
       req.session.appeal.application.isEdit = true;
       req.session.appeal.application.homeOfficeLetter = [{ fileId: 'id', name: 'name' } as Evidence];
-      postHomeOfficeDecisionLetter(req as Request, res as Response, next);
+      await postHomeOfficeDecisionLetter(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledOnce.calledWith(error);
     });

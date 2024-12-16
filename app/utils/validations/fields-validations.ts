@@ -29,8 +29,8 @@ function validate(obj: object, schema: any, abortEarly: boolean = false): Valida
   const result = schema.validate(obj, { abortEarly });
   if (result.error) {
     return result.error.details.reduce((acc, curr): ValidationError => {
-      const key = curr.context.key || (curr.context.peers ? curr.context.peers.join('-') : curr.context.peers);
-      const href = curr.context.key || (curr.context.peers ? curr.context.peers[0] : curr.context.peers);
+      const key = curr.context.key || (curr.context.peers ? curr.context.peers.join('-') : curr.context.peers) || (curr.context.details[0].context.key);
+      const href = curr.context.key || (curr.context.peers ? curr.context.peers[0] : curr.context.peers) || (curr.context.details[0].context.key);
       acc[key] = {
         key: key,
         text: curr.message,
@@ -119,6 +119,8 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
   const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
     moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';
 
+  const currentDate = new Date();
+
   const toValidate = {
     ...obj,
     date
@@ -130,6 +132,14 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
       'number.integer': errors.incorrectFormat,
       'number.min': errors.incorrectFormat,
       'number.max': errors.incorrectFormat
+    }).custom((value, helpers) => {
+      if ((date === 'invalid Date') && (!isNaN(Number(day)) && !isNaN(Number(month)) && !isNaN(Number(year))) && (year <= currentDate.getFullYear()) && (month > 0) && (month < 13)) {
+        return helpers.message(errors.incorrectFormat);
+      }
+      if ((value > currentDate.getDate()) && (Number(year) === currentDate.getFullYear()) && (Number(month) === (currentDate.getMonth() + 1))) {
+        return helpers.message(errors.inPast);
+      }
+      return value;
     }),
     month: Joi.number().empty('').required().integer().min(1).max(12).required().messages({
       'any.required': errors.missing,
@@ -137,15 +147,20 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
       'number.integer': errors.incorrectFormat,
       'number.min': errors.incorrectFormat,
       'number.max': errors.incorrectFormat
+    }).custom((value, helpers) => {
+      if ((Number(value) > (currentDate.getMonth() + 1)) && (Number(year) === currentDate.getFullYear())) {
+        return helpers.message(errors.inPast);
+      }
+      return value;
     }),
-    year: Joi.number().empty('').required().integer().min(1900).required().messages({
+    year: Joi.number().empty('').required().integer().min(1900).max(currentDate.getFullYear()).required().messages({
       'any.required': errors.missing,
       'number.base': errors.incorrectFormat,
       'number.integer': errors.incorrectFormat,
-      'number.min': errors.incorrectFormat
+      'number.min': errors.incorrectFormat,
+      'number.max': errors.inPast
     }),
-    date: Joi.date().less('now').messages({
-      'date.less': errors.inPast,
+    date: Joi.date().messages({
       'date.base': errors.incorrectFormat
     })
   }).unknown(true);
@@ -257,9 +272,9 @@ function interpreterLanguageSelectionValidation(obj: object) {
 
 function contactDetailsValidation(obj: object) {
   const schema = Joi.object({
-    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.contactDetails.selectOneOption }),
+    contactDetails: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.contactDetails.selectOneOption }),
     'email-value': Joi.alternatives().conditional(
-      'selections', {
+      'contactDetails', {
       is: Joi.string().regex(/email/),
       then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
         .email({ minDomainSegments: 2, allowUnicode: false }).messages({
@@ -269,7 +284,7 @@ function contactDetailsValidation(obj: object) {
       otherwise: Joi.any()
     }),
     'text-message-value': Joi.alternatives().conditional(
-      'selections', {
+      'contactDetails', {
       is: Joi.string().regex(/text-message/),
       then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
         .messages({
@@ -280,7 +295,6 @@ function contactDetailsValidation(obj: object) {
       otherwise: Joi.any()
     })
   }).unknown();
-
   return validate(obj, schema);
 }
 
@@ -496,9 +510,9 @@ function sponsorAddressValidation(obj: object): null | ValidationErrors {
 
 function sponsorContactDetailsValidation(obj: object) {
   const schema = Joi.object({
-    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorContactDetails.selectOneOption }),
+    sponsorContactDetails: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorContactDetails.selectOneOption }),
     'email-value': Joi.alternatives().conditional(
-        'selections', {
+        'sponsorContactDetails', {
           is: Joi.string().regex(/email/),
           then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
               .email({ minDomainSegments: 2, allowUnicode: false }).messages({
@@ -508,7 +522,7 @@ function sponsorContactDetailsValidation(obj: object) {
           otherwise: Joi.any()
         }),
     'text-message-value': Joi.alternatives().conditional(
-        'selections', {
+        'sponsorContactDetails', {
           is: Joi.string().regex(/text-message/),
           then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164').defaultCountry('GB')
               .messages({
@@ -613,6 +627,16 @@ function helpWithFeesRefNumberValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function deportationOrderOptionsValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.deportationOrder
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
 export {
   createStructuredError,
   contactDetailsValidation,
@@ -658,5 +682,6 @@ export {
   remissionOptionsValidation,
   asylumSupportValidation,
   helpWithFeesValidation,
-  helpWithFeesRefNumberValidation
+  helpWithFeesRefNumberValidation,
+  deportationOrderOptionsValidation
 };

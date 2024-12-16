@@ -340,6 +340,7 @@ interface AppealApplication {
   manageFeeRequestedAmount?: string;
   paidAmount?: string;
   refundConfirmationApplied?: boolean;
+  deportationOrderOptions?: string;
 }
 
 interface CmaRequirements {

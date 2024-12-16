@@ -355,6 +355,102 @@ describe('Out of Country Controller', function () {
       });
     });
 
+    it('should fail validation and render ooc-protection-departure-date.njk with a validation error with month in future', async () => {
+      const currentDate = new Date();
+      const futureMonth = (currentDate.getMonth() + 1) < 12 ? (currentDate.getMonth() + 2) : 1;
+      const futureYear = (currentDate.getMonth() + 1) < 12 ? currentDate.getFullYear() : currentDate.getFullYear() + 1;
+
+      req.body['day'] = 1;
+      req.body['month'] = futureMonth;
+      req.body['year'] = futureYear;
+
+      const futureMonthError: ValidationError = {
+        key: 'month',
+        text: 'The date must be in the past',
+        href: '#month'
+      };
+
+      const futureYearError: ValidationError = {
+        key: 'year',
+        text: 'The date must be in the past',
+        href: '#year'
+      };
+
+      const expectedError = (futureMonth === 1 && futureYear === currentDate.getFullYear() + 1)
+        ? futureYearError
+        : futureMonthError;
+
+      await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
+        error: { [expectedError.key]: expectedError },
+        errorList: [expectedError],
+        dateClientLeaveUk: {
+          ...req.body
+        },
+        previousPage: paths.appealStarted.typeOfAppeal
+      });
+    });
+
+    it('should fail validation and render ooc-protection-departure-date.njk with a validation error with day in future', async () => {
+      const currentDate = new Date();
+
+      let tomorrowDate = new Date();
+      tomorrowDate.setDate(currentDate.getDate() + 1);
+
+      req.body['day'] = tomorrowDate.getDate();
+      req.body['month'] = tomorrowDate.getMonth() + 1;
+      req.body['year'] = tomorrowDate.getFullYear();
+
+      const expectedError: ValidationError = {
+        key: 'day',
+        text: 'The date must be in the past',
+        href: '#day'
+      };
+
+      await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
+        error: { day: expectedError },
+        errorList: [expectedError],
+        dateClientLeaveUk: {
+          ...req.body
+        },
+        previousPage: paths.appealStarted.typeOfAppeal
+      });
+    });
+
+    it('should fail validation and render ooc-protection-departure-date.njk with a validation error with invalid date', async () => {
+      const currentDate = new Date();
+
+      let tomorrowDate = new Date();
+      tomorrowDate.setDate(currentDate.getDate() + 1);
+
+      req.body['day'] = 31;
+      req.body['month'] = 4;
+      req.body['year'] = 2024;
+
+      const expectedError: ValidationError = {
+        key: 'day',
+        text: 'Enter the date in the correct format',
+        href: '#day'
+      };
+
+      await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
+        error: { day: expectedError },
+        errorList: [expectedError],
+        dateClientLeaveUk: {
+          ...req.body
+        },
+        previousPage: paths.appealStarted.typeOfAppeal
+      });
+    });
+
     it('postOocProtectionDepartureDate should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'dateClientLeaveUk': undefined };

@@ -271,6 +271,7 @@ interface CaseData {
   sourceOfRemittal?: string;
   remittalDocuments: Collection<CcdRemittalDetails>[];
   refundConfirmationApplied?: string;
+  deportationOrderOptions?: string;
 }
 
 interface Application<T> {

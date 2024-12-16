@@ -203,6 +203,42 @@ function getListCaseEvent(req: Request): any[] {
         });
 }
 
+function getAsyncStitchingEvent(req: Request): any[] {
+  let hearingBundles: Evidence[] = [];
+  let hearingBundleTags: string[] = ['hearingBundle', 'updatedHearingBundle'];
+  if (req.session.appeal.hearingDocuments) {
+    hearingBundles = req.session.appeal.hearingDocuments.filter((doc: Evidence) => hearingBundleTags.includes(doc.tag));
+  }
+  if (req.session.appeal.reheardHearingDocumentsCollection) {
+    req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {
+      if (collection.value) {
+        let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
+          .filter(doc => hearingBundleTags.includes(doc.tag));
+        hearingBundles.push(...filteredCollection);
+      }
+    });
+  }
+
+  return hearingBundles
+    .map(hearingBundle => {
+      const textForTimeline: string = hearingBundle.tag === 'updatedHearingBundle'
+        ? i18n.pages.overviewPage.timeline.asyncStitchingComplete.textForUpdateBundle
+        : i18n.pages.overviewPage.timeline.asyncStitchingComplete.text;
+      return {
+        date: moment(hearingBundle.dateUploaded).format('DD MMMM YYYY'),
+        dateTimeObject: new Date(hearingBundle.dateTimeUploaded),
+        dateObject: new Date(hearingBundle.dateUploaded),
+        text: textForTimeline,
+        links: [{
+          ...i18n.pages.overviewPage.timeline.asyncStitchingComplete.links[0],
+          href: paths.common.hearingBundleViewer
+        }]
+      };
+    })
+    .sort((a: any, b: any) => b.dateObject - a.dateObject)
+    .sort((a: any, b: any) => b.dateTimeObject - a.dateTimeObject);
+}
+
 function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
   let latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
 
@@ -286,6 +322,10 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const listCaseEvent = getListCaseEvent(req);
   appealHearingRequirementsSection = appealHearingRequirementsSection.concat(listCaseEvent)
         .sort((a: any, b: any) => b.dateObject - a.dateObject);
+  const asyncStitchingEvent = getAsyncStitchingEvent(req);
+  appealHearingRequirementsSection = appealHearingRequirementsSection.concat(asyncStitchingEvent)
+    .sort((a: any, b: any) => b.dateObject - a.dateObject);
+
   const appealArgumentSection = constructSection(
         eventsAndStates.appealArgumentSectionEvents,
         req.session.appeal.history.filter(event => !isUploadEvidenceEventByLegalRep(req, event)),
@@ -488,6 +528,7 @@ function filterEventsForHearingRequirementsSection(req: Request) {
     Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
     Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
     Events.RECORD_ADJOURNMENT_DETAILS.id,
+    Events.STITCHING_BUNDLE_COMPLETE.id,
     Events.LIST_CASE.id
   ];
 
@@ -506,6 +547,7 @@ export {
     getUpdateTribunalDecisionDocumentHistory,
     constructSection,
     getEventsAndStates,
+    getAsyncStitchingEvent,
     filterEventsForHearingRequirementsSection,
     getListCaseEvent
 };

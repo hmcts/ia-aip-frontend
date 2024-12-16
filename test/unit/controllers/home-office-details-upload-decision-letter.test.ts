@@ -149,6 +149,8 @@ describe('Home office decision letter', function () {
     });
 
     it('should redirect to \'/about-appeal\' if dlrm-internal flag is switched off', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false).resolves(false);
+
       req.session.appeal.application.homeOfficeLetter = [{ fileId: 'id', name: 'name' } as Evidence];
       await postHomeOfficeDecisionLetter(req as Request, res as Response, next);
 

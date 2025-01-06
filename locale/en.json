@@ -1316,7 +1316,8 @@
           "appealRemissionSection": "Your appeal details"
         },
         "asyncStitchingComplete": {
-          "text": "The hearing bundle is ready to view.",
+          "text": "A hearing bundle is ready to view.",
+          "textForUpdateBundle": "An updated hearing bundle is ready to view.",
           "links": [
             {
               "title": "Useful documents",
@@ -2099,8 +2100,12 @@
         "title": "Notice of Adjourned Hearing"
       },
       "hearingBundle": {
-        "title": "Hearing Bundle",
-        "dateUploaded": "Date uploaded",
+        "title": "Hearing bundle",
+        "titlePlural": "Hearing bundles",
+        "subtitle": "Hearing bundle",
+        "previousSubtitle": "Previous hearing bundle",
+        "previousSubtitlePlural": "Previous hearing bundles",
+        "dateUploaded": "Uploaded on",
         "document": "Document"
       },
       "decisionsAndReasons": {

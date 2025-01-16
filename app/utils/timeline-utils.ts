@@ -56,7 +56,7 @@ function constructEventObject(event: HistoryEvent, req: Request) {
   if (event.id === Events.RECORD_OUT_OF_TIME_DECISION.id) {
     eventObject.text = i18n.pages.overviewPage.timeline[event.id].type[req.session.appeal.outOfTimeDecisionType];
   }
-  if (event.id === Events.REQUEST_RESPONSE_REVIEW.id) {
+  if (event.id === Events.REQUEST_RESPONSE_REVIEW.id && i18n.pages.overviewPage.timeline[event.id].status[req.session.appeal.appealReviewOutcome]) {
     eventObject.links[0].text = i18n.pages.overviewPage.timeline[event.id].status[req.session.appeal.appealReviewOutcome].text;
     eventObject.links[0].href = i18n.pages.overviewPage.timeline[event.id].status[req.session.appeal.appealReviewOutcome].href;
   }

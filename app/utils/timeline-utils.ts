@@ -145,7 +145,7 @@ function getDirectionHistory(req: Request): any[] {
     return (req.session.appeal.directions || [])
             .filter(direction => (
                 direction.directionType === 'sendDirection'
-                && (direction.parties === 'appellant' || direction.parties === 'respondent')))
+                && (direction.parties === 'appellant' || direction.parties === 'respondent' || direction.parties === 'appellantAndRespondent')))
             .map(direction => {
               return {
                 date: moment(direction.dateSent).format('DD MMMM YYYY'),

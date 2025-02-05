@@ -149,7 +149,7 @@ function getDirectionHistory(req: Request): any[] {
       ))
       .flatMap(direction => {
         if (direction.parties === 'appellantAndRespondent') {
-          return ['appellant', 'respondent'].map(party => ({
+          return ['respondent', 'appellant'].map(party => ({
             date: moment(direction.dateSent).format('DD MMMM YYYY'),
             dateObject: new Date(direction.dateSent),
             text: i18n.pages.overviewPage.timeline.sendDirection[party].text || null,

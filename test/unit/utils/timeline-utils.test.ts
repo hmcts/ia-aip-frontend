@@ -713,7 +713,7 @@ describe('timeline-utils', () => {
       ];
       const directionsHistory = getDirectionHistory(req as Request);
 
-      expect(directionsHistory.length).to.be.eql(2);
+      expect(directionsHistory.length).to.be.eql(4);
       directionsHistory.forEach(direction => {
         expect(direction).to.contain.keys('date', 'dateObject', 'text', 'links');
       });
@@ -773,7 +773,7 @@ describe('timeline-utils', () => {
         }
       ];
       const directionsHistory = getDirectionHistory(req as Request);
-      expect(directionsHistory.length).to.be.eql(3);
+      expect(directionsHistory.length).to.be.eql(5);
       directionsHistory.forEach(direction => {
         expect(direction).to.contain.keys('date', 'dateObject', 'text', 'links');
       });

@@ -141,25 +141,22 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
 }
 
 function getDirectionHistory(req: Request): any[] {
-  if (isNonStandardDirectionEnabled(req)) {
-    return (req.session.appeal.directions || [])
-            .filter(direction => (
-                direction.directionType === 'sendDirection'
-                && (direction.parties === 'appellant' || direction.parties === 'respondent')))
-            .map(direction => {
-              return {
-                date: moment(direction.dateSent).format('DD MMMM YYYY'),
-                dateObject: new Date(direction.dateSent),
-                text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
-                links: [{
-                  ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
-                  href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
-                }]
-              };
-            });
-  } else {
-    return [];
-  }
+  if (!isNonStandardDirectionEnabled(req)) return [];
+
+  return (req.session.appeal.directions || [])
+    .filter(direction => direction.directionType === 'sendDirection')
+    .flatMap(direction => {
+      const parties = direction.parties === 'appellantAndRespondent' ? ['appellant', 'respondent'] : [direction.parties];
+      return parties.map(party => ({
+        date: moment(direction.dateSent).format('DD MMMM YYYY'),
+        dateObject: new Date(direction.dateSent),
+        text: i18n.pages.overviewPage.timeline.sendDirection[party]?.text || null,
+        links: [{
+          ...i18n.pages.overviewPage.timeline.sendDirection[party]?.links[0],
+          href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
+        }]
+      }));
+    });
 }
 
 function getListCaseEvent(req: Request): any[] {

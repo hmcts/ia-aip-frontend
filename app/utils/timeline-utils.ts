@@ -148,25 +148,34 @@ function getDirectionHistory(req: Request): any[] {
         (direction.parties === 'appellant' || direction.parties === 'respondent' || direction.parties === 'appellantAndRespondent')
       ))
       .flatMap(direction => {
-        const parties = direction.parties === 'appellantAndRespondent' ? ['respondent', 'appellant'] : [direction.parties];
-
-        return parties.map(party => {
-          const partyData = i18n.pages.overviewPage.timeline.sendDirection[party] || {};
-          const linkData = partyData.links ? partyData.links[0] : null;
-
-          return {
+        if (direction.parties === 'appellantAndRespondent') {
+          return ['respondent', 'appellant'].map(party => ({
             date: moment(direction.dateSent).format('DD MMMM YYYY'),
             dateObject: new Date(direction.dateSent),
-            text: partyData.text || null,
-            links: linkData
-              ? [{...linkData, href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
-              }]
-              : []
-          };
-        });
+            text: i18n.pages.overviewPage.timeline.sendDirection[party].text || null,
+            links: [
+              {
+                ...i18n.pages.overviewPage.timeline.sendDirection[party].links[0],
+                href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
+              }
+            ]
+          }));
+        }
+        return [{
+          date: moment(direction.dateSent).format('DD MMMM YYYY'),
+          dateObject: new Date(direction.dateSent),
+          text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
+          links: [
+            {
+              ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
+              href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
+            }
+          ]
+        }];
       });
+  } else {
+    return [];
   }
-  return [];
 }
 
 function getListCaseEvent(req: Request): any[] {

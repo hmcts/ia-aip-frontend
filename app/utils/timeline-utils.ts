@@ -156,7 +156,7 @@ function getDirectionHistory(req: Request): any[] {
             links: [
               {
                 ...i18n.pages.overviewPage.timeline.sendDirection[party].links[0],
-                href: paths.common.directionHistoryViewer.replace(':id', `${direction.uniqueId}-${party}`)
+                href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
               }
             ]
           }));

@@ -264,7 +264,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
       await addPreviousRemissionDetails(req, application, feeHistoryRows);
     }
   } else {
-    if (['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
+    if (!['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
       const { paymentStatus = null, feeAmountGbp = null, newFeeAmount = null } = req.session.appeal;
       const fee = getFee(req.session.appeal);
       if (application.feeUpdateTribunalAction) {

@@ -1341,19 +1341,30 @@ function attachFtpaDocuments(documents: Evidence[], documentCollection, docLabel
 
 function getDirectionHistory(req: Request, res: Response, next: NextFunction) {
   if (req.session.appeal.directions && req.params.id) {
-    let direction: Direction = req.session.appeal.directions.find(direction => (req.params.id === direction.uniqueId));
+    const match = req.params.id.match(/^(.*?)(?:-(appellant|respondent))?$/);
+    const baseUniqueId = match ? match[1] : req.params.id;
+    const partyType = match ? match[2] : null;
+
+    let direction: Direction = req.session.appeal.directions.find(
+      direction => direction.uniqueId === baseUniqueId
+    );
 
     if (direction) {
-      if (direction.parties === 'appellantAndRespondent') {
-        getAppellantDirectionHistoryDetails(req, res, next, direction);
-        return getRespondentDirectionHistoryDetails(req, res, next, direction);
-      } else if (direction.parties === APPLICANT_TYPE.APPELLANT) {
+      if (partyType === 'appellant') {
         return getAppellantDirectionHistoryDetails(req, res, next, direction);
-      } else if (direction.parties === APPLICANT_TYPE.RESPONDENT) {
+      } else if (partyType === 'respondent') {
         return getRespondentDirectionHistoryDetails(req, res, next, direction);
+      } else {
+        if (direction.parties === APPLICANT_TYPE.APPELLANT) {
+          return getAppellantDirectionHistoryDetails(req, res, next, direction);
+        } else if (direction.parties === APPLICANT_TYPE.RESPONDENT) {
+          return getRespondentDirectionHistoryDetails(req, res, next, direction);
+        }
       }
     }
   }
+
+  res.status(404).send('Direction not found.');
 }
 
 function getAppellantDirectionHistoryDetails(req: Request, res: Response, next: NextFunction, direction: Direction) {

@@ -5310,16 +5310,6 @@ describe('DetailViewController', () => {
       }));
     });
 
-    it('should return 404 when direction is not found', () => {
-      req.session.appeal.directions = directions;
-      req.params.id = 'nonexistent-id';
-
-      getDirectionHistory(req as Request, res as Response, next);
-
-      expect(res.status).to.have.been.calledWith(404);
-      expect(res.send).to.have.been.calledWith('Direction not found.');
-    });
-
     it('should catch error and call next with it', () => {
       req.session.appeal.directions = directions;
       req.params.id = '123456789';

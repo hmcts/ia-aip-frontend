@@ -1363,8 +1363,6 @@ function getDirectionHistory(req: Request, res: Response, next: NextFunction) {
       }
     }
   }
-
-  res.status(404).send('Direction not found.');
 }
 
 function getAppellantDirectionHistoryDetails(req: Request, res: Response, next: NextFunction, direction: Direction) {

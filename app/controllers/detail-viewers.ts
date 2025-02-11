@@ -274,7 +274,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
     }
   }
-  
+
   return {
     aboutAppealRows,
     personalDetailsRows,

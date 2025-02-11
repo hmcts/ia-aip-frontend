@@ -9,6 +9,7 @@ import { DocumentManagementService } from '../service/document-management-servic
 import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dateTimeFormat, dayMonthYearFormat, formatDate } from '../utils/date-utils';
+import Logger, { getLogLabel } from '../utils/logger';
 import { getFee } from '../utils/payments-utils';
 import {
   appealHasNoRemissionOption,
@@ -30,6 +31,9 @@ import {
   toHtmlLink,
   toIsoDate
 } from '../utils/utils';
+
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
@@ -263,15 +267,18 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     if (application.previousRemissionDetails) {
       await addPreviousRemissionDetails(req, application, feeHistoryRows);
     }
-  } else if (!['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
-    const { paymentStatus = null, feeAmountGbp = null, newFeeAmount = null } = req.session.appeal;
-    const fee = getFee(req.session.appeal);
-    if (application.feeUpdateTribunalAction) {
-      feeDetailsRows.push(newFeeAmount ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [calculateAmountToPounds(newFeeAmount)]) : null);
-      addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, feeAmountGbp, null);
-    } else if (appealHasNoRemissionOption(application)) {
-      feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+  } else {
+    logger.trace('Appeal type: ' + application.appealType, logLabel);
+    if (['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
+      const { paymentStatus = null, feeAmountGbp = null, newFeeAmount = null } = req.session.appeal;
+      const fee = getFee(req.session.appeal);
+      if (application.feeUpdateTribunalAction) {
+        feeDetailsRows.push(newFeeAmount ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [calculateAmountToPounds(newFeeAmount)]) : null);
+        addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, feeAmountGbp, null);
+      } else if (appealHasNoRemissionOption(application)) {
+        feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+      }
     }
   }
 

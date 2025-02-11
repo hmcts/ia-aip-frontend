@@ -263,17 +263,15 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     if (application.previousRemissionDetails) {
       await addPreviousRemissionDetails(req, application, feeHistoryRows);
     }
-  } else {
-    if (!['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
-      const { paymentStatus = null, feeAmountGbp = null, newFeeAmount = null } = req.session.appeal;
-      const fee = getFee(req.session.appeal);
-      if (application.feeUpdateTribunalAction) {
-        feeDetailsRows.push(newFeeAmount ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [calculateAmountToPounds(newFeeAmount)]) : null);
-        addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, feeAmountGbp, null);
-      } else if (appealHasNoRemissionOption(application)) {
-        feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
-      }
+  } else if (!['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
+    const { paymentStatus = null, feeAmountGbp = null, newFeeAmount = null } = req.session.appeal;
+    const fee = getFee(req.session.appeal);
+    if (application.feeUpdateTribunalAction) {
+      feeDetailsRows.push(newFeeAmount ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [calculateAmountToPounds(newFeeAmount)]) : null);
+      addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, feeAmountGbp, null);
+    } else if (appealHasNoRemissionOption(application)) {
+      feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
     }
   }
 

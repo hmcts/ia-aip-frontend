@@ -9,7 +9,6 @@ import { DocumentManagementService } from '../service/document-management-servic
 import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dateTimeFormat, dayMonthYearFormat, formatDate } from '../utils/date-utils';
-import Logger, { getLogLabel } from '../utils/logger';
 import { getFee } from '../utils/payments-utils';
 import {
   appealHasNoRemissionOption,
@@ -31,9 +30,6 @@ import {
   toHtmlLink,
   toIsoDate
 } from '../utils/utils';
-
-const logger: Logger = new Logger();
-const logLabel: string = getLogLabel(__filename);
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
@@ -248,39 +244,6 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     ...(application.contactDetails.wantsEmail ? [application.contactDetails.email] : []),
     ...(application.contactDetails.wantsSms ? [application.contactDetails.phone] : [])
   ], null, Delimiter.BREAK_LINE));
-
-  // fee section
-  if (appealHasRemissionOption(application)) {
-    await addPaymentDetails(req, application, feeDetailsRows);
-    if (application.remissionOption === 'asylumSupportFromHo') {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [application.asylumSupportRefNumber], null));
-    } else if (application.remissionOption === 'feeWaiverFromHo') {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, ['Home Office fee waiver'], null));
-    } else if (application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') {
-      const localAuthorityLetterDocs = application.localAuthorityLetters.map(doc => {
-        return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
-      });
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
-    } else if (application.remissionOption === 'noneOfTheseStatements' || application.remissionOption === 'iWantToGetHelpWithFees') {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [application.helpWithFeesRefNumber], null));
-    }
-    if (application.previousRemissionDetails) {
-      await addPreviousRemissionDetails(req, application, feeHistoryRows);
-    }
-  } else {
-    logger.trace('Appeal type: ' + application.appealType, logLabel);
-    if (['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
-      const { paymentStatus = null, feeAmountGbp = null, newFeeAmount = null } = req.session.appeal;
-      const fee = getFee(req.session.appeal);
-      if (application.feeUpdateTribunalAction) {
-        feeDetailsRows.push(newFeeAmount ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [calculateAmountToPounds(newFeeAmount)]) : null);
-        addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, feeAmountGbp, null);
-      } else if (appealHasNoRemissionOption(application)) {
-        feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
-      }
-    }
-  }
 
   return {
     aboutAppealRows,

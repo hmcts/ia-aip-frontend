@@ -2480,6 +2480,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/trusted-types@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "@types/trusted-types@npm:2.0.7"
+  checksum: 8e4202766a65877efcf5d5a41b7dd458480b36195e580a3b1085ad21e948bc417d55d6f8af1fd2a7ad008015d4117d5fdfe432731157da3c68678487174e4ba3
+  languageName: node
+  linkType: hard
+
 "@types/uuid@npm:8.3.4":
   version: 8.3.4
   resolution: "@types/uuid@npm:8.3.4"
@@ -5943,10 +5950,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:^2.2.9":
-  version: 2.2.9
-  resolution: "dompurify@npm:2.2.9"
-  checksum: a7a8332ac7984c772176523fb239364873e70c3df62c9c16427851caaece04ee888d165cf89c8f25a94f59a9cf812e0a3f6dee5f4127d3ca593381d1bc74e53a
+"dompurify@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "dompurify@npm:3.2.4"
+  dependencies:
+    "@types/trusted-types": ^2.0.7
+  dependenciesMeta:
+    "@types/trusted-types":
+      optional: true
+  checksum: 7a299cbbfe3b3d189e5fc77ab94ad312807e37fda1e24a927548b76a58a9c98137e612ce8d94a2f6cd3d3db59844f14fca477676b5eae6103568a82142771df6
   languageName: node
   linkType: hard
 
@@ -8175,7 +8187,7 @@ __metadata:
     css-loader: ^3.6.0
     csurf: ^1.11.0
     cucumber: ^6.0.3
-    dompurify: ^2.2.9
+    dompurify: ^3.2.4
     dotenv-extended: ^2.9.0
     dyson: ^3.0.4
     expect-ct: ^0.3.0

@@ -1,25 +1,18 @@
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const TerserJSPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const commonConfig = require('./webpack.common');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const { serverConfig, clientConfig } = require('./webpack.common.js');
 
-const serverConfig = {
-  mode: "production"
-};
+const prodServerConfig = merge(serverConfig, {
+    mode: "production",
+});
 
-const clientConfig = {
-        mode: "production",
-        optimization: {
-            minimizer: [
-                new TerserJSPlugin({}),
-                new OptimizeCSSAssetsPlugin({})
-            ]
+const prodClientConfig = merge(clientConfig, {
+    mode: "production",
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserJSPlugin(), new CssMinimizerPlugin()],
     }
-};
+});
 
-const devConfig = {
-  server: serverConfig,
-  client: clientConfig
-};
-
-module.exports = merge.multiple(commonConfig, devConfig);
+module.exports = [prodServerConfig, prodClientConfig];

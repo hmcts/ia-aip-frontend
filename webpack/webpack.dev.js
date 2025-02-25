@@ -1,20 +1,14 @@
-const merge = require('webpack-merge');
-const commonConfig = require('./webpack.common');
+const { merge } = require('webpack-merge');
+const { serverConfig, clientConfig } = require('./webpack.common.js');
 
-const serverConfig = {
+const devServerConfig = merge(serverConfig, {
     mode: "development",
     devtool: 'inline-source-map',
-};
+});
 
-const clientConfig = {
+const devClientConfig = merge(clientConfig, {
     mode: "development",
     devtool: 'inline-source-map',
+});
 
-};
-
-const devConfig = {
-  server: serverConfig,
-  client: clientConfig
-};
-
-module.exports = merge.multiple(commonConfig, devConfig);
+module.exports = [devServerConfig, devClientConfig];

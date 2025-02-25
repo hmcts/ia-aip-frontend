@@ -246,32 +246,34 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   ], null, Delimiter.BREAK_LINE));
 
   // fee section
-  if (appealHasRemissionOption(application)) {
-    await addPaymentDetails(req, application, feeDetailsRows);
-    if (application.remissionOption === 'asylumSupportFromHo') {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [application.asylumSupportRefNumber], null));
-    } else if (application.remissionOption === 'feeWaiverFromHo') {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, ['Home Office fee waiver'], null));
-    } else if (application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') {
-      const localAuthorityLetterDocs = application.localAuthorityLetters.map(doc => {
-        return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
-      });
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
-    } else if (application.remissionOption === 'noneOfTheseStatements' || application.remissionOption === 'iWantToGetHelpWithFees') {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [application.helpWithFeesRefNumber], null));
-    }
-    if (application.previousRemissionDetails) {
-      await addPreviousRemissionDetails(req, application, feeHistoryRows);
-    }
-  } else {
-    const { paymentStatus = null, feeAmountGbp = null, newFeeAmount = null } = req.session.appeal;
-    const fee = getFee(req.session.appeal);
-    if (application.feeUpdateTribunalAction) {
-      feeDetailsRows.push(newFeeAmount ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [calculateAmountToPounds(newFeeAmount)]) : null);
-      addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, feeAmountGbp, null);
-    } else if (appealHasNoRemissionOption(application)) {
-      feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+  if (!['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
+    if (appealHasRemissionOption(application)) {
+      await addPaymentDetails(req, application, feeDetailsRows);
+      if (application.remissionOption === 'asylumSupportFromHo') {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [application.asylumSupportRefNumber], null));
+      } else if (application.remissionOption === 'feeWaiverFromHo') {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, ['Home Office fee waiver'], null));
+      } else if (application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') {
+        const localAuthorityLetterDocs = application.localAuthorityLetters.map(doc => {
+          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
+        });
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
+      } else if (application.remissionOption === 'noneOfTheseStatements' || application.remissionOption === 'iWantToGetHelpWithFees') {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [application.helpWithFeesRefNumber], null));
+      }
+      if (application.previousRemissionDetails) {
+        await addPreviousRemissionDetails(req, application, feeHistoryRows);
+      }
+    } else {
+      const { paymentStatus = null, feeAmountGbp = null, newFeeAmount = null } = req.session.appeal;
+      const fee = getFee(req.session.appeal);
+      if (application.feeUpdateTribunalAction) {
+        feeDetailsRows.push(newFeeAmount ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [calculateAmountToPounds(newFeeAmount)]) : null);
+        addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, feeAmountGbp, null);
+      } else if (appealHasNoRemissionOption(application)) {
+        feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+      }
     }
   }
 
@@ -1341,11 +1343,26 @@ function attachFtpaDocuments(documents: Evidence[], documentCollection, docLabel
 
 function getDirectionHistory(req: Request, res: Response, next: NextFunction) {
   if (req.session.appeal.directions && req.params.id) {
-    let direction: Direction = req.session.appeal.directions.find(direction => (req.params.id === direction.uniqueId));
-    if (direction && APPLICANT_TYPE.APPELLANT === direction.parties) {
-      return getAppellantDirectionHistoryDetails(req, res, next, direction);
-    } else if (direction && APPLICANT_TYPE.RESPONDENT === direction.parties) {
-      return getRespondentDirectionHistoryDetails(req, res, next, direction);
+    const match = req.params.id.match(/^(.*?)(?:-(appellant|respondent))?$/);
+    const baseUniqueId = match ? match[1] : req.params.id;
+    const partyType = match ? match[2] : null;
+
+    let direction: Direction = req.session.appeal.directions.find(
+      direction => direction.uniqueId === baseUniqueId
+    );
+
+    if (direction) {
+      if (partyType === 'appellant') {
+        return getAppellantDirectionHistoryDetails(req, res, next, direction);
+      } else if (partyType === 'respondent') {
+        return getRespondentDirectionHistoryDetails(req, res, next, direction);
+      } else {
+        if (direction.parties === APPLICANT_TYPE.APPELLANT) {
+          return getAppellantDirectionHistoryDetails(req, res, next, direction);
+        } else if (direction.parties === APPLICANT_TYPE.RESPONDENT) {
+          return getRespondentDirectionHistoryDetails(req, res, next, direction);
+        }
+      }
     }
   }
 }

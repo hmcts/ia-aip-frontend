@@ -56,7 +56,7 @@ function constructEventObject(event: HistoryEvent, req: Request) {
   if (event.id === Events.RECORD_OUT_OF_TIME_DECISION.id) {
     eventObject.text = i18n.pages.overviewPage.timeline[event.id].type[req.session.appeal.outOfTimeDecisionType];
   }
-  if (event.id === Events.REQUEST_RESPONSE_REVIEW.id) {
+  if (event.id === Events.REQUEST_RESPONSE_REVIEW.id && i18n.pages.overviewPage.timeline[event.id].status[req.session.appeal.appealReviewOutcome]) {
     eventObject.links[0].text = i18n.pages.overviewPage.timeline[event.id].status[req.session.appeal.appealReviewOutcome].text;
     eventObject.links[0].href = i18n.pages.overviewPage.timeline[event.id].status[req.session.appeal.appealReviewOutcome].href;
   }
@@ -143,20 +143,36 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
 function getDirectionHistory(req: Request): any[] {
   if (isNonStandardDirectionEnabled(req)) {
     return (req.session.appeal.directions || [])
-            .filter(direction => (
-                direction.directionType === 'sendDirection'
-                && (direction.parties === 'appellant' || direction.parties === 'respondent')))
-            .map(direction => {
-              return {
-                date: moment(direction.dateSent).format('DD MMMM YYYY'),
-                dateObject: new Date(direction.dateSent),
-                text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
-                links: [{
-                  ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
-                  href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
-                }]
-              };
-            });
+      .filter(direction => (
+        direction.directionType === 'sendDirection' &&
+        (direction.parties === 'appellant' || direction.parties === 'respondent' || direction.parties === 'appellantAndRespondent')
+      ))
+      .flatMap(direction => {
+        if (direction.parties === 'appellantAndRespondent') {
+          return ['respondent', 'appellant'].map(party => ({
+            date: moment(direction.dateSent).format('DD MMMM YYYY'),
+            dateObject: new Date(direction.dateSent),
+            text: i18n.pages.overviewPage.timeline.sendDirection[party].text || null,
+            links: [
+              {
+                ...i18n.pages.overviewPage.timeline.sendDirection[party].links[0],
+                href: paths.common.directionHistoryViewer.replace(':id', `${direction.uniqueId}-${party}`)
+              }
+            ]
+          }));
+        }
+        return [{
+          date: moment(direction.dateSent).format('DD MMMM YYYY'),
+          dateObject: new Date(direction.dateSent),
+          text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
+          links: [
+            {
+              ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
+              href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
+            }
+          ]
+        }];
+      });
   } else {
     return [];
   }

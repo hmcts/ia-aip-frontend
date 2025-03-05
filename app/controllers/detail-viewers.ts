@@ -179,7 +179,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
   });
   const appellantInUk = application.appellantInUk && application.appellantInUk === 'Yes';
-  const hasSponsor = application.appellantInUk && application.appellantInUk === 'No' && application.hasSponsor && application.hasSponsor === 'Yes';
+  const hasSponsor = application.hasSponsor && application.hasSponsor === 'Yes';
   const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
 
   let aboutAppealRows = [];

@@ -22,8 +22,7 @@ Feature: Contact details
     When I enter text message number "07899999999"
     And I click "Save for later" button
     Then I should be taken to the has sponsor page
-    Then I click no
-    Then I click "Continue" button
+    Then I choose No and click Continue
     Then I am on the overview page
     Then I click continue
     Then I should see the task-list page

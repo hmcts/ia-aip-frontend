@@ -21,7 +21,7 @@ Feature: Contact details
     Given I am on the contact details page
     When I enter text message number "07899999999"
     And I click "Save for later" button
-    Then I am on the has-sponsor page
+    Then I should be taken to the has sponsor page
     Then I click no
     Then I click "Continue" button
     Then I am on the overview page

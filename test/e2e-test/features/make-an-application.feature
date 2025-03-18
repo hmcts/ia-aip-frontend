@@ -26,6 +26,8 @@ Feature: Make an application
     Then I click "Save and continue" button
     When I upload a Home Office decision letter
     Then I click "Save and continue" button
+    Then I should see the deportation order page
+    When I choose Yes and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Personal details task
     Then I should be taken to the enter your name page
@@ -109,6 +111,8 @@ Feature: Make an application
     Then I click "Save and continue" button
     When I upload a Home Office decision letter
     Then I click "Save and continue" button
+    Then I should see the deportation order page
+    When I choose Yes and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Personal details task
     Then I should be taken to the enter your name page
@@ -275,6 +279,8 @@ Feature: Make an application
     Then I click "Save and continue" button
     When I upload a Home Office decision letter
     Then I click "Save and continue" button
+    Then I should see the deportation order page
+    When I choose Yes and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Personal details task
     Then I should be taken to the enter your name page
@@ -358,6 +364,8 @@ Feature: Make an application
     Then I click "Save and continue" button
     When I upload a Home Office decision letter
     Then I click "Save and continue" button
+    Then I should see the deportation order page
+    When I choose Yes and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Personal details task
     Then I should be taken to the enter your name page
@@ -439,6 +447,8 @@ Feature: Make an application
     Then I click "Save and continue" button
     When I upload a Home Office decision letter
     Then I click "Save and continue" button
+    Then I should see the deportation order page
+    When I choose Yes and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Personal details task
     Then I should be taken to the enter your name page

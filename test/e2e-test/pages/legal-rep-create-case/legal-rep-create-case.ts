@@ -43,6 +43,12 @@ module.exports = {
       await I.waitForInvisible('span.error-message', 30);
       await I.fillField('#uploadTheNoticeOfDecisionDocs_0_description', 'Home office decision letter document');
       await I.click('Continue');
+      await I.waitForText('Type of appeal', 60);
+      await I.click('#appealType-deprivation');
+      await I.click('Continue');
+      await I.waitForText('The grounds of your appeal', 60);
+      await I.click('#appealGroundsDeprivation_values-disproportionateDeprivation');
+      await I.click('Continue');
       await I.waitForText('Basic details', 60);
       await I.fillField('#appellantTitle', 'Mr');
       await I.fillField('#appellantGivenNames', 'Jose');
@@ -61,12 +67,6 @@ module.exports = {
       await I.click('#contactPreference-wantsEmail');
       await I.waitForVisible('#email', 30);
       await I.fillField('#email', 'josegonzalez99@mailnesia.com');
-      await I.click('Continue');
-      await I.waitForText('Type of appeal', 60);
-      await I.click('#appealType-deprivation');
-      await I.click('Continue');
-      await I.waitForText('The grounds of your appeal', 60);
-      await I.click('#appealGroundsDeprivation_values-disproportionateDeprivation');
       await I.click('Continue');
       await I.waitForText('Deportation order', 60);
       await I.click('#deportationOrderOptions_No');

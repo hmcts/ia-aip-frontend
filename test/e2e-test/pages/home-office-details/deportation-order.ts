@@ -8,20 +8,20 @@ module.exports = {
     Given('I am on the deportation order page', async () => {
       I.amOnPage(testUrl + paths.appealStarted.details);
     });
+
+    Then(/^I should see deportation order page$/, async () => {
+      I.waitInUrl(paths.appealStarted.deportationOrder,10);
+      I.seeInCurrentUrl(paths.appealStarted.deportationOrder);
+    });
+
+    When('I choose Yes and click save and continue', async () => {
+      I.checkOption('#answer');
+      I.click('Save and continue');
+    });
+
+    When('I choose No and click save and continue', async () => {
+      I.checkOption('#answer-2');
+      I.click('Save and continue');
+    });
   }
 };
-
-Then(/^I should see deportation order page$/, async () => {
-  I.waitInUrl(paths.appealStarted.deportationOrder,10);
-  I.seeInCurrentUrl(paths.appealStarted.deportationOrder);
-});
-
-When('I choose Yes and click save and continue', async () => {
-  I.checkOption('#answer');
-  I.click('Save and continue');
-});
-
-When('I choose No and click save and continue', async () => {
-  I.checkOption('#answer-2');
-  I.click('Save and continue');
-});

@@ -10,18 +10,18 @@ module.exports = {
     });
 
     Then(/^I should see deportation order page$/, async () => {
-      I.waitInUrl(paths.appealStarted.deportationOrder,10);
-      I.seeInCurrentUrl(paths.appealStarted.deportationOrder);
+      await I.waitInUrl(paths.appealStarted.deportationOrder,10);
+      await I.seeInCurrentUrl(paths.appealStarted.deportationOrder);
     });
 
     When('I choose Yes and click save and continue', async () => {
-      I.checkOption('#answer');
-      I.click('Save and continue');
+      await I.checkOption('#answer');
+      await I.click('Save and continue');
     });
 
     When('I choose No and click save and continue', async () => {
-      I.checkOption('#answer-2');
-      I.click('Save and continue');
+      await I.checkOption('#answer-2');
+      await I.click('Save and continue');
     });
   }
 };

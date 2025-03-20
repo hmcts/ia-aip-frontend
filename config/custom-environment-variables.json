@@ -1,0 +1,116 @@
+{
+  "testUrl": "TEST_URL",
+  "currentEnvironment": "NODE_ENV",
+  "httpProxy": "HTTP_PROXY",
+  "appInsights": {
+    "instrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY"
+  },
+  "trackingScripts": "TRACKING_SCRIPTS",
+  "node": {
+    "protocol": "HTTP_PROTOCOL",
+    "hostname": "EXTERNAL_HOSTNAME",
+    "port": "PORT"
+  },
+  "ssl": {
+    "hpkp": {
+      "maxAge": "HPKP_MAXAGE",
+      "sha256s": "HPKP_SHA256",
+      "sha256sBackup": "HPKP_SHA256_BACKUP"
+    }
+  },
+  "microservice": "MICROSERVICE",
+  "session": {
+    "useRedis": {
+      "__name": "USE_REDIS",
+      "__format": "json"
+    },
+    "useLogger": "USE_SESSION_LOGGER",
+    "redis": {
+      "url": "REDIS_URL",
+      "secret": "SESSION_SECRET"
+    }
+  },
+  "s2s": {
+    "microserviceName": "S2S_MICROSERVICE_NAME",
+    "secret": "S2S_SECRET",
+    "url": "S2S_URL"
+  },
+  "idam": {
+    "apiUrl": "IDAM_API_URL",
+    "webUrl": "IDAM_WEB_URL",
+    "secret": "IDAM_SECRET"
+  },
+  "systemUser": {
+    "username": "IA_SYSTEM_USERNAME",
+    "password": "IA_SYSTEM_PASSWORD"
+  },
+  "payments": {
+    "apiUrl": "PAYMENTS_API_URL"
+  },
+  "iaPayments": {
+    "apiUrl": "IA_CASE_PAYMENTS_API_URL"
+  },
+  "launchDarkly": {
+    "sdkKey": "LAUNCH_DARKLY_SDK_KEY"
+  },
+  "ccd": {
+    "apiUrl": "CCD_API_URL"
+  },
+  "documentManagement": {
+    "apiUrl": "DOC_MANAGEMENT_URL"
+  },
+  "cdamDocumentManagement": {
+    "apiUrl": "CASE_DOCUMENT_AM_URL"
+  },
+  "addressLookup": {
+    "token": "ADDRESS_LOOKUP_TOKEN",
+    "url": "ADDRESS_LOOKUP_URL"
+  },
+  "saucelabs": {
+    "secret": "SAUCELABS_SECRET"
+  },
+  "showTests": "SHOW_TESTS",
+  "functionalTests": "FUNCTIONAL_TESTS",
+  "features": {
+    "askForMoreTime": "ASK_FOR_MORE_TIME_ENABLED",
+    "timelineEnabled": "TIMELINE_ENABLED"
+  },
+  "testAccounts": {
+    "testCaseOfficerUserName": "TEST_CASEOFFICER_USERNAME",
+    "testHomeOfficeGenericUserName": "TEST_HOMEOFFICE_GENERIC_USERNAME",
+    "testAdminOfficerUserName": "TEST_ADMINOFFICER_USERNAME",
+    "testJudgeUserName": "TEST_JUDGE_X_USERNAME",
+    "testLawFirmAUsername": "TEST_LAW_FIRM_SHARE_CASE_A_USERNAME"
+  },
+  "hearingCentres": {
+    "bradfordEmail": "IA_HEARING_CENTRE_BRADFORD_EMAIL",
+    "manchesterEmail": "IA_HEARING_CENTRE_MANCHESTER_EMAIL",
+    "newportEmail": "IA_HEARING_CENTRE_NEWPORT_EMAIL",
+    "taylorHouseEmail": "IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL",
+    "northShieldsEmail": "IA_HEARING_CENTRE_NORTH_SHIELDS_EMAIL",
+    "birminghamEmail": "IA_HEARING_CENTRE_BIRMINGHAM_EMAIL",
+    "hattonCrossEmail": "IA_HEARING_CENTRE_HATTON_CROSS_EMAIL",
+    "glasgowEmail": "IA_HEARING_CENTRE_GLASGOW_EMAIL"
+  },
+  "docmosis": {
+    "renderUrl": "DOCMOSIS_RENDER_URL",
+    "accessKey": "DOCMOSIS_ACCESS_KEY"
+  },
+  "customerServices": {
+    "telephone": "IA_CUSTOMER_SERVICES_TELEPHONE",
+    "email": "IA_CUSTOMER_SERVICES_EMAIL"
+  },
+  "pcq": {
+    "url": "PCQ_URL",
+    "health": "/health",
+    "path": "/service-endpoint",
+    "returnUrl": "PCQ_RETURN_URL",
+    "tokenKey": "PCQ_TOKEN_KEY"
+  },
+  "refData": {
+    "apiUrl": "REF_DATA_API_URL"
+  },
+  "govNotify": {
+    "accessKey": "GOV_NOTIFY_KEY"
+  }
+}

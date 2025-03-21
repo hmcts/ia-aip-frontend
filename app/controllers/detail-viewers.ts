@@ -44,11 +44,11 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
   });
   const appellantInUk = application.appellantInUk && application.appellantInUk === 'Yes';
-  const hasSponsor = application.appellantInUk && application.appellantInUk === 'No' && application.hasSponsor && application.hasSponsor === 'Yes';
+  const hasSponsor = application.hasSponsor && application.hasSponsor === 'Yes';
   let rows = [];
   let rowsCont = [];
 
-  if (appellantInUk) {
+  if (appellantInUk && !hasSponsor) {
 
     rows = [
       application.appellantInUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantInUk, [application.appellantInUk], null)
@@ -87,7 +87,7 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     rows.push(...rowsCont);
   }
 
-  if (!appellantInUk && hasSponsor) {
+  if (hasSponsor) {
 
     rows = [
       application.appellantInUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantInUk, [application.appellantInUk], null)
@@ -179,7 +179,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
   });
   const appellantInUk = application.appellantInUk && application.appellantInUk === 'Yes';
-  const hasSponsor = application.appellantInUk && application.appellantInUk === 'No' && application.hasSponsor && application.hasSponsor === 'Yes';
+  const hasSponsor = application.hasSponsor && application.hasSponsor === 'Yes';
   const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
 
   let aboutAppealRows = [];

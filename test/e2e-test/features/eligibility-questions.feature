@@ -37,9 +37,10 @@ Feature: Eligibility
     Then I should see the "Are you currently in detention" eligibility page
     When I select No and click continue
     Then I should see the ineligible page
+    When I click "Back" button
     Then I should see the "Are you currently in detention" eligibility page
     When I select Yes and click continue
-    Then I should see the eligible page
+    Then I should see the ineligible page
 
   @nightly-test
   Scenario: Citizen can click back on an ineligible page to change answer to previous question

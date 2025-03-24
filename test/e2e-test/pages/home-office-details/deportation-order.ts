@@ -6,7 +6,7 @@ const testUrl = config.get('testUrl');
 module.exports = {
   deportationOrder(I) {
     Given('I am on the deportation order page', async () => {
-      I.amOnPage(testUrl + paths.appealStarted.details);
+      I.amOnPage(testUrl + paths.appealStarted.deportationOrder);
     });
 
     Then('I should see the deportation order page', async () => {

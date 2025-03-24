@@ -57,7 +57,7 @@ module.exports = {
       await I.fillField('#appellantDateOfBirth-month', '02');
       await I.fillField('#appellantDateOfBirth-year', '1999');
       await I.click('Continue');
-      await I.waitForText('Tell us about your client\'s nationality', 60);
+      await I.waitForText('What is the appellant\'s nationality?', 60);
       await I.click('#appellantStateless-isStateless');
       await I.click('Continue');
       await I.waitForText('Your client\'s address', 60);

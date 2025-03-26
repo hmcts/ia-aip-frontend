@@ -60,7 +60,7 @@ module.exports = {
       await I.waitForText('What is the appellant\'s nationality?', 60);
       await I.click('#appellantStateless-isStateless');
       await I.click('Continue');
-      await I.waitForText('Your client\'s address', 60);
+      await I.waitForText('Appellant\'s address', 60);
       await I.click('#appellantHasFixedAddress_No');
       await I.click('Continue');
       await I.waitForText('The appellant\'s contact preference', 60);
@@ -74,7 +74,7 @@ module.exports = {
       await I.waitForText('New matters', 60);
       await I.click('#hasNewMatters_No');
       await I.click('Continue');
-      await I.waitForText('Has your client appealed against any other UK immigration decisions?', 60);
+      await I.waitForText('Has the appellant appealed against any other UK immigration decisions?', 60);
       await I.selectOption('#hasOtherAppeals', 'No');
       await I.click('Continue');
       await I.waitForText('Legal representative details', 60);

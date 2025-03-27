@@ -69,8 +69,6 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
         ...appealUpdated
       };
 
-      if (['Yes'].includes(appeal.application.appellantInUk)) return res.redirect(paths.appealStarted.taskList);
-
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.hasSponsor);
 
       return res.redirect(redirectPage);

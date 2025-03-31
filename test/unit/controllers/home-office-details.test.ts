@@ -857,3 +857,4 @@ describe('Home Office Details Controller', function () {
       });
     });
   });
+};

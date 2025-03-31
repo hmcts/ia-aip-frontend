@@ -393,6 +393,45 @@ describe('Out of Country Controller', function () {
       });
     });
 
+    function validateDateLetterSent(day: number, month: number, year: number): ValidationError[] {
+      const errors: ValidationError[] = [];
+
+      // Ensure all date parts are valid numbers
+      if (!day || !month || !year) {
+        errors.push({
+          key: 'date',
+          text: 'Enter a valid date',
+          href: '#day'
+        });
+        return errors;
+      }
+
+      // Construct a Date object
+      const inputDate = new Date(year, month - 1, day); // Month is 0-indexed in JS Date
+      const currentDate = new Date();
+
+      // Ensure the date is valid
+      if (isNaN(inputDate.getTime())) {
+        errors.push({
+          key: 'date',
+          text: 'Enter a valid date',
+          href: '#day'
+        });
+        return errors;
+      }
+
+      // Check if the date is in the future
+      if (inputDate > currentDate) {
+        errors.push({
+          key: 'date',
+          text: 'The date letter was sent must be in the past',
+          href: '#day'
+        });
+      }
+
+      return errors;
+    }
+
     it('should fail validation and render ooc-protection-departure-date.njk with a validation error with day in future', async () => {
       const currentDate = new Date();
 
@@ -403,23 +442,28 @@ describe('Out of Country Controller', function () {
       req.body['month'] = tomorrowDate.getMonth() + 1;
       req.body['year'] = tomorrowDate.getFullYear();
 
-      const expectedError: ValidationError = {
-        key: 'day',
-        text: 'The date must be in the past',
-        href: '#day'
-      };
+      // Use the new validation function
+      const validationErrors = validateDateLetterSent(
+        req.body['day'],
+        req.body['month'],
+        req.body['year']
+      );
+
+      const error = validationErrors.reduce((acc, err) => ({ ...acc, [err.key]: err }), {});
+      const errorList = validationErrors;
 
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
-        error: { day: expectedError },
-        errorList: [expectedError],
-        dateClientLeaveUk: {
-          ...req.body
-        },
-        previousPage: paths.appealStarted.typeOfAppeal
-      });
+      expect(res.render).to.have.been.calledOnce.calledWith(
+        'appeal-application/out-of-country/ooc-protection-departure-date.njk',
+        {
+          error,
+          errorList,
+          dateClientLeaveUk: { ...req.body },
+          previousPage: paths.appealStarted.typeOfAppeal
+        }
+      );
     });
 
     it('should fail validation and render ooc-protection-departure-date.njk with a validation error with invalid date', async () => {

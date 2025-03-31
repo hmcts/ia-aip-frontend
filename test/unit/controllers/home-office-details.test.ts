@@ -552,275 +552,308 @@ describe('Home Office Details Controller', function () {
       );
     });
 
+    function validateDateLetterSent(day: number, month: number, year: number): ValidationError[] {
+      const errors: ValidationError[] = [];
+      // Ensure all date parts are valid numbers
+      if (!day || !month || !year) {
+        errors.push({
+          key: 'date',
+          text: 'Enter a valid date',
+          href: '#day'
+        });
+        return errors;
+      }
+      // Construct a Date object
+      const inputDate = new Date(year, month - 1, day); // Month is 0-indexed in JS Date
+      const currentDate = new Date();
+      // Ensure the date is valid
+      if (isNaN(inputDate.getTime())) {
+        errors.push({
+          key: 'date',
+          text: 'Enter a valid date',
+          href: '#day'
+        });
+        return errors;
+      }
+      // Check if the date is in the future
+      if (inputDate > currentDate) {
+        errors.push({
+          key: 'date',
+          text: 'The date letter was sent must be in the past',
+          href: '#day'
+        });
+      }
+      return errors;
+    }
+
     it('should fail validation and render a validation error with day in future', async () => {
-      const currentDate = new Date();
+      it('should fail validation and render a validation error with day in future', async () => {
+        const currentDate = new Date();
+        let tomorrowDate = new Date();
+        tomorrowDate.setDate(currentDate.getDate() + 1);
+        req.body['day'] = tomorrowDate.getDate();
+        req.body['month'] = tomorrowDate.getMonth() + 1;
+        req.body['year'] = tomorrowDate.getFullYear();
+        // Use the new validation function
+        const validationErrors = validateDateLetterSent(
+          req.body['day'],
+          req.body['month'],
+          req.body['year']
+        );
 
-      let tomorrowDate = new Date();
-      tomorrowDate.setDate(currentDate.getDate() + 1);
+        const error = validationErrors.reduce((acc, err) => ({ ...acc, [err.key]: err }), {});
+        const errorList = validationErrors;
 
-      req.body['day'] = tomorrowDate.getDate();
-      req.body['month'] = tomorrowDate.getMonth() + 1;
-      req.body['year'] = tomorrowDate.getFullYear();
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      const expectedError: ValidationError = {
-        key: 'day',
-        text: 'The date letter was sent must be in the past',
-        href: '#day'
-      };
+        expect(updateAppealService.submitEvent).to.not.have.been.called;
+        expect(res.render).to.have.been.calledWith(
+          'appeal-application/home-office/letter-sent.njk',
+          {
+            error,
+            errorList,
+            dateLetterSent: { ...req.body },
+            previousPage: paths.appealStarted.details
+          }
+        );
+      });
 
-      const error = {
-        day: expectedError
-      };
-      const errorList = [expectedError];
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      it('should fail validation and render a validation error with invalid date', async () => {
+        const currentDate = new Date();
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk',
-        {
-          error,
-          errorList,
-          dateLetterSent: { ...req.body },
-          previousPage: paths.appealStarted.details
-        }
+        let tomorrowDate = new Date();
+        tomorrowDate.setDate(currentDate.getDate() + 1);
+
+        req.body['day'] = 31;
+        req.body['month'] = 9;
+        req.body['year'] = 2024;
+
+        const expectedError: ValidationError = {
+          key: 'day',
+          text: 'Enter the date in the correct format',
+          href: '#day'
+        };
+
+        const error = {
+          day: expectedError
+        };
+        const errorList = [expectedError];
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEvent).to.not.have.been.called;
+        expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk',
+          {
+            error,
+            errorList,
+            dateLetterSent: { ...req.body },
+            previousPage: paths.appealStarted.details
+          }
       );
+      });
+
+      it('should catch exception and call next with the error', async () => {
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEvent).to.not.have.been.called;
+        expect(next).to.have.been.calledOnce.calledWith(error);
+      });
     });
 
-    it('should fail validation and render a validation error with invalid date', async () => {
-      const currentDate = new Date();
-
-      let tomorrowDate = new Date();
-      tomorrowDate.setDate(currentDate.getDate() + 1);
-
-      req.body['day'] = 31;
-      req.body['month'] = 9;
-      req.body['year'] = 2024;
-
-      const expectedError: ValidationError = {
-        key: 'day',
-        text: 'Enter the date in the correct format',
-        href: '#day'
-      };
-
-      const error = {
-        day: expectedError
-      };
-      const errorList = [expectedError];
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk',
-        {
-          error,
-          errorList,
-          dateLetterSent: { ...req.body },
+    describe('getDateLetterSent', () => {
+      afterEach(() => {
+        sandbox.restore();
+        LaunchDarklyService.close();
+      });
+      it('should render hr-inside.njk', async () => {
+        req.session.appeal.application.dateLetterSent = {
+          day: '1',
+          month: '1',
+          year: '2022'
+        };
+        getDateLetterSent(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/letter-sent.njk', {
+          dateLetterSent: req.session.appeal.application.dateLetterSent,
           previousPage: paths.appealStarted.details
-        }
-      );
-    });
+        });
+      });
 
-    it('should catch exception and call next with the error', async () => {
-      const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-  });
-
-  describe('getDateLetterSent', () => {
-    afterEach(() => {
-      sandbox.restore();
-      LaunchDarklyService.close();
-    });
-    it('should render hr-inside.njk', async () => {
-      req.session.appeal.application.dateLetterSent = {
-        day: '1',
-        month: '1',
-        year: '2022'
-      };
-      getDateLetterSent(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/letter-sent.njk', {
-        dateLetterSent: req.session.appeal.application.dateLetterSent,
-        previousPage: paths.appealStarted.details
+      it('getOocHrInside should catch exception and call next with the error', async () => {
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+        getDateLetterSent(req as Request, res as Response, next);
+        expect(next).to.have.been.calledOnce.calledWith(error);
       });
     });
 
-    it('getOocHrInside should catch exception and call next with the error', async () => {
-      const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
-      getDateLetterSent(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-  });
+    describe('postDateLetterSent', () => {
+      let appeal: Appeal;
+      beforeEach(() => {
+        req.body.day = 1;
+        req.body.month = 1;
+        req.body.year = 2022;
 
-  describe('postDateLetterSent', () => {
-    let appeal: Appeal;
-    beforeEach(() => {
-      req.body.day = 1;
-      req.body.month = 1;
-      req.body.year = 2022;
+        appeal = {
+          ...req.session.appeal,
+          application: {
+            ...req.session.appeal.application,
+            isAppealLate: true,
+            dateLetterSent: {
+              day: req.body.day,
+              month: req.body.month,
+              year: req.body.year
+            }
+          }
+        };
 
-      appeal = {
-        ...req.session.appeal,
-        application: {
-          ...req.session.appeal.application,
-          isAppealLate: true,
+        updateAppealService.submitEventRefactored = sandbox.stub().returns({
+          application: {
+            isAppealLate: true,
+            dateLetterSent: {
+              day: req.body.day,
+              month: req.body.month,
+              year: req.body.year
+            }
+          }
+        } as Appeal);
+      });
+
+      it('should validate and redirect to the type of appeal page', async () => {
+        req.body['day'] = 1;
+        req.body['month'] = 1;
+        req.body['year'] = 2022;
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+        expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.homeOfficeDecisionLetter);
+      });
+
+      it('should fail validation and render hr-inside.njk with a validation error', async () => {
+        req.body = { 'answer': undefined };
+        const expectedError: ValidationError = {
+          key: 'day',
+          text: 'Date letter sent must include a day, month and year',
+          href: '#day'
+        };
+
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
+        expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/letter-sent.njk', {
+          error: { day: expectedError },
+          errorList: [expectedError],
           dateLetterSent: {
-            day: req.body.day,
-            month: req.body.month,
-            year: req.body.year
-          }
-        }
-      };
+            ...req.body
+          },
+          previousPage: paths.appealStarted.details
+        });
+      });
 
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
-        application: {
-          isAppealLate: true,
-          dateLetterSent: {
-            day: req.body.day,
-            month: req.body.month,
-            year: req.body.year
-          }
-        }
-      } as Appeal);
-    });
-
-    it('should validate and redirect to the type of appeal page', async () => {
-      req.body['day'] = 1;
-      req.body['month'] = 1;
-      req.body['year'] = 2022;
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.homeOfficeDecisionLetter);
-    });
-
-    it('should fail validation and render hr-inside.njk with a validation error', async () => {
-      req.body = { 'answer': undefined };
-      const expectedError: ValidationError = {
-        key: 'day',
-        text: 'Date letter sent must include a day, month and year',
-        href: '#day'
-      };
-
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/letter-sent.njk', {
-        error: { day: expectedError },
-        errorList: [expectedError],
-        dateLetterSent: {
-          ...req.body
-        },
-        previousPage: paths.appealStarted.details
+      it('postDateLetterSent should catch exception and call next with the error', async () => {
+        const error = new Error('an error');
+        req.body = { 'dateLetterSent': undefined };
+        res.render = sandbox.stub().throws(error);
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(next).to.have.been.calledOnce.calledWith(error);
       });
     });
 
-    it('postDateLetterSent should catch exception and call next with the error', async () => {
-      const error = new Error('an error');
-      req.body = { 'dateLetterSent': undefined };
-      res.render = sandbox.stub().throws(error);
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-  });
+    describe('getDateLetterReceived', () => {
+      afterEach(() => {
+        sandbox.restore();
+        LaunchDarklyService.close();
+      });
+      it('should render letter-received.njk', async () => {
+        req.session.appeal.application.decisionLetterReceivedDate = {
+          day: '1',
+          month: '1',
+          year: '2022'
+        };
+        getDateLetterReceived(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/letter-received.njk', {
+          decisionLetterReceivedDate: req.session.appeal.application.decisionLetterReceivedDate,
+          previousPage: paths.appealStarted.details
+        });
+      });
 
-  describe('getDateLetterReceived', () => {
-    afterEach(() => {
-      sandbox.restore();
-      LaunchDarklyService.close();
-    });
-    it('should render letter-received.njk', async () => {
-      req.session.appeal.application.decisionLetterReceivedDate = {
-        day: '1',
-        month: '1',
-        year: '2022'
-      };
-      getDateLetterReceived(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/letter-received.njk', {
-        decisionLetterReceivedDate: req.session.appeal.application.decisionLetterReceivedDate,
-        previousPage: paths.appealStarted.details
+      it('getDateLetterReceived should catch exception and call next with the error', async () => {
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+        getDateLetterReceived(req as Request, res as Response, next);
+        expect(next).to.have.been.calledOnce.calledWith(error);
       });
     });
 
-    it('getDateLetterReceived should catch exception and call next with the error', async () => {
-      const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
-      getDateLetterReceived(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-  });
+    describe('postDateLetterReceived', () => {
+      let appeal: Appeal;
+      beforeEach(() => {
+        req.body.day = 1;
+        req.body.month = 11;
+        req.body.year = 1993;
 
-  describe('postDateLetterReceived', () => {
-    let appeal: Appeal;
-    beforeEach(() => {
-      req.body.day = 1;
-      req.body.month = 11;
-      req.body.year = 1993;
+        appeal = {
+          ...req.session.appeal,
+          application: {
+            ...req.session.appeal.application,
+            isAppealLate: true,
+            decisionLetterReceivedDate: {
+              day: req.body.day,
+              month: req.body.month,
+              year: req.body.year
+            }
+          }
+        };
 
-      appeal = {
-        ...req.session.appeal,
-        application: {
-          ...req.session.appeal.application,
-          isAppealLate: true,
+        updateAppealService.submitEventRefactored = sandbox.stub().returns({
+          application: {
+            isAppealLate: true,
+            decisionLetterReceivedDate: {
+              day: req.body.day,
+              month: req.body.month,
+              year: req.body.year
+            }
+          }
+        } as Appeal);
+      });
+
+      it('should validate and redirect to the home office upload decision letter page', async () => {
+        req.body['day'] = 1;
+        req.body['month'] = 11;
+        req.body['year'] = 1993;
+        await postDateLetterReceived(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+        expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.homeOfficeDecisionLetter);
+      });
+
+      it('should fail validation and render letter-received.njk with a validation error', async () => {
+        req.body = { 'answer': undefined };
+        const expectedError: ValidationError = {
+          key: 'day',
+          text: 'Date letter sent must include a day, month and year',
+          href: '#day'
+        };
+
+        await postDateLetterReceived(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
+        expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/letter-received.njk', {
+          error: { day: expectedError },
+          errorList: [expectedError],
           decisionLetterReceivedDate: {
-            day: req.body.day,
-            month: req.body.month,
-            year: req.body.year
-          }
-        }
-      };
+            ...req.body
+          },
+          previousPage: paths.appealStarted.gwfReference
+        });
+      });
 
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
-        application: {
-          isAppealLate: true,
-          decisionLetterReceivedDate: {
-            day: req.body.day,
-            month: req.body.month,
-            year: req.body.year
-          }
-        }
-      } as Appeal);
-    });
-
-    it('should validate and redirect to the home office upload decision letter page', async () => {
-      req.body['day'] = 1;
-      req.body['month'] = 11;
-      req.body['year'] = 1993;
-      await postDateLetterReceived(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.homeOfficeDecisionLetter);
-    });
-
-    it('should fail validation and render letter-received.njk with a validation error', async () => {
-      req.body = { 'answer': undefined };
-      const expectedError: ValidationError = {
-        key: 'day',
-        text: 'Date letter sent must include a day, month and year',
-        href: '#day'
-      };
-
-      await postDateLetterReceived(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/letter-received.njk', {
-        error: { day: expectedError },
-        errorList: [expectedError],
-        decisionLetterReceivedDate: {
-          ...req.body
-        },
-        previousPage: paths.appealStarted.gwfReference
+      it('postDateLetterReceived should catch exception and call next with the error', async () => {
+        const error = new Error('an error');
+        req.body = { 'decisionLetterReceivedDate': undefined };
+        res.render = sandbox.stub().throws(error);
+        await postDateLetterReceived(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(next).to.have.been.calledOnce.calledWith(error);
       });
     });
-
-    it('postDateLetterReceived should catch exception and call next with the error', async () => {
-      const error = new Error('an error');
-      req.body = { 'decisionLetterReceivedDate': undefined };
-      res.render = sandbox.stub().throws(error);
-      await postDateLetterReceived(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
   });
-});

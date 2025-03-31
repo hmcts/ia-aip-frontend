@@ -24,8 +24,7 @@ Feature: Basic Appeal Submissions
     And I click "Save and continue" button
     Then I should see letter sent page
     When I enter an on time letter sent date
-    And I click "Save and continue" button
-    Then I should see the upload your home office decision letter page
+    Then I click "Save and continue" button
     When I upload a Home Office decision letter
     Then I click "Save and continue" button
     Then I should see the deportation order page

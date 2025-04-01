@@ -116,59 +116,56 @@ function dateOfBirthValidation(obj: object): boolean | ValidationErrors {
 
 function dateValidation(obj: any, errors): boolean | ValidationErrors {
   const { year, month, day } = obj;
-  const dateStr = `${year} ${month} ${day}`;
+  const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
+    moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';
 
-  // Validate full date using Moment.js with spaces
-  const date = moment(dateStr, 'YYYY MM DD', true);
-  const currentDate = moment().startOf('day');
+  const currentDate = new Date();
 
-  if (!date.isValid()) {
-    return { day: createError('day', errors.incorrectFormat) };
-  }
-
-  if (date.isSameOrAfter(currentDate)) {
-    return { day: createError('day', errors.inPast) };
-  }
-
-  // Define Joi schema
+  const toValidate = {
+    ...obj,
+    date
+  };
   const schema = Joi.object({
-    day: Joi.number().integer().min(1).max(31).required().messages({
+    day: Joi.number().empty('').required().integer().min(1).max(31).messages({
       'any.required': errors.missing,
       'number.base': errors.incorrectFormat,
       'number.integer': errors.incorrectFormat,
       'number.min': errors.incorrectFormat,
       'number.max': errors.incorrectFormat
+    }).custom((value, helpers) => {
+      if ((date === 'invalid Date') && (!isNaN(Number(day)) && !isNaN(Number(month)) && !isNaN(Number(year))) && (year <= currentDate.getFullYear()) && (month > 0) && (month < 13)) {
+        return helpers.message(errors.incorrectFormat);
+      }
+      if ((value > currentDate.getDate()) && (Number(year) === currentDate.getFullYear()) && (Number(month) === (currentDate.getMonth() + 1))) {
+        return helpers.message(errors.inPast);
+      }
+      return value;
     }),
-    month: Joi.number().integer().min(1).max(12).required().messages({
+    month: Joi.number().empty('').required().integer().min(1).max(12).required().messages({
       'any.required': errors.missing,
       'number.base': errors.incorrectFormat,
       'number.integer': errors.incorrectFormat,
       'number.min': errors.incorrectFormat,
       'number.max': errors.incorrectFormat
+    }).custom((value, helpers) => {
+      if ((Number(value) > (currentDate.getMonth() + 1)) && (Number(year) === currentDate.getFullYear())) {
+        return helpers.message(errors.inPast);
+      }
+      return value;
     }),
-    year: Joi.number().integer().min(1900).max(currentDate.year()).required().messages({
+    year: Joi.number().empty('').required().integer().min(1900).max(currentDate.getFullYear()).required().messages({
       'any.required': errors.missing,
       'number.base': errors.incorrectFormat,
       'number.integer': errors.incorrectFormat,
       'number.min': errors.incorrectFormat,
       'number.max': errors.inPast
+    }),
+    date: Joi.date().messages({
+      'date.base': errors.incorrectFormat
     })
   }).unknown(true);
 
-  // Validate fields
-  const { error } = schema.validate(obj);
-  if (error) {
-    return error.details.reduce((acc, err) => {
-      acc[err.context.key] = createError(err.context.key, err.message);
-      return acc;
-    }, {});
-  }
-
-  return true; // Date is valid
-}
-
-function createError(field: string, message: string) {
-  return { key: field, text: message, href: `#${field}` };
+  return validate(toValidate, schema, true);
 }
 
 function DOBValidation(obj: any, errors): boolean | ValidationErrors {

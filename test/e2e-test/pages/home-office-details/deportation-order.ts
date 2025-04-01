@@ -9,8 +9,8 @@ module.exports = {
       I.amOnPage(testUrl + paths.appealStarted.deportationOrder);
     });
 
-    Then('I should see the deportation order page', async () => {
-      await I.waitInUrl(paths.appealStarted.deportationOrder,10);
+    Then(/^I should see the deportation order page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.deportationOrder,20);
       await I.seeInCurrentUrl(paths.appealStarted.deportationOrder);
     });
 

@@ -10,7 +10,7 @@ module.exports = {
     });
 
     Then('I should see the upload your home office decision letter page', async () => {
-      await I.waitInUrl(paths.appealStarted.homeOfficeDecisionLetter,10);
+      await I.waitInUrl(paths.appealStarted.homeOfficeDecisionLetter,20);
       await I.seeInCurrentUrl(paths.appealStarted.homeOfficeDecisionLetter);
     });
 

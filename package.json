@@ -179,7 +179,7 @@
     "browserify-sign": "^4.2.3",
     "create-ecdh": "^4.0.4",
     "elliptic": "^6.6.1",
-    "babel/runtime": "^7.25.6",
+    "babel/runtime": "^7.26.10",
     "copy-webpack-plugin/glob-parent": "^6.0.2",
     "sauce-connect-launcher/async": "^2.6.4",
     "puppeteer/node-fetch": "^2.6.7",

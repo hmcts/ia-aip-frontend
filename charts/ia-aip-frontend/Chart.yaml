@@ -1,7 +1,7 @@
 apiVersion: v2
 name: ia-aip-frontend
 home: https://github.com/hmcts/ia-aip-frontend
-version: 0.0.52
+version: 0.0.53
 description: IA AIP Frontend
 dependencies:
   - name: nodejs

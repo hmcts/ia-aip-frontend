@@ -177,6 +177,8 @@
     "dyson/lodash": "^4.17.21",
     "codeceptjs/axios": "^0.30.0",
     "browserify-sign": "^4.2.3",
+    "create-ecdh": "^4.0.4",
+    "elliptic": "^6.6.1",
     "copy-webpack-plugin/glob-parent": "^6.0.2",
     "sauce-connect-launcher/async": "^2.6.4",
     "puppeteer/node-fetch": "^2.6.7",

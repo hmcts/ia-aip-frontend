@@ -168,6 +168,7 @@
   },
   "resolutions": {
     "express": "^4.19.2",
+    "path-to-regexp": "^0.1.12",
     "follow-redirects": "^1.15.6",
     "launchdarkly-node-server-sdk/async": "^3.2.2",
     "terser-webpack-plugin/terser": "^5.3.0",

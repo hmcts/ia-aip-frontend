@@ -57,7 +57,7 @@
     "cross-env": "^7.0.3",
     "crypto-browserify": "^3.12.0",
     "csurf": "^1.11.0",
-    "dompurify": "^2.2.9",
+    "dompurify": "^3.2.4",
     "dyson": "^3.0.4",
     "expect-ct": "^0.3.0",
     "express": "^4.19.2",

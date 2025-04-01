@@ -172,7 +172,7 @@
     "launchdarkly-node-server-sdk/async": "^3.2.2",
     "terser-webpack-plugin/terser": "^5.3.0",
     "dyson/lodash": "^4.17.21",
-    "codeceptjs/axios": "^0.28.0",
+    "codeceptjs/axios": "^0.30.0",
     "browserify-sign": "^4.2.2",
     "copy-webpack-plugin/glob-parent": "^6.0.2",
     "sauce-connect-launcher/async": "^2.6.4",
@@ -205,7 +205,10 @@
     "braces": "3.0.3",
     "micromatch": "4.0.8",
     "@types/express-session": "1.17.0",
-    "@types/express": "4.17.1"
+    "@types/express": "4.17.1",
+    "tar-fs": "^3.0.8",
+    "elliptic": "^6.6.1",
+    "@babel/helpers": "^7.26.10"
   },
   "packageManager": "yarn@3.5.1"
 }

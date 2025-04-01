@@ -126,6 +126,25 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
     date
   };
   const schema = Joi.object({
+    year: Joi.number().empty('').required().integer().min(1900).max(currentDate.getFullYear()).required().messages({
+      'any.required': errors.missing,
+      'number.base': errors.incorrectFormat,
+      'number.integer': errors.incorrectFormat,
+      'number.min': errors.incorrectFormat,
+      'number.max': errors.inPast
+    }),
+    month: Joi.number().empty('').required().integer().min(1).max(12).required().messages({
+      'any.required': errors.missing,
+      'number.base': errors.incorrectFormat,
+      'number.integer': errors.incorrectFormat,
+      'number.min': errors.incorrectFormat,
+      'number.max': errors.incorrectFormat
+    }).custom((value, helpers) => {
+      if ((Number(value) > (currentDate.getMonth() + 1)) && (Number(year) === currentDate.getFullYear())) {
+        return helpers.message(errors.inPast);
+      }
+      return value;
+    }),
     day: Joi.number().empty('').required().integer().min(1).max(31).messages({
       'any.required': errors.missing,
       'number.base': errors.incorrectFormat,
@@ -140,25 +159,6 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
         return helpers.message(errors.inPast);
       }
       return value;
-    }),
-    month: Joi.number().empty('').required().integer().min(1).max(12).required().messages({
-      'any.required': errors.missing,
-      'number.base': errors.incorrectFormat,
-      'number.integer': errors.incorrectFormat,
-      'number.min': errors.incorrectFormat,
-      'number.max': errors.incorrectFormat
-    }).custom((value, helpers) => {
-      if ((Number(value) > (currentDate.getMonth() + 1)) && (Number(year) === currentDate.getFullYear())) {
-        return helpers.message(errors.inPast);
-      }
-      return value;
-    }),
-    year: Joi.number().empty('').required().integer().min(1900).max(currentDate.getFullYear()).required().messages({
-      'any.required': errors.missing,
-      'number.base': errors.incorrectFormat,
-      'number.integer': errors.incorrectFormat,
-      'number.min': errors.incorrectFormat,
-      'number.max': errors.inPast
     }),
     date: Joi.date().messages({
       'date.base': errors.incorrectFormat

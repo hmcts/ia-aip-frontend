@@ -44,6 +44,7 @@
     }
   },
   "dependencies": {
+    "@babel/runtime": "^7.26.10",
     "@hmcts/ia-idam-express-middleware": "^6.7.5",
     "@hmcts/os-places-client": "^1.1.2",
     "@hmcts/properties-volume": "^0.0.13",
@@ -59,6 +60,7 @@
     "csurf": "^1.11.0",
     "dompurify": "^2.2.9",
     "dyson": "^3.0.4",
+    "elliptic": "^6.6.1",
     "expect-ct": "^0.3.0",
     "express": "^4.19.2",
     "express-session": "^1.16.2",
@@ -97,9 +99,7 @@
     "webpack-cli": "^5.1.4",
     "webpack-dev-middleware": "^7.3.0",
     "webpack-merge": "^6.0.1",
-    "webpack-node-externals": "^3.0.0",
-    "@babel/runtime": "^7.26.10",
-    "elliptic": "^6.6.1"
+    "webpack-node-externals": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

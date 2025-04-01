@@ -1731,6 +1731,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.26.10":
+  version: 7.27.0
+  resolution: "@babel/runtime@npm:7.27.0"
+  dependencies:
+    regenerator-runtime: ^0.14.0
+  checksum: 3e73d9e65f76fad8f99802b5364c941f4a60c693b3eca66147bb0bfa54cf0fbe017232155e16e3fd83c0a049b51b8d7239efbd73626534abe8b54a6dd57dcb1b
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.0.0, @babel/template@npm:^7.20.7, @babel/template@npm:^7.24.7, @babel/template@npm:^7.25.0":
   version: 7.25.0
   resolution: "@babel/template@npm:7.25.0"
@@ -9826,6 +9835,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.25.2
     "@babel/preset-env": ^7.25.4
+    "@babel/runtime": ^7.26.10
     "@hmcts/ia-idam-express-middleware": ^6.7.5
     "@hmcts/os-places-client": ^1.1.2
     "@hmcts/properties-volume": ^0.0.13
@@ -9872,6 +9882,7 @@ __metadata:
     dompurify: ^2.2.9
     dotenv-extended: ^2.9.0
     dyson: ^3.0.4
+    elliptic: ^6.6.1
     expect-ct: ^0.3.0
     express: ^4.19.2
     express-session: ^1.16.2

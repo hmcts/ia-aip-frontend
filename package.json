@@ -44,7 +44,6 @@
     }
   },
   "dependencies": {
-    "@babel/runtime": "^7.26.10",
     "@hmcts/ia-idam-express-middleware": "^6.7.5",
     "@hmcts/os-places-client": "^1.1.2",
     "@hmcts/properties-volume": "^0.0.13",
@@ -104,6 +103,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
+    "@babel/runtime": "^7.26.10",
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@stryker-mutator/api": "^4.0.0",
     "@stryker-mutator/core": "^4.0.0",

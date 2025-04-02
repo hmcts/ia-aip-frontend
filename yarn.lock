@@ -9655,9 +9655,9 @@ __metadata:
   linkType: hard
 
 "htmlfy@npm:^0.6.0":
-  version: 0.6.5
-  resolution: "htmlfy@npm:0.6.5"
-  checksum: bac4dc73ab27d53dc54d49231c6a07ace0f622c9a01f7cb688995aa4113f7caa57db053884919cacb5844b7d330dd683836365c90e0d1fbddf4913a0ddde2a99
+  version: 0.6.6
+  resolution: "htmlfy@npm:0.6.6"
+  checksum: 6627241794c43df3c8a4e067e146830ae47ed9a3a3910a7fa314203e5bb6f1e6a3158d215cfac7292460e15269da074c093d0efde5fc0ccb2c9df4f1604179eb
   languageName: node
   linkType: hard
 

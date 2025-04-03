@@ -12,11 +12,9 @@ To run the project you will need to have the following installed:
 * Node.js
 * Yarn
 
-
 For information about the software versions used to build this application and a complete list of its dependencies see package.json
 
 ### Running the application
-
 
 Fore Local development you will need to set the following environment variables:
 

@@ -168,6 +168,7 @@
     "nonGlobalStepDefinitions": true
   },
   "resolutions": {
+    "express": "^4.19.2",
     "follow-redirects": "^1.15.6",
     "launchdarkly-node-server-sdk/async": "^3.2.2",
     "terser-webpack-plugin/terser": "^5.3.0",
@@ -207,8 +208,7 @@
     "braces": "3.0.3",
     "micromatch": "4.0.8",
     "@types/express-session": "1.17.0",
-    "@types/express": "4.17.1",
-    "express": "^4.19.2"
+    "@types/express": "4.17.1"
   },
   "packageManager": "yarn@3.5.1"
 }

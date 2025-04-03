@@ -20,7 +20,7 @@ function getChangeRepresentation() {
 }
 
 function getChangeRepresentationDownload() {
-  return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const response = await docmosis.render('noticeOfChangeDetails', getDetails(req));
       if (response.success) {

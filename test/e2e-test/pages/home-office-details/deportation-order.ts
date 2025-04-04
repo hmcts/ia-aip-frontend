@@ -14,7 +14,7 @@ module.exports = {
       await I.seeInCurrentUrl(paths.appealStarted.deportationOrder);
     });
 
-    When('I choose Yes and click save and continue', async () => {
+    When('I choose Yes to deportation order and click save and continue', async () => {
       await I.checkOption('#answer');
       await I.click('Save and continue');
     });

@@ -48,6 +48,8 @@ Scenario: Complete NoC Happy path AiP to LR
    Then I should be taken to the contact-details page
    When I enter text message number "07899999999"
    And I click "Save and continue" button
+   Then I should be taken to the has sponsor page
+   When I choose No and click Continue
    Then I should be taken to the task-list page
    When I go into the Decision with or without a hearing task
    Then I should be taken to the decision type page

@@ -78,7 +78,7 @@ module.exports = {
       await I.click('#hasNewMatters_No');
       await I.click('Continue');
       await I.waitForText('Has the appellant appealed against any other UK immigration decision?', 60);
-      await I.selectOption('#hasOtherAppeals', 'No');
+      await I.click('#hasOtherAppeals-No');
       await I.click('Continue');
       await I.waitForText('Legal representative details', 60);
       await I.fillField('#legalRepName', 'legal rep given name');
@@ -96,7 +96,7 @@ module.exports = {
       await I.waitForText('Current progress of the case', 60);
       const currentUrl = await I.grabCurrentUrl();
       appealReference = currentUrl.split('case-details/')[1].split('#')[0].replaceAll('/', '');
-      await I.selectOption('#next-step', 'Submit your appeal');
+      await I.click('Submit your appeal');
       await I.handleNextStep('Declaration', 'submitAppeal/submitAppealdeclaration', appealReference);
       await I.click('#legalRepDeclaration-hasDeclared');
       await I.click('Submit');

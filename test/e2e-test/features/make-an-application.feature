@@ -24,6 +24,7 @@ Feature: Make an application
     Then I should see letter sent page
     When I enter an on time letter sent date
     Then I click "Save and continue" button
+    Then I should see the upload your home office decision letter page
     When I upload a Home Office decision letter
     And I click "Save and continue" button
     And I choose Yes to deportation order and click save and continue
@@ -110,6 +111,7 @@ Feature: Make an application
     Then I should see letter sent page
     When I enter an on time letter sent date
     Then I click "Save and continue" button
+    Then I should see the upload your home office decision letter page
     When I upload a Home Office decision letter
     And I click "Save and continue" button
     And I choose Yes to deportation order and click save and continue
@@ -196,6 +198,7 @@ Feature: Make an application
     Then I should see letter sent page
     When I enter an on time letter sent date
     Then I click "Save and continue" button
+    Then I should see the upload your home office decision letter page
     When I upload a Home Office decision letter
     And I click "Save and continue" button
     And I choose Yes to deportation order and click save and continue
@@ -282,6 +285,7 @@ Feature: Make an application
     Then I should see letter sent page
     When I enter an on time letter sent date
     Then I click "Save and continue" button
+    Then I should see the upload your home office decision letter page
     When I upload a Home Office decision letter
     And I click "Save and continue" button
     And I choose Yes to deportation order and click save and continue
@@ -368,6 +372,7 @@ Feature: Make an application
     Then I should see letter sent page
     When I enter an on time letter sent date
     Then I click "Save and continue" button
+    Then I should see the upload your home office decision letter page
     When I upload a Home Office decision letter
     And I click "Save and continue" button
     And I choose Yes to deportation order and click save and continue
@@ -452,6 +457,7 @@ Feature: Make an application
     Then I should see letter sent page
     When I enter an on time letter sent date
     Then I click "Save and continue" button
+    Then I should see the upload your home office decision letter page
     When I upload a Home Office decision letter
     And I click "Save and continue" button
     And I choose Yes to deportation order and click save and continue

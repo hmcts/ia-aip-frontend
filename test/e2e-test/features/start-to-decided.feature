@@ -32,6 +32,7 @@ Scenario: Create appeal and force case through to decided
   When I enter an on time letter sent date
   Then I click "Save and continue" button
   And I create a accessibility report for the current page
+  Then I should see the upload your home office decision letter page
   When I upload a Home Office decision letter
   And I click "Save and continue" button
   And I choose Yes to deportation order and click save and continue

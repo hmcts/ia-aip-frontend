@@ -46,6 +46,8 @@ const { startRepresentingYourself } = require('../pages/start-representing-yours
 const { aipToLegalRepNoC } = require('../pages/aip-to-legal-rep-noc/aip-to-legal-rep-noc');
 const { legalRepCreateCase } = require('../pages/legal-rep-create-case/legal-rep-create-case');
 const { applyForFTPAAppellant } = require('../pages/ftpa/apply-for-ftpa');
+const { homeOfficeUpload } = require('../pages/home-office-details/home-office-upload-decision-letter');
+const { deportationOrder } = require('../pages/home-office-details/deportation-order');
 
 const { I } = inject();
 

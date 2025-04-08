@@ -724,19 +724,22 @@ function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunct
 }
 
 function getDocumentViewer(documentManagementService: DocumentManagementService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const documentId = req.params.documentId;
       const documentLocationUrl: string = documentIdToDocStoreUrl(documentId, req.session.appeal.documentMap);
+
       if (documentLocationUrl) {
         const response = await documentManagementService.fetchFile(req, documentLocationUrl);
+
         if (response.statusCode === 200) {
           res.setHeader('content-type', response.headers['content-type']);
-          return res.send(Buffer.from(response.body, 'binary'));
+          res.send(Buffer.from(response.body, 'binary'));
+          return;
         }
       }
-      return res.redirect(paths.common.fileNotFound);
 
+      res.redirect(paths.common.fileNotFound);
     } catch (error) {
       next(error);
     }

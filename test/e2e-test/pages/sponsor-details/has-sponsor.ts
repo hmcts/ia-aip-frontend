@@ -11,6 +11,7 @@ module.exports = {
 
     When('I choose No and click Continue', async () => {
       await I.checkOption('#answer-2');
+      I.wait(3);
       await I.click('Continue');
     });
   }

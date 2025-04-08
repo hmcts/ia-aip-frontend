@@ -63,6 +63,13 @@ describe('session controller', () => {
       expect(res.send).to.have.been.calledWith({
         timeout: sinon.match.typeOf('object')
       });
+      expect(next).to.have.not.been.called;
+    });
+    it('should call next with error if an exception is thrown', () => {
+      const errorStub = sinon.stub(config, 'get').throws(new Error('Config error'));
+      getExtendSession(req as Request, res as Response, next);
+      expect(next).to.have.been.calledWith(sinon.match.instanceOf(Error).and(sinon.match.has('message', 'Config error')));
+      errorStub.restore();
     });
   });
 

@@ -728,10 +728,8 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
     try {
       const documentId = req.params.documentId;
       const documentLocationUrl: string = documentIdToDocStoreUrl(documentId, req.session.appeal.documentMap);
-
       if (documentLocationUrl) {
         const response = await documentManagementService.fetchFile(req, documentLocationUrl);
-
         if (response.statusCode === 200) {
           res.setHeader('content-type', response.headers['content-type']);
           res.send(Buffer.from(response.body, 'binary'));

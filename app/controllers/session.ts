@@ -6,9 +6,13 @@ import { idamConfig } from '../config/idam-config';
 import { checkSession } from '../middleware/session-middleware';
 import { paths } from '../paths';
 
-function getExtendSession(req: Request, res: Response, next: NextFunction) {
-  const timeout = moment().add(config.get('session.cookie.maxAgeInMs'), 'milliseconds');
-  return res.send({ timeout });
+function getExtendSession(req: Request, res: Response, next: NextFunction): void {
+  try {
+    const timeout = moment().add(config.get('session.cookie.maxAgeInMs'), 'milliseconds');
+    res.send({ timeout });
+  } catch (error) {
+    next(error);
+  }
 }
 
 function getSessionEnded(req: Request, res: Response, next: NextFunction) {

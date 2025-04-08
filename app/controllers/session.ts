@@ -7,12 +7,8 @@ import { checkSession } from '../middleware/session-middleware';
 import { paths } from '../paths';
 
 function getExtendSession(req: Request, res: Response, next: NextFunction): void {
-  try {
-    const timeout = moment().add(config.get('session.cookie.maxAgeInMs'), 'milliseconds');
-    res.send({ timeout });
-  } catch (error) {
-    next(error);
-  }
+  const timeout = moment().add(config.get('session.cookie.maxAgeInMs'), 'milliseconds');
+  res.send({ timeout });
 }
 
 function getSessionEnded(req: Request, res: Response, next: NextFunction) {

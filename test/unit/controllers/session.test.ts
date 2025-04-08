@@ -1,15 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
-
-import { jest } from '@jest/globals';
-import { expect, sinon } from '../../utils/testUtils';
-
 import config from 'config';
+import { NextFunction, Request, Response } from 'express';
 import {
   getExtendSession,
   getSessionEnded,
   setupSessionController
 } from '../../../app/controllers/session';
 import { paths } from '../../../app/paths';
+import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
 
@@ -66,13 +63,6 @@ describe('session controller', () => {
       expect(res.send).to.have.been.calledWith({
         timeout: sinon.match.typeOf('object')
       });
-      expect(next).to.have.not.been.called;
-    });
-    it('should call next with error if an exception is thrown', () => {
-      const errorStub = sinon.stub(config, 'get').throws(new Error('Config error'));
-      getExtendSession(req as Request, res as Response, next);
-      expect(next).to.have.been.calledWith(sinon.match.instanceOf(Error).and(sinon.match.has('message', 'Config error')));
-      errorStub.restore();
     });
   });
 

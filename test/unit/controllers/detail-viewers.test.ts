@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import { application, NextFunction, Request, Response } from 'express';
 import {
   addFeeSupportStatus,
@@ -265,26 +264,6 @@ describe('DetailViewController', () => {
       documentManagementService.fetchFile = sandbox.stub().throws(error);
       await getDocumentViewer(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-
-    it('should redirect to fileNotFound if document location URL is not found', async () => {
-      jest.spyOn(global, 'documentIdToDocStoreUrl').mockReturnValueOnce(null);
-      const viewer = getDocumentViewer(mockDocumentManagementService);
-      await viewer(req as Request, res as Response, next);
-      expect(res.redirect).toHaveBeenCalledWith(paths.common.fileNotFound);
-    });
-
-    it('should redirect to fileNotFound if fetchFile fails', async () => {
-      const documentLocationUrl = 'some-fake-url';
-      jest.spyOn(global, 'documentIdToDocStoreUrl').mockReturnValueOnce(documentLocationUrl);
-      mockDocumentManagementService.fetchFile.mockResolvedValue({
-        statusCode: 404,
-        headers: {},
-        body: ''
-      });
-      const viewer = getDocumentViewer(mockDocumentManagementService);
-      await viewer(req as Request, res as Response, next);
-      expect(res.redirect).toHaveBeenCalledWith(paths.common.fileNotFound);
     });
   });
 

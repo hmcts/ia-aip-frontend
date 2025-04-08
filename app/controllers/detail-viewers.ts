@@ -737,7 +737,7 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
         }
       }
 
-      res.redirect(paths.common.fileNotFound);
+      return res.redirect(paths.common.fileNotFound);
     } catch (error) {
       next(error);
     }

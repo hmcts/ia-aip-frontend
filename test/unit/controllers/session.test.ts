@@ -1,12 +1,15 @@
-import config from 'config';
 import { NextFunction, Request, Response } from 'express';
+
+import { jest } from '@jest/globals';
+import { expect, sinon } from '../../utils/testUtils';
+
+import config from 'config';
 import {
   getExtendSession,
   getSessionEnded,
   setupSessionController
 } from '../../../app/controllers/session';
 import { paths } from '../../../app/paths';
-import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
 

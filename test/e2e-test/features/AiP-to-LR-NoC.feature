@@ -27,7 +27,8 @@ Scenario: Complete NoC Happy path AiP to LR
    Then I click "Save and continue" button
    When I upload a Home Office decision letter
    Then I click "Save and continue" button
-   When I choose Yes to deportation order and click save and continue
+   When I choose Yes to deportation order
+   And I click "Save and continue" button
    Then I expect to be redirect back to the task-list
    When I go into the Personal details task
    Then I should be taken to the enter your name page
@@ -62,7 +63,7 @@ Scenario: Complete NoC Happy path AiP to LR
    Then I should see the appeal overview page
    When I click continue
    Then I should be taken to the task-list page
-   When I go to the support to pay the fee page
+   When I click on the Support to pay the fee page
    And I choose Asylum support and click save and continue
    Then I enter my asylum support reference number and click save and continue
    Then I should see the appeal overview page

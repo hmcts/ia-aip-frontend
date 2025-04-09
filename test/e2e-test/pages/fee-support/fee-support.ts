@@ -5,7 +5,7 @@ const testUrl = config.get('testUrl');
 
 module.exports = {
   feeSupport(I) {
-    Given('I am on the fee suppot page', async () => {
+    Given('I am on the fee support page', async () => {
       I.amOnPage(testUrl + paths.appealStarted.feeSupport);
     });
 

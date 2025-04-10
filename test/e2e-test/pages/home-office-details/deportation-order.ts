@@ -14,14 +14,12 @@ module.exports = {
       await I.seeInCurrentUrl(paths.appealStarted.deportationOrder);
     });
 
-    When(/^I choose Yes to deportation order and click save and continue$/, async () => {
+    When(/^I choose Yes to deportation order$/, async () => {
       await I.checkOption('#answer');
-      await I.click('Save and continue');
     });
 
-    When('I choose No and click save and continue', async () => {
+    When('I choose No to deportation order', async () => {
       await I.checkOption('#answer-2');
-      await I.click('Save and continue');
     });
   }
 };

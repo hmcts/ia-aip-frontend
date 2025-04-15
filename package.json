@@ -38,6 +38,11 @@
     "test:mutation-local": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js",
     "genCert": "mkdir -p keys && openssl req -x509 -newkey rsa:4096 -keyout keys/server.key -out keys/server.cert -sha256 -days 365 -nodes -subj \"/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=CommonNameOrHostname\""
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint"
+    }
+  },
   "dependencies": {
     "@hmcts/ia-idam-express-middleware": "^6.7.5",
     "@hmcts/os-places-client": "^1.1.2",

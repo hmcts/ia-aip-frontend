@@ -3643,7 +3643,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/multer@npm:^1.4.4":
+"@types/multer@npm:^1.4.5-lts.1":
   version: 1.4.12
   resolution: "@types/multer@npm:1.4.12"
   dependencies:
@@ -10112,7 +10112,7 @@ __metadata:
     "@types/joi": ^14.3.3
     "@types/lodash": ^4.14.157
     "@types/mocha": 10.0.0
-    "@types/multer": ^1.4.4
+    "@types/multer": ^1.4.5-lts.1
     "@types/node": ^13.9.0
     "@types/nunjucks": ^3.1.2
     "@types/puppeteer": ^5.4.4
@@ -17729,9 +17729,9 @@ __metadata:
   linkType: hard
 
 "type-fest@npm:^4.18.2":
-  version: 4.39.1
-  resolution: "type-fest@npm:4.39.1"
-  checksum: 71ce0e25822d5d984c8882e3243c42c741f089c003d89222dc361a133698d8ac021c18a9139ba3baf0fee2f523383422b8c5aaa390b1b3a98140f23dd0f44795
+  version: 4.40.0
+  resolution: "type-fest@npm:4.40.0"
+  checksum: af2863a707dea6bf7ed85262c90b2a54afc856149a591d1ce69df48093bfdc38c3dc66385511b3568f6ad3beb930aa852e5ba1919d445d58b803a4626442fabc
   languageName: node
   linkType: hard
 

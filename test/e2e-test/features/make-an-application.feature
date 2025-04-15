@@ -26,8 +26,8 @@ Feature: Make an application
     Then I click "Save and continue" button
     When I upload a Home Office decision letter
     And I click "Save and continue" button
-    Then I should see the deportation order page
-    And I choose Yes and click save and continue
+    And I choose Yes to deportation order
+    And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
     When I go into the Personal details task
     Then I should be taken to the enter your name page
@@ -48,6 +48,8 @@ Feature: Make an application
     Then I should be taken to the contact-details page
     When I enter text message number "07899999999"
     And I click "Save and continue" button
+    Then I should be taken to the has sponsor page
+    When I choose No and click Continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -60,6 +62,10 @@ Feature: Make an application
     Then I should see the appeal overview page
     When I click continue
     Then I expect to be redirect back to the task-list
+    When I click on the Support to pay the fee page
+    And I choose Asylum support and click save and continue
+    Then I enter my asylum support reference number and click save and continue
+    Then I should see the appeal overview page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
@@ -111,8 +117,8 @@ Feature: Make an application
     Then I click "Save and continue" button
     When I upload a Home Office decision letter
     And I click "Save and continue" button
-    Then I should see the deportation order page
-    And I choose Yes and click save and continue
+    And I choose Yes to deportation order
+    And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
     When I go into the Personal details task
     Then I should be taken to the enter your name page
@@ -133,6 +139,8 @@ Feature: Make an application
     Then I should be taken to the contact-details page
     When I enter text message number "07899999999"
     And I click "Save and continue" button
+    Then I should be taken to the has sponsor page
+    When I choose No and click Continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -145,6 +153,10 @@ Feature: Make an application
     Then I should see the appeal overview page
     When I click continue
     Then I expect to be redirect back to the task-list
+    When I click on the Support to pay the fee page
+    And I choose Asylum support and click save and continue
+    Then I enter my asylum support reference number and click save and continue
+    Then I should see the appeal overview page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
@@ -196,8 +208,8 @@ Feature: Make an application
     Then I click "Save and continue" button
     When I upload a Home Office decision letter
     And I click "Save and continue" button
-    Then I should see the deportation order page
-    And I choose Yes and click save and continue
+    And I choose Yes to deportation order
+    And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
     When I go into the Personal details task
     Then I should be taken to the enter your name page
@@ -218,6 +230,8 @@ Feature: Make an application
     Then I should be taken to the contact-details page
     When I enter text message number "07899999999"
     And I click "Save and continue" button
+    Then I should be taken to the has sponsor page
+    When I choose No and click Continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -230,6 +244,10 @@ Feature: Make an application
     Then I should see the appeal overview page
     When I click continue
     Then I expect to be redirect back to the task-list
+    When I click on the Support to pay the fee page
+    And I choose Asylum support and click save and continue
+    Then I enter my asylum support reference number and click save and continue
+    Then I should see the appeal overview page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
@@ -281,8 +299,8 @@ Feature: Make an application
     Then I click "Save and continue" button
     When I upload a Home Office decision letter
     And I click "Save and continue" button
-    Then I should see the deportation order page
-    And I choose Yes and click save and continue
+    And I choose Yes to deportation order
+    And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
     When I go into the Personal details task
     Then I should be taken to the enter your name page
@@ -303,6 +321,8 @@ Feature: Make an application
     Then I should be taken to the contact-details page
     When I enter text message number "07899999999"
     And I click "Save and continue" button
+    Then I should be taken to the has sponsor page
+    When I choose No and click Continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -315,6 +335,10 @@ Feature: Make an application
     Then I should see the appeal overview page
     When I click continue
     Then I expect to be redirect back to the task-list
+    When I click on the Support to pay the fee page
+    And I choose Asylum support and click save and continue
+    Then I enter my asylum support reference number and click save and continue
+    Then I should see the appeal overview page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
@@ -366,8 +390,8 @@ Feature: Make an application
     Then I click "Save and continue" button
     When I upload a Home Office decision letter
     And I click "Save and continue" button
-    Then I should see the deportation order page
-    And I choose Yes and click save and continue
+    And I choose Yes to deportation order
+    And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
     When I go into the Personal details task
     Then I should be taken to the enter your name page
@@ -388,6 +412,8 @@ Feature: Make an application
     Then I should be taken to the contact-details page
     When I enter text message number "07899999999"
     And I click "Save and continue" button
+    Then I should be taken to the has sponsor page
+    When I choose No and click Continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -400,6 +426,10 @@ Feature: Make an application
     Then I should see the appeal overview page
     When I click continue
     Then I expect to be redirect back to the task-list
+    When I click on the Support to pay the fee page
+    And I choose Asylum support and click save and continue
+    Then I enter my asylum support reference number and click save and continue
+    Then I should see the appeal overview page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
@@ -449,8 +479,8 @@ Feature: Make an application
     Then I click "Save and continue" button
     When I upload a Home Office decision letter
     And I click "Save and continue" button
-    Then I should see the deportation order page
-    And I choose Yes and click save and continue
+    And I choose Yes to deportation order
+    And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
     When I go into the Personal details task
     Then I should be taken to the enter your name page
@@ -471,6 +501,8 @@ Feature: Make an application
     Then I should be taken to the contact-details page
     When I enter text message number "07899999999"
     And I click "Save and continue" button
+    Then I should be taken to the has sponsor page
+    When I choose No and click Continue
     Then I should be taken to the task-list page
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -483,6 +515,10 @@ Feature: Make an application
     Then I should see the appeal overview page
     And I click continue
     Then I should be taken to the task-list page
+    When I click on the Support to pay the fee page
+    And I choose Asylum support and click save and continue
+    Then I enter my asylum support reference number and click save and continue
+    Then I should see the appeal overview page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth

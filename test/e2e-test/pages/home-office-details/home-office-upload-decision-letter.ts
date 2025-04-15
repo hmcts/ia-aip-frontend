@@ -4,13 +4,13 @@ const config = require('config');
 const testUrl = config.get('testUrl');
 
 module.exports = {
-  deportationOrder(I) {
+  homeOfficeUpload(I) {
     Given('I am on the upload your home office decision letter page', async () => {
       I.amOnPage(testUrl + paths.appealStarted.homeOfficeDecisionLetter);
     });
 
     Then('I should see the upload your home office decision letter page', async () => {
-      await I.waitInUrl(paths.appealStarted.homeOfficeDecisionLetter,10);
+      await I.waitInUrl(paths.appealStarted.homeOfficeDecisionLetter,20);
       await I.seeInCurrentUrl(paths.appealStarted.homeOfficeDecisionLetter);
     });
 

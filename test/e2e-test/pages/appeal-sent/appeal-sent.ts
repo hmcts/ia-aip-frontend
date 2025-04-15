@@ -40,7 +40,7 @@ module.exports = {
       await I.click('Continue');
       await I.see('Confirm your payment', 'h1');
       await I.click('Confirm payment');
-      await I.waitForText('What happens next', 60);
+      await I.see('What happens next', 'h2');
     });
 
     Then('I am on the appeal details sent with payment page', async () => {

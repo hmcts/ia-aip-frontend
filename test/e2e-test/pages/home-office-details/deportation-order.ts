@@ -9,19 +9,17 @@ module.exports = {
       I.amOnPage(testUrl + paths.appealStarted.deportationOrder);
     });
 
-    Then('I should see the deportation order page', async () => {
-      await I.waitInUrl(paths.appealStarted.deportationOrder,10);
+    Then(/^I should see the deportation order page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.deportationOrder,20);
       await I.seeInCurrentUrl(paths.appealStarted.deportationOrder);
     });
 
-    When('I choose Yes and click save and continue', async () => {
+    When(/^I choose Yes to deportation order$/, async () => {
       await I.checkOption('#answer');
-      await I.click('Save and continue');
     });
 
-    When('I choose No and click save and continue', async () => {
+    When('I choose No to deportation order', async () => {
       await I.checkOption('#answer-2');
-      await I.click('Save and continue');
     });
   }
 };

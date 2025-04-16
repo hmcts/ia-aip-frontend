@@ -60,7 +60,7 @@
     "dompurify": "^3.2.4",
     "dyson": "^3.0.4",
     "expect-ct": "^0.3.0",
-    "express": "^4.19.2",
+    "express": "5.0.1",
     "express-session": "^1.16.2",
     "google-libphonenumber": "^3.2.21",
     "govuk-frontend": "^4.7.0",

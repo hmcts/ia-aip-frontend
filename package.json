@@ -205,8 +205,7 @@
     "braces": "3.0.3",
     "micromatch": "4.0.8",
     "@types/express-session": "1.17.0",
-    "@types/express": "4.17.1",
-    "busboy": "1.0.0"
+    "@types/express": "4.17.1"
   },
   "packageManager": "yarn@3.5.1"
 }

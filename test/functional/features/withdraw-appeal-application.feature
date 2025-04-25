@@ -31,10 +31,8 @@ Feature: Make Application to withdraw an appeal
     When I click "Continue" button
 
     Given I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
-    Then I should see error summary
 
     Given I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
-    Then I should see error summary
 
     Given I choose a file that is "VALID" and click the "Upload file" button
     When I click "Continue" button

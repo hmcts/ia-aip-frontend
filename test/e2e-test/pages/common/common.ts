@@ -323,7 +323,7 @@ module.exports = {
     });
 
     Then(/^I should see error summary$/,async () => {
-      await I.wait(5);
+      await I.wait(2);
       await I.seeInTitle('Error: ');
     });
 

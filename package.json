@@ -207,5 +207,8 @@
     "@types/express-session": "1.17.0",
     "@types/express": "4.17.1"
   },
+  "overrides": {
+    "cross-spawn": "^7.0.5"
+  },
   "packageManager": "yarn@3.5.1"
 }

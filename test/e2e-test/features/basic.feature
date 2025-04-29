@@ -133,9 +133,6 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
-    And I go to appeal overview page
-    Then I should see the appeal overview page
-    When I click continue
     Then I expect to be redirect back to the task-list
     When I click on the Support to pay the fee page
     And I choose Asylum support and click save and continue
@@ -279,9 +276,6 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
-    And I go to appeal overview page
-    Then I should see the appeal overview page
-    When I click continue
     Then I expect to be redirect back to the task-list
     When I click on the Support to pay the fee page
     And I choose Asylum support and click save and continue
@@ -358,9 +352,6 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
-    And I go to appeal overview page
-    Then I should see the appeal overview page
-    When I click continue
     Then I expect to be redirect back to the task-list
     When I click on the Support to pay the fee page
     And I choose Asylum support and click save and continue
@@ -430,9 +421,6 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
-    And I go to appeal overview page
-    Then I should see the appeal overview page
-    When I click continue
     Then I expect to be redirect back to the task-list
     When I click on the Support to pay the fee page
     And I choose Asylum support and click save and continue

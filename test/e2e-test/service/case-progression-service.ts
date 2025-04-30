@@ -538,8 +538,8 @@ module.exports = {
 
     When(/^I List without requirements$/, async () => {
       await I.selectOption('#next-step', 'List without requirements');
-      await I.handleNextStep('Length', 'listCaseWithoutHearingRequirements/listCaseWithoutHearingRequirementslistCaseWithoutHearing', onlineCaseReference);
-      await I.selectOption('#listCaseHearingLength', '1 hour');
+      await I.handleNextStep('Listing length', 'listCaseWithoutHearingRequirements/listCaseWithoutHearingRequirementslistCaseWithoutHearing', onlineCaseReference);
+      await I.fillField('#listingLength_hours', '1');
       await I.click('Continue');
       await I.waitForText('What hearing channel type is required?', 30);
       await I.checkOption('#hearingChannel_INTER');

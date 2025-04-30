@@ -8,5 +8,11 @@ module.exports = {
     Given('I should be taken to the has sponsor page', async () => {
       I.amOnPage(testUrl + paths.appealStarted.hasSponsor);
     });
+
+    When('I choose No and click Continue', async () => {
+      await I.checkOption('#answer-2');
+      I.wait(3);
+      await I.click('Continue');
+    });
   }
 };

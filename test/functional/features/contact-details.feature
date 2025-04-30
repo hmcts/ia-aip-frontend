@@ -29,5 +29,7 @@ Feature: Contact details
     Given I am on the contact details page
     When I enter text message number "07899999999"
     And I click "Save and continue" button
+    Then I should be taken to the has sponsor page
+    Then I choose No and click Continue
     Then I should see the task-list page
     And I should be able to click "Decision type"

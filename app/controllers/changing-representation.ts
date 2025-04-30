@@ -20,13 +20,13 @@ function getChangeRepresentation() {
 }
 
 function getChangeRepresentationDownload() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const response = await docmosis.render('noticeOfChangeDetails', getDetails(req));
       if (response.success) {
         res.setHeader('content-type', 'application/pdf');
         res.setHeader('content-disposition', 'attachment; filename="Notice of Change details.pdf"');
-        return res.send(response.document);
+        res.send(response.document);
       } else {
         next(response.error);
       }

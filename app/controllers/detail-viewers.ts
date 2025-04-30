@@ -44,11 +44,11 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
   });
   const appellantInUk = application.appellantInUk && application.appellantInUk === 'Yes';
-  const hasSponsor = application.appellantInUk && application.appellantInUk === 'No' && application.hasSponsor && application.hasSponsor === 'Yes';
+  const hasSponsor = application.hasSponsor && application.hasSponsor === 'Yes';
   let rows = [];
   let rowsCont = [];
 
-  if (appellantInUk) {
+  if (appellantInUk && !hasSponsor) {
 
     rows = [
       application.appellantInUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantInUk, [application.appellantInUk], null)
@@ -87,7 +87,7 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     rows.push(...rowsCont);
   }
 
-  if (!appellantInUk && hasSponsor) {
+  if (hasSponsor) {
 
     rows = [
       application.appellantInUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantInUk, [application.appellantInUk], null)
@@ -179,7 +179,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
   });
   const appellantInUk = application.appellantInUk && application.appellantInUk === 'Yes';
-  const hasSponsor = application.appellantInUk && application.appellantInUk === 'No' && application.hasSponsor && application.hasSponsor === 'Yes';
+  const hasSponsor = application.hasSponsor && application.hasSponsor === 'Yes';
   const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
 
   let aboutAppealRows = [];
@@ -724,7 +724,7 @@ function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunct
 }
 
 function getDocumentViewer(documentManagementService: DocumentManagementService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const documentId = req.params.documentId;
       const documentLocationUrl: string = documentIdToDocStoreUrl(documentId, req.session.appeal.documentMap);
@@ -732,11 +732,11 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
         const response = await documentManagementService.fetchFile(req, documentLocationUrl);
         if (response.statusCode === 200) {
           res.setHeader('content-type', response.headers['content-type']);
-          return res.send(Buffer.from(response.body, 'binary'));
+          res.send(Buffer.from(response.body, 'binary'));
+          return;
         }
       }
-      return res.redirect(paths.common.fileNotFound);
-
+      res.redirect(paths.common.fileNotFound);
     } catch (error) {
       next(error);
     }

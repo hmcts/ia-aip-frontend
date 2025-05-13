@@ -56,10 +56,10 @@ module.exports = {
 
     Then(/^I submit appeal for a decision (with|without) hearing (non paid|paid) appeal$/, async (hearingType, paymentChoice) => {
       if (paymentChoice === 'non paid') {
-        await I.click('Submit your appeal');
+        await I.click('Submit');
       } else {
         if (hearingType === 'with') {
-          await I.click('Submit and continue to pay £140 by debit or credit card');
+          await I.click('Submit');
         } else {
           await I.click('Submit and continue to pay £80 by debit or credit card');
         }

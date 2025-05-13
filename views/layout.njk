@@ -238,6 +238,7 @@
 {% block main %}
   <div class="govuk-width-container {{ containerClasses }}">
     {% block beforeContent %}
+      {% include "./notification-banner.njk" %}
       {% set feedbackLink = [
           "<a href=",
           i18n.phaseBanner.feedbackSurveyLik.href,

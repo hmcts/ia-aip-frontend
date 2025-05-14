@@ -34,6 +34,7 @@ module.exports = {
     });
 
     When(/^I enter my asylum support reference number and click save and continue$/, async () => {
+      await I.waitInUrl(paths.appealStarted.asylumSupport,20);
       I.fillField('#asylumSupportRefNumber', '123456789');
       await I.click('Save and continue');
     });

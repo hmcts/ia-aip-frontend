@@ -239,11 +239,6 @@
 {% block main %}
   <div class="govuk-width-container {{ containerClasses }}">
     {% block beforeContent %}
-      {% if banner.enabled == true %}
-          {% block notificationBanner %}
-            {% include "./notification-banner.njk" %}
-          {% endblock %}
-      {% endif %}
       {% set feedbackLink = [
           "<a href=",
           i18n.phaseBanner.feedbackSurveyLik.href,
@@ -268,6 +263,11 @@
       {% endif %}
     {% endblock %}
     <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %} tabindex="-1">
+      {% if banner.enabled == true %}
+          {% block notificationBanner %}
+            {% include "./notification-banner.njk" %}
+          {% endblock %}
+      {% endif %}
       {% block content %}{% endblock %}
     </main>
   </div>

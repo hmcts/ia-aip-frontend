@@ -52,6 +52,14 @@ nodejs:
         - docmosis-access-key
         - customer-services-telephone
         - customer-services-email
+
+  banner:
+    enabled: true
+    titleText:
+      en: 'Scheduled Maintenance'
+    messageHtml:
+      en: 'Scheduled maintence on 28th September 2023 from 8:00 AM to 9:00 AM. The service will be unavailable during this time.'
+
 redis:
   enabled: false
   architecture: standalone

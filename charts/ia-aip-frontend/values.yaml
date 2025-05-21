@@ -27,7 +27,7 @@ nodejs:
     CASE_DOCUMENT_AM_URL: "http://ccd-case-document-am-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     SECURE_SESSION: true
     TRACKING_SCRIPTS: false
-    BANNER_ENABLED: 'false'
+    BANNER_ENABLED: 'true'
     BANNER_TITLE_TEXT_EN: 'Scheduled Maintenance'
     BANNER_TITLE_TEXT_CY: 'Cynhelir cynnal a chadw'
     BANNER_MESSAGE_HTML_EN: 'Scheduled maintenance on 28th September 2023 from 8:00 AM to 9:00 AM. The service will be unavailable during this time.'

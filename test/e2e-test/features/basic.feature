@@ -10,8 +10,7 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I go into the Appeal type task
-    Then I should be taken to the Is the appellant in the UK page
+    When I click on the type-of-appeal link
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
@@ -84,8 +83,7 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I go into the Appeal type task
-    Then I should be taken to the Is the appellant in the UK page
+    When I click on the type-of-appeal link
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
@@ -133,6 +131,9 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
+    And I go to appeal overview page
+    Then I should see the appeal overview page
+    When I click continue
     Then I expect to be redirect back to the task-list
     When I click on the Support to pay the fee page
     And I choose Asylum support and click save and continue
@@ -153,8 +154,7 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I go into the Appeal type task
-    Then I should be taken to the Is the appellant in the UK page
+    When I click on the type-of-appeal link
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
@@ -227,8 +227,7 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I go into the Appeal type task
-    Then I should be taken to the Is the appellant in the UK page
+    When I click on the type-of-appeal link
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
@@ -276,6 +275,9 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
+    And I go to appeal overview page
+    Then I should see the appeal overview page
+    When I click continue
     Then I expect to be redirect back to the task-list
     When I click on the Support to pay the fee page
     And I choose Asylum support and click save and continue
@@ -304,8 +306,7 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I go into the Appeal type task
-    Then I should be taken to the Is the appellant in the UK page
+    When I click on the type-of-appeal link
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
@@ -370,8 +371,7 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I go into the Appeal type task
-    Then I should be taken to the Is the appellant in the UK page
+    When I click on the type-of-appeal link
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
@@ -435,8 +435,7 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I go into the Appeal type task
-    Then I should be taken to the Is the appellant in the UK page
+    When I click on the type-of-appeal link
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page

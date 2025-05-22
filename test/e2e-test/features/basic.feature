@@ -133,11 +133,14 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
+    And I go to appeal overview page
+    Then I should see the appeal overview page
+    When I click continue
     Then I expect to be redirect back to the task-list
     When I click on the Support to pay the fee page
     And I choose Asylum support and click save and continue
     Then I enter my asylum support reference number and click save and continue
-    Then I should see the appeal overview page
+    Then I should be taken to the task-list page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
@@ -276,16 +279,21 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
+    And I go to appeal overview page
+    Then I should see the appeal overview page
+    When I click continue
     Then I expect to be redirect back to the task-list
     When I click on the Support to pay the fee page
     And I choose Asylum support and click save and continue
     Then I enter my asylum support reference number and click save and continue
-    Then I should see the appeal overview page
+    Then I should be taken to the task-list page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
     And I submit appeal for a decision with hearing paid appeal
-    Then I am on the appeal details non PA payment submitted page
+    Then I am on the appeal details sent page
+    And I see "You have sent your appeal details" in title
+    And I click on the See your appeal progress link
     When I click "Pay for this appeal" button
     Then I am on the make payment page
     When I make a successful payment
@@ -353,10 +361,6 @@ Feature: Basic Appeal Submissions
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
     Then I expect to be redirect back to the task-list
-    When I click on the Support to pay the fee page
-    And I choose Asylum support and click save and continue
-    Then I enter my asylum support reference number and click save and continue
-    Then I should see the appeal overview page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
@@ -421,11 +425,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
-    Then I expect to be redirect back to the task-list
-    When I click on the Support to pay the fee page
-    And I choose Asylum support and click save and continue
-    Then I enter my asylum support reference number and click save and continue
-    Then I should see the appeal overview page
+    Then I should be taken to the task-list page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth

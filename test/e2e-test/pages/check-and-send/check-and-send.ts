@@ -56,10 +56,10 @@ module.exports = {
 
     Then(/^I submit appeal for a decision (with|without) hearing (non paid|paid) appeal$/, async (hearingType, paymentChoice) => {
       if (paymentChoice === 'non paid') {
-        await I.click('Submit your appeal');
+        await I.click('Submit');
       } else {
         if (hearingType === 'with') {
-          await I.click('Submit and continue to pay £140 by debit or credit card');
+          await I.click('Submit');
         } else {
           await I.click('Submit and continue to pay £80 by debit or credit card');
         }
@@ -67,8 +67,6 @@ module.exports = {
     });
 
     Then(/^I submit a failed payment appeal with (Card type not accepted|Card declined|Card expired|Invalid CVC code|General error)$/, async (cardError) => {
-      await I.waitForText('Enter card details', 30);
-      await I.see('Enter card details', 'h1');
       let cardNumber;
       if (cardError === 'Card type not accepted') {
         cardNumber = '6759649826438453';

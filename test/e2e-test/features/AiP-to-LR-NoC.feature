@@ -63,7 +63,7 @@ Scenario: Complete NoC Happy path AiP to LR
    When I click on the Support to pay the fee page
    And I choose Asylum support and click save and continue
    Then I enter my asylum support reference number and click save and continue
-   Then I should see the appeal overview page
+   Then I should be taken to the task-list page
    When I go into the Check and send your appeal details task
    Then I should be taken to the check-and-send page
    When I check the statement of truth

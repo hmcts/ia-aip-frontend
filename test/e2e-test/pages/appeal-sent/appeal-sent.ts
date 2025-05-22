@@ -23,7 +23,7 @@ module.exports = {
     });
 
     Then('I am on the make payment page', async () => {
-      await I.waitForText('Enter card details', 20);
+      await I.see('Enter card details', 'h1');
     });
 
     When('I make a successful payment', async () => {

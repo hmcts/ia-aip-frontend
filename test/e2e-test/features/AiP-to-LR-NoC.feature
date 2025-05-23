@@ -10,7 +10,7 @@ Scenario: Complete NoC Happy path AiP to LR
    And I should see the 'do this next section' for 'New - Appeal started'
    When I click continue
    Then I should see the task-list page
-   When I go into the Appeal type task
+   When I click on the type-of-appeal link
    Then I should be taken to the Is the appellant in the UK page
    When I select Yes
    And I click "Continue" button

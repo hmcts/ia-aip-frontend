@@ -12,8 +12,7 @@ Scenario: Create appeal and force case through to decided
   When I click continue
   Then I should see the task-list page
   And I create a accessibility report for the current page
-  When I go into the Appeal type task
-  Then I should be taken to the Is the appellant in the UK page
+  When I click on the type-of-appeal link
   And I create a accessibility report for the current page
   When I select Yes
   And I click "Continue" button
@@ -78,6 +77,9 @@ Scenario: Create appeal and force case through to decided
   Then I should see the appeal overview page
   When I click continue
   Then I expect to be redirect back to the task-list
+  When I click on the Support to pay the fee page
+  And I choose Asylum support and click save and continue
+  Then I enter my asylum support reference number and click save and continue
   When I go into the Check and send your appeal details task
   Then I should be taken to the check-and-send page
   And I create a accessibility report for the current page

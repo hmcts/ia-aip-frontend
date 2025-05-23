@@ -5,10 +5,6 @@
 {% from "components/progress-bar.njk" import progressBar with context %}
 
 {% block content %}
-    {% block notificationBanner %}
-      {% include "./notification-banner.njk" %}
-    {% endblock %}
-
   <h1 class="govuk-heading-xl">{{ i18n.pages.start.header }}</h1>
 
   <p class="govuk-body"> {{ i18n.pages.eligibleStartPage.newService }}</p>

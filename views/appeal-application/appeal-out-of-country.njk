@@ -19,9 +19,6 @@
 
     <fieldset class="govuk-fieldset">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-        {% block notificationBanner %}
-          {% include "../notification-banner.njk" %}
-        {% endblock %}
         <h1 class="govuk-fieldset__heading">{{ question }}</h1>
         {% if description %}
           <div id="answer-hint" class="govuk-hint">{{ description }}</div>

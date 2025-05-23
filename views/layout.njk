@@ -263,9 +263,10 @@
       {% endif %}
     {% endblock %}
     <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %} tabindex="-1">
-        {% block notificationBanner %}
-          {% include "./notification-banner.njk" %}
-        {% endblock %}
+        {{ govukNotificationBanner({
+          titleText: banner.titleText,
+          html: banner.messageHtml
+        }) }}
       {% block content %}
       {% endblock %}
     </main>

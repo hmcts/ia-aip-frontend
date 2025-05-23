@@ -136,5 +136,16 @@
   },
   "govNotify": {
     "accessKey": "GOV_NOTIFY_KEY"
+  },
+  "notificationBanner": {
+    "enabled": "BANNER_ENABLED",
+    "titleText": {
+      "en": "BANNER_TITLE_TEXT_EN",
+      "cy": "BANNER_TITLE_TEXT_CY"
+    },
+    "messageHtml": {
+      "en": "BANNER_MESSAGE_HTML_EN",
+      "cy": "BANNER_MESSAGE_HTML_CY"
+    }
   }
 }

@@ -17,6 +17,11 @@ nodejs:
     PCQ_RETURN_URL: https://${SERVICE_FQDN}/about-appeal
     NODE_ENV: development
     TEST: 1
+    BANNER_ENABLED: 'true'
+    BANNER_TITLE_TEXT_EN: 'Scheduled Maintenance'
+    BANNER_TITLE_TEXT_CY: 'Cynhelir cynnal a chadw'
+    BANNER_MESSAGE_HTML_EN: 'Scheduled maintenance on 28th September 2024 from 8:00 AM to 9:00 AM. The service will be unavailable during this time.'
+    BANNER_MESSAGE_HTML_CY: 'Cynhelir cynnal a chadw ar 28ain Medi 2024 rhwng 8:00 AM a 9:00 AM. Bydd y gwasanaeth ar gael yn ystod y cyfnod hwn.'
   keyVaults:
     ia:
       secrets:

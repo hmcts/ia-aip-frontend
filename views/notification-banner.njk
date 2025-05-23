@@ -1,0 +1,6 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{{ govukNotificationBanner({
+  titleText: banner.titleText,
+  html: banner.messageHtml
+}) }}

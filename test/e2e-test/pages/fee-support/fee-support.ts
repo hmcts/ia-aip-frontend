@@ -23,6 +23,11 @@ module.exports = {
       await I.seeInCurrentUrl(paths.appealStarted.feeSupport);
     });
 
+    When(/^I click on support to pay the fee link and it takes me to the asylum support page$/, async () => {
+      await I.click('#feeSupportLink');
+      await I.seeInCurrentUrl(paths.appealStarted.asylumSupport);
+    });
+
     Then(/^I go to the support to pay the fee page$/, async () => {
       await I.waitInUrl(paths.appealStarted.feeSupport,20);
       await I.seeInCurrentUrl(paths.appealStarted.feeSupport);

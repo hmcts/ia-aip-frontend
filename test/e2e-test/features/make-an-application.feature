@@ -473,7 +473,7 @@ Feature: Make an application
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
     Then I should be taken to the task-list page
-    When I click on the Support to pay the fee page
+    When I click on support to pay the fee link and it takes me to the asylum support page
     And I choose Asylum support and click save and continue
     Then I enter my asylum support reference number and click save and continue
     Then I should be taken to the task-list page

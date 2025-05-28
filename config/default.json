@@ -138,7 +138,7 @@
     "accessKey": "GOV_NOTIFY_KEY"
   },
   "notificationBanner": {
-    "enabled": "BANNER_ENABLED",
+    "enabled": "false",
     "titleText": {
       "en": "BANNER_TITLE_TEXT_EN",
       "cy": "BANNER_TITLE_TEXT_CY"

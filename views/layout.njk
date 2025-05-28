@@ -263,11 +263,11 @@
       {% endif %}
     {% endblock %}
     <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %} tabindex="-1">
-      {% if i18n.banner.enabled == "true" %}
-      {{ govukNotificationBanner({
-                  titleText: i18n.banner.titleText,
-                  html: i18n.banner.messageHtml
-      }) }}
+      {% if i18n.banner.enabled == 'true' %}
+          {{ govukNotificationBanner({
+                      titleText: i18n.banner.titleText,
+                      html: i18n.banner.messageHtml
+          }) }}
       {% endif %}
       {% block content %}
       {% endblock %}

@@ -263,7 +263,7 @@
       {% endif %}
     {% endblock %}
     <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %} tabindex="-1">
-      {% if i18n.banner.enabled == 'true' %}
+      {% if i18n.banner.enabled %}
           {{ govukNotificationBanner({
                       titleText: i18n.banner.titleText,
                       html: i18n.banner.messageHtml

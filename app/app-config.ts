@@ -26,18 +26,15 @@ function configureNunjucks(app: express.Application) {
     noCache: true
   });
   nunjucksEnv.addGlobal('environment', currentEnv);
+  nunjucksEnv.addGlobal('notificationBannerEnabled', config.get('notificationBanner.enabled'));
+  nunjucksEnv.addGlobal('notificationBannerTitle', config.get('notificationBanner.titleText.en'));
+  nunjucksEnv.addGlobal('notificationBannerMessageHtml', config.get('notificationBanner.messageHtml.en'));
   nunjucksEnv.addFilter('eval', function(text: string) {
     return nunjucks.renderString(text, this.ctx);
   });
   nunjucksEnv.addFilter('path', function(path: string) {
     return _.get(paths, path);
   });
-
-  const banner: {
-    enabled: () => config.get('notificationBanner.enabled'),
-    titleText: () => config.get('notificationBanner.titleText.en'),
-    messageHtml: () => config.get('notificationBanner.messageHtml.en'),
-  },
 }
 
 function configureS2S(app: express.Application) {

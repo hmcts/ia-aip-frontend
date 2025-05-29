@@ -264,8 +264,8 @@
     {% endblock %}
     <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %} tabindex="-1">
           {{ govukNotificationBanner({
-                      titleText: notificationBanner.titleText,
-                      html: notificationBanner.messageHtml
+                      titleText: notificationBannerTitle,
+                      html: notificationBannerMessageHtml
           }) }}
       {% block content %}
       {% endblock %}

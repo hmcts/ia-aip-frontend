@@ -138,8 +138,8 @@
     "accessKey": "GOV_NOTIFY_KEY"
   },
   "notificationBanner": {
-    "enabled": "true",
-    "titleText": "Important",
-    "messageHtml": "Scheduled maintence on 28th September 2022 from 8:00 AM to 9:00 AM. The service will be unavailable during this time."
+    "enabled": "BANNER_ENABLED",
+    "titleText": "BANNER_TITLE_TEXT",
+    "messageHtml": "BANNER_MESSAGE_HTML"
   }
 }

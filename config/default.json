@@ -138,7 +138,7 @@
     "accessKey": "GOV_NOTIFY_KEY"
   },
   "notificationBanner": {
-    "enabled": "false",
+    "enabled": "true",
     "titleText": {
       "en": "Important",
       "cy": "Pwysig"

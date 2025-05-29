@@ -32,6 +32,12 @@ function configureNunjucks(app: express.Application) {
   nunjucksEnv.addFilter('path', function(path: string) {
     return _.get(paths, path);
   });
+
+  const banner: {
+    enabled: () => config.get('notificationBanner.enabled'),
+    titleText: () => config.get('notificationBanner.titleText.en'),
+    messageHtml: () => config.get('notificationBanner.messageHtml.en'),
+  },
 }
 
 function configureS2S(app: express.Application) {

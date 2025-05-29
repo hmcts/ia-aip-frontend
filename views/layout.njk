@@ -11,6 +11,7 @@
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "components/header.njk" import header with context %}
 {% from "components/timeout-modal.njk" import timeoutModal with context %}
+{% from "config" import config %}
 
 {% set serviceName = i18n.serviceName %}
 {% set serviceUrl = i18n.serviceUrl %}
@@ -264,8 +265,8 @@
     {% endblock %}
     <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %} tabindex="-1">
           {{ govukNotificationBanner({
-                      titleText: i18n.banner.titleText.en,
-                      html: i18n.banner.messageHtml.en
+                      titleText: notificationBanner.titleText,
+                      html: i18n.notificationBanner.messageHtml
           }) }}
       {% block content %}
       {% endblock %}

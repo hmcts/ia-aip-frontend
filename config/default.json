@@ -138,14 +138,14 @@
     "accessKey": "GOV_NOTIFY_KEY"
   },
   "notificationBanner": {
-    "enabled": "BANNER_ENABLED",
+    "enabled": "false",
     "titleText": {
-      "en": "BANNER_TITLE_TEXT_EN",
-      "cy": "BANNER_TITLE_TEXT_CY"
+      "en": "Important",
+      "cy": "Pwysig"
     },
     "messageHtml": {
-      "en": "BANNER_MESSAGE_HTML_EN",
-      "cy": "BANNER_MESSAGE_HTML_CY"
+      "en": "Scheduled maintence on 28th September 2022 from 8:00 AM to 9:00 AM. The service will be unavailable during this time.",
+      "cy": "Cynhelir cynnal a chadw ar 28ain Medi 2022 rhwng 8:00 AM a 9:00 AM. Bydd y gwasanaeth ar gael yn ystod yr amser hwn."
     }
   }
 }

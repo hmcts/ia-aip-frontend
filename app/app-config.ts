@@ -16,6 +16,9 @@ function configureLogger(app: express.Application) {
 
 function configureNunjucks(app: express.Application) {
   const currentEnv: string = config.get('currentEnvironment');
+  const bannerEnabled: string = config.get('notificationBanner.enabled');
+  const bannerTitle: string = config.get('notificationBanner.titleText.en');
+  const bannerMessageHtml: string = config.get('notificationBanner.messageHtml.en');
 
   const nunjucksEnv: nunjucks.Environment = nunjucks.configure([
     'views',
@@ -26,9 +29,9 @@ function configureNunjucks(app: express.Application) {
     noCache: true
   });
   nunjucksEnv.addGlobal('environment', currentEnv);
-  nunjucksEnv.addGlobal('notificationBannerEnabled', config.get('notificationBanner.enabled'));
-  nunjucksEnv.addGlobal('notificationBannerTitle', config.get('notificationBanner.titleText.en'));
-  nunjucksEnv.addGlobal('notificationBannerMessageHtml', config.get('notificationBanner.messageHtml.en'));
+  nunjucksEnv.addGlobal('notificationBannerEnabled', bannerTitle);
+  nunjucksEnv.addGlobal('notificationBannerTitle', bannerTitle);
+  nunjucksEnv.addGlobal('notificationBannerMessageHtml', bannerMessageHtml);
   nunjucksEnv.addFilter('eval', function(text: string) {
     return nunjucks.renderString(text, this.ctx);
   });

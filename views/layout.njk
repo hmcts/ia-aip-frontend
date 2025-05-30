@@ -5,6 +5,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/footer/macro.njk" import govukFooter %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
@@ -262,7 +263,14 @@
       {% endif %}
     {% endblock %}
     <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %} tabindex="-1">
-      {% block content %}{% endblock %}
+       {% if notificationBannerEnabled == "true" %}
+          {{ govukNotificationBanner({
+                      titleText: notificationBannerTitle,
+                      html: notificationBannerMessageHtml
+          }) }}
+      {% endif %}
+      {% block content %}
+      {% endblock %}
     </main>
   </div>
 {% endblock %}

@@ -58,7 +58,7 @@ module.exports = {
     });
 
     When(/^I enter the saved first and last names$/, async () => {
-      await I.waitForText('Enter details', 60);
+      await I.waitForText('Enter your client\'s details', 60);
       await I.fillField('#NoCChallengeQ1', firstName);
       await I.fillField('#NoCChallengeQ2', lastName);
       await I.click('Continue');

@@ -13,7 +13,7 @@ module.exports = {
     Then('I am on the appeal details PA pay now submitted page', async () => {
       await I.waitInUrl(paths.pendingPayment.confirmation, 20);
       await I.seeInCurrentUrl(paths.pendingPayment.confirmation);
-      await I.see('You still have to Pay for your appeal.');
+      await I.see('You have sent your appeal details.', 'h1');
     });
 
     Then('I am on the appeal details non PA payment submitted page', async () => {

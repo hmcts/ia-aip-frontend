@@ -13,7 +13,15 @@ module.exports = {
     Then('I am on the appeal details PA pay now submitted page', async () => {
       await I.waitInUrl(paths.pendingPayment.confirmation, 20);
       await I.seeInCurrentUrl(paths.pendingPayment.confirmation);
-      await I.see('You have sent your appeal details.', 'h1');
+      await I.see('You have sent your appeal details', 'h1');
+    });
+
+    Then('I see You have sent your appeal details in the heading', async () => {
+      await I.see('You have sent your appeal details', 'h1');
+    });
+
+    Then('I see Your appeal has been submitted in the heading', async () => {
+      await I.see('Your appeal has been submitted', 'h1');
     });
 
     Then('I am on the appeal details non PA payment submitted page', async () => {

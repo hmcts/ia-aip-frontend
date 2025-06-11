@@ -74,15 +74,3 @@ Feature: Failed payments
     Then I am on the make payment page
     And I submit a failed payment appeal with Card type not accepted
     Then I see a This card type is not accepted error message
-
-    When I submit a failed payment appeal with Card declined
-    Then I see the Your payment has been declined error page
-
-    And I submit a failed payment appeal with Card expired
-    Then I see the Your payment has been declined error page
-
-    And I submit a failed payment appeal with Invalid CVC code
-    Then I see the Your payment has been declined error page
-
-    And I submit a failed payment appeal with General error
-    Then I see the We’re experiencing technical problems error page

@@ -488,7 +488,7 @@ Feature: Make an application
     Then I am on the make payment page
     When I make a successful payment
     Then I am on the appeal details sent with payment page
-    And I see "Your appeal details have been sent" in title
+    And I see "You have paid for the appeal" in title
     When I grab the Online Case Reference
     And I sign in as a Case Officer and End the appeal
     Given I am on home page

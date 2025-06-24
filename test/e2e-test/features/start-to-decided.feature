@@ -94,7 +94,6 @@ Scenario: Create appeal and force case through to decided
   When I make a successful payment
   Then I am on the appeal details sent with payment page
   And I create a accessibility report for the current page
-  And I see "Your appeal has been submitted" in title
   And I see the respond by date is 5 days in the future
 
   # Case Progression

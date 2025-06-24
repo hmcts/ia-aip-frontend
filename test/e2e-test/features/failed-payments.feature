@@ -77,12 +77,24 @@ Feature: Failed payments
 
     When I submit a failed payment appeal with Card declined
     Then I see the Your payment has been declined error page
+    When I click continue
+    Then I should see the appeal overview page
+    When I click "Pay for your appeal" button
+    Then I am on the make payment page
 
     And I submit a failed payment appeal with Card expired
     Then I see the Your payment has been declined error page
+    When I click continue
+    Then I should see the appeal overview page
+    When I click "Pay for your appeal" button
+    Then I am on the make payment page
 
     And I submit a failed payment appeal with Invalid CVC code
     Then I see the Your payment has been declined error page
+    When I click continue
+    Then I should see the appeal overview page
+    When I click "Pay for your appeal" button
+    Then I am on the make payment page
 
     And I submit a failed payment appeal with General error
     Then I see the We’re experiencing technical problems error page

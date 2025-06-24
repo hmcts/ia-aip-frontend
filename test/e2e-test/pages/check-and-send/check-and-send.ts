@@ -104,6 +104,8 @@ module.exports = {
 
     Then('I see the We’re experiencing technical problems error page', async () => {
       await I.see('We’re experiencing technical problems');
+      await I.see('No money has been taken from your account.');
+      await I.see('Cancel and go back to try the payment again');
     });
   }
 };

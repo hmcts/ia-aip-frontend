@@ -288,7 +288,7 @@ Feature: Basic Appeal Submissions
     When I check the statement of truth
     And I submit appeal for a decision with hearing paid appeal
     Then I am on the appeal details sent page
-    And I see "You have sent your appeal details" in title
+    And I see "Your appeal has been submitted" in title
     And I click on the See your appeal progress link
     When I click "Pay for this appeal" button
     Then I am on the make payment page

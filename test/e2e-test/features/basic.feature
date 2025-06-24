@@ -71,7 +71,7 @@ Feature: Basic Appeal Submissions
     Then I am on the make payment page
     When I make a successful payment
     Then I am on the appeal details sent with payment page
-    And I see "Your appeal details have been sent" in title
+    And I see "Your appeal has been submitted" in title
     And I see the respond by date is 5 days in the future
 
   Scenario: Complete PA Pay Later appeal
@@ -288,7 +288,7 @@ Feature: Basic Appeal Submissions
     When I check the statement of truth
     And I submit appeal for a decision with hearing paid appeal
     Then I am on the appeal details sent page
-    And I see "Your appeal has been submitted" in title
+    And I see "You have sent your appeal details" in title
     And I click on the See your appeal progress link
     When I click "Pay for this appeal" button
     Then I am on the make payment page

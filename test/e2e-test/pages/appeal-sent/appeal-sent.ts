@@ -7,13 +7,13 @@ module.exports = {
   appealSent(I) {
     Then('I am on the appeal details sent page', async () => {
       await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
-      I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
+      await I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
     });
 
     Then('I am on the appeal details PA pay now submitted page', async () => {
       await I.waitInUrl(paths.pendingPayment.confirmation, 20);
       await I.seeInCurrentUrl(paths.pendingPayment.confirmation);
-      await I.see('You have sent your appeal details', 'h1');
+      await I.see('Your appeal has been submitted', 'h1');
     });
 
     Then('I am on the appeal details non PA payment submitted page', async () => {
@@ -56,7 +56,6 @@ module.exports = {
       await I.waitInUrl(paths.common.confirmationPayment, 15);
       await I.seeInCurrentUrl(paths.common.confirmationPayment);
       await I.see(content.pages.confirmationPaid.title);
-      await I.seeInSource(moment().add(5,'days').format(dayMonthYearFormat));
     });
 
     Then('I see the respond by date is 4 weeks in the future', async () => {

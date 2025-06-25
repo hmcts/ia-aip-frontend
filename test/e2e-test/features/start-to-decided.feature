@@ -86,7 +86,7 @@ Scenario: Create appeal and force case through to decided
   Then I should be taken to the check-and-send page
   And I create a accessibility report for the current page
   When I check the statement of truth
-  And I submit appeal for a decision with hearing paid appeal
+  And I submit appeal for a paid appeal with a remission
   Then I am on the You have sent your appeal details page
   And I create a accessibility report for the current page
   When I click "Pay for this appeal" button

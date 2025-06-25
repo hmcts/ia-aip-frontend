@@ -1,7 +1,7 @@
 @nightly-test
 Feature: Basic Appeal Submissions
 
-  Scenario: Complete PA Pay Now appeal
+  Scenario: Complete PA Pay Now appeal without remission
     Given I am on home page
     When I click Sign in to continue with your appeal
     Then I should see the sign in page
@@ -63,8 +63,8 @@ Feature: Basic Appeal Submissions
     When I click continue
     Then I expect to be redirect back to the task-list
     When I click on the Support to pay the fee page
-    And I choose Asylum support and click save and continue
-    Then I enter my asylum support reference number and click save and continue
+    And I choose None of these statements and click save and continue
+    And I say I will pay for the appeal now and click save and continue
     Then I should be taken to the task-list page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
@@ -78,7 +78,7 @@ Feature: Basic Appeal Submissions
     And I see "Your appeal has been submitted" in title
     And I see the respond by date is 5 days in the future
 
-  Scenario: Complete PA Pay Later appeal
+  Scenario: Complete PA Pay Later appeal with remission
     Given I am on home page
     When I click Sign in to continue with your appeal
     Then I should see the sign in page
@@ -146,7 +146,7 @@ Feature: Basic Appeal Submissions
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
-    And I submit appeal for a decision with hearing non paid appeal
+    And I submit appeal for a paid appeal with a remission
     Then I am on the appeal details sent page
 
   Scenario: Complete HU appeal
@@ -222,7 +222,7 @@ Feature: Basic Appeal Submissions
     And I see "Your appeal details have been sent" in title
     And I see the respond by date is 5 days in the future
 
-  Scenario: Complete EEA appeal
+  Scenario: Complete EEA appeal with remission
     Given I am on home page
     When I click Sign in to continue with your appeal
     Then I should see the sign in page
@@ -290,7 +290,7 @@ Feature: Basic Appeal Submissions
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
-    And I submit appeal for a decision with hearing paid appeal
+    And I submit appeal for a paid appeal with a remission
     Then I am on the appeal details sent page
     And I see "You have sent your appeal details" in title
     And I click on the See your appeal progress link

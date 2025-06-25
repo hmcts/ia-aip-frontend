@@ -66,6 +66,10 @@ module.exports = {
       }
     });
 
+    Then(/^I submit appeal for a paid appeal with a remission$/, async () => {
+      await I.click('Submit');
+    });
+
     Then(/^I submit a failed payment appeal with (Card type not accepted|Card declined|Card expired|Invalid CVC code|General error)$/, async (cardError) => {
       let cardNumber;
       if (cardError === 'Card type not accepted') {

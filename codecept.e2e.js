@@ -51,7 +51,7 @@ exports.config = {
     },
     stepByStepReport: {
       enabled: true,
-      fullPageScreenshots: false,
+      fullPageScreenshots: true,
       deleteSuccessful: true,
     },
     retryTo: {
@@ -63,7 +63,6 @@ exports.config = {
             "codeceptjs-cli-reporter": {
                 "stdout": "-",
                 "options": {
-                    "verbose": true,
                     "steps": true,
                 }
             },

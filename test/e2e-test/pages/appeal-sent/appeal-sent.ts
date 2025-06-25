@@ -5,6 +5,30 @@ import content from '../../../../locale/en.json';
 
 module.exports = {
   appealSent(I) {
+    Then('I am on the Your late appeal details have been sent page', async () => {
+      await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
+      await I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
+      await I.see('Your late appeal details have been sent', 'h1');
+    });
+
+    Then('I am on the You have sent your appeal details page', async () => {
+      await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
+      await I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
+      await I.see('You have sent your appeal details', 'h1');
+    });
+
+    Then('I am on the Your appeal has been submitted page', async () => {
+      await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
+      await I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
+      await I.see('Your appeal has been submitted', 'h1');
+    });
+
+    Then('I am on the Your appeal details have been sent page', async () => {
+      await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
+      await I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
+      await I.see('Your appeal details have been sent', 'h1');
+    });
+
     Then('I am on the appeal details sent page', async () => {
       await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
       await I.seeInCurrentUrl(paths.appealSubmitted.confirmation);

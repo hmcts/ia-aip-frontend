@@ -87,7 +87,7 @@ Scenario: Create appeal and force case through to decided
   And I create a accessibility report for the current page
   When I check the statement of truth
   And I submit appeal for a decision with hearing paid appeal
-  Then I am on the appeal details PA pay now submitted page
+  Then I am on the You have sent your appeal details page
   And I create a accessibility report for the current page
   When I click "Pay for this appeal" button
   Then I am on the make payment page

@@ -59,7 +59,7 @@ module.exports = {
         await I.click('Submit');
       } else {
         if (hearingType === 'with') {
-          await I.click('Submit');
+          await I.click('Submit and continue to pay £140 by debit or credit card');
         } else {
           await I.click('Submit and continue to pay £80 by debit or credit card');
         }

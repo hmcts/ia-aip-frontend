@@ -29,7 +29,7 @@ module.exports = {
       await I.see('Your appeal details have been sent', 'h1');
     });
 
-    Then('I am on the appeal details sent page', async () => {
+    Then('I am on the appeal submission confirmation page', async () => {
       await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
       await I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
     });

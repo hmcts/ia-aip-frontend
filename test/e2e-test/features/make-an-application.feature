@@ -62,7 +62,7 @@ Feature: Make an application
     Then I should be taken to the check-and-send page
     When I check the statement of truth
     And I submit appeal for a decision with hearing non paid appeal
-    Then I am on the appeal details sent page
+    Then I am on the appeal submission confirmation page
     And I see "Your appeal details have been sent" in title
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -145,7 +145,7 @@ Feature: Make an application
     Then I should be taken to the check-and-send page
     When I check the statement of truth
     And I submit appeal for a decision with hearing non paid appeal
-    Then I am on the appeal details sent page
+    Then I am on the appeal submission confirmation page
     And I see "Your appeal details have been sent" in title
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -229,7 +229,7 @@ Feature: Make an application
     Then I should be taken to the check-and-send page
     When I check the statement of truth
     And I submit appeal for a decision with hearing non paid appeal
-    Then I am on the appeal details sent page
+    Then I am on the appeal submission confirmation page
     And I see "Your appeal details have been sent" in title
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -312,7 +312,7 @@ Feature: Make an application
     Then I should be taken to the check-and-send page
     When I check the statement of truth
     And I submit appeal for a decision with hearing non paid appeal
-    Then I am on the appeal details sent page
+    Then I am on the appeal submission confirmation page
     And I see "Your appeal details have been sent" in title
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -395,7 +395,7 @@ Feature: Make an application
     Then I should be taken to the check-and-send page
     When I check the statement of truth
     And I submit appeal for a decision with hearing non paid appeal
-    Then I am on the appeal details sent page
+    Then I am on the appeal submission confirmation page
     And I see "Your appeal details have been sent" in title
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -481,7 +481,7 @@ Feature: Make an application
     Then I should be taken to the check-and-send page
     When I check the statement of truth
     And I submit appeal for a paid appeal with a remission
-    Then I am on the appeal details sent page
+    Then I am on the appeal submission confirmation page
     And I see "You have sent your appeal details" in title
     And I click on the See your appeal progress link
     When I click "Pay for this appeal" button

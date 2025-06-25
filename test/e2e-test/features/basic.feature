@@ -218,7 +218,7 @@ Feature: Basic Appeal Submissions
     When I click "Pay for this appeal" button
     Then I am on the make payment page
     When I make a successful payment
-    Then I am on the Your appeal details have been sent page
+    Then I am on the appeal details sent with payment page
     And I see "Your appeal details have been sent" in title
     And I see the respond by date is 5 days in the future
 
@@ -297,7 +297,7 @@ Feature: Basic Appeal Submissions
     When I click "Pay for this appeal" button
     Then I am on the make payment page
     When I make a successful payment
-    Then I am on the Your appeal details have been sent page
+    Then I am on the appeal details sent with payment page
     And I see "Your appeal details have been sent" in title
     And I see the respond by date is 5 days in the future
 

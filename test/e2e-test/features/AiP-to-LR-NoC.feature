@@ -69,7 +69,7 @@ Scenario: Complete NoC Happy path AiP to LR
    When I check the statement of truth
    And I submit appeal for a decision with hearing non paid appeal
 
-   Then I am on the appeal details sent page
+   Then I am on the appeal submission confirmation page
    And I create a accessibility report for the current page
    And I see "You have sent your appeal details" in title
    And I click on the See your appeal progress link

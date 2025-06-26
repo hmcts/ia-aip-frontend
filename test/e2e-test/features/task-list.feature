@@ -29,5 +29,9 @@ Scenario: Task List links work
   Then I should be taken to the decision type page
   When I click "Back" link
   Then I expect to be redirect back to the task-list
+  When I click on the fee-support link
+  Then I should be taken to the fee support page
+  When I click "Back" link
+  Then I expect to be redirect back to the task-list
   When I click on the check and send your appeal link
   Then I should be taken to the check-and-send page

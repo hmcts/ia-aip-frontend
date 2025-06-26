@@ -51,7 +51,7 @@ exports.config = {
     },
     stepByStepReport: {
       enabled: true,
-      fullPageScreenshots: false,
+      fullPageScreenshots: true,
       deleteSuccessful: true,
     },
     retryTo: {

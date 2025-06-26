@@ -12,7 +12,7 @@ Feature: submission
     Then I should see error summary
     When I check the statement of truth
     And I click submit your appeal
-    Then I am on the appeal details sent page
+    Then I am on the appeal submission confirmation page
     And I see "Your appeal details have been sent" in title
     And I see the respond by date is 5 days in the future
 
@@ -24,7 +24,7 @@ Feature: submission
     Then I should see error summary
     When I check the statement of truth
     And I click Submit and continue to pay £80 by debit or credit card
-    Then I am on the appeal details sent page
+    Then I am on the appeal submission confirmation page
     And I see "Your appeal has been submitted" in title
     And I see the pay by date is 14 days in the future
     When I visit the overview page

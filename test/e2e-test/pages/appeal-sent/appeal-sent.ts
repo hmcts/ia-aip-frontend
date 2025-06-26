@@ -5,15 +5,39 @@ import content from '../../../../locale/en.json';
 
 module.exports = {
   appealSent(I) {
-    Then('I am on the appeal details sent page', async () => {
+    Then('I am on the Your late appeal details have been sent page', async () => {
       await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
-      I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
+      await I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
+      await I.see('Your late appeal details have been sent', 'h1');
+    });
+
+    Then('I am on the You have sent your appeal details page', async () => {
+      await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
+      await I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
+      await I.see('You have sent your appeal details', 'h1');
+    });
+
+    Then('I am on the Your appeal has been submitted page', async () => {
+      await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
+      await I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
+      await I.see('Your appeal has been submitted', 'h1');
+    });
+
+    Then('I am on the Your appeal details have been sent page', async () => {
+      await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
+      await I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
+      await I.see('Your appeal details have been sent', 'h1');
+    });
+
+    Then('I am on the appeal submission confirmation page', async () => {
+      await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
+      await I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
     });
 
     Then('I am on the appeal details PA pay now submitted page', async () => {
       await I.waitInUrl(paths.pendingPayment.confirmation, 20);
       await I.seeInCurrentUrl(paths.pendingPayment.confirmation);
-      await I.see('You have sent your appeal details.', 'h1');
+      await I.see('Your appeal has been submitted', 'h1');
     });
 
     Then('I am on the appeal details non PA payment submitted page', async () => {
@@ -50,6 +74,12 @@ module.exports = {
       await I.see(content.pages.successPage.askHomeOffice);
       await I.see(content.pages.successPage.whatToDoNext);
       await I.seeInSource(moment().add(5,'days').format(dayMonthYearFormat));
+    });
+
+    Then('I am on the paid for appeal page', async () => {
+      await I.waitInUrl(paths.common.confirmationPayment, 15);
+      await I.seeInCurrentUrl(paths.common.confirmationPayment);
+      await I.see(content.pages.confirmationPaid.title);
     });
 
     Then('I see the respond by date is 4 weeks in the future', async () => {

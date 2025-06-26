@@ -60,16 +60,14 @@ Feature: Failed payments
     And I wait for 5 seconds
     Then I should be taken to the task-list page
     When I click on the Support to pay the fee page
-    And I choose Asylum support and click save and continue
-    Then I enter my asylum support reference number and click save and continue
+    And I choose None of these statements and click save and continue
+    Then I say I will pay for the appeal now and click save and continue
     Then I should see the task-list page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
     And I submit appeal for a decision with hearing paid appeal
-    Then I am on the appeal details sent page
-    And I see "You have sent your appeal details" in title
-    And I click on the See your appeal progress link
+    Then I am on the Your appeal has been submitted page
     When I click "Pay for this appeal" button
     Then I am on the make payment page
     And I submit a failed payment appeal with Card type not accepted
@@ -77,12 +75,27 @@ Feature: Failed payments
 
     When I submit a failed payment appeal with Card declined
     Then I see the Your payment has been declined error page
+    When I click continue
+    And I go to appeal overview page
+    Then I should see the appeal overview page
+    When I click "Pay for this appeal" link
+    Then I am on the make payment page
 
     And I submit a failed payment appeal with Card expired
     Then I see the Your payment has been declined error page
+    When I click continue
+    And I go to appeal overview page
+    Then I should see the appeal overview page
+    When I click "Pay for this appeal" link
+    Then I am on the make payment page
 
     And I submit a failed payment appeal with Invalid CVC code
     Then I see the Your payment has been declined error page
+    When I click continue
+    And I go to appeal overview page
+    Then I should see the appeal overview page
+    When I click "Pay for this appeal" link
+    Then I am on the make payment page
 
     And I submit a failed payment appeal with General error
     Then I see the We’re experiencing technical problems error page

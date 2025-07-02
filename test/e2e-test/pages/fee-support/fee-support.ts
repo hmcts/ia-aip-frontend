@@ -38,10 +38,39 @@ module.exports = {
       await I.click('Save and continue');
     });
 
+    When(/^I choose None of these statements and click save and continue$/, async () => {
+      await I.checkOption('#noneOfTheseStatements');
+      await I.click('Save and continue');
+    });
+
+    When(/^I say I will pay for the appeal now and click save and continue$/, async () => {
+      await I.checkOption('#answer-3');
+      await I.click('Save and continue');
+    });
+
     When(/^I enter my asylum support reference number and click save and continue$/, async () => {
       await I.waitInUrl(paths.appealStarted.asylumSupport,20);
       I.fillField('#asylumSupportRefNumber', '123456789');
       await I.click('Save and continue');
+    });
+
+    When(/^I click on the fee-support link$/, async () => {
+      for (let i = 0; i < 3; i++) {
+        try {
+          await I.click('#feeSupportLink');
+          await I.waitInUrl(paths.appealStarted.feeSupport, 20);
+          await I.seeInCurrentUrl(paths.appealStarted.feeSupport);
+          break;
+        } catch (e) {
+          await I.seeInCurrentUrl(paths.appealStarted.taskList);
+        }
+      }
+      await I.seeInCurrentUrl(paths.appealStarted.feeSupport);
+    });
+
+    Given('I should be taken to the fee support page', async () => {
+      await I.waitInUrl(paths.appealStarted.feeSupport,30);
+      await I.seeInCurrentUrl(paths.appealStarted.feeSupport);
     });
   }
 };

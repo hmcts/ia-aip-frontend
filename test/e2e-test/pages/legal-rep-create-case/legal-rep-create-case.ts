@@ -97,7 +97,7 @@ module.exports = {
       const currentUrl = await I.grabCurrentUrl();
       appealReference = currentUrl.split('case-details/')[1].split('#')[0].replaceAll('/', '');
       await I.click('Submit your appeal');
-      await I.handleNextStep('Declaration', 'submitAppeal/submitAppealdeclaration', appealReference);
+      await I.handleNextStep('Declaration', 'submitAppeal', appealReference);
       await I.click('#legalRepDeclaration-hasDeclared');
       await I.click('Submit');
       await I.waitForText('Your appeal has been submitted', 60);
@@ -107,7 +107,7 @@ module.exports = {
 
     When(/^I stop representing the client$/, async () => {
       await I.selectOption('#next-step', 'Stop representing a client');
-      await I.handleNextStep('Once you\'ve submitted this request', 'removeRepresentation/removeRepresentationSingleFormPageWithComplex', appealReference);
+      await I.handleNextStep('Once you\'ve submitted this request', 'removeRepresentation', appealReference);
       await I.see('Once you\'ve submitted this request');
       await I.click('Continue');
       await I.waitForText('Submit', 60);

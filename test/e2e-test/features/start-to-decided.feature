@@ -78,22 +78,23 @@ Scenario: Create appeal and force case through to decided
   When I click continue
   Then I expect to be redirect back to the task-list
   When I click on the Support to pay the fee page
-  And I choose Asylum support and click save and continue
-  Then I enter my asylum support reference number and click save and continue
+  And I create a accessibility report for the current page
+  And I choose None of these statements and click save and continue
+  And I create a accessibility report for the current page
+  And I say I will pay for the appeal now and click save and continue
+  Then I should be taken to the task-list page
   When I go into the Check and send your appeal details task
   Then I should be taken to the check-and-send page
   And I create a accessibility report for the current page
   When I check the statement of truth
   And I submit appeal for a decision with hearing paid appeal
-  Then I am on the appeal details PA pay now submitted page
+  Then I am on the Your appeal has been submitted page
   And I create a accessibility report for the current page
   When I click "Pay for this appeal" button
   Then I am on the make payment page
   When I make a successful payment
   Then I am on the appeal details sent with payment page
   And I create a accessibility report for the current page
-  And I see "Your appeal details have been sent" in title
-  And I see the respond by date is 5 days in the future
 
   # Case Progression
   When I grab the Online Case Reference

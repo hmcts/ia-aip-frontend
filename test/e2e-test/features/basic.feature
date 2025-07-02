@@ -1,7 +1,7 @@
 @nightly-test
 Feature: Basic Appeal Submissions
 
-  Scenario: Complete PA Pay Now appeal
+  Scenario: Complete PA Pay Now appeal without remission
     Given I am on home page
     When I click Sign in to continue with your appeal
     Then I should see the sign in page
@@ -62,19 +62,21 @@ Feature: Basic Appeal Submissions
     Then I should see the appeal overview page
     When I click continue
     Then I expect to be redirect back to the task-list
+    When I click on the Support to pay the fee page
+    And I choose None of these statements and click save and continue
+    And I say I will pay for the appeal now and click save and continue
+    Then I should be taken to the task-list page
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
     And I submit appeal for a decision with hearing paid appeal
-    Then I am on the appeal details PA pay now submitted page
+    Then I am on the Your appeal has been submitted page
     When I click "Pay for this appeal" button
     Then I am on the make payment page
     When I make a successful payment
     Then I am on the appeal details sent with payment page
-    And I see "Your appeal details have been sent" in title
-    And I see the respond by date is 5 days in the future
 
-  Scenario: Complete PA Pay Later appeal
+  Scenario: Complete PA Pay Later appeal with remission
     Given I am on home page
     When I click Sign in to continue with your appeal
     Then I should see the sign in page
@@ -142,8 +144,10 @@ Feature: Basic Appeal Submissions
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
-    And I submit appeal for a decision with hearing non paid appeal
-    Then I am on the appeal details sent page
+    And I submit appeal for a paid appeal with a remission
+    Then I am on the You have sent your appeal details page
+    And I see the respond by date is 5 days in the future
+
 
   Scenario: Complete HU appeal
     Given I am on home page
@@ -218,7 +222,7 @@ Feature: Basic Appeal Submissions
     And I see "Your appeal details have been sent" in title
     And I see the respond by date is 5 days in the future
 
-  Scenario: Complete EEA appeal
+  Scenario: Complete EEA appeal with remission
     Given I am on home page
     When I click Sign in to continue with your appeal
     Then I should see the sign in page
@@ -286,8 +290,8 @@ Feature: Basic Appeal Submissions
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
-    And I submit appeal for a decision with hearing paid appeal
-    Then I am on the appeal details sent page
+    And I submit appeal for a paid appeal with a remission
+    Then I am on the appeal submission confirmation page
     And I see "You have sent your appeal details" in title
     And I click on the See your appeal progress link
     When I click "Pay for this appeal" button
@@ -360,7 +364,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the check-and-send page
     When I check the statement of truth
     And I submit appeal for a decision with hearing non paid appeal
-    Then I am on the appeal details sent page
+    Then I am on the Your appeal details have been sent page
 
     Scenario: Complete DC appeal
     Given I am on home page
@@ -424,7 +428,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the check-and-send page
     When I check the statement of truth
     And I submit appeal for a decision with hearing non paid appeal
-    Then I am on the appeal details sent page
+    Then I am on the Your appeal details have been sent page
 
   Scenario: Complete EUSS appeal
     Given I am on home page

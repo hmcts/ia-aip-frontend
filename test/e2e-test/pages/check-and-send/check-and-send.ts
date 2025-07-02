@@ -59,11 +59,15 @@ module.exports = {
         await I.click('Submit');
       } else {
         if (hearingType === 'with') {
-          await I.click('Submit');
+          await I.click('Submit and continue to pay £140 by debit or credit card');
         } else {
           await I.click('Submit and continue to pay £80 by debit or credit card');
         }
       }
+    });
+
+    Then(/^I submit appeal for a paid appeal with a remission$/, async () => {
+      await I.click('Submit');
     });
 
     Then(/^I submit a failed payment appeal with (Card type not accepted|Card declined|Card expired|Invalid CVC code|General error)$/, async (cardError) => {
@@ -104,6 +108,8 @@ module.exports = {
 
     Then('I see the We’re experiencing technical problems error page', async () => {
       await I.see('We’re experiencing technical problems');
+      await I.see('No money has been taken from your account.');
+      await I.see('Cancel and go back to try the payment again');
     });
   }
 };

@@ -112,5 +112,10 @@
   },
   "govNotify": {
     "accessKey": "GOV_NOTIFY_KEY"
+  },
+  "notificationBanner": {
+    "enabled": "BANNER_ENABLED",
+    "titleText": "BANNER_TITLE_TEXT",
+    "messageHtml": "BANNER_MESSAGE_HTML"
   }
 }

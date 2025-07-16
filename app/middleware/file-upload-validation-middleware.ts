@@ -46,11 +46,10 @@ function handleFileUploadErrors(err: any, req: Request, res: Response, next: Nex
 
 function enforceFileSizeLimit(req: Request, res: Response, next: NextFunction) {
   if (req.file && req.file.size > maxFileSizeInMb * 1024 * 1024) {
-    res.locals.errorCode = 'fileTooLarge';
-    res.locals.multerError = `${i18n.validationErrors.fileUpload.fileTooLarge}`;
+    delete req.file;
     return next(new multer.MulterError('LIMIT_FILE_SIZE'));
   }
-  next();
+  return next();
 }
 
 export {

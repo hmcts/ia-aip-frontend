@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
 import { applicationTypes } from '../../data/application-types';
 import { Events } from '../../data/events';
-import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
+import { enforceFileSizeLimit, handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
@@ -212,7 +212,7 @@ function setupAskForMoreTimeController(middleware, deps?: any): Router {
   router.get(paths.common.askForMoreTimeSupportingEvidence, middleware, getAskForMoreTimeEvidence);
   router.post(paths.common.askForMoreTimeSupportingEvidence, middleware, postAdditionalSupportingEvidenceQuestionPage);
   router.get(paths.common.askForMoreTimeSupportingEvidenceUpload, middleware, getUploadEvidence);
-  router.post(paths.common.askForMoreTimeSupportingEvidenceUpload, middleware, uploadConfiguration, handleFileUploadErrors, postUploadEvidence(deps.documentManagementService, deps.updateAppealService));
+  router.post(paths.common.askForMoreTimeSupportingEvidenceUpload, middleware, uploadConfiguration, enforceFileSizeLimit, handleFileUploadErrors, postUploadEvidence(deps.documentManagementService, deps.updateAppealService));
   router.get(paths.common.askForMoreTimeSupportingEvidenceDelete, middleware, getDeleteEvidence(deps.documentManagementService));
   router.post(paths.common.askForMoreTimeSupportingEvidenceSubmit, middleware, postSubmitEvidence(deps.updateAppealService));
   router.get(paths.common.askForMoreTimeCheckAndSend, middleware, getCheckAndSend);

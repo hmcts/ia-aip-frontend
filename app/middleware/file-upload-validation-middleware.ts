@@ -11,7 +11,7 @@ const SUPPORTED_FORMATS: string[] = config.get('evidenceUpload.supportedFormats'
  * Multer upload configuration that includes limits for file type formats and limits for the size
  */
 const uploadConfiguration = multer({
-  limits: { fileSize: (maxFileSizeInMb * 1024 * 1024) },
+  storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
     const fileTypeError = 'LIMIT_FILE_TYPE';
     if (SUPPORTED_FORMATS.includes(path.extname(file.originalname.toLowerCase()))) {
@@ -44,7 +44,17 @@ function handleFileUploadErrors(err: any, req: Request, res: Response, next: Nex
   return next(err);
 }
 
+function enforceFileSizeLimit(req: Request, res: Response, next: NextFunction) {
+  if (req.file && req.file.size > maxFileSizeInMb * 1024 * 1024) {
+    res.locals.errorCode = 'fileTooLarge';
+    res.locals.multerError = `${i18n.validationErrors.fileUpload.fileTooLarge}`;
+    return next(new multer.MulterError('LIMIT_FILE_SIZE'));
+  }
+  next();
+}
+
 export {
   uploadConfiguration,
-  handleFileUploadErrors
+  handleFileUploadErrors,
+  enforceFileSizeLimit
 };

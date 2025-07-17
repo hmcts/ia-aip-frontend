@@ -21,7 +21,6 @@ function fileFilter(req, file, cb) {
  */
 const uploadConfiguration = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: (maxFileSizeInMb * 1024 * 1024) },
   fileFilter
 }).single('file-upload');
 
@@ -47,6 +46,7 @@ function handleFileUploadErrors(err: any, req: Request, res: Response, next: Nex
   return next(err);
 }
 
+// Middleware to enforce file size limit - needs to be placed before handleFileUploadErrors middleware
 function enforceFileSizeLimit(req: Request, res: Response, next: NextFunction) {
   if (req.file && req.file.size > maxFileSizeInMb * 1024 * 1024) {
     delete req.file;

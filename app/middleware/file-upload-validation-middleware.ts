@@ -7,19 +7,22 @@ const config = require('config');
 const maxFileSizeInMb: number = config.get('evidenceUpload.maxFileSizeInMb');
 const SUPPORTED_FORMATS: string[] = config.get('evidenceUpload.supportedFormats');
 
+function fileFilter(req, file, cb) {
+  const fileTypeError = 'LIMIT_FILE_TYPE';
+  if (SUPPORTED_FORMATS.includes(path.extname(file.originalname.toLowerCase()))) {
+    cb(null, true);
+  } else {
+    cb(new multer.MulterError(fileTypeError), false);
+  }
+}
+
 /**
  * Multer upload configuration that includes limits for file type formats and limits for the size
  */
 const uploadConfiguration = multer({
   storage: multer.memoryStorage(),
-  fileFilter: (req, file, cb) => {
-    const fileTypeError = 'LIMIT_FILE_TYPE';
-    if (SUPPORTED_FORMATS.includes(path.extname(file.originalname.toLowerCase()))) {
-      cb(null, true);
-    } else {
-      cb(new multer.MulterError(fileTypeError), false);
-    }
-  }
+  limits: { fileSize: (maxFileSizeInMb * 1024 * 1024) },
+  fileFilter
 }).single('file-upload');
 
 function handleFileUploadErrors(err: any, req: Request, res: Response, next: NextFunction) {
@@ -55,5 +58,6 @@ function enforceFileSizeLimit(req: Request, res: Response, next: NextFunction) {
 export {
   uploadConfiguration,
   handleFileUploadErrors,
-  enforceFileSizeLimit
+  enforceFileSizeLimit,
+  fileFilter
 };

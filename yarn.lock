@@ -9804,7 +9804,7 @@ __metadata:
     mocha-multi: ^1.1.7
     mochawesome: ^7.1.3
     moment: ^2.29.4
-    multer: ^2.0.1
+    multer: ^2.0.2
     multiparty: ^4.2.2
     nl2br: ^0.0.3
     nodemon: ^2.0.7
@@ -12464,9 +12464,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multer@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "multer@npm:2.0.1"
+"multer@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "multer@npm:2.0.2"
   dependencies:
     append-field: ^1.0.0
     busboy: ^1.6.0
@@ -12475,7 +12475,7 @@ __metadata:
     object-assign: ^4.1.1
     type-is: ^1.6.18
     xtend: ^4.0.2
-  checksum: bcbc523108c337cdb0a3f2610fd743a8ad0b7ce773f1970c69e9a338ba3d4389ce3a6339a6bf66b80b96a7aa82442ae505121a2eaa07f3e843b342b84ce8bc2f
+  checksum: 187f3539b3d5b7f80a289288fc21d3e4116ab9ed21ac9b9ceb25272c7344d215e9572f7e7ed01edb876afddf24661b06578f2c0fc67f36655ebb51a13ccf83dc
   languageName: node
   linkType: hard
 

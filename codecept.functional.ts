@@ -34,6 +34,20 @@ exports.config = {
       enabled: true,
       fullPageScreenshots: true,
       deleteSuccessful: true
+    },
+    retryTo: {
+      enabled: true
+    }
+  },
+  'mocha': {
+    'reporterOptions': {
+      'codeceptjs-cli-reporter': {
+        'stdout': '-',
+        'options': {
+          'verbose': true,
+          'steps': true
+        }
+      }
     }
   },
   require: ['ts-node/register/transpile-only']

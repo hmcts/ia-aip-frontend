@@ -20,6 +20,9 @@ let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
 export async function bootstrap() {
+  global.testsPassed = 0;
+  global.testsTitles = [];
+  global.testFailed = false;
   server = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
@@ -101,7 +104,16 @@ export async function teardown() {
     logger.exception(e, logLabel);
   } finally {
     if (global.testFailed) {
-      process.exit(1);
+      // tslint:disable:no-console
+      console.log('---------------------');
+      console.log('Total scenarios run: ' + global.testsTitles.length);
+      console.log('Scenarios passed: ' + global.testsPassed);
+      console.log('---------------------');
+      if (global.testsPassed === global.testsTitles.length) {
+        process.exit(0);
+      } else {
+        process.exit(1);
+      }
     } else {
       process.exit(0);
     }

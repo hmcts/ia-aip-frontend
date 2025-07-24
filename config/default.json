@@ -52,8 +52,7 @@
     "caseType": "Asylum"
   },
   "systemUser": {
-    "username": "IA_SYSTEM_USERNAME",
-    "password": ""
+    "username": "IA_SYSTEM_USERNAME"
   },
   "launchDarkly": {
     "sdkKey": "LAUNCH_DARKLY_SDK_KEY"

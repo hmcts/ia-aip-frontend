@@ -5,13 +5,20 @@ import { get, has, set } from 'lodash';
 propertiesVolume.addTo(config);
 
 const setSecret = (secretPath, configPath) => {
-  // Only overwrite the value if the secretPath is defined
-  if (has(config, secretPath)) {
+  if (secretPath === 'secrets.ia.system-password') {
+    // Special case for system password to stop needing to set it in the config file
+    const systemCredentials = { 'username': get(config, 'secrets.ia.system-username'), 'password': get(config, 'secrets.ia.system-password') };
+    set(config, 'systemUser', systemCredentials);
+    setSecret('secrets.ia.system-username', 'systemUser.username');
+    setSecret('secrets.ia.system-password', 'systemUser.password');
+    // Only overwrite the value if the secretPath is defined
+  } else if (has(config, secretPath)) {
     set(config, configPath, get(config, secretPath));
   }
 };
 
 const setupSecrets = () => {
+  setSecret('secrets.ia.system-credentials', 'system-credentials');
   setSecret('secrets.ia.idam-secret', 'idam.secret');
   setSecret('secrets.ia.addressLookupToken', 'addressLookup.token');
   setSecret('secrets.ia.s2s-secret', 's2s.secret');
@@ -27,8 +34,6 @@ const setupSecrets = () => {
   setSecret('secrets.ia.hearing-centre-hattoncross-email', 'hearingCentres.hattoncrossEmail');
   setSecret('secrets.ia.hearing-centre-glasgow-email', 'hearingCentres.glasgowEmail');
   setSecret('secrets.ia.pcq-token-key', 'pcq.tokenKey');
-  setSecret('secrets.ia.system-username', 'systemUser.username');
-  setSecret('secrets.ia.system-password', 'systemUser.password');
   setSecret('secrets.ia.test-caseofficer-password', 'testAccounts.testCaseOfficerPassword');
   setSecret('secrets.ia.test-homeoffice-generic-password', 'testAccounts.testHomeOfficeGenericPassword');
   setSecret('secrets.ia.test-adminofficer-password', 'testAccounts.testAdminOfficerPassword');

@@ -27,9 +27,9 @@ nodejs:
     CASE_DOCUMENT_AM_URL: "http://ccd-case-document-am-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     SECURE_SESSION: true
     TRACKING_SCRIPTS: false
-    BANNER_ENABLED: false
+    BANNER_ENABLED: true
     BANNER_TITLE_TEXT: 'Scheduled Maintenance'
-    BANNER_MESSAGE_HTML: 'Scheduled maintenance on 28th September 2023 from 8:00 AM to 9:00 AM. The service will be unavailable during this time.'
+    BANNER_MESSAGE_HTML: 'Please note, the service will be unavailable on Thursday 31st July 2025 between 8:30pm to 12:30am'
   aadIdentityName: ia
   keyVaults:
     ia:

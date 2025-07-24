@@ -9,7 +9,7 @@ const idamClientId: string = config.get('microservice');
 const idamClientSecret: string = config.get('idam.secret');
 const idamScope: string = 'openid profile roles';
 const usernameSystemCaseworker: string = config.get('systemUser.username');
-const passwordSystemCaseworker: string = config.get('systemUser.password');
+const passwordSystemCaseworker: string = process.env.IA_SYSTEM_PASSWORD || config.get('systemUser.password');
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);

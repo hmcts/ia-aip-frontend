@@ -6,7 +6,8 @@ declare namespace Express {
     csrfToken?: () => string;
   }
 
-  interface SessionData {
+  interface Partial<SessionData> {
     appeal?: Appeal;
+    [key: string]: any;
   }
 }

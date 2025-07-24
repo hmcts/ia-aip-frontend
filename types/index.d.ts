@@ -615,10 +615,8 @@ interface AppellantWitnessConfigValue {
   appellantValue: string;
 }
 
-declare namespace NodeJS {
+declare module NodeJS {
   interface Global {
     testFailed: boolean;
-    testsPassed: number;
-    testsTitles: String[];
   }
 }

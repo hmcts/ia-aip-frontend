@@ -170,4 +170,15 @@
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/robots.txt_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/assets/images/favicon.ico_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/privacy-policy_GET": "ignore",
-  "10049_Non-Storable Content_https://immigration-appeal.aat.platform.hmcts.net/assets/images/hmcts-logo-compress.svg_GET":  "ignore"}
+  "10049_Non-Storable Content_https://immigration-appeal.aat.platform.hmcts.net/assets/images/hmcts-logo-compress.svg_GET":  "ignore",
+  "10055_CSP: Failure to Define Directive with No Fallback_https://immigration-appeal.aat.platform.hmcts.net/cookie-policy_GET": "ignore",
+  "10055_CSP: Failure to Define Directive with No Fallback_https://immigration-appeal.aat.platform.hmcts.net/eligibility_GET": "ignore",
+  "10055_CSP: Failure to Define Directive with No Fallback_https://immigration-appeal.aat.platform.hmcts.net/start-appeal_GET": "ignore",
+  "10055_CSP: Failure to Define Directive with No Fallback_https://immigration-appeal.aat.platform.hmcts.net/terms-and-conditions_GET": "ignore",
+  "90004_Insufficient Site Isolation Against Spectre Vulnerability_https://immigration-appeal.aat.platform.hmcts.net/assets/images/favicon.ico_GET": "ignore",
+  "90004_Insufficient Site Isolation Against Spectre Vulnerability_https://immigration-appeal.aat.platform.hmcts.net/eligibility_GET": "ignore",
+  "90004_Insufficient Site Isolation Against Spectre Vulnerability_https://immigration-appeal.aat.platform.hmcts.net/start-appeal_GET": "ignore",
+  "90004_Insufficient Site Isolation Against Spectre Vulnerability_https://immigration-appeal.aat.platform.hmcts.net/terms-and-conditions_GET": "ignore",
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/assets/images/hmcts-logo-compress.svg_GET": "ignore",
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore"
+}

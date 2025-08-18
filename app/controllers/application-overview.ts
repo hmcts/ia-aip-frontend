@@ -163,7 +163,6 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const application = req.session.appeal.application;
 
       const showAskForFeeRemission = refundFeatureEnabled
-        && 'Paid' === paymentStatus
         && (!application.refundRequested || application.refundRequested && !!application.remissionDecision);
 
       const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;

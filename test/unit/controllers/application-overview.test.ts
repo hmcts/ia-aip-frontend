@@ -611,6 +611,7 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
     req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
     req.session.appeal.paymentStatus = 'Paid';
+    req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 

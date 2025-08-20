@@ -158,6 +158,7 @@ describe('Confirmation Page Controller', () => {
     };
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.appealReferenceNumber = 'DRAFT';
+    req.session.appeal.paAppealTypeAipPaymentOption ='payLater';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -232,6 +233,7 @@ describe('Confirmation Page Controller', () => {
         dateUploaded: '2024-02-28'
       }
     ];
+    req.session.appeal.paAppealTypeAipPaymentOption ='payLater';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -404,6 +406,7 @@ describe('Confirmation Page Controller', () => {
     };
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.appealReferenceNumber = 'appealNumber';
+    req.session.appeal.paAppealTypeAipPaymentOption ='payLater';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -468,6 +471,7 @@ describe('Confirmation Page Controller', () => {
     };
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.appealReferenceNumber = 'appealNumber';
+    req.session.appeal.paAppealTypeAipPaymentOption ='payLater';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -534,6 +538,7 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
     req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
     req.session.appeal.utAppealReferenceNumber = null;
+    req.session.appeal.paAppealTypeAipPaymentOption ='payLater';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 

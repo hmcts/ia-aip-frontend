@@ -163,7 +163,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const application = req.session.appeal.application;
 
       const showAskForFeeRemission = refundFeatureEnabled
-        && (paAppealTypeAipPaymentOption === 'payLater' || 'Paid' === paymentStatus)
+        && ((paAppealTypeAipPaymentOption === 'payLater' && application.appealType === 'protection') || 'Paid' === paymentStatus)
         && (!application.refundRequested || application.refundRequested && !!application.remissionDecision);
 
       const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;

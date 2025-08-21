@@ -158,7 +158,72 @@ describe('Confirmation Page Controller', () => {
     };
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.appealReferenceNumber = 'DRAFT';
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    const expectedStages = [{
+      title: 'Your appeal<br/> details',
+      ariaLabel: 'Your appeal details stage',
+      active: true,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> argument',
+      ariaLabel: 'Your appeal argument stage',
+      active: false,
+      completed: false
+    }, {
+      title: 'Your hearing<br/> details',
+      ariaLabel: 'Your hearing details stage',
+      active: false,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> decision',
+      ariaLabel: 'Your appeal decision stage',
+      active: false,
+      completed: false
+    }];
+
+    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+      name: 'Alex Developer',
+      appealRefNumber: null,
+      applicationNextStep: expectedNextStep,
+      history: expectedHistory,
+      stages: expectedStages,
+      saved: false,
+      ended: false,
+      transferredToUt: false,
+      askForMoreTimeInFlight: false,
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false,
+      showAppealRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
+      showHearingRequests: false,
+      showPayLaterLink: false,
+      ftpaFeatureEnabled: true,
+      hearingDetails: null,
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false,
+      showAskForFeeRemission: false,
+      showAskForSomethingInEndedState: false,
+      isPostDecisionState: false
+    });
+  });
+
+it('getApplicationOverview should render application-overview.njk for a pay later PA case', async () => {
+    req.idam = {
+      userDetails: {
+        uid: 'anId',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer',
+        sub: 'email@test.com'
+      }
+    };
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.appealReferenceNumber = 'DRAFT';
     req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+    req.session.appeal.appealType = 'protection';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -211,6 +276,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
+
   it('getApplicationOverview should render application-overview.njk with isPostDecisionState', async () => {
     req.idam = {
       userDetails: {
@@ -233,7 +299,6 @@ describe('Confirmation Page Controller', () => {
         dateUploaded: '2024-02-28'
       }
     ];
-    req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -296,7 +361,7 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: true,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: true,
+      showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: true
     });
@@ -316,7 +381,6 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.isDecisionAllowed = 'allowed';
     req.session.appeal.appealReferenceNumber = 'PA/12345/2025';
     req.session.appeal.application.appealType = 'protection';
-    req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
     req.session.appeal.finalDecisionAndReasonsDocuments = [
       {
         fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
@@ -388,7 +452,7 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: true,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: true,
+      showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: true
     });
@@ -406,7 +470,6 @@ describe('Confirmation Page Controller', () => {
     };
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.appealReferenceNumber = 'appealNumber';
-    req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -453,7 +516,7 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: true,
+      showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: false
     });
@@ -471,7 +534,6 @@ describe('Confirmation Page Controller', () => {
     };
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.appealReferenceNumber = 'appealNumber';
-    req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -518,7 +580,7 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: true,
+      showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: false
     });
@@ -538,7 +600,6 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
     req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
     req.session.appeal.utAppealReferenceNumber = null;
-    req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -596,7 +657,7 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: true,
+      showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: false
     });
@@ -616,7 +677,6 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
     req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
     req.session.appeal.paymentStatus = 'Paid';
-    req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -639,7 +699,6 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
     req.session.appeal.application.personalDetails.givenNames = 'Appellant';
     req.session.appeal.application.personalDetails.familyName = 'Name';
-    req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -697,7 +756,7 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: true,
+      showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: false
     });

@@ -210,7 +210,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-it('getApplicationOverview should render application-overview.njk for a pay later PA case', async () => {
+  it('getApplicationOverview should render application-overview.njk for a pay later PA case', async () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
@@ -275,7 +275,6 @@ it('getApplicationOverview should render application-overview.njk for a pay late
       isPostDecisionState: false
     });
   });
-
 
   it('getApplicationOverview should render application-overview.njk with isPostDecisionState', async () => {
     req.idam = {

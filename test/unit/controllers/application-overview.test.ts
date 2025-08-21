@@ -381,6 +381,7 @@ it('getApplicationOverview should render application-overview.njk for a pay late
     req.session.appeal.isDecisionAllowed = 'allowed';
     req.session.appeal.appealReferenceNumber = 'PA/12345/2025';
     req.session.appeal.application.appealType = 'protection';
+    req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
     req.session.appeal.finalDecisionAndReasonsDocuments = [
       {
         fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
@@ -452,7 +453,7 @@ it('getApplicationOverview should render application-overview.njk for a pay late
       hearingDetails: null,
       showChangeRepresentation: true,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false,
+      showAskForFeeRemission: true,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: true
     });

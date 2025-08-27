@@ -250,7 +250,8 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     if (appealHasRemissionOption(application)) {
       await addPaymentDetails(req, application, feeDetailsRows);
       if (application.remissionOption === 'asylumSupportFromHo') {
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [application.asylumSupportRefNumber], null));
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber,
+          [application.asylumSupportRefNumber || application.asylumSupportReference], null));
       } else if (application.remissionOption === 'feeWaiverFromHo') {
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, ['Home Office fee waiver'], null));
       } else if (application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') {
@@ -259,7 +260,8 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
         });
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
       } else if (application.remissionOption === 'noneOfTheseStatements' || application.remissionOption === 'iWantToGetHelpWithFees') {
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [application.helpWithFeesRefNumber], null));
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber,
+          [application.helpWithFeesRefNumber || application.helpWithFeesReference], null));
       }
       if (application.previousRemissionDetails) {
         await addPreviousRemissionDetails(req, application, feeHistoryRows);

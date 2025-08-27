@@ -244,8 +244,10 @@ interface CaseData {
   utAppealReferenceNumber?: string;
   remissionOption?: string;
   asylumSupportRefNumber?: string;
+  asylumSupportReference?: string;
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
+  helpWithFeesReference?: string;
   localAuthorityLetters?: Collection<DocumentWithMetaData>[];
   correctedDecisionAndReasons: Collection<CcdDecisionAndReasons>[];
 

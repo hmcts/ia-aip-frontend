@@ -24,9 +24,18 @@ const PIP_VALIDATION_FAILED: PipValidation = {
 };
 
 export function validateAccessCode(caseDetails, accessCode: string): boolean {
+  logger.trace(`Validating access code for case details - ${JSON.stringify(caseDetails)}`, logLabel);
   if (caseDetails.appellantPinInPost) {
+    logger.trace(`Appellant Pin in Post details found for case - ${caseDetails.id}`, logLabel);
     const expiryDate: Date = new Date(caseDetails.appellantPinInPost.expiryDate);
+    logger.trace(`Pin in Post expiry date - ${expiryDate}`, logLabel);
+    logger.trace(`new Date(Date.now()) = ${new Date(Date.now())}`, logLabel);
+    logger.trace(`new Date(Date.now()) <= expiryDate = ${new Date(Date.now()) <= expiryDate}`, logLabel);
     if (new Date(Date.now()) <= expiryDate) {
+      logger.trace(`Pin in Post is valid for case - ${caseDetails.id}`, logLabel);
+      logger.trace(`Pin in Post access code - ${caseDetails.appellantPinInPost.accessCode}`, logLabel);
+      logger.trace(`Pin in Post pin used - ${caseDetails.appellantPinInPost.pinUsed}`, logLabel);
+      logger.trace(`Access code entered - ${accessCode}`, logLabel);
       return caseDetails.appellantPinInPost.pinUsed === 'No'
         && caseDetails.appellantPinInPost.accessCode === accessCode;
     }

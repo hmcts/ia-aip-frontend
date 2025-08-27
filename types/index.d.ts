@@ -317,8 +317,10 @@ interface AppealApplication {
   feeSupportPersisted?: boolean;
   remissionOption?: string;
   asylumSupportRefNumber?: string;
+  asylumSupportReference?: string;
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
+  helpWithFeesReference?: string;
   localAuthorityLetters?: Evidence[];
 
   lateRemissionOption?: string;

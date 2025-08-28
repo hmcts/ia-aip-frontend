@@ -748,12 +748,10 @@ describe('update-appeal-service', () => {
             isHearingRoomNeeded: null,
             isLateRemissionRequest: 'No',
             asylumSupportRefNumber: null,
-            asylumSupportReference: null,
             decisionHearingFeeOption: null,
             feeSupportPersisted: 'No',
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
-            helpWithFeesReference: null,
             localAuthorityLetters: null,
             paAppealTypeAipPaymentOption: null,
             pcqId: null,
@@ -797,12 +795,10 @@ describe('update-appeal-service', () => {
             isHearingRoomNeeded: null,
             isLateRemissionRequest: 'No',
             asylumSupportRefNumber: null,
-            asylumSupportReference: null,
             decisionHearingFeeOption: null,
             feeSupportPersisted: 'No',
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
-            helpWithFeesReference: null,
             localAuthorityLetters: null,
             paAppealTypeAipPaymentOption: null,
             pcqId: null,
@@ -847,8 +843,6 @@ describe('update-appeal-service', () => {
             isHearingRoomNeeded: null,
             isLateRemissionRequest: 'No',
             asylumSupportRefNumber: null,
-            asylumSupportReference: null,
-            helpWithFeesReference: null,
             decisionHearingFeeOption: null,
             feeSupportPersisted: 'No',
             helpWithFeesOption: null,
@@ -912,10 +906,8 @@ describe('update-appeal-service', () => {
           'gwfReferenceNumber': null,
           'remissionOption': null,
           'asylumSupportRefNumber': null,
-          'asylumSupportReference': null,
           'helpWithFeesOption': null,
           'helpWithFeesRefNumber': null,
-          'helpWithFeesReference': null,
           'localAuthorityLetters': null,
           'feeSupportPersisted': 'No',
           'isHearingRoomNeeded': null,
@@ -962,8 +954,6 @@ describe('update-appeal-service', () => {
           'gwfReferenceNumber': null,
           'remissionOption': null,
           'asylumSupportRefNumber': null,
-          'asylumSupportReference': null,
-          'helpWithFeesReference': null,
           'helpWithFeesOption': null,
           'helpWithFeesRefNumber': null,
           'localAuthorityLetters': null,
@@ -1056,8 +1046,6 @@ describe('update-appeal-service', () => {
           'isHearingRoomNeeded': null,
           'isLateRemissionRequest': 'No',
           'asylumSupportRefNumber': null,
-          'asylumSupportReference': null,
-          'helpWithFeesReference': null,
           'decisionHearingFeeOption': null,
           'feeSupportPersisted': 'No',
           'helpWithFeesOption': null,
@@ -1109,8 +1097,6 @@ describe('update-appeal-service', () => {
         'isHearingLoopNeeded': null,
         'isHearingRoomNeeded': null,
         'asylumSupportRefNumber': null,
-        'asylumSupportReference': null,
-        'helpWithFeesReference': null,
         'decisionHearingFeeOption': null,
         'feeSupportPersisted': 'No',
         'helpWithFeesOption': null,
@@ -1162,8 +1148,6 @@ describe('update-appeal-service', () => {
         'isHearingRoomNeeded': null,
         'isLateRemissionRequest': 'No',
         'asylumSupportRefNumber': null,
-        'asylumSupportReference': null,
-        'helpWithFeesReference': null,
         'decisionHearingFeeOption': null,
         'feeSupportPersisted': 'No',
         'helpWithFeesOption': null,
@@ -1211,18 +1195,8 @@ describe('update-appeal-service', () => {
 
       emptyApplication.hearingRequirements.isInterpreterServicesNeeded = true;
       emptyApplication.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
-      emptyApplication.hearingRequirements.appellantInterpreterSpokenLanguage = {
-        languageRefData: {
-          value: {
-            label: 'Maghreb',
-            code: 'ara-mag'
-          }
-        }
-      };
-      emptyApplication.hearingRequirements.appellantInterpreterSignLanguage = {
-        languageManualEntry: ['Yes'],
-        languageManualEntryDescription: 'input sign language manually'
-      };
+      emptyApplication.hearingRequirements.appellantInterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
+      emptyApplication.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData.isInterpreterServicesNeeded).to.be.equals('Yes');
@@ -1241,18 +1215,8 @@ describe('update-appeal-service', () => {
         'list_items': [{ 'code': 'witness 2', 'label': 'witness 2' }]
       };
       emptyApplication.hearingRequirements.witness2InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
-      emptyApplication.hearingRequirements.witness2InterpreterSpokenLanguage = {
-        languageRefData: {
-          value: {
-            label: 'Maghreb',
-            code: 'ara-mag'
-          }
-        }
-      };
-      emptyApplication.hearingRequirements.witness2InterpreterSignLanguage = {
-        languageManualEntry: ['Yes'],
-        languageManualEntryDescription: 'input sign language manually'
-      };
+      emptyApplication.hearingRequirements.witness2InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
+      emptyApplication.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData.isInterpreterServicesNeeded).to.be.equals('Yes');
@@ -1554,34 +1518,34 @@ describe('update-appeal-service', () => {
     describe('previousRemissionDetails', () => {
       const caseData: Partial<CaseData> = {
         previousRemissionDetails:
-          [{
-            id: '1',
-            value: {
-              feeAmount: '2000',
-              amountRemitted: '1000',
-              amountLeftToPay: '1000',
-              feeRemissionType: 'type1',
-              remissionDecision: 'decission1',
-              asylumSupportReference: 'refNumber1',
-              remissionDecisionReason: 'decission',
-              helpWithFeesReferenceNumber: 'refNumber2',
-              helpWithFeesOption: 'helpOption',
-              localAuthorityLetters: [
-                {
-                  id: 'fa35dcae-ae4c-462d-9cce-6878326875b0',
-                  value: {
-                    tag: 'additionalEvidence',
-                    document: {
-                      document_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4',
-                      document_filename: '1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf',
-                      document_binary_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4/binary'
-                    },
-                    dateUploaded: ''
-                  }
+        [{
+          id: '1',
+          value: {
+            feeAmount: '2000',
+            amountRemitted: '1000',
+            amountLeftToPay: '1000',
+            feeRemissionType: 'type1',
+            remissionDecision: 'decission1',
+            asylumSupportReference: 'refNumber1',
+            remissionDecisionReason: 'decission',
+            helpWithFeesReferenceNumber: 'refNumber2',
+            helpWithFeesOption: 'helpOption',
+            localAuthorityLetters: [
+              {
+                id: 'fa35dcae-ae4c-462d-9cce-6878326875b0',
+                value: {
+                  tag: 'additionalEvidence',
+                  document: {
+                    document_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4',
+                    document_filename: '1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf',
+                    document_binary_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4/binary'
+                  },
+                  dateUploaded: ''
                 }
-              ]
-            } as RemissionDetailsData
-          }] as RemissionDetailsCollection[]
+              }
+            ]
+          } as RemissionDetailsData
+        }] as RemissionDetailsCollection[]
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1770,10 +1734,7 @@ describe('update-appeal-service', () => {
         const caseData: Partial<CaseData> = {
           appellantInterpreterLanguageCategory: ['spokenLanguageInterpreter', 'signLanguageInterpreter'],
           appellantInterpreterSpokenLanguage: { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } },
-          appellantInterpreterSignLanguage: {
-            languageManualEntry: ['Yes'],
-            languageManualEntryDescription: 'input sign language manually'
-          }
+          appellantInterpreterSignLanguage: { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' }
         };
 
         const mappedAppeal = getMappedAppeal(caseData);
@@ -1789,16 +1750,10 @@ describe('update-appeal-service', () => {
           isAnyWitnessInterpreterRequired: 'Yes',
           witness1: witness1,
           witness2: witness2,
-          witnessListElement2: {
-            'value': [{ 'code': 'witness 2', 'label': 'witness 2' }],
-            'list_items': [{ 'code': 'witness 2', 'label': 'witness 2' }]
-          },
+          witnessListElement2: { 'value': [{ 'code': 'witness 2', 'label': 'witness 2' }], 'list_items': [{ 'code': 'witness 2', 'label': 'witness 2' }] },
           witness2InterpreterLanguageCategory: ['spokenLanguageInterpreter', 'signLanguageInterpreter'],
           witness2InterpreterSpokenLanguage: { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } },
-          witness2InterpreterSignLanguage: {
-            languageManualEntry: ['Yes'],
-            languageManualEntryDescription: 'input sign language manually'
-          }
+          witness2InterpreterSignLanguage: { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' }
         };
 
         const mappedAppeal = getMappedAppeal(caseData);
@@ -1875,7 +1830,7 @@ describe('update-appeal-service', () => {
       ];
 
       // @ts-ignore
-      const expected: Collection<DocumentWithMetaData>[] = [
+      const expected: Collection<Document>[] = [
         {
           id: '1',
           value: {
@@ -1993,8 +1948,6 @@ describe('update-appeal-service', () => {
               feeSupportPersisted: true,
               helpWithFeesOption: 'test',
               helpWithFeesRefNumber: 'HWF-123',
-              asylumSupportReference: 'some-other',
-              helpWithFeesReference: 'some-other-hwf',
               localAuthorityLetters: [{
                 name: 'somefile.png',
                 fileId: '00000000-0000-0000-0000-000000000000',
@@ -2109,8 +2062,6 @@ describe('update-appeal-service', () => {
         'asylumSupportRefNumber': 'test',
         'helpWithFeesOption': 'test',
         'helpWithFeesRefNumber': 'HWF-123',
-        'asylumSupportReference': 'some-other',
-        'helpWithFeesReference': 'some-other-hwf',
         'localAuthorityLetters': [
           {
             'id': '00000000-0000-0000-0000-000000000000',
@@ -2179,8 +2130,6 @@ describe('update-appeal-service', () => {
     });
 
     it('updates case with ccd', async () => {
-      expectedCaseData.asylumSupportReference = 'some-other';
-      expectedCaseData.helpWithFeesReference = 'some-other-hwf';
       await updateAppealServiceBis.submitEvent(Events.EDIT_APPEAL, req as Request);
       expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
         Events.EDIT_APPEAL,
@@ -2194,8 +2143,6 @@ describe('update-appeal-service', () => {
     });
 
     it('submits case with ccd', async () => {
-      expectedCaseData.asylumSupportReference = 'some-other';
-      expectedCaseData.helpWithFeesReference = 'some-other-hwf';
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_APPEAL, req as Request);
       expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
         Events.SUBMIT_APPEAL,
@@ -2209,8 +2156,6 @@ describe('update-appeal-service', () => {
     });
 
     it('submits ReasonsForAppeal with ccd', async () => {
-      expectedCaseData.asylumSupportReference = 'some-other';
-      expectedCaseData.helpWithFeesReference = 'some-other-hwf';
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req as Request);
       expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
         Events.SUBMIT_REASONS_FOR_APPEAL,
@@ -2306,8 +2251,6 @@ describe('update-appeal-service', () => {
         additionalRequests: 'Yes',
         additionalRequestsDescription: 'Anything else description'
       };
-      expectedCaseData.asylumSupportReference = 'some-other';
-      expectedCaseData.helpWithFeesReference = 'some-other-hwf';
       expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
         Events.SUBMIT_CMA_REQUIREMENTS,
         userId,
@@ -2681,10 +2624,8 @@ describe('update-appeal-service', () => {
             dateToAvoidReason: 'Medical appointment'
           }
         }, {
-          value: {
-            dateToAvoid: '2024-11-05',
-            dateToAvoidReason: 'Family event'
-          }
+          value: { dateToAvoid: '2024-11-05',
+            dateToAvoidReason: 'Family event' }
         }]
       };
 

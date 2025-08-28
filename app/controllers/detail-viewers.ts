@@ -174,6 +174,8 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
 
 async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   const { application } = req.session.appeal;
+  // tslint:disable-next-line:no-console
+  console.log(application);
   const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
     return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
@@ -250,8 +252,12 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     if (appealHasRemissionOption(application)) {
       await addPaymentDetails(req, application, feeDetailsRows);
       if (application.remissionOption === 'asylumSupportFromHo') {
+        let asylumSupportRef = application.asylumSupportRefNumber;
+        if (!asylumSupportRef || asylumSupportRef === '') {
+          asylumSupportRef = application.asylumSupportReference;
+        }
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber,
-          [application.asylumSupportRefNumber || application.asylumSupportReference], null));
+          [asylumSupportRef], null));
       } else if (application.remissionOption === 'feeWaiverFromHo') {
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, ['Home Office fee waiver'], null));
       } else if (application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') {
@@ -260,8 +266,12 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
         });
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
       } else if (application.remissionOption === 'noneOfTheseStatements' || application.remissionOption === 'iWantToGetHelpWithFees') {
+        let helpWithFeeRef = application.helpWithFeesRefNumber;
+        if (!helpWithFeeRef || helpWithFeeRef === '') {
+          helpWithFeeRef = application.helpWithFeesReference;
+        }
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber,
-          [application.helpWithFeesRefNumber || application.helpWithFeesReference], null));
+          [helpWithFeeRef], null));
       }
       if (application.previousRemissionDetails) {
         await addPreviousRemissionDetails(req, application, feeHistoryRows);

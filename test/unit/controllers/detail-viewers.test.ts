@@ -774,7 +774,8 @@ describe('DetailViewController', () => {
       });
     });
 
-    it('should render detail-viewers/details-with-fees-viewer.njk with feeRemissionType if present', async () => {
+    it('should render detail-viewers/details-with-fees-viewer.njk with fee support type ' +
+      'feeRemissionType if present', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
@@ -788,6 +789,83 @@ describe('DetailViewController', () => {
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.feeRemissionType = 'SOME FEE REMISSION TYPE';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.feeWithHearing = '140';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with appealSupportReference ' +
+      'if appealSupportRefNumber missing', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportReference = 'supportRefNumber';
+      req.session.appeal.feeWithHearing = '140';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with helpWithFeesReferenceNumber ' +
+      'if helpWithFeesRefNumber missing', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+        { key: { text: 'Help with fees reference number' }, value: { html: 'helpWithFeesRefNumberValue' } }
+      );
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
+      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
+      req.session.appeal.application.helpWithFeesReferenceNumber = 'helpWithFeesRefNumberValue';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with fee support type' +
+      ' if feeWaiverFromHo', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+        { key: { text: 'Fee support type' }, value: { html: 'Home Office fee waiver' } }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);

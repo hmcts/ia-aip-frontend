@@ -7,9 +7,9 @@ import { addSummaryRow } from './summary-list';
 function appealHasRemissionOption(application: AppealApplication) {
   return ['asylumSupportFromHo', 'feeWaiverFromHo', 'under18GetSupportFromLocalAuthority', 'parentGetSupportFromLocalAuthority']
       .includes(application.remissionOption)
-    || ['noneOfTheseStatements', 'iWantToGetHelpWithFees'].includes(application.remissionOption)
+    || (['noneOfTheseStatements', 'iWantToGetHelpWithFees'].includes(application.remissionOption)
     && ['wantToApply', 'alreadyApplied'].includes(application.helpWithFeesOption)
-    && application.helpWithFeesRefNumber;
+    && application.helpWithFeesRefNumber || application.helpWithFeesReferenceNumber);
 }
 
 function appealHasNoRemissionOption(application: AppealApplication) {

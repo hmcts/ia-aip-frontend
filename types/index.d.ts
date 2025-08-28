@@ -320,7 +320,7 @@ interface AppealApplication {
   asylumSupportReference?: string;
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
-  helpWithFeesReference?: string;
+  helpWithFeesReferenceNumber?: string;
   localAuthorityLetters?: Evidence[];
 
   lateRemissionOption?: string;

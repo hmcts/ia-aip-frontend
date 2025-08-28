@@ -174,8 +174,6 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
 
 async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   const { application } = req.session.appeal;
-  // tslint:disable-next-line:no-console
-  console.log(application);
   const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
     return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
@@ -268,7 +266,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
       } else if (application.remissionOption === 'noneOfTheseStatements' || application.remissionOption === 'iWantToGetHelpWithFees') {
         let helpWithFeeRef = application.helpWithFeesRefNumber;
         if (!helpWithFeeRef || helpWithFeeRef === '') {
-          helpWithFeeRef = application.helpWithFeesReference;
+          helpWithFeeRef = application.helpWithFeesReferenceNumber;
         }
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber,
           [helpWithFeeRef], null));

@@ -247,7 +247,7 @@ interface CaseData {
   asylumSupportReference?: string;
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
-  helpWithFeesReference?: string;
+  helpWithFeesReferenceNumber?: string;
   localAuthorityLetters?: Collection<DocumentWithMetaData>[];
   correctedDecisionAndReasons: Collection<CcdDecisionAndReasons>[];
 

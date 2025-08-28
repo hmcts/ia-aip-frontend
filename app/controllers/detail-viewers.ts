@@ -249,6 +249,10 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   if (!['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
     if (appealHasRemissionOption(application)) {
       await addPaymentDetails(req, application, feeDetailsRows);
+      let hasFeeRemissionType = application.feeRemissionType !== null && application.feeRemissionType !== '';
+      if (hasFeeRemissionType) {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [application.feeRemissionType], null));
+      }
       if (application.remissionOption === 'asylumSupportFromHo') {
         let asylumSupportRef = application.asylumSupportRefNumber;
         if (!asylumSupportRef || asylumSupportRef === '') {
@@ -256,7 +260,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
         }
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber,
           [asylumSupportRef], null));
-      } else if (application.remissionOption === 'feeWaiverFromHo') {
+      } else if (application.remissionOption === 'feeWaiverFromHo' && !hasFeeRemissionType) {
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, ['Home Office fee waiver'], null));
       } else if (application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') {
         const localAuthorityLetterDocs = application.localAuthorityLetters.map(doc => {

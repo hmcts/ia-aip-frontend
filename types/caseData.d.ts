@@ -245,6 +245,7 @@ interface CaseData {
   remissionOption?: string;
   asylumSupportRefNumber?: string;
   asylumSupportReference?: string;
+  feeRemissionType?: string;
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
   helpWithFeesReferenceNumber?: string;

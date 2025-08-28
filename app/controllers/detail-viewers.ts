@@ -247,7 +247,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
 
   // fee section
   if (!['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
-    if (appealHasRemissionOption(application)) {
+    if (appealHasRemissionOption(application, true)) {
       await addPaymentDetails(req, application, feeDetailsRows);
       let hasFeeRemissionType = application.feeRemissionType && application.feeRemissionType !== '';
       if (hasFeeRemissionType) {

@@ -4,12 +4,15 @@ import { Events } from '../data/events';
 import { convertToAmountOfMoneyDividedBy100 } from './payments-utils';
 import { addSummaryRow } from './summary-list';
 
-function appealHasRemissionOption(application: AppealApplication) {
+function appealHasRemissionOption(application: AppealApplication, checkHelpWithFeesReferenceNumber: boolean = false) {
+  let hasHwfNumber: boolean = checkHelpWithFeesReferenceNumber
+    ? !!(application.helpWithFeesRefNumber || application.helpWithFeesReferenceNumber) : !!(application.helpWithFeesRefNumber);
+
   return ['asylumSupportFromHo', 'feeWaiverFromHo', 'under18GetSupportFromLocalAuthority', 'parentGetSupportFromLocalAuthority']
       .includes(application.remissionOption)
-    || (['noneOfTheseStatements', 'iWantToGetHelpWithFees'].includes(application.remissionOption)
+    || ['noneOfTheseStatements', 'iWantToGetHelpWithFees'].includes(application.remissionOption)
     && ['wantToApply', 'alreadyApplied'].includes(application.helpWithFeesOption)
-    && application.helpWithFeesRefNumber || application.helpWithFeesReferenceNumber);
+    && hasHwfNumber;
 }
 
 function appealHasNoRemissionOption(application: AppealApplication) {

@@ -260,40 +260,48 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
         if (!asylumSupportRef || asylumSupportRef === '') {
           asylumSupportRef = application.asylumSupportReference;
         }
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber,
-          [asylumSupportRef], null));
-        if (application.asylumSupportDocument) {
-          feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportDocument,
-            [getEvidenceUrl(application.asylumSupportDocument)], null));
+        if (asylumSupportRef) {
+          feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber,
+            [asylumSupportRef], null));
+          if (application.asylumSupportDocument) {
+            feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportDocument,
+              [getEvidenceUrl(application.asylumSupportDocument)], null));
+          }
         }
-      } else if ((application.remissionOption === 'feeWaiverFromHo' && !hasFeeRemissionType) || (hasHoWaiverRemissionType && application.remissionClaim === 'homeOfficeWaiver')) {
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, ['Home Office fee waiver'], null));
-        if (application.homeOfficeWaiverDocument) {
-          feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeWaiverDocument,
-            [getEvidenceUrl(application.homeOfficeWaiverDocument)], null));
-        }
-      } else if (application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') {
+      }
+      if ((application.remissionOption === 'feeWaiverFromHo' || (hasHoWaiverRemissionType && application.remissionClaim === 'homeOfficeWaiver')) && application.homeOfficeWaiverDocument) {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeWaiverDocument,
+          [getEvidenceUrl(application.homeOfficeWaiverDocument)], null));
+      }
+      if ((application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') && application.localAuthorityLetters && application.localAuthorityLetters.length > 0) {
         const localAuthorityLetterDocs = application.localAuthorityLetters.map(doc => {
           return getEvidenceUrl(doc);
         });
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
-      } else if (hasHoWaiverRemissionType && application.remissionClaim === 'section17' && application.section17Document) {
+      }
+      if (hasHoWaiverRemissionType && application.remissionClaim === 'section17' && application.section17Document) {
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.section17Document,
           [getEvidenceUrl(application.section17Document)], null));
-      } else if (hasHoWaiverRemissionType && application.remissionClaim === 'section20' && application.section20Document) {
+      }
+      if (hasHoWaiverRemissionType && application.remissionClaim === 'section20' && application.section20Document) {
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.section20Document,
           [getEvidenceUrl(application.section20Document)], null));
-      } else if (hasHoWaiverRemissionType && application.remissionClaim === 'legalAid') {
+      }
+      if (hasHoWaiverRemissionType && application.remissionClaim === 'legalAid' && application.legalAidAccountNumber) {
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber,
           [application.legalAidAccountNumber], null));
-      } else if (application.remissionOption === 'noneOfTheseStatements' || application.remissionOption === 'iWantToGetHelpWithFees' || application.remissionType === 'helpWithFees') {
+      }
+      if (application.remissionOption === 'noneOfTheseStatements' || application.remissionOption === 'iWantToGetHelpWithFees' || application.remissionType === 'helpWithFees') {
         let helpWithFeeRef = application.helpWithFeesRefNumber;
         if (!helpWithFeeRef || helpWithFeeRef === '') {
           helpWithFeeRef = application.helpWithFeesReferenceNumber;
         }
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber,
-          [helpWithFeeRef], null));
-      } else if (application.remissionType === 'exceptionalCircumstancesRemission') {
+        if (helpWithFeeRef) {
+          feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber,
+            [helpWithFeeRef], null));
+        }
+      }
+      if (application.remissionType === 'exceptionalCircumstancesRemission' && application.exceptionalCircumstances) {
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstances, [application.exceptionalCircumstances], null));
         if (application.remissionEcEvidenceDocuments && application.remissionEcEvidenceDocuments.length > 0) {
           const ecEvidenceDocs = application.remissionEcEvidenceDocuments.map(doc => {
@@ -389,6 +397,12 @@ async function addPreviousRemissionDetails(req: Request, application: AppealAppl
       });
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstancesEvidence, ecEvidenceDocs, null));
     }
+    console.log('does have localAuthorityLetter:');
+    console.log(remissionDetail.localAuthorityLetters && remissionDetail.localAuthorityLetters.length > 0)
+    console.log(remissionDetail.localAuthorityLetters.map((doc: Evidence) => {
+      return getEvidenceUrl(doc);
+    }));
+
     if (remissionDetail.localAuthorityLetters && remissionDetail.localAuthorityLetters.length > 0) {
       const localAuthorityLetterDocs = remissionDetail.localAuthorityLetters.map((doc: Evidence) => {
         return getEvidenceUrl(doc);

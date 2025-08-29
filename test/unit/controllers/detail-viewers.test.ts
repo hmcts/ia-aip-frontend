@@ -935,7 +935,6 @@ describe('DetailViewController', () => {
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
           { key: { text: 'Fee amount' }, value: { html: '£140' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-          { key: { text: 'Fee support type' }, value: { html: 'Home Office fee waiver' } },
           {
             key: { text: i18n.pages.checkYourAnswers.rowTitles.homeOfficeWaiverDocument },
             value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>homeOfficeWaiverDoc1.pdf</a>" }
@@ -1040,14 +1039,12 @@ describe('DetailViewController', () => {
       });
     });
 
-    it('should render detail-viewers/details-with-fees-viewer.njk with fee support type' +
-      ' if feeWaiverFromHo', async () => {
+    it('should render detail-viewers/details-with-fees-viewer.njk if feeWaiverFromHo', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
         { key: { text: 'Fee amount' }, value: { html: '£140' } },
-        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-        { key: { text: 'Fee support type' }, value: { html: 'Home Office fee waiver' } }
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } }
       );
 
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';

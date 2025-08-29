@@ -623,9 +623,12 @@ export default class UpdateAppealService {
         ...caseData.rpDcAppealHearingOption && { rpDcAppealHearingOption: caseData.rpDcAppealHearingOption },
         ...caseData.decisionHearingFeeOption && { decisionHearingFeeOption: caseData.decisionHearingFeeOption },
         remissionOption: caseData.remissionOption,
+        feeRemissionType: caseData.feeRemissionType,
         asylumSupportRefNumber: caseData.asylumSupportRefNumber,
+        asylumSupportReference: caseData.asylumSupportReference,
         helpWithFeesOption: caseData.helpWithFeesOption,
         helpWithFeesRefNumber: caseData.helpWithFeesRefNumber,
+        helpWithFeesReferenceNumber: caseData.helpWithFeesReferenceNumber,
         ...caseData.localAuthorityLetters && { localAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.localAuthorityLetters, documentMap) },
         feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined,
         refundRequested: caseData.refundRequested ? yesNoToBool(caseData.refundRequested) : undefined,
@@ -1415,16 +1418,22 @@ export default class UpdateAppealService {
     this.assignSinglePropertyIfExists(application, 'appellantOutOfCountryAddress', caseData, 'appellantOutOfCountryAddress');
     this.assignSinglePropertyIfExists(application, 'appealType', caseData, 'appealType');
 
+    caseData.feeRemissionType = null;
     caseData.remissionOption = null;
     caseData.asylumSupportRefNumber = null;
+    caseData.asylumSupportReference = null;
     caseData.helpWithFeesOption = null;
     caseData.helpWithFeesRefNumber = null;
+    caseData.helpWithFeesReferenceNumber = null;
     caseData.localAuthorityLetters = null;
 
+    this.assignSinglePropertyIfExists(application, 'feeRemissionType', caseData, 'feeRemissionType');
     this.assignSinglePropertyIfExists(application, 'remissionOption', caseData, 'remissionOption');
     this.assignSinglePropertyIfExists(application, 'asylumSupportRefNumber', caseData, 'asylumSupportRefNumber');
+    this.assignSinglePropertyIfExists(application, 'asylumSupportReference', caseData, 'asylumSupportReference');
     this.assignSinglePropertyIfExists(application, 'helpWithFeesOption', caseData, 'helpWithFeesOption');
     this.assignSinglePropertyIfExists(application, 'helpWithFeesRefNumber', caseData, 'helpWithFeesRefNumber');
+    this.assignSinglePropertyIfExists(application, 'helpWithFeesReferenceNumber', caseData, 'helpWithFeesReferenceNumber');
     this.mapToCCDLocalAuthorityLetters(appeal, caseData);
 
     caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;

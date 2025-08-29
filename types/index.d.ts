@@ -572,6 +572,7 @@ interface RemissionDetails {
   remissionDecisionReason?: string;
   helpWithFeesReferenceNumber?: string;
   helpWithFeesOption?: string;
+  asylumSupportDocument?: Evidence;
   localAuthorityLetters?: Evidence[];
 }
 

@@ -442,6 +442,7 @@ interface RemissionDetailsData {
   remissionDecisionReason?: string;
   helpWithFeesReferenceNumber?: string;
   helpWithFeesOption?: string;
+  asylumSupportDocument?: SupportingDocument;
   localAuthorityLetters?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
 }
 

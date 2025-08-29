@@ -175,6 +175,8 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
 
 async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   const { application } = req.session.appeal;
+  // tslint:disable-next-line:no-console
+  console.log(application);
   const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
     return getEvidenceUrl(doc);
@@ -397,11 +399,6 @@ async function addPreviousRemissionDetails(req: Request, application: AppealAppl
       });
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstancesEvidence, ecEvidenceDocs, null));
     }
-    console.log('does have localAuthorityLetter:');
-    console.log(remissionDetail.localAuthorityLetters && remissionDetail.localAuthorityLetters.length > 0)
-    console.log(remissionDetail.localAuthorityLetters.map((doc: Evidence) => {
-      return getEvidenceUrl(doc);
-    }));
 
     if (remissionDetail.localAuthorityLetters && remissionDetail.localAuthorityLetters.length > 0) {
       const localAuthorityLetterDocs = remissionDetail.localAuthorityLetters.map((doc: Evidence) => {

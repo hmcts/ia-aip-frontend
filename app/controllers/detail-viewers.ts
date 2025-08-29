@@ -326,6 +326,9 @@ async function addPreviousRemissionDetails(req: Request, application: AppealAppl
 
   application.previousRemissionDetails.forEach((remissionDetail: RemissionDetails, index: number) => {
     const row = [];
+    if (remissionDetail.feeRemissionType) {
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [remissionDetail.feeRemissionType], null));
+    }
     row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateOfApplication,
       [getRecordRemissionDate(req, index, application.previousRemissionDetails.length)], null));
     if (remissionDetail.asylumSupportReference) {

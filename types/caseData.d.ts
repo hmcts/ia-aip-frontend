@@ -245,7 +245,16 @@ interface CaseData {
   remissionOption?: string;
   asylumSupportRefNumber?: string;
   asylumSupportReference?: string;
+  legalAidAccountNumber?: string;
+  exceptionalCircumstances?: string;
+  asylumSupportDocument?: SupportingDocument;
+  section17Document?: SupportingDocument;
+  section20Document?: SupportingDocument;
+  homeOfficeWaiverDocument?: SupportingDocument;
+  remissionEcEvidenceDocuments?: Collection<SupportingDocument>[];
   feeRemissionType?: string;
+  remissionType?: string;
+  remissionClaim?: string;
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
   helpWithFeesReferenceNumber?: string;

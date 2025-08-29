@@ -752,6 +752,13 @@ describe('update-appeal-service', () => {
             feeSupportPersisted: 'No',
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
+            asylumSupportDocument: null,
+            section17Document: null,
+            section20Document: null,
+            homeOfficeWaiverDocument: null,
+            remissionEcEvidenceDocuments: null,
+            legalAidAccountNumber: null,
+            exceptionalCircumstances: null,
             localAuthorityLetters: null,
             paAppealTypeAipPaymentOption: null,
             feeRemissionType: null,
@@ -798,6 +805,13 @@ describe('update-appeal-service', () => {
             isHearingRoomNeeded: null,
             isLateRemissionRequest: 'No',
             feeRemissionType: null,
+            asylumSupportDocument: null,
+            section17Document: null,
+            section20Document: null,
+            homeOfficeWaiverDocument: null,
+            remissionEcEvidenceDocuments: null,
+            legalAidAccountNumber: null,
+            exceptionalCircumstances: null,
             asylumSupportReference: null,
             helpWithFeesReferenceNumber: null,
             asylumSupportRefNumber: null,
@@ -850,6 +864,13 @@ describe('update-appeal-service', () => {
             feeRemissionType: null,
             asylumSupportReference: null,
             helpWithFeesReferenceNumber: null,
+            asylumSupportDocument: null,
+            section17Document: null,
+            section20Document: null,
+            homeOfficeWaiverDocument: null,
+            remissionEcEvidenceDocuments: null,
+            legalAidAccountNumber: null,
+            exceptionalCircumstances: null,
             isLateRemissionRequest: 'No',
             asylumSupportRefNumber: null,
             decisionHearingFeeOption: null,
@@ -919,6 +940,13 @@ describe('update-appeal-service', () => {
           'helpWithFeesRefNumber': null,
           'feeRemissionType': null,
           'asylumSupportReference': null,
+          asylumSupportDocument: null,
+          section17Document: null,
+          section20Document: null,
+          homeOfficeWaiverDocument: null,
+          remissionEcEvidenceDocuments: null,
+          legalAidAccountNumber: null,
+          exceptionalCircumstances: null,
           'helpWithFeesReferenceNumber': null,
           'localAuthorityLetters': null,
           'feeSupportPersisted': 'No',
@@ -972,6 +1000,13 @@ describe('update-appeal-service', () => {
           'feeRemissionType': null,
           'asylumSupportReference': null,
           'helpWithFeesReferenceNumber': null,
+          asylumSupportDocument: null,
+          section17Document: null,
+          section20Document: null,
+          homeOfficeWaiverDocument: null,
+          remissionEcEvidenceDocuments: null,
+          legalAidAccountNumber: null,
+          exceptionalCircumstances: null,
           'feeSupportPersisted': 'No',
           'refundRequested': 'No',
           'isLateRemissionRequest': 'No',
@@ -1060,6 +1095,13 @@ describe('update-appeal-service', () => {
           'isHearingLoopNeeded': null,
           'isHearingRoomNeeded': null,
           'isLateRemissionRequest': 'No',
+          asylumSupportDocument: null,
+          section17Document: null,
+          section20Document: null,
+          homeOfficeWaiverDocument: null,
+          remissionEcEvidenceDocuments: null,
+          legalAidAccountNumber: null,
+          exceptionalCircumstances: null,
           'asylumSupportRefNumber': null,
           'decisionHearingFeeOption': null,
           'feeSupportPersisted': 'No',
@@ -1118,6 +1160,13 @@ describe('update-appeal-service', () => {
         'decisionHearingFeeOption': null,
         'feeSupportPersisted': 'No',
         'helpWithFeesOption': null,
+        asylumSupportDocument: null,
+        section17Document: null,
+        section20Document: null,
+        homeOfficeWaiverDocument: null,
+        remissionEcEvidenceDocuments: null,
+        legalAidAccountNumber: null,
+        exceptionalCircumstances: null,
         'helpWithFeesRefNumber': null,
         'paAppealTypeAipPaymentOption': null,
         'pcqId': null,
@@ -1172,6 +1221,13 @@ describe('update-appeal-service', () => {
         'decisionHearingFeeOption': null,
         'feeSupportPersisted': 'No',
         'helpWithFeesOption': null,
+        asylumSupportDocument: null,
+        section17Document: null,
+        section20Document: null,
+        homeOfficeWaiverDocument: null,
+        remissionEcEvidenceDocuments: null,
+        legalAidAccountNumber: null,
+        exceptionalCircumstances: null,
         'helpWithFeesRefNumber': null,
         'localAuthorityLetters': null,
         'feeRemissionType': null,
@@ -1270,6 +1326,73 @@ describe('update-appeal-service', () => {
       expect(caseData.witnessListElement2).to.deep.eq(emptyApplication.hearingRequirements.witnessListElement2);
       expect(caseData.witness2InterpreterSpokenLanguage).to.deep.eq(emptyApplication.hearingRequirements.witness2InterpreterSpokenLanguage);
       expect(caseData.witness2InterpreterSignLanguage).to.deep.eq(emptyApplication.hearingRequirements.witness2InterpreterSignLanguage);
+    });
+
+    it('converts the remission details', () => {
+      emptyApplication.application.legalAidAccountNumber = 'someLegalAidAccountNumber';
+      emptyApplication.application.exceptionalCircumstances = 'someExceptionalCircumstances';
+      emptyApplication.application.remissionEcEvidenceDocuments = [
+        { fileId: '5', name: 'someRemissionEcEvidenceDocument1.pdf' },
+        { fileId: '6', name: 'someRemissionEcEvidenceDocument2.pdf' }
+      ];
+      emptyApplication.application.section17Document = { fileId: '1', name: 'someSection17Doc.pdf' };
+      emptyApplication.application.section20Document = { fileId: '2', name: 'someSection20Doc.pdf' };
+      emptyApplication.application.asylumSupportDocument = { fileId: '3', name: 'someAsylumSupportDoc.pdf' };
+      emptyApplication.application.homeOfficeWaiverDocument = { fileId: '4', name: 'someHomeOfficeWaiverDoc.pdf' };
+      emptyApplication.documentMap = [
+        { id: '1', url: 'http://example.com/section17Document' },
+        { id: '2', url: 'http://example.com/section20Document' },
+        { id: '3', url: 'http://example.com/asylumSupportDocument' },
+        { id: '4', url: 'http://example.com/homeOfficeWaiverDocument' },
+        { id: '5', url: 'http://example.com/ecDoc1' },
+        { id: '6', url: 'http://example.com/ecDoc2' }
+      ];
+      emptyApplication.application.isAppealLate = true;
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData.section17Document).to.deep.eq({
+        document_filename: 'someSection17Doc.pdf',
+        document_url: 'http://example.com/section17Document',
+        document_binary_url: 'http://example.com/section17Document/binary'
+      });
+      expect(caseData.section20Document).to.deep.eq({
+        document_url: 'http://example.com/section20Document',
+        document_filename: 'someSection20Doc.pdf',
+        document_binary_url: 'http://example.com/section20Document/binary'
+      });
+      expect(caseData.homeOfficeWaiverDocument).to.deep.eq({
+        document_url: 'http://example.com/homeOfficeWaiverDocument',
+        document_filename: 'someHomeOfficeWaiverDoc.pdf',
+        document_binary_url: 'http://example.com/homeOfficeWaiverDocument/binary'
+      });
+      expect(caseData.asylumSupportDocument).to.deep.eq({
+        document_url: 'http://example.com/asylumSupportDocument',
+        document_filename: 'someAsylumSupportDoc.pdf',
+        document_binary_url: 'http://example.com/asylumSupportDocument/binary'
+      });
+      expect(caseData.remissionEcEvidenceDocuments).to.be.length(2);
+      expect(caseData.remissionEcEvidenceDocuments).to.deep.eq([
+        {
+          id: '5',
+          value: {
+            document_url: 'http://example.com/ecDoc1',
+            document_filename: 'someRemissionEcEvidenceDocument1.pdf',
+            document_binary_url: 'http://example.com/ecDoc1/binary'
+          }
+        },
+        {
+          id: '6',
+          value: {
+            document_url: 'http://example.com/ecDoc2',
+            document_filename: 'someRemissionEcEvidenceDocument2.pdf',
+            document_binary_url: 'http://example.com/ecDoc2/binary'
+          }
+        }
+      ]);
+      expect(caseData).contains({
+        legalAidAccountNumber: 'someLegalAidAccountNumber',
+        exceptionalCircumstances: 'someExceptionalCircumstances'
+      });
     });
   });
 
@@ -2116,6 +2239,13 @@ describe('update-appeal-service', () => {
         'asylumSupportReference': null,
         'helpWithFeesReferenceNumber': null,
         'feeRemissionType': null,
+        asylumSupportDocument: null,
+        section17Document: null,
+        section20Document: null,
+        homeOfficeWaiverDocument: null,
+        remissionEcEvidenceDocuments: null,
+        legalAidAccountNumber: null,
+        exceptionalCircumstances: null,
         'journeyType': 'aip',
         'homeOfficeReferenceNumber': 'newRef',
         'appellantInUk': 'undefined',

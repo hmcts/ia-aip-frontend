@@ -316,6 +316,8 @@ interface AppealApplication {
   decisionHearingFeeOption?: string;
   feeSupportPersisted?: boolean;
   remissionOption?: string;
+  remissionType?: string;
+  remissionClaim?: string;
   asylumSupportRefNumber?: string;
   asylumSupportReference?: string;
   feeRemissionType?: string;
@@ -323,6 +325,13 @@ interface AppealApplication {
   helpWithFeesRefNumber?: string;
   helpWithFeesReferenceNumber?: string;
   localAuthorityLetters?: Evidence[];
+  legalAidAccountNumber?: string;
+  exceptionalCircumstances?: string;
+  asylumSupportDocument?: Evidence;
+  section17Document?: Evidence;
+  section20Document?: Evidence;
+  homeOfficeWaiverDocument?: Evidence;
+  remissionEcEvidenceDocuments?: Evidence[];
 
   lateRemissionOption?: string;
   lateAsylumSupportRefNumber?: string;

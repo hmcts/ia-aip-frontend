@@ -15,6 +15,18 @@ function appealHasRemissionOption(application: AppealApplication, checkHelpWithF
     && hasHwfNumber;
 }
 
+function appealHasRemissionType(application: AppealApplication) {
+  if (application.remissionType === 'hoWaiverRemission') {
+    return appealHasRemissionClaim(application);
+  }
+  return ['helpWithFees', 'exceptionalCircumstancesRemission'].includes(application.remissionType);
+}
+
+function appealHasRemissionClaim(application: AppealApplication) {
+  return ['asylumSupport','legalAid','section17','section20','homeOfficeWaiver']
+    .includes(application.remissionClaim);
+}
+
 function appealHasNoRemissionOption(application: AppealApplication) {
   return 'noneOfTheseStatements' === application.remissionOption && 'willPayForAppeal' === application.helpWithFeesOption;
 }
@@ -105,5 +117,6 @@ export {
   getFeeSupportStatusForAppealDetails,
   getDecisionReasonRowForAppealDetails,
   getPaymentStatusRow,
-  paymentForAppealHasBeenMade
+  paymentForAppealHasBeenMade,
+  appealHasRemissionType
 };

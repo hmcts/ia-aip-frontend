@@ -569,7 +569,7 @@ export default class UpdateAppealService {
         }
         if (remissionDetail.value.remissionEcEvidenceDocuments && remissionDetail.value.remissionEcEvidenceDocuments.length > 0) {
           let documentMapRemissionEcEvidenceDocs: DocumentMap[] = [];
-          remissionEcEvidenceDocuments = this.mapSupportingDocumentsToEvidence(remissionDetail.value.remissionEcEvidenceDocuments, documentMapRemissionEcEvidenceDocs)
+          remissionEcEvidenceDocuments = this.mapSupportingDocumentsToEvidence(remissionDetail.value.remissionEcEvidenceDocuments, documentMapRemissionEcEvidenceDocs);
         }
         return {
           id: remissionDetail.id,

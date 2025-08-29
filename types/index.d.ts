@@ -572,8 +572,14 @@ interface RemissionDetails {
   remissionDecisionReason?: string;
   helpWithFeesReferenceNumber?: string;
   helpWithFeesOption?: string;
-  asylumSupportDocument?: Evidence;
   localAuthorityLetters?: Evidence[];
+  legalAidAccountNumber?: string;
+  exceptionalCircumstances?: string;
+  asylumSupportDocument?: Evidence;
+  section17Document?: Evidence;
+  section20Document?: Evidence;
+  homeOfficeWaiverDocument?: Evidence;
+  remissionEcEvidenceDocuments?: Evidence[];
 }
 
 interface RemittalDetails {

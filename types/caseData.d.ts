@@ -442,8 +442,14 @@ interface RemissionDetailsData {
   remissionDecisionReason?: string;
   helpWithFeesReferenceNumber?: string;
   helpWithFeesOption?: string;
-  asylumSupportDocument?: SupportingDocument;
   localAuthorityLetters?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  legalAidAccountNumber?: string;
+  exceptionalCircumstances?: string;
+  asylumSupportDocument?: SupportingDocument;
+  section17Document?: SupportingDocument;
+  section20Document?: SupportingDocument;
+  homeOfficeWaiverDocument?: SupportingDocument;
+  remissionEcEvidenceDocuments?: Collection<SupportingDocument>[];
 }
 
 interface InterpreterLanguageRefData {

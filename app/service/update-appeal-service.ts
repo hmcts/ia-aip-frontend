@@ -542,9 +542,34 @@ export default class UpdateAppealService {
       const previousRemissionDetailsData = caseData.previousRemissionDetails || [];
       previousRemissionDetails = previousRemissionDetailsData.map(remissionDetail => {
         let localAuthorityLetters = [];
+        let asylumSupportDocument = null;
+        let section17Document = null;
+        let section20Document = null;
+        let homeOfficeWaiverDocument = null;
+        let remissionEcEvidenceDocuments = [];
         if (remissionDetail.value.localAuthorityLetters && remissionDetail.value.localAuthorityLetters.length > 0) {
           let documentMapLocalAuthorityLetters: DocumentMap[] = [];
           localAuthorityLetters = this.mapDocsWithMetadataToEvidenceArray(remissionDetail.value.localAuthorityLetters, documentMapLocalAuthorityLetters);
+        }
+        if (remissionDetail.value.asylumSupportDocument && remissionDetail.value.asylumSupportDocument.document_filename) {
+          let documentMapAsylumSupportDoc: DocumentMap[] = [];
+          asylumSupportDocument = this.mapSupportingDocumentToEvidence(remissionDetail.value.asylumSupportDocument, documentMapAsylumSupportDoc);
+        }
+        if (remissionDetail.value.section17Document && remissionDetail.value.section17Document.document_filename) {
+          let documentMapSection17Doc: DocumentMap[] = [];
+          section17Document = this.mapSupportingDocumentToEvidence(remissionDetail.value.section17Document, documentMapSection17Doc);
+        }
+        if (remissionDetail.value.section20Document && remissionDetail.value.section20Document.document_filename) {
+          let documentMapSection20Doc: DocumentMap[] = [];
+          section20Document = this.mapSupportingDocumentToEvidence(remissionDetail.value.section20Document, documentMapSection20Doc);
+        }
+        if (remissionDetail.value.homeOfficeWaiverDocument && remissionDetail.value.homeOfficeWaiverDocument.document_filename) {
+          let documentMapHomeOfficeWaiverDoc: DocumentMap[] = [];
+          homeOfficeWaiverDocument = this.mapSupportingDocumentToEvidence(remissionDetail.value.homeOfficeWaiverDocument, documentMapHomeOfficeWaiverDoc);
+        }
+        if (remissionDetail.value.remissionEcEvidenceDocuments && remissionDetail.value.remissionEcEvidenceDocuments.length > 0) {
+          let documentMapRemissionEcEvidenceDocs: DocumentMap[] = [];
+          remissionEcEvidenceDocuments = this.mapSupportingDocumentsToEvidence(remissionDetail.value.remissionEcEvidenceDocuments, documentMapRemissionEcEvidenceDocs)
         }
         return {
           id: remissionDetail.id,
@@ -557,7 +582,14 @@ export default class UpdateAppealService {
           remissionDecisionReason: remissionDetail.value.remissionDecisionReason,
           helpWithFeesReferenceNumber: remissionDetail.value.helpWithFeesReferenceNumber,
           helpWithFeesOption: remissionDetail.value.helpWithFeesOption,
-          localAuthorityLetters: localAuthorityLetters
+          localAuthorityLetters: localAuthorityLetters,
+          legalAidAccountNumber: remissionDetail.value.legalAidAccountNumber,
+          exceptionalCircumstances: remissionDetail.value.exceptionalCircumstances,
+          asylumSupportDocument: asylumSupportDocument,
+          section17Document: section17Document,
+          section20Document: section20Document,
+          homeOfficeWaiverDocument: homeOfficeWaiverDocument,
+          remissionEcEvidenceDocuments: remissionEcEvidenceDocuments
         } as RemissionDetails;
       });
     }
@@ -877,7 +909,7 @@ export default class UpdateAppealService {
     return clarifyingQuestions.map(answer => {
       let evidencesList: Evidence[] = [];
       if (answer.value.supportingEvidence) {
-        evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentsToEvidence(e, documentMap));
+        evidencesList = this.mapSupportingDocumentsToEvidence(answer.value.supportingEvidence, documentMap);
       }
       return {
         id: answer.id,
@@ -964,12 +996,14 @@ export default class UpdateAppealService {
     };
   }
 
-  private mapSupportingDocumentsToEvidence(evidence: Collection<SupportingDocument>, documentMap: DocumentMap[]) {
-    const documentMapperId: string = this._documentManagementService.addToDocumentMapper(evidence.value.document_url, documentMap);
-    return {
-      fileId: documentMapperId,
-      name: evidence.value.document_filename
-    };
+  private mapSupportingDocumentsToEvidence(evidence: Collection<SupportingDocument>[], documentMap: DocumentMap[]) {
+    return evidence.map(doc => {
+      const documentMapperId: string = this._documentManagementService.addToDocumentMapper(doc.value.document_url, documentMap);
+      return {
+        fileId: documentMapperId,
+        name: doc.value.document_filename
+      };
+    });
   }
 
   private mapEvidenceToSupportingDocument(evidence: Evidence, documentMap: DocumentMap[]): Collection<SupportingDocument> {
@@ -1057,7 +1091,7 @@ export default class UpdateAppealService {
         id: application.id,
         value: {
           ...application.value,
-          ...application.value.evidence && { evidence: application.value.evidence.map(e => this.mapSupportingDocumentsToEvidence(e, documentMap)) }
+          ...application.value.evidence && { evidence: this.mapSupportingDocumentsToEvidence(application.value.evidence, documentMap) }
         }
       };
     });

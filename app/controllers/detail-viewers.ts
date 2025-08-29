@@ -32,6 +32,8 @@ import {
   toIsoDate
 } from '../utils/utils';
 
+const localAuthorityFeeRemissionTypes = ['Section 17', 'Section 20'];
+
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
   return history.filter(h => h.id === eventId);
@@ -253,9 +255,12 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     if (appealHasRemissionOption(application, true) || appealHasRemissionType(application)) {
       let hasHoWaiverRemissionType = application.remissionType && application.remissionType === 'hoWaiverRemission';
       await addPaymentDetails(req, application, feeDetailsRows);
-      let hasFeeRemissionType = application.feeRemissionType && application.feeRemissionType !== '';
-      if (hasFeeRemissionType) {
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [application.feeRemissionType], null));
+      if (application.feeRemissionType && application.feeRemissionType !== '') {
+        if (localAuthorityFeeRemissionTypes.includes(application.feeRemissionType)) {
+          feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [`Local Authority Support (${application.feeRemissionType})`], null));
+        } else {
+          feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [application.feeRemissionType], null));
+        }
       }
       if (application.remissionOption === 'asylumSupportFromHo' || (hasHoWaiverRemissionType && application.remissionClaim === 'asylumSupport')) {
         let asylumSupportRef = application.asylumSupportRefNumber;
@@ -364,7 +369,11 @@ async function addPreviousRemissionDetails(req: Request, application: AppealAppl
   application.previousRemissionDetails.forEach((remissionDetail: RemissionDetails, index: number) => {
     const row = [];
     if (remissionDetail.feeRemissionType) {
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [remissionDetail.feeRemissionType], null));
+      if (localAuthorityFeeRemissionTypes.includes(remissionDetail.feeRemissionType)) {
+        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [`Local Authority Support (${remissionDetail.feeRemissionType})`], null));
+      } else {
+        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [remissionDetail.feeRemissionType], null));
+      }
     }
     row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateOfApplication,
       [getRecordRemissionDate(req, index, application.previousRemissionDetails.length)], null));

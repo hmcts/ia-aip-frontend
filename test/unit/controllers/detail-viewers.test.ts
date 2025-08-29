@@ -1248,7 +1248,8 @@ describe('DetailViewController', () => {
           id: '5',
           fileId: 'file Id 5',
           name: 'file_5_name'
-        } as Evidence
+        } as Evidence,
+        feeRemissionType: 'Section 17'
       } as RemissionDetails, {
         id: '1',
         feeAmount: '1000',
@@ -1264,6 +1265,7 @@ describe('DetailViewController', () => {
         amountLeftToPay: '1000',
         remissionDecision: 'Rejected',
         remissionDecisionReason: 'Decision 2',
+        feeRemissionType: 'Section 20',
         localAuthorityLetters: [{
           id: '1',
           fileId: 'file Id 1',
@@ -1307,13 +1309,14 @@ describe('DetailViewController', () => {
         ],
         'feeHistoryRows': [
           [
+            { key: { text: 'Fee support type' }, value: {  html: 'Local Authority Support (Section 17)' } },
             { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
             { key: { text: 'Asylum Support reference number' }, value: { html: 'refNum' } },
             { key: { text: 'Legal Aid account number' }, value: { html: 'legalAidAccountNumber' } },
             { key: { text: 'Exceptional circumstances' }, value: { html: 'Exceptional reason' } },
             { key: { text: 'Asylum support document' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 2'>file_2_name</a>" } },
-            { key: { text: 'Section 17 document' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 3'>file_3_name</a>" } },
-            { key: { text: 'Section 20 document' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 4'>file_4_name</a>" } },
+            { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 3'>file_3_name</a>" } },
+            { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 4'>file_4_name</a>" } },
             { key: { text: 'Home Office waiver document' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 5'>file_5_name</a>" } },
             { key: { text: 'Exceptional circumstances evidence' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" } },
             { key: { text: 'Fee support status' }, value: {  html: 'Fee support request granted' } },
@@ -1326,6 +1329,7 @@ describe('DetailViewController', () => {
             { key: { text: 'Reason for decision' }, value: {  html: 'Decision 1' } },
             { key: { text: 'Fee to refund' }, value: { html: '£130' } }
           ], [
+            { key: { text: 'Fee support type' }, value: {  html: 'Local Authority Support (Section 20)' } },
             { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
             { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" } },
             { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested refused' } },

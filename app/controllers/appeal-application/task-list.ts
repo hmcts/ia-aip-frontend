@@ -13,7 +13,7 @@ async function getAppealStageStatus(req: Request) {
   const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
   const humanRightsOrEEA: boolean = (req.session.appeal.application.appealType === 'refusalOfEu' || req.session.appeal.application.appealType === 'refusalOfHumanRights');
   const homeOfficeDetails: string = (outsideUkWhenApplicationMade && humanRightsOrEEA) ? 'homeOfficeDetailsOOC' : 'homeOfficeDetails';
-  const yourDetails = buildSectionObject('yourDetails', ['typeOfAppeal', homeOfficeDetails, 'personalDetails', 'contactDetails'], status);
+  const yourDetails = buildSectionObject('yourDetails', ['typeOfAppeal', homeOfficeDetails, 'contactDetails'], status);
   const decisionType = buildSectionObject('decisionType', ['decisionType'], status);
   const feeSupport = drlmFeeRemissionFeatureFlag && status.feeSupport ? buildSectionObject('feeSupport', ['feeSupport'], status) : null;
   const checkAndSend = buildSectionObject('checkAndSend', [checkAndSendTaskDlrmSetAsideFlag], status);

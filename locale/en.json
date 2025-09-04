@@ -94,11 +94,6 @@
         "title": "Your Home Office details",
         "path": "appealStarted.gwfReference"
       },
-      "personalDetails": {
-        "id": "personalDetailsLink",
-        "title": "Your personal details",
-        "path": "appealStarted.name"
-      },
       "contactDetails": {
         "id": "contactDetailsLink",
         "title": "Your contact details",

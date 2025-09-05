@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import * as _ from 'lodash';
 import {
   getContactDetails,
   getHasSponsor,
@@ -291,7 +292,7 @@ describe('Contact details Controller', () => {
           sandbox.restore();
         });
 
-        it('should validate email and redirect to has-sponsor.njk', async () => {
+        it('should validate email and redirect to enter postcode page if no address has been set', async () => {
           req.body = {
             selections: 'email',
             'email-value': 'valid@example.net'
@@ -300,7 +301,7 @@ describe('Contact details Controller', () => {
 
           expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
-          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.hasSponsor);
+          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
         });
 
         it('when in edit mode should validate email and redirect to check-and-send.njk and reset isEdit flag', async () => {
@@ -417,12 +418,12 @@ describe('Contact details Controller', () => {
           sandbox.restore();
         });
 
-        it('should validate phone number and redirect to has-sponsor.njk', async () => {
+        it('should validate phone number and redirect to postcode page', async () => {
           await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
           expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
-          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.hasSponsor);
+          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
         });
 
         it('should validate phone number and redirect to check-and-send.njk and reset isEdit', async () => {
@@ -435,6 +436,44 @@ describe('Contact details Controller', () => {
           expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
           expect(req.session.appeal.application.isEdit).to.be.undefined;
         });
+      });
+    });
+
+    describe('redirection', () => {
+      it('should redirect to enter postcode page if no address has been set', async () => {
+        req.body = {
+          selections: 'email',
+          'email-value': 'valid@example.net'
+        };
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
+      });
+
+      it('should redirect to enter address page if address has been set', async () => {
+        _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
+        req.body = {
+          selections: 'email',
+          'email-value': 'valid@example.net'
+        };
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterAddress);
+      });
+
+      it('should redirect out of country address page when ooc feature is enabled', async () => {
+        // ooc feature flag is enabled
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(true);
+
+        // appeal is out of country
+        req.session.appeal.appealOutOfCountry = 'Yes';
+        req.body = {
+          selections: 'email',
+          'email-value': 'valid@example.net'
+        };
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.oocAddress);
       });
     });
   });
@@ -457,6 +496,7 @@ describe('Contact details Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/has-sponsor.njk');
     });
 
+    // TODO add validation for the other previous page routes.
     it('should render sponsor-details/has-sponsor.njk', async () => {
       await getHasSponsor(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/has-sponsor.njk', {
@@ -464,7 +504,7 @@ describe('Contact details Controller', () => {
         description: undefined,
         modal: undefined,
         questionId: undefined,
-        previousPage: paths.appealStarted.contactDetails,
+        previousPage: paths.appealStarted.enterPostcode,
         answer: undefined,
         errors: undefined,
         errorList: undefined
@@ -514,7 +554,7 @@ describe('Contact details Controller', () => {
         description: undefined,
         modal: undefined,
         questionId: undefined,
-        previousPage: paths.appealStarted.contactDetails,
+        previousPage: paths.appealStarted.enterPostcode,
         answer: undefined,
         errors: { answer: expectedError },
         errorList: [expectedError]

@@ -57,13 +57,15 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
           homeOfficeRefNumber: req.body.homeOfficeRefNumber
         }
       };
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
       };
 
-      return res.redirect(paths.appealStarted.name);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.name);
+      return res.redirect(redirectPage);
     } catch (e) {
       next(e);
     }

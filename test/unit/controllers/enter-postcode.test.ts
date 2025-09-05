@@ -1,6 +1,8 @@
+import { OSPlacesClient } from '@hmcts/os-places-client';
+
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
-import { getEnterPostcodePage, postEnterPostcodePage, setupPersonalDetailsController } from '../../../app/controllers/appeal-application/personal-details';
+import { getEnterPostcodePage, postEnterPostcodePage, setupContactDetailsController } from '../../../app/controllers/appeal-application/contact-details';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
@@ -13,6 +15,7 @@ describe('Personal Details Controller', function() {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
+  const osPlacesClient = new OSPlacesClient('someToken');
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -57,7 +60,7 @@ describe('Personal Details Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
-      setupPersonalDetailsController(middleware, { updateAppealService });
+      setupContactDetailsController(middleware, { updateAppealService, osPlacesClient } as any);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.enterPostcode, middleware);
       expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.enterPostcode, middleware);
     });
@@ -106,7 +109,7 @@ describe('Personal Details Controller', function() {
           error: { postcode: error },
           errorList: [ error ],
           postcode: 'invalid',
-          previousPage: paths.appealStarted.nationality
+          previousPage: paths.appealStarted.contactDetails
         });
     });
 
@@ -128,7 +131,7 @@ describe('Personal Details Controller', function() {
           error: { postcode },
           errorList: emptyPostcodeText,
           postcode: '',
-          previousPage: paths.appealStarted.nationality
+          previousPage: paths.appealStarted.contactDetails
         });
     });
   });

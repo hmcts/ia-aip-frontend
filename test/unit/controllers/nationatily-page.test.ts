@@ -1,15 +1,15 @@
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
 import {
   getNationalityPage,
   postNationalityPage,
-  setupPersonalDetailsController
-} from '../../../app/controllers/appeal-application/personal-details';
+  setupHomeOfficeDetailsController
+} from '../../../app/controllers/appeal-application/home-office-details';
 import { countryList } from '../../../app/data/country-list';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
-import LaunchDarklyService from '../../../app/service/launchDarkly-service';
+// import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { getNationalitiesOptions } from '../../../app/utils/nationalities';
@@ -71,7 +71,7 @@ describe('Nationality details Controller', function () {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
 
-      setupPersonalDetailsController(middleware, { updateAppealService });
+      setupHomeOfficeDetailsController(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.nationality, middleware);
       expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.nationality, middleware);
     });
@@ -125,21 +125,22 @@ describe('Nationality details Controller', function () {
 
     });
 
-    it('should redirect to out of country address page when ooc feature is enabled', async () => {
-      // ooc feature flag is enabled
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(true);
+    // TODO update redirect pages if pages are approved
+    // it('should redirect to out of country address page when ooc feature is enabled', async () => {
+    //   // ooc feature flag is enabled
+    //   sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(true);
+    //
+    //   // appeal is out of country
+    //   req.session.appeal.appealOutOfCountry = 'Yes';
+    //   await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    //   expect(res.redirect).to.have.been.calledWith(paths.appealStarted.oocAddress);
+    // });
 
-      // appeal is out of country
-      req.session.appeal.appealOutOfCountry = 'Yes';
-      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.oocAddress);
-    });
-
-    it('should validate and redirect personal-details/nationality.njk', async () => {
+    it('should validate and redirect letter received page', async () => {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.letterReceived);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
@@ -203,17 +204,18 @@ describe('Nationality details Controller', function () {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
-    it('redirects to enter postcode page if no address has been set', async () => {
-      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
-    });
-
-    it('redirects to enter address page if address has been set', async () => {
-      _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
-      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterAddress);
-    });
+    // TODO update redirect paths if pages are approved
+    // it('redirects to enter postcode page if no address has been set', async () => {
+    //   await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    //
+    //   expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
+    // });
+    //
+    // it('redirects to enter address page if address has been set', async () => {
+    //   _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
+    //   await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    //
+    //   expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterAddress);
+    // });
   });
 });

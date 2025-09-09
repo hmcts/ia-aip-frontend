@@ -49,12 +49,14 @@ async function getFeeSupport(req: Request, res: Response, next: NextFunction) {
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     const appeal = req.session.appeal;
     appeal.application.isEdit = _.has(req.query, 'edit');
+    const paPayLater = payLaterForApplicationNeeded(req);
 
     return res.render('ask-for-fee-remission/fee-support-refund.njk', {
       previousPage: paths.common.overview,
       pageTitle: i18n.pages.remissionOptionPage.refundTitle,
       formAction: paths.appealSubmitted.feeSupportRefund,
-      question: getOptionsQuestion(req.session.appeal)
+      question: getOptionsQuestion(req.session.appeal),
+      paPayLater
     });
   } catch (error) {
     next(error);

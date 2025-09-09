@@ -4,8 +4,8 @@ import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
-import { remissionOptionsValidation } from '../../utils/validations/fields-validations';
 import { payLaterForApplicationNeeded } from '../../utils/payments-utils';
+import { remissionOptionsValidation } from '../../utils/validations/fields-validations';
 
 function getOptionsQuestion(appeal: Appeal) {
   let remissionOption = appeal.application.lateRemissionOption || null;

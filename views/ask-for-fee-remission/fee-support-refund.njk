@@ -16,7 +16,9 @@
         <h1 class="govuk-heading-xl">{{ i18n.pages.remissionOptionPage.refundTitle }}</h1>
 
         <p>{{ i18n.pages.remissionOptionPage.refundParagraph1 }}</p>
-        <p>{{ i18n.pages.remissionOptionPage.refundParagraph2 }}</p>
+        {% if paPayLater %}
+            <p>{{ i18n.pages.remissionOptionPage.refundParagraph2 }}</p>
+        {% endif %}
         <p>{{ i18n.pages.remissionOptionPage.refundParagraph3 }}</p>
 
         {{ radioButtonQuestion(

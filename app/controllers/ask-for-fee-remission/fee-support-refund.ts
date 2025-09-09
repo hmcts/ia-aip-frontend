@@ -5,6 +5,7 @@ import { FEATURE_FLAGS } from '../../data/constants';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import { remissionOptionsValidation } from '../../utils/validations/fields-validations';
+import { payLaterForApplicationNeeded } from '../../utils/payments-utils';
 
 function getOptionsQuestion(appeal: Appeal) {
   let remissionOption = appeal.application.lateRemissionOption || null;

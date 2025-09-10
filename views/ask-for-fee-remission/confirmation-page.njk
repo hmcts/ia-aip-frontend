@@ -15,7 +15,8 @@
     <ul class="govuk-list govuk-list--bullet govuk-!-padding-left-4">
     {% if paPayLater %}
       <li>{{ i18n.pages.feeSupportConfirmationPage.bullet1PaPayLater | safe }}</li>
-    {% elif  not paPayLater %}
+    {% endif %}
+    {% if not paPayLater %}
       <li>{{ i18n.pages.feeSupportConfirmationPage.bullet1 | safe }}</li>
     {% endif %}
       <li>{{ i18n.pages.feeSupportConfirmationPage.bullet2 | eval | safe }}</li>

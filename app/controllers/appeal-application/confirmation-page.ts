@@ -39,7 +39,6 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
 function getConfirmationPaidPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     req.app.locals.logger.trace(`Successful AIP paid after submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
-    const paPayLater = payLaterForApplicationNeeded(req);
 
     try {
       const { application, paAppealTypeAipPaymentOption = null } = req.session.appeal;

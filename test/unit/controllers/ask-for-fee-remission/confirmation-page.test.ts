@@ -66,7 +66,8 @@ describe('Ask for a refund confirmation page Controller', function () {
     it('getConfirmationPage should render confirmation-page.njk after submission', () => {
       getConfirmationPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('ask-for-fee-remission/confirmation-page.njk', {
-        date: addDaysToDate(14)
+        date: addDaysToDate(14),
+        payPayLater: false
       });
     });
   });

@@ -50,7 +50,7 @@ async function getFeeSupport(req: Request, res: Response, next: NextFunction) {
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     const appeal = req.session.appeal;
     appeal.application.isEdit = _.has(req.query, 'edit');
-    const paPayLater = payLaterForApplicationNeeded(req);
+    const paPayLater = payLaterForApplicationNeeded(req) && application.appealType === 'protection';
 
     return res.render('ask-for-fee-remission/fee-support-refund.njk', {
       previousPage: paths.common.overview,

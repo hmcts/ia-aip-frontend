@@ -78,7 +78,8 @@ function postFeeSupport() {
           previousPage: paths.common.overview,
           pageTitle: i18n.pages.remissionOptionPage.refundTitle,
           formAction: paths.appealSubmitted.feeSupportRefund,
-          question: getOptionsQuestion(req.session.appeal)
+          question: getOptionsQuestion(req.session.appeal),
+          paPayLater
         });
       }
 

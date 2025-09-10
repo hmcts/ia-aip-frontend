@@ -67,6 +67,7 @@ async function getFeeSupport(req: Request, res: Response, next: NextFunction) {
 function postFeeSupport() {
   return async (req: Request, res: Response, next: NextFunction) => {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    const paPayLater = payLaterForApplicationNeeded(req);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
 
     try {

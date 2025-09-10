@@ -163,7 +163,7 @@ describe('Fee support refund Controller', () => {
         previousPage: paths.common.overview,
         pageTitle: i18n.pages.remissionOptionPage.refundTitle,
         formAction: paths.appealSubmitted.feeSupportRefund,
-        question: sinon.match.any
+        question: sinon.match.object
       });
     });
 

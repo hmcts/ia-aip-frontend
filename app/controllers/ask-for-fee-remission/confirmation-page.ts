@@ -13,7 +13,7 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
     const paPayLater = payLaterForApplicationNeeded(req) && application.appealType === 'protection';
     res.render('ask-for-fee-remission/confirmation-page.njk', {
       date: addDaysToDate(daysToWait),
-      paPayNow
+      paPayLater
     });
   } catch (e) {
     next(e);

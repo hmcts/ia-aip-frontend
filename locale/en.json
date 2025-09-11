@@ -3925,7 +3925,8 @@
       },
       "checkAndSendWantToApply": "I want to apply for help with fees",
       "checkAndSendWillPayForAppeal": "I want to pay for the appeal now",
-      "refundsNote": "The fee you paid for this appeal is £{{ fee }}. You may be able to get a full or partial refund if you:"
+      "refundsNote": "The fee you paid for this appeal is £{{ fee }}. You may be able to get a full or partial refund if you:",
+      "mayBeAbleToGetHWF": "You may be able to get help with fees if you:"
     },
     "stepsToHelpWithFees": {
       "title": "Apply for help with fees",

@@ -18,8 +18,9 @@
         <p>{{ i18n.pages.remissionOptionPage.refundParagraph1 }}</p>
         {% if not paPayLater %}
             <p>{{ i18n.pages.remissionOptionPage.refundParagraph2 }}</p>
+            <p>{{ i18n.pages.remissionOptionPage.refundParagraph3 }}</p>
         {% endif %}
-        <p>{{ i18n.pages.remissionOptionPage.refundParagraph3 }}</p>
+        <p>{{ i18n.pages.remissionOptionPage.refundParagraph3PaPayLater }}</p>
 
         {{ radioButtonQuestion(
             question.name or 'answer',

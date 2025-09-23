@@ -28,5 +28,5 @@ Feature: Personal details nationality page
     Given I am on the personal details nationality page
     When I enter a nationality "Armenia"
     And I click "Save and continue" button
-    Then I should see the enter postcode page
+    Then I should see letter received page
 

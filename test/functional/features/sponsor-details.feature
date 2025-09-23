@@ -27,16 +27,6 @@ Scenario: Complete appeal application
   Then I should be taken to the home office ref number page
   When I enter a home office reference "1212-0099-0062-8083"
   And I click "Save and continue" button
-  Then I should see letter received page
-  When I enter an on time letter received date
-  Then I click "Save and continue" button
-  When I upload a Home Office decision letter
-  And I click "Save and continue" button
-  Then I should see the task-list page
-
-  # Your personal details page
-  And I see "Tell us about your appeal" in title
-  When I click Your personal details
   Then I should be taken to the enter your name page
   When Enter "Random" "User" as my Given and Family Name and click Save and continue
   And I click "Save and continue" button
@@ -44,9 +34,10 @@ Scenario: Complete appeal application
   When I enter "11" "11" "1999" as my DOB and click Save and continue
   Then I should be taken to nationality page
   When I pick "Ukraine" from the Nationalities drop down and click continue
-  Then I am on the out of country address page
-  And I see "What is your address?" in title
-  When I enter an out of country address of "28 The Street, Ukraine, 23234"
+  Then I should see letter received page
+  When I enter an on time letter received date
+  Then I click "Save and continue" button
+  When I upload a Home Office decision letter
   And I click "Save and continue" button
   Then I should see the task-list page
 
@@ -59,6 +50,10 @@ Scenario: Complete appeal application
   Then I check the "Mobile phone" option
   And I enter text message number "07899999999"
   Then I click "Save and continue" button
+  Then I am on the out of country address page
+  And I see "What is your address?" in title
+  When I enter an out of country address of "28 The Street, Ukraine, 23234"
+  And I click "Save and continue" button
   And I should be taken to the has sponsor page
   Then I see "Do you have a sponsor?" in title
   When I select Yes and click continue

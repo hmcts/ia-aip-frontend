@@ -4,14 +4,14 @@ As a citizen
 I want to be able to enter my address
 
 Scenario: Home office reference page
-  Given I have an appeal with home office details, name, date of birth and nationality
+  Given I have an appeal with home office details, name, date of birth, nationality and reason for appeal
   And I have logged in
   And I am on the personal details enter address page
   When I click "Save for later" button
   Then I am on the overview page
   Then I click continue
   Then I should see the task-list page
-  And I shouldnt be able to click "Your contact details"
+  And I shouldnt be able to click "Decision type"
 
   Given I am on the personal details enter address page
   And I click "Save and continue" button
@@ -23,10 +23,13 @@ Scenario: Home office reference page
   Then I am on the overview page
   Then I click continue
   Then I should see the task-list page
-  And I should be able to click "Your contact details"
+  And I shouldnt be able to click "Decision type"
 
   Given I am on the personal details enter address page
   When I enter building and street "1 Some way", Town or city "Nowhere", Postcode "CM15 8BN"
   And I click "Save and continue" button
+  And I should be taken to the has sponsor page
+  Then I see "Do you have a sponsor?" in title
+  When I select No and click continue
   Then I should see the task-list page
-  And I should be able to click "Your contact details"
+  And I should be able to click "Decision type"

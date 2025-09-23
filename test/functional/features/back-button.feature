@@ -23,7 +23,7 @@ Feature: Back button
     Then I should see error summary
 
     When I enter "1234-1234-1234-1234" as the Office ref number and click Save and continue
-    Then I should see letter sent page
+    Then I should be taken to the enter your name page
     When I click "Back" button
     Then I should be taken to the home office ref number page
     And I shouldnt see error summary

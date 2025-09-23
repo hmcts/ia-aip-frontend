@@ -11,7 +11,7 @@ Feature: Home office letter sent page @letterSent
     Then I am on the overview page
     Then I click continue
     Then I should see the task-list page
-    And I shouldnt be able to click "Your personal details"
+    And I shouldnt be able to click "Your contact details"
 
     Given I am on the home office letter sent page
     When I enter a day "1" month "1" year "1"
@@ -29,5 +29,5 @@ Feature: Home office letter sent page @letterSent
     Then I am on the overview page
     Then I click continue
     Then I should see the task-list page
-    And I shouldnt be able to click "Your personal details"
+    And I shouldnt be able to click "Your contact details"
 

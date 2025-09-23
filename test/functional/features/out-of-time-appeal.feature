@@ -20,6 +20,9 @@ Scenario: Explain the reason why my appeal is late
   And I click "Your Home Office details" link
   # When I click on Home office details
   And I enter "1234-1234-1234-1234" as the Office ref number and click Save and continue
+  And Enter "Random" "User" as my Given and Family Name and click Save and continue
+  And I enter "11" "11" "1999" as my DOB and click Save and continue
+  And I pick "Angola" from the Nationalities drop down and click continue
   And I enter an out of time letter sent date and click Save and continue
 
   Then I see "Upload your Home Office decision letter" in title
@@ -36,16 +39,12 @@ Scenario: Explain the reason why my appeal is late
   And I choose a file that is "VALID" and click the "Upload file" button
   And I click "Save and continue" button
 
-  And I click "Your personal details" link
-  And Enter "Random" "User" as my Given and Family Name and click Save and continue
-  And I enter "11" "11" "1999" as my DOB and click Save and continue
-  And I pick "Angola" from the Nationalities drop down and click continue
-  And I type "W1W 7RT" as my postcode and click Find address
-  And I choose the first address from the dropdown list and click continue
-  And I click "Save and continue" button
   And I click the contact details link
   And I check the "Mobile phone" option
   And I enter text message number "07899999999"
+  And I click "Save and continue" button
+  And I type "W1W 7RT" as my postcode and click Find address
+  And I choose the first address from the dropdown list and click continue
   And I click "Save and continue" button
 #  And I click on the decision-type link
 #  And I select I want the appeal to be decided with a hearing

@@ -76,9 +76,11 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const personalDetails = req.session.appeal.application.personalDetails || null;
+    const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
+    const previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
     return res.render('appeal-application/personal-details/name.njk', {
       personalDetails,
-      previousPage: paths.appealStarted.details
+      previousPage
     });
   } catch (e) {
     next(e);
@@ -93,6 +95,8 @@ function postNamePage(updateAppealService: UpdateAppealService) {
       }
       const validation = appellantNamesValidation(req.body);
       if (validation) {
+        const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
+        let previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
         return res.render('appeal-application/personal-details/name.njk', {
           personalDetails: {
             familyName: req.body.familyName,
@@ -100,7 +104,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
           },
           error: validation,
           errorList: Object.values(validation),
-          previousPage: paths.appealStarted.details
+          previousPage
         });
       }
 
@@ -318,13 +322,10 @@ function getDateLetterReceived(req: Request, res: Response, next: NextFunction) 
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
-    const citizenOutsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
-    let previousPage = citizenOutsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.nationality;
-
     const { decisionLetterReceivedDate } = req.session.appeal.application;
     res.render('appeal-application/home-office/letter-received.njk', {
       decisionLetterReceivedDate,
-      previousPage: previousPage
+      previousPage: paths.appealStarted.nationality
     });
   } catch (e) {
     next(e);
@@ -337,16 +338,13 @@ function postDateLetterReceived(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) { return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved'); }
       const validation = dateLetterReceivedValidation(req.body);
       if (validation) {
-        const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
-        let previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.nationality : paths.appealStarted.gwfReference;
-
         return res.render('appeal-application/home-office/letter-received.njk', {
           error: validation,
           errorList: Object.values(validation),
           decisionLetterReceivedDate: {
             ...req.body
           },
-          previousPage: previousPage
+          previousPage: paths.appealStarted.nationality
         });
       }
 

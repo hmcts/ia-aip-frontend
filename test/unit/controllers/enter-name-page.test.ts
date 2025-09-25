@@ -8,7 +8,7 @@ import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
 
-describe('Personal Details Controller', function () {
+describe('Home Office Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -60,7 +60,7 @@ describe('Personal Details Controller', function () {
     sandbox.restore();
   });
 
-  describe('setupPersonalDetailsController', () => {
+  describe('setupHomeOfficeDetailsController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
@@ -96,6 +96,22 @@ describe('Personal Details Controller', function () {
             givenNames: 'givenName'
           },
           previousPage: paths.appealStarted.details
+        }
+      );
+    });
+
+    it('gets name from session with gwf reference previous page', function () {
+      req.session.appeal.application.personalDetails = { givenNames: 'givenName', familyName: 'familyName', dob: null };
+      req.session.appeal.application.outsideUkWhenApplicationMade = 'Yes';
+      getNamePage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk',
+        {
+          personalDetails: {
+            dob: null,
+            familyName: 'familyName',
+            givenNames: 'givenName'
+          },
+          previousPage: paths.appealStarted.gwfReference
         }
       );
     });
@@ -209,6 +225,37 @@ describe('Personal Details Controller', function () {
           errorList: [ givenNameErrors, familyNameError ],
           personalDetails: { familyName: '', givenNames: '' },
           previousPage: paths.appealStarted.details
+        });
+    });
+
+    it('should fail validation and render personal-details/name.njk with error with gwf reference previous page', async () => {
+      req.body.givenNames = '';
+      req.body.familyName = '';
+      req.session.appeal.application.outsideUkWhenApplicationMade = 'Yes';
+      await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const familyNameError: ValidationError = {
+        href: '#familyName',
+        key: 'familyName',
+        text: 'Enter your family name or names'
+      };
+      const givenNameErrors: ValidationError = {
+        href: '#givenNames',
+        key: 'givenNames',
+        text: 'Enter your given name or names'
+      };
+
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith(
+        'appeal-application/personal-details/name.njk',
+        {
+          error: {
+            givenNames: givenNameErrors,
+            familyName: familyNameError
+          },
+          errorList: [ givenNameErrors, familyNameError ],
+          personalDetails: { familyName: '', givenNames: '' },
+          previousPage: paths.appealStarted.gwfReference
         });
     });
   });

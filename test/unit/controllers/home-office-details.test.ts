@@ -811,7 +811,7 @@ describe('Home Office Details Controller', function () {
         decisionLetterReceivedDate: {
           ...req.body
         },
-        previousPage: paths.appealStarted.gwfReference
+        previousPage: paths.appealStarted.nationality
       });
     });
 

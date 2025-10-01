@@ -360,80 +360,143 @@ function calculateAmountToPounds(amount) {
   return '£' + (amount / 100);
 }
 
-async function addPreviousRemissionDetails(req: Request, application: AppealApplication, feeHistoryRows: any[]) {
-  const fee = getFee(req.session.appeal);
-  const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+async function addPreviousRemissionDetails(
+    req: Request,
+    application: AppealApplication,
+    feeHistoryRows: any[]
+) {
+  const refundFeatureEnabled = await LaunchDarklyService.getInstance()
+      .getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+
+  const fee = refundFeatureEnabled ? getFee(req.session.appeal) : null;
 
   application.previousRemissionDetails.forEach((remissionDetail: RemissionDetails, index: number) => {
-    const row = [];
-    if (remissionDetail.feeRemissionType) {
-      if (localAuthorityFeeRemissionTypes.includes(remissionDetail.feeRemissionType)) {
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [`Local Authority Support (${remissionDetail.feeRemissionType})`], null));
-      } else {
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [remissionDetail.feeRemissionType], null));
-      }
-    }
-    row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateOfApplication,
-      [getRecordRemissionDate(req, index, application.previousRemissionDetails.length)], null));
-    if (remissionDetail.asylumSupportReference) {
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [remissionDetail.asylumSupportReference], null));
-    }
-    if (remissionDetail.legalAidAccountNumber) {
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber, [remissionDetail.legalAidAccountNumber], null));
-    }
-    if (remissionDetail.exceptionalCircumstances) {
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstances, [remissionDetail.exceptionalCircumstances], null));
-    }
-    if (remissionDetail.asylumSupportDocument) {
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportDocument,
-        [getEvidenceUrl(remissionDetail.asylumSupportDocument)], null));
-    }
-    if (remissionDetail.section17Document) {
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.section17Document,
-        [getEvidenceUrl(remissionDetail.section17Document)], null));
-    }
-    if (remissionDetail.section20Document) {
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.section20Document,
-        [getEvidenceUrl(remissionDetail.section20Document)], null));
-    }
-    if (remissionDetail.homeOfficeWaiverDocument) {
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeWaiverDocument,
-        [getEvidenceUrl(remissionDetail.homeOfficeWaiverDocument)], null));
-    }
-    if (remissionDetail.remissionEcEvidenceDocuments && remissionDetail.remissionEcEvidenceDocuments.length > 0) {
-      const ecEvidenceDocs = remissionDetail.remissionEcEvidenceDocuments.map((doc: Evidence) => {
-        return getEvidenceUrl(doc);
-      });
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstancesEvidence, ecEvidenceDocs, null));
+    const row: any[] = [];
+
+    addFeeRemissionType(remissionDetail, row);
+    addDateOfApplication(req, application, index, row);
+    addBasicFields(remissionDetail, row);
+    addDocumentFields(remissionDetail, row);
+    addArrayDocumentFields(remissionDetail, row);
+    addHelpWithFees(remissionDetail, row);
+
+    if (refundFeatureEnabled && fee) {
+      addRefundDecision(remissionDetail, fee, row);
     }
 
-    if (remissionDetail.localAuthorityLetters && remissionDetail.localAuthorityLetters.length > 0) {
-      const localAuthorityLetterDocs = remissionDetail.localAuthorityLetters.map((doc: Evidence) => {
-        return getEvidenceUrl(doc);
-      });
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
-    }
-    if (remissionDetail.helpWithFeesReferenceNumber) {
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [remissionDetail.helpWithFeesReferenceNumber], null));
-    }
-    if (refundFeatureEnabled) {
-      if (remissionDetail.remissionDecision === 'Approved') {
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-          ['Fee support request granted'], null));
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToRefund, [`£${fee.calculated_amount}`], null));
-      } else if (remissionDetail.remissionDecision === 'Partially approved') {
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-          ['Fee support request partially granted'], null));
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [remissionDetail.remissionDecisionReason], null));
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToRefund, [getAmountToRefund(fee.calculated_amount, remissionDetail.amountLeftToPay)], null));
-      } else if (remissionDetail.remissionDecision === 'Rejected') {
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-          ['Fee support requested refused'], null));
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [remissionDetail.remissionDecisionReason], null));
-      }
-    }
     feeHistoryRows.push(row);
   });
+}
+
+/**
+ * === Helpers ===
+ */
+
+function addFeeRemissionType(remissionDetail: RemissionDetails, row: any[]) {
+  if (!remissionDetail.feeRemissionType) return;
+
+  const { feeRemissionType } = remissionDetail;
+  const label = localAuthorityFeeRemissionTypes.includes(feeRemissionType)
+      ? `Local Authority Support (${feeRemissionType})`
+      : feeRemissionType;
+
+  row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [label], null));
+}
+
+function addDateOfApplication(
+    req: Request,
+    application: AppealApplication,
+    index: number,
+    row: any[]
+) {
+  row.push(addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.dateOfApplication,
+      [getRecordRemissionDate(req, index, application.previousRemissionDetails.length)],
+      null
+  ));
+}
+
+function addBasicFields(remissionDetail: RemissionDetails, row: any[]) {
+  const mappings: Record<string, string | undefined> = {
+    asylumSupportReferenceNumber: remissionDetail.asylumSupportReference,
+    legalAidAccountNumber: remissionDetail.legalAidAccountNumber,
+    exceptionalCircumstances: remissionDetail.exceptionalCircumstances,
+  };
+
+  Object.entries(mappings).forEach(([key, value]) => {
+    if (value) {
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles[key], [value], null));
+    }
+  });
+}
+
+function addDocumentFields(remissionDetail: RemissionDetails, row: any[]) {
+  const docMappings: Record<string, Evidence | undefined> = {
+    asylumSupportDocument: remissionDetail.asylumSupportDocument,
+    section17Document: remissionDetail.section17Document,
+    section20Document: remissionDetail.section20Document,
+    homeOfficeWaiverDocument: remissionDetail.homeOfficeWaiverDocument,
+  };
+
+  Object.entries(docMappings).forEach(([key, doc]) => {
+    if (doc) {
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles[key], [getEvidenceUrl(doc)], null));
+    }
+  });
+}
+
+function addArrayDocumentFields(remissionDetail: RemissionDetails, row: any[]) {
+  const arrayDocMappings: Record<string, Evidence[] | undefined> = {
+    exceptionalCircumstancesEvidence: remissionDetail.remissionEcEvidenceDocuments,
+    localAuthorityLetter: remissionDetail.localAuthorityLetters,
+  };
+
+  Object.entries(arrayDocMappings).forEach(([key, docs]) => {
+    if (docs?.length) {
+      row.push(addSummaryRow(
+          i18n.pages.checkYourAnswers.rowTitles[key],
+          docs.map(getEvidenceUrl),
+          null
+      ));
+    }
+  });
+}
+
+function addHelpWithFees(remissionDetail: RemissionDetails, row: any[]) {
+  if (remissionDetail.helpWithFeesReferenceNumber) {
+    row.push(addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber,
+        [remissionDetail.helpWithFeesReferenceNumber],
+        null
+    ));
+  }
+}
+
+function addRefundDecision(remissionDetail: RemissionDetails, fee: any, row: any[]) {
+  switch (remissionDetail.remissionDecision) {
+    case 'Approved':
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+          ['Fee support request granted'], null));
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToRefund,
+          [`£${fee.calculated_amount}`], null));
+      break;
+
+    case 'Partially approved':
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+          ['Fee support request partially granted'], null));
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
+          [remissionDetail.remissionDecisionReason], null));
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToRefund,
+          [getAmountToRefund(fee.calculated_amount, remissionDetail.amountLeftToPay)], null));
+      break;
+
+    case 'Rejected':
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+          ['Fee support requested refused'], null));
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
+          [remissionDetail.remissionDecisionReason], null));
+      break;
+  }
 }
 
 function addFeeUpdatePaymentSection(application: AppealApplication, feeDetailsRows: any[], fee: { code: string; calculated_amount: any; version: string }, paymentStatus: string, feeAmountGbp: string, previousFeeAmountGbp: string) {

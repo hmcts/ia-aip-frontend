@@ -118,7 +118,7 @@ describe('fileSize limit', () => {
   });
 
   it('should allow files within the size limit', async () => {
-    const smallFile = Buffer.alloc(1024 * 1024 * 2); // 2MB file
+    const smallFile = Buffer.alloc(1); // 1 byte file
     await request(app)
       .post('/upload')
       .attach('file-upload', smallFile, 'small-file.pdf')

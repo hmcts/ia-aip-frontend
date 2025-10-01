@@ -547,7 +547,7 @@ export default class UpdateAppealService {
         let section20Document = null;
         let homeOfficeWaiverDocument = null;
         let remissionEcEvidenceDocuments = [];
-        if (remissionDetail.value.localAuthorityLetters && remissionDetail.value.localAuthorityLetters.length > 0) {
+        if ((remissionDetail.value.localAuthorityLetters?.length ?? 0) > 0) {
           localAuthorityLetters = this.mapDocsWithMetadataToEvidenceArray(remissionDetail.value.localAuthorityLetters, documentMap);
         }
         if (remissionDetail.value.asylumSupportDocument?.document_filename) {
@@ -562,7 +562,7 @@ export default class UpdateAppealService {
         if (remissionDetail.value.homeOfficeWaiverDocument?.document_filename) {
           homeOfficeWaiverDocument = this.mapSupportingDocumentToEvidence(remissionDetail.value.homeOfficeWaiverDocument, documentMap);
         }
-        if (remissionDetail.value.remissionEcEvidenceDocuments && remissionDetail.value.remissionEcEvidenceDocuments.length > 0) {
+        if ((remissionDetail.value.remissionEcEvidenceDocuments?.length ?? 0) > 0) {
           remissionEcEvidenceDocuments = this.mapSupportingDocumentsToEvidence(remissionDetail.value.remissionEcEvidenceDocuments, documentMap);
         }
         return {

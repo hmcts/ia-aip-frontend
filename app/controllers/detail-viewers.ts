@@ -177,8 +177,6 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
 
 async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   const { application } = req.session.appeal;
-  // tslint:disable-next-line:no-console
-  console.log(application);
   const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
     return getEvidenceUrl(doc);

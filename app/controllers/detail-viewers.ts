@@ -32,7 +32,7 @@ import {
   toIsoDate
 } from '../utils/utils';
 
-const localAuthorityFeeRemissionTypes = ['Section 17', 'Section 20'];
+const localAuthorityFeeRemissionTypes = new Set(['Section 17', 'Section 20']);
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
@@ -254,7 +254,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
       let hasHoWaiverRemissionType = application.remissionType && application.remissionType === 'hoWaiverRemission';
       await addPaymentDetails(req, application, feeDetailsRows);
       if (application.feeRemissionType && application.feeRemissionType !== '') {
-        if (localAuthorityFeeRemissionTypes.includes(application.feeRemissionType)) {
+        if (localAuthorityFeeRemissionTypes.has(application.feeRemissionType)) {
           feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [`Local Authority Support (${application.feeRemissionType})`], null));
         } else {
           feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [application.feeRemissionType], null));
@@ -396,7 +396,7 @@ function addFeeRemissionType(remissionDetail: RemissionDetails, row: any[]) {
   if (!remissionDetail.feeRemissionType) return;
 
   const { feeRemissionType } = remissionDetail;
-  const label = localAuthorityFeeRemissionTypes.includes(feeRemissionType)
+  const label = localAuthorityFeeRemissionTypes.has(feeRemissionType)
       ? `Local Authority Support (${feeRemissionType})`
       : feeRemissionType;
 
@@ -420,7 +420,7 @@ function addBasicFields(remissionDetail: RemissionDetails, row: any[]) {
   const mappings: Record<string, string | undefined> = {
     asylumSupportReferenceNumber: remissionDetail.asylumSupportReference,
     legalAidAccountNumber: remissionDetail.legalAidAccountNumber,
-    exceptionalCircumstances: remissionDetail.exceptionalCircumstances,
+    exceptionalCircumstances: remissionDetail.exceptionalCircumstances
   };
 
   Object.entries(mappings).forEach(([key, value]) => {
@@ -435,7 +435,7 @@ function addDocumentFields(remissionDetail: RemissionDetails, row: any[]) {
     asylumSupportDocument: remissionDetail.asylumSupportDocument,
     section17Document: remissionDetail.section17Document,
     section20Document: remissionDetail.section20Document,
-    homeOfficeWaiverDocument: remissionDetail.homeOfficeWaiverDocument,
+    homeOfficeWaiverDocument: remissionDetail.homeOfficeWaiverDocument
   };
 
   Object.entries(docMappings).forEach(([key, doc]) => {
@@ -448,7 +448,7 @@ function addDocumentFields(remissionDetail: RemissionDetails, row: any[]) {
 function addArrayDocumentFields(remissionDetail: RemissionDetails, row: any[]) {
   const arrayDocMappings: Record<string, Evidence[] | undefined> = {
     exceptionalCircumstancesEvidence: remissionDetail.remissionEcEvidenceDocuments,
-    localAuthorityLetter: remissionDetail.localAuthorityLetters,
+    localAuthorityLetter: remissionDetail.localAuthorityLetters
   };
 
   Object.entries(arrayDocMappings).forEach(([key, docs]) => {
@@ -1057,10 +1057,10 @@ function getLatestHearingNoticeDocument(appeal: Appeal): Evidence | undefined {
       hearingDocuments.push(...docs);
     }
   }
-  let hearingNoticeTags: string[] = ['hearingNotice', 'hearingNoticeRelisted',
-    'reheardHearingNotice', 'reheardHearingNoticeRelisted'];
+  let hearingNoticeTags = new Set(['hearingNotice', 'hearingNoticeRelisted',
+    'reheardHearingNotice', 'reheardHearingNoticeRelisted']);
   let hearingNotices: Evidence[] = hearingDocuments.filter((doc: Evidence) =>
-    hearingNoticeTags.includes(doc.tag));
+    hearingNoticeTags.has(doc.tag));
   hearingNotices.sort((a: Evidence, b: Evidence) => {
     if (a.dateTimeUploaded && b.dateTimeUploaded) {
       return moment(b.dateTimeUploaded).diff(moment(a.dateTimeUploaded));

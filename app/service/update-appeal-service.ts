@@ -550,16 +550,16 @@ export default class UpdateAppealService {
         if (remissionDetail.value.localAuthorityLetters && remissionDetail.value.localAuthorityLetters.length > 0) {
           localAuthorityLetters = this.mapDocsWithMetadataToEvidenceArray(remissionDetail.value.localAuthorityLetters, documentMap);
         }
-        if (remissionDetail.value.asylumSupportDocument && remissionDetail.value.asylumSupportDocument.document_filename) {
+        if (remissionDetail.value.asylumSupportDocument?.document_filename) {
           asylumSupportDocument = this.mapSupportingDocumentToEvidence(remissionDetail.value.asylumSupportDocument, documentMap);
         }
-        if (remissionDetail.value.section17Document && remissionDetail.value.section17Document.document_filename) {
+        if (remissionDetail.value.section17Document?.document_filename) {
           section17Document = this.mapSupportingDocumentToEvidence(remissionDetail.value.section17Document, documentMap);
         }
-        if (remissionDetail.value.section20Document && remissionDetail.value.section20Document.document_filename) {
+        if (remissionDetail.value.section20Document?.document_filename) {
           section20Document = this.mapSupportingDocumentToEvidence(remissionDetail.value.section20Document, documentMap);
         }
-        if (remissionDetail.value.homeOfficeWaiverDocument && remissionDetail.value.homeOfficeWaiverDocument.document_filename) {
+        if (remissionDetail.value.homeOfficeWaiverDocument?.document_filename) {
           homeOfficeWaiverDocument = this.mapSupportingDocumentToEvidence(remissionDetail.value.homeOfficeWaiverDocument, documentMap);
         }
         if (remissionDetail.value.remissionEcEvidenceDocuments && remissionDetail.value.remissionEcEvidenceDocuments.length > 0) {

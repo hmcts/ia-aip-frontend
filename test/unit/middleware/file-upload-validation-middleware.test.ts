@@ -1,7 +1,8 @@
 const multer = require('multer');
-import { NextFunction, Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
+import request from 'supertest';
 import {
-  enforceFileSizeLimit, fileFilter, handleFileUploadErrors
+  enforceFileSizeLimit, fileFilter, handleFileUploadErrors, uploadConfiguration
 } from '../../../app/middleware/file-upload-validation-middleware';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -77,7 +78,7 @@ describe('#enforceFileSizeLimit middleware', () => {
 
   it('should throw multer LIMIT_FILE_TYPE error', () => {
     const nextStub: sinon.SinonStub = sinon.stub();
-    req = { file: { size: 10000 } } as any;
+    req = { file: { size: 1024 * 1024 * 10 } } as any;
 
     enforceFileSizeLimit(req, res, nextStub);
 
@@ -107,5 +108,34 @@ describe('fileFilter', () => {
     expect(cb.args[0][0]).to.be.instanceOf(Error);
     expect(cb.args[0][0].code).to.equal('LIMIT_FILE_TYPE');
     expect(cb.args[0][1]).to.be.false;
+  });
+});
+
+describe('fileSize limit', () => {
+  const app = express();
+  app.post('/upload', uploadConfiguration, enforceFileSizeLimit, handleFileUploadErrors, (req, res) => {
+    res.status(200).send(res.locals.multerError ? res.locals.multerError : 'File uploaded successfully');
+  });
+
+  it('should allow files within the size limit', async () => {
+    const smallFile = Buffer.alloc(1024 * 1024 * 2); // 2MB file
+    await request(app)
+      .post('/upload')
+      .attach('file-upload', smallFile, 'small-file.pdf')
+      .expect(200, 'File uploaded successfully');
+  });
+
+  it('should reject files exceeding the size limit', async () => {
+    const largeFile = Buffer.alloc(1024 * 1024 * 10); // 10MB file
+    app.use((req, res, next) => {
+      res.locals = {}; // Initialize res.locals for testing
+      next();
+    });
+    const response = await request(app)
+      .post('/upload')
+      .attach('file-upload', largeFile, 'large-file.pdf')
+      .expect(200);
+
+    expect(response.text).to.include('The selected file must be smaller than');
   });
 });

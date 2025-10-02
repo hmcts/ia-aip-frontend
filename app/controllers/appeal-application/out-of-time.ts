@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
+import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
@@ -38,10 +39,10 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
       let validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
       let appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
 
-      if (res.locals && res.locals.multerError) {
+      if (res.locals && res.locals.errorCode) {
         validationError = {
           ...validationError,
-          uploadFile: createStructuredError('file-upload', res.locals.multerError)
+          uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${res.locals.errorCode}`])
         };
       }
 

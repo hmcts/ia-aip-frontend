@@ -104,9 +104,8 @@ export function postUploadFile(documentManagementService: DocumentManagementServ
         // await updateAppealService.submitEvent(evidenceUploadConfig.updateCcdEvent, req);
         return res.redirect(evidenceUploadConfig.evidenceUploadPath);
       } else {
-        let validationError;
-        validationError = res.locals && res.locals.multerError
-          ? { uploadFile: createStructuredError('file-upload', res.locals.multerError) }
+        const validationError = res.locals && res.locals.errorCode
+          ? { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${res.locals.errorCode}`]) }
           : { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
         const evidences = evidenceUploadConfig.getEvidenceFromSessionFunction(req) || {};
 

@@ -232,7 +232,7 @@ describe('Out of time controller', () => {
       };
       req.body['appeal-late'] = 'My explanation why am late';
       req.session.appeal.application.lateAppeal.evidence = evidenceExample;
-      res.locals.multerError = expectedError.text;
+      res.locals.errorCode = 'fileTooLarge';
       req.session.appeal.appealOutOfCountry = 'Yes';
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -253,7 +253,7 @@ describe('Out of time controller', () => {
         text: 'The selected file must be a {{ supportedFormats | join(\', \') }}'
       };
       req.body['appeal-late'] = 'My explanation why am late';
-      res.locals.multerError = expectedError.text;
+      res.locals.errorCode = 'incorrectFormat';
       req.session.appeal.appealOutOfCountry = 'Yes';
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

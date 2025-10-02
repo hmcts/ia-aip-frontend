@@ -178,7 +178,7 @@ describe('upload evidence controller', () => {
         text: 'The selected file must be a {{ supportedFormats | join(\', \') }}'
       };
 
-      res.locals.multerError = expectedError.text;
+      res.locals.errorCode = 'incorrectFormat';
 
       await postUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('upload-evidence/evidence-upload-page.njk', {
@@ -203,7 +203,7 @@ describe('upload evidence controller', () => {
         text: 'The selected file must be smaller than {{maxFileSizeInMb}}MB'
       };
 
-      res.locals.multerError = expectedError.text;
+      res.locals.errorCode = 'fileTooLarge';
 
       await postUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('upload-evidence/evidence-upload-page.njk', {

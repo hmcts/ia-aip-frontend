@@ -182,9 +182,8 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         req.session.appeal.reasonsForAppeal.evidences = [ ...evidences ];
         return res.redirect(paths.awaitingReasonsForAppeal.supportingEvidenceUpload);
       } else {
-        let validationError;
-        validationError = res.locals && res.locals.multerError
-          ? { uploadFile: createStructuredError('file-upload', res.locals.multerError) }
+        const validationError = res.locals && res.locals.errorCode
+          ? { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${res.locals.errorCode}`]) }
           : { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
         const evidences = req.session.appeal.reasonsForAppeal.evidences || {};
 

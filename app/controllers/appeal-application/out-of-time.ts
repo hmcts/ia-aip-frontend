@@ -38,7 +38,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
       let validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
       let appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
 
-      if (res.locals.multerError) {
+      if (res.locals && res.locals.multerError) {
         validationError = {
           ...validationError,
           uploadFile: createStructuredError('file-upload', res.locals.multerError)

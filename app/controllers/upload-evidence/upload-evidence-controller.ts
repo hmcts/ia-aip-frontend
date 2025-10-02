@@ -105,7 +105,7 @@ export function postUploadFile(documentManagementService: DocumentManagementServ
         return res.redirect(evidenceUploadConfig.evidenceUploadPath);
       } else {
         let validationError;
-        validationError = res.locals.multerError
+        validationError = res.locals && res.locals.multerError
           ? { uploadFile: createStructuredError('file-upload', res.locals.multerError) }
           : { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
         const evidences = evidenceUploadConfig.getEvidenceFromSessionFunction(req) || {};

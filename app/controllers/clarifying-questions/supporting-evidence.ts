@@ -55,7 +55,7 @@ function postSupportingEvidenceUpload(documentManagementService: DocumentManagem
       } else {
         const questionOrder = parseInt(req.params.id, 10) - 1;
         const evidences = req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence || [];
-        let validationError = res.locals.multerError
+        let validationError = res.locals && res.locals.multerError
           ? { uploadFile: createStructuredError('file-upload', res.locals.multerError) }
           : { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
         res.render('upload-evidence/supporting-evidence-upload-page.njk', {

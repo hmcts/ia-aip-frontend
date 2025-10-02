@@ -183,7 +183,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         return res.redirect(paths.awaitingReasonsForAppeal.supportingEvidenceUpload);
       } else {
         let validationError;
-        validationError = res.locals.multerError
+        validationError = res.locals && res.locals.multerError
           ? { uploadFile: createStructuredError('file-upload', res.locals.multerError) }
           : { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
         const evidences = req.session.appeal.reasonsForAppeal.evidences || {};

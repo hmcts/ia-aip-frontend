@@ -15,12 +15,20 @@ function getSupportingEvidenceUploadPage(req: Request, res: Response, next: Next
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const questionOrder = parseInt(req.params.id, 10) - 1;
     const evidences = req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence || [];
+    let validationError;
+    if (req.query.error) {
+      validationError = {
+        uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${req.query.error}`])
+      };
+    }
     res.render('upload-evidence/supporting-evidence-upload-page.njk', {
       previousPage: paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id),
       evidences,
       evidenceUploadAction: paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), req.params.id),
       formSubmitAction: paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceSubmit.replace(new RegExp(':id'), req.params.id),
-      evidenceCTA: paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceDeleteFile.replace(new RegExp(':id'), req.params.id)
+      evidenceCTA: paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceDeleteFile.replace(new RegExp(':id'), req.params.id),
+      error: validationError,
+      errorList: Object.values(validationError)
     });
   } catch (e) {
     next(e);
@@ -33,9 +41,9 @@ function postSupportingEvidenceUpload(documentManagementService: DocumentManagem
       if (req.file) {
         const questionOrder = parseInt(req.params.id, 10) - 1;
         const evidenceStored: Evidence = await documentManagementService.uploadFile(req);
-        const draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
+        const draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[] = [...req.session.appeal.draftClarifyingQuestionsAnswers];
         if (!draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence) {
-          draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence = [ { ...evidenceStored } ];
+          draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence = [{ ...evidenceStored }];
         } else {
           draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence = [
             ...draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence,
@@ -53,19 +61,8 @@ function postSupportingEvidenceUpload(documentManagementService: DocumentManagem
         };
         return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), req.params.id)));
       } else {
-        const questionOrder = parseInt(req.params.id, 10) - 1;
-        const evidences = req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence || [];
-        const validationError = res.locals && res.locals.errorCode
-          ? { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${res.locals.errorCode}`]) }
-          : { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
-        res.render('upload-evidence/supporting-evidence-upload-page.njk', {
-          previousPage: paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id),
-          evidences,
-          evidenceUploadAction: paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), req.params.id),
-          formSubmitAction: paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceSubmit.replace(new RegExp(':id'), req.params.id),
-          error: validationError,
-          errorList: Object.values(validationError)
-        });
+        const errorCode = res.locals && res.locals.errorCode ? res.locals.errorCode : 'noFileSelected';
+        return res.redirect(`${paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile}?error=${errorCode}`);
       }
     } catch (e) {
       next(e);
@@ -81,8 +78,8 @@ function getSupportingEvidenceDelete(documentManagementService: DocumentManageme
       if (fileId) {
         const questionOrder = parseInt(req.params.id, 10) - 1;
         await documentManagementService.deleteFile(req, fileId);
-        const supportingEvidences: Evidence[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence ];
-        const draftClarifyingQuestionsAnswers = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
+        const supportingEvidences: Evidence[] = [...req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence];
+        const draftClarifyingQuestionsAnswers = [...req.session.appeal.draftClarifyingQuestionsAnswers];
         draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence = [
           ...supportingEvidences.filter((evidence: Evidence) => evidence.fileId !== req.query['id'])
         ];

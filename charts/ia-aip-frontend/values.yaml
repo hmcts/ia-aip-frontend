@@ -66,3 +66,7 @@ redis:
 tags:
   idam-pr: false
   pr: false
+
+global:
+  security:
+    allowInsecureImages: true

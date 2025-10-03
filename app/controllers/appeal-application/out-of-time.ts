@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
-import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';

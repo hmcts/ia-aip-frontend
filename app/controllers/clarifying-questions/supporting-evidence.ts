@@ -6,6 +6,7 @@ import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage } from '../../utils/save-for-later-utils';
+import { getFileUploadError } from '../../utils/upload-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
@@ -56,7 +57,7 @@ function postSupportingEvidenceUpload(documentManagementService: DocumentManagem
         const questionOrder = parseInt(req.params.id, 10) - 1;
         const evidences = req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence || [];
         const validationError = res.locals && res.locals.errorCode
-          ? { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${res.locals.errorCode}`]) }
+          ? { uploadFile: createStructuredError('file-upload', getFileUploadError(res.locals.errorCode)) }
           : { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
         res.render('upload-evidence/supporting-evidence-upload-page.njk', {
           previousPage: paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id),

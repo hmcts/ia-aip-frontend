@@ -8,6 +8,7 @@ import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addDaysToDate } from '../../utils/date-utils';
+import { getFileUploadError } from '../../utils/upload-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { asBooleanValue, documentIdToDocStoreUrl, hasPendingTimeExtension } from '../../utils/utils';
 import {
@@ -183,7 +184,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         return res.redirect(paths.awaitingReasonsForAppeal.supportingEvidenceUpload);
       } else {
         const validationError = res.locals && res.locals.errorCode
-          ? { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${res.locals.errorCode}`]) }
+          ? { uploadFile: createStructuredError('file-upload', getFileUploadError(res.locals.errorCode)) }
           : { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
         const evidences = req.session.appeal.reasonsForAppeal.evidences || {};
 

@@ -56,8 +56,8 @@ redis:
   enabled: false
   image:
     registry: hmctspublic.azurecr.io
-    repository: imported/bitnami/redis
-    tag: '20.13.4'
+    repository: imported/bitnamicharts/redi
+    tag: '20.11.5'
   architecture: standalone
   master:
     persistence:

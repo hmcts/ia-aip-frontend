@@ -16,7 +16,7 @@ exports.config = {
       console.log('Total scenarios run: ' + global.testsTitles.length);
       console.log('Scenarios passed: ' + global.testsPassed);
       console.log('---------------------');
-      if (global.testsPassed >= global.testsTitles.length) {
+      if (global.testsPassed === global.testsTitles.length) {
         process.exit(0);
       } else {
         process.exit(1);

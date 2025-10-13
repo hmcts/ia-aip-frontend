@@ -33,5 +33,5 @@ nodejs:
   redis:
     image:
       registry: hmctspublic.azurecr.io
-      repository: imported/bitnamicharts/redis
-      tag: '20.11.5'
+      repository: imported/bitnami/redis
+      tag: '8.2.0'

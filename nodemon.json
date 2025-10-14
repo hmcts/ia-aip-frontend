@@ -6,8 +6,5 @@
   "verbose": true,
   "execMap": {
     "ts": "node --require ts-node/register/transpile-only"
-  },
-  "env": {
-    "NODE_ENV": "development"
   }
 }

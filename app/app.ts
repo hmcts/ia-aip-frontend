@@ -54,7 +54,7 @@ function createApp() {
   app.post('*', uploadConfiguration, handleFileUploadErrors);
   app.post('*', filterRequest);
 
-  if (environment === 'development' || environment === 'test') {
+  if (environment === 'development' || environment === 'test' || environment === 'aatDevelopment') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
     // @ts-ignore

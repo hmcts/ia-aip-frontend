@@ -373,7 +373,7 @@ router.use(startRepresentingMyselfPublicControllers);
 router.use(idamController);
 router.use(askForMoreTime);
 // router.use(initSession);
-if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {
+if ((process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'aatDevelopment') && sessionLoggerEnabled) {
   router.use(logSession);
 }
 

@@ -3,7 +3,7 @@ Feature: Personal details date of birth page
   As a citizen
   I want to be able to enter date of birth
 
-  Scenario: Home office reference page
+  Scenario: Home office reference page 4
     Given I have an appeal with home office details and name
     And I have logged in
     And I am on the personal details date of birth page

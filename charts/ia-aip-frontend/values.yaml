@@ -54,19 +54,19 @@ nodejs:
         - customer-services-email
 redis:
   enabled: false
+  image:
+    registry: hmctspublic.azurecr.io
+    repository: imported/bitnami/redis
+    tag: '8.2.0'
   architecture: standalone
   master:
     persistence:
       enabled: false
   auth:
     enabled: false
-  image:
-    registry: hmctspublic.azurecr.io
-    repository: imported/bitnami/redis
 tags:
   idam-pr: false
   pr: false
-
 global:
   security:
     allowInsecureImages: true

@@ -29,9 +29,3 @@ nodejs:
         - AppInsightsInstrumentationKey
         - pcq-token-key
         - launch-darkly-sdk-key
-  ## Override redis image
-  redis:
-    image:
-      registry: hmctspublic.azurecr.io
-      repository: imported/bitnami/redis
-      tag: '8.2.0'

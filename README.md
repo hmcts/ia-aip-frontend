@@ -55,7 +55,7 @@ This only has to be run once per local instance - DO NOT commit the aat.env file
 ```
 yarn get-aat-dev-variables
 ```
-Then to run the app pointed to AAT:
+Then to run the app pointed to AAT (hosted at https://localhost:3000):
 ```
 yarn dev:aat
 ```

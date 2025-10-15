@@ -94,7 +94,7 @@
   },
   "features": {
     "askForMoreTime": false,
-    "timelineEnabled": false
+    "timelineEnabled": true
   },
   "testAccounts": {
     "testCaseOfficerUserName": "TEST_CASEOFFICER_USERNAME",

@@ -20,6 +20,8 @@ import { setupSession } from './session';
 import { getUrl } from './utils/url-utils';
 
 const uuid = require('uuid');
+const featurePolicy = require('feature-policy');
+const nocache = require('nocache');
 
 function createApp() {
   const app: express.Application = express();
@@ -54,7 +56,7 @@ function createApp() {
   app.post('*', uploadConfiguration, handleFileUploadErrors);
   app.post('*', filterRequest);
 
-  if (environment === 'development' || environment === 'test') {
+  if (environment === 'development' || environment === 'test' || environment === 'aatDevelopment') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
     // @ts-ignore
@@ -101,7 +103,7 @@ function configureHelmet(app) {
         '\'self\'',
         'tagmanager.google.com',
         'fonts.googleapis.com/',
-        (req, res) =>
+        (req: any, res: any) =>
           req.url.includes('/view/document/')
             ? `'unsafe-inline'`
             : `'nonce-${res.locals.nonce}'`
@@ -131,7 +133,7 @@ function configureHelmet(app) {
 
   app.use(helmet.permittedCrossDomainPolicies());
   app.use(expectCt({ enforce: true, maxAge: 60 }));
-  app.use(helmet.featurePolicy({
+  app.use(featurePolicy({
     features: {
       accelerometer: [ '\'none\'' ],
       ambientLightSensor: [ '\'none\'' ],
@@ -147,7 +149,7 @@ function configureHelmet(app) {
       vibrate: [ '\'none\'' ]
     }
   }));
-  app.use(helmet.noCache());
+  app.use(nocache());
 }
 
 export {

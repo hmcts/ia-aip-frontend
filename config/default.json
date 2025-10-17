@@ -93,7 +93,7 @@
     "fromRemissionAppliedDate": 14
   },
   "features": {
-    "askForMoreTime": true,
+    "askForMoreTime": false,
     "timelineEnabled": true
   },
   "testAccounts": {

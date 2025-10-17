@@ -159,7 +159,6 @@ async function createTestCases() {
   for (const user of functionalUsers()) {
     const caseDetails: CcdCaseDetails = await createCase(user);
     user.caseId = caseDetails.id;
-    user.caseData = caseDetails.case_data;
     logger.trace(`Created case for user '${user.userId}' with case id '${user.caseId}'`, logLabel);
   }
 }

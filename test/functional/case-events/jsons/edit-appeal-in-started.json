@@ -15,7 +15,6 @@
     "appellantStateless": "isStateless",
     "feeSupportPersisted": "Yes",
     "isFeePaymentEnabled": "Yes",
-    "appellantEmailAddress": "test@test.com",
     "caseManagementLocation": {
       "region": "1",
       "baseLocation": "227101"
@@ -104,7 +103,8 @@
           "email": "alejandro@example.net",
           "wantsSms": "No",
           "subscriber": "appellant",
-          "wantsEmail": "Yes"
+          "wantsEmail": "Yes",
+          "mobileNumber": null
         }
       }
     ],
@@ -118,8 +118,6 @@
       "AddressLine2": ""
     },
     "appealType": "protection",
-    "appellantGivenNames": "aa",
-    "appellantFamilyName": "asd",
     "appellantNationalities": [
       {
         "id": "1",

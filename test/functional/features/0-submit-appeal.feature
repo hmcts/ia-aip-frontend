@@ -7,7 +7,7 @@ Feature: Home office reference page 8
   Background:
     Given I have logged in
 
-    Then I see "John Smith" in title
+    Then I see "setupcase functionalCase" in title
     And I see "Do this next" in subheading
     And I click "Continue" button
 
@@ -69,7 +69,7 @@ Feature: Home office reference page 8
 
     Then I see "How do you want us to contact you?" in title
     And I check "Email" option
-    And I fill "Enter email address" field with "test@test.com"
+    And I fill "Enter email address" field with "alejandro@example.net"
     And I click "Save and continue" button
 
     Then I see "Tell us about your appeal" in title

@@ -12,7 +12,8 @@
           "email": "alejandro@example.net",
           "wantsSms": "No",
           "subscriber": "appellant",
-          "wantsEmail": "Yes"
+          "wantsEmail": "Yes",
+          "mobileNumber": null
         }
       }
     ],
@@ -26,9 +27,7 @@
       "AddressLine2": ""
     },
     "appealType": "protection",
-    "appellantGivenNames": "aa",
     "journeyType": "aip",
-    "appellantFamilyName": "asd",
     "appellantNationalities": [
       {
         "id": "39dd0f68-aa9f-41b0-99a8-e553e1ce0fb1",

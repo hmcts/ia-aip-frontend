@@ -25,7 +25,6 @@ type UserInfo = {
   userId?: string;
   userToken?: string;
   caseId?: string;
-  caseData?: CaseData;
 };
 
 let idamTestingAccessToken;
@@ -153,11 +152,11 @@ function functionalUsers(): UserInfo[] {
     // awaitingReasonsForAppealWithTimeExtensionUser,
     // awaitingClarifyingQuestionsWithTimeExtensionUser,
     // clarifyingQuestionsUser,
-    awaitingCmaRequirementsUser
+    // awaitingCmaRequirementsUser,
     // awaitingCmaRequirementsWithTimeExtensionUser,
     // cmaRequirementsSubmittedUser,
     // cmaListedUser,
-    // preHearingUser,
+    preHearingUser
     // decidedUser,
     // ftpaOutOfTimeApplicationStartedUser
   ];

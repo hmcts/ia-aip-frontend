@@ -5,9 +5,18 @@ import { SecurityHeaders } from '../../app/service/authentication-service';
 import S2SService from '../../app/service/s2s-service';
 import { isJWTExpired } from '../../app/utils/jwt-utils';
 import Logger, { getLogLabel } from '../../app/utils/logger';
-import events from './case-events/index.js';
+
+const events = require('./case-events/index.js');
 import { getSecurityHeaders, updateAppeal } from './ccd-service';
-import { awaitingCmaRequirementsUser, functionalUsers, getUserId, getUserToken, UserInfo } from './user-service';
+import {
+  awaitingCmaRequirementsUser,
+  functionalUsers,
+  getUserId,
+  getUserToken,
+  preHearingUser,
+  UserInfo
+} from './user-service';
+
 const s2sSecret: string = config.get('s2s.secret');
 const s2sUrl: string = config.get('s2s.url');
 const microServiceName: string = config.get('s2s.microserviceName');
@@ -32,12 +41,15 @@ let serviceToken = null;
 async function triggerEvent(user: UserInfo, object: string, userRunningEvent: string) {
   const json = JSON.parse(object);
   const event = json.event;
-  const newCaseData = json.case_data;
-  const caseData = {
-    ...user.caseData,
-    ...newCaseData
-  };
-  delete caseData['TTL'];
+  let caseData = json.case_data;
+  if (['editAppeal', 'submitAppeal'].includes(event.id)) {
+    caseData = {
+      ...caseData,
+      'appellantGivenNames': user.forename,
+      'appellantFamilyName': user.surname,
+      'appellantEmailAddress': user.email
+    };
+  }
   let headers;
   let citizen: boolean = true;
   let userId: string = user.userId;
@@ -46,7 +58,6 @@ async function triggerEvent(user: UserInfo, object: string, userRunningEvent: st
       headers = await getSecurityHeaders({ email: caseOfficerUserName, password: caseOfficerPassword });
       userId = await getUserId(headers.userToken);
       citizen = false;
-      delete caseData['appealReferenceNumber'];
       break;
     case 'homeOffice':
       headers = await getSecurityHeaders({ email: homeOfficeUserName, password: homeOfficePassword });
@@ -68,13 +79,26 @@ async function triggerEvent(user: UserInfo, object: string, userRunningEvent: st
       break;
   }
   await updateAppeal(event, userId, user.caseId, caseData, headers, citizen);
-  user.caseData = caseData;
 }
 
 async function prepareTestCases() {
-  await triggerEvent(awaitingCmaRequirementsUser, JSON.stringify(events.editAppealData), 'aip');
-  await triggerEvent(awaitingCmaRequirementsUser, JSON.stringify(events.appealSubmittedData), 'aip');
-  await triggerEvent(awaitingCmaRequirementsUser, JSON.stringify(events.requestHoData), 'caseOfficer');
+  await preparePreHearingUser();
+}
+
+async function preparePreHearingUser() {
+  await triggerEvent(preHearingUser, JSON.stringify(events.editAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.submitAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestHoData), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestRespondentEvidence), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.uploadHoBundle), 'homeOffice');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestReasonsForAppeal), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.submitReasonsForAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestRespondentReview), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.uploadHomeOfficeAppealResponse), 'homeOffice');
+  await triggerEvent(preHearingUser, JSON.stringify(events.reviewHoResponse), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestHearingRequirements), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.draftHearingRequirements), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.reviewHearingRequirements), 'caseOfficer');
 }
 
 export {

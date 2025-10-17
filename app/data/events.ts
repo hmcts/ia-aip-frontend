@@ -30,7 +30,7 @@ export const Events = {
     description: 'Submits Reasons for appeal case AIP'
   },
   REQUEST_RESPONDENT_REVIEW: {
-    id: 'requestRespondentReview',
+    id: 'requestRespondentwReview',
     summary: 'Request respondent review',
     description: 'Request respondent review'
   },

@@ -4,7 +4,7 @@ import rp from 'request-promise';
 import { SecurityHeaders } from '../../app/service/authentication-service';
 import { isJWTExpired } from '../../app/utils/jwt-utils';
 import Logger, { getLogLabel } from '../../app/utils/logger';
-import { UserInfo, functionalUsers, getUserToken } from './user-service';
+import { functionalUsers, getUserToken, UserInfo } from './user-service';
 
 const s2sSecret: string = config.get('s2s.secret');
 const s2sUrl: string = config.get('s2s.url');

@@ -45,7 +45,8 @@
     "apiUrl": "IDAM_API_URL",
     "webUrl": "IDAM_WEB_URL",
     "testingSupportUrl": "IDAM_TESTING_SUPPORT_URL",
-    "secret": "IDAM_SECRET"
+    "secret": "IDAM_SECRET",
+    "rpxClientSecret": "IDAM_CLIENT_SECRET"
   },
   "ccd": {
     "apiUrl": "CCD_API_URL",

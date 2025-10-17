@@ -3,7 +3,6 @@
     "id": "editAppeal",
     "summary": "Update appeal case AIP"
   },
-  "state": "appealStarted",
   "case_data": {
     "pcqId": "3e13b79c-da73-4fc0-b16f-c7e744774d20",
     "feeVersion": "3",

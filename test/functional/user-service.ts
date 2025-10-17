@@ -17,11 +17,11 @@ const redirectUrl = `${testUrl}/redirectUrl`;
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
-type AipUser = {
+type UserInfo = {
   email: string;
   password: string;
-  forename: string;
-  surname: string;
+  forename?: string;
+  surname?: string;
   userId?: string;
   userToken?: string;
   caseId?: string;
@@ -48,7 +48,7 @@ async function setTestingSupportToken() {
   }
 }
 
-async function createUser(userInfo: AipUser) {
+async function createUser(userInfo: UserInfo) {
   logger.trace(`Creating user: ${userInfo.email}`, logLabel);
   try {
     await axios.post(`${idamTestingSupportUrl}/test/idam/users`, {
@@ -71,7 +71,7 @@ async function createUser(userInfo: AipUser) {
   }
 }
 
-async function deleteUser(userInfo: AipUser) {
+async function deleteUser(userInfo: UserInfo) {
   logger.trace(`Deleting user: ${userInfo.email}`, logLabel);
   try {
     await axios.delete(`${idamTestingSupportUrl}/test/idam/users/${userInfo.userId}`, {
@@ -85,7 +85,7 @@ async function deleteUser(userInfo: AipUser) {
   }
 }
 
-async function getUserToken(userConfig: AipUser) {
+async function getUserToken(userConfig: UserInfo) {
   if (userConfig.userToken && !isJWTExpired(userConfig.userToken)) {
     return userConfig.userToken;
   }
@@ -142,7 +142,7 @@ async function deleteUsers() {
   }
 }
 
-function functionalUsers(): AipUser[] {
+function functionalUsers(): UserInfo[] {
   return [
     // setupcaseUser,
     // noCasesUser,
@@ -163,112 +163,112 @@ function functionalUsers(): AipUser[] {
   ];
 }
 
-const setupcaseUser: AipUser = {
+const setupcaseUser: UserInfo = {
   email: `setupcase@example.com`,
   password: 'Apassword123',
   forename: 'setupcase',
   surname: 'functionalCase'
 };
 
-const noCasesUser: AipUser = {
+const noCasesUser: UserInfo = {
   email: `no-cases@example.com`,
   password: 'Apassword123',
   forename: 'no-cases',
   surname: 'functionalCase'
 };
 
-const hasCaseUser: AipUser = {
+const hasCaseUser: UserInfo = {
   email: `has-case@example.com`,
   password: 'Apassword123',
   forename: 'has-case',
   surname: 'functionalCase'
 };
 
-const appealSubmittedUser: AipUser = {
+const appealSubmittedUser: UserInfo = {
   email: `appeal-submitted@example.com`,
   password: 'Apassword123',
   forename: 'appeal-submitted',
   surname: 'functionalCase'
 };
 
-const awaitingReasonsForAppealUser: AipUser = {
+const awaitingReasonsForAppealUser: UserInfo = {
   email: `awaiting-reasons-for-appeal@example.com`,
   password: 'Apassword123',
   forename: 'awaiting-reasons-for-appeal',
   surname: 'functionalCase'
 };
 
-const partialAwaitingReasonsForAppealUser: AipUser = {
+const partialAwaitingReasonsForAppealUser: UserInfo = {
   email: `partial-awaiting-reasons-for-appeal@example.com`,
   password: 'Apassword123',
   forename: 'partial-awaiting-reasons-for-appeal',
   surname: 'functionalCase'
 };
 
-const awaitingReasonsForAppealWithTimeExtensionUser: AipUser = {
+const awaitingReasonsForAppealWithTimeExtensionUser: UserInfo = {
   email: `awaitingReasonsForAppeal-with-time_extension@example.com`,
   password: 'Apassword123',
   forename: 'awaitingReasonsForAppeal-with-time_extension',
   surname: 'functionalCase'
 };
 
-const awaitingClarifyingQuestionsWithTimeExtensionUser: AipUser = {
+const awaitingClarifyingQuestionsWithTimeExtensionUser: UserInfo = {
   email: `awaitingClarifyingQuestions-with-time_extension@example.com`,
   password: 'Apassword123',
   forename: 'awaitingClarifyingQuestions-with-time_extension',
   surname: 'functionalCase'
 };
 
-const clarifyingQuestionsUser: AipUser = {
+const clarifyingQuestionsUser: UserInfo = {
   email: `clarifying-questions@example.com`,
   password: 'Apassword123',
   forename: 'clarifying-questions',
   surname: 'functionalCase'
 };
 
-const awaitingCmaRequirementsUser: AipUser = {
+const awaitingCmaRequirementsUser: UserInfo = {
   email: `awaitingCmaRequirements@example.com`,
   password: 'Apassword123',
   forename: 'awaitingCmaRequirements',
   surname: 'functionalCase'
 };
 
-const awaitingCmaRequirementsWithTimeExtensionUser: AipUser = {
+const awaitingCmaRequirementsWithTimeExtensionUser: UserInfo = {
   email: `awaitingCmaRequirements-with-time_extension@example.com`,
   password: 'Apassword123',
   forename: 'awaitingCmaRequirements-with-time_extension',
   surname: 'functionalCase'
 };
 
-const cmaRequirementsSubmittedUser: AipUser = {
+const cmaRequirementsSubmittedUser: UserInfo = {
   email: `cmaRequirementsSubmitted@example.com`,
   password: 'Apassword123',
   forename: 'cmaRequirementsSubmitted',
   surname: 'functionalCase'
 };
 
-const cmaListedUser: AipUser = {
+const cmaListedUser: UserInfo = {
   email: `cmaListed@example.com`,
   password: 'Apassword123',
   forename: 'cmaListed',
   surname: 'functionalCase'
 };
 
-const preHearingUser: AipUser = {
+const preHearingUser: UserInfo = {
   email: `preHearing@example.com`,
   password: 'Apassword123',
   forename: 'preHearing',
   surname: 'functionalCase'
 };
 
-const decidedUser: AipUser = {
+const decidedUser: UserInfo = {
   email: `decided@example.com`,
   password: 'Apassword123',
   forename: 'decided',
   surname: 'functionalCase'
 };
 
-const ftpaOutOfTimeApplicationStartedUser: AipUser = {
+const ftpaOutOfTimeApplicationStartedUser: UserInfo = {
   email: `ftpa-out-of-time-application-started@example.com`,
   password: 'Apassword123',
   forename: 'ftpa-out-of-time-application-started',
@@ -282,7 +282,7 @@ export {
   getUserToken,
   getUserId,
   functionalUsers,
-  AipUser,
+  UserInfo,
   setupcaseUser,
   noCasesUser,
   hasCaseUser,

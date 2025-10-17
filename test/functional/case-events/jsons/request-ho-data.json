@@ -1,0 +1,80 @@
+{
+  "event": {
+    "id": "requestHomeOfficeData",
+    "summary": "Request Home office data"
+  },
+  "case_data": {
+    "homeOfficeSearchResponse": {
+      "messageHeader": {
+        "eventDateTime": "2020-08-25T08:30:29.305206Z",
+        "correlationId": "bbd96db3-090d-41c9-beda-f5c1763013b3",
+        "consumer": {
+          "code": "HMCTS",
+          "description": "HM Courts and Tribunal Service"
+        }
+      },
+      "messageType": "RESPONSE_RIGHT_OF_APPEAL_DETAILS",
+      "status": [
+        {
+          "person": {
+            "givenName": null,
+            "familyName": "TestSix",
+            "fullName": "Asylumcase TestSix",
+            "gender": {
+              "code": "F",
+              "description": "Female"
+            },
+            "dayOfBirth": 4,
+            "monthOfBirth": 4,
+            "yearOfBirth": 1995,
+            "nationality": {
+              "code": "CHL",
+              "description": "Chile"
+            }
+          },
+          "applicationStatus": {
+            "documentReference": "1212-0099-0062-8083",
+            "roleType": {
+              "code": "SPOUSE",
+              "description": "Spouse"
+            },
+            "roleSubType": null,
+            "applicationType": {
+              "code": "ASYLUM",
+              "description": "Asylum and Protection"
+            },
+            "claimReasonType": null,
+            "decisionType": {
+              "code": "REFUSE",
+              "description": "SD outcome"
+            },
+            "decisionDate": "2020-07-30T00:00:00Z",
+            "decisionCommunication": null,
+            "rejectionReasons": [
+              {
+                "reason": "Refused asylum"
+              }
+            ],
+            "metadata": null
+          }
+        }
+      ]
+    },
+    "homeOfficeAppellantsList": {
+      "value": {
+        "code": "NoMatch",
+        "label": "No Match"
+      },
+      "list_items": [
+        {
+          "code": "AsylumcaseTestFive",
+          "label": "AsylumcaseTestFive-040495"
+        },
+        {
+          "code": "NoMatch",
+          "label": "No Match"
+        }
+      ]
+    }
+  }
+}

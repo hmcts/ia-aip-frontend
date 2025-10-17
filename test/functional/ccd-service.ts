@@ -4,7 +4,7 @@ import rp from 'request-promise';
 import { SecurityHeaders } from '../../app/service/authentication-service';
 import { isJWTExpired } from '../../app/utils/jwt-utils';
 import Logger, { getLogLabel } from '../../app/utils/logger';
-import { AipUser, functionalUsers, getUserToken } from './user-service';
+import { UserInfo, functionalUsers, getUserToken } from './user-service';
 
 const s2sSecret: string = config.get('s2s.secret');
 const s2sUrl: string = config.get('s2s.url');
@@ -59,19 +59,19 @@ function submitCreateCase(userId: string, headers: SecurityHeaders, startEvent: 
   return rp.post(options);
 }
 
-function startUpdateAppeal(userId: string, caseId: string, eventId: string, headers: SecurityHeaders): Promise<StartEventResponse> {
+function startUpdateAppeal(userId: string, caseId: string, eventId: string, headers: SecurityHeaders, citizen: boolean): Promise<StartEventResponse> {
   return rp.get(createOptions(
     userId,
     headers,
-    `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${eventId}/token`
+    `${ccdBaseUrl}/${citizen ? 'citizens' : 'caseworkers'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${eventId}/token`
   ));
 }
 
-function submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData): Promise<CcdCaseDetails> {
+function submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData, citizen: boolean): Promise<CcdCaseDetails> {
   const options: any = createOptions(
     userId,
     headers,
-    `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`);
+    `${ccdBaseUrl}/${citizen ? 'citizens' : 'caseworkers'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`);
   options.body = event;
 
   return rp.post(options);
@@ -110,13 +110,13 @@ async function getServiceToken() {
   return `Bearer ${serviceToken}`;
 }
 
-async function getSecurityHeaders(user: AipUser): Promise<SecurityHeaders> {
+async function getSecurityHeaders(user: UserInfo): Promise<SecurityHeaders> {
   const userToken: string = await getUserToken(user);
   const serviceToken: string = await getServiceToken();
   return { userToken, serviceToken };
 }
 
-async function createCase(user: AipUser): Promise<CcdCaseDetails> {
+async function createCase(user: UserInfo): Promise<CcdCaseDetails> {
   const headers = await getSecurityHeaders(user);
   const startEventResponse = await startCreateCase(user.userId, headers);
   const supplementaryDataRequest = generateSupplementaryId();
@@ -136,23 +136,23 @@ async function createCase(user: AipUser): Promise<CcdCaseDetails> {
   });
 }
 
-async function updateAppeal(event, userId: string, updatedCase: CcdCaseDetails, headers: SecurityHeaders): Promise<CcdCaseDetails> {
-  logger.trace(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${updatedCase.id}' `, logLabel);
-  const updateEventResponse = await startUpdateAppeal(userId, updatedCase.id, event.id, headers);
+async function updateAppeal(event, userId: string, caseId: string, caseData: CaseData, headers: SecurityHeaders, citizen: boolean): Promise<CcdCaseDetails> {
+  logger.trace(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${caseId}' `, logLabel);
+  const updateEventResponse = await startUpdateAppeal(userId, caseId, event.id, headers, citizen);
   logger.trace(`Submitting update appeal case with event '${event.id}'`, logLabel);
   const supplementaryDataRequest = generateSupplementaryId();
 
-  return submitUpdateAppeal(userId, updatedCase.id, headers, {
+  return submitUpdateAppeal(userId, caseId, headers, {
     event: {
       id: updateEventResponse.event_id,
       summary: event.summary,
       description: event.summary
     },
-    data: updatedCase.case_data,
+    data: caseData,
     event_token: updateEventResponse.token,
     ignore_warning: true,
     supplementary_data_request: supplementaryDataRequest
-  });
+  }, citizen);
 }
 
 async function createTestCases() {

@@ -84,6 +84,12 @@ withPipeline("nodejs", product, component) {
   env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
   env.PAYMENTS_API_URL = 'http://payment-api-aat.service.core-compute-aat.internal'
   env.REF_DATA_API_URL = 'http://rd-commondata-api-aat.service.core-compute-aat.internal'
+  env.IDAM_WEB_URL = 'https://idam-web-public.aat.platform.hmcts.net'
+  env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
+  env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
+  env.PCQ_URL = 'https://pcq.aat.platform.hmcts.net'
+  env.PCQ_RETURN_URL = env.TEST_URL + '/about-appeal'
+  env.IDAM_TESTING_SUPPORT_URL = 'https://idam-testing-support-api.aat.platform.hmcts.net'
 
   before("functionalTest") {
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'

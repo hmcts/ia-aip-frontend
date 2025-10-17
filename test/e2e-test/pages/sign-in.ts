@@ -1,5 +1,24 @@
 import { paths } from '../../../app/paths';
+import {
+  appealSubmittedUser,
+  awaitingClarifyingQuestionsWithTimeExtensionUser,
+  awaitingCmaRequirementsUser,
+  awaitingCmaRequirementsWithTimeExtensionUser,
+  awaitingReasonsForAppealUser,
+  awaitingReasonsForAppealWithTimeExtensionUser,
+  clarifyingQuestionsUser,
+  cmaListedUser,
+  cmaRequirementsSubmittedUser,
+  decidedUser,
+  ftpaOutOfTimeApplicationStartedUser,
+  hasCaseUser,
+  noCasesUser,
+  partialAwaitingReasonsForAppealUser,
+  preHearingUser,
+  setupcaseUser
+} from '../../functional/user-service';
 import { currentUserDetails } from './helper-functions';
+
 const { signInHelper, signInForUser } = require('./helper-functions');
 const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
@@ -89,7 +108,7 @@ module.exports = {
 
     Given('I have logged in', async () => {
       I.amOnPage(testUrl + paths.common.login);
-      signInForUser('setupcase@example.com');
+      signInForUser(setupcaseUser);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
@@ -98,63 +117,63 @@ module.exports = {
 
       switch (appealState) {
         case 'appealStarted': {
-          signInForUser('no-cases@example.com');
+          signInForUser(noCasesUser);
           break;
         }
         case 'Saved appealStarted': {
-          signInForUser('has-case@example.com');
+          signInForUser(hasCaseUser);
           break;
         }
         case 'appealSubmitted': {
-          signInForUser('appeal-submitted@example.com');
+          signInForUser(appealSubmittedUser);
           break;
         }
         case 'awaitingReasonsForAppeal': {
-          signInForUser('awaiting-reasons-for-appeal@example.com');
+          signInForUser(awaitingReasonsForAppealUser);
           break;
         }
         case 'Saved awaitingReasonsForAppeal': {
-          signInForUser('partial-awaiting-reasons-for-appeal@example.com');
+          signInForUser(partialAwaitingReasonsForAppealUser);
           break;
         }
         case 'awaitingReasonsForAppeal with time extensions': {
-          signInForUser('awaitingReasonsForAppeal-with-time_extension@example.com');
+          signInForUser(awaitingReasonsForAppealWithTimeExtensionUser);
           break;
         }
         case 'awaitingClarifyingQuestionsAnswers with time extensions': {
-          signInForUser('awaitingClarifyingQuestions-with-time_extension@example.com');
+          signInForUser(awaitingClarifyingQuestionsWithTimeExtensionUser);
           break;
         }
         case 'awaitingClarifyingQuestionsAnswers': {
-          signInForUser('clarifying-questions@example.com');
+          signInForUser(clarifyingQuestionsUser);
           break;
         }
         case 'awaitingCmaRequirements': {
-          signInForUser('awaitingCmaRequirements@example.com');
+          signInForUser(awaitingCmaRequirementsUser);
           break;
         }
         case 'awaitingCmaRequirements with time extensions': {
-          signInForUser('awaitingCmaRequirements-with-time_extension@example.com');
+          signInForUser(awaitingCmaRequirementsWithTimeExtensionUser);
           break;
         }
         case 'cmaRequirementsSubmitted': {
-          signInForUser('cmaRequirementsSubmitted@example.com');
+          signInForUser(cmaRequirementsSubmittedUser);
           break;
         }
         case 'cmaListed': {
-          signInForUser('cmaListed@example.com');
+          signInForUser(cmaListedUser);
           break;
         }
         case 'preHearing': {
-          signInForUser('preHearing@example.com');
+          signInForUser(preHearingUser);
           break;
         }
         case 'decided': {
-          signInForUser('decided@example.com');
+          signInForUser(decidedUser);
           break;
         }
         case 'ftpaOutOfTimeApplicationStarted': {
-          signInForUser('ftpa-out-of-time-application-started@example.com');
+          signInForUser(ftpaOutOfTimeApplicationStartedUser);
           break;
         }
         default:

@@ -126,12 +126,12 @@ async function getSecurityHeaders(user: UserInfo): Promise<SecurityHeaders> {
   return { userToken, serviceToken };
 }
 
-async function createCase(user: UserInfo): Promise<CcdCaseDetails> {
+async function createCase(user: UserInfo): Promise<void> {
   const headers = await getSecurityHeaders(user);
   const startEventResponse = await startCreateCase(user.userId, headers);
   const supplementaryDataRequest = generateSupplementaryId();
 
-  return submitCreateCase(user.userId, headers, {
+  const caseDetails: CcdCaseDetails = await submitCreateCase(user.userId, headers, {
     event: {
       id: startEventResponse.event_id,
       summary: 'Create case AIP',
@@ -144,6 +144,8 @@ async function createCase(user: UserInfo): Promise<CcdCaseDetails> {
     ignore_warning: true,
     supplementary_data_request: supplementaryDataRequest
   });
+  user.caseId = caseDetails.id;
+  logger.trace(`Created case for user '${user.userId}' with case id '${user.caseId}'`, logLabel);
 }
 
 async function updateAppeal(event, userId: string, caseId: string, caseData: CaseData, headers: SecurityHeaders, citizen: boolean): Promise<CcdCaseDetails> {
@@ -165,14 +167,6 @@ async function updateAppeal(event, userId: string, caseId: string, caseData: Cas
   }, citizen);
 }
 
-async function createTestCases() {
-  for (const user of functionalUsers()) {
-    const caseDetails: CcdCaseDetails = await createCase(user);
-    user.caseId = caseDetails.id;
-    logger.trace(`Created case for user '${user.userId}' with case id '${user.caseId}'`, logLabel);
-  }
-}
-
 interface ES<T> {
   length: number;
   cases: T[];
@@ -180,9 +174,9 @@ interface ES<T> {
 }
 
 export {
-  createTestCases,
   getServiceToken,
   updateAppeal,
   getSecurityHeaders,
-  getAppealState
+  getAppealState,
+  createCase
 };

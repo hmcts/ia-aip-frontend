@@ -47,7 +47,8 @@ async function setTestingSupportToken() {
 }
 
 async function createUser(userInfo: UserInfo) {
-  logger.trace(`Creating user: ${userInfo.email}`, logLabel);
+  const timestamp: string = Date.now().toString();
+  userInfo.email = userInfo.email.replace('@', `${timestamp}@`);
   try {
     await axios.post(`${idamTestingSupportUrl}/test/idam/users`, {
       password: userInfo.password,
@@ -64,6 +65,9 @@ async function createUser(userInfo: UserInfo) {
       },
       timeout: 10000
     });
+    userInfo.userToken = await getUserToken(userInfo);
+    userInfo.userId = await getUserId(userInfo.userToken);
+    logger.trace(`Creating user: ${userInfo.email}`, logLabel);
   } catch (error) {
     logger.exception(`Error in createUser: ${error.message}`, logLabel);
   }
@@ -124,40 +128,32 @@ async function getUserId(userToken: string) {
   }
 }
 
-async function createUsers() {
-  const timestamp: string = Date.now().toString();
-  for (const user of functionalUsers()) {
-    user.email = user.email.replace('@', `${timestamp}@`);
-    await createUser(user);
-    user.userToken = await getUserToken(user);
-    user.userId = await getUserId(user.userToken);
-  }
-}
-
 async function deleteUsers() {
   for (const user of functionalUsers()) {
-    await deleteUser(user);
+    if (user.userId) {
+      await deleteUser(user);
+    }
   }
 }
 
 function functionalUsers(): UserInfo[] {
   return [
-    // setupcaseUser,
-    // noCasesUser,
-    // hasCaseUser,
-    // appealSubmittedUser,
-    // awaitingReasonsForAppealUser,
-    // partialAwaitingReasonsForAppealUser,
-    // awaitingReasonsForAppealWithTimeExtensionUser,
-    // awaitingClarifyingQuestionsWithTimeExtensionUser,
-    // clarifyingQuestionsUser,
-    // awaitingCmaRequirementsUser,
-    // awaitingCmaRequirementsWithTimeExtensionUser,
-    // cmaRequirementsSubmittedUser,
-    // cmaListedUser,
-    preHearingUser
-    // decidedUser,
-    // ftpaOutOfTimeApplicationStartedUser
+    setupcaseUser,
+    noCasesUser,
+    hasCaseUser,
+    appealSubmittedUser,
+    awaitingReasonsForAppealUser,
+    partialAwaitingReasonsForAppealUser,
+    awaitingReasonsForAppealWithTimeExtensionUser,
+    awaitingClarifyingQuestionsWithTimeExtensionUser,
+    clarifyingQuestionsUser,
+    awaitingCmaRequirementsUser,
+    awaitingCmaRequirementsWithTimeExtensionUser,
+    cmaRequirementsSubmittedUser,
+    cmaListedUser,
+    preHearingUser,
+    decidedUser,
+    ftpaOutOfTimeApplicationStartedUser
   ];
 }
 
@@ -275,7 +271,6 @@ const ftpaOutOfTimeApplicationStartedUser: UserInfo = {
 
 export {
   setTestingSupportToken,
-  createUsers,
   deleteUsers,
   getUserToken,
   getUserId,
@@ -296,5 +291,7 @@ export {
   cmaListedUser,
   preHearingUser,
   decidedUser,
-  ftpaOutOfTimeApplicationStartedUser
+  ftpaOutOfTimeApplicationStartedUser,
+  createUser,
+  deleteUser
 };

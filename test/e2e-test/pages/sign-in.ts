@@ -1,4 +1,6 @@
 import { paths } from '../../../app/paths';
+import * as progression from '../../functional/case-progression-service';
+import { createCase } from '../../functional/ccd-service';
 import {
   appealSubmittedUser,
   awaitingClarifyingQuestionsWithTimeExtensionUser,
@@ -9,6 +11,7 @@ import {
   clarifyingQuestionsUser,
   cmaListedUser,
   cmaRequirementsSubmittedUser,
+  createUser,
   decidedUser,
   ftpaOutOfTimeApplicationStartedUser,
   hasCaseUser,
@@ -108,6 +111,7 @@ module.exports = {
 
     Given('I have logged in', async () => {
       I.amOnPage(testUrl + paths.common.login);
+      await createUser(setupcaseUser);
       signInForUser(setupcaseUser);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
@@ -117,62 +121,87 @@ module.exports = {
 
       switch (appealState) {
         case 'appealStarted': {
+          await createUser(noCasesUser);
           signInForUser(noCasesUser);
           break;
         }
         case 'Saved appealStarted': {
+          await createUser(hasCaseUser);
+          await createCase(hasCaseUser);
+          await progression.prepareHasCaseUser();
           signInForUser(hasCaseUser);
           break;
         }
         case 'appealSubmitted': {
+          await createUser(appealSubmittedUser);
+          await createCase(appealSubmittedUser);
+          await progression.prepareAppealSubmittedUser();
           signInForUser(appealSubmittedUser);
           break;
         }
         case 'awaitingReasonsForAppeal': {
+          await createUser(awaitingReasonsForAppealUser);
+          await createCase(awaitingReasonsForAppealUser);
+          await progression.prepareAwaitingReasonsForAppealUser();
           signInForUser(awaitingReasonsForAppealUser);
           break;
         }
         case 'Saved awaitingReasonsForAppeal': {
+          await createUser(partialAwaitingReasonsForAppealUser);
+          await createCase(partialAwaitingReasonsForAppealUser);
+          await progression.preparePartialAwaitingReasonsForAppealUser();
           signInForUser(partialAwaitingReasonsForAppealUser);
           break;
         }
         case 'awaitingReasonsForAppeal with time extensions': {
-          signInForUser(awaitingReasonsForAppealWithTimeExtensionUser);
+          // unused
           break;
         }
         case 'awaitingClarifyingQuestionsAnswers with time extensions': {
-          signInForUser(awaitingClarifyingQuestionsWithTimeExtensionUser);
+          // unused
           break;
         }
         case 'awaitingClarifyingQuestionsAnswers': {
+          await createUser(clarifyingQuestionsUser);
+          await createCase(clarifyingQuestionsUser);
+          await progression.prepareClarifyingQuestionsUser();
           signInForUser(clarifyingQuestionsUser);
           break;
         }
         case 'awaitingCmaRequirements': {
-          signInForUser(awaitingCmaRequirementsUser);
+          // unused
           break;
         }
         case 'awaitingCmaRequirements with time extensions': {
-          signInForUser(awaitingCmaRequirementsWithTimeExtensionUser);
+          // unused
           break;
         }
         case 'cmaRequirementsSubmitted': {
-          signInForUser(cmaRequirementsSubmittedUser);
+          // unused
           break;
         }
         case 'cmaListed': {
-          signInForUser(cmaListedUser);
+          // unused
           break;
         }
         case 'preHearing': {
+          await createUser(preHearingUser);
+          await createCase(preHearingUser);
+          await progression.preparePreHearingUser();
           signInForUser(preHearingUser);
           break;
         }
         case 'decided': {
+          await createUser(decidedUser);
+          await createCase(decidedUser);
+          await progression.prepareDecidedUser();
           signInForUser(decidedUser);
           break;
         }
         case 'ftpaOutOfTimeApplicationStarted': {
+          await createUser(ftpaOutOfTimeApplicationStartedUser);
+          await createCase(ftpaOutOfTimeApplicationStartedUser);
+          await progression.prepareFtpaOutOfTimeApplicationStartedUser();
           signInForUser(ftpaOutOfTimeApplicationStartedUser);
           break;
         }

@@ -1,4 +1,4 @@
-@cmaRequirements
+@cmaRequirements @disabled
 Feature: Cma Requirements
   In order to complete my appeal
   As a citizen

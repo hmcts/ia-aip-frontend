@@ -1,16 +1,11 @@
 import * as process from 'process';
-import { prepareTestCases } from './case-progression-service';
-import { createTestCases } from './ccd-service';
-import { createUsers, deleteUsers, setTestingSupportToken } from './user-service';
+import { deleteUsers, setTestingSupportToken } from './user-service';
 
 export async function bootstrap() {
   global.testsPassed = 0;
   global.testsTitles = [];
   global.testFailed = false;
   await setTestingSupportToken();
-  await createUsers();
-  await createTestCases();
-  await prepareTestCases();
 }
 
 export async function teardown() {

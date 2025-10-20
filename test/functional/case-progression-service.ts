@@ -3,7 +3,8 @@ import config from 'config';
 const events = require('./case-events/index.js');
 import { getAppealState, getSecurityHeaders, updateAppeal } from './ccd-service';
 import {
-  getUserId,
+  appealSubmittedUser,
+  getUserId, hasCaseUser,
   preHearingUser,
   UserInfo
 } from './user-service';
@@ -60,11 +61,42 @@ async function triggerEvent(user: UserInfo, object: string, userRunningEvent: st
   await updateAppeal(event, userId, user.caseId, caseData, headers, citizen);
 }
 
-async function prepareTestCases() {
-  await preparePreHearingUser();
+async function prepareHasCaseUser() {
+  await triggerEvent(hasCaseUser, JSON.stringify(events.editAppeal), 'aip');
 }
 
-async function preparePreHearingUser() {
+async function prepareAppealSubmittedUser() {
+  await triggerEvent(appealSubmittedUser, JSON.stringify(events.editAppeal), 'aip');
+  await triggerEvent(appealSubmittedUser, JSON.stringify(events.submitAppeal), 'aip');
+}
+
+async function prepareAwaitingReasonsForAppealUser() {
+  await triggerEvent(preHearingUser, JSON.stringify(events.editAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.submitAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestHoData), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestRespondentEvidence), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.uploadHoBundle), 'homeOffice');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestReasonsForAppeal), 'caseOfficer');
+}
+
+async function preparePartialAwaitingReasonsForAppealUser() {
+  await triggerEvent(preHearingUser, JSON.stringify(events.editAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.submitAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestHoData), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestRespondentEvidence), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.uploadHoBundle), 'homeOffice');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestReasonsForAppeal), 'caseOfficer');
+}
+
+async function prepareClarifyingQuestionsUser() {
+  await triggerEvent(preHearingUser, JSON.stringify(events.editAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.submitAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestHoData), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.sendClarifyingQuestions), 'caseOfficer');
+
+}
+
+async function prepareDecidedUser() {
   await triggerEvent(preHearingUser, JSON.stringify(events.editAppeal), 'aip');
   await triggerEvent(preHearingUser, JSON.stringify(events.submitAppeal), 'aip');
   await triggerEvent(preHearingUser, JSON.stringify(events.requestHoData), 'caseOfficer');
@@ -87,6 +119,49 @@ async function preparePreHearingUser() {
   await triggerEvent(preHearingUser, JSON.stringify(events.completeDecisionAndReasonsGranted), 'judge');
 }
 
+async function prepareFtpaOutOfTimeApplicationStartedUser() {
+  await triggerEvent(preHearingUser, JSON.stringify(events.editAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.submitAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestHoData), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestRespondentEvidence), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.uploadHoBundle), 'homeOffice');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestReasonsForAppeal), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.submitReasonsForAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestRespondentReview), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.uploadHomeOfficeAppealResponse), 'homeOffice');
+  await triggerEvent(preHearingUser, JSON.stringify(events.reviewHoResponse), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestHearingRequirements), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.draftHearingRequirements), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.reviewHearingRequirements), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.listCase), 'adminOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.createCaseSummary), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.generateHearingBundle), 'caseOfficer');
+  await waitForStateChange(preHearingUser, 'preHearing');
+  await triggerEvent(preHearingUser, JSON.stringify(events.startDecisionAndReasons), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.prepareDecisionAndReasons), 'judge');
+  await triggerEvent(preHearingUser, JSON.stringify(events.completeDecisionAndReasonsDismissed), 'judge');
+}
+
+async function preparePreHearingUser() {
+  await triggerEvent(preHearingUser, JSON.stringify(events.editAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.submitAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestHoData), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestRespondentEvidence), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.uploadHoBundle), 'homeOffice');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestReasonsForAppeal), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.submitReasonsForAppeal), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestRespondentReview), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.uploadHomeOfficeAppealResponse), 'homeOffice');
+  await triggerEvent(preHearingUser, JSON.stringify(events.reviewHoResponse), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.requestHearingRequirements), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.draftHearingRequirements), 'aip');
+  await triggerEvent(preHearingUser, JSON.stringify(events.reviewHearingRequirements), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.listCase), 'adminOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.createCaseSummary), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.generateHearingBundle), 'caseOfficer');
+  await waitForStateChange(preHearingUser, 'preHearing');
+}
+
 async function waitForStateChange(user: UserInfo, expectedState: string) {
   const maxAttempts = 12;
   const delay = 5000;
@@ -105,5 +180,12 @@ async function waitForStateChange(user: UserInfo, expectedState: string) {
 }
 
 export {
-  prepareTestCases
+  prepareHasCaseUser,
+  prepareAppealSubmittedUser,
+  prepareAwaitingReasonsForAppealUser,
+  preparePartialAwaitingReasonsForAppealUser,
+  prepareClarifyingQuestionsUser,
+  preparePreHearingUser,
+  prepareDecidedUser,
+  prepareFtpaOutOfTimeApplicationStartedUser
 };

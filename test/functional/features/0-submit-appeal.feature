@@ -1,10 +1,6 @@
 @submitAppeal
-Feature: Home office reference page 8
-  In order complete my appeal
-  As a citizen
-  I want to be able to enter a home office reference number
-
-  Background:
+Feature: Submit an appeal
+  Scenario: Submit a new appeal
     Given I have logged in
 
     Then I see "setupcase functionalCase" in title
@@ -69,7 +65,7 @@ Feature: Home office reference page 8
 
     Then I see "How do you want us to contact you?" in title
     And I check "Email" option
-    And I fill "Enter email address" field with "alejandro@example.net"
+    And I fill "Enter email address" field with "test@test.com"
     And I click "Save and continue" button
 
     Then I see "Tell us about your appeal" in title

@@ -32,7 +32,7 @@
     "test:e2e": "yarn codecept:e2e -g @e2e",
     "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functional && yarn test:e2e",
     "test:crossbrowser": "cross-env NODE_ENV=ci IDAM_API_URL=https://idam-api.aat.platform.hmcts.net codeceptjs run-multiple -c codecept.crossbrowser.js -g @crossbrowser --all --steps",
-    "codecept:functional": "cross-env NODE_ENV=test DEFAULT_LAUNCH_DARKLY_FLAG=true codeceptjs run -c codecept.functional.ts --verbose -g @testy",
+    "codecept:functional": "cross-env NODE_ENV=test DEFAULT_LAUNCH_DARKLY_FLAG=true codeceptjs run -c codecept.functional.ts --verbose -g '(?=.*)^(?!.*@disabled)'",
     "codecept:e2e": "NODE_OPTIONS=--max-old-space-size=8192 IDAM_API_URL=https://idam-api.aat.platform.hmcts.net codeceptjs run --features -c codecept.e2e.js",
     "codecept:e2e-local": "IDAM_API_URL=http://localhost:5000 codeceptjs run -c codecept.e2e.js --verbose --debug",
     "setupUser": "cross-env NODE_ENV=e2e-local codeceptjs run -c codecept.setup.js --verbose --debug | grep ia_citizen",

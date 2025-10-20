@@ -77,6 +77,16 @@ function submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHea
   return rp.post(options);
 }
 
+async function getAppealState(userId: string, caseId: string, headers: SecurityHeaders): Promise<string> {
+  const options: any = createOptions(
+    userId,
+    headers,
+    `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`);
+
+  const response = await rp.get(options);
+  return response.state;
+}
+
 async function requestServiceToken() {
   const uri = `${s2sUrl}/lease`;
   const oneTimePassword = await otp(s2sSecret).totp();
@@ -173,5 +183,6 @@ export {
   createTestCases,
   getServiceToken,
   updateAppeal,
-  getSecurityHeaders
+  getSecurityHeaders,
+  getAppealState
 };

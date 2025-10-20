@@ -1,0 +1,11 @@
+{
+  "event": {
+    "id": "generateDecisionAndReasons",
+    "summary": "Prepare decision and reasons"
+  },
+  "case_data": {
+    "anonymityOrder": "Yes",
+    "appellantRepresentative": "",
+    "respondentRepresentative": "Legal representative for the respondent"
+  }
+}

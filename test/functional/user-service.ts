@@ -9,7 +9,6 @@ const idamUrl = config.get('idam.apiUrl');
 const idamWebUrl = config.get('idam.webUrl');
 const idamSecret = config.get('idam.secret');
 const idamClientSecret = config.get('idam.rpxClientSecret');
-const microservice = config.get('microservice');
 const testUrl = config.get('testUrl');
 
 const redirectUrl = `${testUrl}/redirectUrl`;

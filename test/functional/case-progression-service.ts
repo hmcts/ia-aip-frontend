@@ -1,26 +1,13 @@
-import axios from 'axios';
 import config from 'config';
-import rp from 'request-promise';
-import { SecurityHeaders } from '../../app/service/authentication-service';
-import S2SService from '../../app/service/s2s-service';
-import { isJWTExpired } from '../../app/utils/jwt-utils';
-import Logger, { getLogLabel } from '../../app/utils/logger';
 
 const events = require('./case-events/index.js');
-import { getSecurityHeaders, updateAppeal } from './ccd-service';
+import { getAppealState, getSecurityHeaders, updateAppeal } from './ccd-service';
 import {
-  awaitingCmaRequirementsUser,
-  functionalUsers,
   getUserId,
-  getUserToken,
   preHearingUser,
   UserInfo
 } from './user-service';
 
-const s2sSecret: string = config.get('s2s.secret');
-const s2sUrl: string = config.get('s2s.url');
-const microServiceName: string = config.get('s2s.microserviceName');
-const otp = require('otp');
 const caseOfficerUserName: string = config.get('testAccounts.testCaseOfficerUserName');
 const caseOfficerPassword: string = process.env.TEST_CASEOFFICER_PASSWORD;
 const adminOfficerUserName: string = config.get('testAccounts.testAdminOfficerUserName');
@@ -29,19 +16,11 @@ const judgeUserName: string = config.get('testAccounts.testJudgeUserName');
 const judgePassword: string = process.env.TEST_JUDGE_X_PASSWORD;
 const homeOfficeUserName: string = config.get('testAccounts.testHomeOfficeGenericUserName');
 const homeOfficePassword: string = process.env.TEST_HOMEOFFICE_GENERIC_PASSWORD;
-const ccdBaseUrl = config.get('ccd.apiUrl');
-const jurisdictionId = config.get('ccd.jurisdictionId');
-const caseType = config.get('ccd.caseType');
-
-const logger: Logger = new Logger();
-const logLabel: string = getLogLabel(__filename);
-
-let serviceToken = null;
 
 async function triggerEvent(user: UserInfo, object: string, userRunningEvent: string) {
   const json = JSON.parse(object);
   const event = json.event;
-  let caseData = json.case_data;
+  let caseData = json.case_data || {};
   if (['editAppeal', 'submitAppeal'].includes(event.id)) {
     caseData = {
       ...caseData,
@@ -99,6 +78,30 @@ async function preparePreHearingUser() {
   await triggerEvent(preHearingUser, JSON.stringify(events.requestHearingRequirements), 'caseOfficer');
   await triggerEvent(preHearingUser, JSON.stringify(events.draftHearingRequirements), 'aip');
   await triggerEvent(preHearingUser, JSON.stringify(events.reviewHearingRequirements), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.listCase), 'adminOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.createCaseSummary), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.generateHearingBundle), 'caseOfficer');
+  await waitForStateChange(preHearingUser, 'preHearing');
+  await triggerEvent(preHearingUser, JSON.stringify(events.startDecisionAndReasons), 'caseOfficer');
+  await triggerEvent(preHearingUser, JSON.stringify(events.prepareDecisionAndReasons), 'judge');
+  await triggerEvent(preHearingUser, JSON.stringify(events.completeDecisionAndReasonsGranted), 'judge');
+}
+
+async function waitForStateChange(user: UserInfo, expectedState: string) {
+  const maxAttempts = 12;
+  const delay = 5000;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const currentState = await getAppealState(user.userId, user.caseId, await getSecurityHeaders(user));
+    if (currentState === expectedState) {
+      return;
+    }
+    if (attempt < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, delay)); // Wait for 5 seconds
+    }
+  }
+
+  throw new Error(`State did not change to '${expectedState}' within ${maxAttempts * delay / 1000} seconds.`);
 }
 
 export {

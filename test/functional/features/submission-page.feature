@@ -1,4 +1,4 @@
-@submitAppeal
+@submitAppeal @testy
 Feature: submission
   In order complete my appeal
   As a citizen

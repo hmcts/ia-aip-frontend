@@ -228,7 +228,6 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
           previousPage: paths.appealStarted.dob
         });
       }
-      const { application } = req.session.appeal;
       const appeal: Appeal = {
         ...req.session.appeal,
         application: {

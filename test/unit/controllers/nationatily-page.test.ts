@@ -1,6 +1,5 @@
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
-// import * as _ from 'lodash';
 import {
   getNationalityPage,
   postNationalityPage,
@@ -9,7 +8,6 @@ import {
 import { countryList } from '../../../app/data/country-list';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
-// import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { getNationalitiesOptions } from '../../../app/utils/nationalities';
@@ -125,17 +123,6 @@ describe('Nationality details Controller', function () {
 
     });
 
-    // TODO update redirect pages if pages are approved
-    // it('should redirect to out of country address page when ooc feature is enabled', async () => {
-    //   // ooc feature flag is enabled
-    //   sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(true);
-    //
-    //   // appeal is out of country
-    //   req.session.appeal.appealOutOfCountry = 'Yes';
-    //   await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-    //   expect(res.redirect).to.have.been.calledWith(paths.appealStarted.oocAddress);
-    // });
-
     it('should validate and redirect letter received page', async () => {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -204,18 +191,16 @@ describe('Nationality details Controller', function () {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
-    // TODO update redirect paths if pages are approved
-    // it('redirects to enter postcode page if no address has been set', async () => {
-    //   await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-    //
-    //   expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
-    // });
-    //
-    // it('redirects to enter address page if address has been set', async () => {
-    //   _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
-    //   await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-    //
-    //   expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterAddress);
-    // });
+
+    it('should redirect to letter received page when user selected No for appellantInUk', async () => {
+      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.letterReceived);
+    });
+
+    it('should redirect to letter sent page when user selected Yes for appellantInUk', async () => {
+      req.session.appeal.application.appellantInUk = 'Yes';
+      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.letterSent);
+    });
   });
 });

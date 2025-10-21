@@ -1,6 +1,7 @@
 import { Address, AddressInfoResponse, OSPlacesClient, Point } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response } from 'express';
 import {
+  ContactDetailsControllerDependencies,
   getPostcodeLookupPage,
   postPostcodeLookupPage,
   setupContactDetailsController
@@ -71,7 +72,7 @@ describe('Personal Details Controller', function () {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
-      setupContactDetailsController(middleware, { updateAppealService, osPlacesClient } as any);
+      setupContactDetailsController(middleware, { updateAppealService, osPlacesClient } as ContactDetailsControllerDependencies);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.postcodeLookup, middleware);
       expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.postcodeLookup, middleware);
     });

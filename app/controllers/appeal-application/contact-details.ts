@@ -653,7 +653,9 @@ function postSponsorAuthorisation(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupContactDetailsController(middleware: Middleware[], deps: { updateAppealService: UpdateAppealService, osPlacesClient: OSPlacesClient }): Router {
+type ContactDetailsControllerDependencies = { updateAppealService: UpdateAppealService, osPlacesClient: OSPlacesClient };
+
+function setupContactDetailsController(middleware: Middleware[], deps: ContactDetailsControllerDependencies): Router {
   const router = Router();
   router.get(paths.appealStarted.contactDetails, middleware, getContactDetails);
   router.post(paths.appealStarted.contactDetails, middleware, postContactDetails(deps.updateAppealService));
@@ -700,5 +702,6 @@ export {
   getSponsorContactDetails,
   postSponsorContactDetails,
   getSponsorAuthorisation,
-  postSponsorAuthorisation
+  postSponsorAuthorisation,
+  ContactDetailsControllerDependencies
 };

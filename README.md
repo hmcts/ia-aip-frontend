@@ -209,5 +209,47 @@ This creates an AiP case in CCD for the user stored in `someUser: UserInfo` obje
 `await triggerEvent(user: UserInfo, object: string, userRunningEvent: string);`\
 This triggers the event from a json passed in as `object` for the case stored in `user: UserInfo`. The `userRunningEvent` string is used to set the token in the request header as caseOfficer, homeOffice, etc. Examples of this function being used can be found in the file such as `preparePreHearingUser()`
 
+### env variables
+```
+export S2S_MICROSERVICE_NAME=iac
+export S2S_URL=http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
+export PAYMENTS_API_URL=http://payment-api-aat.service.core-compute-aat.internal
+export REF_DATA_API_URL=http://rd-commondata-api-aat.service.core-compute-aat.internal
+export IDAM_WEB_URL=https://idam-web-public.aat.platform.hmcts.net
+export IDAM_API_URL=https://idam-api.aat.platform.hmcts.net
+export PCQ_URL=https://pcq.aat.platform.hmcts.net
+export IDAM_TESTING_SUPPORT_URL=https://idam-testing-support-api.aat.platform.hmcts.net
+export TEST_CASEOFFICER_USERNAME=iac-base-func-test01@justice.gov.uk
+export TEST_HOMEOFFICE_GENERIC_USERNAME=ia.respondentoffice.ccd@gmail.com
+export TEST_ADMINOFFICER_USERNAME=CRD_func_test_aat_adm66@justice.gov.uk
+export TEST_JUDGE_X_USERNAME=ia.iacjudge.ccd@gmail.com
+```
+If running against AAT:
+```
+export CCD_API_URL=http://ccd-data-store-api-aat.service.core-compute-aat.internal
+export TEST_URL=https://immigration-appeal.aat.platform.hmcts.net/
+export PCQ_RETURN_URL=https://immigration-appeal.aat.platform.hmcts.net/about-appeal
+```
+If running against ia-case-api preview build:
+```
+export PR_NUMBER=<PR_NUMBER>
+export CCD_API_URL=https://ccd-data-store-api-ia-case-api-pr-${PR_NUMBER}.preview.platform.hmcts.net
+export TEST_URL=https://ia-case-api-pr-${PR_NUMBER}-aip-frontend.preview.platform.hmcts.net
+export PCQ_RETURN_URL=https://ia-case-api-pr-${PR_NUMBER}-aip-frontend.preview.platform.hmcts.net/about-appeal
+```
+If running against ia-aip-frontend preview build:
+```
+PR_NUMBER=<PR_NUMBER>
+export CCD_API_URL=http://ccd-data-store-api-aat.service.core-compute-aat.internal
+export TEST_URL=https://ia-aip-frontend-pr-${PR_NUMBER}.preview.platform.hmcts.net/
+export PCQ_RETURN_URL=https://ia-aip-frontend-pr-${PR_NUMBER}.preview.platform.hmcts.net/about-appeal
+```
+Need to get from vaults:
+`ia-aat`
+TEST_CASEOFFICER_PASSWORD: test-caseofficer-password
+TEST_HOMEOFFICE_GENERIC_PASSWORD: test-homeoffice-generic-password
+TEST_ADMINOFFICER_PASSWORD: test-adminofficer-password
+TEST_JUDGE_X_PASSWORD: test-judge-x-password
 
-
+`rpx-aat`
+IDAM_CLIENT_SECRET: mc-idam-client-secret

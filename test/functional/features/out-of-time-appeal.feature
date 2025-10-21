@@ -35,6 +35,11 @@ Scenario: Explain the reason why my appeal is late
 
   And I choose a file that is "VALID" and click the "Upload file" button
   And I click "Save and continue" button
+  Then I should see the deportation order page
+
+  When I choose Yes to deportation order
+  And I click "Save and continue" button
+  Then I should see the task-list page
 
   And I click "Your personal details" link
   And Enter "Random" "User" as my Given and Family Name and click Save and continue

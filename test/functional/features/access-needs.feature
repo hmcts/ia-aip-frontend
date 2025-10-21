@@ -1,4 +1,3 @@
-@disabled
 Feature: CMA Access needs
   In order complete my access needs
   As a citizen

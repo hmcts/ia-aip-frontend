@@ -1,9 +1,13 @@
 @submitAppeal
-Feature: Submit an appeal
-  Scenario: Submit a new appeal
+Feature: Home office reference page 8
+  In order complete my appeal
+  As a citizen
+  I want to be able to enter a home office reference number
+
+  Background:
     Given I have logged in
 
-    Then I see "setupcase functionalCase" in title
+    Then I see "John Smith" in title
     And I see "Do this next" in subheading
     And I click "Continue" button
 

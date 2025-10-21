@@ -7,7 +7,6 @@
     "maxFileSizeInMb": 0.001
   },
   "features": {
-    "askForMoreTime": true,
     "timelineEnabled": true
   },
   "cdamDocumentManagement": {

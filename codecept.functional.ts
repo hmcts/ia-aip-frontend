@@ -4,10 +4,10 @@ import { bootstrap as ourBootStrap, teardown as ourTeardown } from './test/funct
 exports.config = {
   name: 'codecept',
   output: './functional-output/functional/reports/',
-  bootstrap: async () => {
+  bootstrapAll: async () => {
     await ourBootStrap();
   },
-  teardown: async () => {
+  teardownAll: async () => {
     await ourTeardown();
   },
   helpers: {

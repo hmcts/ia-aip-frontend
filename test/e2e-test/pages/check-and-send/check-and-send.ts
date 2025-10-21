@@ -46,6 +46,10 @@ module.exports = {
       await I.click('Submit your appeal');
     });
 
+    When('I click submit', async () => {
+      await I.click('Submit');
+    });
+
     When('I click Submit and continue to pay £80 by debit or credit card', async () => {
       await I.click('Submit and continue to pay £80 by debit or credit card');
     });

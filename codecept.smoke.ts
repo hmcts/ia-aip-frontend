@@ -1,6 +1,4 @@
 import config from 'config';
-import process from 'process';
-import * as TestState from './test/e2e-test/TestState.json';
 import * as testStateHelper from './test/e2e-test/testStateHelper';
 import { failureCheck } from './test/functional/bootstrap';
 

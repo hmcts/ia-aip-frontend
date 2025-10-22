@@ -1,24 +1,22 @@
 const config = require('config');
 const process = require("process");
 const { setTestingSupportToken } = require("./test/wip/user-service");
+import * as TestState from './test/e2e-test/TestState.json';
 
 exports.config = {
   name: 'codecept',
   timeout: 600,
   output: './functional-output/e2e/reports/',
   bootstrapAll: async() => {
-    global.testsPassed = 0;
-    global.testsTitles = [];
-    global.testFailed = false;
     await setTestingSupportToken();
   },
   teardownAll: async() => {
-    if (global.testFailed) {
+    if (TestState.testFailed) {
       console.log('---------------------');
-      console.log('Total scenarios run: ' + global.testsTitles.length);
-      console.log('Scenarios passed: ' + global.testsPassed);
+      console.log('Total scenarios run: ' + TestState.testsTitles.length);
+      console.log('Scenarios passed: ' + TestState.testsPassed);
       console.log('---------------------');
-      if (global.testsPassed === global.testsTitles.length) {
+      if (TestState.testsPassed === TestState.testsTitles.length) {
         process.exit(0);
       } else {
         process.exit(1);

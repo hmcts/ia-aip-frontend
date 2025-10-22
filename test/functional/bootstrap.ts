@@ -5,6 +5,7 @@ import https from 'https';
 import * as process from 'process';
 import { createApp } from '../../app/app';
 import Logger, { getLogLabel } from '../../app/utils/logger';
+import * as TestState from '../e2e-test/TestState.json';
 
 const dyson = require('dyson');
 const path = require('path');
@@ -68,10 +69,8 @@ export async function bootstrap() {
   const documentManagementStoreConfigs = dyson.getConfigurations(documentManagementStoreOptions);
   dyson.registerServices(documentManagementStoreApp, documentManagementStoreOptions, documentManagementStoreConfigs);
   documentManagementStoreServer = documentManagementStoreApp.listen(20003);
-  global.testsPassed = 0;
-  global.testsTitles = [];
-  global.testFailed = false;
 }
+
 function closeServerWithPromise(server) {
   return new Promise(function (resolve, reject) {
     server.close((err, result) => {
@@ -102,13 +101,13 @@ export async function teardown() {
   } catch (e) {
     logger.exception(e, logLabel);
   } finally {
-    if (global.testFailed) {
+    if (TestState.testFailed) {
       // tslint:disable:no-console
       console.log('---------------------');
-      console.log('Total scenarios run: ' + global.testsTitles.length);
-      console.log('Scenarios passed: ' + global.testsPassed);
+      console.log('Total scenarios run: ' + TestState.testsTitles.length);
+      console.log('Scenarios passed: ' + TestState.testsPassed);
       console.log('---------------------');
-      if (global.testsPassed === global.testsTitles.length) {
+      if (TestState.testsPassed === TestState.testsTitles.length) {
         process.exit(0);
       } else {
         process.exit(1);

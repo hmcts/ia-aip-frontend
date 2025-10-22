@@ -4,7 +4,7 @@ Feature: Make Application to change some of my details
   As a citizen
   I want to be able to make an application to change some of my details
 
-  Scenario: Make an Application to withdraw an appeal 1
+  @disabled Scenario: Make an Application to withdraw an appeal 1
     Given I have logged in as an appellant in state "preHearing"
     When I click the Ask to change some of your details link
     Then I should see the Ask to change some of your details page

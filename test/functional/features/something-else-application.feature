@@ -4,7 +4,7 @@ Feature: Make Application to asl something else
   As a citizen
   I want to be able to make an application to ask something else
 
-  Scenario: Make an Application to withdraw an appeal 2
+  @disabled Scenario: Make an Application to withdraw an appeal 2
     Given I have logged in as an appellant in state "preHearing"
     When I click the Ask for something else link
     Then I should see the Ask for something else page

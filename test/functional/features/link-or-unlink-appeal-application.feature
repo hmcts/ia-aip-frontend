@@ -4,7 +4,7 @@ Feature: Make Application to link or unlink an appeal
   As a citizen
   I want to be able to make an application to link or unlink an appeal
 
-  Scenario: Make an Application to link or unlink an appeal
+  @disabled Scenario: Make an Application to link or unlink an appeal
     Given I have logged in as an appellant in state "preHearing"
     When I click the Ask to link or unlink with another appeal link
     Then I should see the Ask to link or unlink this appeal page

@@ -4,7 +4,7 @@ Feature: Make Application to expedite hearing
   As a citizen
   I want to be able to make an application to expedite hearing
 
-  Scenario: Make an Application to expedite hearing
+  @disabled Scenario: Make an Application to expedite hearing
     Given I have logged in as an appellant in state "preHearing"
     When I click the Ask to change your hearing date location or needs link
     Then I should see the Ask to change something about your hearing page

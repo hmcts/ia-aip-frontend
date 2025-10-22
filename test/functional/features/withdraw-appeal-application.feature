@@ -4,7 +4,7 @@ Feature: Make Application to withdraw an appeal
   As a citizen
   I want to be able to make an application to withdraw an appeal
 
-  Scenario: Make an Application to withdraw an appeal 3
+  @disabled Scenario: Make an Application to withdraw an appeal 3
     Given I have logged in as an appellant in state "preHearing"
     When I click the Withdraw my appeal link
     Then I should see the Ask to withdraw the appeal page

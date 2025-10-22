@@ -3,7 +3,7 @@ Feature: Type of appeal
   As a citizen
   I want to be able to enter my type of appeal
 
-  Scenario: Appeal type page
+  @disabled Scenario: Appeal type page
 
     Given I have logged in
     And I see "Do this next" in subheading

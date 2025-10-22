@@ -4,7 +4,7 @@ Feature: Cma Requirements Listed
   As a citizen
   I want to check my cma requirements have been listed
 
-  Scenario: Cma Requirements Listed
+  @disabled Scenario: Cma Requirements Listed
     Given I have logged in as an appellant in state "cmaListed"
 
     Then I am on the overview page

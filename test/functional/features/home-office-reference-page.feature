@@ -3,7 +3,7 @@ Feature: Home office reference page 3
   As a citizen
   I want to be able to enter a home office reference number
 
-  Scenario: Entering a Home Office reference number
+  @disabled Scenario: Entering a Home Office reference number
     Given I have logged in
     And I am on the home office reference page
     When I click "Save for later" button

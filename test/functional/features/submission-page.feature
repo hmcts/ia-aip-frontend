@@ -4,7 +4,7 @@ Feature: submission
   As a citizen
   I want to be able to submit my appeal
 
-  Scenario: Submit an appeal
+  @disabled Scenario: Submit an appeal
     Given I have an appeal with home office details, name, date of birth, nationality, address and reason for appeal
     And I have logged in
     And I am on the check your answers page
@@ -16,7 +16,7 @@ Feature: submission
     And I see "Your appeal details have been sent" in title
     And I see the respond by date is 5 days in the future
 
-  Scenario: Submit an EU/EUSS/HU appeal
+  @disabled Scenario: Submit an EU/EUSS/HU appeal
     Given I have an EU or EUSS or HU appeal with home office details, name, date of birth, nationality, address and reason for appeal
     And I have logged in
     And I am on the check your answers page

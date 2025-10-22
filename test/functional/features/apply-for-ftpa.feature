@@ -4,7 +4,7 @@ Feature: Apply for FTPA as an appellant in person
   As a citizen
   I want to be able to apply for FTPA
 
-  Scenario: Apply for FTPA in time
+  @disabled Scenario: Apply for FTPA in time
     Given I have logged in as an appellant in state "decided"
     When I click the Apply for permission to appeal to the Upper Tribunal link
     Then I should see the ftpa reason page

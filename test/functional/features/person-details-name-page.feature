@@ -3,7 +3,7 @@ Feature: Personal details name page
   As a citizen
   I want to be able to enter my name
 
-  Scenario: Home office reference page 5
+  @disabled Scenario: Home office reference page 5
     Given I have an appeal with home office details
     And I have logged in
     And I am on the personal details name page

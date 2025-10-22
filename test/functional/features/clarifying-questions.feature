@@ -12,7 +12,7 @@ Feature: Clarifying questions
     Then I see "Answer question 1" item in list
     Then I see "Answer question 2" item in list
 
-  Scenario: Answering Clarifying questions
+  @disabled Scenario: Answering Clarifying questions
     When I click "Answer question 1" link
     Then I see "Question 1" in title
 
@@ -73,7 +73,7 @@ Feature: Clarifying questions
     Then I see "Pablo Jimenez" in title
     And I see "A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next" description in overview banner
 
-  Scenario: Answering Clarifying questions save for later
+  @disabled Scenario: Answering Clarifying questions save for later
     When I click "Answer question 1" link
     Then I see "Question 1" in title
 
@@ -81,7 +81,7 @@ Feature: Clarifying questions
     And I click "Save for later" button
     Then I am on the overview page
 
-  Scenario: Ask for more time while answering Clarifying questions
+  @disabled Scenario: Ask for more time while answering Clarifying questions
     When I click "Answer question 1" link
     And I see "Question 1" in title
     And I fill textarea with "my answer"

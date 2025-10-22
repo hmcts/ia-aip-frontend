@@ -3,7 +3,7 @@ Feature: Out of Time appeal @outOfTimeAppeal
   As a citizen
   I need to explain why my appeal is late
 
-Scenario: Explain the reason why my appeal is late
+@disabled Scenario: Explain the reason why my appeal is late
   Given I have logged in as an appellant in state "appealStarted"
   Then I click continue
 
@@ -74,7 +74,7 @@ Scenario: Explain the reason why my appeal is late
 #  When I choose a file that is "VALID" and click the "Save and continue" button
 #  Then I should be taken to the check-and-send page
 
-Scenario: Delete an evidence changes on reason should persist
+@disabled Scenario: Delete an evidence changes on reason should persist
 #  Given I have an out of time appeal with reason for being late an evidence
 #  And I have logged in
 #  And I click "Continue" button

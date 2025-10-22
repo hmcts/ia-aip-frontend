@@ -1,9 +1,32 @@
+import testStateHelper from "./test/e2e-test/testStateHelper";
+
 const config = require('config');
+const process = require("process");
+const testStateHelper = require('./test/e2e-test/testStateHelper');
+const TestState = require('./test/e2e-test/TestState.json');
 
 exports.config = {
   name: 'codecept',
   timeout: 600,
   output: './functional-output/smoke/reports/',
+  bootstrap: async() => {
+    testStateHelper.resetTestState();
+  },
+  teardown: async() => {
+    if (TestState.testFailed) {
+      console.log('---------------------');
+      console.log('Total scenarios run: ' + TestState.testsTitles.length);
+      console.log('Scenarios passed: ' + TestState.testsPassed);
+      console.log('---------------------');
+      if (TestState.testsPassed === TestState.testsTitles.length) {
+        process.exit(0);
+      } else {
+        process.exit(1);
+      }
+    } else {
+      process.exit(0);
+    }
+  },
   helpers: {
     Puppeteer: {
       url: config.get('testUrl'),
@@ -12,6 +35,12 @@ exports.config = {
         ignoreHTTPSErrors: true
       },
       restart: true
+    },
+    customHelper: {
+      require: './test/e2e-test/helpers/navigationHelper.ts', // Import the custom helper file
+    },
+    FailedTest: {
+      require: './test/e2e-test/helpers/failedTestHelper.js',
     },
   },
   gherkin: {

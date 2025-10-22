@@ -1,13 +1,15 @@
 const config = require('config');
 const process = require("process");
 const { setTestingSupportToken } = require("./test/wip/user-service");
-import * as TestState from './test/e2e-test/TestState.json';
+const testStateHelper = require('./test/e2e-test/testStateHelper');
+const TestState = require('./test/e2e-test/TestState.json');
 
 exports.config = {
   name: 'codecept',
   timeout: 600,
   output: './functional-output/e2e/reports/',
   bootstrapAll: async() => {
+    testStateHelper.resetTestState();
     await setTestingSupportToken();
   },
   teardownAll: async() => {

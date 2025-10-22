@@ -14,6 +14,15 @@ function writeTestState(updatedState: object) {
   fs.writeFileSync(testStatePath, JSON.stringify(updatedState, null, 2), 'utf8');
 }
 
+// Function to reset the current test suite state
+export function resetTestState() {
+  const state = readTestState();
+  state.testsPassed = 0;
+  state.testFailed = false;
+  state.testsTitles = [];
+  writeTestState(state);
+}
+
 // Function to update testFailed
 export function setTestFailed(value: boolean) {
   const state = readTestState();

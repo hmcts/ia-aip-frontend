@@ -6,6 +6,7 @@ import * as process from 'process';
 import { createApp } from '../../app/app';
 import Logger, { getLogLabel } from '../../app/utils/logger';
 import * as TestState from '../e2e-test/TestState.json';
+import * as testStateHelper from '../e2e-test/testStateHelper';
 
 const dyson = require('dyson');
 const path = require('path');
@@ -21,6 +22,7 @@ let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
 export async function bootstrap() {
+  testStateHelper.resetTestState();
   server = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')

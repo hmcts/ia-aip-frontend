@@ -37,6 +37,7 @@
     "codecept:e2e": "NODE_OPTIONS=--max-old-space-size=8192 IDAM_API_URL=https://idam-api.aat.platform.hmcts.net codeceptjs run-workers 3 -c codecept.e2e.ts",
     "codecept:e2e-local": "IDAM_API_URL=http://localhost:5000 codeceptjs run -c codecept.e2e.ts --verbose --debug",
     "setupUser": "cross-env NODE_ENV=e2e-local codeceptjs run -c codecept.setup.js --verbose --debug | grep ia_citizen",
+    "createCaseInState": "node --require ts-node/register/transpile-only test/wip/create-case-in-state.ts",
     "test:mutation": "NODE_CONFIG_DIR=./config DEFAULT_LAUNCH_DARKLY_FLAG=false stryker run stryker.node.conf.js",
     "test:mutation-local": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js",
     "genCert": "mkdir -p keys && openssl req -x509 -newkey rsa:4096 -keyout keys/server.key -out keys/server.cert -sha256 -days 365 -nodes -subj \"/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=CommonNameOrHostname\""

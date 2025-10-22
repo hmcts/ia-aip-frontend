@@ -175,24 +175,14 @@ There are base UserInfo profiles set up i.e. user-service/preHearingUser which a
 
 The event data is stored in `test/wip/case-progression-service/case-events` as json files which are then passed to the `triggerEvent()` function in `case-progression-service.ts` to progress the case to the next state.
 
-### Example usage:
-To create and progress a preHearingUser case to the preHearing state, and then progress to decided, you would do the following:
+### Example usage with yarn command:
+To create a user and progress a case to the preHearing state you would do the following:
 
-```typescript
-import { setTestingSupportToken, createUser } from '../wip/user-service';
-import { createCase } from '../wip/ccd-service';
-import * as progression from '../../wip/case-progression-service';
-const events = require('./case-events/index.js');
-
-await setTestingSupportToken();
-await createUser(preHearingUser);
-await createCase(preHearingUser);
-await progression.preparePreHearingUser(preHearingUser);
-await progression.triggerEvent(preHearingUser, JSON.stringify(events.startDecisionAndReasons), 'caseOfficer');
-await progression.triggerEvent(preHearingUser, JSON.stringify(events.prepareDecisionAndReasons), 'judge');
-await progression.triggerEvent(preHearingUser, JSON.stringify(events.completeDecisionAndReasonsGranted), 'judge');
 ```
-
+TEST_STATE=preHearing && TEST_APPEAL_TYPE=deprivation && TEST_DECISION_TYPE=dismissed && yarn createCaseInState
+```
+TEST_APPEAL_TYPE is optional and will default to 'protection' if not set
+TEST_DECISION_TYPE is optional and will default to 'granted' if not set
 
 ### test/wip/user-service.ts
 `await setTestingSupportToken();` \

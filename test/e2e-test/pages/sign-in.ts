@@ -206,14 +206,14 @@ module.exports = {
         case 'Saved appealStarted': {
           await createUser(hasCaseUser);
           await createCase(hasCaseUser);
-          await progression.createCaseInState(hasCaseUser, 'appealStarted');
+          await progression.createCaseInState(hasCaseUser, progression.State.appealStarted);
           signInForUserFromInfo(hasCaseUser);
           break;
         }
         case 'appealSubmitted': {
           await createUser(appealSubmittedUser);
           await createCase(appealSubmittedUser);
-          await progression.createCaseInState(appealSubmittedUser, 'appealSubmitted');
+          await progression.createCaseInState(appealSubmittedUser, progression.State.appealSubmitted);
           signInForUserFromInfo(appealSubmittedUser);
           break;
         }
@@ -221,20 +221,20 @@ module.exports = {
           await setTestingSupportToken();
           await createUser(pendingPaymentUser);
           await createCase(pendingPaymentUser);
-          await progression.createCaseInState(pendingPaymentUser, 'pendingPayment', 'refusalOfHumanRights');
+          await progression.createCaseInState(pendingPaymentUser, progression.State.pendingPayment, 'refusalOfHumanRights');
           signInForUserFromInfo(pendingPaymentUser);
           break;
         case 'awaitingReasonsForAppeal': {
           await createUser(awaitingReasonsForAppealUser);
           await createCase(awaitingReasonsForAppealUser);
-          await progression.createCaseInState(awaitingReasonsForAppealUser, 'awaitingReasonsForAppeal');
+          await progression.createCaseInState(awaitingReasonsForAppealUser, progression.State.awaitingReasonsForAppeal);
           signInForUserFromInfo(awaitingReasonsForAppealUser);
           break;
         }
         case 'Saved awaitingReasonsForAppeal': {
           await createUser(partialAwaitingReasonsForAppealUser);
           await createCase(partialAwaitingReasonsForAppealUser);
-          await progression.createCaseInState(partialAwaitingReasonsForAppealUser, 'awaitingReasonsForAppeal');
+          await progression.createCaseInState(partialAwaitingReasonsForAppealUser, progression.State.awaitingReasonsForAppeal);
           signInForUserFromInfo(partialAwaitingReasonsForAppealUser);
           break;
         }
@@ -249,7 +249,7 @@ module.exports = {
         case 'awaitingClarifyingQuestionsAnswers': {
           await createUser(clarifyingQuestionsUser);
           await createCase(clarifyingQuestionsUser);
-          await progression.createCaseInState(clarifyingQuestionsUser, 'awaitingClarifyingQuestionsAnswers');
+          await progression.createCaseInState(clarifyingQuestionsUser, progression.State.awaitingClarifyingQuestionsAnswers);
           signInForUserFromInfo(clarifyingQuestionsUser);
           break;
         }
@@ -272,21 +272,21 @@ module.exports = {
         case 'preHearing': {
           await createUser(preHearingUser);
           await createCase(preHearingUser);
-          await progression.createCaseInState(preHearingUser, 'preHearing');
+          await progression.createCaseInState(preHearingUser, progression.State.preHearing);
           signInForUserFromInfo(preHearingUser);
           break;
         }
         case 'decided': {
           await createUser(decidedUser);
           await createCase(decidedUser);
-          await progression.createCaseInState(decidedUser, 'decided');
+          await progression.createCaseInState(decidedUser, progression.State.decided);
           signInForUserFromInfo(decidedUser);
           break;
         }
         case 'ftpaOutOfTimeApplicationStarted': {
           await createUser(ftpaOutOfTimeApplicationStartedUser);
           await createCase(ftpaOutOfTimeApplicationStartedUser);
-          await progression.createCaseInState(ftpaOutOfTimeApplicationStartedUser, 'decided');
+          await progression.createCaseInState(ftpaOutOfTimeApplicationStartedUser, progression.State.decided);
           signInForUserFromInfo(ftpaOutOfTimeApplicationStartedUser);
           break;
         }

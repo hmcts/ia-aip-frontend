@@ -32,7 +32,10 @@ def secrets = [
         secret('system-password', 'IA_SYSTEM_PASSWORD'),
         secret('case-documents-api-url', 'CASE_DOCUMENT_AM_URL'),
         secret('ia-gov-notify-key', 'GOV_NOTIFY_KEY')
-    ]
+    ],
+    'rpx-${env}': [
+        secret('mc-idam-client-secret', 'IDAM_CLIENT_SECRET')
+    ],
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
@@ -84,6 +87,12 @@ withPipeline("nodejs", product, component) {
   env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
   env.PAYMENTS_API_URL = 'http://payment-api-aat.service.core-compute-aat.internal'
   env.REF_DATA_API_URL = 'http://rd-commondata-api-aat.service.core-compute-aat.internal'
+  env.IDAM_WEB_URL = 'https://idam-web-public.aat.platform.hmcts.net'
+  env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
+  env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
+  env.PCQ_URL = 'https://pcq.aat.platform.hmcts.net'
+  env.PCQ_RETURN_URL = env.TEST_URL + '/about-appeal'
+  env.IDAM_TESTING_SUPPORT_URL = 'https://idam-testing-support-api.aat.platform.hmcts.net'
 
   before("functionalTest") {
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'

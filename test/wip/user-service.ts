@@ -1,0 +1,297 @@
+import { isJWTExpired } from '../../app/utils/jwt-utils';
+import Logger, { getLogLabel } from '../../app/utils/logger';
+
+const axios = require('axios');
+const config = require('config');
+
+const idamTestingSupportUrl = config.get('idam.testingSupportUrl');
+const idamUrl = config.get('idam.apiUrl');
+const idamWebUrl = config.get('idam.webUrl');
+const idamSecret = config.get('idam.secret');
+const idamClientSecret = config.get('idam.rpxClientSecret');
+const testUrl = config.get('testUrl');
+
+const redirectUrl = `${testUrl}/redirectUrl`;
+
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
+
+type UserInfo = {
+  email: string;
+  password: string;
+  forename?: string;
+  surname?: string;
+  userId?: string;
+  userToken?: string;
+  caseId?: string;
+};
+
+let idamTestingAccessToken;
+
+async function setTestingSupportToken() {
+  try {
+    const response = await axios.post(`${idamWebUrl}/o/token`, new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: 'iac',
+      client_secret: idamSecret,
+      scope: 'profile roles'
+    }), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+    idamTestingAccessToken = response.data.access_token;
+  } catch (error) {
+    logger.exception(`Error in setTestingSupportToken: ${error.message}`, logLabel);
+  }
+}
+
+async function createUser(userInfo: UserInfo) {
+  const timestamp: string = Date.now().toString();
+  userInfo.email = userInfo.email.replace('@', `${timestamp}@`);
+  try {
+    await axios.post(`${idamTestingSupportUrl}/test/idam/users`, {
+      password: userInfo.password,
+      user: {
+        email: userInfo.email,
+        forename: userInfo.forename,
+        surname: userInfo.surname,
+        roleNames: ['citizen']
+      }
+    }, {
+      headers: {
+        'Authorization': `Bearer ${idamTestingAccessToken}`,
+        'Content-Type': 'application/json'
+      },
+      timeout: 10000
+    });
+    userInfo.userToken = await getUserToken(userInfo);
+    userInfo.userId = await getUserId(userInfo.userToken);
+    logger.trace(`Creating user: ${userInfo.email}`, logLabel);
+  } catch (error) {
+    logger.exception(`Error in createUser: ${error.message}`, logLabel);
+  }
+}
+
+async function deleteUser(userInfo: UserInfo) {
+  logger.trace(`Deleting user: ${userInfo.email}`, logLabel);
+  try {
+    await axios.delete(`${idamTestingSupportUrl}/test/idam/users/${userInfo.userId}`, {
+      headers: {
+        Authorization: `Bearer ${idamTestingAccessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (error) {
+    logger.exception(`Error in deleteUser: ${error.message}`, logLabel);
+  }
+}
+
+async function getUserToken(userConfig: UserInfo) {
+  if (userConfig.userToken && !isJWTExpired(userConfig.userToken)) {
+    return userConfig.userToken;
+  }
+  try {
+    const response = await axios.post(
+      `${idamUrl}/o/token`, '',
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        params: {
+          grant_type: 'password',
+          redirect_uri: redirectUrl,
+          client_id: 'xuiwebapp',
+          client_secret: idamClientSecret,
+          username: userConfig.email,
+          password: userConfig.password,
+          scope: 'profile openid roles manage-user create-user search-user'
+        }
+      }
+    );
+    return `Bearer ${response.data.access_token}`;
+  } catch (error) {
+    logger.exception(`Error in getUserToken: ${error.message}`, logLabel);
+  }
+}
+
+async function getUserId(userToken: string) {
+  try {
+    const userDetails = await axios.get(`${idamUrl}/details`, {
+      headers: {
+        'Authorization': userToken
+      }
+    });
+    return userDetails.data.id;
+  } catch (error) {
+    logger.exception(`Error in getUserId: ${error.message}`, logLabel);
+  }
+}
+
+async function deleteUsers() {
+  for (const user of functionalUsers()) {
+    if (user.userId) {
+      await deleteUser(user);
+    }
+  }
+}
+
+function functionalUsers(): UserInfo[] {
+  return [
+    setupcaseUser,
+    noCasesUser,
+    hasCaseUser,
+    appealSubmittedUser,
+    awaitingReasonsForAppealUser,
+    partialAwaitingReasonsForAppealUser,
+    awaitingReasonsForAppealWithTimeExtensionUser,
+    awaitingClarifyingQuestionsWithTimeExtensionUser,
+    clarifyingQuestionsUser,
+    awaitingCmaRequirementsUser,
+    awaitingCmaRequirementsWithTimeExtensionUser,
+    cmaRequirementsSubmittedUser,
+    cmaListedUser,
+    preHearingUser,
+    decidedUser,
+    ftpaOutOfTimeApplicationStartedUser
+  ];
+}
+
+const setupcaseUser: UserInfo = {
+  email: `setupcase@example.com`,
+  password: 'Apassword123',
+  forename: 'setupcase',
+  surname: 'functionalCase'
+};
+
+const noCasesUser: UserInfo = {
+  email: `no-cases@example.com`,
+  password: 'Apassword123',
+  forename: 'no-cases',
+  surname: 'functionalCase'
+};
+
+const hasCaseUser: UserInfo = {
+  email: `has-case@example.com`,
+  password: 'Apassword123',
+  forename: 'has-case',
+  surname: 'functionalCase'
+};
+
+const appealSubmittedUser: UserInfo = {
+  email: `appeal-submitted@example.com`,
+  password: 'Apassword123',
+  forename: 'appeal-submitted',
+  surname: 'functionalCase'
+};
+
+const awaitingReasonsForAppealUser: UserInfo = {
+  email: `awaiting-reasons-for-appeal@example.com`,
+  password: 'Apassword123',
+  forename: 'awaiting-reasons-for-appeal',
+  surname: 'functionalCase'
+};
+
+const partialAwaitingReasonsForAppealUser: UserInfo = {
+  email: `partial-awaiting-reasons-for-appeal@example.com`,
+  password: 'Apassword123',
+  forename: 'partial-awaiting-reasons-for-appeal',
+  surname: 'functionalCase'
+};
+
+const awaitingReasonsForAppealWithTimeExtensionUser: UserInfo = {
+  email: `awaitingReasonsForAppeal-with-time_extension@example.com`,
+  password: 'Apassword123',
+  forename: 'awaitingReasonsForAppeal-with-time_extension',
+  surname: 'functionalCase'
+};
+
+const awaitingClarifyingQuestionsWithTimeExtensionUser: UserInfo = {
+  email: `awaitingClarifyingQuestions-with-time_extension@example.com`,
+  password: 'Apassword123',
+  forename: 'awaitingClarifyingQuestions-with-time_extension',
+  surname: 'functionalCase'
+};
+
+const clarifyingQuestionsUser: UserInfo = {
+  email: `clarifying-questions@example.com`,
+  password: 'Apassword123',
+  forename: 'clarifying-questions',
+  surname: 'functionalCase'
+};
+
+const awaitingCmaRequirementsUser: UserInfo = {
+  email: `awaitingCmaRequirements@example.com`,
+  password: 'Apassword123',
+  forename: 'awaitingCmaRequirements',
+  surname: 'functionalCase'
+};
+
+const awaitingCmaRequirementsWithTimeExtensionUser: UserInfo = {
+  email: `awaitingCmaRequirements-with-time_extension@example.com`,
+  password: 'Apassword123',
+  forename: 'awaitingCmaRequirements-with-time_extension',
+  surname: 'functionalCase'
+};
+
+const cmaRequirementsSubmittedUser: UserInfo = {
+  email: `cmaRequirementsSubmitted@example.com`,
+  password: 'Apassword123',
+  forename: 'cmaRequirementsSubmitted',
+  surname: 'functionalCase'
+};
+
+const cmaListedUser: UserInfo = {
+  email: `cmaListed@example.com`,
+  password: 'Apassword123',
+  forename: 'cmaListed',
+  surname: 'functionalCase'
+};
+
+const preHearingUser: UserInfo = {
+  email: `preHearing@example.com`,
+  password: 'Apassword123',
+  forename: 'preHearing',
+  surname: 'functionalCase'
+};
+
+const decidedUser: UserInfo = {
+  email: `decided@example.com`,
+  password: 'Apassword123',
+  forename: 'decided',
+  surname: 'functionalCase'
+};
+
+const ftpaOutOfTimeApplicationStartedUser: UserInfo = {
+  email: `ftpa-out-of-time-application-started@example.com`,
+  password: 'Apassword123',
+  forename: 'ftpa-out-of-time-application-started',
+  surname: 'functionalCase'
+};
+
+export {
+  setTestingSupportToken,
+  deleteUsers,
+  getUserToken,
+  getUserId,
+  functionalUsers,
+  UserInfo,
+  setupcaseUser,
+  noCasesUser,
+  hasCaseUser,
+  appealSubmittedUser,
+  awaitingReasonsForAppealUser,
+  partialAwaitingReasonsForAppealUser,
+  awaitingReasonsForAppealWithTimeExtensionUser,
+  awaitingClarifyingQuestionsWithTimeExtensionUser,
+  clarifyingQuestionsUser,
+  awaitingCmaRequirementsUser,
+  awaitingCmaRequirementsWithTimeExtensionUser,
+  cmaRequirementsSubmittedUser,
+  cmaListedUser,
+  preHearingUser,
+  decidedUser,
+  ftpaOutOfTimeApplicationStartedUser,
+  createUser,
+  deleteUser
+};

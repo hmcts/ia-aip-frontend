@@ -1,0 +1,44 @@
+{
+  "event": {
+    "id": "submitAppeal",
+    "summary": "Submit appeal case AIP"
+  },
+  "case_data": {
+    "appellantHasFixedAddress": "Yes",
+    "subscriptions": [
+      {
+        "id": "ce208f30-0aae-41a1-95a6-8b79333fa274",
+        "value": {
+          "email": "alejandro@example.net",
+          "wantsSms": "No",
+          "subscriber": "appellant",
+          "wantsEmail": "Yes",
+          "mobileNumber": null
+        }
+      }
+    ],
+    "appellantDateOfBirth": "2019-01-01",
+    "appellantAddress": {
+      "County": "",
+      "Country": "United Kingdom",
+      "PostCode": "W1W 7RT",
+      "PostTown": "LONDON",
+      "AddressLine1": "60 GREAT PORTLAND STREET",
+      "AddressLine2": ""
+    },
+    "appealType": "protection",
+    "journeyType": "aip",
+    "appellantNationalities": [
+      {
+        "id": "39dd0f68-aa9f-41b0-99a8-e553e1ce0fb1",
+        "value": {
+          "code": "AX"
+        }
+      }
+    ],
+    "homeOfficeDecisionDate": "2020-02-10",
+    "searchPostcode": "W1W 7RT",
+    "submissionOutOfTime": "No",
+    "homeOfficeReferenceNumber": "A1234567"
+  }
+}

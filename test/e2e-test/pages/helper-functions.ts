@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { UserInfo } from '../../wip/user-service';
 import { createUser } from '../service/idam-service';
 const html = require('pa11y-reporter-html');
 const container = require('codeceptjs').container;
@@ -20,6 +21,13 @@ async function signInHelper() {
 
 function signInForUser(email: string) {
   I.fillField('#username', email);
+  I.click('Sign in');
+  I.wait(5);
+}
+
+function signInForUserFromInfo(user: UserInfo) {
+  I.fillField('#username', user.email);
+  I.fillField('#password', user.password);
   I.click('Sign in');
   I.wait(5);
 }

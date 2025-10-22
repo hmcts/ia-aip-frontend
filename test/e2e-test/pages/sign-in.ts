@@ -1,5 +1,21 @@
 import { paths } from '../../../app/paths';
+import * as progression from '../../wip/case-progression-service';
+import { createCase } from '../../wip/ccd-service';
+import {
+  appealSubmittedUser,
+  awaitingReasonsForAppealUser,
+  clarifyingQuestionsUser,
+  createUser,
+  decidedUser,
+  ftpaOutOfTimeApplicationStartedUser,
+  hasCaseUser,
+  noCasesUser,
+  partialAwaitingReasonsForAppealUser,
+  preHearingUser,
+  setupcaseUser
+} from '../../wip/user-service';
 import { currentUserDetails } from './helper-functions';
+
 const { signInHelper, signInForUser } = require('./helper-functions');
 const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
@@ -168,5 +184,109 @@ module.exports = {
       I.retry(3).amOnPage(testUrl + '/logout');
       await I.wait(5);
     });
+
+    Given('I have WIP logged in', async () => {
+      I.amOnPage(testUrl + paths.common.login);
+      await createUser(setupcaseUser);
+      signInForUser(setupcaseUser);
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
+    });
+
+    Given(/^I have WIP logged in as an appellant in state "([^"]*)"$/, async (appealState) => {
+      I.amOnPage(testUrl + paths.common.login);
+
+      switch (appealState) {
+        case 'appealStarted': {
+          await createUser(noCasesUser);
+          signInForUser(noCasesUser);
+          break;
+        }
+        case 'Saved appealStarted': {
+          await createUser(hasCaseUser);
+          await createCase(hasCaseUser);
+          await progression.prepareHasCaseUser();
+          signInForUser(hasCaseUser);
+          break;
+        }
+        case 'appealSubmitted': {
+          await createUser(appealSubmittedUser);
+          await createCase(appealSubmittedUser);
+          await progression.prepareAppealSubmittedUser();
+          signInForUser(appealSubmittedUser);
+          break;
+        }
+        case 'awaitingReasonsForAppeal': {
+          await createUser(awaitingReasonsForAppealUser);
+          await createCase(awaitingReasonsForAppealUser);
+          await progression.prepareAwaitingReasonsForAppealUser();
+          signInForUser(awaitingReasonsForAppealUser);
+          break;
+        }
+        case 'Saved awaitingReasonsForAppeal': {
+          await createUser(partialAwaitingReasonsForAppealUser);
+          await createCase(partialAwaitingReasonsForAppealUser);
+          await progression.preparePartialAwaitingReasonsForAppealUser();
+          signInForUser(partialAwaitingReasonsForAppealUser);
+          break;
+        }
+        case 'awaitingReasonsForAppeal with time extensions': {
+          // unused
+          break;
+        }
+        case 'awaitingClarifyingQuestionsAnswers with time extensions': {
+          // unused
+          break;
+        }
+        case 'awaitingClarifyingQuestionsAnswers': {
+          await createUser(clarifyingQuestionsUser);
+          await createCase(clarifyingQuestionsUser);
+          await progression.prepareClarifyingQuestionsUser();
+          signInForUser(clarifyingQuestionsUser);
+          break;
+        }
+        case 'awaitingCmaRequirements': {
+          // unused
+          break;
+        }
+        case 'awaitingCmaRequirements with time extensions': {
+          // unused
+          break;
+        }
+        case 'cmaRequirementsSubmitted': {
+          // unused
+          break;
+        }
+        case 'cmaListed': {
+          // unused
+          break;
+        }
+        case 'preHearing': {
+          await createUser(preHearingUser);
+          await createCase(preHearingUser);
+          await progression.preparePreHearingUser();
+          signInForUser(preHearingUser);
+          break;
+        }
+        case 'decided': {
+          await createUser(decidedUser);
+          await createCase(decidedUser);
+          await progression.prepareDecidedUser();
+          signInForUser(decidedUser);
+          break;
+        }
+        case 'ftpaOutOfTimeApplicationStarted': {
+          await createUser(ftpaOutOfTimeApplicationStartedUser);
+          await createCase(ftpaOutOfTimeApplicationStartedUser);
+          await progression.prepareFtpaOutOfTimeApplicationStartedUser();
+          signInForUser(ftpaOutOfTimeApplicationStartedUser);
+          break;
+        }
+        default:
+          break;
+      }
+
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
+    });
+
   }
 };

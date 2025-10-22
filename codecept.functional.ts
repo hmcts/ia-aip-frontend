@@ -1,4 +1,4 @@
-import config from 'config';
+const config = require('config');
 import { bootstrap as ourBootStrap, teardown as ourTeardown } from './test/functional/bootstrap';
 
 exports.config = {
@@ -19,7 +19,7 @@ exports.config = {
       }
     },
     FailedTest: {
-      require: './test/e2e-test/helpers/failedTestHelper.js'
+      require: './test/e2e-test/helpers/failedTestHelper.ts'
     }
   },
   gherkin: {

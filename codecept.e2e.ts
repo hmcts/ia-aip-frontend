@@ -1,19 +1,20 @@
-const config = require('config');
-const process = require("process");
-const { setTestingSupportToken } = require("./test/wip/user-service");
-const testStateHelper = require('./test/e2e-test/testStateHelper');
-const TestState = require('./test/e2e-test/TestState.json');
+import config from 'config';
+import process from 'process';
+import * as TestState from './test/e2e-test/TestState.json';
+import * as testStateHelper from './test/e2e-test/testStateHelper';
+import { setTestingSupportToken } from './test/wip/user-service';
 
 exports.config = {
   name: 'codecept',
   timeout: 600,
   output: './functional-output/e2e/reports/',
-  bootstrapAll: async() => {
+  bootstrapAll: async () => {
     testStateHelper.resetTestState();
     await setTestingSupportToken();
   },
-  teardownAll: async() => {
+  teardownAll: async () => {
     if (TestState.testFailed) {
+      // tslint:disable:no-console
       console.log('---------------------');
       console.log('Total scenarios run: ' + TestState.testsTitles.length);
       console.log('Scenarios passed: ' + TestState.testsPassed);
@@ -37,11 +38,11 @@ exports.config = {
       restart: true
     },
     customHelper: {
-      require: './test/e2e-test/helpers/navigationHelper.ts', // Import the custom helper file
+      require: './test/e2e-test/helpers/navigationHelper.ts' // Import the custom helper file
     },
     FailedTest: {
-      require: './test/e2e-test/helpers/failedTestHelper.js',
-    },
+      require: './test/e2e-test/helpers/failedTestHelper.ts'
+    }
   },
   gherkin: {
     features: './test/e2e-test/features/*.feature',
@@ -49,34 +50,34 @@ exports.config = {
   },
   plugins: {
     retryFailedStep: {
-       enabled: true
+      enabled: true
     },
     stepByStepReport: {
       enabled: true,
       fullPageScreenshots: true,
-      deleteSuccessful: true,
+      deleteSuccessful: true
     },
     retryTo: {
       enabled: true
     }
   },
-    "mocha": {
-        "reporterOptions": {
-            "codeceptjs-cli-reporter": {
-                "stdout": "-",
-                "options": {
-                    "verbose": true,
-                    "steps": true,
-                }
-            },
-           "mochawesome": {
-                "stdout": "./functional-output/e2e/reports/console.log",
-                "options": {
-                    "reportDir": "./functional-output/e2e/reports/",
-                    "reportFilename": "report"
-                }
-            }
+  'mocha': {
+    'reporterOptions': {
+      'codeceptjs-cli-reporter': {
+        'stdout': '-',
+        'options': {
+          'verbose': true,
+          'steps': true
         }
-    },
+      },
+      'mochawesome': {
+        'stdout': './functional-output/e2e/reports/console.log',
+        'options': {
+          'reportDir': './functional-output/e2e/reports/',
+          'reportFilename': 'report'
+        }
+      }
+    }
+  },
   require: ['ts-node/register/transpile-only']
 };

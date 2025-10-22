@@ -1,8 +1,9 @@
-const Helper = require('@codeceptjs/helper');
-const testStateHelper = require('../testStateHelper');
-const TestState = require('../TestState.json');
+// tslint:disable:no-console
+import helper from '@codeceptjs/helper';
+import TestState from '../TestState.json';
+import * as testStateHelper from '../testStateHelper';
 
-class FailedTest extends Helper {
+class FailedTest extends helper {
   _failed(test) {
     console.log('Failed test: ' + test.title);
     testStateHelper.setTestFailed(true);

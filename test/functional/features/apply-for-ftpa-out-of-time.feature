@@ -4,7 +4,8 @@ Feature: Apply for FTPA as an appellant in person out of time
   As a citizen
   I want to be able to apply for FTPA
 
-  @disabled Scenario: Apply for FTPA out of time
+  @disabled
+  Scenario: Apply for FTPA out of time
     Given I have logged in as an appellant in state "ftpaOutOfTimeApplicationStarted"
     When I click the Apply for permission to appeal to the Upper Tribunal link
     Then I should see the ftpa out of time reason page

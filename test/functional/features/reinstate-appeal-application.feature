@@ -4,7 +4,8 @@ Feature: Make Application to reinstate an appeal
   As a citizen
   I want to be able to make an application to reinstate an appeal
 
-  @disabled Scenario: Make an Application to reinstate an appeal
+  @disabled
+  Scenario: Make an Application to reinstate an appeal
     Given I have logged in as an appellant in state "preHearing"
     When I click the Ask for the appeal to be reinstated link
     Then I should see the Ask for the appeal to be reinstated page

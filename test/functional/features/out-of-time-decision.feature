@@ -3,7 +3,8 @@ Feature: Out of time decision @outOfTimeDecision
   As a citizen
   I can see the out of time appeal decision
 
-  @disabled Scenario: Decision granted @decisionGranted
+  @disabled
+  Scenario: Decision granted @decisionGranted
     Given I have an out of time granted decision appeal
     And I have logged in
     Then I see "/appeal-overview" in current url
@@ -21,7 +22,8 @@ Feature: Out of time decision @outOfTimeDecision
     When I click "Back" button
     Then I see "/appeal-overview" in current url
 
-  @disabled Scenario: Decision rejected @decisionRejected
+  @disabled
+  Scenario: Decision rejected @decisionRejected
     Given I have an out of time rejected decision appeal
     And I have logged in
     Then I see "/appeal-overview" in current url
@@ -39,7 +41,8 @@ Feature: Out of time decision @outOfTimeDecision
     When I click "Back" button
     Then I see "/appeal-overview" in current url
 
-  @disabled Scenario: Decision in time @decisionInTime
+  @disabled
+  Scenario: Decision in time @decisionInTime
     Given I have an out of time in-time decision appeal
     And I have logged in
     Then I see "/appeal-overview" in current url

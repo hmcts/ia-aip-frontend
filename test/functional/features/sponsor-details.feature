@@ -3,7 +3,8 @@ In order to achieve my goals
 As a citizen
 I want be able to capture my sponsor details for an out of country appeal
 
-@disabled Scenario: Complete appeal application
+@disabled
+  Scenario: Complete appeal application
   Given I have logged in as an appellant in state "appealStarted"
   When I visit the overview page
   And I click continue

@@ -4,7 +4,8 @@ Feature: Ask for more time page
   As a citizen
   I want to be able to fill in why I will need extra time
 
-  @disabled Scenario: AFMT - Awaiting Reasons For Appeal with evidence
+  @disabled
+  Scenario: AFMT - Awaiting Reasons For Appeal with evidence
     Given I have logged in as an appellant in state "awaitingReasonsForAppeal"
     When I visit the overview page
     Then I click Ask for more time
@@ -31,7 +32,8 @@ Feature: Ask for more time page
     When I click "See your appeal progress" button
     Then I am on the overview page
 
-  @disabled Scenario: AFMT - Reasons For Appeal without evidence
+  @disabled
+  Scenario: AFMT - Reasons For Appeal without evidence
     Given I have logged in as an appellant in state "awaitingReasonsForAppeal"
     When I visit the overview page
     Then I click Ask for more time
@@ -47,7 +49,8 @@ Feature: Ask for more time page
     When I click "See your appeal progress" button
     Then I am on the overview page
 
-  @disabled Scenario: AFMT - Awaiting Clarifying questions without evidence
+  @disabled
+  Scenario: AFMT - Awaiting Clarifying questions without evidence
     Given I have logged in as an appellant in state "awaitingClarifyingQuestionsAnswers"
     When I visit the overview page
     Then I click Ask for more time
@@ -63,7 +66,8 @@ Feature: Ask for more time page
     When I click "See your appeal progress" button
     Then I am on the overview page
 
-  @disabled Scenario: AFMT - Awaiting Clarifying questions with evidence
+  @disabled
+  Scenario: AFMT - Awaiting Clarifying questions with evidence
     Given I have logged in as an appellant in state "awaitingClarifyingQuestionsAnswers"
     When I visit the overview page
     Then I click Ask for more time
@@ -92,7 +96,8 @@ Feature: Ask for more time page
 
 
 
-  @disabled Scenario: AFMT - Awaiting Cma requirements without evidence @trythis
+  @disabled
+  Scenario: AFMT - Awaiting Cma requirements without evidence @trythis
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
     When I visit the overview page
     Then I click Ask for more time
@@ -108,7 +113,8 @@ Feature: Ask for more time page
     When I click "See your appeal progress" button
     Then I am on the overview page
 
-  @disabled Scenario: AFMT - Awaiting Cma requirements with evidence
+  @disabled
+  Scenario: AFMT - Awaiting Cma requirements with evidence
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
     When I visit the overview page
     Then I click Ask for more time

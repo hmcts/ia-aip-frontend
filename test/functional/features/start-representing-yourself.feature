@@ -4,7 +4,8 @@ Feature: Start Representing Yourself
   As a citizen
   I want to be able to enter the case reference and access code to take over the case
 
-  @disabled Scenario: Complete the Start Representing Yourself process
+  @disabled
+  Scenario: Complete the Start Representing Yourself process
     When I visit the start-representing-yourself page
     Then I see "Start representing yourself" in title
 

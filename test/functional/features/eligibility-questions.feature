@@ -3,7 +3,8 @@ Feature: Eligibility
   As a citizen
   I want to be able to answer the eligibility questions and see if I am eligible to use the service
 
-  @disabled Scenario: Citizen was once a british citizen and is eligible to use the service
+  @disabled
+  Scenario: Citizen was once a british citizen and is eligible to use the service
     Given I am on home page
     When I click start now
   # TODO: Remove "Are you currently living in the United Kingdom" step when "Feature flag for Out of Country feature" flag is switched on

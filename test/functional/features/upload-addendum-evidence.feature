@@ -4,7 +4,8 @@ Feature: upload addendum evidence
   As a citizen
   I want to be able to upload the evidence with reason it is late
 
-  @disabled Scenario: Navigate through upload addendum evidence
+  @disabled
+  Scenario: Navigate through upload addendum evidence
     Given I have logged in as an appellant in state "preHearing"
     When I click the Provide more evidence link
     Then I should see the provide more evidence page

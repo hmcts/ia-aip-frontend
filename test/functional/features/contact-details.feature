@@ -3,7 +3,8 @@ Feature: Contact details
   As a citizen
   I want to be able to enter my contact details
 
-  @disabled Scenario: Entering my contact details should open next task
+  @disabled
+  Scenario: Entering my contact details should open next task
     Given I have an appeal with home office details, name, date of birth, nationality and address
     And I have logged in
     Then I click continue

@@ -3,7 +3,8 @@ Feature: Home office letter sent page @letterSent
   As a citizen
   I want to be able to enter a home office letter sent date
 
-  @disabled Scenario: Home office reference page 2
+  @disabled
+  Scenario: Home office reference page 2
     Given I have an appeal with home office reference
     And I have logged in
     And I am on the home office letter sent page

@@ -3,7 +3,8 @@ In order complete my appeal
 As a citizen
 I want to be able to enter my postcode
 
-@disabled Scenario: Personal details enter postcode
+@disabled
+  Scenario: Personal details enter postcode
 Given I have an appeal with home office details, name, date of birth and nationality
 And I have logged in
 And I am on the personal details enter postcode page

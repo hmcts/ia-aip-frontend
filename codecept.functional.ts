@@ -1,5 +1,5 @@
 const config = require('config');
-import { bootstrap as ourBootStrap, teardown as ourTeardown } from './test/functional/bootstrap';
+import { bootstrap as ourBootStrap, failureCheck as ourTeardown, teardownAll as ourTeardownAll } from './test/functional/bootstrap';
 
 exports.config = {
   name: 'codecept',
@@ -7,8 +7,11 @@ exports.config = {
   bootstrapAll: async () => {
     await ourBootStrap();
   },
+  teardown: async () => {
+    ourTeardown();
+  },
   teardownAll: async () => {
-    await ourTeardown();
+    await ourTeardownAll();
   },
   helpers: {
     Puppeteer: {

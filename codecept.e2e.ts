@@ -1,7 +1,6 @@
 import config from 'config';
-import process from 'process';
-import * as TestState from './test/e2e-test/TestState.json';
 import * as testStateHelper from './test/e2e-test/testStateHelper';
+import { failureCheck } from './test/functional/bootstrap';
 import { setTestingSupportToken } from './test/wip/user-service';
 
 exports.config = {
@@ -13,20 +12,7 @@ exports.config = {
     await setTestingSupportToken();
   },
   teardownAll: async () => {
-    if (TestState.testFailed) {
-      // tslint:disable:no-console
-      console.log('---------------------');
-      console.log('Total scenarios run: ' + TestState.testsTitles.length);
-      console.log('Scenarios passed: ' + TestState.testsPassed);
-      console.log('---------------------');
-      if (TestState.testsPassed === TestState.testsTitles.length) {
-        process.exit(0);
-      } else {
-        process.exit(1);
-      }
-    } else {
-      process.exit(0);
-    }
+    failureCheck();
   },
   helpers: {
     Puppeteer: {

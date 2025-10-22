@@ -82,7 +82,8 @@ function closeServerWithPromise(server) {
     });
   });
 }
-export async function teardown() {
+
+export async function teardownAll() {
   try {
     if (server && server.close) {
       await closeServerWithPromise(server);
@@ -103,19 +104,23 @@ export async function teardown() {
   } catch (e) {
     logger.exception(e, logLabel);
   } finally {
-    if (TestState.testFailed) {
-      // tslint:disable:no-console
-      console.log('---------------------');
-      console.log('Total scenarios run: ' + TestState.testsTitles.length);
-      console.log('Scenarios passed: ' + TestState.testsPassed);
-      console.log('---------------------');
-      if (TestState.testsPassed === TestState.testsTitles.length) {
-        process.exit(0);
-      } else {
-        process.exit(1);
-      }
-    } else {
+    failureCheck();
+  }
+}
+
+export function failureCheck() {
+  if (TestState.testFailed) {
+    // tslint:disable:no-console
+    console.log('---------------------');
+    console.log('Total scenarios run: ' + TestState.testsTitles.length);
+    console.log('Scenarios passed: ' + TestState.testsPassed);
+    console.log('---------------------');
+    if (TestState.testsPassed === TestState.testsTitles.length) {
       process.exit(0);
+    } else {
+      process.exit(1);
     }
+  } else {
+    process.exit(0);
   }
 }

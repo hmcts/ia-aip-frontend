@@ -1,5 +1,6 @@
 {
   "testUrl": "https://localhost:3000",
+  "currentEnvironment": "NODE_ENV",
   "httpProxy": false,
   "proxy": {
     "host": "proxyout.reform.hmcts.net",

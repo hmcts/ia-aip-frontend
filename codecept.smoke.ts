@@ -12,6 +12,7 @@ exports.config = {
     testStateHelper.resetTestState();
   },
   teardown: async () => {
+    testStateHelper.resetTestState();
     failureCheck();
   },
   helpers: {

@@ -12,6 +12,7 @@ exports.config = {
     await setTestingSupportToken();
   },
   teardownAll: async () => {
+    testStateHelper.resetTestState();
     failureCheck();
   },
   helpers: {

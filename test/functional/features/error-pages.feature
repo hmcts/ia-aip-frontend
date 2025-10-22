@@ -3,8 +3,7 @@ Feature: Type iof appeal
   As a citizen
   I want to be able to enter my type of appeal
 
-  @disabled
-  Scenario: Home office reference page 3
+    Scenario: Home office reference page 3
     Given I have logged in as an appellant in state "appealStarted"
     When I enter a non existent url
     Then I should see page not found error page

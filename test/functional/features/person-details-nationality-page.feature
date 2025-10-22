@@ -3,8 +3,7 @@ Feature: Personal details nationality page
   As a citizen
   I want to be able to nationality
 
-  @disabled
-  Scenario: Home office reference page 6
+    Scenario: Home office reference page 6
     Given I have an appeal with home office details, name and date of birth
     And I have logged in
     And I am on the personal details nationality page

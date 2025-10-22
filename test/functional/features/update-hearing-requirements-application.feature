@@ -4,8 +4,7 @@ Feature: Make Application to update hearing requirements
   As a citizen
   I want to be able to make an application to update hearing requirements
 
-  @disabled
-  Scenario: Make an Application to update hearing requirements
+    Scenario: Make an Application to update hearing requirements
     Given I have logged in as an appellant in state "preHearing"
     When I click the Ask to change your hearing date location or needs link
     Then I should see the Ask to change something about your hearing page

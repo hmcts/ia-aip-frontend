@@ -4,8 +4,7 @@ Feature: Reason for appeal
   As a citizen
   I want to be able to fill in the reason text field
 
-  @disabled
-  Scenario: Navigate through reasons for appeal
+    Scenario: Navigate through reasons for appeal
     Given I have logged in as an appellant in state "awaitingReasonsForAppeal"
     When I visit reasons for appeal
     And I click "Save and continue" button
@@ -41,8 +40,7 @@ Feature: Reason for appeal
     Then I should see the reasons for appeal confirmation page
     And I see the respond by date is 2 weeks in the future
 
-  @disabled
-  Scenario: Navigate through reasons for appeal with no additional evidence
+    Scenario: Navigate through reasons for appeal with no additional evidence
     Given I have logged in as an appellant in state "awaitingReasonsForAppeal"
     When I visit reasons for appeal
     And I click "Save and continue" button

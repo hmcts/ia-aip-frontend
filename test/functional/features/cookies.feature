@@ -8,7 +8,6 @@ Background: I am able to navigate through info pages
 
   And I see "Do this next" in subheading
 
-@disabled
   Scenario: I view cookies and accept them
   And I see "Cookies on MyHMCTS" in subheading
   And I click "View cookies" button
@@ -17,13 +16,11 @@ Background: I am able to navigate through info pages
   And I click "Accept analytics cookies" button
   Then I dont see "Cookies on MyHMCTS" on the page
 
-@disabled
   Scenario: I accept analytics cookie 1
   And I see "Cookies on MyHMCTS" in subheading
   And I click "Accept analytics cookies" button
   Then I dont see "Cookies on MyHMCTS" on the page
 
-@disabled
   Scenario: I reject analytics cookie
   And I see "Cookies on MyHMCTS" in subheading
   And I click "Reject analytics cookies" button

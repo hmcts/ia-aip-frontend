@@ -3,7 +3,6 @@ In order complete my appeal
 As a citizen
 I want to be able to enter my address
 
-@disabled
   Scenario: Home office reference page 7
   Given I have an appeal with home office details, name, date of birth and nationality
   And I have logged in

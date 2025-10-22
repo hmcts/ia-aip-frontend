@@ -206,14 +206,14 @@ module.exports = {
         case 'Saved appealStarted': {
           await createUser(hasCaseUser);
           await createCase(hasCaseUser);
-          await progression.prepareHasCaseUser(hasCaseUser);
+          await progression.createCaseInState(hasCaseUser, 'appealStarted');
           signInForUserFromInfo(hasCaseUser);
           break;
         }
         case 'appealSubmitted': {
           await createUser(appealSubmittedUser);
           await createCase(appealSubmittedUser);
-          await progression.prepareAppealSubmittedUser(appealSubmittedUser);
+          await progression.createCaseInState(appealSubmittedUser, 'appealSubmitted');
           signInForUserFromInfo(appealSubmittedUser);
           break;
         }
@@ -221,20 +221,20 @@ module.exports = {
           await setTestingSupportToken();
           await createUser(pendingPaymentUser);
           await createCase(pendingPaymentUser);
-          await progression.preparePendingPaymentUser(pendingPaymentUser);
+          await progression.createCaseInState(pendingPaymentUser, 'pendingPayment', 'refusalOfHumanRights');
           signInForUserFromInfo(pendingPaymentUser);
           break;
         case 'awaitingReasonsForAppeal': {
           await createUser(awaitingReasonsForAppealUser);
           await createCase(awaitingReasonsForAppealUser);
-          await progression.prepareAwaitingReasonsForAppealUser(awaitingReasonsForAppealUser);
+          await progression.createCaseInState(awaitingReasonsForAppealUser, 'awaitingReasonsForAppeal');
           signInForUserFromInfo(awaitingReasonsForAppealUser);
           break;
         }
         case 'Saved awaitingReasonsForAppeal': {
           await createUser(partialAwaitingReasonsForAppealUser);
           await createCase(partialAwaitingReasonsForAppealUser);
-          await progression.preparePartialAwaitingReasonsForAppealUser(partialAwaitingReasonsForAppealUser);
+          await progression.createCaseInState(partialAwaitingReasonsForAppealUser, 'awaitingReasonsForAppeal');
           signInForUserFromInfo(partialAwaitingReasonsForAppealUser);
           break;
         }
@@ -249,7 +249,7 @@ module.exports = {
         case 'awaitingClarifyingQuestionsAnswers': {
           await createUser(clarifyingQuestionsUser);
           await createCase(clarifyingQuestionsUser);
-          await progression.prepareClarifyingQuestionsUser(clarifyingQuestionsUser);
+          await progression.createCaseInState(clarifyingQuestionsUser, 'awaitingClarifyingQuestionsAnswers');
           signInForUserFromInfo(clarifyingQuestionsUser);
           break;
         }
@@ -272,21 +272,21 @@ module.exports = {
         case 'preHearing': {
           await createUser(preHearingUser);
           await createCase(preHearingUser);
-          await progression.preparePreHearingUser(preHearingUser);
+          await progression.createCaseInState(preHearingUser, 'preHearing');
           signInForUserFromInfo(preHearingUser);
           break;
         }
         case 'decided': {
           await createUser(decidedUser);
           await createCase(decidedUser);
-          await progression.prepareDecidedUser(decidedUser);
+          await progression.createCaseInState(decidedUser, 'decided');
           signInForUserFromInfo(decidedUser);
           break;
         }
         case 'ftpaOutOfTimeApplicationStarted': {
           await createUser(ftpaOutOfTimeApplicationStartedUser);
           await createCase(ftpaOutOfTimeApplicationStartedUser);
-          await progression.prepareFtpaOutOfTimeApplicationStartedUser(ftpaOutOfTimeApplicationStartedUser);
+          await progression.createCaseInState(ftpaOutOfTimeApplicationStartedUser, 'decided');
           signInForUserFromInfo(ftpaOutOfTimeApplicationStartedUser);
           break;
         }

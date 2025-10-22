@@ -81,6 +81,7 @@ export {
   signInForUser,
   fillInDate,
   enterRefNumber,
+  signInForUserFromInfo,
   currentUserDetails,
   checkAccessibility
 };

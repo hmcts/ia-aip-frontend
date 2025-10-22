@@ -250,6 +250,8 @@ TEST_CASEOFFICER_PASSWORD: test-caseofficer-password
 TEST_HOMEOFFICE_GENERIC_PASSWORD: test-homeoffice-generic-password
 TEST_ADMINOFFICER_PASSWORD: test-adminofficer-password
 TEST_JUDGE_X_PASSWORD: test-judge-x-password
+IDAM_SECRET: idam-secret
+S2S_SECRET: s2s-secret
 
 `rpx-aat`
 IDAM_CLIENT_SECRET: mc-idam-client-secret

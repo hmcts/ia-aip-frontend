@@ -1,16 +1,18 @@
 const config = require('config');
 const process = require("process");
+const { setTestingSupportToken } = require("./test/wip/user-service");
 
 exports.config = {
   name: 'codecept',
   timeout: 600,
   output: './functional-output/e2e/reports/',
-  bootstrap: async() => {
+  bootstrapAll: async() => {
     global.testsPassed = 0;
     global.testsTitles = [];
     global.testFailed = false;
+    await setTestingSupportToken();
   },
-  teardown: async() => {
+  teardownAll: async() => {
     if (global.testFailed) {
       console.log('---------------------');
       console.log('Total scenarios run: ' + global.testsTitles.length);

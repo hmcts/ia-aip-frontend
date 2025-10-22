@@ -185,6 +185,13 @@ const appealSubmittedUser: UserInfo = {
   surname: 'functionalCase'
 };
 
+const pendingPaymentUser: UserInfo = {
+  email: `pending-payment@example.com`,
+  password: 'Apassword123',
+  forename: 'pending-payment',
+  surname: 'functionalCase'
+};
+
 const awaitingReasonsForAppealUser: UserInfo = {
   email: `awaiting-reasons-for-appeal@example.com`,
   password: 'Apassword123',
@@ -292,6 +299,7 @@ export {
   preHearingUser,
   decidedUser,
   ftpaOutOfTimeApplicationStartedUser,
+  pendingPaymentUser,
   createUser,
   deleteUser
 };

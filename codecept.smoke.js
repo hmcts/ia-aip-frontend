@@ -1,9 +1,10 @@
 const config = require('config');
+const process = require("process");
 
 exports.config = {
   name: 'codecept',
   timeout: 600,
-  output: './functional-output/smoke/reports/',
+  output: './functional-output/e2e/reports/',
   bootstrap: async() => {
     global.testsPassed = 0;
     global.testsTitles = [];
@@ -32,6 +33,12 @@ exports.config = {
         ignoreHTTPSErrors: true
       },
       restart: true
+    },
+    customHelper: {
+      require: './test/e2e-test/helpers/navigationHelper.ts', // Import the custom helper file
+    },
+    FailedTest: {
+      require: './test/e2e-test/helpers/failedTestHelper.js',
     },
   },
   gherkin: {

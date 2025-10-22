@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import puppeteer, { Browser } from 'puppeteer';
 const pa11y = require('pa11y');
 const html = require('pa11y-reporter-html');
-const { bootstrap, teardown } = require('../functional/bootstrap');
+const { bootstrap, teardownAll } = require('../functional/bootstrap');
 
 describe('Test accessibility', async function() {
   // tslint:disable:no-console
@@ -34,7 +34,7 @@ describe('Test accessibility', async function() {
     //   await page.close();
     // }
     await browser.close();
-    await teardown(() => {
+    await teardownAll(() => {
       console.log('Shutdown completed');
     });
   });

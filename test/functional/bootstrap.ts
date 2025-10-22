@@ -20,9 +20,6 @@ let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
 export async function bootstrap() {
-  global.testsPassed = 0;
-  global.testsTitles = [];
-  global.testFailed = false;
   server = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
@@ -71,6 +68,8 @@ export async function bootstrap() {
   const documentManagementStoreConfigs = dyson.getConfigurations(documentManagementStoreOptions);
   dyson.registerServices(documentManagementStoreApp, documentManagementStoreOptions, documentManagementStoreConfigs);
   documentManagementStoreServer = documentManagementStoreApp.listen(20003);
+  global.testsPassed = 0;
+  global.testsTitles = [];
   global.testFailed = false;
 }
 function closeServerWithPromise(server) {

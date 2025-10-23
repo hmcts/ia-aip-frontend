@@ -6,8 +6,7 @@ Feature: Cookies banner
   Background: I am able to navigate through info pages
     Given I have a blank appeal
     And I have logged in
-
-    And I see "Do this next" in subheading
+    And I am on the overview page
 
   Scenario: I view cookies and accept them
     And I see "Cookies on MyHMCTS" in subheading

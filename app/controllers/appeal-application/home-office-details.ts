@@ -1,13 +1,23 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
+import i18n from '../../../locale/en.json';
+import { countryList } from '../../data/country-list';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { getNationalitiesOptions } from '../../utils/nationalities';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
-import { dateLetterReceivedValidation, dateLetterSentValidation, homeOfficeNumberValidation } from '../../utils/validations/fields-validations';
+import {
+  appellantNamesValidation,
+  dateLetterReceivedValidation,
+  dateLetterSentValidation,
+  dateOfBirthValidation,
+  homeOfficeNumberValidation,
+  nationalityValidation
+} from '../../utils/validations/fields-validations';
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
@@ -54,6 +64,188 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
         ...appealUpdated
       };
 
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.name);
+      return res.redirect(redirectPage);
+    } catch (e) {
+      next(e);
+    }
+  };
+}
+
+function getNamePage(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    const personalDetails = req.session.appeal.application.personalDetails || null;
+    const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
+    const previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
+    return res.render('appeal-application/personal-details/name.njk', {
+      personalDetails,
+      previousPage
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postNamePage(updateAppealService: UpdateAppealService) {
+  return async function (req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'familyName', 'givenNames')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
+      const validation = appellantNamesValidation(req.body);
+      if (validation) {
+        const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
+        let previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
+        return res.render('appeal-application/personal-details/name.njk', {
+          personalDetails: {
+            familyName: req.body.familyName,
+            givenNames: req.body.givenNames
+          },
+          error: validation,
+          errorList: Object.values(validation),
+          previousPage
+        });
+      }
+
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          personalDetails: {
+            ...req.session.appeal.application.personalDetails,
+            familyName: req.body.familyName,
+            givenNames: req.body.givenNames
+          }
+        }
+      };
+
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.dob);
+      return res.redirect(redirectPage);
+    } catch (e) {
+      next(e);
+    }
+  };
+}
+
+function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+
+    const { application } = req.session.appeal;
+    const dob = application.personalDetails && application.personalDetails.dob || null;
+    return res.render('appeal-application/personal-details/date-of-birth.njk', {
+      dob,
+      previousPage: paths.appealStarted.name
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postDateOfBirth(updateAppealService: UpdateAppealService) {
+  return async function (req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
+      const validation = dateOfBirthValidation(req.body);
+      if (validation != null) {
+        return res.render('appeal-application/personal-details/date-of-birth.njk', {
+          errors: validation,
+          errorList: Object.values(validation),
+          dob: { ...req.body },
+          previousPage: paths.appealStarted.name
+        });
+      }
+
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          personalDetails: {
+            ...req.session.appeal.application.personalDetails,
+            dob: {
+              day: req.body.day,
+              month: req.body.month,
+              year: req.body.year
+            }
+          }
+        }
+      };
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.nationality);
+      return res.redirect(redirectPage);
+    } catch (e) {
+      next(e);
+    }
+  };
+}
+
+function getNationalityPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+
+    const { application } = req.session.appeal;
+    const stateless = application.personalDetails.stateless;
+    const nationality = application.personalDetails && application.personalDetails.nationality || null;
+    const nationalitiesOptions = getNationalitiesOptions(countryList, nationality, i18n.pages.nationality.defaultNationality);
+    return res.render('appeal-application/personal-details/nationality.njk', {
+      stateless,
+      nationalitiesOptions,
+      previousPage: paths.appealStarted.dob
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postNationalityPage(updateAppealService: UpdateAppealService) {
+  return async function (req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'nationality', 'stateless')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
+      const validation = nationalityValidation(req.body);
+      if (validation) {
+        const nationality = req.body.nationality;
+        const nationalitiesOptions = getNationalitiesOptions(countryList, nationality, i18n.pages.nationality.defaultNationality);
+        return res.render('appeal-application/personal-details/nationality.njk', {
+          nationalitiesOptions,
+          errors: validation,
+          errorList: Object.values(validation),
+          previousPage: paths.appealStarted.dob
+        });
+      }
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          personalDetails: {
+            ...req.session.appeal.application.personalDetails,
+            nationality: req.body.nationality || null,
+            stateless: req.body.stateless || 'hasNationality'
+          }
+        }
+      };
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+
       if (['Yes'].includes(appeal.application.appellantInUk)) return res.redirect(paths.appealStarted.letterSent);
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.letterReceived);
       return res.redirect(redirectPage);
@@ -70,7 +262,7 @@ function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
     const { dateLetterSent } = req.session.appeal.application;
     res.render('appeal-application/home-office/letter-sent.njk', {
       dateLetterSent,
-      previousPage: paths.appealStarted.details
+      previousPage: paths.appealStarted.nationality
     });
   } catch (e) {
     next(e);
@@ -91,7 +283,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
           dateLetterSent: {
             ...req.body
           },
-          previousPage: paths.appealStarted.details
+          previousPage: paths.appealStarted.nationality
         });
       }
 
@@ -129,13 +321,10 @@ function getDateLetterReceived(req: Request, res: Response, next: NextFunction) 
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
-    const citizenOutsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
-    let previousPage = citizenOutsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
-
     const { decisionLetterReceivedDate } = req.session.appeal.application;
     res.render('appeal-application/home-office/letter-received.njk', {
       decisionLetterReceivedDate,
-      previousPage: previousPage
+      previousPage: paths.appealStarted.nationality
     });
   } catch (e) {
     next(e);
@@ -148,16 +337,13 @@ function postDateLetterReceived(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) { return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved'); }
       const validation = dateLetterReceivedValidation(req.body);
       if (validation) {
-        const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
-        let previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.details : paths.appealStarted.gwfReference;
-
         return res.render('appeal-application/home-office/letter-received.njk', {
           error: validation,
           errorList: Object.values(validation),
           decisionLetterReceivedDate: {
             ...req.body
           },
-          previousPage: previousPage
+          previousPage: paths.appealStarted.nationality
         });
       }
 
@@ -195,6 +381,12 @@ function setupHomeOfficeDetailsController(middleware: Middleware[], updateAppeal
   const router = Router();
   router.get(paths.appealStarted.details, middleware, getHomeOfficeDetails);
   router.post(paths.appealStarted.details, middleware, postHomeOfficeDetails(updateAppealService));
+  router.get(paths.appealStarted.name, middleware, getNamePage);
+  router.post(paths.appealStarted.name, middleware, postNamePage(updateAppealService));
+  router.get(paths.appealStarted.dob, middleware, getDateOfBirthPage);
+  router.post(paths.appealStarted.dob, middleware, postDateOfBirth(updateAppealService));
+  router.get(paths.appealStarted.nationality, middleware, getNationalityPage);
+  router.post(paths.appealStarted.nationality, middleware, postNationalityPage(updateAppealService));
   router.get(paths.appealStarted.letterSent, middleware, getDateLetterSent);
   router.post(paths.appealStarted.letterSent, middleware, postDateLetterSent(updateAppealService));
   router.get(paths.appealStarted.letterReceived, middleware, getDateLetterReceived);
@@ -205,6 +397,12 @@ function setupHomeOfficeDetailsController(middleware: Middleware[], updateAppeal
 export {
   getDateLetterSent,
   getHomeOfficeDetails,
+  getNamePage,
+  postNamePage,
+  getDateOfBirthPage,
+  postDateOfBirth,
+  postNationalityPage,
+  getNationalityPage,
   postDateLetterSent,
   postHomeOfficeDetails,
   getDateLetterReceived,

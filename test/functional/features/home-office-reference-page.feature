@@ -11,7 +11,7 @@ Feature: Home office reference page 3
     Then I am on the overview page
     Then I click continue
     Then I should see the task-list page
-    And I shouldnt be able to click "Your personal details"
+    And I shouldnt be able to click "Your contact details"
 
     Given I am on the home office reference page
     When I enter a home office reference "A12345"
@@ -29,5 +29,5 @@ Feature: Home office reference page 3
     Then I am on the overview page
     Then I click continue
     Then I should see the task-list page
-    And I shouldnt be able to click "Your personal details"
+    And I shouldnt be able to click "Your contact details"
 

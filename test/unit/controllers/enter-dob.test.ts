@@ -3,8 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import {
   getDateOfBirthPage,
   postDateOfBirth,
-  setupPersonalDetailsController
-} from '../../../app/controllers/appeal-application/personal-details';
+  setupHomeOfficeDetailsController
+} from '../../../app/controllers/appeal-application/home-office-details';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -69,7 +69,7 @@ describe('Personal Details Controller', function () {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
 
-      setupPersonalDetailsController(middleware, { updateAppealService });
+      setupHomeOfficeDetailsController(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.dob, middleware);
       expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.dob, middleware);
     });

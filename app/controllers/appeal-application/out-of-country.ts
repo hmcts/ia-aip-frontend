@@ -173,7 +173,7 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.letterReceived);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.name);
       return res.redirect(redirectPage);
     } catch (postGwfReferenceError) {
       next(postGwfReferenceError);

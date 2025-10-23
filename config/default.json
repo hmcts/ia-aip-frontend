@@ -93,8 +93,8 @@
     "fromRemissionAppliedDate": 14
   },
   "features": {
-    "askForMoreTime": true,
-    "timelineEnabled": true
+    "askForMoreTime": false,
+    "timelineEnabled": false
   },
   "testAccounts": {
     "testCaseOfficerUserName": "TEST_CASEOFFICER_USERNAME",

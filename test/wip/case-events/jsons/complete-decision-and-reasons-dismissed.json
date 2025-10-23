@@ -1,7 +1,7 @@
 {
   "event": {
-    "id": "generateDecisionAndReasons",
-    "summary": "Prepare decision and reasons"
+    "id": "sendDecisionAndReasons",
+    "summary": "Complete decision and reasons"
   },
   "case_data": {
     "finalDecisionAndReasonsDocument": {

@@ -11,7 +11,7 @@ const testUser: UserInfo = {
   surname: 'user'
 };
 
-const state: State = process.env.TEST_STATE as State;
+const state: string = process.env.TEST_STATE;
 if (!state) {
   throw new Error('TEST_STATE environment variable is not set');
 }
@@ -24,14 +24,20 @@ const validState: State = state as State;
 const appealType: string = process.env.TEST_APPEAL_TYPE || 'protection';
 const decisionType: string = process.env.TEST_DECISION_TYPE || 'granted';
 
-setTestingSupportToken().then(() => {
-  createUser(testUser).then(() => {
-    createCase(testUser).then(() => {
-      createCaseInState(testUser, validState, appealType, decisionType).then(() => {
-        console.log(`Case created in state: ${validState}`);
-        console.log(`CaseID: ${testUser.caseId}`);
-        console.log(`User credentials: \nEmail: ${testUser.email}\nPassword: ${testUser.password}`);
-      });
-    });
-  });
-});
+async function main() {
+  try {
+    await setTestingSupportToken();
+    await createUser(testUser);
+    await createCase(testUser);
+    await createCaseInState(testUser, validState, appealType, decisionType);
+
+    console.log(`Case created in state: ${validState}`);
+    console.log(`CaseID: ${testUser.caseId}`);
+    console.log(`User credentials: \nEmail: ${testUser.email}\nPassword: ${testUser.password}`);
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+}
+
+// Ensure the main function is awaited
+main().catch((error) => console.error('Unhandled error:', error));

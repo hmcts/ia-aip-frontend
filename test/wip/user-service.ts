@@ -162,7 +162,7 @@ function functionalUsers(): UserInfo[] {
     decidedUser,
     ftpaOutOfTimeApplicationStartedUser,
     endedAppealUser
-  ]
+  ];
 }
 
 const setupcaseUser: UserInfo = {

@@ -12,7 +12,6 @@ Feature: Basic Appeal Submissions
     Then I should see the task-list page
     And I create a accessibility report for the current page
     When I click on the type-of-appeal link
-    And I create a accessibility report for the current page
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
@@ -28,11 +27,12 @@ Feature: Basic Appeal Submissions
     Then I should see letter sent page
     And I create a accessibility report for the current page
     When I enter an on time letter sent date
+    And I click "Save and continue" button
+    When I upload a Home Office decision letter
+    And I create a accessibility report for the current page
     Then I click "Save and continue" button
     And I create a accessibility report for the current page
-    When I upload a Home Office decision letter
-    And I click "Save and continue" button
-    And I choose Yes to deportation order
+    When I choose Yes to deportation order
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
     When I go into the Personal details task
@@ -41,7 +41,6 @@ Feature: Basic Appeal Submissions
     When Enter "Random" "User" as my Given and Family Name and click Save and continue
     Then I click "Save and continue" button
     Then I should be taken to the DOB page
-    And I create a accessibility report for the current page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
     And I create a accessibility report for the current page
@@ -62,6 +61,7 @@ Feature: Basic Appeal Submissions
     When I enter text message number "07899999999"
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
+    And I create a accessibility report for the current page
     When I choose No and click Continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
@@ -93,7 +93,6 @@ Feature: Basic Appeal Submissions
     Then I am on the make payment page
     When I make a successful payment
     Then I am on the appeal details sent with payment page
-    And I create a accessibility report for the current page
 
   Scenario: Complete PA Pay Now appeal without remission
     And I should see the 'do this next section' for 'New - Appeal started'

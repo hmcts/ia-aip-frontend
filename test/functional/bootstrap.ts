@@ -117,7 +117,7 @@ export function failureCheck() {
     console.log('Total scenarios run: ' + uniqueTitles.length);
     console.log('Scenarios passed: ' + testState.testsPassed);
     console.log('---------------------');
-    if (testState.testsPassed === testState.testsTitles.length) {
+    if (testState.testsPassed === uniqueTitles.length) {
       process.exit(0);
     } else {
       process.exit(1);

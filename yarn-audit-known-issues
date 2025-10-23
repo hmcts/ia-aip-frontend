@@ -1,254 +1,31 @@
-{
-    "actions": [],
-    "advisories": {
-        "1093150": {
-            "findings": [
-                {
-                    "version": "0.2.5",
-                    "paths": [
-                        "multer>busboy>dicer"
-                    ]
-                }
-            ],
-            "found_by": null,
-            "deleted": null,
-            "references": "- https://nvd.nist.gov/vuln/detail/CVE-2022-24434\n- https://github.com/mscdex/busboy/issues/250\n- https://github.com/mscdex/dicer/pull/22\n- https://snyk.io/vuln/SNYK-JS-DICER-2311764\n- https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-2838865\n- https://github.com/mscdex/dicer/commit/b7fca2e93e8e9d4439d8acc5c02f5e54a0112dac\n- https://github.com/advisories/GHSA-wm7h-9275-46v2",
-            "created": "2022-05-21T00:00:25.000Z",
-            "id": 1093150,
-            "npm_advisory_id": null,
-            "overview": "This affects all versions of the package `dicer`. A malicious attacker can send a modified form to the server and crash the Node.js service. A complete denial of service can be achieved by sending the malicious form in a loop.",
-            "reported_by": null,
-            "title": "Crash in HeaderParser in dicer",
-            "metadata": null,
-            "cves": [
-                "CVE-2022-24434"
-            ],
-            "access": "public",
-            "severity": "high",
-            "module_name": "dicer",
-            "vulnerable_versions": "<=0.3.1",
-            "github_advisory_id": "GHSA-wm7h-9275-46v2",
-            "recommendation": "None",
-            "patched_versions": "<0.0.0",
-            "updated": "2023-08-28T14:22:55.000Z",
-            "cvss": {
-                "score": 7.5,
-                "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
-            },
-            "cwe": [
-                "CWE-248"
-            ],
-            "url": "https://github.com/advisories/GHSA-wm7h-9275-46v2"
-        },
-        "1096727": {
-            "findings": [
-                {
-                    "version": "2.88.2",
-                    "paths": [
-                        "@hmcts/ia-idam-express-middleware>request",
-                        "@hmcts/ia-idam-express-middleware>request-promise-native>request"
-                    ]
-                }
-            ],
-            "found_by": null,
-            "deleted": null,
-            "references": "- https://nvd.nist.gov/vuln/detail/CVE-2023-28155\n- https://github.com/request/request/issues/3442\n- https://github.com/request/request/pull/3444\n- https://doyensec.com/resources/Doyensec_Advisory_RequestSSRF_Q12023.pdf\n- https://github.com/github/advisory-database/pull/2500\n- https://github.com/cypress-io/request/blob/master/lib/redirect.js#L116\n- https://github.com/request/request/blob/master/lib/redirect.js#L111\n- https://github.com/cypress-io/request/pull/28\n- https://github.com/cypress-io/request/commit/c5bcf21d40fb61feaff21a0e5a2b3934a440024f\n- https://github.com/cypress-io/request/releases/tag/v3.0.0\n- https://security.netapp.com/advisory/ntap-20230413-0007\n- https://github.com/advisories/GHSA-p8p7-x288-28g6",
-            "created": "2023-03-16T15:30:19.000Z",
-            "id": 1096727,
-            "npm_advisory_id": null,
-            "overview": "The `request` package through 2.88.2 for Node.js and the `@cypress/request` package prior to 3.0.0 allow a bypass of SSRF mitigations via an attacker-controller server that does a cross-protocol redirect (HTTP to HTTPS, or HTTPS to HTTP).\n\nNOTE: The `request` package is no longer supported by the maintainer.",
-            "reported_by": null,
-            "title": "Server-Side Request Forgery in Request",
-            "metadata": null,
-            "cves": [
-                "CVE-2023-28155"
-            ],
-            "access": "public",
-            "severity": "moderate",
-            "module_name": "request",
-            "vulnerable_versions": "<=2.88.2",
-            "github_advisory_id": "GHSA-p8p7-x288-28g6",
-            "recommendation": "None",
-            "patched_versions": "<0.0.0",
-            "updated": "2024-03-21T17:47:21.000Z",
-            "cvss": {
-                "score": 6.1,
-                "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
-            },
-            "cwe": [
-                "CWE-918"
-            ],
-            "url": "https://github.com/advisories/GHSA-p8p7-x288-28g6"
-        },
-        "1104780": {
-            "findings": [
-                {
-                    "version": "1.4.4",
-                    "paths": [
-                        "multer"
-                    ]
-                }
-            ],
-            "found_by": null,
-            "deleted": null,
-            "references": "- https://github.com/expressjs/multer/security/advisories/GHSA-4pg4-qvpc-4q3h\n- https://nvd.nist.gov/vuln/detail/CVE-2025-47944\n- https://github.com/expressjs/multer/issues/1176\n- https://github.com/expressjs/multer/commit/2c8505f207d923dd8de13a9f93a4563e59933665\n- https://github.com/advisories/GHSA-4pg4-qvpc-4q3h",
-            "created": "2025-05-19T22:16:30.000Z",
-            "id": 1104780,
-            "npm_advisory_id": null,
-            "overview": "### Impact\nA vulnerability in Multer versions >=1.4.4-lts.1 allows an attacker to trigger a Denial of Service (DoS) by sending a malformed multi-part upload request. This request causes an unhandled exception, leading to a crash of the process.\n\n### Patches\nUsers should upgrade to `2.0.0`\n\n### Workarounds\nNone\n\n### References\n\n- https://github.com/expressjs/multer/issues/1176\n- https://github.com/expressjs/multer/commit/2c8505f207d923dd8de13a9f93a4563e59933665",
-            "reported_by": null,
-            "title": "Multer vulnerable to Denial of Service from maliciously crafted requests",
-            "metadata": null,
-            "cves": [
-                "CVE-2025-47944"
-            ],
-            "access": "public",
-            "severity": "high",
-            "module_name": "multer",
-            "vulnerable_versions": ">=1.4.4-lts.1 <2.0.0",
-            "github_advisory_id": "GHSA-4pg4-qvpc-4q3h",
-            "recommendation": "Upgrade to version 2.0.0 or later",
-            "patched_versions": ">=2.0.0",
-            "updated": "2025-05-21T20:37:35.000Z",
-            "cvss": {
-                "score": 7.5,
-                "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
-            },
-            "cwe": [
-                "CWE-248"
-            ],
-            "url": "https://github.com/advisories/GHSA-4pg4-qvpc-4q3h"
-        },
-        "1105262": {
-            "findings": [
-                {
-                    "version": "1.4.4",
-                    "paths": [
-                        "multer"
-                    ]
-                }
-            ],
-            "found_by": null,
-            "deleted": null,
-            "references": "- https://github.com/expressjs/multer/security/advisories/GHSA-g5hg-p3ph-g8qg\n- https://nvd.nist.gov/vuln/detail/CVE-2025-48997\n- https://github.com/expressjs/multer/issues/1233\n- https://github.com/expressjs/multer/pull/1256\n- https://github.com/expressjs/multer/commit/35a3272b611945155e046dd5cef11088587635e9\n- https://github.com/advisories/GHSA-g5hg-p3ph-g8qg",
-            "created": "2025-06-05T01:09:35.000Z",
-            "id": 1105262,
-            "npm_advisory_id": null,
-            "overview": "### Impact\n\nA vulnerability in Multer versions >=1.4.4-lts.1, <2.0.1 allows an attacker to trigger a Denial of Service (DoS) by sending an upload file request with an empty string field name. This request causes an unhandled exception, leading to a crash of the process.\n\n### Patches\n\nUsers should upgrade to `2.0.1`\n\n### Workarounds\n\nNone\n\n### References\n\nhttps://github.com/expressjs/multer/commit/35a3272b611945155e046dd5cef11088587635e9\nhttps://github.com/expressjs/multer/issues/1233\nhttps://github.com/expressjs/multer/pull/1256",
-            "reported_by": null,
-            "title": "Multer vulnerable to Denial of Service via unhandled exception",
-            "metadata": null,
-            "cves": [
-                "CVE-2025-48997"
-            ],
-            "access": "public",
-            "severity": "high",
-            "module_name": "multer",
-            "vulnerable_versions": ">=1.4.4-lts.1 <2.0.1",
-            "github_advisory_id": "GHSA-g5hg-p3ph-g8qg",
-            "recommendation": "Upgrade to version 2.0.1 or later",
-            "patched_versions": ">=2.0.1",
-            "updated": "2025-06-05T01:09:36.000Z",
-            "cvss": {
-                "score": 0,
-                "vectorString": null
-            },
-            "cwe": [
-                "CWE-248"
-            ],
-            "url": "https://github.com/advisories/GHSA-g5hg-p3ph-g8qg"
-        },
-        "1105267": {
-            "findings": [
-                {
-                    "version": "1.4.4",
-                    "paths": [
-                        "multer"
-                    ]
-                }
-            ],
-            "found_by": null,
-            "deleted": null,
-            "references": "- https://github.com/expressjs/multer/security/advisories/GHSA-44fp-w29j-9vj5\n- https://nvd.nist.gov/vuln/detail/CVE-2025-47935\n- https://github.com/expressjs/multer/pull/1120\n- https://github.com/expressjs/multer/commit/2c8505f207d923dd8de13a9f93a4563e59933665\n- https://github.com/advisories/GHSA-44fp-w29j-9vj5",
-            "created": "2025-05-19T22:04:17.000Z",
-            "id": 1105267,
-            "npm_advisory_id": null,
-            "overview": "### Impact\n\nMulter <2.0.0 is vulnerable to a resource exhaustion and memory leak issue due to improper stream handling. When the HTTP request stream emits an error, the internal `busboy` stream is not closed, violating Node.js stream safety guidance.\n\nThis leads to unclosed streams accumulating over time, consuming memory and file descriptors. Under sustained or repeated failure conditions, this can result in denial of service, requiring manual server restarts to recover. All users of Multer handling file uploads are potentially impacted.\n\n\n### Patches\n\nUsers should upgrade to `2.0.0`\n\n\n### Workarounds\n\nNone\n\n### References\n\n- https://github.com/expressjs/multer/pull/1120\n- https://github.com/expressjs/multer/commit/2c8505f207d923dd8de13a9f93a4563e59933665",
-            "reported_by": null,
-            "title": "Multer vulnerable to Denial of Service via memory leaks from unclosed streams",
-            "metadata": null,
-            "cves": [
-                "CVE-2025-47935"
-            ],
-            "access": "public",
-            "severity": "high",
-            "module_name": "multer",
-            "vulnerable_versions": "<2.0.0",
-            "github_advisory_id": "GHSA-44fp-w29j-9vj5",
-            "recommendation": "Upgrade to version 2.0.0 or later",
-            "patched_versions": ">=2.0.0",
-            "updated": "2025-06-08T07:19:19.000Z",
-            "cvss": {
-                "score": 7.5,
-                "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
-            },
-            "cwe": [
-                "CWE-401"
-            ],
-            "url": "https://github.com/advisories/GHSA-44fp-w29j-9vj5"
-        },
-        "1106463": {
-            "findings": [
-                {
-                    "version": "1.4.4",
-                    "paths": [
-                        "multer"
-                    ]
-                }
-            ],
-            "found_by": null,
-            "deleted": null,
-            "references": "- https://github.com/expressjs/multer/security/advisories/GHSA-fjgf-rc76-4x9p\n- https://nvd.nist.gov/vuln/detail/CVE-2025-7338\n- https://github.com/expressjs/multer/commit/adfeaf669f0e7fe953eab191a762164a452d143b\n- https://cna.openjsf.org/security-advisories.html\n- https://github.com/advisories/GHSA-fjgf-rc76-4x9p",
-            "created": "2025-07-17T21:01:54.000Z",
-            "id": 1106463,
-            "npm_advisory_id": null,
-            "overview": "### Impact\n\nA vulnerability in Multer versions >= 1.4.4-lts.1, < 2.0.2 allows an attacker to trigger a Denial of Service (DoS) by sending a malformed request. This request causes an unhandled exception, leading to a crash of the process.\n\n### Patches\n\nUsers should upgrade to `2.0.2`\n\n### Workarounds\n\nNone",
-            "reported_by": null,
-            "title": "Multer vulnerable to Denial of Service via unhandled exception from malformed request",
-            "metadata": null,
-            "cves": [
-                "CVE-2025-7338"
-            ],
-            "access": "public",
-            "severity": "high",
-            "module_name": "multer",
-            "vulnerable_versions": ">=1.4.4-lts.1 <2.0.2",
-            "github_advisory_id": "GHSA-fjgf-rc76-4x9p",
-            "recommendation": "Upgrade to version 2.0.2 or later",
-            "patched_versions": ">=2.0.2",
-            "updated": "2025-07-17T21:01:55.000Z",
-            "cvss": {
-                "score": 7.5,
-                "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
-            },
-            "cwe": [
-                "CWE-248"
-            ],
-            "url": "https://github.com/advisories/GHSA-fjgf-rc76-4x9p"
-        }
-    },
-    "muted": [],
-    "metadata": {
-        "vulnerabilities": {
-            "info": 0,
-            "low": 0,
-            "moderate": 2,
-            "high": 12,
-            "critical": 0
-        },
-        "dependencies": 1137,
-        "devDependencies": 0,
-        "optionalDependencies": 0,
-        "totalDependencies": 1137
-    }
-}
+{"value":"@babel/plugin-proposal-async-generator-functions","children":{"ID":"@babel/plugin-proposal-async-generator-functions (deprecation)","Issue":"This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-async-generator-functions instead.","Severity":"moderate","Vulnerable Versions":"7.20.7","Tree Versions":["7.20.7"],"Dependents":["@react-native/babel-preset@virtual:ffb1de779de498f41febd81561aab51db912ac40b2e184b82944dbf0f5e3a93fe3a4bb4e8cb7322ada3dd898c5cc48c856f21199c8b13c68b08f7b26808879e2#npm:0.73.21"]}}
+{"value":"@babel/plugin-proposal-class-properties","children":{"ID":"@babel/plugin-proposal-class-properties (deprecation)","Issue":"This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.","Severity":"moderate","Vulnerable Versions":"7.18.6","Tree Versions":["7.18.6"],"Dependents":["jscodeshift@virtual:306af7e362d5885c0c5d3c76c605d3a8a826edb7cd6c011bb3c02378da8da182d028916bb8dc20d574d67fe83618c1e769d5e5bea131e130340f18403299c753#npm:0.14.0"]}}
+{"value":"@babel/plugin-proposal-nullish-coalescing-operator","children":{"ID":"@babel/plugin-proposal-nullish-coalescing-operator (deprecation)","Issue":"This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-nullish-coalescing-operator instead.","Severity":"moderate","Vulnerable Versions":"7.18.6","Tree Versions":["7.18.6"],"Dependents":["jscodeshift@virtual:306af7e362d5885c0c5d3c76c605d3a8a826edb7cd6c011bb3c02378da8da182d028916bb8dc20d574d67fe83618c1e769d5e5bea131e130340f18403299c753#npm:0.14.0"]}}
+{"value":"@babel/plugin-proposal-numeric-separator","children":{"ID":"@babel/plugin-proposal-numeric-separator (deprecation)","Issue":"This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-numeric-separator instead.","Severity":"moderate","Vulnerable Versions":"7.18.6","Tree Versions":["7.18.6"],"Dependents":["@react-native/babel-preset@virtual:ffb1de779de498f41febd81561aab51db912ac40b2e184b82944dbf0f5e3a93fe3a4bb4e8cb7322ada3dd898c5cc48c856f21199c8b13c68b08f7b26808879e2#npm:0.73.21"]}}
+{"value":"@babel/plugin-proposal-object-rest-spread","children":{"ID":"@babel/plugin-proposal-object-rest-spread (deprecation)","Issue":"This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-object-rest-spread instead.","Severity":"moderate","Vulnerable Versions":"7.20.7","Tree Versions":["7.20.7"],"Dependents":["@react-native/babel-preset@virtual:ffb1de779de498f41febd81561aab51db912ac40b2e184b82944dbf0f5e3a93fe3a4bb4e8cb7322ada3dd898c5cc48c856f21199c8b13c68b08f7b26808879e2#npm:0.73.21"]}}
+{"value":"@babel/plugin-proposal-optional-catch-binding","children":{"ID":"@babel/plugin-proposal-optional-catch-binding (deprecation)","Issue":"This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-catch-binding instead.","Severity":"moderate","Vulnerable Versions":"7.18.6","Tree Versions":["7.18.6"],"Dependents":["@react-native/babel-preset@virtual:ffb1de779de498f41febd81561aab51db912ac40b2e184b82944dbf0f5e3a93fe3a4bb4e8cb7322ada3dd898c5cc48c856f21199c8b13c68b08f7b26808879e2#npm:0.73.21"]}}
+{"value":"@babel/plugin-proposal-optional-chaining","children":{"ID":"@babel/plugin-proposal-optional-chaining (deprecation)","Issue":"This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-chaining instead.","Severity":"moderate","Vulnerable Versions":"7.21.0","Tree Versions":["7.21.0"],"Dependents":["jscodeshift@virtual:306af7e362d5885c0c5d3c76c605d3a8a826edb7cd6c011bb3c02378da8da182d028916bb8dc20d574d67fe83618c1e769d5e5bea131e130340f18403299c753#npm:0.14.0"]}}
+{"value":"axios","children":{"ID":1108262,"Issue":"Axios is vulnerable to DoS attack through lack of data size check","URL":"https://github.com/advisories/GHSA-4hjh-wcwx-xvwj","Severity":"high","Vulnerable Versions":"<0.30.2","Tree Versions":["0.30.1"],"Dependents":["codeceptjs@npm:3.6.10"]}}
+{"value":"axios","children":{"ID":1108263,"Issue":"Axios is vulnerable to DoS attack through lack of data size check","URL":"https://github.com/advisories/GHSA-4hjh-wcwx-xvwj","Severity":"high","Vulnerable Versions":">=1.0.0 <1.12.0","Tree Versions":["1.11.0"],"Dependents":["notifications-node-client@npm:7.0.6"]}}
+{"value":"body-parser","children":{"ID":1099520,"Issue":"body-parser vulnerable to denial of service when url encoding is enabled","URL":"https://github.com/advisories/GHSA-qwcr-r2fm-qrc7","Severity":"high","Vulnerable Versions":"<1.20.3","Tree Versions":["1.19.0"],"Dependents":["dyson@npm:3.0.4"]}}
+{"value":"codeceptjs","children":{"ID":1108193,"Issue":"CodeceptJS's incomprehensive sanitation can lead to Command Injection","URL":"https://github.com/advisories/GHSA-34w8-mcwr-vg29","Severity":"critical","Vulnerable Versions":">=3.5.0 <3.7.5","Tree Versions":["3.6.10"],"Dependents":["ia-aip-frontend@workspace:."]}}
+{"value":"cookie","children":{"ID":1103907,"Issue":"cookie accepts cookie name, path, and domain with out of bounds characters","URL":"https://github.com/advisories/GHSA-pxg6-pf52-xh8x","Severity":"low","Vulnerable Versions":"<0.7.0","Tree Versions":["0.4.0"],"Dependents":["csurf@npm:1.11.0"]}}
+{"value":"csurf","children":{"ID":"csurf (deprecation)","Issue":"This package is archived and no longer maintained. For support, visit https://github.com/expressjs/express/discussions","Severity":"moderate","Vulnerable Versions":"1.11.0","Tree Versions":["1.11.0"],"Dependents":["ia-aip-frontend@workspace:."]}}
+{"value":"dicer","children":{"ID":1093150,"Issue":"Crash in HeaderParser in dicer","URL":"https://github.com/advisories/GHSA-wm7h-9275-46v2","Severity":"high","Vulnerable Versions":"<=0.3.1","Tree Versions":["0.2.5"],"Dependents":["busboy@npm:0.2.14"]}}
+{"value":"glob","children":{"ID":"glob (deprecation)","Issue":"Glob versions prior to v9 are no longer supported","Severity":"moderate","Vulnerable Versions":"6.0.4","Tree Versions":["6.0.4"],"Dependents":["rimraf@npm:2.4.5"]}}
+{"value":"har-validator","children":{"ID":"har-validator (deprecation)","Issue":"this library is no longer supported","Severity":"moderate","Vulnerable Versions":"5.1.5","Tree Versions":["5.1.5"],"Dependents":["request@npm:2.88.2"]}}
+{"value":"inflight","children":{"ID":"inflight (deprecation)","Issue":"This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.","Severity":"moderate","Vulnerable Versions":"1.0.6","Tree Versions":["1.0.6"],"Dependents":["glob@npm:6.0.1"]}}
+{"value":"messageformat","children":{"ID":"messageformat (deprecation)","Issue":"Package renamed as '@messageformat/core', see messageformat.github.io for more details. 'messageformat@4' will eventually provide a polyfill for Intl.MessageFormat, once it's been defined by Unicode & ECMA.","Severity":"moderate","Vulnerable Versions":"2.3.0","Tree Versions":["2.3.0"],"Dependents":["i18n@npm:0.13.4"]}}
+{"value":"multer","children":{"ID":1104780,"Issue":"Multer vulnerable to Denial of Service from maliciously crafted requests","URL":"https://github.com/advisories/GHSA-4pg4-qvpc-4q3h","Severity":"high","Vulnerable Versions":">=1.4.4-lts.1 <2.0.0","Tree Versions":["1.4.4"],"Dependents":["ia-aip-frontend@workspace:."]}}
+{"value":"multer","children":{"ID":1105262,"Issue":"Multer vulnerable to Denial of Service via unhandled exception","URL":"https://github.com/advisories/GHSA-g5hg-p3ph-g8qg","Severity":"high","Vulnerable Versions":">=1.4.4-lts.1 <2.0.1","Tree Versions":["1.4.4"],"Dependents":["ia-aip-frontend@workspace:."]}}
+{"value":"multer","children":{"ID":1105267,"Issue":"Multer vulnerable to Denial of Service via memory leaks from unclosed streams","URL":"https://github.com/advisories/GHSA-44fp-w29j-9vj5","Severity":"high","Vulnerable Versions":"<2.0.0","Tree Versions":["1.4.4"],"Dependents":["ia-aip-frontend@workspace:."]}}
+{"value":"multer","children":{"ID":1106463,"Issue":"Multer vulnerable to Denial of Service via unhandled exception from malformed request","URL":"https://github.com/advisories/GHSA-fjgf-rc76-4x9p","Severity":"high","Vulnerable Versions":">=1.4.4-lts.1 <2.0.2","Tree Versions":["1.4.4"],"Dependents":["ia-aip-frontend@workspace:."]}}
+{"value":"request","children":{"ID":1096727,"Issue":"Server-Side Request Forgery in Request","URL":"https://github.com/advisories/GHSA-p8p7-x288-28g6","Severity":"moderate","Vulnerable Versions":"<=2.88.2","Tree Versions":["2.88.2"],"Dependents":["@hmcts/ia-idam-express-middleware@npm:6.7.5"]}}
+{"value":"request-promise","children":{"ID":"request-promise (deprecation)","Issue":"request-promise has been deprecated because it extends the now deprecated request package, see https://github.com/request/request/issues/3142","Severity":"moderate","Vulnerable Versions":"4.2.6","Tree Versions":["4.2.6"],"Dependents":["ia-aip-frontend@workspace:."]}}
+{"value":"request-promise-native","children":{"ID":"request-promise-native (deprecation)","Issue":"request-promise-native has been deprecated because it extends the now deprecated request package, see https://github.com/request/request/issues/3142","Severity":"moderate","Vulnerable Versions":"1.0.9","Tree Versions":["1.0.9"],"Dependents":["@hmcts/ia-idam-express-middleware@npm:6.7.5"]}}
+{"value":"rimraf","children":{"ID":"rimraf (deprecation)","Issue":"Rimraf versions prior to v4 are no longer supported","Severity":"moderate","Vulnerable Versions":"2.6.3","Tree Versions":["2.6.3"],"Dependents":["temp@npm:0.8.4"]}}
+{"value":"sudo-prompt","children":{"ID":"sudo-prompt (deprecation)","Issue":"Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.","Severity":"moderate","Vulnerable Versions":"9.2.1","Tree Versions":["9.2.1"],"Dependents":["@react-native-community/cli-tools@npm:12.3.7"]}}
+{"value":"tar-fs","children":{"ID":1108378,"Issue":"tar-fs has a symlink validation bypass if destination directory is predictable with a specific tarball","URL":"https://github.com/advisories/GHSA-vj76-c3g6-qr5v","Severity":"high","Vulnerable Versions":">=3.0.0 <3.1.1","Tree Versions":["3.1.0"],"Dependents":["puppeteer-core@npm:5.5.0"]}}
+{"value":"tough-cookie","children":{"ID":1097682,"Issue":"tough-cookie Prototype Pollution vulnerability","URL":"https://github.com/advisories/GHSA-72xf-g2v4-qvf3","Severity":"moderate","Vulnerable Versions":"<4.1.3","Tree Versions":["2.5.0"],"Dependents":["request-promise@virtual:4981360cf5f9d9468fe10f043d207b07d905143421f7cba9e4648807f85ccc4aaf8ce745fb8291601c3bd4be6db95431e210c22947a2c78a9721b84834a6cf93#npm:4.2.6"]}}
+{"value":"uuid","children":{"ID":"uuid (deprecation)","Issue":"Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.","Severity":"moderate","Vulnerable Versions":"3.4.0","Tree Versions":["3.4.0"],"Dependents":["@hmcts/ia-idam-express-middleware@npm:6.7.5"]}}
+{"value":"validator","children":{"ID":1108959,"Issue":"validator.js has a URL validation bypass vulnerability in its isURL function","URL":"https://github.com/advisories/GHSA-9965-vmph-33xx","Severity":"moderate","Vulnerable Versions":"<=13.15.15","Tree Versions":["13.15.15"],"Dependents":["ia-aip-frontend@workspace:."]}}

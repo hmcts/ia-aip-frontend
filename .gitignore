@@ -6,6 +6,7 @@ public
 dump.rdb
 build
 test/coverage
+mochawesome-report/
 functional-output
 .env
 output

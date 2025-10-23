@@ -5,7 +5,6 @@ import https from 'https';
 import * as process from 'process';
 import { createApp } from '../../app/app';
 import Logger, { getLogLabel } from '../../app/utils/logger';
-import * as TestState from '../e2e-test/TestState.json';
 import * as testStateHelper from '../e2e-test/testStateHelper';
 
 const dyson = require('dyson');
@@ -109,13 +108,15 @@ export async function teardownAll() {
 }
 
 export function failureCheck() {
-  if (TestState.testFailed) {
-    // tslint:disable:no-console
+  const testState = testStateHelper.readTestState();
+  // tslint:disable:no-console
+  console.log('Test state at the end of all tests:', testState);
+  if (testState.testFailed) {
     console.log('---------------------');
-    console.log('Total scenarios run: ' + TestState.testsTitles.length);
-    console.log('Scenarios passed: ' + TestState.testsPassed);
+    console.log('Total scenarios run: ' + testState.testsTitles.length);
+    console.log('Scenarios passed: ' + testState.testsPassed);
     console.log('---------------------');
-    if (TestState.testsPassed === TestState.testsTitles.length) {
+    if (testState.testsPassed === testState.testsTitles.length) {
       process.exit(0);
     } else {
       process.exit(1);

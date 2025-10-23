@@ -17,7 +17,7 @@ Feature: Back button
     And I click "Save and continue" button
 
     Then I should see the task-list page
-    And I click "Your Home Office details" link
+    And I click "Your Home Office and personal details" link
     Then I should be taken to the home office ref number page
     When I enter "A12345" as the Office ref number and click Save and continue
     Then I should see error summary

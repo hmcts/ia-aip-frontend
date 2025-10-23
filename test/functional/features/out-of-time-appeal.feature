@@ -17,7 +17,7 @@ Scenario: Explain the reason why my appeal is late
   And I click "Save and continue" button
 
   Then I should see the task-list page
-  And I click "Your Home Office details" link
+  And I click "Your Home Office and personal details" link
   # When I click on Home office details
   And I enter "1234-1234-1234-1234" as the Office ref number and click Save and continue
   And Enter "Random" "User" as my Given and Family Name and click Save and continue

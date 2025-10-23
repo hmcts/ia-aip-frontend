@@ -86,12 +86,12 @@
       },
       "homeOfficeDetails": {
         "id": "homeOfficeDetailsLink",
-        "title": "Your Home Office details",
+        "title": "Your Home Office and personal details",
         "path": "appealStarted.details"
       },
       "homeOfficeDetailsOOC": {
         "id": "homeOfficeDetailsLinkOOC",
-        "title": "Your Home Office details",
+        "title": "Your Home Office and personal details",
         "path": "appealStarted.gwfReference"
       },
       "contactDetails": {

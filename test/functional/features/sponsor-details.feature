@@ -21,7 +21,7 @@ Scenario: Complete appeal application
   When I enter "11" "11" "1999" as my Leave UK date and click Save and continue
   Then I should see the task-list page
 
-  # Your Home Office details page
+  # Your Home Office and personal details page
   And I see "Tell us about your appeal" in title
   When I click on Home office details
   Then I should be taken to the home office ref number page

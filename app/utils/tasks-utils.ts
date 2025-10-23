@@ -11,37 +11,31 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
 
   const gwfRefNumber: boolean = !!_.get(appeal.application, 'gwfReferenceNumber');
   const homeOfficeRefNumber: boolean = !!_.get(appeal.application, 'homeOfficeRefNumber');
-  const dateLetterSent: boolean = !!_.get(appeal.application, 'dateLetterSent');
-  const decisionLetterReceived: boolean = !!_.get(appeal.application, 'decisionLetterReceivedDate');
-  const homeOfficeLetter: boolean = appeal.application.homeOfficeLetter && appeal.application.homeOfficeLetter.length > 0 || false;
-  const homeOfficeDetails: Task = {
-    saved: gwfRefNumber || homeOfficeRefNumber || decisionLetterReceived || homeOfficeLetter,
-    completed: homeOfficeLetter && ((homeOfficeRefNumber && dateLetterSent) || (gwfRefNumber && decisionLetterReceived) || (homeOfficeRefNumber && decisionLetterReceived)),
-    active: typeOfAppeal.completed
-  };
-  const homeOfficeDetailsOOC: Task = {
-    saved: gwfRefNumber || homeOfficeRefNumber || decisionLetterReceived || homeOfficeLetter,
-    completed: homeOfficeLetter && ((homeOfficeRefNumber && dateLetterSent) || (gwfRefNumber && decisionLetterReceived) || (homeOfficeRefNumber && decisionLetterReceived)),
-    active: typeOfAppeal.completed
-  };
-
   const givenNames: boolean = !!_.get(appeal.application, 'personalDetails.givenNames');
   const familyName: boolean = !!_.get(appeal.application, 'personalDetails.familyName');
   const dob: boolean = !!_.get(appeal.application, 'personalDetails.dob');
   const nationality: boolean = !!_.get(appeal.application, 'personalDetails.nationality');
-  const appellantOutOfCountryAddress: boolean = !!_.get(appeal.application, 'appellantOutOfCountryAddress');
-  const postcode: boolean = !!_.get(appeal.application, 'personalDetails.address.postcode');
-  const line1: boolean = !!_.get(appeal.application, 'personalDetails.address.line1');
-  const personalDetails: Task = {
-    saved: givenNames || familyName || dob || nationality || postcode || line1 || appellantOutOfCountryAddress,
-    completed: givenNames && familyName && dob && nationality && (line1 || appellantOutOfCountryAddress),
-    active: homeOfficeDetails.completed || homeOfficeDetailsOOC.completed
+  const dateLetterSent: boolean = !!_.get(appeal.application, 'dateLetterSent');
+  const decisionLetterReceived: boolean = !!_.get(appeal.application, 'decisionLetterReceivedDate');
+  const homeOfficeLetter: boolean = appeal.application.homeOfficeLetter && appeal.application.homeOfficeLetter.length > 0 || false;
+  const homeOfficeDetails: Task = {
+    saved: gwfRefNumber || homeOfficeRefNumber || givenNames || familyName || dob || nationality || decisionLetterReceived || homeOfficeLetter,
+    completed: homeOfficeLetter && givenNames && familyName && dob && nationality && ((homeOfficeRefNumber && dateLetterSent) || (gwfRefNumber && decisionLetterReceived) || (homeOfficeRefNumber && decisionLetterReceived)),
+    active: typeOfAppeal.completed
+  };
+  const homeOfficeDetailsOOC: Task = {
+    saved: gwfRefNumber || homeOfficeRefNumber || givenNames || familyName || dob || nationality || decisionLetterReceived || homeOfficeLetter,
+    completed: homeOfficeLetter && givenNames && familyName && dob && nationality && ((homeOfficeRefNumber && dateLetterSent) || (gwfRefNumber && decisionLetterReceived) || (homeOfficeRefNumber && decisionLetterReceived)),
+    active: typeOfAppeal.completed
   };
 
   const email: boolean = !!_.get(appeal.application, 'contactDetails.email');
   const wantsEmail: boolean = !!_.get(appeal.application, 'contactDetails.wantsEmail');
   const phone: boolean = !!_.get(appeal.application, 'contactDetails.phone');
   const wantsSms: boolean = !!_.get(appeal.application, 'contactDetails.wantsSms');
+  const appellantOutOfCountryAddress: boolean = !!_.get(appeal.application, 'appellantOutOfCountryAddress');
+  const postcode: boolean = !!_.get(appeal.application, 'personalDetails.address.postcode');
+  const line1: boolean = !!_.get(appeal.application, 'personalDetails.address.line1');
   const hasSponsorNo: boolean = appeal.application.hasSponsor && appeal.application.hasSponsor === 'No' || false;
   const hasSponsorYes: boolean = appeal.application.hasSponsor && appeal.application.hasSponsor === 'Yes' || false;
   const sponsorEmail: boolean = !!_.get(appeal.application, 'sponsorContactDetails.email');
@@ -52,14 +46,14 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
   const sponsorFamilyName: boolean = !!_.get(appeal.application, 'sponsorFamilyName');
   const sponsorAddress: boolean = !!_.get(appeal.application, 'sponsorAddress');
   const sponsorAuthorisation: boolean = !!_.get(appeal.application, 'sponsorAuthorisation');
-  const appellantContactDetails: boolean = email && wantsEmail || phone && wantsSms;
+  const appellantContactDetails: boolean = (email && wantsEmail || phone && wantsSms) && (line1 || appellantOutOfCountryAddress);
   const sponsorContactDetails: boolean = sponsorEmail && sponsorWantsEmail || sponsorPhone && sponsorWantsSms;
   const outUkContactDetailsComplete: boolean = (appellantContactDetails && hasSponsorNo) ||
     (appellantContactDetails && hasSponsorYes && sponsorGivenNames && sponsorFamilyName && sponsorAddress && sponsorContactDetails && sponsorAuthorisation);
   const contactDetails: Task = {
-    saved: email && wantsEmail || phone && wantsSms,
+    saved: (email && wantsEmail) || (phone && wantsSms) || postcode || line1 || appellantOutOfCountryAddress,
     completed: _.get(appeal.application, 'appellantInUk') === 'Yes' ? appellantContactDetails : outUkContactDetailsComplete,
-    active: personalDetails.completed
+    active: homeOfficeDetails.completed || homeOfficeDetailsOOC.completed
   };
 
   let decisionTypePage: boolean;
@@ -111,7 +105,6 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
     active:
       homeOfficeDetails.completed
       && homeOfficeDetailsOOC.completed
-      && personalDetails.completed
       && contactDetails.completed
       && typeOfAppeal.completed
       && decisionType.completed
@@ -121,7 +114,6 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
   return drlmSetAsideFlag && appealTypeHasFee ? {
     homeOfficeDetails,
     homeOfficeDetailsOOC,
-    personalDetails,
     contactDetails,
     typeOfAppeal,
     decisionType,
@@ -131,7 +123,6 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
   } : {
     homeOfficeDetails,
     homeOfficeDetailsOOC,
-    personalDetails,
     contactDetails,
     typeOfAppeal,
     decisionType,

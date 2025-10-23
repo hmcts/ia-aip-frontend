@@ -1,6 +1,8 @@
+import { OSPlacesClient } from '@hmcts/os-places-client';
+
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
-import { getEnterAddressForOutOfCountryAppeal, postEnterAddressForOutOfCountryAppeal, setupPersonalDetailsController } from '../../../app/controllers/appeal-application/personal-details';
+import { getEnterAddressForOutOfCountryAppeal, postEnterAddressForOutOfCountryAppeal, setupContactDetailsController } from '../../../app/controllers/appeal-application/contact-details';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
@@ -15,6 +17,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
   let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
+  const osPlacesClient = new OSPlacesClient('someToken');
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -63,7 +66,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
-      setupPersonalDetailsController(middleware, { updateAppealService });
+      setupContactDetailsController(middleware, { updateAppealService, osPlacesClient } as any);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.oocAddress, middleware);
       expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.oocAddress, middleware);
     });
@@ -74,7 +77,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
       const expectedArgs = {
         formAction: '/out-of-country-address',
         pageTitle: 'What is your address?',
-        previousPage: paths.appealStarted.nationality,
+        previousPage: paths.appealStarted.contactDetails,
         question: {
           name: 'outofcountry-address',
           title: 'What is your address?',
@@ -92,7 +95,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
       const expectedArgs = {
         formAction: '/out-of-country-address',
         pageTitle: 'What is your address?',
-        previousPage: paths.appealStarted.nationality,
+        previousPage: paths.appealStarted.contactDetails,
         question: {
           name: 'outofcountry-address',
           title: 'What is your address?',
@@ -129,7 +132,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
       const expectedArgs = {
         errorList: Object.values(expectedError),
         error: expectedError,
-        previousPage: '/nationality',
+        previousPage: '/contact-preferences',
         formAction: '/out-of-country-address',
         pageTitle: 'What is your address?',
         question: {
@@ -148,7 +151,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
       await postEnterAddressForOutOfCountryAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.hasSponsor);
     });
 
     it('should catch error and call next with error', async () => {

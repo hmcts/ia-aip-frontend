@@ -113,7 +113,8 @@ export function failureCheck() {
   console.log('Test state at the end of all tests:', testState);
   if (testState.testFailed) {
     console.log('---------------------');
-    console.log('Total scenarios run: ' + testState.testsTitles.length);
+    const uniqueTitles = Array.from(new Set(testState.testsTitles));
+    console.log('Total scenarios run: ' + uniqueTitles.length);
     console.log('Scenarios passed: ' + testState.testsPassed);
     console.log('---------------------');
     if (testState.testsPassed === testState.testsTitles.length) {

@@ -4,7 +4,7 @@ Feature: Make Application to reinstate an appeal
   As a citizen
   I want to be able to make an application to reinstate an appeal
 
-    Scenario: Make an Application to reinstate an appeal
+  Scenario: Make an Application to reinstate an appeal
     Given I have logged in as an appellant in state "preHearing"
     When I click the Ask for the appeal to be reinstated link
     Then I should see the Ask for the appeal to be reinstated page
@@ -12,8 +12,6 @@ Feature: Make Application to reinstate an appeal
     Then I fill textarea with "Why do you want the appeal to be reinstated?"
     Then I click continue
     Then I see "/supporting-evidence" in current url
-
-
 
     # Path with no supporting evidence
     When I select No and click continue

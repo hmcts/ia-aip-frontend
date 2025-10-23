@@ -4,7 +4,7 @@ Feature: Make Application for a judge to review appeal decision
   As a citizen
   I want to be able to make an application for a judge to review an appeal decision
 
-    Scenario: Make an Application for a judge to review an appeal decision
+  Scenario: Make an Application for a judge to review an appeal decision
     Given I have logged in as an appellant in state "preHearing"
     When I click the Ask for a judge to review a decision by a Tribunal Caseworker link
     Then I should see the Ask for a judge to review a decision page
@@ -12,8 +12,6 @@ Feature: Make Application for a judge to review appeal decision
     Then I fill textarea with "Which decision do you want a judge to review and why"
     Then I click continue
     Then I see "/supporting-evidence" in current url
-
-
 
     # Path with no supporting evidence
     When I select No and click continue

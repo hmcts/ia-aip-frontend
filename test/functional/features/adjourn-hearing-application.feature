@@ -1,10 +1,10 @@
 @adjournHearingFeature
-Feature: Make Application to adjourn hearing
+Feature: Adjourn hearing application
   In order to have an adjourned hearing
   As a citizen
   I want to be able to make an application to adjourn hearing
 
-    Scenario: Make an Application to adjourn hearing
+  Scenario: Make an Application to adjourn hearing
     Given I have logged in as an appellant in state "preHearing"
     When I click the Ask to change your hearing date location or needs link
     Then I should see the Ask to change something about your hearing page
@@ -15,8 +15,6 @@ Feature: Make Application to adjourn hearing
     Then I fill textarea with "When do you want to change the hearing to and why?"
     Then I click continue
     Then I see "/supporting-evidence" in current url
-
-
 
     # Path with no supporting evidence
     When I select No and click continue

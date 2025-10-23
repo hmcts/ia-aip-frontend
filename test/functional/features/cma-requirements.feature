@@ -4,7 +4,7 @@ Feature: Cma Requirements
   As a citizen
   I want to be able to answer cma requirements
 
-    Scenario: Answering Cma Requirements 1
+  Scenario: Answering Cma Requirements 1
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
 
     Then I am on the overview page
@@ -182,8 +182,7 @@ Feature: Cma Requirements
     Then I should see the cma requirements confirmation page
     And I see the respond by date is 2 weeks in the future
 
-
-    Scenario: Answering Cma Requirements 2
+  Scenario: Answering Cma Requirements 2
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
 
     Then I am on the overview page
@@ -199,9 +198,7 @@ Feature: Cma Requirements
     When I click "Save for later" button
     Then I should see the appeal overview page
 
-
-
-    Scenario: Answering Cma Requirements 3
+  Scenario: Answering Cma Requirements 3
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
 
     Then I am on the overview page
@@ -221,7 +218,7 @@ Feature: Cma Requirements
     And I click "Save for later" button
     Then I should see the appeal overview page
 
-    Scenario: Answering Cma Requirements save for later
+  Scenario: Answering Cma Requirements save for later
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
 
     Then I am on the overview page
@@ -252,7 +249,7 @@ Feature: Cma Requirements
 
     Then I should see the cma requirements task-list page
 
-    Scenario: checking cma details viewer
+  Scenario: checking cma details viewer
     Given I have logged in as an appellant in state "cmaRequirementsSubmitted"
     Then I am on the overview page
     When I click "Your appointment needs" link

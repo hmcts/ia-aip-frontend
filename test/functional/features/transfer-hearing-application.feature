@@ -4,7 +4,7 @@ Feature: Make Application to transfer hearing
   As a citizen
   I want to be able to make an application to transfer hearing
 
-    Scenario: Make an Application to transfer hearing
+  Scenario: Make an Application to transfer hearing
     Given I have logged in as an appellant in state "preHearing"
     When I click the Ask to change your hearing date location or needs link
     Then I should see the Ask to change something about your hearing page
@@ -15,8 +15,6 @@ Feature: Make Application to transfer hearing
     Then I fill textarea with "Where do you want the hearing to take place and why?"
     Then I click continue
     Then I see "/supporting-evidence" in current url
-
-
 
     # Path with no supporting evidence
     When I select No and click continue

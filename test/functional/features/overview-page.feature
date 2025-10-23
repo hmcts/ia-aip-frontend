@@ -4,20 +4,20 @@ Feature: Overview page
   As a citizen
   I want to know what stage of the appeal I am at
 
-    Scenario: Appeal Started
+  Scenario: Appeal Started
     Given I have logged in as an appellant in state "appealStarted"
     When I visit the overview page
     Then I should see the 'do this next section' for 'New - Appeal started'
     And I click continue
     Then I should see the task-list page
 
-    Scenario: Saved Appeal Started
+  Scenario: Saved Appeal Started
     Given I have logged in as an appellant in state "Saved appealStarted"
     Then I should see the 'do this next section' for 'Saved - Appeal started'
     Then I click continue
     Then I should see the task-list page
 
-    Scenario: Appeal Submitted
+  Scenario: Appeal Submitted
     Given I have logged in as an appellant in state "appealSubmitted"
     And I visit the overview page
     Then I should see the 'do this next section' for 'Appeal submitted'
@@ -28,7 +28,7 @@ Feature: Overview page
     Then I should see the appeal overview page
 
 
-    Scenario: Awaiting Reasons for appeal
+  Scenario: Awaiting Reasons for appeal
     Given I have logged in as an appellant in state "awaitingReasonsForAppeal"
     When I visit the overview page
     Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
@@ -39,7 +39,7 @@ Feature: Overview page
     Then I click continue
     Then I should see the reasons for appeal decision page
 
-    Scenario: Saved Awaiting Reasons for appeal
+  Scenario: Saved Awaiting Reasons for appeal
     Given I have logged in as an appellant in state "Saved awaitingReasonsForAppeal"
     When I visit the overview page
     Then I should see the 'do this next section' for 'Saved - Awaiting reasons for appeal'
@@ -60,7 +60,7 @@ Feature: Overview page
   #   When I visit the overview page
   #   Then I should see the 'do this next section' for 'Awaiting clarifying questions with time extensions' with respond by date '02 May 2020'
 
-    Scenario: Awaiting Cma Requirements appeal
+  Scenario: Awaiting Cma Requirements appeal
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
     When I visit the overview page
     Then I should see the 'do this next section' for 'awaitingCmaRequirements'

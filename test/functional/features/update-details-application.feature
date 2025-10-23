@@ -4,7 +4,7 @@ Feature: Make Application to change some of my details
   As a citizen
   I want to be able to make an application to change some of my details
 
-    Scenario: Make an Application to withdraw an appeal 1
+  Scenario: Make an Application to change details
     Given I have logged in as an appellant in state "preHearing"
     When I click the Ask to change some of your details link
     Then I should see the Ask to change some of your details page
@@ -12,8 +12,6 @@ Feature: Make Application to change some of my details
     Then I fill textarea with "What changes do you want to make to your details and why?"
     Then I click continue
     Then I see "/supporting-evidence" in current url
-
-
 
     # Path with no supporting evidence
     When I select No and click continue

@@ -1,22 +1,19 @@
 // tslint:disable:no-console
 import helper from '@codeceptjs/helper';
-import TestState from '../TestState.json';
 import * as testStateHelper from '../testStateHelper';
 
 class FailedTest extends helper {
-  _failed(test) {
+  _failed(test: any) {
     console.log('Failed test: ' + test.title);
     testStateHelper.setTestFailed(true);
-    if (!TestState.testsTitles.includes(test.title)) {
-      testStateHelper.addTestTitle(test.title);
-    }
   }
 
-  _passed(test) {
+  _passed(test: any) {
     testStateHelper.incrementTestsPassed();
-    if (!TestState.testsTitles.includes(test.title)) {
-      testStateHelper.addTestTitle(test.title);
-    }
+  }
+
+  _after(test: any) {
+    testStateHelper.addTestTitle(test.title);
   }
 }
 

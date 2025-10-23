@@ -41,12 +41,16 @@ async function setTestingSupportToken() {
       }
     });
     idamTestingAccessToken = response.data.access_token;
+    logger.trace(`Testing support token set: ${idamTestingAccessToken}`, logLabel);
   } catch (error) {
     logger.exception(`Error in setTestingSupportToken: ${error.message}`, logLabel);
   }
 }
 
 async function createUser(userInfo: UserInfo) {
+  if (idamTestingAccessToken === undefined) {
+    await setTestingSupportToken();
+  }
   const timestamp: string = Date.now().toString();
   userInfo.email = userInfo.email.replace('@', `${timestamp}@`);
   try {

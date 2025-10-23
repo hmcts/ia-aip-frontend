@@ -39,9 +39,6 @@ Feature: Sponsor details
     Then I click "Save and continue" button
     When I upload a Home Office decision letter
     And I click "Save and continue" button
-    Then I should see the deportation order page
-    When I choose Yes to deportation order
-    And I click "Save and continue" button
     Then I should see the task-list page
 
   # Your contact details page

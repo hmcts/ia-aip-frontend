@@ -38,10 +38,6 @@ Feature: Out of Time appeal @outOfTimeAppeal
 
     And I choose a file that is "VALID" and click the "Upload file" button
     And I click "Save and continue" button
-    Then I should see the deportation order page
-
-    When I choose Yes to deportation order
-    And I click "Save and continue" button
     Then I should see the task-list page
 
     And I click the contact details link
@@ -73,6 +69,7 @@ Feature: Out of Time appeal @outOfTimeAppeal
 #  When I choose a file that is "VALID" and click the "Save and continue" button
 #  Then I should be taken to the check-and-send page
 
+  @disabled
   Scenario: Delete an evidence changes on reason should persist
 #  Given I have an out of time appeal with reason for being late an evidence
 #  And I have logged in

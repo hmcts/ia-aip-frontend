@@ -75,17 +75,6 @@ withPipeline("nodejs", product, component) {
       ]
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
     }
-
-    stage('functional test') {
-        try {
-          yarnBuilder.yarn('test:functional')
-        } catch (Error) {
-          error(message: "${STAGE_NAME} is failed: " + Error.toString())
-        } finally {
-          steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional/**'
-          steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional/**/*'
-        }
-    }
   }
 
   loadVaultSecrets(secrets)

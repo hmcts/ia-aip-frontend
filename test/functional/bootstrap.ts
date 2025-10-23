@@ -104,7 +104,6 @@ export async function teardownAll() {
   } catch (e) {
     logger.exception(e, logLabel);
   } finally {
-    testStateHelper.resetTestState();
     failureCheck();
   }
 }

@@ -30,10 +30,9 @@ exports.config = {
     retryFailedStep: {
       enabled: true
     },
-    stepByStepReport: {
+    screenshotOnFail: {
       enabled: true,
-      fullPageScreenshots: true,
-      deleteSuccessful: true
+      fullPageScreenshots: true
     },
     retryTo: {
       enabled: true

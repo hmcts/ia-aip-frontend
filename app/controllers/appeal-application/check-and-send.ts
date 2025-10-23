@@ -82,29 +82,7 @@ async function createSummaryRowsFrom(req: Request) {
     rows.push(homeOfficeRefNumberRow);
   }
 
-  if (application.decisionLetterReceivedDate && application.decisionLetterReceivedDate.year) {
-    const decisionLetterReceivedDateRow = addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.dateLetterReceived,
-        [application.decisionLetterReceivedDate.day, moment.months(parseInt(application.decisionLetterReceivedDate.month, 10) - 1), application.decisionLetterReceivedDate.year],
-        paths.appealStarted.letterReceived + editParameter,
-        Delimiter.SPACE);
-    rows.push(decisionLetterReceivedDateRow);
-  } else {
-    const dateLetterSentRow = addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.dateLetterSent,
-        [application.dateLetterSent.day, moment.months(parseInt(application.dateLetterSent.month, 10) - 1), application.dateLetterSent.year],
-        paths.appealStarted.letterSent + editParameter,
-        Delimiter.SPACE);
-    rows.push(dateLetterSentRow);
-  }
-
-  const rowsCont = [
-    addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter,
-        application.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
-        paths.appealStarted.homeOfficeDecisionLetter + editParameter,
-        Delimiter.BREAK_LINE
-    ),
+  const personalDetailsRows = [
     addSummaryRow(
         i18n.pages.checkYourAnswers.rowTitles.name,
         [application.personalDetails.givenNames, application.personalDetails.familyName],
@@ -123,15 +101,22 @@ async function createSummaryRowsFrom(req: Request) {
         paths.appealStarted.nationality + editParameter
     )
   ];
+  rows.push(...personalDetailsRows);
 
-  if (dlrmInternalFeatureFlag) {
-    const deportationOrderRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.deportationOrder,
-      [application.deportationOrderOptions === 'Yes' ? i18n.pages.deportationOrder.cyaPageRowValueWhenYesSelected : i18n.pages.deportationOrder.cyaPageRowValueWhenNoSelected],
-      paths.appealStarted.deportationOrder + editParameter,
-      Delimiter.BREAK_LINE);
-
-    rowsCont.splice(1, 0, deportationOrderRow);
+  if (application.decisionLetterReceivedDate && application.decisionLetterReceivedDate.year) {
+    const decisionLetterReceivedDateRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.dateLetterReceived,
+        [application.decisionLetterReceivedDate.day, moment.months(parseInt(application.decisionLetterReceivedDate.month, 10) - 1), application.decisionLetterReceivedDate.year],
+        paths.appealStarted.letterReceived + editParameter,
+        Delimiter.SPACE);
+    rows.push(decisionLetterReceivedDateRow);
+  } else {
+    const dateLetterSentRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.dateLetterSent,
+        [application.dateLetterSent.day, moment.months(parseInt(application.dateLetterSent.month, 10) - 1), application.dateLetterSent.year],
+        paths.appealStarted.letterSent + editParameter,
+        Delimiter.SPACE);
+    rows.push(dateLetterSentRow);
   }
 
   if (application.appellantInUk) {
@@ -199,7 +184,23 @@ async function createSummaryRowsFrom(req: Request) {
     rows.push(appealTypeRow);
   }
 
-  rows.push(...rowsCont);
+  const homeOfficeDecisionLetterRow = addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter,
+      application.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
+      paths.appealStarted.homeOfficeDecisionLetter + editParameter,
+      Delimiter.BREAK_LINE
+  );
+  rows.push(homeOfficeDecisionLetterRow);
+
+  if (dlrmInternalFeatureFlag) {
+    const deportationOrderRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.deportationOrder,
+        [application.deportationOrderOptions === 'Yes' ? i18n.pages.deportationOrder.cyaPageRowValueWhenYesSelected : i18n.pages.deportationOrder.cyaPageRowValueWhenNoSelected],
+        paths.appealStarted.deportationOrder + editParameter,
+        Delimiter.BREAK_LINE);
+
+    rows.push(deportationOrderRow);
+  }
 
   if (paymentsFlag) {
     let decisionType: string;

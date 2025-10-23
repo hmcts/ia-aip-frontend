@@ -1,4 +1,4 @@
-@nightly-test
+@nightly-test @testThis
 Feature: Make an application
   Scenario: Ask to withdraw
     Given I am on home page

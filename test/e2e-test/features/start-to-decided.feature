@@ -1,4 +1,4 @@
-@nightly-test
+@nightly-test @testThis
 Feature: Start to decided with accessibility reports
 
 Scenario: Create appeal and force case through to decided

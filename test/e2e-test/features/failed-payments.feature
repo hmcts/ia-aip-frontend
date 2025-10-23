@@ -1,4 +1,4 @@
-@nightly-test
+@nightly-test @testThis
 Feature: Failed payments
   Scenario: Card type not accepted, Card declined, Card expired, Invalid CVC code, General error
     Given I am on home page

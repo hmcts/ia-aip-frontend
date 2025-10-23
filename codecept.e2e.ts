@@ -11,6 +11,9 @@ exports.config = {
     testStateHelper.resetTestState();
     await setTestingSupportToken();
   },
+  teardown: async () => {
+    failureCheck();
+  },
   teardownAll: async () => {
     failureCheck();
   },

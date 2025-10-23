@@ -21,7 +21,7 @@ Feature: Home office reference page 8
     And I click "Save and continue" button
 
     Then I should see the task-list page
-    And I click "Your Home Office details" link
+    And I click "Your Home Office and personal details" link
 
     Then I see "What is your Home Office reference number?" in title
     And I fill "Enter your Home Office reference number" field with "1234567"

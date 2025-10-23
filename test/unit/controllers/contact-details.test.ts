@@ -496,7 +496,6 @@ describe('Contact details Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/has-sponsor.njk');
     });
 
-    // TODO add validation for the other previous page routes.
     it('should render sponsor-details/has-sponsor.njk', async () => {
       await getHasSponsor(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/has-sponsor.njk', {
@@ -505,6 +504,40 @@ describe('Contact details Controller', () => {
         modal: undefined,
         questionId: undefined,
         previousPage: paths.appealStarted.enterPostcode,
+        answer: undefined,
+        errors: undefined,
+        errorList: undefined
+      });
+    });
+
+    it('should render sponsor-details/has-sponsor.njk with previous page pointing to manual-address endpoint', async () => {
+      _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
+      await getHasSponsor(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/has-sponsor.njk', {
+        question: 'Do you have a sponsor?',
+        description: undefined,
+        modal: undefined,
+        questionId: undefined,
+        previousPage: paths.appealStarted.enterAddress,
+        answer: undefined,
+        errors: undefined,
+        errorList: undefined
+      });
+    });
+
+    it('should render sponsor-details/has-sponsor.njk with previous page pointing to out-of-country-address endpoint', async () => {
+      // ooc feature flag is enabled
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(true);
+
+      // appeal is out of country
+      req.session.appeal.appealOutOfCountry = 'Yes';
+      await getHasSponsor(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/has-sponsor.njk', {
+        question: 'Do you have a sponsor?',
+        description: undefined,
+        modal: undefined,
+        questionId: undefined,
+        previousPage: paths.appealStarted.oocAddress,
         answer: undefined,
         errors: undefined,
         errorList: undefined

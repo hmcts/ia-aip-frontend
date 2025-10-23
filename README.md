@@ -175,73 +175,41 @@ There are base UserInfo profiles set up i.e. user-service/preHearingUser which a
 
 The event data is stored in `test/wip/case-progression-service/case-events` as json files which are then passed to the `triggerEvent()` function in `case-progression-service.ts` to progress the case to the next state.
 
+# Creating cases and progressing them via command line
+### Environment Variables
+To run the case creation and progression scripts you will need to set the following environment variables:
+
+`TEST_STATE` - The state you want the case to be progressed to. Valid values can be found in the State enum in `test/wip/case-progression-service/models/state.ts`.
+
+`TEST_APPEAL_TYPE` - The type of appeal - defaults to 'protection' if not set. Valid values are:\
+`'refusalOfHumanRights', 'refusalOfEu', 'deprivation', 'protection', 'revocationOfProtection', 'euSettlementScheme'`
+
+`TEST_DECISION_TYPE` - The type of decision - defaults to 'granted' if not set. Valid values are:\
+`'granted', 'dismissed'`
+
+`PR_NUMBER` - The PR number of the preview build you want to run against. Only required for preview builds of ia-case-api and ia-aip-frontend.
+
 ### Example usage with yarn command:
-To create a user and progress a case to the preHearing state you would do the following:
+To create a user and progress a case to the decided and dismissed state in AAT you would do the following:
 
 ```
-TEST_STATE=preHearing && TEST_APPEAL_TYPE=deprivation && TEST_DECISION_TYPE=dismissed && yarn createCaseInState
+export TEST_STATE=decided
+export TEST_APPEAL_TYPE=deprivation
+export TEST_DECISION_TYPE=dismissed
+yarn createCase-aat
 ```
-TEST_APPEAL_TYPE is optional and will default to 'protection' if not set
-TEST_DECISION_TYPE is optional and will default to 'granted' if not set
 
-### test/wip/user-service.ts
-`await setTestingSupportToken();` \
-This sets the token needed to access the IDAM test support endpoint to create users.
-
-`await createUser(someUser);` \
-This creates the test user in IDAM and stores the `userId` and `userToken` for further events within the `someUser: UserInfo` object. 
-
-### test/wip/ccd-service.ts
-`await createCase(someUser);` 
-This creates an AiP case in CCD for the user stored in `someUser: UserInfo` object and stores the `caseId` in the same object.
-
-### test/wip/case-progression-service.ts
-`await triggerEvent(user: UserInfo, object: string, userRunningEvent: string);`\
-This triggers the event from a json passed in as `object` for the case stored in `user: UserInfo`. The `userRunningEvent` string is used to set the token in the request header as caseOfficer, homeOffice, etc. Examples of this function being used can be found in the file such as `preparePreHearingUser()`
-
-### env variables
+Similarly, if you wanted to run against a preview build of ia-case-api you would do the following:
 ```
-export S2S_MICROSERVICE_NAME=iac
-export S2S_URL=http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
-export PAYMENTS_API_URL=http://payment-api-aat.service.core-compute-aat.internal
-export REF_DATA_API_URL=http://rd-commondata-api-aat.service.core-compute-aat.internal
-export IDAM_WEB_URL=https://idam-web-public.aat.platform.hmcts.net
-export IDAM_API_URL=https://idam-api.aat.platform.hmcts.net
-export PCQ_URL=https://pcq.aat.platform.hmcts.net
-export IDAM_TESTING_SUPPORT_URL=https://idam-testing-support-api.aat.platform.hmcts.net
-export TEST_CASEOFFICER_USERNAME=iac-base-func-test01@justice.gov.uk
-export TEST_HOMEOFFICE_GENERIC_USERNAME=ia.respondentoffice.ccd@gmail.com
-export TEST_ADMINOFFICER_USERNAME=CRD_func_test_aat_adm66@justice.gov.uk
-export TEST_JUDGE_X_USERNAME=ia.iacjudge.ccd@gmail.com
+export PR_NUMBER=2791
+export TEST_STATE=preHearing
+yarn createCase-case-api-pr
 ```
-If running against AAT:
+And for ia-aip-frontend preview build:
 ```
-export CCD_API_URL=http://ccd-data-store-api-aat.service.core-compute-aat.internal
-export TEST_URL=https://immigration-appeal.aat.platform.hmcts.net/
-export PCQ_RETURN_URL=https://immigration-appeal.aat.platform.hmcts.net/about-appeal
+export PR_NUMBER=105
+export TEST_STATE=decided
+export TEST_APPEAL_TYPE=refusalOfHumanRights
+export TEST_DECISION_TYPE=granted 
+yarn createCase-frontend-pr
 ```
-If running against ia-case-api preview build:
-```
-export PR_NUMBER=<PR_NUMBER>
-export CCD_API_URL=https://ccd-data-store-api-ia-case-api-pr-${PR_NUMBER}.preview.platform.hmcts.net
-export TEST_URL=https://ia-case-api-pr-${PR_NUMBER}-aip-frontend.preview.platform.hmcts.net
-export PCQ_RETURN_URL=https://ia-case-api-pr-${PR_NUMBER}-aip-frontend.preview.platform.hmcts.net/about-appeal
-```
-If running against ia-aip-frontend preview build:
-```
-PR_NUMBER=<PR_NUMBER>
-export CCD_API_URL=http://ccd-data-store-api-aat.service.core-compute-aat.internal
-export TEST_URL=https://ia-aip-frontend-pr-${PR_NUMBER}.preview.platform.hmcts.net/
-export PCQ_RETURN_URL=https://ia-aip-frontend-pr-${PR_NUMBER}.preview.platform.hmcts.net/about-appeal
-```
-Need to get from vaults:
-`ia-aat`
-TEST_CASEOFFICER_PASSWORD: test-caseofficer-password
-TEST_HOMEOFFICE_GENERIC_PASSWORD: test-homeoffice-generic-password
-TEST_ADMINOFFICER_PASSWORD: test-adminofficer-password
-TEST_JUDGE_X_PASSWORD: test-judge-x-password
-IDAM_SECRET: idam-secret
-S2S_SECRET: s2s-secret
-
-`rpx-aat`
-IDAM_CLIENT_SECRET: mc-idam-client-secret

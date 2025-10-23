@@ -30,7 +30,7 @@ setTestingSupportToken().then(() => {
       createCaseInState(testUser, validState, appealType, decisionType).then(() => {
         console.log(`Case created in state: ${validState}`);
         console.log(`CaseID: ${testUser.caseId}`);
-        console.log(`User credentials - Email: ${testUser.email}, Password: ${testUser.password}`);
+        console.log(`User credentials: \nEmail: ${testUser.email}\nPassword: ${testUser.password}`);
       });
     });
   });

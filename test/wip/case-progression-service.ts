@@ -7,6 +7,24 @@ import {
   UserInfo
 } from './user-service';
 
+enum State {
+  appealStarted = 'appealStarted',
+  appealSubmitted = 'appealSubmitted',
+  pendingPayment = 'pendingPayment',
+  awaitingRespondentEvidence = 'awaitingRespondentEvidence',
+  awaitingReasonsForAppeal = 'awaitingReasonsForAppeal',
+  reasonsForAppealSubmitted = 'reasonsForAppealSubmitted',
+  awaitingClarifyingQuestionsAnswers = 'awaitingClarifyingQuestionsAnswers',
+  respondentReview = 'respondentReview',
+  submitHearingRequirements = 'submitHearingRequirements',
+  listing = 'listing',
+  prepareForHearing = 'prepareForHearing',
+  finalBundling = 'finalBundling',
+  preHearing = 'preHearing',
+  decision = 'decision',
+  decided = 'decided'
+}
+
 const caseOfficerUserName: string = config.get('testAccounts.testCaseOfficerUserName');
 const caseOfficerPassword: string = process.env.TEST_CASEOFFICER_PASSWORD;
 const adminOfficerUserName: string = config.get('testAccounts.testAdminOfficerUserName');
@@ -20,7 +38,7 @@ async function triggerEvent(user: UserInfo, object: string, userRunningEvent: st
   const json = JSON.parse(object);
   const event = json.event;
   let caseData = json.case_data || {};
-  if (['submitAppeal', 'editAppeal'].includes(event)) {
+  if (['submitAppeal', 'editAppeal'].includes(event.id)) {
     caseData.appellantGivenNames = user.forename;
     caseData.appellantFamilyName = user.surname;
     caseData.appellantEmailAddress = user.email;
@@ -57,24 +75,6 @@ async function triggerEvent(user: UserInfo, object: string, userRunningEvent: st
   await updateAppeal(event, userId, user.caseId, caseData, headers, citizen);
 }
 
-enum State {
-  appealStarted = 'appealStarted',
-  appealSubmitted = 'appealSubmitted',
-  pendingPayment = 'pendingPayment',
-  awaitingRespondentEvidence = 'awaitingRespondentEvidence',
-  awaitingReasonsForAppeal = 'awaitingReasonsForAppeal',
-  reasonsForAppealSubmitted = 'reasonsForAppealSubmitted',
-  awaitingClarifyingQuestionsAnswers = 'awaitingClarifyingQuestionsAnswers',
-  respondentReview = 'respondentReview',
-  submitHearingRequirements = 'submitHearingRequirements',
-  listing = 'listing',
-  prepareForHearing = 'prepareForHearing',
-  finalBundling = 'finalBundling',
-  preHearing = 'preHearing',
-  decision = 'decision',
-  decided = 'decided'
-}
-
 async function createCaseInState(user: UserInfo, state: State, appealType: string = 'protection', decisionType: string = 'granted') {
   await triggerEvent(user, JSON.stringify(events.editAppeal), 'aip', appealType);
   if (state === State.appealStarted) {
@@ -88,50 +88,52 @@ async function createCaseInState(user: UserInfo, state: State, appealType: strin
     await triggerEvent(user, JSON.stringify(events.requestHoData), 'caseOfficer');
   }
   await triggerEvent(user, JSON.stringify(events.requestRespondentEvidence), 'caseOfficer');
-  if (State.awaitingRespondentEvidence) {
+  if (state === State.awaitingRespondentEvidence) {
     return;
   }
   await triggerEvent(user, JSON.stringify(events.uploadHoBundle), 'homeOffice');
   await triggerEvent(user, JSON.stringify(events.requestReasonsForAppeal), 'caseOfficer');
-  if (State.awaitingReasonsForAppeal) {
+  if (state === State.awaitingReasonsForAppeal) {
     return;
   }
   await triggerEvent(user, JSON.stringify(events.submitReasonsForAppeal), 'aip');
-  if (State.reasonsForAppealSubmitted) {
+  if (state === State.reasonsForAppealSubmitted) {
     return;
   }
-  if (State.awaitingClarifyingQuestionsAnswers) {
+  if (state === State.awaitingClarifyingQuestionsAnswers) {
     await triggerEvent(user, JSON.stringify(events.sendClarifyingQuestions), 'caseOfficer');
     return;
   }
   await triggerEvent(user, JSON.stringify(events.requestRespondentReview), 'caseOfficer');
-  if (State.respondentReview) {
+  if (state === State.respondentReview) {
     return;
   }
+  await triggerEvent(user, JSON.stringify(events.uploadHomeOfficeAppealResponse), 'homeOffice');
+  await triggerEvent(user, JSON.stringify(events.reviewHoResponse), 'caseOfficer');
   await triggerEvent(user, JSON.stringify(events.requestHearingRequirements), 'caseOfficer');
-  if (State.submitHearingRequirements) {
+  if (state === State.submitHearingRequirements) {
     return;
   }
   await triggerEvent(user, JSON.stringify(events.draftHearingRequirements), 'aip');
-  if (State.listing) {
+  if (state === State.listing) {
     return;
   }
   await triggerEvent(user, JSON.stringify(events.reviewHearingRequirements), 'caseOfficer');
   await triggerEvent(user, JSON.stringify(events.listCase), 'adminOfficer');
-  if (State.prepareForHearing) {
+  if (state === State.prepareForHearing) {
     return;
   }
   await triggerEvent(user, JSON.stringify(events.createCaseSummary), 'caseOfficer');
-  if (State.finalBundling) {
+  if (state === State.finalBundling) {
     return;
   }
   await triggerEvent(user, JSON.stringify(events.generateHearingBundle), 'caseOfficer');
   await waitForStateChange(user, State.preHearing);
-  if (State.preHearing) {
+  if (state === State.preHearing) {
     return;
   }
   await triggerEvent(user, JSON.stringify(events.startDecisionAndReasons), 'caseOfficer');
-  if (State.decision) {
+  if (state === State.decision) {
     return;
   }
   await triggerEvent(user, JSON.stringify(events.prepareDecisionAndReasons), 'judge');
@@ -140,7 +142,7 @@ async function createCaseInState(user: UserInfo, state: State, appealType: strin
   } else {
     await triggerEvent(user, JSON.stringify(events.completeDecisionAndReasonsDismissed), 'judge');
   }
-  if (State.decided) {
+  if (state === State.decided) {
     return;
   }
 }

@@ -7,19 +7,21 @@ const config = require('config');
 const maxFileSizeInMb: number = config.get('evidenceUpload.maxFileSizeInMb');
 const SUPPORTED_FORMATS: string[] = config.get('evidenceUpload.supportedFormats');
 
+function fileFilter(req, file, cb) {
+  const fileTypeError = 'LIMIT_FILE_TYPE';
+  if (SUPPORTED_FORMATS.includes(path.extname(file.originalname.toLowerCase()))) {
+    cb(null, true);
+  } else {
+    cb(new multer.MulterError(fileTypeError), false);
+  }
+}
+
 /**
  * Multer upload configuration that includes limits for file type formats and limits for the size
  */
 const uploadConfiguration = multer({
-  limits: { fileSize: (maxFileSizeInMb * 1024 * 1024) },
-  fileFilter: (req, file, cb) => {
-    const fileTypeError = 'LIMIT_FILE_TYPE';
-    if (SUPPORTED_FORMATS.includes(path.extname(file.originalname.toLowerCase()))) {
-      cb(null, true);
-    } else {
-      cb(new multer.MulterError(fileTypeError), false);
-    }
-  }
+  storage: multer.memoryStorage(),
+  fileFilter
 }).single('file-upload');
 
 function handleFileUploadErrors(err: any, req: Request, res: Response, next: NextFunction) {
@@ -44,7 +46,18 @@ function handleFileUploadErrors(err: any, req: Request, res: Response, next: Nex
   return next(err);
 }
 
+// Middleware to enforce file size limit - needs to be placed before handleFileUploadErrors middleware
+function enforceFileSizeLimit(req: Request, res: Response, next: NextFunction) {
+  if (req.file && req.file.size > maxFileSizeInMb * 1024 * 1024) {
+    delete req.file;
+    return next(new multer.MulterError('LIMIT_FILE_SIZE'));
+  }
+  return next();
+}
+
 export {
   uploadConfiguration,
-  handleFileUploadErrors
+  handleFileUploadErrors,
+  enforceFileSizeLimit,
+  fileFilter
 };

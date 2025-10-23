@@ -4,7 +4,8 @@ Feature: Cookies banner
   I should be able to accept, reject and read cookies in this service
 
 Background: I am able to navigate through info pages
-  Given I have logged in
+  Given I have a blank appeal
+  And I have logged in
 
   And I see "Do this next" in subheading
 

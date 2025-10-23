@@ -5,7 +5,8 @@ Feature: Type of appeal
 
     Scenario: Appeal type page
 
-    Given I have logged in
+    Given I have a blank appeal
+    And I have logged in
     And I see "Do this next" in subheading
     And I click "Continue" button
 

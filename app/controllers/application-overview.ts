@@ -138,7 +138,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
       const saveAndAskForMoreTime = _.has(req.query, 'save-and-ask-for-more-time');
-      const { appealReferenceNumber, appealStatus, paymentStatus } = req.session.appeal;
+      const { appealReferenceNumber, appealStatus, paymentStatus, paAppealTypeAipPaymentOption } = req.session.appeal;
       const loggedInUserFullName: string = getAppellantName(req);
       const appealRefNumber = getAppealRefNumber(appealReferenceNumber);
       const stagesStatus = buildProgressBarStages(appealStatus, paymentStatus);
@@ -163,6 +163,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const application = req.session.appeal.application;
 
       const showAskForFeeRemission = refundFeatureEnabled
+        && ((paAppealTypeAipPaymentOption === 'payLater' && application.appealType === 'protection') || 'Paid' === paymentStatus)
         && (!application.refundRequested || application.refundRequested && !!application.remissionDecision);
 
       const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;

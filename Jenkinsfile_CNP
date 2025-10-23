@@ -80,7 +80,7 @@ withPipeline("nodejs", product, component) {
         try {
           yarnBuilder.yarn('test:functional')
         } catch (Error) {
-          unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+          error(message: "${STAGE_NAME} is failed: " + Error.toString())
         } finally {
           steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional/**'
           steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional/**/*'

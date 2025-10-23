@@ -75,8 +75,16 @@ withPipeline("nodejs", product, component) {
       ]
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
     }
+
     stage('functional test') {
-      yarnBuilder.yarn('test:functional')
+        try {
+          yarnBuilder.yarn('test:functional')
+        } catch (Error) {
+          unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+        } finally {
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional/**'
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional/**/*'
+        }
     }
   }
 

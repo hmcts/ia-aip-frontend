@@ -137,8 +137,8 @@ describe('Help with fees refund Controller', () => {
         formAction: paths.appealSubmitted.helpWithFeesRefund,
         question: sinon.match.any,
         continueCancelButtons: true,
-         refundJourney: true,
-         paPayLater: false
+        refundJourney: true,
+        paPayLater: false
       });
     });
 

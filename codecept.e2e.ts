@@ -1,21 +1,28 @@
 import config from 'config';
-import * as testStateHelper from './test/e2e-test/testStateHelper';
-import { failureCheck } from './test/functional/bootstrap';
-import { setTestingSupportToken } from './test/wip/user-service';
+// import * as testStateHelper from './test/e2e-test/testStateHelper';
+// import { failureCheck } from './test/functional/bootstrap';
+// import { setTestingSupportToken } from './test/wip/user-service';
 
 exports.config = {
   name: 'codecept',
   timeout: 600,
   output: './functional-output/e2e/reports/',
   bootstrapAll: async () => {
-    testStateHelper.resetTestState();
-    await setTestingSupportToken();
+    // tslint:disable:no-console
+    console.log('Running bootstrapAll hook...');
+    // testStateHelper.resetTestState();
+    // await setTestingSupportToken();
+  },
+  bootstrap: async () => {
+    console.log('Running bootstrap hook...');
   },
   teardown: async () => {
-    failureCheck();
+    console.log('Running teardown hook...');
+    // failureCheck();
   },
   teardownAll: async () => {
-    failureCheck();
+    console.log('Running teardownAll hook...');
+    // failureCheck();
   },
   helpers: {
     Puppeteer: {

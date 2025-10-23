@@ -11,6 +11,7 @@ enum State {
   appealStarted = 'appealStarted',
   appealSubmitted = 'appealSubmitted',
   pendingPayment = 'pendingPayment',
+  ended = 'ended',
   awaitingRespondentEvidence = 'awaitingRespondentEvidence',
   awaitingReasonsForAppeal = 'awaitingReasonsForAppeal',
   reasonsForAppealSubmitted = 'reasonsForAppealSubmitted',
@@ -82,6 +83,10 @@ async function createCaseInState(user: UserInfo, state: State, appealType: strin
   }
   await triggerEvent(user, JSON.stringify(events.submitAppeal), 'aip', appealType);
   if ([State.pendingPayment, State.appealSubmitted].includes(state)) {
+    return;
+  }
+  if (state === State.ended) {
+    await triggerEvent(user, JSON.stringify(events.endAppeal), 'caseOfficer', appealType);
     return;
   }
   if (['protection', 'revocationOfProtection'].includes(appealType)) {

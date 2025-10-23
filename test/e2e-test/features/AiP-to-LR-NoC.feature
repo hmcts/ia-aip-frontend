@@ -1,4 +1,4 @@
-@aip-to-lr-noc @nightly-test @testThis
+@aip-to-lr-noc @nightly-test
 Feature: Appellant in person to Legal Rep Notice of change
 
 Scenario: Complete NoC Happy path AiP to LR
@@ -8,12 +8,11 @@ Scenario: Complete NoC Happy path AiP to LR
    When I have WIP logged in as an appellant in state "appealSubmitted"
    Then I should see the appeal overview page
    And I click the I am no longer representing myself link
-   And I get and save the Case Reference number and names
    And I create a accessibility report for the current page
 
    When I log in as a Legal Rep
    And I go to Notice of Change
-   And I enter the saved case reference number
-   And I enter the saved first and last names
+   And I enter the saved case reference number from state "appealSubmitted"
+   And I enter the saved first and last names from state "appealSubmitted"
    And I complete the notice of change
    Then I should see the success screen

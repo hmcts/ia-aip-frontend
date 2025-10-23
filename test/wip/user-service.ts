@@ -167,6 +167,13 @@ const setupcaseUser: UserInfo = {
   surname: 'functionalCase'
 };
 
+const endedAppealUser: UserInfo = {
+  email: `endedAppeal@example.com`,
+  password: 'Apassword123',
+  forename: 'ended',
+  surname: 'functionalCase'
+};
+
 const noCasesUser: UserInfo = {
   email: `no-cases@example.com`,
   password: 'Apassword123',
@@ -303,6 +310,7 @@ export {
   decidedUser,
   ftpaOutOfTimeApplicationStartedUser,
   pendingPaymentUser,
+  endedAppealUser,
   createUser,
   deleteUser
 };

@@ -1,11 +1,8 @@
-@nightly-test @testThis
+@nightly-test
 Feature: Start to decided with accessibility reports
 
 Scenario: Create appeal and force case through to decided
   Given I am on home page
-  When I click Sign in to continue with your appeal
-  Then I should see the sign in page
-  # Case Progression
   When I have WIP logged in as an appellant in state "decided"
   Then I should see the appeal overview page
 

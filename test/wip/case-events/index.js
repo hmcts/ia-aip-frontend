@@ -19,10 +19,12 @@ const startDecisionAndReasons = require( './jsons/start-decision-and-reasons.jso
 const prepareDecisionAndReasons = require( './jsons/prepare-decision-and-reasons.json');
 const completeDecisionAndReasonsGranted = require( './jsons/complete-decision-and-reasons-granted.json');
 const completeDecisionAndReasonsDismissed = require( './jsons/complete-decision-and-reasons-dismissed.json');
+const endAppeal = require( './jsons/end-appeal.json');
 
 module.exports = {
   editAppeal,
   submitAppeal,
+  endAppeal,
   requestHoData,
   uploadHoBundle,
   sendClarifyingQuestions,

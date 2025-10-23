@@ -7,6 +7,7 @@ import {
   clarifyingQuestionsUser,
   createUser,
   decidedUser,
+  endedAppealUser,
   ftpaOutOfTimeApplicationStartedUser,
   hasCaseUser,
   noCasesUser,
@@ -190,7 +191,7 @@ module.exports = {
     Given('I have WIP logged in', async () => {
       I.amOnPage(testUrl + paths.common.login);
       await createUser(setupcaseUser);
-      signInForUser(setupcaseUser);
+      signInForUserFromInfo(setupcaseUser);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
@@ -217,13 +218,22 @@ module.exports = {
           signInForUserFromInfo(appealSubmittedUser);
           break;
         }
-        case 'pendingPayment':
+        case 'pendingPayment': {
           await setTestingSupportToken();
           await createUser(pendingPaymentUser);
           await createCase(pendingPaymentUser);
           await progression.createCaseInState(pendingPaymentUser, progression.State.pendingPayment, 'refusalOfHumanRights');
           signInForUserFromInfo(pendingPaymentUser);
           break;
+        }
+        case 'ended': {
+          await setTestingSupportToken();
+          await createUser(endedAppealUser);
+          await createCase(endedAppealUser);
+          await progression.createCaseInState(endedAppealUser, progression.State.ended);
+          signInForUserFromInfo(endedAppealUser);
+          break;
+        }
         case 'awaitingReasonsForAppeal': {
           await createUser(awaitingReasonsForAppealUser);
           await createCase(awaitingReasonsForAppealUser);

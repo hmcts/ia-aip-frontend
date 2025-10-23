@@ -88,6 +88,10 @@ async function deleteUser(userInfo: UserInfo) {
   } catch (error) {
     logger.exception(`Error in deleteUser: ${error.message}`, logLabel);
   }
+  delete userInfo.userId;
+  delete userInfo.userToken;
+  delete userInfo.caseId;
+  userInfo.email = userInfo.email.replace(/\d+/g, '');
 }
 
 async function getUserToken(userConfig: UserInfo) {
@@ -156,8 +160,9 @@ function functionalUsers(): UserInfo[] {
     cmaListedUser,
     preHearingUser,
     decidedUser,
-    ftpaOutOfTimeApplicationStartedUser
-  ];
+    ftpaOutOfTimeApplicationStartedUser,
+    endedAppealUser
+  ]
 }
 
 const setupcaseUser: UserInfo = {

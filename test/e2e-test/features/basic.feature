@@ -11,7 +11,9 @@ Feature: Basic Appeal Submissions
     When I click continue
     Then I should see the task-list page
     And I create a accessibility report for the current page
-    When I click on the type-of-appeal link
+    When I go into the Appeal type task
+    Then I should be taken to the currently living in the United Kingdom page
+    And I create a accessibility report for the current page
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
@@ -19,32 +21,37 @@ Feature: Basic Appeal Submissions
     When I select appeal type Protection
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Home office details task
+    When I go into the Home Office and personal details task
     Then I should be taken to the home office ref number page
     And I create a accessibility report for the current page
     Then I enter a home office reference "1212-0099-0062-8083"
     And I click "Save and continue" button
-    Then I should see letter sent page
-    And I create a accessibility report for the current page
-    When I enter an on time letter sent date
-    And I click "Save and continue" button
-    When I upload a Home Office decision letter
-    And I create a accessibility report for the current page
-    Then I click "Save and continue" button
-    And I create a accessibility report for the current page
-    When I choose Yes to deportation order
-    And I click "Save and continue" button
-    Then I expect to be redirect back to the task-list
-    When I go into the Personal details task
     Then I should be taken to the enter your name page
     And I create a accessibility report for the current page
     When Enter "Random" "User" as my Given and Family Name and click Save and continue
     Then I click "Save and continue" button
     Then I should be taken to the DOB page
+    And I create a accessibility report for the current page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
     And I create a accessibility report for the current page
     When I pick "Angola" from the Nationalities drop down and click continue
+    Then I should see letter sent page
+    And I create a accessibility report for the current page
+    When I enter an on time letter sent date
+    And I click "Save and continue" button
+    And I create a accessibility report for the current page
+    When I upload a Home Office decision letter
+    Then I click "Save and continue" button
+    And I create a accessibility report for the current page
+    When I choose Yes to deportation order
+    And I click "Save and continue" button
+    Then I expect to be redirect back to the task-list
+    When I go into the Contact details task
+    Then I should be taken to the contact-details page
+    And I create a accessibility report for the current page
+    When I enter text message number "07899999999"
+    And I click "Save and continue" button
     Then I should be taken to the enter your postcode page
     And I create a accessibility report for the current page
     When I type "W1W 7RT" as my postcode and click Find address
@@ -53,12 +60,6 @@ Feature: Basic Appeal Submissions
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
     And I create a accessibility report for the current page
-    And I click "Save and continue" button
-    Then I expect to be redirect back to the task-list
-    When I go into the Contact details task
-    Then I should be taken to the contact-details page
-    And I create a accessibility report for the current page
-    When I enter text message number "07899999999"
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
     And I create a accessibility report for the current page
@@ -74,9 +75,11 @@ Feature: Basic Appeal Submissions
     And I wait for 5 seconds
     And I go to appeal overview page
     Then I should see the appeal overview page
+    And I create a accessibility report for the current page
     When I click continue
     Then I expect to be redirect back to the task-list
-    When I click on the Support to pay the fee page
+    When I go into the Support to pay the fee task
+    Then I should be taken to the fee support page
     And I create a accessibility report for the current page
     And I choose None of these statements and click save and continue
     And I create a accessibility report for the current page
@@ -93,22 +96,31 @@ Feature: Basic Appeal Submissions
     Then I am on the make payment page
     When I make a successful payment
     Then I am on the appeal details sent with payment page
+    And I create a accessibility report for the current page
 
   Scenario: Complete PA Pay Now appeal without remission
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I click on the type-of-appeal link
+    When I go into the Appeal type task
+    Then I should be taken to the currently living in the United Kingdom page
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
     When I select appeal type Protection
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Home office details task
+    When I go into the Home Office and personal details task
     Then I should be taken to the home office ref number page
     Then I enter a home office reference "1212-0099-0062-8083"
     And I click "Save and continue" button
+    Then I should be taken to the enter your name page
+    When Enter "Random" "User" as my Given and Family Name and click Save and continue
+    Then I click "Save and continue" button
+    Then I should be taken to the DOB page
+    When I enter "11" "11" "1999" as my DOB and click Save and continue
+    Then I should be taken to nationality page
+    When I pick "Angola" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -117,24 +129,15 @@ Feature: Basic Appeal Submissions
     When I choose Yes to deportation order
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Personal details task
-    Then I should be taken to the enter your name page
-    When Enter "Random" "User" as my Given and Family Name and click Save and continue
-    Then I click "Save and continue" button
-    Then I should be taken to the DOB page
-    When I enter "11" "11" "1999" as my DOB and click Save and continue
-    Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I go into the Contact details task
+    Then I should be taken to the contact-details page
+    When I enter text message number "07899999999"
+    And I click "Save and continue" button
     Then I should be taken to the enter your postcode page
     When I type "W1W 7RT" as my postcode and click Find address
     Then I should be taken to the what is your address page
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
-    And I click "Save and continue" button
-    Then I expect to be redirect back to the task-list
-    When I go into the Contact details task
-    Then I should be taken to the contact-details page
-    When I enter text message number "07899999999"
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
     When I choose No and click Continue
@@ -150,7 +153,8 @@ Feature: Basic Appeal Submissions
     Then I should see the appeal overview page
     When I click continue
     Then I expect to be redirect back to the task-list
-    When I click on the Support to pay the fee page
+    When I go into the Support to pay the fee task
+    Then I should be taken to the fee support page
     And I choose None of these statements and click save and continue
     And I say I will pay for the appeal now and click save and continue
     Then I should be taken to the task-list page
@@ -168,17 +172,25 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I click on the type-of-appeal link
+    When I go into the Appeal type task
+    Then I should be taken to the currently living in the United Kingdom page
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
     When I select appeal type Protection
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Home office details task
+    When I go into the Home Office and personal details task
     Then I should be taken to the home office ref number page
     Then I enter a home office reference "1212-0099-0062-8083"
     And I click "Save and continue" button
+    Then I should be taken to the enter your name page
+    When Enter "Random" "User" as my Given and Family Name and click Save and continue
+    Then I click "Save and continue" button
+    Then I should be taken to the DOB page
+    When I enter "11" "11" "1999" as my DOB and click Save and continue
+    Then I should be taken to nationality page
+    When I pick "Angola" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -187,24 +199,15 @@ Feature: Basic Appeal Submissions
     And I choose Yes to deportation order
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Personal details task
-    Then I should be taken to the enter your name page
-    When Enter "Random" "User" as my Given and Family Name and click Save and continue
-    Then I click "Save and continue" button
-    Then I should be taken to the DOB page
-    When I enter "11" "11" "1999" as my DOB and click Save and continue
-    Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I go into the Contact details task
+    Then I should be taken to the contact-details page
+    When I enter text message number "07899999999"
+    And I click "Save and continue" button
     Then I should be taken to the enter your postcode page
     When I type "W1W 7RT" as my postcode and click Find address
     Then I should be taken to the what is your address page
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
-    And I click "Save and continue" button
-    Then I expect to be redirect back to the task-list
-    When I go into the Contact details task
-    Then I should be taken to the contact-details page
-    When I enter text message number "07899999999"
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
     When I choose No and click Continue
@@ -220,7 +223,8 @@ Feature: Basic Appeal Submissions
     Then I should see the appeal overview page
     When I click continue
     Then I expect to be redirect back to the task-list
-    When I click on the Support to pay the fee page
+    When I go into the Support to pay the fee task
+    Then I should be taken to the fee support page
     And I choose Asylum support and click save and continue
     Then I enter my asylum support reference number and click save and continue
     Then I should be taken to the task-list page
@@ -235,17 +239,25 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I click on the type-of-appeal link
+    When I go into the Appeal type task
+    Then I should be taken to the currently living in the United Kingdom page
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
     When I select appeal type Human Rights
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Home office details task
+    When I go into the Home Office and personal details task
     Then I should be taken to the home office ref number page
     Then I enter a home office reference "1212-0099-0062-8083"
     And I click "Save and continue" button
+    Then I should be taken to the enter your name page
+    When Enter "Random" "User" as my Given and Family Name and click Save and continue
+    Then I click "Save and continue" button
+    Then I should be taken to the DOB page
+    When I enter "11" "11" "1999" as my DOB and click Save and continue
+    Then I should be taken to nationality page
+    When I pick "Angola" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -254,24 +266,15 @@ Feature: Basic Appeal Submissions
     And I choose Yes to deportation order
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Personal details task
-    Then I should be taken to the enter your name page
-    When Enter "Random" "User" as my Given and Family Name and click Save and continue
-    Then I click "Save and continue" button
-    Then I should be taken to the DOB page
-    When I enter "11" "11" "1999" as my DOB and click Save and continue
-    Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I go into the Contact details task
+    Then I should be taken to the contact-details page
+    When I enter text message number "07899999999"
+    And I click "Save and continue" button
     Then I should be taken to the enter your postcode page
     When I type "W1W 7RT" as my postcode and click Find address
     Then I should be taken to the what is your address page
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
-    And I click "Save and continue" button
-    Then I expect to be redirect back to the task-list
-    When I go into the Contact details task
-    Then I should be taken to the contact-details page
-    When I enter text message number "07899999999"
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
     When I choose No and click Continue
@@ -303,17 +306,25 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I click on the type-of-appeal link
+    When I go into the Appeal type task
+    Then I should be taken to the currently living in the United Kingdom page
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
     When I select appeal type European Economic Area
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Home office details task
+    When I go into the Home Office and personal details task
     Then I should be taken to the home office ref number page
     Then I enter a home office reference "1212-0099-0062-8083"
     And I click "Save and continue" button
+    Then I should be taken to the enter your name page
+    When Enter "Random" "User" as my Given and Family Name and click Save and continue
+    Then I click "Save and continue" button
+    Then I should be taken to the DOB page
+    When I enter "11" "11" "1999" as my DOB and click Save and continue
+    Then I should be taken to nationality page
+    When I pick "Angola" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -322,24 +333,15 @@ Feature: Basic Appeal Submissions
     And I choose Yes to deportation order
     Then I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Personal details task
-    Then I should be taken to the enter your name page
-    When Enter "Random" "User" as my Given and Family Name and click Save and continue
-    Then I click "Save and continue" button
-    Then I should be taken to the DOB page
-    When I enter "11" "11" "1999" as my DOB and click Save and continue
-    Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I go into the Contact details task
+    Then I should be taken to the contact-details page
+    When I enter text message number "07899999999"
+    And I click "Save and continue" button
     Then I should be taken to the enter your postcode page
     When I type "W1W 7RT" as my postcode and click Find address
     Then I should be taken to the what is your address page
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
-    And I click "Save and continue" button
-    Then I expect to be redirect back to the task-list
-    When I go into the Contact details task
-    Then I should be taken to the contact-details page
-    When I enter text message number "07899999999"
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
     When I choose No and click Continue
@@ -355,7 +357,8 @@ Feature: Basic Appeal Submissions
     Then I should see the appeal overview page
     When I click continue
     Then I expect to be redirect back to the task-list
-    When I click on the Support to pay the fee page
+    When I go into the Support to pay the fee task
+    Then I should be taken to the fee support page
     And I choose Asylum support and click save and continue
     Then I enter my asylum support reference number and click save and continue
     Then I should be taken to the task-list page
@@ -377,17 +380,25 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I click on the type-of-appeal link
+    When I go into the Appeal type task
+    Then I should be taken to the currently living in the United Kingdom page
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
     When I select appeal type Revocation of Protection Status
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Home office details task
+    When I go into the Home Office and personal details task
     Then I should be taken to the home office ref number page
     Then I enter a home office reference "1212-0099-0062-8083"
     And I click "Save and continue" button
+    Then I should be taken to the enter your name page
+    When Enter "Random" "User" as my Given and Family Name and click Save and continue
+    Then I click "Save and continue" button
+    Then I should be taken to the DOB page
+    When I enter "11" "11" "1999" as my DOB and click Save and continue
+    Then I should be taken to nationality page
+    When I pick "Angola" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -397,24 +408,15 @@ Feature: Basic Appeal Submissions
     And I choose Yes to deportation order
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Personal details task
-    Then I should be taken to the enter your name page
-    When Enter "Random" "User" as my Given and Family Name and click Save and continue
-    Then I click "Save and continue" button
-    Then I should be taken to the DOB page
-    When I enter "11" "11" "1999" as my DOB and click Save and continue
-    Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I go into the Contact details task
+    Then I should be taken to the contact-details page
+    When I enter text message number "07899999999"
+    And I click "Save and continue" button
     Then I should be taken to the enter your postcode page
     When I type "W1W 7RT" as my postcode and click Find address
     Then I should be taken to the what is your address page
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
-    And I click "Save and continue" button
-    Then I expect to be redirect back to the task-list
-    When I go into the Contact details task
-    Then I should be taken to the contact-details page
-    When I enter text message number "07899999999"
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
     When I choose No and click Continue
@@ -437,17 +439,25 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I click on the type-of-appeal link
+    When I go into the Appeal type task
+    Then I should be taken to the currently living in the United Kingdom page
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
     When I select appeal type Deprivation of Citizenship
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Home office details task
+    When I go into the Home Office and personal details task
     Then I should be taken to the home office ref number page
     Then I enter a home office reference "1212-0099-0062-8083"
     And I click "Save and continue" button
+    Then I should be taken to the enter your name page
+    When Enter "Random" "User" as my Given and Family Name and click Save and continue
+    Then I click "Save and continue" button
+    Then I should be taken to the DOB page
+    When I enter "11" "11" "1999" as my DOB and click Save and continue
+    Then I should be taken to nationality page
+    When I pick "Angola" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -456,24 +466,15 @@ Feature: Basic Appeal Submissions
     And I choose Yes to deportation order
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Personal details task
-    Then I should be taken to the enter your name page
-    When Enter "Random" "User" as my Given and Family Name and click Save and continue
-    Then I click "Save and continue" button
-    Then I should be taken to the DOB page
-    When I enter "11" "11" "1999" as my DOB and click Save and continue
-    Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I go into the Contact details task
+    Then I should be taken to the contact-details page
+    When I enter text message number "07899999999"
+    And I click "Save and continue" button
     Then I should be taken to the enter your postcode page
     When I type "W1W 7RT" as my postcode and click Find address
     Then I should be taken to the what is your address page
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
-    And I click "Save and continue" button
-    Then I expect to be redirect back to the task-list
-    When I go into the Contact details task
-    Then I should be taken to the contact-details page
-    When I enter text message number "07899999999"
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
     When I choose No and click Continue
@@ -496,17 +497,25 @@ Feature: Basic Appeal Submissions
     And I should see the 'do this next section' for 'New - Appeal started'
     When I click continue
     Then I should see the task-list page
-    When I click on the type-of-appeal link
+    When I go into the Appeal type task
+    Then I should be taken to the currently living in the United Kingdom page
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
     When I select appeal type EU Settlement Scheme
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Home office details task
+    When I go into the Home Office and personal details task
     Then I should be taken to the home office ref number page
     Then I enter a home office reference "1212-0099-0062-8083"
     And I click "Save and continue" button
+    Then I should be taken to the enter your name page
+    When Enter "Random" "User" as my Given and Family Name and click Save and continue
+    Then I click "Save and continue" button
+    Then I should be taken to the DOB page
+    When I enter "11" "11" "1999" as my DOB and click Save and continue
+    Then I should be taken to nationality page
+    When I pick "Angola" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -515,24 +524,15 @@ Feature: Basic Appeal Submissions
     And I choose Yes to deportation order
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
-    When I go into the Personal details task
-    Then I should be taken to the enter your name page
-    When Enter "Random" "User" as my Given and Family Name and click Save and continue
-    Then I click "Save and continue" button
-    Then I should be taken to the DOB page
-    When I enter "11" "11" "1999" as my DOB and click Save and continue
-    Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I go into the Contact details task
+    Then I should be taken to the contact-details page
+    When I enter text message number "07899999999"
+    And I click "Save and continue" button
     Then I should be taken to the enter your postcode page
     When I type "W1W 7RT" as my postcode and click Find address
     Then I should be taken to the what is your address page
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
-    And I click "Save and continue" button
-    Then I expect to be redirect back to the task-list
-    When I go into the Contact details task
-    Then I should be taken to the contact-details page
-    When I enter text message number "07899999999"
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
     When I choose No and click Continue

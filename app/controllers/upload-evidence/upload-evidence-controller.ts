@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import i18n from '../../../locale/en.json';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { getFileUploadError } from '../../utils/upload-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { documentIdToDocStoreUrl } from '../../utils/utils';
 import { createStructuredError, yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
@@ -104,9 +105,8 @@ export function postUploadFile(documentManagementService: DocumentManagementServ
         // await updateAppealService.submitEvent(evidenceUploadConfig.updateCcdEvent, req);
         return res.redirect(evidenceUploadConfig.evidenceUploadPath);
       } else {
-        let validationError;
-        validationError = res.locals.multerError
-          ? { uploadFile: createStructuredError('file-upload', res.locals.multerError) }
+        const validationError = res.locals && res.locals.errorCode
+          ? { uploadFile: createStructuredError('file-upload', getFileUploadError(res.locals.errorCode)) }
           : { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
         const evidences = evidenceUploadConfig.getEvidenceFromSessionFunction(req) || {};
 

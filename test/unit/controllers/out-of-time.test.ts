@@ -224,15 +224,15 @@ describe('Out of time controller', () => {
     });
     it('Should display validation error LIMIT_FILE_SIZE and render appeal-application/home-office/appeal-late.njk', async () => {
       // Because the file size is being overriden on the development config for testing purposes
-      // error message will show max file size as {{maxFileSizeInMb}}MB
+      // error message will show max file size as 0.001MB
       const expectedError: ValidationError = {
         href: '#file-upload',
         key: 'file-upload',
-        text: 'The selected file must be smaller than {{maxFileSizeInMb}}MB'
+        text: 'The selected file must be smaller than 0.001MB'
       };
       req.body['appeal-late'] = 'My explanation why am late';
       req.session.appeal.application.lateAppeal.evidence = evidenceExample;
-      res.locals.multerError = expectedError.text;
+      res.locals.errorCode = 'fileTooLarge';
       req.session.appeal.appealOutOfCountry = 'Yes';
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -250,10 +250,10 @@ describe('Out of time controller', () => {
       const expectedError: ValidationError = {
         href: '#file-upload',
         key: 'file-upload',
-        text: 'The selected file must be a {{ supportedFormats | join(\', \') }}'
+        text: 'The selected file must be a .jpg, .jpeg, .bmp, .tif, .tiff, .png, .pdf, .txt, .doc, .dot, .docx, .dotx, .xls, .xlt, .xla, .xlsx, .xltx, .xlsb, .ppt, .pot, .pps, .ppa, .pptx, .potx, .ppsx, .rtf, .csv'
       };
       req.body['appeal-late'] = 'My explanation why am late';
-      res.locals.multerError = expectedError.text;
+      res.locals.errorCode = 'incorrectFormat';
       req.session.appeal.appealOutOfCountry = 'Yes';
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

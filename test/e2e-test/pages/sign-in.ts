@@ -300,6 +300,13 @@ module.exports = {
           await signInForUserFromInfo(ftpaOutOfTimeApplicationStartedUser);
           break;
         }
+        case 'decided-dismissed': {
+          await createUser(decidedUser);
+          await createCase(decidedUser);
+          await progression.createCaseInState(decidedUser, progression.State.decided, appealState, 'dismissed');
+          await signInForUserFromInfo(decidedUser);
+          break;
+        }
         default:
           break;
       }

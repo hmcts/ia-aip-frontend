@@ -51,6 +51,8 @@ async function createUser(userInfo: UserInfo) {
   if (idamTestingAccessToken === undefined) {
     await setTestingSupportToken();
   }
+  const timestamp = Date.now();
+  userInfo.email = userInfo.email.replace('@', `${timestamp}@`);
   try {
     await axios.post(`${idamTestingSupportUrl}/test/idam/users`, {
       password: userInfo.password,
@@ -90,6 +92,7 @@ async function deleteUser(userInfo: UserInfo) {
   delete userInfo.userId;
   delete userInfo.userToken;
   delete userInfo.caseId;
+  userInfo.email = userInfo.email.replace(/\d+/g, '');
 }
 
 async function getUserToken(userConfig: UserInfo) {

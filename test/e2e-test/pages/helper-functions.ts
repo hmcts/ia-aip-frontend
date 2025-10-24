@@ -25,7 +25,7 @@ function signInForUser(email: string) {
   I.wait(5);
 }
 
-function signInForUserFromInfo(user: UserInfo) {
+async function signInForUserFromInfo(user: UserInfo) {
   I.fillField('#username', user.email);
   I.fillField('#password', user.password);
   I.click('Sign in');

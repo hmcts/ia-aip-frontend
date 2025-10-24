@@ -191,7 +191,7 @@ module.exports = {
     Given('I have WIP logged in', async () => {
       I.amOnPage(testUrl + paths.common.login);
       await createUser(setupcaseUser);
-      signInForUserFromInfo(setupcaseUser);
+      await signInForUserFromInfo(setupcaseUser);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
@@ -201,21 +201,21 @@ module.exports = {
       switch (appealState) {
         case 'appealStarted': {
           await createUser(noCasesUser);
-          signInForUserFromInfo(noCasesUser);
+          await signInForUserFromInfo(noCasesUser);
           break;
         }
         case 'Saved appealStarted': {
           await createUser(hasCaseUser);
           await createCase(hasCaseUser);
           await progression.createCaseInState(hasCaseUser, progression.State.appealStarted);
-          signInForUserFromInfo(hasCaseUser);
+          await signInForUserFromInfo(hasCaseUser);
           break;
         }
         case 'appealSubmitted': {
           await createUser(appealSubmittedUser);
           await createCase(appealSubmittedUser);
           await progression.createCaseInState(appealSubmittedUser, progression.State.appealSubmitted);
-          signInForUserFromInfo(appealSubmittedUser);
+          await signInForUserFromInfo(appealSubmittedUser);
           break;
         }
         case 'pendingPayment': {
@@ -223,7 +223,7 @@ module.exports = {
           await createUser(pendingPaymentUser);
           await createCase(pendingPaymentUser);
           await progression.createCaseInState(pendingPaymentUser, progression.State.pendingPayment, 'refusalOfHumanRights');
-          signInForUserFromInfo(pendingPaymentUser);
+          await signInForUserFromInfo(pendingPaymentUser);
           break;
         }
         case 'ended': {
@@ -231,21 +231,21 @@ module.exports = {
           await createUser(endedAppealUser);
           await createCase(endedAppealUser);
           await progression.createCaseInState(endedAppealUser, progression.State.ended);
-          signInForUserFromInfo(endedAppealUser);
+          await signInForUserFromInfo(endedAppealUser);
           break;
         }
         case 'awaitingReasonsForAppeal': {
           await createUser(awaitingReasonsForAppealUser);
           await createCase(awaitingReasonsForAppealUser);
           await progression.createCaseInState(awaitingReasonsForAppealUser, progression.State.awaitingReasonsForAppeal);
-          signInForUserFromInfo(awaitingReasonsForAppealUser);
+          await signInForUserFromInfo(awaitingReasonsForAppealUser);
           break;
         }
         case 'Saved awaitingReasonsForAppeal': {
           await createUser(partialAwaitingReasonsForAppealUser);
           await createCase(partialAwaitingReasonsForAppealUser);
           await progression.createCaseInState(partialAwaitingReasonsForAppealUser, progression.State.awaitingReasonsForAppeal);
-          signInForUserFromInfo(partialAwaitingReasonsForAppealUser);
+          await signInForUserFromInfo(partialAwaitingReasonsForAppealUser);
           break;
         }
         case 'awaitingReasonsForAppeal with time extensions': {
@@ -260,7 +260,7 @@ module.exports = {
           await createUser(clarifyingQuestionsUser);
           await createCase(clarifyingQuestionsUser);
           await progression.createCaseInState(clarifyingQuestionsUser, progression.State.awaitingClarifyingQuestionsAnswers);
-          signInForUserFromInfo(clarifyingQuestionsUser);
+          await signInForUserFromInfo(clarifyingQuestionsUser);
           break;
         }
         case 'awaitingCmaRequirements': {
@@ -283,21 +283,21 @@ module.exports = {
           await createUser(preHearingUser);
           await createCase(preHearingUser);
           await progression.createCaseInState(preHearingUser, progression.State.preHearing);
-          signInForUserFromInfo(preHearingUser);
+          await signInForUserFromInfo(preHearingUser);
           break;
         }
         case 'decided': {
           await createUser(decidedUser);
           await createCase(decidedUser);
           await progression.createCaseInState(decidedUser, progression.State.decided);
-          signInForUserFromInfo(decidedUser);
+          await signInForUserFromInfo(decidedUser);
           break;
         }
         case 'ftpaOutOfTimeApplicationStarted': {
           await createUser(ftpaOutOfTimeApplicationStartedUser);
           await createCase(ftpaOutOfTimeApplicationStartedUser);
           await progression.createCaseInState(ftpaOutOfTimeApplicationStartedUser, progression.State.decided);
-          signInForUserFromInfo(ftpaOutOfTimeApplicationStartedUser);
+          await signInForUserFromInfo(ftpaOutOfTimeApplicationStartedUser);
           break;
         }
         default:

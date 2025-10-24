@@ -148,13 +148,13 @@ async function createCase(user: UserInfo): Promise<void> {
   logger.trace(`Created case for user '${user.userId}' with case id '${user.caseId}'`, logLabel);
 }
 
-async function updateAppeal(event, userId: string, caseId: string, caseData: CaseData, headers: SecurityHeaders, citizen: boolean): Promise<CcdCaseDetails> {
+async function updateAppeal(event, userId: string, caseId: string, caseData: CaseData, headers: SecurityHeaders, citizen: boolean): Promise<void> {
   logger.trace(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${caseId}' `, logLabel);
   const updateEventResponse = await startUpdateAppeal(userId, caseId, event.id, headers, citizen);
   logger.trace(`Submitting update appeal case with event '${event.id}'`, logLabel);
   const supplementaryDataRequest = generateSupplementaryId();
 
-  return submitUpdateAppeal(userId, caseId, headers, {
+  await submitUpdateAppeal(userId, caseId, headers, {
     event: {
       id: updateEventResponse.event_id,
       summary: event.summary,
@@ -165,12 +165,7 @@ async function updateAppeal(event, userId: string, caseId: string, caseData: Cas
     ignore_warning: true,
     supplementary_data_request: supplementaryDataRequest
   }, citizen);
-}
-
-interface ES<T> {
-  length: number;
-  cases: T[];
-  total: number;
+  logger.trace(`Successfully submitted update appeal case with event '${event.id}'`, logLabel);
 }
 
 export {

@@ -195,6 +195,14 @@ withNightlyPipeline(type, product, component) {
                 reportFiles          : 'report.html',
                 reportName           : 'Functional E2E Tests'
         ])
+        publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "functional-output/e2e/reports/",
+                reportFiles          : 'report-v2.html',
+                reportName           : 'Functional E2E Tests V2'
+        ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/accessibility/*'
     }
 }

@@ -45,6 +45,14 @@ exports.config = {
     },
     retryTo: {
       enabled: true
+    },
+    htmlReporter: {
+      enabled: true,
+      output: './functional-output/e2e/reports',              // Directory for the report
+      reportFileName: 'report-v2.html',   // Name of the HTML file
+      includeArtifacts: true,          // Include screenshots/artifacts
+      showSteps: true,                 // Show individual test steps
+      showSkipped: true                // Show skipped tests
     }
   },
   'mocha': {

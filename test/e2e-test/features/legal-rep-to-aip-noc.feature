@@ -1,4 +1,4 @@
-@start-representing-yourself @lr-to-aip-noc @nightly-test @testy-test
+@start-representing-yourself @lr-to-aip-noc
 Feature: Legal Rep to Appellant in person Notice of change
 
 Scenario: NoC Happy path LR to AiP

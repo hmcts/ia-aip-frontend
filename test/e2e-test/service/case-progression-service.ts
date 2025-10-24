@@ -1,6 +1,6 @@
 import { Events } from '../../../app/data/events';
 import { CcdService } from '../../../app/service/ccd-service';
-import { appealSubmittedUser } from '../../wip/user-service';
+import { getCitizenUserFromThread } from '../../wip/user-service';
 import { AuthenticationService } from './authentication-service';
 import { updateAppeal } from './ccd-service';
 import { aipCurrentUser, getUserId, getUserToken } from './idam-service';
@@ -492,7 +492,7 @@ module.exports = {
       await I.fillField('#password', caseOfficerPassword);
       await I.click('Sign in');
       await I.waitForText('Case list', 45);
-      await I.amOnPage(exUiUrl + 'cases/case-details/' + appealSubmittedUser.caseId);
+      await I.amOnPage(exUiUrl + 'cases/case-details/' + getCitizenUserFromThread().caseId);
       await I.waitForText('Do this next', 45);
       await I.selectOption('#next-step', 'End the appeal');
       await I.handleNextStep('This appeal has ended. Record the outcome and reasons below.', 'endAppeal', onlineCaseReference);

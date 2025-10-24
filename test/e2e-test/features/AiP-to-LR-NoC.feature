@@ -12,7 +12,7 @@ Scenario: Complete NoC Happy path AiP to LR
 
    When I log in as a Legal Rep
    And I go to Notice of Change
-   And I enter the saved case reference number from state "appealSubmitted"
-   And I enter the saved first and last names from state "appealSubmitted"
+   And I enter the saved case reference number
+   And I enter the saved first and last names
    And I complete the notice of change
    Then I should see the success screen

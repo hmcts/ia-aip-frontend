@@ -1,4 +1,5 @@
-import { appealSubmittedUser } from '../../../wip/user-service';
+import { getCitizenUserFromThread } from '../../../wip/user-service';
+
 const config = require('config');
 let exuiBaseUrl;
 
@@ -36,19 +37,17 @@ module.exports = {
       await I.waitForText('You can use this notice of change (sometimes called a \'notice of acting\') to get access to the digital case file in place of:', 60);
     });
 
-    When(/^I enter the saved case reference number from state "([^"]*)"$/, async (appealState) => {
-      if (appealState === 'appealSubmitted') {
-        await I.fillField('#caseRef', appealSubmittedUser.caseId);
-      }
+    When(/^I enter the saved case reference number$/, async () => {
+      const user = getCitizenUserFromThread();
+      await I.fillField('#caseRef', user.caseId);
       await I.click('Continue');
     });
 
-    When(/^I enter the saved first and last names from state "([^"]*)"$/, async (appealState) => {
+    When(/^I enter the saved first and last names/, async () => {
       await I.waitForText('Enter your client\'s details', 60);
-      if (appealState === 'appealSubmitted') {
-        await I.fillField('#NoCChallengeQ1', appealSubmittedUser.forename);
-        await I.fillField('#NoCChallengeQ2', appealSubmittedUser.surname);
-      }
+      const user = getCitizenUserFromThread();
+      await I.fillField('#NoCChallengeQ1', user.forename);
+      await I.fillField('#NoCChallengeQ2', user.surname);
       await I.click('Continue');
     });
 

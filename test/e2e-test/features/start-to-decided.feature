@@ -1,5 +1,5 @@
 @nightly-test
-Feature: Start to decided with accessibility reports
+Feature: Start to decided
 
 Scenario: Create appeal and force case through to decided
   Given I am on home page
@@ -9,4 +9,5 @@ Scenario: Create appeal and force case through to decided
   # Appellant
   And I see "A judge has allowed your appeal." description in overview banner
   When I click "Read the Decision and Reasons document" link
+  And I create a accessibility report for the current page
   Then I see "Decision and Reasons" in title

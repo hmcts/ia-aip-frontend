@@ -163,6 +163,7 @@ describe('Fee support refund Controller', () => {
         previousPage: paths.common.overview,
         pageTitle: i18n.pages.remissionOptionPage.refundTitle,
         formAction: paths.appealSubmitted.feeSupportRefund,
+        paPayLater: false,
         question: sinon.match.any
       });
     });
@@ -245,6 +246,7 @@ describe('Fee support refund Controller', () => {
           previousPage: paths.common.overview,
           pageTitle: i18n.pages.remissionOptionPage.refundTitle,
           formAction: paths.appealSubmitted.feeSupportRefund,
+          paPayLater: false,
           question: sinon.match.any
         });
     });

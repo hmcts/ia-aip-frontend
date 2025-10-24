@@ -3,6 +3,7 @@ import config from 'config';
 const events = require('./case-events/index.js');
 import { getAppealState, getSecurityHeaders, updateAppeal } from './ccd-service';
 import {
+  getCitizenUserFromThread,
   getUserId,
   UserInfo
 } from './user-service';
@@ -152,6 +153,11 @@ async function createCaseInState(user: UserInfo, state: State, appealType: strin
   }
 }
 
+async function createCaseInStateFromThread(state: State, appealType: string = 'protection', decisionType: string = 'granted') {
+  const user: UserInfo = getCitizenUserFromThread();
+  await createCaseInState(user, state, appealType, decisionType);
+}
+
 async function waitForStateChange(user: UserInfo, expectedState: State): Promise<void> {
   const maxAttempts = 12;
   const delay = 5000;
@@ -171,5 +177,6 @@ async function waitForStateChange(user: UserInfo, expectedState: State): Promise
 
 export {
   createCaseInState,
+  createCaseInStateFromThread,
   State
 };

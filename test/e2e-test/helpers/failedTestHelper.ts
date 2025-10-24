@@ -1,20 +1,26 @@
 // tslint:disable:no-console
 import helper from '@codeceptjs/helper';
-import { deleteUsers } from '../../wip/user-service';
+
+import Logger, { getLogLabel } from '../../../app/utils/logger';
+import { deleteCitizenUser } from '../../wip/user-service';
 import * as testStateHelper from '../testStateHelper';
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 
 class FailedTest extends helper {
   async _failed(test: any) {
-    console.log('Failed test: ' + test.title);
+    logger.trace('Failed test: ' + test.title, logLabel);
     testStateHelper.addTestTitle(test.title);
     testStateHelper.setTestFailed(true);
-    await deleteUsers();
   }
 
   async _passed(test: any) {
     testStateHelper.addTestTitle(test.title);
     testStateHelper.incrementTestsPassed();
-    await deleteUsers();
+  }
+
+  async _after() {
+    await deleteCitizenUser();
   }
 }
 

@@ -4,7 +4,7 @@ import rp from 'request-promise';
 import { SecurityHeaders } from '../../app/service/authentication-service';
 import { isJWTExpired } from '../../app/utils/jwt-utils';
 import Logger, { getLogLabel } from '../../app/utils/logger';
-import { getUserToken, UserInfo } from './user-service';
+import { getCitizenUserFromThread, getUserToken, UserInfo } from './user-service';
 
 const s2sSecret: string = config.get('s2s.secret');
 const s2sUrl: string = config.get('s2s.url');
@@ -148,6 +148,10 @@ async function createCase(user: UserInfo): Promise<void> {
   logger.trace(`Created case for user '${user.userId}' with case id '${user.caseId}'`, logLabel);
 }
 
+async function createCaseFromThread() {
+  await createCase(getCitizenUserFromThread());
+}
+
 async function updateAppeal(event, userId: string, caseId: string, caseData: CaseData, headers: SecurityHeaders, citizen: boolean): Promise<void> {
   logger.trace(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${caseId}' `, logLabel);
   const updateEventResponse = await startUpdateAppeal(userId, caseId, event.id, headers, citizen);
@@ -173,5 +177,6 @@ export {
   updateAppeal,
   getSecurityHeaders,
   getAppealState,
-  createCase
+  createCase,
+  createCaseFromThread
 };

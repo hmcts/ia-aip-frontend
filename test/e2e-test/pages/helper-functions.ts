@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { UserInfo } from '../../wip/user-service';
+import { getCitizenUserFromThread, UserInfo } from '../../wip/user-service';
 import { createUser } from '../service/idam-service';
 const html = require('pa11y-reporter-html');
 const container = require('codeceptjs').container;
@@ -25,7 +25,8 @@ function signInForUser(email: string) {
   I.wait(5);
 }
 
-async function signInForUserFromInfo(user: UserInfo) {
+async function signInForUserFromThread() {
+  const user: UserInfo = getCitizenUserFromThread();
   I.fillField('#username', user.email);
   I.fillField('#password', user.password);
   I.click('Sign in');
@@ -81,7 +82,7 @@ export {
   signInForUser,
   fillInDate,
   enterRefNumber,
-  signInForUserFromInfo,
+  signInForUserFromThread,
   currentUserDetails,
   checkAccessibility
 };

@@ -15,6 +15,7 @@ const redirectUrl = `${testUrl}/redirectUrl`;
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
+const workerThreads = require('node:worker_threads');
 
 type UserInfo = {
   email: string;
@@ -143,151 +144,66 @@ async function deleteUsers() {
   }
 }
 
+async function deleteCitizenUser(): Promise<void> {
+  const user: UserInfo = getCitizenUserFromThread();
+  if (user.userId) {
+    await deleteUser(user);
+  }
+}
+
+async function createCitizenUser(): Promise<void> {
+  const user: UserInfo = getCitizenUserFromThread();
+  if (!user.userId) {
+    await createUser(user);
+  }
+}
+
+function getCitizenUserFromThread(): UserInfo {
+  return functionalUsers()[workerThreads.threadId - 1];
+}
+
 function functionalUsers(): UserInfo[] {
   return [
-    setupcaseUser,
-    noCasesUser,
-    hasCaseUser,
-    appealSubmittedUser,
-    awaitingReasonsForAppealUser,
-    partialAwaitingReasonsForAppealUser,
-    awaitingReasonsForAppealWithTimeExtensionUser,
-    awaitingClarifyingQuestionsWithTimeExtensionUser,
-    clarifyingQuestionsUser,
-    awaitingCmaRequirementsUser,
-    awaitingCmaRequirementsWithTimeExtensionUser,
-    cmaRequirementsSubmittedUser,
-    cmaListedUser,
-    preHearingUser,
-    decidedUser,
-    ftpaOutOfTimeApplicationStartedUser,
-    endedAppealUser
+    citizenUser1,
+    citizenUser2,
+    citizenUser3,
+    citizenUser4,
+    citizenUser5
   ];
 }
 
-const setupcaseUser: UserInfo = {
-  email: `setupcase@example.com`,
+const citizenUser1: UserInfo = {
+  email: 'citizen1@example.com',
   password: 'Apassword123',
-  forename: 'setupcase',
+  forename: 'worker1',
   surname: 'functionalCase'
 };
 
-const endedAppealUser: UserInfo = {
-  email: `endedAppeal@example.com`,
+const citizenUser2: UserInfo = {
+  email: 'citizen2@example.com',
   password: 'Apassword123',
-  forename: 'ended',
+  forename: 'worker2',
   surname: 'functionalCase'
 };
 
-const noCasesUser: UserInfo = {
-  email: `no-cases@example.com`,
+const citizenUser3: UserInfo = {
+  email: 'citizen3@example.com',
   password: 'Apassword123',
-  forename: 'no-cases',
+  forename: 'worker3',
   surname: 'functionalCase'
 };
 
-const hasCaseUser: UserInfo = {
-  email: `has-case@example.com`,
+const citizenUser4: UserInfo = {
+  email: 'citizen4@example.com',
   password: 'Apassword123',
-  forename: 'has-case',
+  forename: 'worker4',
   surname: 'functionalCase'
 };
 
-const appealSubmittedUser: UserInfo = {
-  email: `appeal-submitted@example.com`,
+const citizenUser5: UserInfo = {
+  email: 'citizen5@example.com',
   password: 'Apassword123',
-  forename: 'appeal-submitted',
-  surname: 'functionalCase'
-};
-
-const pendingPaymentUser: UserInfo = {
-  email: `pending-payment@example.com`,
-  password: 'Apassword123',
-  forename: 'pending-payment',
-  surname: 'functionalCase'
-};
-
-const awaitingReasonsForAppealUser: UserInfo = {
-  email: `awaiting-reasons-for-appeal@example.com`,
-  password: 'Apassword123',
-  forename: 'awaiting-reasons-for-appeal',
-  surname: 'functionalCase'
-};
-
-const partialAwaitingReasonsForAppealUser: UserInfo = {
-  email: `partial-awaiting-reasons-for-appeal@example.com`,
-  password: 'Apassword123',
-  forename: 'partial-awaiting-reasons-for-appeal',
-  surname: 'functionalCase'
-};
-
-const awaitingReasonsForAppealWithTimeExtensionUser: UserInfo = {
-  email: `awaitingReasonsForAppeal-with-time_extension@example.com`,
-  password: 'Apassword123',
-  forename: 'awaitingReasonsForAppeal-with-time_extension',
-  surname: 'functionalCase'
-};
-
-const awaitingClarifyingQuestionsWithTimeExtensionUser: UserInfo = {
-  email: `awaitingClarifyingQuestions-with-time_extension@example.com`,
-  password: 'Apassword123',
-  forename: 'awaitingClarifyingQuestions-with-time_extension',
-  surname: 'functionalCase'
-};
-
-const clarifyingQuestionsUser: UserInfo = {
-  email: `clarifying-questions@example.com`,
-  password: 'Apassword123',
-  forename: 'clarifying-questions',
-  surname: 'functionalCase'
-};
-
-const awaitingCmaRequirementsUser: UserInfo = {
-  email: `awaitingCmaRequirements@example.com`,
-  password: 'Apassword123',
-  forename: 'awaitingCmaRequirements',
-  surname: 'functionalCase'
-};
-
-const awaitingCmaRequirementsWithTimeExtensionUser: UserInfo = {
-  email: `awaitingCmaRequirements-with-time_extension@example.com`,
-  password: 'Apassword123',
-  forename: 'awaitingCmaRequirements-with-time_extension',
-  surname: 'functionalCase'
-};
-
-const cmaRequirementsSubmittedUser: UserInfo = {
-  email: `cmaRequirementsSubmitted@example.com`,
-  password: 'Apassword123',
-  forename: 'cmaRequirementsSubmitted',
-  surname: 'functionalCase'
-};
-
-const cmaListedUser: UserInfo = {
-  email: `cmaListed@example.com`,
-  password: 'Apassword123',
-  forename: 'cmaListed',
-  surname: 'functionalCase'
-};
-
-const preHearingUser: UserInfo = {
-  email: `preHearing@example.com`,
-  password: 'Apassword123',
-  forename: 'preHearing',
-  surname: 'functionalCase'
-};
-
-const decidedUser: UserInfo = {
-  email: `decided@example.com`,
-  password: 'Apassword123',
-  forename: 'decided',
-  surname: 'functionalCase'
-};
-
-const ftpaOutOfTimeApplicationStartedUser: UserInfo = {
-  email: `ftpa-out-of-time-application-started@example.com`,
-  password: 'Apassword123',
-  forename: 'ftpa-out-of-time-application-started',
+  forename: 'worker5',
   surname: 'functionalCase'
 };
 
@@ -298,24 +214,9 @@ export {
   getUserId,
   functionalUsers,
   UserInfo,
-  setupcaseUser,
-  noCasesUser,
-  hasCaseUser,
-  appealSubmittedUser,
-  awaitingReasonsForAppealUser,
-  partialAwaitingReasonsForAppealUser,
-  awaitingReasonsForAppealWithTimeExtensionUser,
-  awaitingClarifyingQuestionsWithTimeExtensionUser,
-  clarifyingQuestionsUser,
-  awaitingCmaRequirementsUser,
-  awaitingCmaRequirementsWithTimeExtensionUser,
-  cmaRequirementsSubmittedUser,
-  cmaListedUser,
-  preHearingUser,
-  decidedUser,
-  ftpaOutOfTimeApplicationStartedUser,
-  pendingPaymentUser,
-  endedAppealUser,
   createUser,
-  deleteUser
+  deleteUser,
+  deleteCitizenUser,
+  createCitizenUser,
+  getCitizenUserFromThread
 };

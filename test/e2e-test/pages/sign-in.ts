@@ -1,23 +1,11 @@
 import { paths } from '../../../app/paths';
 import * as progression from '../../wip/case-progression-service';
-import { createCase } from '../../wip/ccd-service';
+import { createCaseFromThread } from '../../wip/ccd-service';
 import {
-  appealSubmittedUser,
-  awaitingReasonsForAppealUser,
-  clarifyingQuestionsUser,
-  createUser,
-  decidedUser,
-  endedAppealUser,
-  ftpaOutOfTimeApplicationStartedUser,
-  hasCaseUser,
-  noCasesUser,
-  partialAwaitingReasonsForAppealUser,
-  pendingPaymentUser,
-  preHearingUser,
-  setTestingSupportToken,
-  setupcaseUser
+  createCitizenUser,
+  setTestingSupportToken
 } from '../../wip/user-service';
-import { currentUserDetails, signInForUserFromInfo } from './helper-functions';
+import { currentUserDetails, signInForUserFromThread } from './helper-functions';
 
 const { signInHelper, signInForUser } = require('./helper-functions');
 const testUrl = require('config').get('testUrl');
@@ -190,8 +178,8 @@ module.exports = {
 
     Given('I have WIP logged in', async () => {
       I.amOnPage(testUrl + paths.common.login);
-      await createUser(setupcaseUser);
-      await signInForUserFromInfo(setupcaseUser);
+      await createCitizenUser();
+      await signInForUserFromThread();
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
@@ -200,52 +188,52 @@ module.exports = {
 
       switch (appealState) {
         case 'appealStarted': {
-          await createUser(noCasesUser);
-          await signInForUserFromInfo(noCasesUser);
+          await createCitizenUser();
+          await signInForUserFromThread();
           break;
         }
         case 'Saved appealStarted': {
-          await createUser(hasCaseUser);
-          await createCase(hasCaseUser);
-          await progression.createCaseInState(hasCaseUser, progression.State.appealStarted);
-          await signInForUserFromInfo(hasCaseUser);
+          await createCitizenUser();
+          await createCaseFromThread();
+          await progression.createCaseInStateFromThread(progression.State.appealStarted);
+          await signInForUserFromThread();
           break;
         }
         case 'appealSubmitted': {
-          await createUser(appealSubmittedUser);
-          await createCase(appealSubmittedUser);
-          await progression.createCaseInState(appealSubmittedUser, progression.State.appealSubmitted);
-          await signInForUserFromInfo(appealSubmittedUser);
+          await createCitizenUser();
+          await createCaseFromThread();
+          await progression.createCaseInStateFromThread(progression.State.appealSubmitted);
+          await signInForUserFromThread();
           break;
         }
         case 'pendingPayment': {
           await setTestingSupportToken();
-          await createUser(pendingPaymentUser);
-          await createCase(pendingPaymentUser);
-          await progression.createCaseInState(pendingPaymentUser, progression.State.pendingPayment, 'refusalOfHumanRights');
-          await signInForUserFromInfo(pendingPaymentUser);
+          await createCitizenUser();
+          await createCaseFromThread();
+          await progression.createCaseInStateFromThread(progression.State.pendingPayment, 'refusalOfHumanRights');
+          await signInForUserFromThread();
           break;
         }
         case 'ended': {
           await setTestingSupportToken();
-          await createUser(endedAppealUser);
-          await createCase(endedAppealUser);
-          await progression.createCaseInState(endedAppealUser, progression.State.ended);
-          await signInForUserFromInfo(endedAppealUser);
+          await createCitizenUser();
+          await createCaseFromThread();
+          await progression.createCaseInStateFromThread(progression.State.ended);
+          await signInForUserFromThread();
           break;
         }
         case 'awaitingReasonsForAppeal': {
-          await createUser(awaitingReasonsForAppealUser);
-          await createCase(awaitingReasonsForAppealUser);
-          await progression.createCaseInState(awaitingReasonsForAppealUser, progression.State.awaitingReasonsForAppeal);
-          await signInForUserFromInfo(awaitingReasonsForAppealUser);
+          await createCitizenUser();
+          await createCaseFromThread();
+          await progression.createCaseInStateFromThread(progression.State.awaitingReasonsForAppeal);
+          await signInForUserFromThread();
           break;
         }
         case 'Saved awaitingReasonsForAppeal': {
-          await createUser(partialAwaitingReasonsForAppealUser);
-          await createCase(partialAwaitingReasonsForAppealUser);
-          await progression.createCaseInState(partialAwaitingReasonsForAppealUser, progression.State.awaitingReasonsForAppeal);
-          await signInForUserFromInfo(partialAwaitingReasonsForAppealUser);
+          await createCitizenUser();
+          await createCaseFromThread();
+          await progression.createCaseInStateFromThread(progression.State.awaitingReasonsForAppeal);
+          await signInForUserFromThread();
           break;
         }
         case 'awaitingReasonsForAppeal with time extensions': {
@@ -257,10 +245,10 @@ module.exports = {
           break;
         }
         case 'awaitingClarifyingQuestionsAnswers': {
-          await createUser(clarifyingQuestionsUser);
-          await createCase(clarifyingQuestionsUser);
-          await progression.createCaseInState(clarifyingQuestionsUser, progression.State.awaitingClarifyingQuestionsAnswers);
-          await signInForUserFromInfo(clarifyingQuestionsUser);
+          await createCitizenUser();
+          await createCaseFromThread();
+          await progression.createCaseInStateFromThread(progression.State.awaitingClarifyingQuestionsAnswers);
+          await signInForUserFromThread();
           break;
         }
         case 'awaitingCmaRequirements': {
@@ -280,31 +268,31 @@ module.exports = {
           break;
         }
         case 'preHearing': {
-          await createUser(preHearingUser);
-          await createCase(preHearingUser);
-          await progression.createCaseInState(preHearingUser, progression.State.preHearing);
-          await signInForUserFromInfo(preHearingUser);
+          await createCitizenUser();
+          await createCaseFromThread();
+          await progression.createCaseInStateFromThread(progression.State.preHearing);
+          await signInForUserFromThread();
           break;
         }
         case 'decided': {
-          await createUser(decidedUser);
-          await createCase(decidedUser);
-          await progression.createCaseInState(decidedUser, progression.State.decided);
-          await signInForUserFromInfo(decidedUser);
+          await createCitizenUser();
+          await createCaseFromThread();
+          await progression.createCaseInStateFromThread(progression.State.decided);
+          await signInForUserFromThread();
           break;
         }
         case 'ftpaOutOfTimeApplicationStarted': {
-          await createUser(ftpaOutOfTimeApplicationStartedUser);
-          await createCase(ftpaOutOfTimeApplicationStartedUser);
-          await progression.createCaseInState(ftpaOutOfTimeApplicationStartedUser, progression.State.decided);
-          await signInForUserFromInfo(ftpaOutOfTimeApplicationStartedUser);
+          await createCitizenUser();
+          await createCaseFromThread();
+          await progression.createCaseInStateFromThread(progression.State.decided);
+          await signInForUserFromThread();
           break;
         }
         case 'decided-dismissed': {
-          await createUser(decidedUser);
-          await createCase(decidedUser);
-          await progression.createCaseInState(decidedUser, progression.State.decided, appealState, 'dismissed');
-          await signInForUserFromInfo(decidedUser);
+          await createCitizenUser();
+          await createCaseFromThread();
+          await progression.createCaseInStateFromThread(progression.State.decided, appealState, 'dismissed');
+          await signInForUserFromThread();
           break;
         }
         default:

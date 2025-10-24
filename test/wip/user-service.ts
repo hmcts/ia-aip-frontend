@@ -51,8 +51,6 @@ async function createUser(userInfo: UserInfo) {
   if (idamTestingAccessToken === undefined) {
     await setTestingSupportToken();
   }
-  const timestamp: string = Date.now().toString();
-  userInfo.email = userInfo.email.replace('@', `${timestamp}@`);
   try {
     await axios.post(`${idamTestingSupportUrl}/test/idam/users`, {
       password: userInfo.password,
@@ -92,7 +90,6 @@ async function deleteUser(userInfo: UserInfo) {
   delete userInfo.userId;
   delete userInfo.userToken;
   delete userInfo.caseId;
-  userInfo.email = userInfo.email.replace(/\d+/g, '');
 }
 
 async function getUserToken(userConfig: UserInfo) {
@@ -133,14 +130,6 @@ async function getUserId(userToken: string) {
     return userDetails.data.id;
   } catch (error) {
     logger.exception(`Error in getUserId: ${error.message}`, logLabel);
-  }
-}
-
-async function deleteUsers() {
-  for (const user of functionalUsers()) {
-    if (user.userId) {
-      await deleteUser(user);
-    }
   }
 }
 
@@ -209,7 +198,6 @@ const citizenUser5: UserInfo = {
 
 export {
   setTestingSupportToken,
-  deleteUsers,
   getUserToken,
   getUserId,
   functionalUsers,

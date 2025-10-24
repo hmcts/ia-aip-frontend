@@ -37,6 +37,7 @@
     ],
     "homeOfficeDecisionDate": "2020-02-10",
     "submissionOutOfTime": "No",
-    "homeOfficeReferenceNumber": "A1234567"
+    "homeOfficeReferenceNumber": "A1234567",
+    "decisionHearingFeeOption": "decisionWithHearing"
   }
 }

@@ -291,7 +291,7 @@ module.exports = {
         case 'decided-dismissed': {
           await createCitizenUser();
           await createCaseFromThread();
-          await progression.createCaseInStateFromThread(progression.State.decided, appealState, 'dismissed');
+          await progression.createCaseInStateFromThread(progression.State.decided, 'protection', 'dismissed');
           await signInForUserFromThread();
           break;
         }

@@ -1,0 +1,25 @@
+{
+  "event": {
+    "id": "sendDecisionAndReasons",
+    "summary": "Complete decision and reasons"
+  },
+  "case_data": {
+    "finalDecisionAndReasonsDocument": {
+      "document_filename": "finalDecisionAndReasonsDocument.pdf",
+      "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3",
+      "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3/binary"
+    },
+    "isAdmin": "No",
+    "isDecisionAllowed": "dismissed",
+    "isDocumentSignedToday": {
+      "values": [
+        "isDocumentSignedToday"
+      ]
+    },
+    "isFeeConsistentWithDecision": {
+      "values": [
+        "isFeeConsistentWithDecision"
+      ]
+    }
+  }
+}

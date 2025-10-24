@@ -1,0 +1,14 @@
+{
+  "event": {
+    "id": "createCaseSummary",
+    "summary": "Create case summary"
+  },
+  "case_data": {
+    "caseSummaryDescription": "case summary doc",
+    "caseSummaryDocument": {
+      "document_filename": "case-summary-doc.pdf",
+      "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3",
+      "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3/binary"
+    }
+  }
+}

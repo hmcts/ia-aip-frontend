@@ -1,0 +1,132 @@
+{
+  "event": {
+    "id": "editAppeal",
+    "summary": "Update appeal case AIP"
+  },
+  "case_data": {
+    "pcqId": "3e13b79c-da73-4fc0-b16f-c7e744774d20",
+    "feeVersion": "3",
+    "paymentStatus": "Payment pending",
+    "staffLocation": "Newport",
+    "feeDescription": "Appeal determined with a hearing",
+    "feeWithHearing": "140",
+    "refundRequested": "No",
+    "remissionOption": "noneOfTheseStatements",
+    "appellantStateless": "isStateless",
+    "feeSupportPersisted": "Yes",
+    "isFeePaymentEnabled": "Yes",
+    "caseManagementLocation": {
+      "region": "1",
+      "baseLocation": "227101"
+    },
+    "isLateRemissionRequest": "No",
+    "deportationOrderOptions": "No",
+    "decisionHearingFeeOption": "decisionWithHearing",
+    "lateLocalAuthorityLetters": [],
+    "refundConfirmationApplied": "No",
+    "appealTypePreviousSelection": "protection",
+    "paAppealTypeAipPaymentOption": "payLater",
+    "caseManagementLocationRefData": {
+      "region": "1",
+      "baseLocation": {
+        "value": {
+          "code": "227101",
+          "label": "Newport Tribunal Centre - Columbus House"
+        },
+        "list_items": [
+          {
+            "code": "999970",
+            "label": "IAC National (Virtual)"
+          },
+          {
+            "code": "649000",
+            "label": "Yarls Wood Immigration And Asylum Hearing Centre"
+          },
+          {
+            "code": "765324",
+            "label": "Taylor House Tribunal Hearing Centre"
+          },
+          {
+            "code": "227101",
+            "label": "Newport Tribunal Centre - Columbus House"
+          },
+          {
+            "code": "366796",
+            "label": "Newcastle Civil And Family Courts And Tribunals Centre"
+          },
+          {
+            "code": "386417",
+            "label": "Hatton Cross Tribunal Hearing Centre"
+          },
+          {
+            "code": "28837",
+            "label": "Harmondsworth Tribunal Hearing Centre"
+          },
+          {
+            "code": "366559",
+            "label": "Atlantic Quay - Glasgow"
+          },
+          {
+            "code": "698118",
+            "label": "Bradford Tribunal Hearing Centre"
+          },
+          {
+            "code": "231596",
+            "label": "Birmingham Civil And Family Justice Centre"
+          },
+          {
+            "code": "512401",
+            "label": "Manchester Tribunal Hearing Centre - Piccadilly Exchange"
+          }
+        ]
+      }
+    },
+    "uploadTheNoticeOfDecisionDocs": [
+      {
+        "id": "1c7fb2e0-35be-40bf-8762-6dd988ad80d2",
+        "value": {
+          "document": {
+            "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3",
+            "document_filename": "dummy.pdf",
+            "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3/binary"
+          }
+        }
+      }
+    ],
+    "appellantInUkPreviousSelection": "Yes",
+    "hasSponsor": "No",
+    "appellantHasFixedAddress": "Yes",
+    "subscriptions": [
+      {
+        "id": "ce208f30-0aae-41a1-95a6-8b79333fa274",
+        "value": {
+          "email": "alejandro@example.net",
+          "wantsSms": "No",
+          "subscriber": "appellant",
+          "wantsEmail": "Yes",
+          "mobileNumber": null
+        }
+      }
+    ],
+    "appellantDateOfBirth": "2019-01-01",
+    "appellantAddress": {
+      "County": "",
+      "Country": "United Kingdom",
+      "PostCode": "W1W 7RT",
+      "PostTown": "LONDON",
+      "AddressLine1": "60 GREAT PORTLAND STREET",
+      "AddressLine2": ""
+    },
+    "appellantNationalities": [
+      {
+        "id": "1",
+        "value": {
+          "code": "ZZ"
+        }
+      }
+    ],
+    "homeOfficeDecisionDate": "2020-02-10",
+    "submissionOutOfTime": "No",
+    "homeOfficeReferenceNumber": "A1234567"
+  }
+}

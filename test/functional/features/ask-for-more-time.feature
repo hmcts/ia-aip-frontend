@@ -90,8 +90,6 @@ Feature: Ask for more time page
     When I click "See your appeal progress" button
     Then I am on the overview page
 
-
-
   Scenario: AFMT - Awaiting Cma requirements without evidence @trythis
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
     When I visit the overview page

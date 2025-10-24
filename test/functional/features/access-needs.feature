@@ -18,7 +18,6 @@ Feature: CMA Access needs
     When I select Yes and click save and continue
     Then I should see the "Tell us your appointment needs - Appeal an immigration or asylum decision - HMCTS" eligibility page
 
-
   Scenario: Entering my access needs 2
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
     Given I am on the access needs page

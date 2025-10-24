@@ -1,0 +1,24 @@
+{
+  "event": {
+    "id": "requestHomeOfficeData",
+    "summary": "Request Home office data"
+  },
+  "case_data": {
+    "homeOfficeAppellantsList": {
+      "value": {
+        "code": "NoMatch",
+        "label": "No Match"
+      },
+      "list_items": [
+        {
+          "code": "AsylumcaseTestFive",
+          "label": "AsylumcaseTestFive-040495"
+        },
+        {
+          "code": "NoMatch",
+          "label": "No Match"
+        }
+      ]
+    }
+  }
+}

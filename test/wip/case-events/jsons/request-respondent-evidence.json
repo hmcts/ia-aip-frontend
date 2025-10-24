@@ -1,0 +1,11 @@
+{
+  "event": {
+    "id": "requestRespondentEvidence",
+    "summary": "Request respondent evidence"
+  },
+  "case_data": {
+    "sendDirectionExplanation": "You must now tell us why you think the Home Office decision to refuse your claim is wrong.",
+    "sendDirectionParties": "respondent",
+    "sendDirectionDateDue": "2025-10-31"
+  }
+}

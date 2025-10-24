@@ -1,0 +1,40 @@
+{
+  "event": {
+    "id": "reviewHearingRequirements",
+    "summary": "Review hearing requirements"
+  },
+  "case_data": {
+    "listingLength": "100",
+    "isRemoteHearingAllowed": "Granted",
+    "hearingChannel": {
+      "value": {
+        "code": "INTER",
+        "label": "In Person"
+      },
+      "list_items": [
+        {
+          "code": "INTER",
+          "label": "In Person"
+        },
+        {
+          "code": "NA",
+          "label": "Not in Attendance"
+        },
+        {
+          "code": "ONPPRS",
+          "label": "On the Papers"
+        },
+        {
+          "code": "TEL",
+          "label": "Telephone"
+        },
+        {
+          "code": "VID",
+          "label": "Video"
+        }
+      ]
+    },
+    "isAppealSuitableToFloat": "No",
+    "isAdditionalInstructionAllowed": "No"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "event": {
+    "id": "decisionAndReasonsStarted",
+    "summary": "Start decision and reasons"
+  },
+  "case_data": {
+    "agreedImmigrationHistoryDescription": "some Agreed immigration history",
+    "appellantCaseSummaryDescription": "some case summary",
+    "appellantsAgreedScheduleOfIssuesDescription": "some appellant's schedule of issues",
+    "autoHearingRequestEnabled": "No",
+    "caseIntroductionDescription": "some intro",
+    "immigrationHistoryAgreement": "Yes",
+    "isIntegrated": "Yes",
+    "listCaseHearingCentre": "taylorHouse",
+    "scheduleOfIssuesAgreement": "Yes"
+  }
+}

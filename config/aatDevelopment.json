@@ -44,6 +44,8 @@
   "idam": {
     "apiUrl": "https://idam-api.aat.platform.hmcts.net",
     "webUrl": "https://idam-web-public.aat.platform.hmcts.net",
+    "testingSupportUrl": "IDAM_TESTING_SUPPORT_URL",
+    "rpxClientSecret": "IDAM_CLIENT_SECRET",
     "secret": "IDAM_SECRET"
   },
   "ccd": {

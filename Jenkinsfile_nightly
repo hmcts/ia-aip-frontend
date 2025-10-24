@@ -52,7 +52,10 @@ def secrets = [
         secret('system-password', 'IA_SYSTEM_PASSWORD'),
         secret('case-documents-api-url', 'CASE_DOCUMENT_AM_URL'),
         secret('ia-gov-notify-key', 'GOV_NOTIFY_KEY')
-    ]
+    ],
+     'rpx-${env}': [
+         secret('mc-idam-client-secret', 'IDAM_CLIENT_SECRET')
+     ],
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {

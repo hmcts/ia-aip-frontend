@@ -1,0 +1,32 @@
+{
+  "event": {
+    "id": "uploadHomeOfficeBundle",
+    "summary": "Upload Home office bundle"
+  },
+  "case_data": {
+    "homeOfficeBundle": [
+      {
+        "id": "1",
+        "value": {
+          "document": {
+            "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3",
+            "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3/binary",
+            "document_filename": "some-new-evidence.pdf"
+          },
+          "description": "Some new evidence"
+        }
+      },
+      {
+        "id": "2",
+        "value": {
+          "document": {
+            "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3",
+            "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3/binary",
+            "document_filename": "some-more-new-evidence.pdf"
+          },
+          "description": "Some more new evidence"
+        }
+      }
+    ]
+  }
+}

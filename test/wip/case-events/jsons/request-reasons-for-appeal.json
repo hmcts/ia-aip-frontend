@@ -1,0 +1,10 @@
+{
+  "event": {
+    "id": "requestReasonsForAppeal",
+    "summary": "Direct the appellant to submit their Appeal Reasons."
+  },
+  "case_data": {
+    "sendDirectionExplanation": "You need to submit your reasons for appealing the decision.\n\n# Next steps\n\nYou must provide your reasons for appealing by the date indicated below. You can do this by logging into your account and uploading your reasons for appeal.\n\nIf you do not provide your reasons for appeal by the date indicated, your appeal may be struck out.",
+    "sendDirectionDateDue": "2024-07-15"
+  }
+}

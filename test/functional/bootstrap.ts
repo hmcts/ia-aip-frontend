@@ -110,19 +110,16 @@ export async function teardownAll() {
 export function failureCheck() {
   const testState = testStateHelper.readTestState();
   // tslint:disable:no-console
-  console.log('Test state at the end of all tests:', testState);
-  if (testState.testFailed) {
-    console.log('---------------------');
-    const uniqueTitles = Array.from(new Set(testState.testsTitles));
-    console.log('Total scenarios run: ' + uniqueTitles.length);
-    console.log('Scenarios passed: ' + testState.testsPassed);
-    console.log('---------------------');
-    if (testState.testsPassed === uniqueTitles.length) {
-      process.exit(0);
-    } else {
-      process.exit(1);
-    }
-  } else {
+  console.log('---------------------');
+  const uniqueTitles = Array.from(new Set(testState.testsRun));
+  console.log('Total scenarios run: ' + uniqueTitles.length);
+  console.log('Scenarios passed: ' + testState.testsPassed.length);
+  console.log('---------------------');
+  if (testState.testsPassed === uniqueTitles.length) {
     process.exit(0);
+  } else {
+    const failedTests = uniqueTitles.filter(title => !testState.testsPassed.includes(title));
+    console.log('Scenarios failed: ', failedTests);
+    process.exit(1);
   }
 }

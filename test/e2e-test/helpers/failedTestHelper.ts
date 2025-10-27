@@ -10,13 +10,12 @@ const logLabel: string = getLogLabel(__filename);
 class FailedTest extends helper {
   async _failed(test: any) {
     logger.trace('Failed test: ' + test.title, logLabel);
-    testStateHelper.addTestTitle(test.title);
-    testStateHelper.setTestFailed(true);
+    testStateHelper.addTestRun(test.title);
   }
 
   async _passed(test: any) {
-    testStateHelper.addTestTitle(test.title);
-    testStateHelper.incrementTestsPassed();
+    testStateHelper.addTestRun(test.title);
+    testStateHelper.addTestPassed(test.title);
   }
 
   async _after() {

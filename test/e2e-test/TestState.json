@@ -1,5 +1,8 @@
 {
-  "testsTitles": [],
-  "testsPassed": 0,
-  "testFailed": false
+  "testsRun": [
+    "Entering my access needs 2"
+  ],
+  "testsPassed": [
+    "Entering my access needs 2"
+  ]
 }

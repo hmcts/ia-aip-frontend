@@ -56,11 +56,10 @@ exports.config = {
           'steps': true
         }
       },
-      'mochawesome': {
+      'mocha-junit-reporter': {
         'stdout': './functional-output/e2e/reports/console.log',
         'options': {
-          'reportDir': './functional-output/e2e/reports/',
-          'reportFilename': 'report'
+          'mochaFile': './functional-output/e2e/reports/report.xml'
         }
       }
     },

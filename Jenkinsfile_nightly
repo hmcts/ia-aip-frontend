@@ -191,10 +191,11 @@ withNightlyPipeline(type, product, component) {
                 allowMissing         : true,
                 alwaysLinkToLastBuild: true,
                 keepAll              : true,
-                reportDir            : "functional-output/e2e/reports/",
-                reportFiles          : 'report.html',
+                reportDir            : "functional-output/e2e/reports/html",
+                reportFiles          : 'index.html',
                 reportName           : 'Functional E2E Tests'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/e2e/reports/**/*'
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/accessibility/*'
     }
 }

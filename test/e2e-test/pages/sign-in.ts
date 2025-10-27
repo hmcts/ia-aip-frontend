@@ -192,7 +192,7 @@ module.exports = {
     Given(/^I have logged in for the e2e as an appellant in state "([^"]*)"$/, async (appealState) => {
       I.amOnPage(testUrl + paths.common.login);
       await createCitizenUser();
-      const appealType: string = appealState === 'pendingPayment' ? 'refusalOfHumanRights' : null;
+      const appealType: string = appealState === 'pendingPayment' ? 'refusalOfHumanRights' : 'protection';
       await createCaseFromThread();
       if (appealState === 'decided-dismissed') {
         await progression.createCaseInStateFromThread(progression.State.decided, 'protection', 'dismissed');

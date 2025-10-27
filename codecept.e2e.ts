@@ -1,6 +1,7 @@
 import config from 'config';
 import * as testStateHelper from './test/e2e-test/testStateHelper';
 import { failureCheck } from './test/functional/bootstrap';
+const workerThreads = require('node:worker_threads');
 
 exports.config = {
   name: 'codecept',
@@ -59,7 +60,7 @@ exports.config = {
       'mocha-junit-reporter': {
         'stdout': './functional-output/e2e/reports/console.log',
         'options': {
-          'mochaFile': './functional-output/e2e/reports/report.xml'
+          'mochaFile': `./functional-output/e2e/reports/report${workerThreads.threadId}.xml`
         }
       }
     },

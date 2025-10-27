@@ -63,7 +63,8 @@ exports.config = {
           'reportFilename': 'report'
         }
       }
-    }
+    },
+    'require': ['mochawesome/register']
   },
   require: ['ts-node/register/transpile-only']
 };

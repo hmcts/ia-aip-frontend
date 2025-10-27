@@ -1,4 +1,4 @@
-@nightly-test @testThis
+@nightly-test
 Feature: Basic Appeal Submissions
   Background:
     Given I am on home page

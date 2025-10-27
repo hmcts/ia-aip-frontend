@@ -177,7 +177,7 @@ async function createCaseFromThread() {
 }
 
 async function updateAppeal(event, userId: string, caseId: string, caseData: CaseData, headers: SecurityHeaders, citizen: boolean): Promise<void> {
-  logger.trace(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${caseId}' `, logLabel);
+  logger.trace(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${caseId}', appealType '${caseData.appealType}' `, logLabel);
   const updateEventResponse = await startUpdateAppeal(userId, caseId, event.id, headers, citizen);
   logger.trace(`Submitting update appeal case with event '${event.id}'`, logLabel);
   const supplementaryDataRequest = generateSupplementaryId();

@@ -2,7 +2,7 @@
 Feature: Failed payments
   Scenario: Card type not accepted, Card declined, Card expired, Invalid CVC code, General error
     Given I am on home page
-    When I have WIP logged in as an appellant in state "pendingPayment"
+    When I have logged in for the e2e as an appellant in state "pendingPayment"
     Then I should see the appeal overview page
 
     When I click "Pay for this appeal" link

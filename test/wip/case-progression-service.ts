@@ -1,7 +1,7 @@
 import config from 'config';
 
 const events = require('./case-events/index.js');
-import { getAppealState, getSecurityHeaders, updateAppeal } from './ccd-service';
+import { createLegalRepCase, getAppealState, getSecurityHeaders, updateAppeal } from './ccd-service';
 import {
   getCitizenUserFromThread,
   getUserId,
@@ -35,15 +35,17 @@ const judgeUserName: string = config.get('testAccounts.testJudgeUserName');
 const judgePassword: string = process.env.TEST_JUDGE_X_PASSWORD;
 const homeOfficeUserName: string = config.get('testAccounts.testHomeOfficeGenericUserName');
 const homeOfficePassword: string = process.env.TEST_HOMEOFFICE_GENERIC_PASSWORD;
+const legalRepUserName: string = config.get('testAccounts.testLawFirmAUsername');
+const legalRepPassword: string = process.env.TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD;
 
-async function triggerEvent(user: UserInfo, object: string, userRunningEvent: string, appealType?: string) {
+async function triggerEvent(user: UserInfo, object: string, userRunningEvent: string, appealType?: string, isLegalRep: boolean = false) {
   const json = JSON.parse(object);
   const event = json.event;
   let caseData = json.case_data || {};
   if (['submitAppeal', 'editAppeal'].includes(event.id)) {
     caseData.appellantGivenNames = user.forename;
     caseData.appellantFamilyName = user.surname;
-    caseData.appellantEmailAddress = user.email;
+    caseData[isLegalRep ? 'email' : 'appellantEmailAddress'] = user.email;
     caseData.appealType = appealType ? appealType : 'protection';
   }
   let headers;
@@ -70,11 +72,27 @@ async function triggerEvent(user: UserInfo, object: string, userRunningEvent: st
       userId = await getUserId(headers.userToken);
       citizen = false;
       break;
+    case 'legalRep':
+      headers = await getSecurityHeaders({ email: legalRepUserName, password: legalRepPassword });
+      userId = await getUserId(headers.userToken);
+      citizen = false;
+      break;
     default:
       headers = await getSecurityHeaders(user);
       break;
   }
   await updateAppeal(event, userId, user.caseId, caseData, headers, citizen);
+}
+
+async function createAndSubmitLegalRepCase() {
+  const user: UserInfo = getCitizenUserFromThread();
+  await createLegalRepCase(user);
+  await triggerEvent(user, JSON.stringify(events.submitAppealLegalRep), 'legalRep', 'deprivation', true);
+}
+
+async function stopRepresentingClient() {
+  const user: UserInfo = getCitizenUserFromThread();
+  await triggerEvent(user, JSON.stringify(events.stopRepresentingClient), 'legalRep');
 }
 
 async function createCaseInState(user: UserInfo, state: State, appealType: string = 'protection', decisionType: string = 'granted') {
@@ -178,5 +196,7 @@ async function waitForStateChange(user: UserInfo, expectedState: State): Promise
 export {
   createCaseInState,
   createCaseInStateFromThread,
+  createAndSubmitLegalRepCase,
+  stopRepresentingClient,
   State
 };

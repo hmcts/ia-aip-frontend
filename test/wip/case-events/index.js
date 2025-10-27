@@ -20,6 +20,9 @@ const prepareDecisionAndReasons = require( './jsons/prepare-decision-and-reasons
 const completeDecisionAndReasonsGranted = require( './jsons/complete-decision-and-reasons-granted.json');
 const completeDecisionAndReasonsDismissed = require( './jsons/complete-decision-and-reasons-dismissed.json');
 const endAppeal = require( './jsons/end-appeal.json');
+const startAppealLegalRep = require( './jsons/start-appeal-legal-rep.json');
+const submitAppealLegalRep = require( './jsons/submit-appeal-legal-rep.json');
+const stopRepresentingClient = require( './jsons/stop-representing-client.json');
 
 module.exports = {
   editAppeal,
@@ -43,5 +46,8 @@ module.exports = {
   startDecisionAndReasons,
   prepareDecisionAndReasons,
   completeDecisionAndReasonsGranted,
-  completeDecisionAndReasonsDismissed
+  completeDecisionAndReasonsDismissed,
+  startAppealLegalRep,
+  submitAppealLegalRep,
+  stopRepresentingClient
 };

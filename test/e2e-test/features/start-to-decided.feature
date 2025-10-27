@@ -3,7 +3,7 @@ Feature: Decided
 
 Scenario: View granted appeal as appellant
   Given I am on home page
-  When I have WIP logged in as an appellant in state "decided"
+  When I have logged in for the e2e as an appellant in state "decided"
   Then I should see the appeal overview page
 
   # Appellant
@@ -14,7 +14,7 @@ Scenario: View granted appeal as appellant
 
 Scenario: View dismissed appeal as appellant
   Given I am on home page
-  When I have WIP logged in as an appellant in state "decided-dismissed"
+  When I have logged in for the e2e as an appellant in state "decided-dismissed"
   Then I should see the appeal overview page
 
   # Appellant

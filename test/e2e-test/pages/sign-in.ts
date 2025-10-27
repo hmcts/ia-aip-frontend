@@ -176,131 +176,31 @@ module.exports = {
       await I.wait(5);
     });
 
-    Given('I have WIP logged in', async () => {
+    Given('I have logged in for the e2e', async () => {
       I.amOnPage(testUrl + paths.common.login);
       await createCitizenUser();
       await signInForUserFromThread();
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
-    Given(/^I have WIP logged in as an appellant in state "([^"]*)"$/, async (appealState) => {
+    Given('I have logged back in for the e2e', async () => {
       I.amOnPage(testUrl + paths.common.login);
-
-      switch (appealState) {
-        case 'appealStarted': {
-          await createCitizenUser();
-          await signInForUserFromThread();
-          break;
-        }
-        case 'Saved appealStarted': {
-          await createCitizenUser();
-          await createCaseFromThread();
-          await progression.createCaseInStateFromThread(progression.State.appealStarted);
-          await signInForUserFromThread();
-          break;
-        }
-        case 'appealSubmitted': {
-          await createCitizenUser();
-          await createCaseFromThread();
-          await progression.createCaseInStateFromThread(progression.State.appealSubmitted);
-          await signInForUserFromThread();
-          break;
-        }
-        case 'pendingPayment': {
-          await setTestingSupportToken();
-          await createCitizenUser();
-          await createCaseFromThread();
-          await progression.createCaseInStateFromThread(progression.State.pendingPayment, 'refusalOfHumanRights');
-          await signInForUserFromThread();
-          break;
-        }
-        case 'ended': {
-          await setTestingSupportToken();
-          await createCitizenUser();
-          await createCaseFromThread();
-          await progression.createCaseInStateFromThread(progression.State.ended);
-          await signInForUserFromThread();
-          break;
-        }
-        case 'awaitingReasonsForAppeal': {
-          await createCitizenUser();
-          await createCaseFromThread();
-          await progression.createCaseInStateFromThread(progression.State.awaitingReasonsForAppeal);
-          await signInForUserFromThread();
-          break;
-        }
-        case 'Saved awaitingReasonsForAppeal': {
-          await createCitizenUser();
-          await createCaseFromThread();
-          await progression.createCaseInStateFromThread(progression.State.awaitingReasonsForAppeal);
-          await signInForUserFromThread();
-          break;
-        }
-        case 'awaitingReasonsForAppeal with time extensions': {
-          // unused
-          break;
-        }
-        case 'awaitingClarifyingQuestionsAnswers with time extensions': {
-          // unused
-          break;
-        }
-        case 'awaitingClarifyingQuestionsAnswers': {
-          await createCitizenUser();
-          await createCaseFromThread();
-          await progression.createCaseInStateFromThread(progression.State.awaitingClarifyingQuestionsAnswers);
-          await signInForUserFromThread();
-          break;
-        }
-        case 'awaitingCmaRequirements': {
-          // unused
-          break;
-        }
-        case 'awaitingCmaRequirements with time extensions': {
-          // unused
-          break;
-        }
-        case 'cmaRequirementsSubmitted': {
-          // unused
-          break;
-        }
-        case 'cmaListed': {
-          // unused
-          break;
-        }
-        case 'preHearing': {
-          await createCitizenUser();
-          await createCaseFromThread();
-          await progression.createCaseInStateFromThread(progression.State.preHearing);
-          await signInForUserFromThread();
-          break;
-        }
-        case 'decided': {
-          await createCitizenUser();
-          await createCaseFromThread();
-          await progression.createCaseInStateFromThread(progression.State.decided);
-          await signInForUserFromThread();
-          break;
-        }
-        case 'ftpaOutOfTimeApplicationStarted': {
-          await createCitizenUser();
-          await createCaseFromThread();
-          await progression.createCaseInStateFromThread(progression.State.decided);
-          await signInForUserFromThread();
-          break;
-        }
-        case 'decided-dismissed': {
-          await createCitizenUser();
-          await createCaseFromThread();
-          await progression.createCaseInStateFromThread(progression.State.decided, 'protection', 'dismissed');
-          await signInForUserFromThread();
-          break;
-        }
-        default:
-          break;
-      }
-
+      await signInForUserFromThread();
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
+    Given(/^I have logged in for the e2e as an appellant in state "([^"]*)"$/, async (appealState) => {
+      I.amOnPage(testUrl + paths.common.login);
+      await createCitizenUser();
+      const appealType: string = appealState === 'pendingPayment' ? 'refusalOfHumanRights' : null;
+      await createCaseFromThread();
+      if (appealState === 'decided-dismissed') {
+        await progression.createCaseInStateFromThread(progression.State.decided, 'protection', 'dismissed');
+      } else {
+        await progression.createCaseInStateFromThread(progression.State[appealState], appealType);
+      }
+      await signInForUserFromThread();
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
+    });
   }
 };

@@ -2,7 +2,7 @@
 Feature: Basic Appeal Submissions
   Background:
     Given I am on home page
-    When I have WIP logged in
+    When I have logged in for the e2e
     Then I should see the appeal overview page
 
   Scenario: Accessibility

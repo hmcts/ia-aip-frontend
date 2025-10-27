@@ -2,7 +2,7 @@
 Feature: Make an application
   Scenario: Ask to withdraw
     Given I am on home page
-    When I have WIP logged in as an appellant in state "appealSubmitted"
+    When I have logged in for the e2e as an appellant in state "appealSubmitted"
     Then I should see the appeal overview page
 
     When I click the Withdraw my appeal link
@@ -23,7 +23,7 @@ Feature: Make an application
 
   Scenario: Ask to change some of your details
     Given I am on home page
-    When I have WIP logged in as an appellant in state "appealSubmitted"
+    When I have logged in for the e2e as an appellant in state "appealSubmitted"
     Then I should see the appeal overview page
 
     When I click the Ask to change some of your details link
@@ -44,7 +44,7 @@ Feature: Make an application
 
   Scenario: Ask to link or unlink
     Given I am on home page
-    When I have WIP logged in as an appellant in state "appealSubmitted"
+    When I have logged in for the e2e as an appellant in state "appealSubmitted"
     Then I should see the appeal overview page
 
     When I click the Ask to link or unlink with another appeal link
@@ -65,7 +65,7 @@ Feature: Make an application
 
   Scenario: Ask to get judge to review
     Given I am on home page
-    When I have WIP logged in as an appellant in state "appealSubmitted"
+    When I have logged in for the e2e as an appellant in state "appealSubmitted"
     Then I should see the appeal overview page
 
     When I click the Ask for a judge to review a decision by a Tribunal Caseworker link
@@ -86,7 +86,7 @@ Feature: Make an application
 
   Scenario: Ask to do something else
     Given I am on home page
-    When I have WIP logged in as an appellant in state "appealSubmitted"
+    When I have logged in for the e2e as an appellant in state "appealSubmitted"
     Then I should see the appeal overview page
 
     When I click the Ask for something else link
@@ -105,7 +105,7 @@ Feature: Make an application
 
   Scenario: Ask for the appeal to be reinstated
     Given I am on home page
-    When I have WIP logged in as an appellant in state "ended"
+    When I have logged in for the e2e as an appellant in state "ended"
     Then I should see the appeal overview page
     When I click the Ask for the appeal to be reinstated link
     Then I should see the Ask for the appeal to be reinstated page

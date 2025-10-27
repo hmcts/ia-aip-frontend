@@ -4,7 +4,7 @@ import rp from 'request-promise';
 import { SecurityHeaders } from '../../app/service/authentication-service';
 import { isJWTExpired } from '../../app/utils/jwt-utils';
 import Logger, { getLogLabel } from '../../app/utils/logger';
-import { getCitizenUserFromThread, getUserToken, UserInfo } from './user-service';
+import { getCitizenUserFromThread, getUserId, getUserToken, UserInfo } from './user-service';
 
 const s2sSecret: string = config.get('s2s.secret');
 const s2sUrl: string = config.get('s2s.url');
@@ -14,9 +14,12 @@ const otp = require('otp');
 const ccdBaseUrl = config.get('ccd.apiUrl');
 const jurisdictionId = config.get('ccd.jurisdictionId');
 const caseType = config.get('ccd.caseType');
+const legalRepUserName: string = config.get('testAccounts.testLawFirmAUsername');
+const legalRepPassword: string = process.env.TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD;
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
+const events = require('./case-events/index.js');
 
 let serviceToken = null;
 
@@ -41,19 +44,19 @@ function createOptions(userId: string, headers: SecurityHeaders, uri) {
   };
 }
 
-function startCreateCase(userId: string, headers: SecurityHeaders): Promise<StartEventResponse> {
+function startCreateCase(userId: string, headers: SecurityHeaders, isLegalRep: boolean = false): Promise<StartEventResponse> {
   return rp.get(createOptions(
     userId,
     headers,
-    `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/event-triggers/startAppeal/token`
+    `${ccdBaseUrl}/${isLegalRep ? 'caseworkers' : 'citizens'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/event-triggers/startAppeal/token`
   ));
 }
 
-function submitCreateCase(userId: string, headers: SecurityHeaders, startEvent: SubmitEventData): Promise<CcdCaseDetails> {
+function submitCreateCase(userId: string, headers: SecurityHeaders, startEvent: SubmitEventData, isLegalRep: boolean = false): Promise<CcdCaseDetails> {
   const options: any = createOptions(
     userId,
     headers,
-    `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases?ignore-warning=true`);
+    `${ccdBaseUrl}/${isLegalRep ? 'caseworkers' : 'citizens'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases?ignore-warning=true`);
   options.body = startEvent;
 
   return rp.post(options);
@@ -148,6 +151,27 @@ async function createCase(user: UserInfo): Promise<void> {
   logger.trace(`Created case for user '${user.userId}' with case id '${user.caseId}'`, logLabel);
 }
 
+async function createLegalRepCase(user: UserInfo): Promise<void> {
+  const headers = await getSecurityHeaders({ email: legalRepUserName, password: legalRepPassword });
+  const userId = await getUserId(headers.userToken);
+  const startEventResponse = await startCreateCase(userId, headers, true);
+  const supplementaryDataRequest = generateSupplementaryId();
+  const data = events.startAppealLegalRep.case_data;
+  const caseDetails: CcdCaseDetails = await submitCreateCase(userId, headers, {
+    event: {
+      id: startEventResponse.event_id,
+      summary: 'Create case LR',
+      description: 'Create case LR'
+    },
+    data: data,
+    event_token: startEventResponse.token,
+    ignore_warning: true,
+    supplementary_data_request: supplementaryDataRequest
+  }, true);
+  user.caseId = caseDetails.id;
+  logger.trace(`Created case for user '${userId}' with case id '${user.caseId}'`, logLabel);
+}
+
 async function createCaseFromThread() {
   await createCase(getCitizenUserFromThread());
 }
@@ -178,5 +202,6 @@ export {
   getSecurityHeaders,
   getAppealState,
   createCase,
-  createCaseFromThread
+  createCaseFromThread,
+  createLegalRepCase
 };

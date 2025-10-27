@@ -21,6 +21,7 @@ OUTPUT_FILE="createCase.env"
 : > "$OUTPUT_FILE" # Clear the file if it exists
 
 TEST_CASEOFFICER_PASSWORD=$(az keyvault secret show --name "test-caseofficer-password" --vault-name "ia-aat" --query value -o tsv 2>/dev/null)
+TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD=$(az keyvault secret show --name "test-law-firm-share-case-a-password" --vault-name "ia-aat" --query value -o tsv 2>/dev/null)
 TEST_HOMEOFFICE_GENERIC_PASSWORD=$(az keyvault secret show --name "test-homeoffice-generic-password" --vault-name "ia-aat" --query value -o tsv 2>/dev/null)
 TEST_ADMINOFFICER_PASSWORD=$(az keyvault secret show --name "test-adminofficer-password" --vault-name "ia-aat" --query value -o tsv 2>/dev/null)
 TEST_JUDGE_X_PASSWORD=$(az keyvault secret show --name "test-judge-x-password" --vault-name "ia-aat" --query value -o tsv 2>/dev/null)
@@ -30,6 +31,7 @@ S2S_SECRET=$(az keyvault secret show --name "s2s-secret" --vault-name "ia-aat" -
 IDAM_CLIENT_SECRET=$(az keyvault secret show --name "mc-idam-client-secret" --vault-name "rpx-aat" --query value -o tsv 2>/dev/null)
 
 echo "TEST_CASEOFFICER_PASSWORD=$TEST_CASEOFFICER_PASSWORD" >> "$OUTPUT_FILE"
+echo "TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD=$TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD" >> "$OUTPUT_FILE"
 echo "TEST_HOMEOFFICE_GENERIC_PASSWORD=$TEST_HOMEOFFICE_GENERIC_PASSWORD" >> "$OUTPUT_FILE"
 echo "TEST_ADMINOFFICER_PASSWORD=$TEST_ADMINOFFICER_PASSWORD" >> "$OUTPUT_FILE"
 echo "TEST_JUDGE_X_PASSWORD=$TEST_JUDGE_X_PASSWORD" >> "$OUTPUT_FILE"
@@ -50,6 +52,7 @@ echo "TEST_CASEOFFICER_USERNAME=iac-base-func-test01@justice.gov.uk" >> "$OUTPUT
 echo "TEST_HOMEOFFICE_GENERIC_USERNAME=ia.respondentoffice.ccd@gmail.com" >> "$OUTPUT_FILE"
 echo "TEST_ADMINOFFICER_USERNAME=CRD_func_test_aat_adm66@justice.gov.uk" >> "$OUTPUT_FILE"
 echo "TEST_JUDGE_X_USERNAME=ia.iacjudge.ccd@gmail.com" >> "$OUTPUT_FILE"
+echo "TEST_LAW_FIRM_SHARE_CASE_A_USERNAME=ialegalreporgcreator12@mailnesia.com" >> "$OUTPUT_FILE"
 
 if [ "$ENVIRONMENT" = "aat" ]; then
     echo "CCD_API_URL=http://ccd-data-store-api-aat.service.core-compute-aat.internal" >> "$OUTPUT_FILE"

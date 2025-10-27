@@ -5,7 +5,7 @@ Scenario: Complete NoC Happy path AiP to LR
    Given I am on home page
    When I click Sign in to continue with your appeal
    Then I should see the sign in page
-   When I have WIP logged in as an appellant in state "appealSubmitted"
+   When I have logged in for the e2e as an appellant in state "appealSubmitted"
    Then I should see the appeal overview page
    And I click the I am no longer representing myself link
    And I create a accessibility report for the current page

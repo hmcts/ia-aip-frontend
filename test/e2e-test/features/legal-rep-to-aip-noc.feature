@@ -1,11 +1,9 @@
-@start-representing-yourself @lr-to-aip-noc
+@start-representing-yourself @lr-to-aip-noc @nightly-test
 Feature: Legal Rep to Appellant in person Notice of change
 
 Scenario: NoC Happy path LR to AiP
-   Given I log in as a Legal Rep
-   And I create a new case and submit it
-   And I grab the appeal reference from ExUi
-   And I stop representing the client
+   Given I create a new case and submit it as a Legal Rep
+   And I stop representing the client as a Legal Rep
    And I get the NoC required data from the sent notification
    When I visit the start-representing-yourself page
    Then I see the start-representing-yourself page content
@@ -19,5 +17,5 @@ Scenario: NoC Happy path LR to AiP
    Then I see the confirm case details page with the correct information
    When I click "Continue" button
    Then I am on the self register page
-   When I enter creds and click sign in
+   When I have logged back in for the e2e
    Then I should see the appeal overview page with the legal rep case details

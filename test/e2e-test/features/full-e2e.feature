@@ -5,7 +5,7 @@ I want be able to sign in
 
 Scenario: Complete appeal application
   Given I am on home page
-  When I have WIP logged in
+  When I have logged in for the e2e
   Then I should see the appeal overview page
   And I should see the 'do this next section' for 'New - Appeal started'
   When I click continue

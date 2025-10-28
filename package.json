@@ -26,7 +26,7 @@
     "sonar-scan": "sonar-scanner",
     "test:smoke": "NODE_ENV=test NODE_OPTIONS=--max-old-space-size=8192 IDAM_API_URL=https://idam-api.aat.platform.hmcts.net codeceptjs run -c codecept.smoke.ts --grep @smoke --reporter mochawesome",
     "test:smoke-local": "yarn codecept:e2e-local -g @smoke",
-    "test:nightly": "yarn codecept:e2e -g @testthis --reporter mocha-multi",
+    "test:nightly": "yarn codecept:e2e -g @nightly-test --reporter mocha-multi",
     "test:fullfunctional": "yarn test:nightly",
     "test:functional": "yarn genCert && yarn codecept:functional",
     "test:e2e": "yarn codecept:e2e -g @e2e",

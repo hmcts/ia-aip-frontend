@@ -8,7 +8,7 @@ Scenario: Complete NoC Happy path AiP to LR
    When I have logged in for the e2e as an appellant in state "appealSubmitted"
    Then I should see the appeal overview page
    And I click the I am no longer representing myself link
-   And I create a accessibility report for the current page
+   And I check page accessibility
 
    When I log in as a Legal Rep
    And I go to Notice of Change

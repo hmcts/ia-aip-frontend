@@ -28,6 +28,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@axe-core/puppeteer@npm:^4.11.0":
+  version: 4.11.0
+  resolution: "@axe-core/puppeteer@npm:4.11.0"
+  dependencies:
+    axe-core: "npm:~4.11.0"
+  peerDependencies:
+    puppeteer: ">=1.10.0"
+  checksum: 10/3d195d5bec48088200a7907f7b753110cfcafce7a881e42a281c8a5e9be46555bc33687b49071039af1a4a947b7bb5967cd1f40bd95e01e0e5e1609d590ea938
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/code-frame@npm:7.27.1"
@@ -4708,6 +4719,13 @@ __metadata:
   version: 1.13.2
   resolution: "aws4@npm:1.13.2"
   checksum: 10/290b9f84facbad013747725bfd8b4c42d0b3b04b5620d8418f0219832ef95a7dc597a4af7b1589ae7fce18bacde96f40911c3cda36199dd04d9f8e01f72fa50a
+  languageName: node
+  linkType: hard
+
+"axe-core@npm:~4.11.0":
+  version: 4.11.0
+  resolution: "axe-core@npm:4.11.0"
+  checksum: 10/18254ee95bc328aec9a909b22e4b22e8ff14a21363fdbd1a5227267e66bf1d2fc1425c186e9001759aab5827cf4ee9dc30f7ea57e8200cbf7a1cd555ed21a908
   languageName: node
   linkType: hard
 
@@ -9663,6 +9681,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ia-aip-frontend@workspace:."
   dependencies:
+    "@axe-core/puppeteer": "npm:^4.11.0"
     "@babel/core": "npm:^7.25.2"
     "@babel/preset-env": "npm:^7.25.4"
     "@hmcts/ia-idam-express-middleware": "npm:^6.7.5"

@@ -8,8 +8,9 @@ Scenario: View granted appeal as appellant
 
   # Appellant
   And I see "A judge has allowed your appeal." description in overview banner
+  And I check page accessibility
   When I click "Read the Decision and Reasons document" link
-  And I create a accessibility report for the current page
+  And I check page accessibility
   Then I see "Decision and Reasons" in title
 
 Scenario: View dismissed appeal as appellant
@@ -20,5 +21,5 @@ Scenario: View dismissed appeal as appellant
   # Appellant
   And I see "A judge has dismissed your appeal." description in overview banner
   When I click "Read the Decision and Reasons document" link
-  And I create a accessibility report for the current page
+  And I check page accessibility
   Then I see "Decision and Reasons" in title

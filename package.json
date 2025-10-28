@@ -28,6 +28,7 @@
     "test:smoke-local": "yarn codecept:e2e-local -g @smoke",
     "test:nightly": "yarn codecept:e2e -g @nightly-test --reporter mocha-multi",
     "test:fullfunctional": "yarn test:nightly",
+    "test:check-accessibility": "yarn codecept:e2e -g @accessibility",
     "test:functional": "yarn genCert && yarn codecept:functional",
     "test:e2e": "yarn codecept:e2e -g @e2e",
     "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functional && yarn test:e2e",
@@ -52,6 +53,7 @@
     }
   },
   "dependencies": {
+    "@axe-core/puppeteer": "^4.11.0",
     "@hmcts/ia-idam-express-middleware": "^6.7.5",
     "@hmcts/os-places-client": "^1.1.2",
     "@hmcts/properties-volume": "^0.0.13",

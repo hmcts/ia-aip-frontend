@@ -5,6 +5,13 @@ import {
   teardownAll as ourTeardownAll
 } from './test/functional/bootstrap';
 
+if (!globalThis.crypto) {
+  Object.defineProperty(globalThis, 'crypto', {
+    value: require('crypto').webcrypto,
+    configurable: true,
+  });
+}
+
 exports.config = {
   name: 'codecept',
   output: './functional-output/functional/reports/',

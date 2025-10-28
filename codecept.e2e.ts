@@ -2,6 +2,13 @@ import config from 'config';
 import * as testStateHelper from './test/e2e-test/testStateHelper';
 import { failureCheck } from './test/functional/bootstrap';
 
+if (!globalThis.crypto) {
+  Object.defineProperty(globalThis, 'crypto', {
+    value: require('crypto').webcrypto,
+    configurable: true,
+  });
+}
+
 exports.config = {
   name: 'codecept',
   timeout: 600,

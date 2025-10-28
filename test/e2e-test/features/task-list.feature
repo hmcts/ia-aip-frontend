@@ -1,4 +1,4 @@
-@nightly-test
+@nightly-test @testthis
 Feature: Task list
 
 Scenario: Task List links work
@@ -7,6 +7,7 @@ Scenario: Task List links work
   Then I should see the sign in page
   When I log in as an appellant ready to submit appeal
   Then I should see the appeal overview page
+  And I check page accessibility
   When I click continue
   Then I should see the task-list page
   When I click on the type-of-appeal link

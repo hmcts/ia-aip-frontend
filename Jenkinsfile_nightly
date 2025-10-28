@@ -194,7 +194,7 @@ withNightlyPipeline(type, product, component) {
                 builder.yarn('test:check-accessibility')
             } catch (Error) {
                 unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            }  finally {
+            } finally {
                 builder.yarn('generate-report')
                 publishHTML([
                         allowMissing         : true,

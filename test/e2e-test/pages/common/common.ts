@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import rp from 'request-promise';
 import { paths } from '../../../../app/paths';
-import { assertNoAxeViolations, axeTest, compileAxeTests } from '../../axeHelper';
+import { axeTest } from '../../axeHelper';
 const mockData = require('../../../mock/ccd/mock-case-data');
 
 const { fillInDate } = require('../helper-functions');
@@ -503,14 +503,6 @@ module.exports = {
 
     Then('I check page accessibility', async () => {
       await axeTest();
-    });
-
-    When('I compile the accessibility results into a json report', async () => {
-      await compileAxeTests();
-    });
-
-    Then('there should be no axe violations', async () => {
-      await assertNoAxeViolations();
     });
   }
 };

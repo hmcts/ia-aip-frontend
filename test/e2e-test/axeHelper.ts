@@ -22,16 +22,28 @@ type ReadableAxeResult = {
 
 export async function axeTest() {
   const page = container.helpers('Puppeteer').page;
-  const accessibilityScanResults = await new AxePuppeteer(page)
-    .withTags([
-      'wcag2a',
-      'wcag2aa',
-      'wcag21a',
-      'wcag21aa',
-      'wcag22a',
-      'wcag22aa'
-    ]).analyze();
-  if (accessibilityScanResults.violations.length > 0) {
+  let accessibilityScanResults = null;
+  const retries = 5;
+  for (let i = 1; i <= retries; i++) {
+    try {
+      accessibilityScanResults = await new AxePuppeteer(page)
+        .withTags([
+          'wcag2a',
+          'wcag2aa',
+          'wcag21a',
+          'wcag21aa',
+          'wcag22a',
+          'wcag22aa'
+        ]).analyze();
+      break;
+    } catch (error) {
+      if (i === retries) {
+        logger.exception(`Error during accessibility scan after ${retries} attempts: ${error}`, logLabel);
+        throw error;
+      }
+    }
+  }
+  if (accessibilityScanResults && accessibilityScanResults.violations.length > 0) {
     accessibilityScanResults.violations.forEach((violationType) => {
       let instances: ReadableAxeResult[] = violationType.nodes.map(
         (violationInstance) => {
@@ -50,21 +62,20 @@ export async function axeTest() {
   }
 }
 
-export async function compileAxeTests() {
-  const violations = readAccessibilityIssues().violations;
-  if (violations.length > 0) {
-    violations.forEach((violation: ReadableAxeResult) => {
-      let log = `Issue: ${violation.issue}\nImpact: ${violation.impact}\nFailure Summary: `
-        + `${violation.failureSummary}\nTarget HTML Object: ${violation.targetHtmlObject}\nFull HTML: `
-        + `${violation.fullHtml}\nPage URL: ${violation.pageUrl}\n\n`;
-      logger.trace(log, logLabel);
-    });
-  }
+function generateViolationLogs(violations: ReadableAxeResult[]) {
+  let logs: string[] = [];
+  violations.forEach((violation: ReadableAxeResult) => {
+    let log = `Issue: ${violation.issue}\nImpact: ${violation.impact}\nFailure Summary: `
+      + `${violation.failureSummary}\nTarget HTML Object: ${violation.targetHtmlObject}\nFull HTML: `
+      + `${violation.fullHtml}\nPage URL: ${violation.pageUrl}`;
+    logs.push(log);
+  });
+  return `\n${logs.join('\n--------------------------------------------\n')}\n\nThere are ${violations.length} accessibility issues`;
 }
 
-export async function assertNoAxeViolations() {
+export function assertNoAxeViolations() {
   const violations = readAccessibilityIssues().violations;
-  expect(violations.length, `There are ${violations.length} accessibility issues.`).to.equal(0);
+  expect(violations, generateViolationLogs(violations)).to.be.an('array').that.is.empty;
 }
 
 // Function to read the accessibility issues
@@ -81,6 +92,34 @@ function writeIssues(updatedIssues: object) {
 // Function to add new violations
 function addViolations(violations: ReadableAxeResult[]) {
   const issues = readAccessibilityIssues();
-  issues.violations.push(...violations);
+  const existingIssues: ReadableAxeResult[] = issues.violations || [];
+  // Filter out violations that already exist in `issues.violations`
+  const existingKeys = new Set(
+    existingIssues.map((issue) =>
+      JSON.stringify({
+        issue: issue.issue,
+        pageUrl: issue.pageUrl,
+        failureSummary: issue.failureSummary,
+        impact: issue.impact,
+        fullHtml: issue.fullHtml,
+        targetHtmlObject: issue.targetHtmlObject
+      })
+    )
+  );
+
+  const uniqueViolations = violations.filter((newViolation) => {
+    const key = JSON.stringify({
+      issue: newViolation.issue,
+      pageUrl: newViolation.pageUrl,
+      failureSummary: newViolation.failureSummary,
+      impact: newViolation.impact,
+      fullHtml: newViolation.fullHtml,
+      targetHtmlObject: newViolation.targetHtmlObject
+    });
+    return !existingKeys.has(key);
+  });
+
+  // Add unique violations to the existing list
+  issues.violations.push(...uniqueViolations);
   writeIssues(issues);
 }

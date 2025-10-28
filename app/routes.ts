@@ -17,7 +17,6 @@ import {
 import { setupHomeOfficeDetailsController } from './controllers/appeal-application/home-office-details';
 import { setupOutOfCountryController } from './controllers/appeal-application/out-of-country';
 import { setupOutOfTimeController } from './controllers/appeal-application/out-of-time';
-import { setupPersonalDetailsController } from './controllers/appeal-application/personal-details';
 import { setupStepToHelpWithFeesController } from './controllers/appeal-application/steps-to-help-with-fees';
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
@@ -257,8 +256,7 @@ const stepsToHelpWithFeesController = setupStepToHelpWithFeesController(middlewa
 const stepsToHelpWithFeesRefundController = setupStepToHelpWithFeesRefundController(middleware);
 const checkYourAnswersRefundController = setupCheckYourAnswersRefundController(middleware, updateAppealService);
 const confirmationRefundController = setConfirmationRefundController(middleware);
-const personalDetailsController = setupPersonalDetailsController(middleware, { updateAppealService, osPlacesClient });
-const contactDetailsController = setupContactDetailsController(middleware, updateAppealService);
+const contactDetailsController = setupContactDetailsController(middleware, { updateAppealService, osPlacesClient });
 const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService, paymentService);
 const confirmationController = setConfirmationController(middleware, updateAppealService);
 const outOfTimeController = setupOutOfTimeController(middleware, { updateAppealService, documentManagementService });
@@ -373,7 +371,7 @@ router.use(startRepresentingMyselfPublicControllers);
 router.use(idamController);
 router.use(askForMoreTime);
 // router.use(initSession);
-if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {
+if ((process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'aatDevelopment') && sessionLoggerEnabled) {
   router.use(logSession);
 }
 
@@ -385,7 +383,6 @@ for (let x = 0; x < privatePages.length; x++) {
 
 router.use(taskListController);
 router.use(homeOfficeDetailsController);
-router.use(personalDetailsController);
 router.use(typeOfAppealController);
 router.use(decisionTypeController);
 router.use(feeSupportController);

@@ -1,11 +1,11 @@
-import { Address, Point } from '@hmcts/os-places-client';
+import { Address, OSPlacesClient, Point } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response } from 'express';
 import * as _ from 'lodash';
 import {
   getManualEnterAddressPage,
   postManualEnterAddressPage,
-  setupPersonalDetailsController
-} from '../../../app/controllers/appeal-application/personal-details';
+  setupContactDetailsController
+} from '../../../app/controllers/appeal-application/contact-details';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -22,6 +22,7 @@ describe('Personal Details Controller', function () {
 
   let next: NextFunction;
   const logger: Logger = new Logger();
+  const osPlacesClient = new OSPlacesClient('someToken');
 
   const address = {
     line1: '',
@@ -71,12 +72,12 @@ describe('Personal Details Controller', function () {
     sandbox.restore();
   });
 
-  describe('setupPersonalDetailsController', () => {
+  describe('setupContactDetailsController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
-      setupPersonalDetailsController(middleware, { updateAppealService });
+      setupContactDetailsController(middleware, { updateAppealService, osPlacesClient } as any);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.enterAddress, middleware);
       expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.enterAddress, middleware);
     });
@@ -90,7 +91,7 @@ describe('Personal Details Controller', function () {
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
         address,
-        previousPage: paths.appealStarted.nationality
+        previousPage: paths.appealStarted.contactDetails
       });
     });
 
@@ -114,7 +115,7 @@ describe('Personal Details Controller', function () {
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
         address,
-        previousPage: paths.appealStarted.nationality
+        previousPage: paths.appealStarted.contactDetails
       });
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
 
@@ -126,7 +127,7 @@ describe('Personal Details Controller', function () {
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
         address,
-        previousPage: paths.appealStarted.nationality
+        previousPage: paths.appealStarted.contactDetails
       });
     });
 
@@ -191,11 +192,11 @@ describe('Personal Details Controller', function () {
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/enter-address.njk');
     });
 
-    it('should validate and redirect to task list page', async () => {
+    it('should validate and redirect to has sponsor page', async () => {
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.hasSponsor);
     });
 
     it('should catch an exception and call next()', async () => {

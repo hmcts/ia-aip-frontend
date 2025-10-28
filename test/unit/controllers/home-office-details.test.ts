@@ -108,7 +108,7 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('postHomeOfficeDetails', () => {
-    it('should validate and redirect home-office/details.njk', async () => {
+    it('should validate and redirect name page', async () => {
       const appeal: Appeal = {
         ...req.session.appeal,
         application: {
@@ -126,7 +126,7 @@ describe('Home Office Details Controller', function () {
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('1212-0099-0089-1080');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.letterReceived);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.name);
     });
 
     it('when save for later should validate and redirect task-list.njk', async () => {
@@ -507,7 +507,7 @@ describe('Home Office Details Controller', function () {
           error,
           errorList,
           dateLetterSent: { ...req.body },
-          previousPage: paths.appealStarted.details
+          previousPage: paths.appealStarted.nationality
         }
       );
     });
@@ -547,7 +547,7 @@ describe('Home Office Details Controller', function () {
           error,
           errorList,
           dateLetterSent: { ...req.body },
-          previousPage: paths.appealStarted.details
+          previousPage: paths.appealStarted.nationality
         }
       );
     });
@@ -580,7 +580,7 @@ describe('Home Office Details Controller', function () {
           error,
           errorList,
           dateLetterSent: { ...req.body },
-          previousPage: paths.appealStarted.details
+          previousPage: paths.appealStarted.nationality
         }
       );
     });
@@ -613,7 +613,7 @@ describe('Home Office Details Controller', function () {
           error,
           errorList,
           dateLetterSent: { ...req.body },
-          previousPage: paths.appealStarted.details
+          previousPage: paths.appealStarted.nationality
         }
       );
     });
@@ -642,7 +642,7 @@ describe('Home Office Details Controller', function () {
       getDateLetterSent(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/letter-sent.njk', {
         dateLetterSent: req.session.appeal.application.dateLetterSent,
-        previousPage: paths.appealStarted.details
+        previousPage: paths.appealStarted.nationality
       });
     });
 
@@ -713,7 +713,7 @@ describe('Home Office Details Controller', function () {
         dateLetterSent: {
           ...req.body
         },
-        previousPage: paths.appealStarted.details
+        previousPage: paths.appealStarted.nationality
       });
     });
 
@@ -740,7 +740,7 @@ describe('Home Office Details Controller', function () {
       getDateLetterReceived(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/letter-received.njk', {
         decisionLetterReceivedDate: req.session.appeal.application.decisionLetterReceivedDate,
-        previousPage: paths.appealStarted.details
+        previousPage: paths.appealStarted.nationality
       });
     });
 
@@ -811,7 +811,7 @@ describe('Home Office Details Controller', function () {
         decisionLetterReceivedDate: {
           ...req.body
         },
-        previousPage: paths.appealStarted.gwfReference
+        previousPage: paths.appealStarted.nationality
       });
     });
 

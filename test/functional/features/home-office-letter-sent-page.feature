@@ -3,7 +3,7 @@ Feature: Home office letter sent page @letterSent
   As a citizen
   I want to be able to enter a home office letter sent date
 
-  Scenario: Home office reference page
+  Scenario: Home office reference page 2
     Given I have an appeal with home office reference
     And I have logged in
     And I am on the home office letter sent page
@@ -11,7 +11,7 @@ Feature: Home office letter sent page @letterSent
     Then I am on the overview page
     Then I click continue
     Then I should see the task-list page
-    And I shouldnt be able to click "Your personal details"
+    And I shouldnt be able to click "Your contact details"
 
     Given I am on the home office letter sent page
     When I enter a day "1" month "1" year "1"
@@ -29,5 +29,5 @@ Feature: Home office letter sent page @letterSent
     Then I am on the overview page
     Then I click continue
     Then I should see the task-list page
-    And I shouldnt be able to click "Your personal details"
+    And I shouldnt be able to click "Your contact details"
 

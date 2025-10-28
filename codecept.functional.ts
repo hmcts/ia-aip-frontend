@@ -23,6 +23,9 @@ exports.config = {
     },
     FailedTest: {
       require: './test/e2e-test/helpers/failedTestHelper.ts'
+    },
+    FunctionalStepHelper: {
+      require: './test/e2e-test/helpers/functionalStepHelper.ts'
     }
   },
   gherkin: {

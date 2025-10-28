@@ -1,19 +1,6 @@
 import { getCitizenUserFromThread, UserInfo } from '../../wip/user-service';
-import { createUser } from '../service/idam-service';
 const { I } = inject();
 let currentUserDetails;
-
-async function signInHelper() {
-  const environment: string = process.env.NODE_ENV;
-  if (environment !== ('test' || 'development')) {
-    let userDetails = await createUser();
-    I.fillField('#username', userDetails.email);
-    I.fillField('#password', userDetails.password);
-    currentUserDetails = userDetails;
-  }
-  I.click('Sign in');
-  I.wait(5);
-}
 
 function signInForUser(email: string) {
   I.fillField('#username', email);
@@ -41,7 +28,6 @@ function enterRefNumber(refNumber) {
 }
 
 export {
-  signInHelper,
   signInForUser,
   fillInDate,
   enterRefNumber,

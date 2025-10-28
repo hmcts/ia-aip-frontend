@@ -7,7 +7,7 @@ import {
 } from '../../wip/user-service';
 import { currentUserDetails, signInForUserFromThread } from './helper-functions';
 
-const { signInHelper, signInForUser } = require('./helper-functions');
+const { signInForUser } = require('./helper-functions');
 const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
 
@@ -40,34 +40,6 @@ module.exports = {
     When('I click Sign in to continue with your appeal after answering PCQ questions', async () => {
       await I.click('Sign in to continue with your appeal');
       await I.waitInUrl('/appeal-overview', 30);
-    });
-
-    When('I enter creds and click sign in', async () => {
-      await signInHelper();
-    });
-
-    Given('I am authenticated as a valid appellant', async () => {
-      await I.amOnPage(testUrl + paths.common.login);
-      await signInHelper();
-      if (!testUrl.includes('localhost')) {
-        for (let i = 0; i < 10; i++) {
-          let success = await I.checkIfLogInIsSuccessful(10);
-          if (success === true) {
-            break;
-          } else {
-            await I.amOnPage(testUrl + '/logout');
-            await I.amOnPage(testUrl + paths.common.login);
-            await I.fillField('#username', currentUserDetails.email);
-            await I.fillField('#password', currentUserDetails.password);
-            await I.click('Sign in');
-          }
-        }
-      } else {
-        await I.fillField('#username', currentUserDetails.email);
-        await I.fillField('#password', currentUserDetails.password);
-        await I.click('Sign in');
-      }
-      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given('I log in as an appellant ready to submit appeal', async () => {

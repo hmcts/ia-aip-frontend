@@ -97,5 +97,19 @@ withPipeline("nodejs", product, component) {
   before("functionalTest") {
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
   }
+
+  afterAlways('functionalTest') {
+    builder.yarn('generate-report')
+    publishHTML([
+          allowMissing         : true,
+          alwaysLinkToLastBuild: true,
+          keepAll              : true,
+          reportDir            : "allure-report",
+          reportFiles          : 'index.html',
+          reportName           : 'Functional Tests'
+    ])
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-report/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-results/*'
+  }
 }
 

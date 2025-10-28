@@ -39,6 +39,10 @@ exports.config = {
     },
     retryTo: {
       enabled: true
+    },
+    allure: {
+      enabled: true,
+      require: 'allure-codeceptjs'
     }
   },
   'mocha': {

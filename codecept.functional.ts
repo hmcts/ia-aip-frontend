@@ -1,5 +1,9 @@
 const config = require('config');
-import { bootstrap as ourBootStrap, failureCheck as ourTeardown, teardownAll as ourTeardownAll } from './test/functional/bootstrap';
+import {
+  bootstrap as ourBootStrap,
+  failureCheck as ourTeardown,
+  teardownAll as ourTeardownAll
+} from './test/functional/bootstrap';
 
 exports.config = {
   name: 'codecept',

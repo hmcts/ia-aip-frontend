@@ -1,5 +1,9 @@
 const config = require('config');
-import { bootstrap as ourBootStrap, failureCheck as ourTeardown, teardownAll as ourTeardownAll } from './test/functional/bootstrap';
+import {
+  bootstrap as ourBootStrap,
+  failureCheck as ourTeardown,
+  teardownAll as ourTeardownAll
+} from './test/functional/bootstrap';
 
 exports.config = {
   name: 'codecept',
@@ -23,6 +27,9 @@ exports.config = {
     },
     FailedTest: {
       require: './test/e2e-test/helpers/failedTestHelper.ts'
+    },
+    FunctionalStepHelper: {
+      require: './test/e2e-test/helpers/functionalStepHelper.ts'
     }
   },
   gherkin: {
@@ -39,6 +46,10 @@ exports.config = {
     },
     retryTo: {
       enabled: true
+    },
+    allure: {
+      enabled: true,
+      require: 'allure-codeceptjs'
     }
   },
   'mocha': {

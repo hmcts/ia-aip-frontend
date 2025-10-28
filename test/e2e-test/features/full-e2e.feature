@@ -5,9 +5,7 @@ I want be able to sign in
 
 Scenario: Complete appeal application
   Given I am on home page
-  When I click Sign in to continue with your appeal
-  Then I should see the sign in page
-  When I am authenticated as a valid appellant
+  When I have logged in for the e2e
   Then I should see the appeal overview page
   And I should see the 'do this next section' for 'New - Appeal started'
   When I click continue
@@ -74,6 +72,8 @@ Scenario: Complete appeal application
   And I see the respond by date is 5 days in the future
 
   # Case Progression
+  When I click "See your appeal progress" button
+  Then I should see the appeal overview page
   When I grab the Online Case Reference
   And I sign in as a Case Officer and Request Home Office data
   And I Request respondent evidence

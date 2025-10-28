@@ -17,29 +17,21 @@ function writeTestState(updatedState: object) {
 // Function to reset the current test suite state
 export function resetTestState() {
   const state = readTestState();
-  state.testsPassed = 0;
-  state.testFailed = false;
-  state.testsTitles = [];
-  writeTestState(state);
-}
-
-// Function to update testFailed
-export function setTestFailed(value: boolean) {
-  const state = readTestState();
-  state.testFailed = value;
+  state.testsRun = [];
+  state.testsPassed = [];
   writeTestState(state);
 }
 
 // Function to increment testsPassed
-export function incrementTestsPassed() {
+export function addTestPassed(title: string) {
   const state = readTestState();
-  state.testsPassed += 1;
+  state.testsPassed.push(title);
   writeTestState(state);
 }
 
-// Function to add a title to testsTitles
-export function addTestTitle(title: string) {
+// Function to add a title to testsRun
+export function addTestRun(title: string) {
   const state = readTestState();
-  state.testsTitles.push(title);
+  state.testsRun.push(title);
   writeTestState(state);
 }

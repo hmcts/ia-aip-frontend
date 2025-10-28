@@ -1,7 +1,6 @@
 import config from 'config';
 import * as testStateHelper from './test/e2e-test/testStateHelper';
 import { failureCheck } from './test/functional/bootstrap';
-import { setTestingSupportToken } from './test/wip/user-service';
 
 exports.config = {
   name: 'codecept',
@@ -9,7 +8,9 @@ exports.config = {
   output: './functional-output/e2e/reports/',
   bootstrapAll: async () => {
     testStateHelper.resetTestState();
-    await setTestingSupportToken();
+  },
+  teardown: async () => {
+    failureCheck();
   },
   teardownAll: async () => {
     failureCheck();
@@ -44,6 +45,10 @@ exports.config = {
     },
     retryTo: {
       enabled: true
+    },
+    allure: {
+      enabled: true,
+      require: 'allure-codeceptjs'
     }
   },
   'mocha': {
@@ -53,13 +58,6 @@ exports.config = {
         'options': {
           'verbose': true,
           'steps': true
-        }
-      },
-      'mochawesome': {
-        'stdout': './functional-output/e2e/reports/console.log',
-        'options': {
-          'reportDir': './functional-output/e2e/reports/',
-          'reportFilename': 'report'
         }
       }
     }

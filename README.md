@@ -168,13 +168,6 @@ In case we added some custom styles, or modified existing one we need to refresh
 2. yarn build
 3. yarn dev
 
-# test/wip folder
-The test/wip folder is used to store some work in progress functional/e2e functions that allow us to create AiP cases in AAT and preview environments and progress them by pushing event data directly to CCD using its API. This will hit the callbacks and essentially simulate manually running the event.
-
-There are base UserInfo profiles set up i.e. user-service/citizenUser1 which are used to create and then store the user's info based on the current worker thread to stop cross contamination of data. 
-
-The event data is stored in `test/wip/case-progression-service/case-events` as json files which are then passed to the `triggerEvent()` function in `case-progression-service.ts` to progress the case to the next state.
-
 # Creating cases and progressing them via command line
 ### Environment Variables
 To run the case creation and progression scripts you will need to set the following environment variables:

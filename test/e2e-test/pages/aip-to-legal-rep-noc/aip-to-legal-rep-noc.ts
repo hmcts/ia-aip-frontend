@@ -1,4 +1,4 @@
-import { getCitizenUserFromThread } from '../../../wip/user-service';
+import { getCitizenUserFromThread } from '../../service/user-service';
 
 const config = require('config');
 let exuiBaseUrl;

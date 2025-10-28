@@ -1,5 +1,5 @@
-import * as progression from '../../../wip/case-progression-service';
-import { createCitizenUser } from '../../../wip/user-service';
+import * as progression from '../../service/case-progression-service';
+import { createCitizenUser } from '../../service/user-service';
 const config = require('config');
 let exuiBaseUrl;
 let appealReference;

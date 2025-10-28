@@ -40,9 +40,9 @@
     "codecept:e2e-local": "IDAM_API_URL=http://localhost:5000 codeceptjs run -c codecept.e2e.ts --verbose --debug",
     "setupUser": "cross-env NODE_ENV=e2e-local codeceptjs run -c codecept.setup.js --verbose --debug | grep ia_citizen",
     "get-create-case-variables": "zsh scripts/get-create-case-variables.sh",
-    "createCase-aat": "zsh ./scripts/get-create-case-variables.sh aat && cross-env $(cat createCase.env | xargs) node --require ts-node/register/transpile-only test/wip/create-case-in-state.ts",
-    "createCase-frontend-pr": "zsh ./scripts/get-create-case-variables.sh pr-aip $PR_NUMBER && cross-env $(cat createCase.env | xargs) node --require ts-node/register/transpile-only test/wip/create-case-in-state.ts",
-    "createCase-case-api-pr": "zsh ./scripts/get-create-case-variables.sh pr-case-api $PR_NUMBER && cross-env $(cat createCase.env | xargs) node --require ts-node/register/transpile-only test/wip/create-case-in-state.ts",
+    "createCase-aat": "zsh ./scripts/get-create-case-variables.sh aat && cross-env $(cat createCase.env | xargs) node --require ts-node/register/transpile-only test/e2e-test/service/create-case-in-state.ts",
+    "createCase-frontend-pr": "zsh ./scripts/get-create-case-variables.sh pr-aip $PR_NUMBER && cross-env $(cat createCase.env | xargs) node --require ts-node/register/transpile-only test/e2e-test/service/create-case-in-state.ts",
+    "createCase-case-api-pr": "zsh ./scripts/get-create-case-variables.sh pr-case-api $PR_NUMBER && cross-env $(cat createCase.env | xargs) node --require ts-node/register/transpile-only test/e2e-test/service/create-case-in-state.ts",
     "test:mutation": "NODE_CONFIG_DIR=./config DEFAULT_LAUNCH_DARKLY_FLAG=false stryker run stryker.node.conf.js",
     "test:mutation-local": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js",
     "genCert": "mkdir -p keys && openssl req -x509 -newkey rsa:4096 -keyout keys/server.key -out keys/server.cert -sha256 -days 365 -nodes -subj \"/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=CommonNameOrHostname\""

@@ -1,10 +1,10 @@
 import { paths } from '../../../app/paths';
-import * as progression from '../../wip/case-progression-service';
-import { createCaseFromThread } from '../../wip/ccd-service';
+import * as progression from '../service/case-progression-service';
+import { createCaseFromThread } from '../service/ccd-service';
 import {
   createCitizenUser,
   setTestingSupportToken
-} from '../../wip/user-service';
+} from '../service/user-service';
 import { currentUserDetails, signInForUserFromThread } from './helper-functions';
 
 const { signInForUser } = require('./helper-functions');

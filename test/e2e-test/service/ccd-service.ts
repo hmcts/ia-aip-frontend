@@ -1,9 +1,9 @@
 import axios from 'axios';
 import config from 'config';
 import rp from 'request-promise';
-import { SecurityHeaders } from '../../app/service/authentication-service';
-import { isJWTExpired } from '../../app/utils/jwt-utils';
-import Logger, { getLogLabel } from '../../app/utils/logger';
+import { SecurityHeaders } from '../../../app/service/authentication-service';
+import { isJWTExpired } from '../../../app/utils/jwt-utils';
+import Logger, { getLogLabel } from '../../../app/utils/logger';
 import { getCitizenUserFromThread, getUserId, getUserToken, UserInfo } from './user-service';
 
 const s2sSecret: string = config.get('s2s.secret');

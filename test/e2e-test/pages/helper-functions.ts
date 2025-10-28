@@ -1,4 +1,4 @@
-import { getCitizenUserFromThread, UserInfo } from '../../wip/user-service';
+import { getCitizenUserFromThread, UserInfo } from '../service/user-service';
 const { I } = inject();
 let currentUserDetails;
 

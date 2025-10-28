@@ -1,6 +1,6 @@
 import { paths } from '../../../../app/paths';
 import Logger, { getLogLabel } from '../../../../app/utils/logger';
-import { getCitizenUserFromThread, UserInfo } from '../../../wip/user-service';
+import { getCitizenUserFromThread, UserInfo } from '../../service/user-service';
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 const config = require('config');

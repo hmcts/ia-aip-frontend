@@ -1,4 +1,4 @@
-import { getCitizenUserFromThread } from '../../wip/user-service';
+import { getCitizenUserFromThread } from './user-service';
 
 const config = require('config');
 const caseOfficerUserName = config.get('testAccounts.testCaseOfficerUserName');

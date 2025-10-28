@@ -2,7 +2,7 @@
 import helper from '@codeceptjs/helper';
 
 import Logger, { getLogLabel } from '../../../app/utils/logger';
-import { deleteCitizenUser } from '../../wip/user-service';
+import { deleteCitizenUser } from '../service/user-service';
 import * as testStateHelper from '../testStateHelper';
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);

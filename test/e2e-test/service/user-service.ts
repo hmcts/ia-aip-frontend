@@ -1,5 +1,5 @@
-import { isJWTExpired } from '../../app/utils/jwt-utils';
-import Logger, { getLogLabel } from '../../app/utils/logger';
+import { isJWTExpired } from '../../../app/utils/jwt-utils';
+import Logger, { getLogLabel } from '../../../app/utils/logger';
 
 const axios = require('axios');
 const config = require('config');

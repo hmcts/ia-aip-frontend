@@ -1,7 +1,6 @@
 import config from 'config';
 import * as testStateHelper from './test/e2e-test/testStateHelper';
 import { failureCheck } from './test/functional/bootstrap';
-const workerThreads = require('node:worker_threads');
 
 exports.config = {
   name: 'codecept',
@@ -46,6 +45,10 @@ exports.config = {
     },
     retryTo: {
       enabled: true
+    },
+    allure: {
+      enabled: true,
+      require: 'allure-codeceptjs'
     }
   },
   'mocha': {
@@ -56,15 +59,8 @@ exports.config = {
           'verbose': true,
           'steps': true
         }
-      },
-      'mocha-junit-reporter': {
-        'stdout': './functional-output/e2e/reports/console.log',
-        'options': {
-          'mochaFile': `./functional-output/e2e/reports/report${workerThreads.threadId}.xml`
-        }
       }
-    },
-    'require': ['mochawesome/register']
+    }
   },
   require: ['ts-node/register/transpile-only']
 };

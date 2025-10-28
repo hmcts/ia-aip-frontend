@@ -502,7 +502,7 @@ module.exports = {
     });
 
     Then('I check page accessibility', async () => {
-      await I.see('#main-content');
+      await I.seeElement('#main-content');
       await axeTest();
     });
   }

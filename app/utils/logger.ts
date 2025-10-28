@@ -54,7 +54,7 @@ export default class Logger implements ILogger {
 
   console(message: string, label: string, severity?: number, workerId: number = null) {
     const log: string = `[${label}]: ${message}`;
-    const worker: string = workerId !== null ? `[0${workerId}] ` : '';
+    const worker: string = workerId === null ? '' : `[0${workerId}] `;
     switch (severity) {
       case SEVERITY.REQUEST:
         // tslint:disable:no-console

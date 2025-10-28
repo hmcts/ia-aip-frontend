@@ -1,16 +1,5 @@
 const config = require('config');
-import {
-  bootstrap as ourBootStrap,
-  failureCheck as ourTeardown,
-  teardownAll as ourTeardownAll
-} from './test/functional/bootstrap';
-
-if (!globalThis.crypto) {
-  Object.defineProperty(globalThis, 'crypto', {
-    value: require('crypto').webcrypto,
-    configurable: true
-  });
-}
+import { bootstrap as ourBootStrap, failureCheck as ourTeardown, teardownAll as ourTeardownAll } from './test/functional/bootstrap';
 
 exports.config = {
   name: 'codecept',

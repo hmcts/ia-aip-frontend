@@ -1,4 +1,4 @@
-@nightly-test @testthis
+@nightly-test
 Feature: Task list
 
 Scenario: Task List links work

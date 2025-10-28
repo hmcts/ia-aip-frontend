@@ -27,6 +27,7 @@ export async function axeTest() {
   for (let i = 1; i <= retries; i++) {
     try {
       accessibilityScanResults = await new AxePuppeteer(page)
+        .options({ pingWaitTime: 5000 })
         .withTags([
           'wcag2a',
           'wcag2aa',
@@ -41,6 +42,7 @@ export async function axeTest() {
         logger.exception(`Error during accessibility scan after ${retries} attempts: ${error}`, logLabel);
         throw error;
       }
+      logger.exception(`Accessibility scan attempt ${i} failed: ${error}`, logLabel);
     }
   }
   if (accessibilityScanResults && accessibilityScanResults.violations.length > 0) {

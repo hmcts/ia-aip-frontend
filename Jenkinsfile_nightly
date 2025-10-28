@@ -187,15 +187,17 @@ withNightlyPipeline(type, product, component) {
     }
 
     afterAlways('fullFunctionalTest') {
+        builder.yarn('generate-report')
         publishHTML([
                 allowMissing         : true,
                 alwaysLinkToLastBuild: true,
                 keepAll              : true,
-                reportDir            : "functional-output/e2e/reports/html",
+                reportDir            : "allure-report",
                 reportFiles          : 'index.html',
                 reportName           : 'Functional E2E Tests'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/e2e/reports/**/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-report/**/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-results/*'
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/accessibility/*'
     }
 }

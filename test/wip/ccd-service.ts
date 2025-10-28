@@ -17,8 +17,9 @@ const caseType = config.get('ccd.caseType');
 const legalRepUserName: string = config.get('testAccounts.testLawFirmAUsername');
 const legalRepPassword: string = process.env.TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD;
 
+const workerThreads = require('node:worker_threads');
 const logger: Logger = new Logger();
-const logLabel: string = getLogLabel(__filename);
+const logLabel: string = `[${workerThreads.threadId}]   ${getLogLabel(__filename)}`;
 const events = require('./case-events/index.js');
 
 let serviceToken = null;

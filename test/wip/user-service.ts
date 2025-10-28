@@ -13,9 +13,9 @@ const testUrl = config.get('testUrl');
 
 const redirectUrl = `${testUrl}/redirectUrl`;
 
-const logger: Logger = new Logger();
-const logLabel: string = getLogLabel(__filename);
 const workerThreads = require('node:worker_threads');
+const logger: Logger = new Logger();
+const logLabel: string = `[${workerThreads.threadId}]   ${getLogLabel(__filename)}`;
 
 type UserInfo = {
   email: string;

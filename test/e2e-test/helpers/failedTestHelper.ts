@@ -4,8 +4,9 @@ import helper from '@codeceptjs/helper';
 import Logger, { getLogLabel } from '../../../app/utils/logger';
 import { deleteCitizenUser } from '../../wip/user-service';
 import * as testStateHelper from '../testStateHelper';
+const workerThreads = require('node:worker_threads');
 const logger: Logger = new Logger();
-const logLabel: string = getLogLabel(__filename);
+const logLabel: string = `[${workerThreads.threadId}]   ${getLogLabel(__filename)}`;
 
 class FailedTest extends helper {
   async _failed(test: any) {
@@ -18,6 +19,10 @@ class FailedTest extends helper {
     testStateHelper.addTestRun(test.title);
     testStateHelper.addTestPassed(test.title);
     await deleteCitizenUser();
+  }
+
+  async _before(test: any) {
+    logger.trace('Starting test: ' + test.title, logLabel);
   }
 }
 

@@ -8,7 +8,7 @@ import {
 if (!globalThis.crypto) {
   Object.defineProperty(globalThis, 'crypto', {
     value: require('crypto').webcrypto,
-    configurable: true,
+    configurable: true
   });
 }
 

@@ -41,23 +41,30 @@ export default class Logger implements ILogger {
     this.console(message, label, SEVERITY.TRACE);
   }
 
+  traceWorker(message: string, label: string) {
+    const workerThreads = require('node:worker_threads');
+    if (this.client) this.client.trackTrace({ message: message });
+    this.console(message, label, SEVERITY.TRACE, workerThreads.threadId);
+  }
+
   exception(message: string, label: string) {
     if (this.client) this.client.trackException({ exception: new Error(message) });
     this.console(message, label, SEVERITY.EXCEPTION);
   }
 
-  console(message: string, label: string, severity?: number) {
+  console(message: string, label: string, severity?: number, workerId: number = null) {
     const log: string = `[${label}]: ${message}`;
+    const worker: string = workerId !== null ? `[${workerId}]   ` : '';
     switch (severity) {
       case SEVERITY.REQUEST:
         // tslint:disable:no-console
-        console.log(chalk.white(`Request: ${log}`));
+        console.log(chalk.white(`${worker}Request: ${log}`));
         break;
       case SEVERITY.TRACE:
-        console.warn(chalk.green(`Info: ${log} `));
+        console.warn(chalk.green(`${worker}Info: ${log} `));
         break;
       case SEVERITY.EXCEPTION:
-        console.error(chalk.red(`Exception: ${log}`));
+        console.error(chalk.red(`${worker}Exception: ${log}`));
         break;
       default:
         break;

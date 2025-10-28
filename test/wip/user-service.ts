@@ -15,7 +15,7 @@ const redirectUrl = `${testUrl}/redirectUrl`;
 
 const workerThreads = require('node:worker_threads');
 const logger: Logger = new Logger();
-const logLabel: string = `[${workerThreads.threadId}]   ${getLogLabel(__filename)}`;
+const logLabel: string = getLogLabel(__filename);
 
 type UserInfo = {
   email: string;
@@ -71,14 +71,14 @@ async function createUser(userInfo: UserInfo) {
     });
     userInfo.userToken = await getUserToken(userInfo);
     userInfo.userId = await getUserId(userInfo.userToken);
-    logger.trace(`Creating user: ${userInfo.email}`, logLabel);
+    logger.traceWorker(`Creating user: ${userInfo.email}`, logLabel);
   } catch (error) {
     logger.exception(`Error in createUser: ${error.message}`, logLabel);
   }
 }
 
 async function deleteUser(userInfo: UserInfo) {
-  logger.trace(`Deleting user: ${userInfo.email}`, logLabel);
+  logger.traceWorker(`Deleting user: ${userInfo.email}`, logLabel);
   try {
     await axios.delete(`${idamTestingSupportUrl}/test/idam/users/${userInfo.userId}`, {
       headers: {

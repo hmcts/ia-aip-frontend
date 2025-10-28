@@ -17,9 +17,8 @@ const caseType = config.get('ccd.caseType');
 const legalRepUserName: string = config.get('testAccounts.testLawFirmAUsername');
 const legalRepPassword: string = process.env.TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD;
 
-const workerThreads = require('node:worker_threads');
 const logger: Logger = new Logger();
-const logLabel: string = `[${workerThreads.threadId}]   ${getLogLabel(__filename)}`;
+const logLabel: string = getLogLabel(__filename);
 const events = require('./case-events/index.js');
 
 let serviceToken = null;
@@ -109,7 +108,7 @@ async function requestServiceToken() {
   }
   if (res && res.data) {
     serviceToken = res.data;
-    logger.trace('Received S2S token and stored token', logLabel);
+    logger.traceWorker('Received S2S token and stored token', logLabel);
   } else {
     logger.exception('Could not retrieve S2S token', logLabel);
   }
@@ -118,7 +117,7 @@ async function requestServiceToken() {
 
 async function getServiceToken() {
   if (serviceToken == null || isJWTExpired(serviceToken)) {
-    logger.trace('Token expired Attempting to acquire a new one.', logLabel);
+    logger.traceWorker('Token expired Attempting to acquire a new one.', logLabel);
     await requestServiceToken();
   }
   return `Bearer ${serviceToken}`;
@@ -149,7 +148,7 @@ async function createCase(user: UserInfo): Promise<void> {
     supplementary_data_request: supplementaryDataRequest
   });
   user.caseId = caseDetails.id;
-  logger.trace(`Created case for user '${user.userId}' with case id '${user.caseId}'`, logLabel);
+  logger.traceWorker(`Created case for user '${user.userId}' with case id '${user.caseId}'`, logLabel);
 }
 
 async function createLegalRepCase(user: UserInfo): Promise<void> {
@@ -170,7 +169,7 @@ async function createLegalRepCase(user: UserInfo): Promise<void> {
     supplementary_data_request: supplementaryDataRequest
   }, true);
   user.caseId = caseDetails.id;
-  logger.trace(`Created case for user '${userId}' with case id '${user.caseId}'`, logLabel);
+  logger.traceWorker(`Created case for user '${userId}' with case id '${user.caseId}'`, logLabel);
 }
 
 async function createCaseFromThread() {
@@ -178,9 +177,9 @@ async function createCaseFromThread() {
 }
 
 async function updateAppeal(event, userId: string, caseId: string, caseData: CaseData, headers: SecurityHeaders, citizen: boolean): Promise<void> {
-  logger.trace(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${caseId}'`, logLabel);
+  logger.traceWorker(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${caseId}'`, logLabel);
   const updateEventResponse = await startUpdateAppeal(userId, caseId, event.id, headers, citizen);
-  logger.trace(`Submitting update appeal case with event '${event.id}'`, logLabel);
+  logger.traceWorker(`Submitting update appeal case with event '${event.id}'`, logLabel);
   const supplementaryDataRequest = generateSupplementaryId();
 
   await submitUpdateAppeal(userId, caseId, headers, {
@@ -194,7 +193,7 @@ async function updateAppeal(event, userId: string, caseId: string, caseData: Cas
     ignore_warning: true,
     supplementary_data_request: supplementaryDataRequest
   }, citizen);
-  logger.trace(`Successfully submitted update appeal case with event '${event.id}'`, logLabel);
+  logger.traceWorker(`Successfully submitted update appeal case with event '${event.id}'`, logLabel);
 }
 
 export {

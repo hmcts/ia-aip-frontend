@@ -207,6 +207,7 @@ withNightlyPipeline(type, product, component) {
                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-report/**/*'
                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-results/*'
                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/accessibility/*'
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'accessibility-issues.json'
             }
         }
     }

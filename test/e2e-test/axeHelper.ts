@@ -5,8 +5,7 @@ import * as path from 'path';
 import Logger, { getLogLabel } from '../../app/utils/logger';
 
 const container = require('codeceptjs').container;
-
-const accessibilityIssuesPath = path.resolve(__dirname, './accessibility-issues.json');
+const accessibilityIssuesPath = path.resolve(__dirname, '../../accessibility-issues.json');
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 

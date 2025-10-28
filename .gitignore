@@ -8,6 +8,8 @@ build
 test/coverage
 mochawesome-report/
 functional-output
+allure-results
+allure-report
 .env
 output
 _output

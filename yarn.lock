@@ -3638,7 +3638,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/puppeteer@npm:*, @types/puppeteer@npm:^5.4.7":
+"@types/puppeteer@npm:*":
   version: 5.4.7
   resolution: "@types/puppeteer@npm:5.4.7"
   dependencies:
@@ -9706,7 +9706,6 @@ __metadata:
     "@types/multer": "npm:^2.0.0"
     "@types/node": "npm:^13.9.0"
     "@types/nunjucks": "npm:^3.1.2"
-    "@types/puppeteer": "npm:^5.4.7"
     "@types/sinon": "npm:^7.0.13"
     "@types/sinon-chai": "npm:^3.2.3"
     allure-codeceptjs: "npm:^3.4.1"
@@ -9773,7 +9772,7 @@ __metadata:
     pa11y: "npm:^8.0.0"
     pa11y-reporter-html: "npm:^2.0.0"
     process: "npm:^0.11.10"
-    puppeteer: "npm:^22.15.0"
+    puppeteer-core: "npm:^22.15.0"
     redis: "npm:^3.1.1"
     request-promise: "npm:^4.2.6"
     sass: "npm:^1.66.1"
@@ -14390,7 +14389,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer-core@npm:22.15.0":
+"puppeteer-core@npm:22.15.0, puppeteer-core@npm:^22.15.0":
   version: 22.15.0
   resolution: "puppeteer-core@npm:22.15.0"
   dependencies:
@@ -14423,7 +14422,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer@npm:^22.15.0, puppeteer@npm:^22.3.0":
+"puppeteer@npm:^22.3.0":
   version: 22.15.0
   resolution: "puppeteer@npm:22.15.0"
   dependencies:

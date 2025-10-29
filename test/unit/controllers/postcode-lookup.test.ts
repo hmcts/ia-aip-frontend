@@ -1,10 +1,11 @@
 import { Address, AddressInfoResponse, OSPlacesClient, Point } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response } from 'express';
 import {
+  ContactDetailsControllerDependencies,
   getPostcodeLookupPage,
   postPostcodeLookupPage,
-  setupPersonalDetailsController
-} from '../../../app/controllers/appeal-application/personal-details';
+  setupContactDetailsController
+} from '../../../app/controllers/appeal-application/contact-details';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
@@ -71,7 +72,7 @@ describe('Personal Details Controller', function () {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
-      setupPersonalDetailsController(middleware, { updateAppealService });
+      setupContactDetailsController(middleware, { updateAppealService, osPlacesClient } as ContactDetailsControllerDependencies);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.postcodeLookup, middleware);
       expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.postcodeLookup, middleware);
     });

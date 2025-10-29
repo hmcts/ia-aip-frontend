@@ -271,6 +271,28 @@ module.exports = {
       });
     });
 
+    Given('I have an appeal with home office details, name, date of birth, nationality and reason for appeal', async () => {
+      await setupData({
+        homeOfficeReferenceNumber: 'A1111111',
+        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
+        appellantGivenNames: 'givenName',
+        appellantFamilyName: 'familyName',
+        appellantDateOfBirth: '1981-01-01',
+        subscriptions: [ {
+          id: 1,
+          value: {
+            subscriber: 'appellant',
+            wantsEmail: 'No',
+            email: null,
+            wantsSms: 'Yes',
+            mobileNumber: '07899999999'
+          }
+        } ],
+        appealType: 'protection',
+        uploadTheNoticeOfDecisionDocs: []
+      });
+    });
+
     Given('I have an EU or EUSS or HU appeal with home office details, name, date of birth, nationality, address and reason for appeal', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',

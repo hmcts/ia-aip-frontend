@@ -1,0 +1,22 @@
+{
+  "target": {
+    "path": "pod/ia-case-api-pr-1375-java-6c8dfc875c-tpngd",
+    "namespace": "ia"
+  },
+  "agent": {
+    "startup_timeout": 300,
+    "namespace": "ia"
+  },
+  "feature": {
+    "network": {
+      "incoming": {
+        "mode": "steal"
+      },
+      "outgoing": {
+        "filter": {
+          "local": ["127.0.0.1", "localhost"]
+        }
+      }
+    }
+  }
+}

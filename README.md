@@ -167,4 +167,4 @@ In case we added some custom styles, or modified existing one we need to refresh
 1. in package.json we need to change "build": "webpack --config webpack/webpack.**dev**.js"
 2. yarn build
 3. yarn dev
-
+### Styles

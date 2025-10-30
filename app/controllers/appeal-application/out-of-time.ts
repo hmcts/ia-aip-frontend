@@ -5,6 +5,7 @@ import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { getFileUploadError } from '../../utils/upload-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { createStructuredError, textAreaValidation } from '../../utils/validations/fields-validations';
@@ -38,10 +39,10 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
       let validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
       let appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
 
-      if (res.locals.multerError) {
+      if (res.locals && res.locals.errorCode) {
         validationError = {
           ...validationError,
-          uploadFile: createStructuredError('file-upload', res.locals.multerError)
+          uploadFile: createStructuredError('file-upload', getFileUploadError(res.locals.errorCode))
         };
       }
 

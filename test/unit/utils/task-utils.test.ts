@@ -67,8 +67,16 @@ describe('getStatus', () => {
             personalDetails: {
               givenNames: 'given names',
               familyName: 'family name',
-              dob: null,
-              nationality: null
+              dob: {
+                day: '1',
+                month: '1',
+                year: '1980'
+              },
+              nationality: 'Angola',
+              address: {
+                line1: '60 GPS London United Kingdom  W1W 7RT60 GPS London United Kingdom  W1W 7RT',
+                postcode: 'W1W 7RT'
+              }
             },
             tasks: {
               typeOfAppeal: {
@@ -86,15 +94,10 @@ describe('getStatus', () => {
                 completed: true,
                 active: false
               },
-              personalDetails: {
+              contactDetails: {
                 saved: true,
                 completed: false,
                 active: true
-              },
-              contactDetails: {
-                saved: false,
-                completed: false,
-                active: false
               },
               decisionType: {
                 active: false,
@@ -161,15 +164,10 @@ describe('getStatus', () => {
         completed: true,
         active: false
       },
-      personalDetails: {
+      contactDetails: {
         saved: true,
         completed: false,
         active: true
-      },
-      contactDetails: {
-        saved: false,
-        completed: false,
-        active: false
       },
       decisionType: {
         active: false,
@@ -210,25 +208,6 @@ describe('getStatus', () => {
   it('should update status homeOfficeDetails as completed and mark active next task', () => {
     appeal.application.isAppealLate = false;
     status.homeOfficeDetails.completed = true;
-    status.personalDetails.active = true;
-    expect(appealApplicationStatus(appeal, false)).to.deep.eq(status);
-  });
-
-  it('should update status personalDetails as completed and mark active next task', () => {
-    appeal.application.personalDetails.dob = {
-      day: '1',
-      month: '1',
-      year: '1980'
-    };
-    appeal.application.personalDetails = {
-      ...appeal.application.personalDetails,
-      nationality: 'Angola',
-      address: {
-        line1: '60 GPS London United Kingdom  W1W 7RT60 GPS London United Kingdom  W1W 7RT',
-        postcode: 'W1W 7RT'
-      }
-    } as any;
-    status.personalDetails.completed = true;
     status.contactDetails.active = true;
     expect(appealApplicationStatus(appeal, false)).to.deep.eq(status);
   });
@@ -245,6 +224,7 @@ describe('getStatus', () => {
       completed: true,
       saved: true
     };
+    status.contactDetails.completed = true;
     status.decisionType.active = true;
     expect(appealApplicationStatus(appeal, false)).to.deep.eq(status);
   });
@@ -263,6 +243,7 @@ describe('getStatus', () => {
       completed: true,
       saved: true
     };
+    status.contactDetails.completed = true;
     status.decisionType.active = true;
     expect(appealApplicationStatus(appeal, false)).to.deep.eq(status);
   });

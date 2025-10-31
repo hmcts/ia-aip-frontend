@@ -1,5 +1,8 @@
 import { paths } from '../../../../app/paths';
-
+import Logger, { getLogLabel } from '../../../../app/utils/logger';
+import { getCitizenUserFromThread, UserInfo } from '../../service/user-service';
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -61,23 +64,14 @@ module.exports = {
     });
 
     When('I get the NoC required data from the sent notification', async () => {
-      notifyClient.getNotifications()
-          .then((response: any) => {
-            let emailBody = response.data.notifications.filter(item => item.template.id === '7d2b7690-12d4-43b4-8793-cd505d8033a9')[0].body;
-            let usefulInfo = emailBody.split('Enter your online case reference number: ')[1]
-                .split('*Follow the instructions to access your case')[0]
-                .split('*Enter this security code: ');
-            setCaseReferenceNumber(usefulInfo[0].trim());
-            setAccessCode(usefulInfo[1].trim());
-            let name = emailBody.split('*Name: ')[1].split('*Date of birth: ')[0].trim().split(' ');
-            setFirstName(name[0]);
-            setLastName(name[1]);
-          })
-          .catch((error: any) => {
-            // Handle errors if any
-            // tslint:disable:no-console
-            console.error('Error fetching notifications:', error);
-          });
+      let emailBody = await waitForNocEmailSent(getCitizenUserFromThread());
+      let rows: string[] = emailBody.split('\n');
+      setAppealRef(findAndRemoveFromRow(rows, 'HMCTS reference:'));
+      setCaseReferenceNumber(findAndRemoveFromRow(rows, '*Enter your online case reference number:'));
+      setAccessCode(findAndRemoveFromRow(rows, '*Enter this security code:'));
+      let name = findAndRemoveFromRow(rows, 'Appellant name:').split(' ');
+      setFirstName(name[0]);
+      setLastName(name[1]);
     });
 
     Then('I see enter case number page content', async () => {
@@ -139,3 +133,29 @@ module.exports = {
     });
   }
 };
+
+function findAndRemoveFromRow(rows: string[], str: string) {
+  return rows.find((row: string) => row.includes(str)).replace(str, '').trim();
+}
+
+async function waitForNocEmailSent(user: UserInfo): Promise<string> {
+  const maxAttempts = 15;
+  const delay = 2000;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    logger.trace(`Checking for notification email, attempt ${attempt}`, logLabel);
+    let response = await notifyClient.getNotifications('email', '', '', '');
+    const filteredResponse = response.data.notifications
+      .filter((item: any) => item.template.id === 'c79d396a-7551-4f2c-854c-b84677fbc19e'
+        && item.reference.includes(user.caseId));
+    logger.trace(`Found ${filteredResponse.length} matching notifications`, logLabel);
+    if (filteredResponse.length > 0 && filteredResponse[0].status === 'delivered') {
+      logger.trace(`Notification email found: ${filteredResponse[0].id}`, logLabel);
+      return filteredResponse[0].body;
+    }
+    if (attempt < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  throw new Error(`Notification was not sent within ${maxAttempts * delay / 1000} seconds.`);
+}

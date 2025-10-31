@@ -1,0 +1,16 @@
+{
+  "event": {
+    "id": "submitAppeal",
+    "summary": "Submit your appeal"
+  },
+  "case_data": {
+    "feeAmountGbp": null,
+    "legalRepDeclaration": [
+      "hasDeclared"
+    ],
+    "paAppealTypePaymentOption": null,
+    "remissionClaim": null,
+    "remissionOption": null,
+    "remissionType": null
+  }
+}

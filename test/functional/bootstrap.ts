@@ -5,6 +5,7 @@ import https from 'https';
 import * as process from 'process';
 import { createApp } from '../../app/app';
 import Logger, { getLogLabel } from '../../app/utils/logger';
+import * as testStateHelper from '../e2e-test/testStateHelper';
 
 const dyson = require('dyson');
 const path = require('path');
@@ -20,9 +21,7 @@ let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
 export async function bootstrap() {
-  global.testsPassed = 0;
-  global.testsTitles = [];
-  global.testFailed = false;
+  testStateHelper.resetTestState();
   server = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
@@ -71,8 +70,8 @@ export async function bootstrap() {
   const documentManagementStoreConfigs = dyson.getConfigurations(documentManagementStoreOptions);
   dyson.registerServices(documentManagementStoreApp, documentManagementStoreOptions, documentManagementStoreConfigs);
   documentManagementStoreServer = documentManagementStoreApp.listen(20003);
-  global.testFailed = false;
 }
+
 function closeServerWithPromise(server) {
   return new Promise(function (resolve, reject) {
     server.close((err, result) => {
@@ -82,7 +81,8 @@ function closeServerWithPromise(server) {
     });
   });
 }
-export async function teardown() {
+
+export async function teardownAll() {
   try {
     if (server && server.close) {
       await closeServerWithPromise(server);
@@ -103,19 +103,23 @@ export async function teardown() {
   } catch (e) {
     logger.exception(e, logLabel);
   } finally {
-    if (global.testFailed) {
-      // tslint:disable:no-console
-      console.log('---------------------');
-      console.log('Total scenarios run: ' + global.testsTitles.length);
-      console.log('Scenarios passed: ' + global.testsPassed);
-      console.log('---------------------');
-      if (global.testsPassed === global.testsTitles.length) {
-        process.exit(0);
-      } else {
-        process.exit(1);
-      }
-    } else {
-      process.exit(0);
-    }
+    failureCheck();
+  }
+}
+
+export function failureCheck() {
+  const testState = testStateHelper.readTestState();
+  // tslint:disable:no-console
+  console.log('---------------------');
+  const uniqueTitles = Array.from(new Set(testState.testsRun));
+  console.log('Total scenarios run: ' + uniqueTitles.length);
+  console.log('Scenarios passed: ' + testState.testsPassed.length);
+  console.log('---------------------');
+  if (testState.testsPassed.length === uniqueTitles.length) {
+    process.exit(0);
+  } else {
+    const failedTests = uniqueTitles.filter(title => !testState.testsPassed.includes(title));
+    console.log('Scenarios failed: ', failedTests);
+    process.exit(1);
   }
 }

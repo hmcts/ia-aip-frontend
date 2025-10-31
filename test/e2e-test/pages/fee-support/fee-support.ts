@@ -9,6 +9,10 @@ module.exports = {
       I.amOnPage(testUrl + paths.appealStarted.feeSupport);
     });
 
+    When(/^I go into the Support to pay the fee task$/, async () => {
+      await I.amOnPage(testUrl + paths.appealStarted.feeSupport);
+    });
+
     When(/^I click on the Support to pay the fee page$/, async () => {
       for (let i = 0; i < 3; i++) {
         try {

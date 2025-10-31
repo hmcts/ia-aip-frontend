@@ -1,0 +1,12 @@
+{
+  "event": {
+    "id": "endAppeal",
+    "summary": "End the appeal"
+  },
+  "case_data": {
+    "endAppealOutcome": "Withdrawn",
+    "endAppealOutcomeReason": "a reason for outcome",
+    "endAppealApproverType": "Judge",
+    "endAppealApproverName": "Judgy Judge"
+  }
+}

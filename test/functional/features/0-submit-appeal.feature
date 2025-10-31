@@ -1,11 +1,9 @@
 @submitAppeal
-Feature: Home office reference page 8
-  In order complete my appeal
-  As a citizen
-  I want to be able to enter a home office reference number
+Feature: Submit appeal
 
   Background:
-    Given I have logged in
+    Given I have a blank appeal
+    And I have logged in
 
     Then I see "John Smith" in title
     And I see "Do this next" in subheading

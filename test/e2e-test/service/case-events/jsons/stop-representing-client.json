@@ -1,0 +1,36 @@
+{
+  "event": {
+    "id": "removeRepresentation",
+    "summary": "Stop representing a client"
+  },
+  "case_data": {
+    "changeOrganisationRequestField": {
+      "ApprovalRejectionTimestamp": null,
+      "ApprovalStatus": "1",
+      "CaseRoleId": {
+        "list_items": [
+          {
+            "code": "[LEGALREPRESENTATIVE]",
+            "label": "Legal Representative"
+          }
+        ],
+        "value": {
+          "code": "[LEGALREPRESENTATIVE]",
+          "label": "Legal Representative"
+        }
+      },
+      "CreatedBy": null,
+      "NotesReason": null,
+      "OrganisationToAdd": {
+        "OrganisationID": null,
+        "OrganisationName": null
+      },
+      "OrganisationToRemove": {
+        "OrganisationID": null,
+        "OrganisationName": null
+      },
+      "Reason": null,
+      "RequestTimestamp": "2025-10-27T14:16:26.851822455"
+    }
+  }
+}

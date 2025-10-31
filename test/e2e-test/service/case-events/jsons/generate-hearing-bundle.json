@@ -1,0 +1,6 @@
+{
+  "event": {
+    "id": "generateHearingBundle",
+    "summary": "Generate hearing bundle"
+  }
+}

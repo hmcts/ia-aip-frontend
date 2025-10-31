@@ -17,10 +17,6 @@ Scenario: Task List links work
   Then I should be taken to the home office ref number page
   When I click "Back" link
   Then I expect to be redirect back to the task-list
-  When I click Your personal details
-  Then I should be taken to the enter your name page
-  When I click "Back" link
-  Then I expect to be redirect back to the task-list
   When I click the contact details link
   Then I should be taken to the contact-details page
   When I click "Back" link

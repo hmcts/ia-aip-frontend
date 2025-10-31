@@ -1,9 +1,6 @@
-import { paths } from '../../../../app/paths';
-const assert = require('assert');
+import * as progression from '../../service/case-progression-service';
+import { createCitizenUser } from '../../service/user-service';
 const config = require('config');
-let caseReferenceNumber;
-let firstName;
-let lastName;
 let exuiBaseUrl;
 let appealReference;
 
@@ -113,6 +110,15 @@ module.exports = {
       await I.waitForText('Submit', 60);
       await I.click('Submit');
       await I.waitForText('Hide Filter', 60);
+    });
+
+    When(/^I create a new case and submit it as a Legal Rep$/, async () => {
+      await createCitizenUser();
+      await progression.createAndSubmitLegalRepCase();
+    });
+
+    When(/^I stop representing the client as a Legal Rep$/, async () => {
+      await progression.stopRepresentingClient();
     });
   }
 };

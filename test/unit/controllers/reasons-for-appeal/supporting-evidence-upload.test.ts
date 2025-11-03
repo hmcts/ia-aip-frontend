@@ -145,10 +145,10 @@ describe('Supporting Evidence Upload Controller', () => {
       const expectedError: ValidationError = {
         href: '#file-upload',
         key: 'file-upload',
-        text: 'The selected file must be a {{ supportedFormats | join(\', \') }}'
+        text: 'The selected file must be a .jpg, .jpeg, .bmp, .tif, .tiff, .png, .pdf, .txt, .doc, .dot, .docx, .dotx, .xls, .xlt, .xla, .xlsx, .xltx, .xlsb, .ppt, .pot, .pps, .ppa, .pptx, .potx, .ppsx, .rtf, .csv'
       };
 
-      res.locals.multerError = expectedError.text;
+      res.locals.errorCode = 'incorrectFormat';
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
@@ -162,14 +162,14 @@ describe('Supporting Evidence Upload Controller', () => {
 
     it('Should display validation error LIMIT_FILE_SIZE and render reasons-for-appeal/reasons-for-appeal-upload.njk ', async () => {
       // Because the file size is being overriden on the development config for testing purposes
-      // error message will show max file size as {{maxFileSizeInMb}}MB
+      // error message will show max file size as 0.001MB
       const expectedError: ValidationError = {
         href: '#file-upload',
         key: 'file-upload',
-        text: 'The selected file must be smaller than {{maxFileSizeInMb}}MB'
+        text: 'The selected file must be smaller than 0.001MB'
       };
 
-      res.locals.multerError = expectedError.text;
+      res.locals.errorCode = 'fileTooLarge';
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {

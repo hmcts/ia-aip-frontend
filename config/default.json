@@ -1,5 +1,6 @@
 {
   "testUrl": "https://localhost:3000",
+  "currentEnvironment": "NODE_ENV",
   "httpProxy": false,
   "proxy": {
     "host": "proxyout.reform.hmcts.net",
@@ -44,6 +45,8 @@
   "idam": {
     "apiUrl": "IDAM_API_URL",
     "webUrl": "IDAM_WEB_URL",
+    "testingSupportUrl": "IDAM_TESTING_SUPPORT_URL",
+    "rpxClientSecret": "IDAM_CLIENT_SECRET",
     "secret": "IDAM_SECRET"
   },
   "ccd": {

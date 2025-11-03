@@ -3,7 +3,7 @@ Feature: End of appeal @endappeal
   As a citizen
   I want to be able to enter my type of appeal
 
-  Scenario: Home office reference page
+  Scenario: Ended appeal
     Given I have an ended appeal
     And I have logged in
     Then I see "Pedro Jimeno" in title

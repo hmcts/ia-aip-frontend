@@ -51,6 +51,15 @@ describe('Utils logger', () => {
     expect(consoleWarnStub).to.have.been.calledOnce;
   });
 
+  it('tracks a traceWorker only on console', () => {
+    const logger: Logger = new Logger();
+    logger.traceWorker(message, label);
+
+    expect(applicationInsightsStartSpy).to.not.have.been.calledOnce;
+    expect(applicationInsightsTraceSpy).to.not.have.been.calledOnce;
+    expect(consoleWarnStub).to.have.been.calledOnce;
+  });
+
   it('tracks a trace both on console and appInights', () => {
     const logger: Logger = new Logger('lakey');
     expect(applicationInsightsSetupSpy).to.have.been.calledOnce;

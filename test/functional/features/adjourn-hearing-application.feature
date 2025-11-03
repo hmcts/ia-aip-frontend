@@ -1,5 +1,5 @@
 @adjournHearingFeature
-Feature: Make Application to adjourn hearing
+Feature: Adjourn hearing application
   In order to have an adjourned hearing
   As a citizen
   I want to be able to make an application to adjourn hearing
@@ -15,8 +15,6 @@ Feature: Make Application to adjourn hearing
     Then I fill textarea with "When do you want to change the hearing to and why?"
     Then I click continue
     Then I see "/supporting-evidence" in current url
-
-
 
     # Path with no supporting evidence
     When I select No and click continue

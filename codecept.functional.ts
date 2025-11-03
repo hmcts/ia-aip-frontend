@@ -1,14 +1,17 @@
-import config from 'config';
-import { bootstrap as ourBootStrap, teardown as ourTeardown } from './test/functional/bootstrap';
+const config = require('config');
+import { bootstrap as ourBootStrap, failureCheck as ourTeardown, teardownAll as ourTeardownAll } from './test/functional/bootstrap';
 
 exports.config = {
   name: 'codecept',
   output: './functional-output/functional/reports/',
-  bootstrap: async () => {
+  bootstrapAll: async () => {
     await ourBootStrap();
   },
   teardown: async () => {
-    await ourTeardown();
+    ourTeardown();
+  },
+  teardownAll: async () => {
+    await ourTeardownAll();
   },
   helpers: {
     Puppeteer: {
@@ -19,7 +22,10 @@ exports.config = {
       }
     },
     FailedTest: {
-      require: './test/e2e-test/helpers/failedTestHelper.js'
+      require: './test/e2e-test/helpers/failedTestHelper.ts'
+    },
+    FunctionalStepHelper: {
+      require: './test/e2e-test/helpers/functionalStepHelper.ts'
     }
   },
   gherkin: {
@@ -30,10 +36,9 @@ exports.config = {
     retryFailedStep: {
       enabled: true
     },
-    stepByStepReport: {
+    screenshotOnFail: {
       enabled: true,
-      fullPageScreenshots: true,
-      deleteSuccessful: true
+      fullPageScreenshots: true
     },
     retryTo: {
       enabled: true

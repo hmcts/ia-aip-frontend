@@ -100,7 +100,6 @@ describe('Task List Controller', () => {
         'tasks': [
           { 'id': 'typeOfAppeal', 'saved': false, 'completed': false, 'active': true },
           { 'id': 'homeOfficeDetails', 'saved': false, 'completed': false, 'active': false },
-          { 'id': 'personalDetails', 'saved': false, 'completed': false, 'active': false },
           { 'id': 'contactDetails', 'saved': false, 'completed': false, 'active': false } ]
       },
       {
@@ -124,7 +123,6 @@ describe('Task List Controller', () => {
         'tasks': [
           { 'id': 'typeOfAppeal', 'saved': false, 'completed': false, 'active': true },
           { 'id': 'homeOfficeDetails', 'saved': false, 'completed': false, 'active': false },
-          { 'id': 'personalDetails', 'saved': false, 'completed': false, 'active': false },
           { 'id': 'contactDetails', 'saved': false, 'completed': false, 'active': false } ]
       },
       {
@@ -148,7 +146,6 @@ describe('Task List Controller', () => {
         'tasks': [
           { 'id': 'typeOfAppeal', 'saved': true, 'completed': true, 'active': true },
           { 'id': 'homeOfficeDetails', 'saved': false, 'completed': false, 'active': true },
-          { 'id': 'personalDetails', 'saved': false, 'completed': false, 'active': false },
           { 'id': 'contactDetails', 'saved': false, 'completed': false, 'active': false } ]
       },
       {

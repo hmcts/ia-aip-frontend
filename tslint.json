@@ -11,6 +11,7 @@
     "space-before-function-paren": false,
     "strict-type-predicates": false,
     "no-console": true,
-    "ordered-imports": true
+    "ordered-imports": true,
+    "deprecation": false
   }
 }

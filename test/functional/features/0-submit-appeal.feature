@@ -1,11 +1,9 @@
 @submitAppeal
-Feature: Home office reference page
-  In order complete my appeal
-  As a citizen
-  I want to be able to enter a home office reference number
+Feature: Submit appeal
 
   Background:
-    Given I have logged in
+    Given I have a blank appeal
+    And I have logged in
 
     Then I see "John Smith" in title
     And I see "Do this next" in subheading
@@ -21,7 +19,7 @@ Feature: Home office reference page
     And I click "Save and continue" button
 
     Then I should see the task-list page
-    And I click "Your Home Office details" link
+    And I click "Your Home Office and personal details" link
 
     Then I see "What is your Home Office reference number?" in title
     And I fill "Enter your Home Office reference number" field with "1234567"

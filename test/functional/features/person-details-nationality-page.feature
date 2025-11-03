@@ -3,7 +3,7 @@ Feature: Personal details nationality page
   As a citizen
   I want to be able to nationality
 
-  Scenario: Home office reference page
+  Scenario: Entering nationality should open next page
     Given I have an appeal with home office details, name and date of birth
     And I have logged in
     And I am on the personal details nationality page
@@ -28,5 +28,5 @@ Feature: Personal details nationality page
     Given I am on the personal details nationality page
     When I enter a nationality "Armenia"
     And I click "Save and continue" button
-    Then I should see the enter postcode page
+    Then I should see letter received page
 

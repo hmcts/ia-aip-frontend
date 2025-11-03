@@ -16,8 +16,6 @@ Feature: Make Application to transfer hearing
     Then I click continue
     Then I see "/supporting-evidence" in current url
 
-
-
     # Path with no supporting evidence
     When I select No and click continue
     Then I see "Check your answer" in title

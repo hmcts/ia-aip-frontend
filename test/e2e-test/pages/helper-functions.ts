@@ -1,25 +1,17 @@
-import * as fs from 'fs';
-import { createUser } from '../service/idam-service';
-const html = require('pa11y-reporter-html');
-const container = require('codeceptjs').container;
+import { getCitizenUserFromThread, UserInfo } from '../service/user-service';
 const { I } = inject();
-const pa11y = require('pa11y');
 let currentUserDetails;
 
-async function signInHelper() {
-  const environment: string = process.env.NODE_ENV;
-  if (environment !== ('test' || 'development')) {
-    let userDetails = await createUser();
-    I.fillField('#username', userDetails.email);
-    I.fillField('#password', userDetails.password);
-    currentUserDetails = userDetails;
-  }
+function signInForUser(email: string) {
+  I.fillField('#username', email);
   I.click('Sign in');
   I.wait(5);
 }
 
-function signInForUser(email: string) {
-  I.fillField('#username', email);
+async function signInForUserFromThread() {
+  const user: UserInfo = getCitizenUserFromThread();
+  I.fillField('#username', user.email);
+  I.fillField('#password', user.password);
   I.click('Sign in');
   I.wait(5);
 }
@@ -35,44 +27,10 @@ function enterRefNumber(refNumber) {
   I.click('.govuk-button');
 }
 
-async function checkAccessibility() {
-// tslint:disable:no-console
-  const path = 'functional-output/accessibility';
-  const url = await I.grabCurrentUrl();
-  try {
-    const options = {
-      log: {
-        debug: console.log,
-        error: console.error,
-        info: console.log
-      },
-      ignoreUrl: true,
-      browser: container.helpers('Puppeteer').browser,
-      page: container.helpers('Puppeteer').page,
-      hideElements: '#cookie-banner, .govuk-phase-banner__content__tag',
-      standard: 'WCAG2AAA'
-    };
-    const results = await Promise.all([
-      pa11y(url, options)
-    ]);
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(path);
-    }
-    results.map(async result => {
-      const htmlResults = await html.results(result);
-      const fileName = result.pageUrl.split('/').pop();
-      fs.writeFileSync(`${path}/${fileName}.html`, htmlResults);
-    });
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 export {
-  signInHelper,
   signInForUser,
   fillInDate,
   enterRefNumber,
-  currentUserDetails,
-  checkAccessibility
+  signInForUserFromThread,
+  currentUserDetails
 };

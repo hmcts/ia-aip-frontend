@@ -1,0 +1,66 @@
+{
+  "event": {
+    "id": "startAppeal",
+    "summary": "Start the appeal"
+  },
+  "case_data": {
+    "appealGroundsDeprivation": {
+      "values": [
+        "disproportionateDeprivation"
+      ]
+    },
+    "journeyType": "rep",
+    "appealType": "deprivation",
+    "appellantDateOfBirth": "1999-02-10",
+    "appellantFamilyName": "Gonzalez",
+    "appellantGivenNames": "Jose",
+    "appellantHasFixedAddress": "No",
+    "appellantInUk": "Yes",
+    "appellantStateless": "isStateless",
+    "appellantTitle": "Mr",
+    "checklist": {
+      "checklist1": [],
+      "checklist2": [
+        "isNotDetained"
+      ],
+      "checklist3": [],
+      "checklist4": [],
+      "checklist5": [],
+      "checklist6": [],
+      "checklist7": []
+    },
+    "contactPreference": "wantsEmail",
+    "deportationOrderOptions": "No",
+    "email": "josegonzalez99@mailnesia.com",
+    "hasNewMatters": "No",
+    "hasOtherAppeals": "No",
+    "hasSponsor": "No",
+    "hearingTypeResult": "No",
+    "homeOfficeDecisionDate": "2025-10-27",
+    "homeOfficeReferenceNumber": "012345678",
+    "isCaseUsingLocationRefData": null,
+    "isFeePaymentEnabled": "Yes",
+    "isOutOfCountryEnabled": "Yes",
+    "isRemissionsEnabled": "Yes",
+    "legalRepCompany": "ia-legal-rep-org777",
+    "legalRepFamilyName": "legal rep family name",
+    "legalRepMobilePhoneNumber": "07827289432",
+    "legalRepName": "legal rep given name",
+    "legalRepReferenceNumber": "017102",
+    "rpDcAppealHearingOption": "decisionWithHearing",
+    "searchParties": [],
+    "uploadTheNoticeOfDecisionDocs": [
+      {
+        "id": "7b0e3dfd-6753-4afb-89a6-03407f441661",
+        "value": {
+          "description": "Home office decision letter document",
+          "document": {
+            "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3/binary",
+            "document_filename": "testfile1.pdf",
+            "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3"
+          }
+        }
+      }
+    ]
+  }
+}

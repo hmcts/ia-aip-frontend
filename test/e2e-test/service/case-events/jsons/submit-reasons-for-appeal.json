@@ -1,0 +1,9 @@
+{
+  "event": {
+    "id": "submitReasonsForAppeal",
+    "summary": "Submit reasons for appeal from appellant"
+  },
+  "case_data": {
+    "reasonsForAppealDecision": "This is some reason why I am appealing the decision."
+  }
+}

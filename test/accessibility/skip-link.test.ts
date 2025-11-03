@@ -4,7 +4,7 @@ const { expect } = require('chai');
 
 function renderNunjucksEnvironment(layoutFileName: string): string {
   const env = nunjucks.configure([
-    'node_modules/govuk-frontend',
+    'node_modules/govuk-frontend/dist',
     'views'
   ]);
 

@@ -23,6 +23,7 @@ describe('Home Office Details Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
+  sinon.useFakeTimers(new Date('2025-06-15'));
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();

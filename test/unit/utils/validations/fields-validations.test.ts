@@ -25,7 +25,7 @@ import {
   yesOrNoRequiredValidation
 } from '../../../../app/utils/validations/fields-validations';
 import i18n from '../../../../locale/en.json';
-import { expect } from '../../../utils/testUtils';
+import { expect, sinon } from '../../../utils/testUtils';
 
 describe('fields-validations', () => {
   function createError(fieldName, errorMessage) {
@@ -131,9 +131,10 @@ describe('fields-validations', () => {
     });
 
     it('fields must be valid and be in past', () => {
-      const currentDate = new Date();
+      sinon.useFakeTimers(new Date('2025-06-15'));
+      const currentDate = new Date('2025-06-15');
 
-      let tomorrowDate = new Date();
+      let tomorrowDate = new Date('2025-06-15');
       tomorrowDate.setDate(currentDate.getDate() + 1);
 
       const notValidYear1 = { day: '1', month: '1', year: '5000' };

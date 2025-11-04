@@ -182,7 +182,6 @@ Feature: Cma Requirements
     Then I should see the cma requirements confirmation page
     And I see the respond by date is 2 weeks in the future
 
-
   Scenario: Answering Cma Requirements 2
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
 
@@ -198,8 +197,6 @@ Feature: Cma Requirements
     Then I see "Will you need an interpreter?" in title
     When I click "Save for later" button
     Then I should see the appeal overview page
-
-
 
   Scenario: Answering Cma Requirements 3
     Given I have logged in as an appellant in state "awaitingCmaRequirements"

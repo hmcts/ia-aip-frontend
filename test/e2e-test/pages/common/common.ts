@@ -2,14 +2,18 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import rp from 'request-promise';
 import { paths } from '../../../../app/paths';
+import { axeTest } from '../../axeHelper';
 const mockData = require('../../../mock/ccd/mock-case-data');
 
-const { checkAccessibility, fillInDate } = require('../helper-functions');
+const { fillInDate } = require('../helper-functions');
 
 const testUrl = require('config').get('testUrl');
 
+function random16DigitNumber() {
+  return Math.floor(1000000000000000 + Math.random() * 9000000000000000);
+}
+
 const caseData = {
-  'id': 1573640323267110,
   'jurisdiction': 'IA',
   'state': 'appealStarted',
   'version': 8,
@@ -85,12 +89,17 @@ module.exports = {
       await setupCase(mockData.outOfTimeDecisionInTime);
     });
 
+    Given('I have a blank appeal', async () => {
+      await setupData({ id: random16DigitNumber() });
+    });
+
     Given('I have an appeal with home office reference', async () => {
-      await setupData({ homeOfficeReferenceNumber: 'A1111111' });
+      await setupData({ id: random16DigitNumber(), homeOfficeReferenceNumber: 'A1111111' });
     });
 
     Given('I have an appeal with home office details', async () => {
       await setupData({
+        id: random16DigitNumber(),
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD')
       });
@@ -98,6 +107,7 @@ module.exports = {
 
     Given('I have an appeal with home office details and name', async () => {
       await setupData({
+        id: random16DigitNumber(),
         appealType: 'protection',
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
@@ -108,6 +118,7 @@ module.exports = {
 
     Given('I have an appeal with home office details, name and date of birth', async () => {
       await setupData({
+        id: random16DigitNumber(),
         appealType: 'protection',
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
@@ -119,6 +130,7 @@ module.exports = {
 
     Given('I have an appeal with home office details, name, date of birth and nationality', async () => {
       await setupData({
+        id: random16DigitNumber(),
         appealType: 'protection',
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
@@ -138,6 +150,7 @@ module.exports = {
 
     Given('I have an appeal with home office details, name, date of birth, nationality and address', async () => {
       await setupData({
+        id: random16DigitNumber(),
         appealType: 'protection',
         appellantInUk: 'Yes',
         homeOfficeReferenceNumber: 'A1111111',
@@ -163,6 +176,7 @@ module.exports = {
 
     Given('I have a fresh appeal', async () => {
       await setupData({
+        id: random16DigitNumber(),
         appealType: 'protection',
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
@@ -197,6 +211,7 @@ module.exports = {
 
     Given('I have an out of time appeal with reason for being late an evidence', async () => {
       await setupData({
+        id: random16DigitNumber(),
         appealType: 'protection',
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().subtract(20, 'days').format('YYYY-MM-DD'),
@@ -238,6 +253,7 @@ module.exports = {
 
     Given('I have an appeal with home office details, name, date of birth, nationality, address and reason for appeal', async () => {
       await setupData({
+        id: random16DigitNumber(),
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',
@@ -295,6 +311,7 @@ module.exports = {
 
     Given('I have an EU or EUSS or HU appeal with home office details, name, date of birth, nationality, address and reason for appeal', async () => {
       await setupData({
+        id: random16DigitNumber(),
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',
@@ -484,8 +501,9 @@ module.exports = {
       await I.wait(waitTime);
     });
 
-    Then('I create a accessibility report for the current page', async () => {
-      await checkAccessibility();
+    Then('I check page accessibility', async () => {
+      await I.seeElement('#main-content');
+      await axeTest();
     });
   }
 };

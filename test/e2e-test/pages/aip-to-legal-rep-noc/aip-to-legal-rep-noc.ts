@@ -1,9 +1,6 @@
-import { paths } from '../../../../app/paths';
-const assert = require('assert');
+import { getCitizenUserFromThread } from '../../service/user-service';
+
 const config = require('config');
-let caseReferenceNumber;
-let firstName;
-let lastName;
 let exuiBaseUrl;
 
 const testUrl = config.get('testUrl');
@@ -17,18 +14,6 @@ if (testUrl.includes('localhost')) {
 }
 module.exports = {
   aipToLegalRepNoC(I) {
-    When(/^I get and save the Case Reference number and names$/, async () => {
-      await I.waitForText('Online case reference number:', 30);
-      let list = await I.grabTextFromAll('li');
-      const caseRef = list[0].split(': ')[1];
-      let fullName = await list[1].split(': ')[1];
-      const forename = fullName.split(' ')[0];
-      const surname = fullName.split(' ')[1];
-      caseReferenceNumber = caseRef;
-      firstName = forename;
-      lastName = surname;
-    });
-
     When(/^I log in as a Legal Rep$/, async () => {
       await I.amOnPage(exuiBaseUrl);
       for (let i = 0; i < 5; i++) {
@@ -53,14 +38,16 @@ module.exports = {
     });
 
     When(/^I enter the saved case reference number$/, async () => {
-      await I.fillField('#caseRef', caseReferenceNumber);
+      const user = getCitizenUserFromThread();
+      await I.fillField('#caseRef', user.caseId);
       await I.click('Continue');
     });
 
-    When(/^I enter the saved first and last names$/, async () => {
+    When(/^I enter the saved first and last names/, async () => {
       await I.waitForText('Enter your client\'s details', 60);
-      await I.fillField('#NoCChallengeQ1', firstName);
-      await I.fillField('#NoCChallengeQ2', lastName);
+      const user = getCitizenUserFromThread();
+      await I.fillField('#NoCChallengeQ1', user.forename);
+      await I.fillField('#NoCChallengeQ2', user.surname);
       await I.click('Continue');
     });
 

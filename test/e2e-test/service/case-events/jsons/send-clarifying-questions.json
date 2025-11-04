@@ -1,0 +1,24 @@
+{
+  "event": {
+    "id": "sendDirectionWithQuestions",
+    "summary": "Direct the appellant to answer clarifying questions"
+  },
+  "case_data": {
+    "sendDirectionExplanation": "You must now tell us why you think the Home Office decision to refuse your claim is wrong.",
+    "sendDirectionDateDue": "2021-03-26",
+    "sendDirectionQuestions": [
+      {
+        "id": "1",
+        "value": {
+          "question": "Give us some more information about:\n- What are their ages?\n  - What are their names?"
+        }
+      },
+      {
+        "id": "2",
+        "value": {
+          "question": "Tell us more about your health issues\n- How long have you suffered from this problem?\n- How does it affect your daily life?"
+        }
+      }
+    ]
+  }
+}

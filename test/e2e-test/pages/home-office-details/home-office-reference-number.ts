@@ -17,6 +17,10 @@ module.exports = {
       await I.amOnPage(testUrl + paths.appealStarted.details);
     });
 
+    When(/^I go into the Home Office and personal details task$/, async () => {
+      await I.amOnPage(testUrl + paths.appealStarted.details);
+    });
+
     When(/^I click on Home office details$/, async () => {
       for (let i = 0; i < 3; i++) {
         try {

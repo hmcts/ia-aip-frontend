@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
+    "mirror": "cross-env NODE_ENV=production ts-node app/server.ts",
     "start": "cross-env NODE_PATH=. node build/main.js",
     "build": "webpack --config webpack/webpack.prod.js",
     "dev": "yarn genCert && cross-env NODE_ENV=development DEFAULT_LAUNCH_DARKLY_FLAG=false nodemon app/server.ts",

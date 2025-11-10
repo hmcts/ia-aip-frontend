@@ -168,4 +168,3 @@ In case we added some custom styles, or modified existing one we need to refresh
 2. yarn build
 3. yarn dev
 ### Styles
-### Styles

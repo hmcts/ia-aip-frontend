@@ -9240,19 +9240,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-errors@npm:~1.8.1":
-  version: 1.8.1
-  resolution: "http-errors@npm:1.8.1"
-  dependencies:
-    depd: "npm:~1.1.2"
-    inherits: "npm:2.0.4"
-    setprototypeof: "npm:1.2.0"
-    statuses: "npm:>= 1.5.0 < 2"
-    toidentifier: "npm:1.0.1"
-  checksum: 10/76fc491bd8df2251e21978e080d5dae20d9736cfb29bb72b5b76ec1bcebb1c14f0f58a3a128dd89288934379d2173cfb0421c571d54103e93dd65ef6243d64d8
-  languageName: node
-  linkType: hard
-
 "http-proxy-agent@npm:^7.0.0, http-proxy-agent@npm:^7.0.1, http-proxy-agent@npm:^7.0.2":
   version: 7.0.2
   resolution: "http-proxy-agent@npm:7.0.2"
@@ -9486,7 +9473,6 @@ __metadata:
     mochawesome: "npm:^7.1.3"
     moment: "npm:^2.29.4"
     multer: "npm:^2.0.2"
-    multiparty: "npm:^4.2.2"
     nl2br: "npm:^0.0.3"
     nocache: "npm:^4.0.0"
     nodemon: "npm:^2.0.7"
@@ -12152,17 +12138,6 @@ __metadata:
   version: 1.0.4
   resolution: "multi-sort-stream@npm:1.0.4"
   checksum: 10/c8ca1d3837e54b2710994bdf1c07992e3a2deb5dc2e10910fca027f9552edcd5ecee54c360c7b452525cc943e32badf9e47965836a0fcfc5bc6369c42331d9a7
-  languageName: node
-  linkType: hard
-
-"multiparty@npm:^4.2.2":
-  version: 4.2.3
-  resolution: "multiparty@npm:4.2.3"
-  dependencies:
-    http-errors: "npm:~1.8.1"
-    safe-buffer: "npm:5.2.1"
-    uid-safe: "npm:2.1.5"
-  checksum: 10/918cadc433f4918f9da2528048d12938b3d33ca636d45a2a43f636d0343a7f9e7c270c0b80212d77f5590fd23835ec4ca5a01df11530fa13f7edf62f82a1840a
   languageName: node
   linkType: hard
 

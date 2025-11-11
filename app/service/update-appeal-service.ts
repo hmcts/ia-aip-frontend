@@ -542,9 +542,28 @@ export default class UpdateAppealService {
       const previousRemissionDetailsData = caseData.previousRemissionDetails || [];
       previousRemissionDetails = previousRemissionDetailsData.map(remissionDetail => {
         let localAuthorityLetters = [];
-        if (remissionDetail.value.localAuthorityLetters && remissionDetail.value.localAuthorityLetters.length > 0) {
-          let documentMapLocalAuthorityLetters: DocumentMap[] = [];
-          localAuthorityLetters = this.mapDocsWithMetadataToEvidenceArray(remissionDetail.value.localAuthorityLetters, documentMapLocalAuthorityLetters);
+        let asylumSupportDocument = null;
+        let section17Document = null;
+        let section20Document = null;
+        let homeOfficeWaiverDocument = null;
+        let remissionEcEvidenceDocuments = [];
+        if ((remissionDetail.value.localAuthorityLetters?.length ?? 0) > 0) {
+          localAuthorityLetters = this.mapDocsWithMetadataToEvidenceArray(remissionDetail.value.localAuthorityLetters, documentMap);
+        }
+        if (remissionDetail.value.asylumSupportDocument?.document_filename) {
+          asylumSupportDocument = this.mapSupportingDocumentToEvidence(remissionDetail.value.asylumSupportDocument, documentMap);
+        }
+        if (remissionDetail.value.section17Document?.document_filename) {
+          section17Document = this.mapSupportingDocumentToEvidence(remissionDetail.value.section17Document, documentMap);
+        }
+        if (remissionDetail.value.section20Document?.document_filename) {
+          section20Document = this.mapSupportingDocumentToEvidence(remissionDetail.value.section20Document, documentMap);
+        }
+        if (remissionDetail.value.homeOfficeWaiverDocument?.document_filename) {
+          homeOfficeWaiverDocument = this.mapSupportingDocumentToEvidence(remissionDetail.value.homeOfficeWaiverDocument, documentMap);
+        }
+        if ((remissionDetail.value.remissionEcEvidenceDocuments?.length ?? 0) > 0) {
+          remissionEcEvidenceDocuments = this.mapSupportingDocumentsToEvidence(remissionDetail.value.remissionEcEvidenceDocuments, documentMap);
         }
         return {
           id: remissionDetail.id,
@@ -557,7 +576,14 @@ export default class UpdateAppealService {
           remissionDecisionReason: remissionDetail.value.remissionDecisionReason,
           helpWithFeesReferenceNumber: remissionDetail.value.helpWithFeesReferenceNumber,
           helpWithFeesOption: remissionDetail.value.helpWithFeesOption,
-          localAuthorityLetters: localAuthorityLetters
+          localAuthorityLetters: localAuthorityLetters,
+          legalAidAccountNumber: remissionDetail.value.legalAidAccountNumber,
+          exceptionalCircumstances: remissionDetail.value.exceptionalCircumstances,
+          asylumSupportDocument: asylumSupportDocument,
+          section17Document: section17Document,
+          section20Document: section20Document,
+          homeOfficeWaiverDocument: homeOfficeWaiverDocument,
+          remissionEcEvidenceDocuments: remissionEcEvidenceDocuments
         } as RemissionDetails;
       });
     }
@@ -623,9 +649,21 @@ export default class UpdateAppealService {
         ...caseData.rpDcAppealHearingOption && { rpDcAppealHearingOption: caseData.rpDcAppealHearingOption },
         ...caseData.decisionHearingFeeOption && { decisionHearingFeeOption: caseData.decisionHearingFeeOption },
         remissionOption: caseData.remissionOption,
+        feeRemissionType: caseData.feeRemissionType,
+        remissionType: caseData.remissionType,
+        remissionClaim: caseData.remissionClaim,
         asylumSupportRefNumber: caseData.asylumSupportRefNumber,
+        asylumSupportReference: caseData.asylumSupportReference,
+        legalAidAccountNumber: caseData.legalAidAccountNumber,
+        exceptionalCircumstances: caseData.exceptionalCircumstances,
+        ...caseData.asylumSupportDocument && { asylumSupportDocument: this.mapSupportingDocumentToEvidence(caseData.asylumSupportDocument, documentMap) },
+        ...caseData.section17Document && { section17Document: this.mapSupportingDocumentToEvidence(caseData.section17Document, documentMap) },
+        ...caseData.section20Document && { section20Document: this.mapSupportingDocumentToEvidence(caseData.section20Document, documentMap) },
+        ...caseData.homeOfficeWaiverDocument && { homeOfficeWaiverDocument: this.mapSupportingDocumentToEvidence(caseData.homeOfficeWaiverDocument, documentMap) },
+        ...caseData.remissionEcEvidenceDocuments && { remissionEcEvidenceDocuments: this.mapSupportingDocumentsToEvidence(caseData.remissionEcEvidenceDocuments, documentMap) },
         helpWithFeesOption: caseData.helpWithFeesOption,
         helpWithFeesRefNumber: caseData.helpWithFeesRefNumber,
+        helpWithFeesReferenceNumber: caseData.helpWithFeesReferenceNumber,
         ...caseData.localAuthorityLetters && { localAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.localAuthorityLetters, documentMap) },
         feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined,
         refundRequested: caseData.refundRequested ? yesNoToBool(caseData.refundRequested) : undefined,
@@ -874,7 +912,7 @@ export default class UpdateAppealService {
     return clarifyingQuestions.map(answer => {
       let evidencesList: Evidence[] = [];
       if (answer.value.supportingEvidence) {
-        evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentsToEvidence(e, documentMap));
+        evidencesList = this.mapSupportingDocumentsToEvidence(answer.value.supportingEvidence, documentMap);
       }
       return {
         id: answer.id,
@@ -961,12 +999,14 @@ export default class UpdateAppealService {
     };
   }
 
-  private mapSupportingDocumentsToEvidence(evidence: Collection<SupportingDocument>, documentMap: DocumentMap[]) {
-    const documentMapperId: string = this._documentManagementService.addToDocumentMapper(evidence.value.document_url, documentMap);
-    return {
-      fileId: documentMapperId,
-      name: evidence.value.document_filename
-    };
+  private mapSupportingDocumentsToEvidence(evidence: Collection<SupportingDocument>[], documentMap: DocumentMap[]) {
+    return evidence.map(doc => {
+      const documentMapperId: string = this._documentManagementService.addToDocumentMapper(doc.value.document_url, documentMap);
+      return {
+        fileId: documentMapperId,
+        name: doc.value.document_filename
+      };
+    });
   }
 
   private mapEvidenceToSupportingDocument(evidence: Evidence, documentMap: DocumentMap[]): Collection<SupportingDocument> {
@@ -1054,7 +1094,7 @@ export default class UpdateAppealService {
         id: application.id,
         value: {
           ...application.value,
-          ...application.value.evidence && { evidence: application.value.evidence.map(e => this.mapSupportingDocumentsToEvidence(e, documentMap)) }
+          ...application.value.evidence && { evidence: this.mapSupportingDocumentsToEvidence(application.value.evidence, documentMap) }
         }
       };
     });
@@ -1316,6 +1356,37 @@ export default class UpdateAppealService {
     }
   }
 
+  private mapToCCDSupportingDocument(appeal, caseData, documentField: string) {
+    if (appeal.application[documentField]) {
+      const evidence: Evidence = appeal.application[documentField];
+
+      const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+      caseData[documentField] = {
+        document_filename: evidence.name,
+        document_url: documentLocationUrl,
+        document_binary_url: `${documentLocationUrl}/binary`
+      } as SupportingDocument;
+    }
+  }
+
+  private mapToCCDSupportingDocuments(appeal, caseData, documentField: string) {
+    if (appeal.application[documentField]) {
+      const evidences: Evidence[] = appeal.application[documentField];
+
+      caseData[documentField] = evidences.map((evidence: Evidence) => {
+        const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+        return {
+          ...evidence.fileId && { id: evidence.fileId },
+          value: {
+            document_filename: evidence.name,
+            document_url: documentLocationUrl,
+            document_binary_url: `${documentLocationUrl}/binary`
+          }
+        } as Collection<SupportingDocument>;
+      });
+    }
+  }
+
   private mapToCCDLateLocalAuthorityLetters(appeal, caseData) {
     if (appeal.application.lateLocalAuthorityLetters) {
       const evidences: Evidence[] = appeal.application.lateLocalAuthorityLetters;
@@ -1415,17 +1486,39 @@ export default class UpdateAppealService {
     this.assignSinglePropertyIfExists(application, 'appellantOutOfCountryAddress', caseData, 'appellantOutOfCountryAddress');
     this.assignSinglePropertyIfExists(application, 'appealType', caseData, 'appealType');
 
+    caseData.feeRemissionType = null;
     caseData.remissionOption = null;
     caseData.asylumSupportRefNumber = null;
+    caseData.asylumSupportReference = null;
+    caseData.asylumSupportDocument = null;
+    caseData.section17Document = null;
+    caseData.section20Document = null;
+    caseData.homeOfficeWaiverDocument = null;
+    caseData.remissionEcEvidenceDocuments = null;
+    caseData.exceptionalCircumstances = null;
+    caseData.legalAidAccountNumber = null;
     caseData.helpWithFeesOption = null;
     caseData.helpWithFeesRefNumber = null;
+    caseData.helpWithFeesReferenceNumber = null;
     caseData.localAuthorityLetters = null;
 
+    this.assignSinglePropertyIfExists(application, 'feeRemissionType', caseData, 'feeRemissionType');
+    this.assignSinglePropertyIfExists(application, 'remissionType', caseData, 'remissionType');
+    this.assignSinglePropertyIfExists(application, 'remissionClaim', caseData, 'remissionClaim');
     this.assignSinglePropertyIfExists(application, 'remissionOption', caseData, 'remissionOption');
     this.assignSinglePropertyIfExists(application, 'asylumSupportRefNumber', caseData, 'asylumSupportRefNumber');
+    this.assignSinglePropertyIfExists(application, 'asylumSupportReference', caseData, 'asylumSupportReference');
+    this.assignSinglePropertyIfExists(application, 'legalAidAccountNumber', caseData, 'legalAidAccountNumber');
+    this.assignSinglePropertyIfExists(application, 'exceptionalCircumstances', caseData, 'exceptionalCircumstances');
     this.assignSinglePropertyIfExists(application, 'helpWithFeesOption', caseData, 'helpWithFeesOption');
     this.assignSinglePropertyIfExists(application, 'helpWithFeesRefNumber', caseData, 'helpWithFeesRefNumber');
+    this.assignSinglePropertyIfExists(application, 'helpWithFeesReferenceNumber', caseData, 'helpWithFeesReferenceNumber');
     this.mapToCCDLocalAuthorityLetters(appeal, caseData);
+    this.mapToCCDSupportingDocument(appeal, caseData, 'asylumSupportDocument');
+    this.mapToCCDSupportingDocument(appeal, caseData, 'section17Document');
+    this.mapToCCDSupportingDocument(appeal, caseData, 'section20Document');
+    this.mapToCCDSupportingDocument(appeal, caseData, 'homeOfficeWaiverDocument');
+    this.mapToCCDSupportingDocuments(appeal, caseData, 'remissionEcEvidenceDocuments');
 
     caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
 

@@ -13,6 +13,7 @@ import { getFee } from '../utils/payments-utils';
 import {
   appealHasNoRemissionOption,
   appealHasRemissionOption,
+  appealHasRemissionType,
   getDecisionReasonRowForAppealDetails,
   getFeeSupportStatusForAppealDetails,
   getPaymentStatusRow,
@@ -31,6 +32,8 @@ import {
   toIsoDate
 } from '../utils/utils';
 
+const localAuthorityFeeRemissionTypes = new Set(['Section 17', 'Section 20']);
+
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
   return history.filter(h => h.id === eventId);
@@ -41,7 +44,7 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
   const { application } = req.session.appeal;
   const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
-    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
+    return getEvidenceUrl(doc);
   });
   const appellantInUk = application.appellantInUk && application.appellantInUk === 'Yes';
   const hasSponsor = application.hasSponsor && application.hasSponsor === 'Yes';
@@ -176,7 +179,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   const { application } = req.session.appeal;
   const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
-    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
+    return getEvidenceUrl(doc);
   });
   const appellantInUk = application.appellantInUk && application.appellantInUk === 'Yes';
   const hasSponsor = application.hasSponsor && application.hasSponsor === 'Yes';
@@ -247,19 +250,70 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
 
   // fee section
   if (!['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
-    if (appealHasRemissionOption(application)) {
+    if (appealHasRemissionOption(application, true) || appealHasRemissionType(application)) {
+      let hasHoWaiverRemissionType = application.remissionType && application.remissionType === 'hoWaiverRemission';
       await addPaymentDetails(req, application, feeDetailsRows);
-      if (application.remissionOption === 'asylumSupportFromHo') {
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [application.asylumSupportRefNumber], null));
-      } else if (application.remissionOption === 'feeWaiverFromHo') {
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, ['Home Office fee waiver'], null));
-      } else if (application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') {
+      if (application.feeRemissionType && application.feeRemissionType !== '') {
+        if (localAuthorityFeeRemissionTypes.has(application.feeRemissionType)) {
+          feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [`Local Authority Support (${application.feeRemissionType})`], null));
+        } else {
+          feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [application.feeRemissionType], null));
+        }
+      }
+      if (application.remissionOption === 'asylumSupportFromHo' || (hasHoWaiverRemissionType && application.remissionClaim === 'asylumSupport')) {
+        let asylumSupportRef = application.asylumSupportRefNumber;
+        if (!asylumSupportRef || asylumSupportRef === '') {
+          asylumSupportRef = application.asylumSupportReference;
+        }
+        if (asylumSupportRef) {
+          feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber,
+            [asylumSupportRef], null));
+          if (application.asylumSupportDocument) {
+            feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportDocument,
+              [getEvidenceUrl(application.asylumSupportDocument)], null));
+          }
+        }
+      }
+      if ((application.remissionOption === 'feeWaiverFromHo' || (hasHoWaiverRemissionType && application.remissionClaim === 'homeOfficeWaiver')) && application.homeOfficeWaiverDocument) {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeWaiverDocument,
+          [getEvidenceUrl(application.homeOfficeWaiverDocument)], null));
+      }
+      if ((application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') && application.localAuthorityLetters && application.localAuthorityLetters.length > 0) {
         const localAuthorityLetterDocs = application.localAuthorityLetters.map(doc => {
-          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
+          return getEvidenceUrl(doc);
         });
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
-      } else if (application.remissionOption === 'noneOfTheseStatements' || application.remissionOption === 'iWantToGetHelpWithFees') {
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [application.helpWithFeesRefNumber], null));
+      }
+      if (hasHoWaiverRemissionType && application.remissionClaim === 'section17' && application.section17Document) {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.section17Document,
+          [getEvidenceUrl(application.section17Document)], null));
+      }
+      if (hasHoWaiverRemissionType && application.remissionClaim === 'section20' && application.section20Document) {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.section20Document,
+          [getEvidenceUrl(application.section20Document)], null));
+      }
+      if (hasHoWaiverRemissionType && application.remissionClaim === 'legalAid' && application.legalAidAccountNumber) {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber,
+          [application.legalAidAccountNumber], null));
+      }
+      if (application.remissionOption === 'noneOfTheseStatements' || application.remissionOption === 'iWantToGetHelpWithFees' || application.remissionType === 'helpWithFees') {
+        let helpWithFeeRef = application.helpWithFeesRefNumber;
+        if (!helpWithFeeRef || helpWithFeeRef === '') {
+          helpWithFeeRef = application.helpWithFeesReferenceNumber;
+        }
+        if (helpWithFeeRef) {
+          feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber,
+            [helpWithFeeRef], null));
+        }
+      }
+      if (application.remissionType === 'exceptionalCircumstancesRemission' && application.exceptionalCircumstances) {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstances, [application.exceptionalCircumstances], null));
+        if (application.remissionEcEvidenceDocuments && application.remissionEcEvidenceDocuments.length > 0) {
+          const ecEvidenceDocs = application.remissionEcEvidenceDocuments.map(doc => {
+            return getEvidenceUrl(doc);
+          });
+          feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstancesEvidence, ecEvidenceDocs, null, Delimiter.BREAK_LINE));
+        }
       }
       if (application.previousRemissionDetails) {
         await addPreviousRemissionDetails(req, application, feeHistoryRows);
@@ -306,44 +360,143 @@ function calculateAmountToPounds(amount) {
   return '£' + (amount / 100);
 }
 
-async function addPreviousRemissionDetails(req: Request, application: AppealApplication, feeHistoryRows: any[]) {
-  const fee = getFee(req.session.appeal);
-  const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+async function addPreviousRemissionDetails(
+    req: Request,
+    application: AppealApplication,
+    feeHistoryRows: any[]
+) {
+  const refundFeatureEnabled = await LaunchDarklyService.getInstance()
+      .getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+
+  const fee = refundFeatureEnabled ? getFee(req.session.appeal) : null;
 
   application.previousRemissionDetails.forEach((remissionDetail: RemissionDetails, index: number) => {
-    const row = [];
-    row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateOfApplication,
-      [getRecordRemissionDate(req, index, application.previousRemissionDetails.length)], null));
-    if (remissionDetail.asylumSupportReference) {
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [remissionDetail.asylumSupportReference], null));
+    const row: any[] = [];
+
+    addFeeRemissionType(remissionDetail, row);
+    addDateOfApplication(req, application, index, row);
+    addBasicFields(remissionDetail, row);
+    addDocumentFields(remissionDetail, row);
+    addArrayDocumentFields(remissionDetail, row);
+    addHelpWithFees(remissionDetail, row);
+
+    if (refundFeatureEnabled && fee) {
+      addRefundDecision(remissionDetail, fee, row);
     }
-    if (remissionDetail.localAuthorityLetters && remissionDetail.localAuthorityLetters.length > 0) {
-      const localAuthorityLetterDocs = remissionDetail.localAuthorityLetters.map((doc: Evidence) => {
-        return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
-      });
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
-    }
-    if (remissionDetail.helpWithFeesReferenceNumber) {
-      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [remissionDetail.helpWithFeesReferenceNumber], null));
-    }
-    if (refundFeatureEnabled) {
-      if (remissionDetail.remissionDecision === 'Approved') {
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-          ['Fee support request granted'], null));
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToRefund, [`£${fee.calculated_amount}`], null));
-      } else if (remissionDetail.remissionDecision === 'Partially approved') {
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-          ['Fee support request partially granted'], null));
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [remissionDetail.remissionDecisionReason], null));
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToRefund, [getAmountToRefund(fee.calculated_amount, remissionDetail.amountLeftToPay)], null));
-      } else if (remissionDetail.remissionDecision === 'Rejected') {
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-          ['Fee support requested refused'], null));
-        row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [remissionDetail.remissionDecisionReason], null));
-      }
-    }
+
     feeHistoryRows.push(row);
   });
+}
+
+/**
+ * === Helpers ===
+ */
+
+function addFeeRemissionType(remissionDetail: RemissionDetails, row: any[]) {
+  if (!remissionDetail.feeRemissionType) return;
+
+  const { feeRemissionType } = remissionDetail;
+  const label = localAuthorityFeeRemissionTypes.has(feeRemissionType)
+      ? `Local Authority Support (${feeRemissionType})`
+      : feeRemissionType;
+
+  row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [label], null));
+}
+
+function addDateOfApplication(
+    req: Request,
+    application: AppealApplication,
+    index: number,
+    row: any[]
+) {
+  row.push(addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.dateOfApplication,
+      [getRecordRemissionDate(req, index, application.previousRemissionDetails.length)],
+      null
+  ));
+}
+
+function addBasicFields(remissionDetail: RemissionDetails, row: any[]) {
+  const mappings: Record<string, string | undefined> = {
+    asylumSupportReferenceNumber: remissionDetail.asylumSupportReference,
+    legalAidAccountNumber: remissionDetail.legalAidAccountNumber,
+    exceptionalCircumstances: remissionDetail.exceptionalCircumstances
+  };
+
+  Object.entries(mappings).forEach(([key, value]) => {
+    if (value) {
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles[key], [value], null));
+    }
+  });
+}
+
+function addDocumentFields(remissionDetail: RemissionDetails, row: any[]) {
+  const docMappings: Record<string, Evidence | undefined> = {
+    asylumSupportDocument: remissionDetail.asylumSupportDocument,
+    section17Document: remissionDetail.section17Document,
+    section20Document: remissionDetail.section20Document,
+    homeOfficeWaiverDocument: remissionDetail.homeOfficeWaiverDocument
+  };
+
+  Object.entries(docMappings).forEach(([key, doc]) => {
+    if (doc) {
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles[key], [getEvidenceUrl(doc)], null));
+    }
+  });
+}
+
+function addArrayDocumentFields(remissionDetail: RemissionDetails, row: any[]) {
+  const arrayDocMappings: Record<string, Evidence[] | undefined> = {
+    exceptionalCircumstancesEvidence: remissionDetail.remissionEcEvidenceDocuments,
+    localAuthorityLetter: remissionDetail.localAuthorityLetters
+  };
+
+  Object.entries(arrayDocMappings).forEach(([key, docs]) => {
+    if (docs?.length) {
+      row.push(addSummaryRow(
+          i18n.pages.checkYourAnswers.rowTitles[key],
+          docs.map(getEvidenceUrl),
+          null
+      ));
+    }
+  });
+}
+
+function addHelpWithFees(remissionDetail: RemissionDetails, row: any[]) {
+  if (remissionDetail.helpWithFeesReferenceNumber) {
+    row.push(addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber,
+        [remissionDetail.helpWithFeesReferenceNumber],
+        null
+    ));
+  }
+}
+
+function addRefundDecision(remissionDetail: RemissionDetails, fee: any, row: any[]) {
+  switch (remissionDetail.remissionDecision) {
+    case 'Approved':
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+          ['Fee support request granted'], null));
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToRefund,
+          [`£${fee.calculated_amount}`], null));
+      break;
+
+    case 'Partially approved':
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+          ['Fee support request partially granted'], null));
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
+          [remissionDetail.remissionDecisionReason], null));
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToRefund,
+          [getAmountToRefund(fee.calculated_amount, remissionDetail.amountLeftToPay)], null));
+      break;
+
+    case 'Rejected':
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+          ['Fee support requested refused'], null));
+      row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
+          [remissionDetail.remissionDecisionReason], null));
+      break;
+  }
 }
 
 function addFeeUpdatePaymentSection(application: AppealApplication, feeDetailsRows: any[], fee: { code: string; calculated_amount: any; version: string }, paymentStatus: string, feeAmountGbp: string, previousFeeAmountGbp: string) {
@@ -364,6 +517,10 @@ function addFeeUpdatePaymentSection(application: AppealApplication, feeDetailsRo
     addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows, fee, feeUpdateReason);
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
   }
+}
+
+function getEvidenceUrl(evidence: Evidence) {
+  return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
 }
 
 function addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows: any[], fee: { code: string; calculated_amount: any; version: string }, previousFeeAmountGbp: string, feeAmountGbp: string) {
@@ -900,10 +1057,10 @@ function getLatestHearingNoticeDocument(appeal: Appeal): Evidence | undefined {
       hearingDocuments.push(...docs);
     }
   }
-  let hearingNoticeTags: string[] = ['hearingNotice', 'hearingNoticeRelisted',
-    'reheardHearingNotice', 'reheardHearingNoticeRelisted'];
+  let hearingNoticeTags = new Set(['hearingNotice', 'hearingNoticeRelisted',
+    'reheardHearingNotice', 'reheardHearingNoticeRelisted']);
   let hearingNotices: Evidence[] = hearingDocuments.filter((doc: Evidence) =>
-    hearingNoticeTags.includes(doc.tag));
+    hearingNoticeTags.has(doc.tag));
   hearingNotices.sort((a: Evidence, b: Evidence) => {
     if (a.dateTimeUploaded && b.dateTimeUploaded) {
       return moment(b.dateTimeUploaded).diff(moment(a.dateTimeUploaded));

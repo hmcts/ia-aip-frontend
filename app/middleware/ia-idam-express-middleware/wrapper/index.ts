@@ -1,9 +1,11 @@
-const loginUrl = require('./loginUrl');
-const userDetails = require('./getUserDetails');
-const accessToken = require('./accessToken');
-const serviceAuth = require('./getServiceAuth');
+import { IdamConfig } from '../../../../types';
 
-const setup = (args = {}) => {
+import accessToken from './accessToken';
+import serviceAuth from './getServiceAuth';
+import userDetails from './getUserDetails';
+import loginUrl from './loginUrl';
+
+export const setup = (args: IdamConfig = {}) => {
   const getIdamLoginUrl = options => {
     return loginUrl(options, args);
   };
@@ -33,4 +35,5 @@ const setup = (args = {}) => {
   };
 };
 
-module.exports = { setup };
+const idamWrapper = { setup };
+export default idamWrapper;

@@ -139,7 +139,7 @@ describe('session-middleware', () => {
       detailsConfirmed: true
     } as any;
     const givenAppellantAccessStub = sandbox.stub(CcdSystemService.prototype, 'givenAppellantAccess');
-    const submitSimpleEventStub = sandbox.stub(UpdateAppealService.prototype, 'submitSimpleEvent').resolves(appeal as Appeal);
+    const submitSimpleEventStub = sandbox.stub(UpdateAppealService.prototype, 'submitSimpleEvent').resolves(appeal);
     await startRepresentingYourself(req as Request, res as Response, next);
 
     expect(givenAppellantAccessStub).to.have.been.calledOnce;

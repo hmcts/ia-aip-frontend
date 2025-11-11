@@ -1,5 +1,5 @@
-const { expect } = require('chai');
-const getServiceAuth = require('./getServiceAuth');
+import getServiceAuth from '../../../../../app/middleware/ia-idam-express-middleware/wrapper/getServiceAuth';
+import { expect } from '../../../../utils/testUtils';
 
 describe('getServiceAuth', () => {
   it('should return a properly encoded base64 string with a client id and secret', () => {

@@ -1,3 +1,4 @@
+import { IdamConfig } from '../../types';
 import { paths } from '../paths';
 import { setupSecrets } from '../setupSecrets';
 import Logger from '../utils/logger';
@@ -5,7 +6,7 @@ import Logger from '../utils/logger';
 const config = setupSecrets();
 const loginUrl = `${config.get('idam.webUrl')}/login`;
 
-export const idamConfig = {
+export const idamConfig: IdamConfig = {
   redirectUri: 'https://localhost:3000/redirectUrl',
   indexUrl: paths.common.login,
   idamApiUrl: config.get('idam.apiUrl'),

@@ -1,6 +1,7 @@
-const request = require('request-promise-native');
+import request from 'request-promise-native';
+import { IdamConfig } from '../../../../types';
 
-const getUserDetails = (authToken, args) => {
+const getUserDetails = (authToken: string, args: IdamConfig) => {
   const userDetailsEndpoint = args.openId ? '/o/userinfo' : '/details';
 
   const options = {
@@ -12,4 +13,4 @@ const getUserDetails = (authToken, args) => {
   return request.get(options);
 };
 
-module.exports = getUserDetails;
+export default getUserDetails;

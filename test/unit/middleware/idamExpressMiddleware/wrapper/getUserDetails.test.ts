@@ -1,17 +1,20 @@
-const sinon = require('sinon');
-const { expect } = require('chai');
-const request = require('request-promise-native');
-const getUserDetails = require('./getUserDetails');
+import request from 'request-promise-native';
+import { sandbox } from 'sinon';
+import getUserDetails from '../../../../../app/middleware/ia-idam-express-middleware/wrapper/getUserDetails';
+import { IdamConfig } from '../../../../../types';
+import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('getUserDetails', () => {
-  const args = {};
+  const args: IdamConfig = {};
+  let sandbox: sinon.SinonSandbox;
 
   beforeEach(() => {
-    sinon.stub(request, 'get');
+    sandbox = sinon.createSandbox();
+    sandbox.stub(request, 'get');
   });
 
   afterEach(() => {
-    request.get.restore();
+    sandbox.restore();
   });
 
   it('makes the request to obtain oauth token', () => {

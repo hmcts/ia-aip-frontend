@@ -1,4 +1,5 @@
-const request = require('request-promise-native');
+import request from 'request-promise-native';
+import { IdamConfig } from '../../../../types';
 
 const requestDefaults = {
   headers: {
@@ -9,19 +10,19 @@ const requestDefaults = {
 };
 const formDefaults = { grant_type: 'authorization_code' };
 
-const accessToken = (options = {}, args) => {
-  let requestOptions = {};
+const accessToken = (options = {}, args: IdamConfig) => {
   if (args.openId) {
     const clientFormData = {
       client_id: args.idamClientID,
       client_secret: args.idamSecret
     };
-    requestOptions = Object.assign({
+    const requestOptions = Object.assign({
       uri: `${args.idamApiUrl}/o/token`,
       form: Object.assign({}, formDefaults, options, clientFormData)
     }, requestDefaults);
+    return request.post(requestOptions);
   } else {
-    requestOptions = Object.assign({
+    const requestOptions = Object.assign({
       uri: `${args.idamApiUrl}/oauth2/token`,
       form: Object.assign({}, formDefaults, options),
       auth: {
@@ -29,9 +30,8 @@ const accessToken = (options = {}, args) => {
         pass: args.idamSecret
       }
     }, requestDefaults);
+    return request.post(requestOptions);
   }
-
-  return request.post(requestOptions);
 };
 
-module.exports = accessToken;
+export default accessToken;

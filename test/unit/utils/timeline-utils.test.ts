@@ -650,7 +650,7 @@ describe('timeline-utils', () => {
       }
     ];
     it('should get Submit CQ events', () => {
-      const events = getSubmitClarifyingQuestionsEvents(history as HistoryEvent[], directions as Direction[]);
+      const events = getSubmitClarifyingQuestionsEvents(history, directions as Direction[]);
 
       expect(events.length).to.be.eql(1);
       expect(events[0]).to.contain.keys('date', 'dateObject', 'text', 'links');
@@ -664,7 +664,7 @@ describe('timeline-utils', () => {
         dateSent: '2021-08-25',
         uniqueId: 'directionId'
       });
-      const events = getSubmitClarifyingQuestionsEvents(history as HistoryEvent[], directions as Direction[]);
+      const events = getSubmitClarifyingQuestionsEvents(history, directions as Direction[]);
 
       expect(events.length).to.be.eql(1);
       expect(events[0]).to.contain.keys('date', 'dateObject', 'text', 'links');

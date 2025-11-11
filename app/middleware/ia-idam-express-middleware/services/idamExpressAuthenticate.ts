@@ -1,17 +1,20 @@
-const idamWrapper = require('../wrapper');
-const UUID = require('uuid/v4');
-const config = require('../config');
-const cookies = require('../utilities/cookies');
-const IdamLogger = require('./Logger');
+import { NextFunction, Request, Response } from 'express';
+import UUID from 'uuid/v4';
+import { IdamConfig } from '../../../../types';
+import Logger, { getLogLabel } from '../../../utils/logger';
+import config from '../config';
+import cookies from '../utilities/cookies';
+import idamWrapper from '../wrapper';
 
-const idamExpressAuthenticate = (args = {}) => {
+const idamExpressAuthenticate = (args: IdamConfig) => {
   const idamFunctions = idamWrapper.setup(args);
-  const logger = new IdamLogger(args);
+  const logger = new Logger();
+  const logLabel = getLogLabel(__filename);
 
   const tokenCookieName = args.tokenCookieName || config.tokenCookieName;
   const stateCookieName = args.stateCookieName || config.stateCookieName;
 
-  return (req, res, next) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     const stateCookie = cookies.get(req, stateCookieName);
     if (stateCookie) {
       cookies.remove(res, stateCookieName);
@@ -24,6 +27,7 @@ const idamExpressAuthenticate = (args = {}) => {
       cookies.set(res, stateCookieName, state, args.hostName);
       res.redirect(idamFunctions.getIdamLoginUrl({ state }));
     };
+
     const authToken = cookies.get(req, tokenCookieName);
     if (authToken) {
       idamFunctions
@@ -33,7 +37,7 @@ const idamExpressAuthenticate = (args = {}) => {
           next();
         })
         .catch(error => {
-          logger.error(`User is not authenticated: ${error}`);
+          logger.exception(`User is not authenticated: ${error}`, logLabel);
           redirectUser();
         });
     } else {
@@ -42,4 +46,4 @@ const idamExpressAuthenticate = (args = {}) => {
   };
 };
 
-module.exports = idamExpressAuthenticate;
+export default idamExpressAuthenticate;

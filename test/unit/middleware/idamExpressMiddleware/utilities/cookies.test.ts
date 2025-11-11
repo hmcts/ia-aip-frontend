@@ -1,6 +1,5 @@
-const { expect } = require('chai');
-const sinon = require('sinon');
-const cookies = require('./cookies');
+import cookies from '../../../../../app/middleware/ia-idam-express-middleware/utilities/cookies';
+import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('cookies', () => {
   let req = null;

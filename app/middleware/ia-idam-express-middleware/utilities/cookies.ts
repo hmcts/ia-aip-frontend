@@ -19,4 +19,5 @@ const remove = (res, cookieName) => {
   return res.clearCookie(cookieName);
 };
 
-module.exports = { set, get, remove };
+const cookies = { set, get, remove };
+export default cookies;

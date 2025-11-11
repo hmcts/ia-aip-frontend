@@ -1,3 +1,6 @@
+import { paths } from '../app/paths';
+import Logger from '../app/utils/logger';
+
 interface Href {
   href: string;
   text: string;
@@ -494,6 +497,23 @@ interface IdamDetails {
   sub: string;
 }
 
+interface IdamConfig {
+  redirectUri?: string;
+  indexUrl?: string;
+  idamApiUrl?: string;
+  idamLoginUrl?: string;
+  idamUserLoginUrl?: string;
+  idamRegistrationUrl?: string;
+  idamSecret?: string;
+  idamClientID?: string;
+  openId?: boolean;
+  logger?: Logger;
+  tokenCookieName?: string;
+  stateCookieName?: string;
+  hostName?: string;
+  state?: any;
+}
+
 interface TimeExtension {
   id: string;
   date: string;
@@ -585,7 +605,7 @@ interface WitnessName {
 }
 
 interface WitnessComponent {
-  witnessFullName?:string;
+  witnessFullName?: string;
   witnessFieldString?: string;
   witness: WitnessDetails;
   witnessListElementFieldString?: string;

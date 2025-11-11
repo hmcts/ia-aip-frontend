@@ -1,4 +1,6 @@
-const getServiceAuth = (args = {}) => {
+import { IdamConfig } from '../../../../types';
+
+const getServiceAuth = (args: IdamConfig = {}) => {
   if (!args.idamClientID || !args.idamSecret) {
     throw new Error('ClientID or Secret is undefined');
   }
@@ -6,4 +8,4 @@ const getServiceAuth = (args = {}) => {
   return Buffer.from(`${args.idamClientID}:${args.idamSecret}`).toString('base64');
 };
 
-module.exports = getServiceAuth;
+export default getServiceAuth;

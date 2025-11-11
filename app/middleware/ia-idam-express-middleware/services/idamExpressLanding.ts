@@ -1,18 +1,20 @@
-const idamWrapper = require('../wrapper');
-const config = require('../config');
-const cookies = require('../utilities/cookies');
-const jwtDecode = require('jwt-decode');
-const IdamLogger = require('./Logger');
+import { NextFunction, Request, Response } from 'express';
+import jwtDecode from 'jwt-decode';
+import { IdamConfig } from '../../../../types';
+import Logger, { getLogLabel } from '../../../utils/logger';
+import config from '../config';
+import cookies from '../utilities/cookies';
+import idamWrapper from '../wrapper';
 
-const idamExpressLanding = (args = {}) => {
+const idamExpressLanding = (args: IdamConfig) => {
   const idamFunctions = idamWrapper.setup(args);
-
-  const logger = new IdamLogger(args);
+  const logger = new Logger();
+  const logLabel = getLogLabel(__filename);
 
   const tokenCookieName = args.tokenCookieName || config.tokenCookieName;
   const stateCookieName = args.stateCookieName || config.stateCookieName;
 
-  return (req, res, next) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     const authToken = req.query[tokenCookieName];
     const code = req.query.code;
 
@@ -27,20 +29,20 @@ const idamExpressLanding = (args = {}) => {
           // set cookie on req so it can be used during this request
           req.cookies = req.cookies || {};
           req.cookies[tokenCookieName] = authToken;
-          idamFunctions.getUserDetails(authToken, args)
+          idamFunctions.getUserDetails(authToken)
             .then(userDetails => {
               req.idam = { userDetails };
               next();
             })
             .catch(error => {
-              logger.error(`An error occurred when authenticating the user: ${error}`);
+              logger.exception(`An error occurred when authenticating the user: ${error}`, logLabel);
               res.redirect(args.indexUrl);
             });
         } catch (error) {
           next();
         }
       } else {
-        logger.error('Code has not been set on the query string');
+        logger.exception('Code has not been set on the query string', logLabel);
         res.redirect(args.indexUrl);
       }
       return;
@@ -48,7 +50,7 @@ const idamExpressLanding = (args = {}) => {
 
     const state = cookies.get(req, stateCookieName) || req.query.state;
     if (!state) {
-      logger.error('State cookie does not exist');
+      logger.exception('State cookie does not exist', logLabel);
       res.redirect(args.indexUrl);
       return;
     }
@@ -67,17 +69,17 @@ const idamExpressLanding = (args = {}) => {
         req.cookies = req.cookies || {};
         req.cookies[tokenCookieName] = response.access_token;
         return idamFunctions
-          .getUserDetails(response.access_token, args);
+          .getUserDetails(response.access_token);
       })
       .then(userDetails => {
         req.idam = { userDetails };
         next();
       })
       .catch(error => {
-        logger.error(`An error occurred when authenticating the user: ${error}`);
+        logger.exception(`An error occurred when authenticating the user: ${error}`, logLabel);
         res.redirect(args.indexUrl);
       });
   };
 };
 
-module.exports = idamExpressLanding;
+export default idamExpressLanding;

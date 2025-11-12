@@ -1,5 +1,3 @@
-import { IdamConfig } from '../../../../types';
-
 import accessToken from './accessToken';
 import serviceAuth from './getServiceAuth';
 import userDetails from './getUserDetails';

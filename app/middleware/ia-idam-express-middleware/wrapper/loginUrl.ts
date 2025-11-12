@@ -1,5 +1,4 @@
 import url from 'url';
-import { IdamConfig } from '../../../../types';
 
 const defaultQueryStringParams = { response_type: 'code' };
 

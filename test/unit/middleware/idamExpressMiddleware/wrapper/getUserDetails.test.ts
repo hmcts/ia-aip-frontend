@@ -1,7 +1,5 @@
 import request from 'request-promise-native';
-import { sandbox } from 'sinon';
 import getUserDetails from '../../../../../app/middleware/ia-idam-express-middleware/wrapper/getUserDetails';
-import { IdamConfig } from '../../../../../types';
 import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('getUserDetails', () => {

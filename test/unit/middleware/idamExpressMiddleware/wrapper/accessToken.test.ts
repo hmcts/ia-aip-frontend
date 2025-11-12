@@ -1,6 +1,5 @@
 import request from 'request-promise-native';
 import accessToken from '../../../../../app/middleware/ia-idam-express-middleware/wrapper/accessToken';
-import { IdamConfig } from '../../../../../types';
 import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('accessToken', () => {

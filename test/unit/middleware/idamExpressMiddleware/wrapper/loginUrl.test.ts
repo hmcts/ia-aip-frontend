@@ -1,6 +1,5 @@
 import url from 'url';
 import loginUrl from '../../../../../app/middleware/ia-idam-express-middleware/wrapper/loginUrl';
-import { IdamConfig } from '../../../../../types';
 import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('loginUrl', () => {

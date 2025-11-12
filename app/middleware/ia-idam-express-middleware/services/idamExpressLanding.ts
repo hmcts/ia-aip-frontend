@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import jwtDecode from 'jwt-decode';
-import { IdamConfig } from '../../../../types';
 import Logger, { getLogLabel } from '../../../utils/logger';
 import config from '../config';
 import cookies from '../utilities/cookies';

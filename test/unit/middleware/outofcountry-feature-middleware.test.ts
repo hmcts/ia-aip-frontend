@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { any } from 'joi';
+import session from 'express-session';
 import {
   outOfCountryFeatureMiddleware
 } from '../../../app/middleware/outofcountry-feature-middleware';
@@ -11,7 +11,7 @@ describe('hearingRequirementsMiddleware', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -21,7 +21,7 @@ describe('hearingRequirementsMiddleware', () => {
         appeal: {
           application: {}
         }
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {},
       idam: {
         userDetails: {}
@@ -42,7 +42,7 @@ describe('hearingRequirementsMiddleware', () => {
 
     req.app.locals.logger.trace = function () { // dummy function
     };
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub() ;
   });
 
   afterEach(() => {
@@ -50,16 +50,22 @@ describe('hearingRequirementsMiddleware', () => {
   });
 
   it('should redirect to respective hearings page if the out of county feature  is enabled', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(true);
-    req.path = paths.common.overview;
-    await outOfCountryFeatureMiddleware(req as Request, res as Response, next);
+    const reqWithPath: Partial<Request> = {
+      ...req,
+      path: paths.common.overview
+    };
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(reqWithPath as Request, 'aip-ooc-feature', false).resolves(true);
+    await outOfCountryFeatureMiddleware(reqWithPath as Request, res as Response, next);
     expect(next).to.have.been.called;
   });
 
   it('should redirect to respective hearings page if the out of county feature  is enabled disabled', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(false);
-    req.path = paths.common.overview;
-    await outOfCountryFeatureMiddleware(req as Request, res as Response, next);
+    const reqWithPath: Partial<Request> = {
+      ...req,
+      path: paths.common.overview
+    };
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(reqWithPath as Request, 'aip-ooc-feature', false).resolves(false);
+    await outOfCountryFeatureMiddleware(reqWithPath as Request, res as Response, next);
     expect(res.redirect).to.have.been.called.calledWith(paths.common.overview);
   });
 });

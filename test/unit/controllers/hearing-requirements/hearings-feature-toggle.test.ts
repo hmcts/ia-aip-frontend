@@ -1,4 +1,5 @@
 import { Express, NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   setupHearingBundleFeatureToggleController,
   setupHearingRequirementsFeatureToggleController
@@ -16,7 +17,7 @@ describe('setupHearingRequirementsFeatureToggleController', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -26,7 +27,7 @@ describe('setupHearingRequirementsFeatureToggleController', () => {
         appeal: {
           application: {}
         }
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {},
       idam: {
         userDetails: {}
@@ -43,7 +44,7 @@ describe('setupHearingRequirementsFeatureToggleController', () => {
       send: sandbox.stub()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

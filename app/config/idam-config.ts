@@ -1,4 +1,3 @@
-import { IdamConfig } from '../../types';
 import { paths } from '../paths';
 import { setupSecrets } from '../setupSecrets';
 import Logger from '../utils/logger';

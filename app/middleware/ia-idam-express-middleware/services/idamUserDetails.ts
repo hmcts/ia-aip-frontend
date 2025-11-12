@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { IdamConfig } from '../../../../types';
 import Logger, { getLogLabel } from '../../../utils/logger';
 import config from '../config';
 import cookies from '../utilities/cookies';

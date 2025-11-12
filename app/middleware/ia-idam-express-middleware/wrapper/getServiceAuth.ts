@@ -1,4 +1,3 @@
-import { IdamConfig } from '../../../../types';
 
 const getServiceAuth = (args: IdamConfig = {}) => {
   if (!args.idamClientID || !args.idamSecret) {

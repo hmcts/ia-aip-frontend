@@ -1,5 +1,4 @@
 import request from 'request-promise-native';
-import { IdamConfig } from '../../../../types';
 
 const requestDefaults = {
   headers: {

@@ -31,3 +31,5 @@ nodejs:
         - launch-darkly-sdk-key
 redis:
   enabled: true
+  readinessProbe:
+    enabled: false

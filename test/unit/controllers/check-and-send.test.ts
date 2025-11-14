@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   createSummaryRowsFrom,
   getCheckAndSend,
@@ -43,7 +44,7 @@ describe('createSummaryRowsFrom', () => {
       },
       session: {
         appeal: createDummyAppealApplication()
-      } as Partial<Express.Session>
+      } as Partial<session.Session>
     } as Partial<Request>;
   });
 
@@ -217,7 +218,7 @@ describe('Check and Send Controller', () => {
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
   let paymentService: Partial<PaymentService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -262,7 +263,7 @@ describe('Check and Send Controller', () => {
       redirect: sinon.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

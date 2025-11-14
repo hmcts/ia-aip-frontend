@@ -1,4 +1,5 @@
 import { Express, NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
  setupOutOfCountryFeatureToggleController
 } from '../../../../app/controllers/out-of-country/ooc-feature-toggle';
@@ -15,7 +16,7 @@ describe('setupOutOfCountryFeatureToggleController', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -25,7 +26,7 @@ describe('setupOutOfCountryFeatureToggleController', () => {
         appeal: {
           application: {}
         }
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {},
       idam: {
         userDetails: {}
@@ -42,7 +43,7 @@ describe('setupOutOfCountryFeatureToggleController', () => {
       send: sandbox.stub()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

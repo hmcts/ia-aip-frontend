@@ -9,7 +9,7 @@ describe('Hearing applications types controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let question;
 
   beforeEach(() => {
@@ -38,7 +38,7 @@ describe('Hearing applications types controller', () => {
       redirect: sandbox.spy(),
       locals: {}
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     question = {
       title: i18n.pages.makeApplication.askChangeHearing.title,
       heading: i18n.pages.makeApplication.askChangeHearing.question.heading,

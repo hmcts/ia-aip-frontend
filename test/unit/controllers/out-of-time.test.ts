@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   getAppealLate,
   postAppealLate,
@@ -20,7 +21,7 @@ describe('Out of time controller', () => {
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const evidenceExample: Evidence = {
     fileId: 'someUUID',
     name: 'filename'
@@ -38,7 +39,7 @@ describe('Out of time controller', () => {
           reasonsForAppeal: {},
           hearingRequirements: {}
         } as Appeal
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {
         '__auth-token': 'atoken'
       },
@@ -59,7 +60,7 @@ describe('Out of time controller', () => {
       redirect: sandbox.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     updateAppealService = { submitEventRefactored: sandbox.stub() };
     documentManagementService = { uploadFile: sandbox.stub(), deleteFile: sandbox.stub() };
   });

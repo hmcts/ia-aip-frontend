@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { SinonStub } from 'sinon';
 import {
   addMoreLanguagePostAction,
   getAccessNeeds,
@@ -38,7 +39,7 @@ describe('Hearing requirements access needs controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: SinonStub;
   const logger: Logger = new Logger();
   const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
   let refDataServiceForSpokenLanguage;
@@ -117,7 +118,7 @@ describe('Hearing requirements access needs controller', () => {
       redirect: sinon.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
 
     witness1 = { witnessPartyId: '1', witnessGivenNames: 'witness', witnessFamilyName: '1' };
     witness2 = { witnessPartyId: '2', witnessGivenNames: 'witness', witnessFamilyName: '2' };

@@ -6,7 +6,7 @@ describe('session-middleware', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Request;
   let res: Response;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();

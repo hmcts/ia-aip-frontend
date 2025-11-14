@@ -57,7 +57,6 @@ redis:
   image:
     registry: hmctspublic.azurecr.io
     repository: imported/bitnami/redis
-    tag: '8.2.0'
   architecture: standalone
   master:
     persistence:

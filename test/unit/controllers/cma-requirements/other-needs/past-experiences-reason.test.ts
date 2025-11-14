@@ -12,7 +12,7 @@ describe('CMA Requirements - Other Needs Section: Past Experiences Reason contro
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
 
   beforeEach(() => {
@@ -32,7 +32,7 @@ describe('CMA Requirements - Other Needs Section: Past Experiences Reason contro
       render: sandbox.stub(),
       redirect: sandbox.spy()
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 

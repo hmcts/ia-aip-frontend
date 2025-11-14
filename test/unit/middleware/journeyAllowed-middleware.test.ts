@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { any } from 'joi';
+import session from 'express-session';
 import {
   isJourneyAllowedMiddleware,
   isTimeExtensionsInProgress
@@ -11,7 +11,7 @@ describe('isJourneyAllowedMiddleware', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -21,7 +21,7 @@ describe('isJourneyAllowedMiddleware', () => {
         appeal: {
           application: {}
         }
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {},
       idam: {
         userDetails: {}
@@ -38,7 +38,7 @@ describe('isJourneyAllowedMiddleware', () => {
       send: sandbox.stub()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {
@@ -47,37 +47,40 @@ describe('isJourneyAllowedMiddleware', () => {
 
   it('should allow access to page', () => {
     req.session.appeal.appealStatus = 'appealStarted';
-    req.path = paths.appealStarted.name;
-    isJourneyAllowedMiddleware(req as Request, res as Response, next);
+    const reqWithPath = { ...req, path: paths.appealStarted.name } as Request;
+    isJourneyAllowedMiddleware(reqWithPath, res as Response, next);
     expect(next).to.have.been.called;
   });
 
   it('should allow access to page with params', () => {
     req.params.id = '3';
     req.session.appeal.appealStatus = 'awaitingClarifyingQuestionsAnswers';
-    req.path = paths.awaitingClarifyingQuestionsAnswers.question.replace(':id', '3');
-    isJourneyAllowedMiddleware(req as Request, res as Response, next);
+    const reqWithPath = {
+      ...req,
+      path: paths.awaitingClarifyingQuestionsAnswers.question.replace(':id', '3')
+    } as Request;
+    isJourneyAllowedMiddleware(reqWithPath, res as Response, next);
     expect(next).to.have.been.called;
   });
 
   it('should allow access to page with params', () => {
-    req.path = paths.ftpa.ftpaApplication;
     req.session.appeal.appealStatus = 'decided';
-    isJourneyAllowedMiddleware(req as Request, res as Response, next);
+    const reqWithPath = { ...req, path: paths.ftpa.ftpaApplication } as Request;
+    isJourneyAllowedMiddleware(reqWithPath, res as Response, next);
     expect(next).to.have.been.called;
   });
 
   it('should render forbidden page when page not available for that state', () => {
     req.session.appeal.appealStatus = 'appealStarted';
-    req.path = paths.appealSubmitted.confirmation;
-    isJourneyAllowedMiddleware(req as Request, res as Response, next);
+    const reqWithPath = { ...req, path: paths.appealSubmitted.confirmation } as Request;
+    isJourneyAllowedMiddleware(reqWithPath, res as Response, next);
     expect(res.redirect).to.have.been.called.calledWith(paths.common.forbidden);
   });
 
   it('should allow access to document viewer', () => {
     req.session.appeal.appealStatus = 'appealStarted';
-    req.path = paths.common.documentViewer + 'someFileName';
-    isJourneyAllowedMiddleware(req as Request, res as Response, next);
+    const reqWithPath = { ...req, path: paths.common.documentViewer + 'someFileName' } as Request;
+    isJourneyAllowedMiddleware(reqWithPath, res as Response, next);
     expect(next).to.have.been.called;
   });
 
@@ -101,7 +104,7 @@ describe('isJourneyAllowedMiddleware', () => {
 
   it('should allow access to page if inFlight is not defined', () => {
     req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
-    req.session.appeal.askForMoreTime = { };
+    req.session.appeal.askForMoreTime = {};
     isTimeExtensionsInProgress(req as Request, res as Response, next);
     expect(next).to.have.been.called;
   });

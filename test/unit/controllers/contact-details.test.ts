@@ -1,3 +1,4 @@
+import { OSPlacesClient } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response } from 'express';
 import * as _ from 'lodash';
 import {
@@ -28,7 +29,8 @@ describe('Contact details Controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let osPlacesClient: Partial<OSPlacesClient>;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   const address = {
@@ -75,7 +77,7 @@ describe('Contact details Controller', () => {
       redirect: sinon.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {
@@ -86,8 +88,12 @@ describe('Contact details Controller', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
+      const deps = {
+        updateAppealService: updateAppealService as UpdateAppealService,
+        osPlacesClient: osPlacesClient as OSPlacesClient
+      };
       const middleware = [];
-      setupContactDetailsController(middleware, updateAppealService as UpdateAppealService);
+      setupContactDetailsController(middleware, deps);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.contactDetails);
       expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.contactDetails);
     });
@@ -135,7 +141,7 @@ describe('Contact details Controller', () => {
         const expectedData = {
           contactDetails: contactDetailsExpectation,
           errors: { 'contactDetails': error },
-          errorList: [ error ],
+          errorList: [error],
           previousPage: paths.appealStarted.taskList
         };
 
@@ -173,7 +179,7 @@ describe('Contact details Controller', () => {
         const expectedData = {
           contactDetails: contactDetailsExpectation,
           errors: { 'email-value': emailError, 'text-message-value': textMessageError },
-          errorList: [ emailError, textMessageError ],
+          errorList: [emailError, textMessageError],
           previousPage: paths.appealStarted.taskList
         };
 
@@ -221,7 +227,7 @@ describe('Contact details Controller', () => {
         const expectedData = {
           contactDetails: contactDetailsExpectation,
           errors: { 'email-value': error },
-          errorList: [ error ],
+          errorList: [error],
           previousPage: paths.appealStarted.taskList
         };
 
@@ -253,7 +259,7 @@ describe('Contact details Controller', () => {
         const expectedData = {
           contactDetails: contactDetailsExpectation,
           errors: { 'email-value': error },
-          errorList: [ error ],
+          errorList: [error],
           previousPage: paths.appealStarted.taskList
         };
 
@@ -344,7 +350,7 @@ describe('Contact details Controller', () => {
         const expectedData = {
           contactDetails: contactDetailsExpectation,
           errors: { 'text-message-value': error },
-          errorList: [ error ],
+          errorList: [error],
           previousPage: paths.appealStarted.taskList
         };
 
@@ -376,7 +382,7 @@ describe('Contact details Controller', () => {
         const expectedData = {
           contactDetails: contactDetailsExpectation,
           errors: { 'text-message-value': error },
-          errorList: [ error ],
+          errorList: [error],
           previousPage: paths.appealStarted.taskList
         };
 
@@ -858,7 +864,7 @@ describe('Contact details Controller', () => {
         const expectedData = {
           sponsorContactDetails: sponsorContactDetailsExpectation,
           errors: { 'sponsorContactDetails': error },
-          errorList: [ error ],
+          errorList: [error],
           previousPage: paths.appealStarted.sponsorAddress
         };
 
@@ -896,7 +902,7 @@ describe('Contact details Controller', () => {
         const expectedData = {
           sponsorContactDetails: sponsorContactDetailsExpectation,
           errors: { 'email-value': emailError, 'text-message-value': textMessageError },
-          errorList: [ emailError, textMessageError ],
+          errorList: [emailError, textMessageError],
           previousPage: paths.appealStarted.sponsorAddress
         };
 
@@ -943,7 +949,7 @@ describe('Contact details Controller', () => {
         const expectedData = {
           sponsorContactDetails: sponsorContactDetailsExpectation,
           errors: { 'email-value': error },
-          errorList: [ error ],
+          errorList: [error],
           previousPage: paths.appealStarted.sponsorAddress
         };
 
@@ -975,7 +981,7 @@ describe('Contact details Controller', () => {
         const expectedData = {
           sponsorContactDetails: sponsorContactDetailsExpectation,
           errors: { 'email-value': error },
-          errorList: [ error ],
+          errorList: [error],
           previousPage: paths.appealStarted.sponsorAddress
         };
 
@@ -1066,7 +1072,7 @@ describe('Contact details Controller', () => {
         const expectedData = {
           sponsorContactDetails: sponsorContactDetailsExpectation,
           errors: { 'text-message-value': error },
-          errorList: [ error ],
+          errorList: [error],
           previousPage: paths.appealStarted.sponsorAddress
         };
 
@@ -1098,7 +1104,7 @@ describe('Contact details Controller', () => {
         const expectedData = {
           sponsorContactDetails: sponsorContactDetailsExpectation,
           errors: { 'text-message-value': error },
-          errorList: [ error ],
+          errorList: [error],
           previousPage: paths.appealStarted.sponsorAddress
         };
 

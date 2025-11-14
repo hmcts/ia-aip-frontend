@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import { validate } from '../../../../app/controllers/appeal-application/upload-local-authority-letter';
 import {
   deleteLocalAuthorityLetterRefund,
@@ -24,7 +25,7 @@ describe('Local authority letter refund Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
 
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -46,7 +47,7 @@ describe('Local authority letter refund Controller', function () {
             personalDetails: {}
           }
         } as Appeal
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       app: {
         locals: {
           logger
@@ -61,7 +62,7 @@ describe('Local authority letter refund Controller', function () {
       locals: {}
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
     documentManagementService = {
       uploadFile: sandbox.stub(),

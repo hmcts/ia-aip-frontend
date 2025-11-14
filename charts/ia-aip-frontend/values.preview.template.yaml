@@ -29,3 +29,5 @@ nodejs:
         - AppInsightsInstrumentationKey
         - pcq-token-key
         - launch-darkly-sdk-key
+redis:
+  enabled: true

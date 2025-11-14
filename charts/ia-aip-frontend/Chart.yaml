@@ -10,8 +10,7 @@ dependencies:
   - name: redis
     version: 23.2.12
     repository: "oci://registry-1.docker.io/bitnamicharts"
-    tags:
-      - pr
+    condition: redis.enabled
   - name: idam-pr
     version: 2.2.6
     repository: 'oci://hmctspublic.azurecr.io/helm'

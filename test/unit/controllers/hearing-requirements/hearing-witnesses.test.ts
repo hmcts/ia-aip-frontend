@@ -12,7 +12,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
   beforeEach(() => {
@@ -43,7 +43,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
 
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

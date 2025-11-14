@@ -17,7 +17,7 @@ describe('Personal Details Controller', function () {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -52,7 +52,7 @@ describe('Personal Details Controller', function () {
       redirect: sinon.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
 
     updateAppealService = {
       submitEventRefactored: sandbox.stub()

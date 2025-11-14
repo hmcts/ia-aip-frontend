@@ -19,7 +19,7 @@ describe('Supporting Evidence Upload Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
   const logger: Logger = new Logger();
@@ -63,7 +63,7 @@ describe('Supporting Evidence Upload Controller', () => {
       redirect: sinon.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

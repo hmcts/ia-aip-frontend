@@ -8,7 +8,7 @@ describe('Appeal application controllers setup', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -36,7 +36,7 @@ describe('Appeal application controllers setup', () => {
       redirect: sandbox.spy(),
       locals: {}
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

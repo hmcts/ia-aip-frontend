@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import { getAppellantInUk, getOocHrInside, getOocProtectionDepartureDate, postAppellantInUk, postOocHrInside, postOocProtectionDepartureDate, setupOutOfCountryController } from '../../../app/controllers/appeal-application/out-of-country';
 import { getTypeOfAppeal } from '../../../app/controllers/appeal-application/type-of-appeal';
 import { Events } from '../../../app/data/events';
@@ -13,7 +14,7 @@ describe('Out of Country Controller', function () {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
   sinon.useFakeTimers(new Date('2025-06-15'));
 
@@ -27,7 +28,7 @@ describe('Out of Country Controller', function () {
             isAppealLate: false
           }
         } as Appeal
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {
         '__auth-token': 'atoken'
       },
@@ -49,7 +50,7 @@ describe('Out of Country Controller', function () {
       redirect: sandbox.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
 
     updateAppealService = {
       submitEvent: sandbox.stub(),

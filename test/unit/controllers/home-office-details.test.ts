@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import moment from 'moment';
 import {
   getDateLetterReceived,
@@ -21,7 +22,7 @@ describe('Home Office Details Controller', function () {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
   sinon.useFakeTimers(new Date('2025-06-15'));
 
@@ -35,7 +36,7 @@ describe('Home Office Details Controller', function () {
             isAppealLate: false
           }
         } as Appeal
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {
         '__auth-token': 'atoken'
       },
@@ -57,7 +58,7 @@ describe('Home Office Details Controller', function () {
       redirect: sandbox.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
 
     updateAppealService = {
       submitEvent: sandbox.stub(),

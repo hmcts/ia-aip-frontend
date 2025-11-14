@@ -15,7 +15,7 @@ describe('Asylum support refund Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -28,7 +28,7 @@ describe('Asylum support refund Controller', function () {
             isAppealLate: false
           }
         } as Appeal
-      } as Partial<Express.Session>,
+      } as Partial<Express.Request>,
       cookies: {
         '__auth-token': 'atoken'
       },
@@ -50,7 +50,7 @@ describe('Asylum support refund Controller', function () {
       redirect: sandbox.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

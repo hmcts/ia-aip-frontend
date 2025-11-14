@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   getPayNow,
   getPayNowQuestion,
@@ -22,7 +23,7 @@ describe('Pay now Controller @payNow', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -33,7 +34,7 @@ describe('Pay now Controller @payNow', () => {
         appeal: {
           application: {}
         }
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {
         '__auth-token': 'atoken'
       },
@@ -57,7 +58,7 @@ describe('Pay now Controller @payNow', () => {
       redirect: sinon.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

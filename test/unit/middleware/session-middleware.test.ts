@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   checkSession,
   initSession,
@@ -15,7 +16,7 @@ describe('session-middleware', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -25,7 +26,7 @@ describe('session-middleware', () => {
         appeal: {
           application: {}
         }
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {},
       idam: {
         userDetails: {}
@@ -45,7 +46,7 @@ describe('session-middleware', () => {
       next: sandbox.stub()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

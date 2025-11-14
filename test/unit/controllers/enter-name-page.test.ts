@@ -13,7 +13,7 @@ describe('Home Office Details Controller', function () {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -53,7 +53,7 @@ describe('Home Office Details Controller', function () {
       submitEvent: sandbox.stub()
     } as Partial<UpdateAppealService>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

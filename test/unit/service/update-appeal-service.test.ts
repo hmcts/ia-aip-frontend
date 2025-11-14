@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import session from 'express-session';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import { AuthenticationService } from '../../../app/service/authentication-service';
@@ -1840,7 +1841,7 @@ describe('update-appeal-service', () => {
               document_url: 'http://example.com/doc1',
               document_binary_url: 'http://example.com/doc1/binary'
             }
-          }
+          } as Document
         },
         {
           id: '2',
@@ -1851,7 +1852,7 @@ describe('update-appeal-service', () => {
               document_url: 'http://example.com/doc2',
               document_binary_url: 'http://example.com/doc2/binary'
             }
-          }
+          } as Document
         }
       ];
 
@@ -2007,7 +2008,7 @@ describe('update-appeal-service', () => {
             }
           } as Appeal,
           ccdCaseId: caseId
-        } as Partial<Express.Session>
+        } as Partial<session.Session>
       } as Partial<Request>;
 
       ccdService2 = {

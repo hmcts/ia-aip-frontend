@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   getConfirmationPage,
   setConfirmationRefundController
@@ -12,7 +13,7 @@ describe('Ask for a refund confirmation page Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -25,7 +26,7 @@ describe('Ask for a refund confirmation page Controller', function () {
             isAppealLate: false
           }
         }
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {
         '__auth-token': 'atoken'
       },
@@ -47,7 +48,7 @@ describe('Ask for a refund confirmation page Controller', function () {
       redirect: sandbox.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

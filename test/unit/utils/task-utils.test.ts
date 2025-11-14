@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
@@ -8,8 +9,6 @@ import { expect, sinon } from '../../utils/testUtils';
 describe('getStatus', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
-  let res: Partial<Response>;
-  let next: NextFunction;
   let appeal: Appeal;
   let status;
   let statusWithDlrm;
@@ -128,7 +127,7 @@ describe('getStatus', () => {
           },
           hearingRequirements: {}
         } as Appeal
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       sectionStatuses: {},
       cookies: {},
       idam: {
@@ -140,11 +139,6 @@ describe('getStatus', () => {
         }
       } as any
     } as Partial<Request>;
-
-    res = {
-      render: sandbox.stub()
-    } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
 
     appeal = req.session.appeal;
     status = req.session.appeal.application.tasks;

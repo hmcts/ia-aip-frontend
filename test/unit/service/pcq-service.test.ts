@@ -1,18 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import rp from 'request-promise';
 import PcqService from '../../../app/service/pcq-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
-const express = require('express');
-
 describe('PCQ service', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -23,7 +20,7 @@ describe('PCQ service', () => {
         appeal: {
           application: {}
         }
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {
         '__auth-token': 'atoken'
       },
@@ -39,15 +36,11 @@ describe('PCQ service', () => {
       } as any
     } as Partial<Request>;
 
-    updateAppealService = { submitEventRefactored: sandbox.stub() };
-
     res = {
       render: sandbox.stub(),
       send: sandbox.stub(),
       redirect: sinon.spy()
     } as Partial<Response>;
-
-    next = sandbox.stub() as NextFunction;
   });
 
   afterEach(() => {

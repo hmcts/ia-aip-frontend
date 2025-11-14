@@ -29,3 +29,9 @@ nodejs:
         - AppInsightsInstrumentationKey
         - pcq-token-key
         - launch-darkly-sdk-key
+redis:
+  enabled: true
+  serviceAccount:
+    create: false
+    name: "iac"
+    automountServiceAccountToken: true

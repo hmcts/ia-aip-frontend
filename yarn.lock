@@ -4958,7 +4958,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bluebird@npm:^3.4.1, bluebird@npm:^3.5.0, bluebird@npm:^3.5.4, bluebird@npm:^3.7.2":
+"bluebird@npm:^3.4.1, bluebird@npm:^3.5.4, bluebird@npm:^3.7.2":
   version: 3.7.2
   resolution: "bluebird@npm:3.7.2"
   checksum: 10/007c7bad22c5d799c8dd49c85b47d012a1fe3045be57447721e6afbd1d5be43237af1db62e26cb9b0d9ba812d2e4ca3bac82f6d7e016b6b88de06ee25ceb96e7
@@ -9895,7 +9895,7 @@ __metadata:
     mem: "npm:^4.0.0"
     memory-cache: "npm:^0.2.0"
     mini-css-extract-plugin: "npm:^2.9.0"
-    mocha: "npm:^10.0.0"
+    mocha: "npm:^10.8.2"
     mocha-junit-reporter: "npm:^2.2.1"
     mocha-multi: "npm:^1.1.7"
     mochawesome: "npm:^7.1.3"
@@ -9913,10 +9913,6 @@ __metadata:
     process: "npm:^0.11.10"
     puppeteer-core: "npm:^22.15.0"
     redis: "npm:^3.1.1"
-    request: "npm:^2.88.0"
-    request-promise: "npm:^4.2.6"
-    request-promise-core: "npm:^1.1.2"
-    request-promise-native: "npm:^1.0.5"
     sass: "npm:^1.66.1"
     sass-loader: "npm:^10.5.2"
     sauce-connect-launcher: "npm:^1.3.2"
@@ -12510,7 +12506,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mocha@npm:^10.0.0":
+"mocha@npm:^10.8.2":
   version: 10.8.2
   resolution: "mocha@npm:10.8.2"
   dependencies:
@@ -15015,7 +15011,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"request-promise-core@npm:1.1.4, request-promise-core@npm:^1.1.2":
+"request-promise-core@npm:1.1.4":
   version: 1.1.4
   resolution: "request-promise-core@npm:1.1.4"
   dependencies:
@@ -15039,21 +15035,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"request-promise@npm:^4.2.6":
-  version: 4.2.6
-  resolution: "request-promise@npm:4.2.6"
-  dependencies:
-    bluebird: "npm:^3.5.0"
-    request-promise-core: "npm:1.1.4"
-    stealthy-require: "npm:^1.1.1"
-    tough-cookie: "npm:^2.3.3"
-  peerDependencies:
-    request: ^2.34
-  checksum: 10/b0d8846ebca56008ab18d8e6daa16630bd94d0753c8718afbc4bd987bc13042ae5f4cb4d418498dfffb43fcd00806babba176598b0ab935212b72bbdb4dc7643
-  languageName: node
-  linkType: hard
-
-"request@npm:^2.83.0, request@npm:^2.88.0, request@npm:^2.88.2":
+"request@npm:^2.83.0, request@npm:^2.88.2":
   version: 2.88.2
   resolution: "request@npm:2.88.2"
   dependencies:

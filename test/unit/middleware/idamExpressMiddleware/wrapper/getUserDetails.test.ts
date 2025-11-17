@@ -19,6 +19,7 @@ describe('getUserDetails', () => {
     const token = 'some-token';
     args.idamApiUrl = 'some-url';
 
+    getStub.resolves({ data: {} });
     await getUserDetails(token, args);
 
     expect(axios.get).to.be.calledOnce;
@@ -32,6 +33,7 @@ describe('getUserDetails', () => {
     args.idamApiUrl = 'some-url';
     args.openId = true;
 
+    getStub.resolves({ data: {} });
     await getUserDetails(token, args);
 
     expect(axios.get).to.be.calledOnce;

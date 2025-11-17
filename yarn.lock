@@ -3177,6 +3177,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/chai-as-promised@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "@types/chai-as-promised@npm:8.0.2"
+  dependencies:
+    "@types/chai": "npm:*"
+  checksum: 10/c1ff3eb32f599623f3d78ef6a2bbda06f35f62e12cc6341e1e1deb5ff1652898880d93846ad83dab03d7cb633a5939330eb1af120b52fab46eb2e5321c2d0cdc
+  languageName: node
+  linkType: hard
+
 "@types/chai@npm:*":
   version: 5.2.2
   resolution: "@types/chai@npm:5.2.2"
@@ -9818,6 +9827,7 @@ __metadata:
     "@stryker-mutator/mocha-runner": "npm:^8.7.1"
     "@stryker-mutator/typescript": "npm:^4.0.0"
     "@types/chai": "npm:^4.2.3"
+    "@types/chai-as-promised": "npm:^8.0.2"
     "@types/config": "npm:^0.0.39"
     "@types/connect-redis": "npm:^0.0.13"
     "@types/cucumber": "npm:^6.0.0"

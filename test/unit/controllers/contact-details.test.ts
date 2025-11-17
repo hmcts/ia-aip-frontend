@@ -1,5 +1,4 @@
-import { OSPlacesClient } from '@hmcts/os-places-client';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import * as _ from 'lodash';
 import {
   getContactDetails,
@@ -17,6 +16,7 @@ import {
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
+import { OSPlacesClient } from '../../../app/service/OSPlacesClient';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
@@ -29,7 +29,7 @@ describe('Contact details Controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let osPlacesClient: Partial<OSPlacesClient>;
+  let osPlacesClient: OSPlacesClient;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
@@ -90,7 +90,7 @@ describe('Contact details Controller', () => {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const deps = {
         updateAppealService: updateAppealService as UpdateAppealService,
-        osPlacesClient: osPlacesClient as OSPlacesClient
+        osPlacesClient: osPlacesClient
       };
       const middleware = [];
       setupContactDetailsController(middleware, deps);

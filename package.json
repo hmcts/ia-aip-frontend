@@ -127,6 +127,7 @@
     "@stryker-mutator/mocha-runner": "^8.7.1",
     "@stryker-mutator/typescript": "^4.0.0",
     "@types/chai": "^4.2.3",
+    "@types/chai-as-promised": "^8.0.2",
     "@types/config": "^0.0.39",
     "@types/connect-redis": "^0.0.13",
     "@types/cucumber": "^6.0.0",

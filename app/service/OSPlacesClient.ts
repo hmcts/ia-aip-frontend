@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
-class AddressInfoResponse {
+export class AddressInfoResponse {
   public addresses: Address[];
   private readonly httpStatus: number;
 
@@ -18,12 +18,12 @@ class AddressInfoResponse {
   }
 }
 
-interface OSPlacesResult {
+export interface OSPlacesResult {
   LPI?: Record<string, any>;
   DPA?: Record<string, any>;
 }
 
-class Point {
+export class Point {
   constructor(public readonly type: string, public readonly coordinates: number[]) {}
 }
 

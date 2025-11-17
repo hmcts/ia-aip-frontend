@@ -1,4 +1,4 @@
-import { Address, Point } from '@hmcts/os-places-client';
+import { Address, Point } from '../../../app/service/OSPlacesClient';
 import { getAddress, getLine1, getLine2 } from '../../../app/utils/address-utils';
 import { expect } from '../../utils/testUtils';
 

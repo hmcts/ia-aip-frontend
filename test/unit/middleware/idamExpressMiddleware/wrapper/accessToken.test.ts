@@ -21,6 +21,7 @@ describe('accessToken', () => {
     args.idamApiUrl = 'some-url';
     args.idamClientID = 'some-id';
     args.idamSecret = 'some-secret';
+    postStub.resolves({ data: {} });
     // Act.
     await accessToken(options, args);
     // Assert.
@@ -42,6 +43,7 @@ describe('accessToken', () => {
     args.idamSecret = 'some-secret';
     args.openId = true;
     // Act.
+    postStub.resolves({ data: {} });
     await accessToken(options, args);
     // Assert.
     expect(postStub).to.be.calledOnce;

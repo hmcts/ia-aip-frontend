@@ -1,4 +1,3 @@
-import { Address, OSPlacesClient } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
@@ -6,6 +5,7 @@ import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
+import { Address, OSPlacesClient } from '../../service/OSPlacesClient';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getAddress } from '../../utils/address-utils';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';

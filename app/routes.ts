@@ -1,4 +1,3 @@
-import { OSPlacesClient } from '@hmcts/os-places-client';
 import * as express from 'express';
 import { setupIndexController } from './controllers';
 import { setupAsylumSupportController } from './controllers/appeal-application/asylum-support';
@@ -199,6 +198,7 @@ import { CcdService } from './service/ccd-service';
 import CcdSystemService from './service/ccd-system-service';
 import { DocumentManagementService } from './service/document-management-service';
 import IdamService from './service/idam-service';
+import { OSPlacesClient } from './service/OSPlacesClient';
 import PaymentService from './service/payments-service';
 import RefDataService from './service/ref-data-service';
 import S2SService from './service/s2s-service';

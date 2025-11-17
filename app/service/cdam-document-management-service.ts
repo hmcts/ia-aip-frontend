@@ -77,7 +77,7 @@ class CdamDocumentManagementService {
       form.getHeaders()
     );
 
-    const response = await axios.post(url, options);
+    const response = await axios.post(url, form, options);
     return JSON.stringify(response.data);
   }
 

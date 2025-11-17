@@ -18,6 +18,11 @@ class AddressInfoResponse {
   }
 }
 
+interface OSPlacesResult {
+  LPI?: Record<string, any>;
+  DPA?: Record<string, any>;
+}
+
 class Point {
   constructor(public readonly type: string, public readonly coordinates: number[]) {}
 }
@@ -25,22 +30,22 @@ class Point {
 export class Address {
   constructor(
     public readonly uprn: string,
-    public readonly organisationName: string | undefined,
-    public readonly departmentName: string | undefined,
-    public readonly poBoxNumber: string | undefined,
-    public readonly buildingName: string | undefined,
-    public readonly subBuildingName: string | undefined,
-    public readonly buildingNumber: number | undefined,
-    public readonly thoroughfareName: string | undefined,
-    public readonly dependentThoroughfareName: string | undefined,
-    public readonly dependentLocality: string | undefined,
-    public readonly doubleDependentLocality: string | undefined,
+    public readonly organisationName: string,
+    public readonly departmentName: string,
+    public readonly poBoxNumber: string,
+    public readonly buildingName: string,
+    public readonly subBuildingName: string,
+    public readonly buildingNumber: number,
+    public readonly thoroughfareName: string,
+    public readonly dependentThoroughfareName: string,
+    public readonly dependentLocality: string,
+    public readonly doubleDependentLocality: string,
     public readonly postTown: string,
     public readonly postcode: string,
     public readonly postcodeType: string,
     public readonly formattedAddress: string,
     public readonly point: Point,
-    public readonly udprn: string | undefined
+    public readonly udprn: string
   ) {}
 }
 
@@ -129,48 +134,8 @@ export class OSPlacesClient {
 
     if (placesQueryBody.results) {
       addressInfoResponse.addAll(
-        placesQueryBody.results.map((jsonAddress: any) => {
-          if (!jsonAddress.DPA) {
-            return new Address(
-              jsonAddress.LPI.UPRN,
-              jsonAddress.LPI.ORGANISATION,
-              jsonAddress.LPI.DEPARTMENT_NAME,
-              jsonAddress.LPI.PO_BOX_NUMBER,
-              jsonAddress.LPI.PAO_TEXT,
-              jsonAddress.LPI.SAO_TEXT,
-              jsonAddress.LPI.BUILDING_NUMBER,
-              jsonAddress.LPI.STREET_DESCRIPTION,
-              jsonAddress.LPI.DEPENDENT_THOROUGHFARE_NAME,
-              jsonAddress.LPI.DEPENDENT_LOCALITY,
-              jsonAddress.LPI.DOUBLE_DEPENDENT_LOCALITY,
-              jsonAddress.LPI.TOWN_NAME,
-              jsonAddress.LPI.POSTCODE_LOCATOR,
-              jsonAddress.LPI.POSTAL_ADDRESS_CODE,
-              jsonAddress.LPI.ADDRESS,
-              new Point('Point', [jsonAddress.LPI.X_COORDINATE, jsonAddress.LPI.Y_COORDINATE]),
-              jsonAddress.LPI.USRN
-            );
-          } else {
-            return new Address(
-              jsonAddress.DPA.UPRN,
-              jsonAddress.DPA.ORGANISATION_NAME,
-              jsonAddress.DPA.DEPARTMENT_NAME,
-              jsonAddress.DPA.PO_BOX_NUMBER,
-              jsonAddress.DPA.BUILDING_NAME,
-              jsonAddress.DPA.SUB_BUILDING_NAME,
-              jsonAddress.DPA.BUILDING_NUMBER,
-              jsonAddress.DPA.THOROUGHFARE_NAME,
-              jsonAddress.DPA.DEPENDENT_THOROUGHFARE_NAME,
-              jsonAddress.DPA.DEPENDENT_LOCALITY,
-              jsonAddress.DPA.DOUBLE_DEPENDENT_LOCALITY,
-              jsonAddress.DPA.POST_TOWN,
-              jsonAddress.DPA.POSTCODE,
-              jsonAddress.DPA.POSTAL_ADDRESS_CODE,
-              jsonAddress.DPA.ADDRESS,
-              new Point('Point', [jsonAddress.DPA.X_COORDINATE, jsonAddress.DPA.Y_COORDINATE]),
-              jsonAddress.DPA.UDPRN
-            );
-          }
+        placesQueryBody.results.map((jsonAddress: OSPlacesResult) => {
+          return this.mapResultToAddress(jsonAddress);
         })
       );
     }
@@ -183,5 +148,29 @@ export class OSPlacesClient {
     }
 
     return addressInfoResponse;
+  }
+
+  private mapResultToAddress(result: OSPlacesResult): Address {
+    const source = result.DPA ?? result.LPI ?? {};
+    const coords = [source.X_COORDINATE, source.Y_COORDINATE];
+    return new Address(
+      source.UPRN,
+      source.ORGANISATION_NAME ?? source.ORGANISATION,
+      source.DEPARTMENT_NAME,
+      source.PO_BOX_NUMBER,
+      source.BUILDING_NAME ?? source.PAO_TEXT,
+      source.SUB_BUILDING_NAME ?? source.SAO_TEXT,
+      source.BUILDING_NUMBER,
+      source.THOROUGHFARE_NAME ?? source.STREET_DESCRIPTION,
+      source.DEPENDENT_THOROUGHFARE_NAME,
+      source.DEPENDENT_LOCALITY,
+      source.DOUBLE_DEPENDENT_LOCALITY,
+      source.POST_TOWN ?? source.TOWN_NAME,
+      source.POSTCODE ?? source.POSTCODE_LOCATOR,
+      source.POSTAL_ADDRESS_CODE,
+      source.ADDRESS,
+      new Point('Point', coords),
+      source.UDPRN ?? source.USRN
+    );
   }
 }

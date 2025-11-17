@@ -1,13 +1,11 @@
-import * as requestDefault from 'request';
-import * as requestPromise from 'request-promise-native';
+import axios, { AxiosInstance } from 'axios';
 
 class AddressInfoResponse {
   public addresses: Address[];
-
   private readonly httpStatus: number;
 
   constructor(httpStatus: number, addresses: Address[] = []) {
-    this.addresses = !addresses ? [] : addresses;
+    this.addresses = addresses || [];
     this.httpStatus = httpStatus;
   }
 
@@ -21,30 +19,29 @@ class AddressInfoResponse {
 }
 
 class Point {
-  constructor(public readonly type: string,
-              public readonly coordinates: number[]) {
-  }
+  constructor(public readonly type: string, public readonly coordinates: number[]) {}
 }
 
 export class Address {
-  constructor(public readonly uprn: string,
-              public readonly organisationName: string | undefined,
-              public readonly departmentName: string | undefined,
-              public readonly poBoxNumber: string | undefined,
-              public readonly buildingName: string | undefined,
-              public readonly subBuildingName: string | undefined,
-              public readonly buildingNumber: number | undefined,
-              public readonly thoroughfareName: string | undefined,
-              public readonly dependentThoroughfareName: string | undefined,
-              public readonly dependentLocality: string | undefined,
-              public readonly doubleDependentLocality: string | undefined,
-              public readonly postTown: string,
-              public readonly postcode: string,
-              public readonly postcodeType: string,
-              public readonly formattedAddress: string,
-              public readonly point: Point,
-              public readonly udprn: string | undefined) {
-  }
+  constructor(
+    public readonly uprn: string,
+    public readonly organisationName: string | undefined,
+    public readonly departmentName: string | undefined,
+    public readonly poBoxNumber: string | undefined,
+    public readonly buildingName: string | undefined,
+    public readonly subBuildingName: string | undefined,
+    public readonly buildingNumber: number | undefined,
+    public readonly thoroughfareName: string | undefined,
+    public readonly dependentThoroughfareName: string | undefined,
+    public readonly dependentLocality: string | undefined,
+    public readonly doubleDependentLocality: string | undefined,
+    public readonly postTown: string,
+    public readonly postcode: string,
+    public readonly postcodeType: string,
+    public readonly formattedAddress: string,
+    public readonly point: Point,
+    public readonly udprn: string | undefined
+  ) {}
 }
 
 class Header {
@@ -59,9 +56,7 @@ class Header {
     public readonly maxResults: number,
     public readonly epoch: string,
     public readonly outputSrs: string
-  ) {
-
-  }
+  ) {}
 
   public hasNextPage(): boolean {
     return (this.offset + this.maxResults) / this.maxResults < this.totalResults / this.maxResults;
@@ -70,17 +65,20 @@ class Header {
   public getNextOffset(): number {
     return this.offset + this.maxResults;
   }
-
 }
 
 export class OSPlacesClient {
+  private http: AxiosInstance;
 
-  constructor(private readonly apiToken: string,
-              private readonly request: requestDefault.RequestAPI<requestPromise.RequestPromise,
-                requestPromise.RequestPromiseOptions,
-                requestDefault.RequiredUriUrl> = requestPromise,
-              private readonly apiUrl: string = 'https://api.os.uk',
-              private readonly apiPath: string = '/search/places/v1/postcode') {
+  constructor(
+    private readonly apiToken: string,
+    private readonly apiUrl: string = 'https://api.os.uk',
+    private readonly apiPath: string = '/search/places/v1/postcode'
+  ) {
+    // Wrap axios to always return the raw response (never throw for non-2xx)
+    this.http = axios.create({
+      validateStatus: () => true // allow 4xx/5xx without throwing
+    });
   }
 
   public lookupByPostcode(postcode: string): Promise<AddressInfoResponse> {
@@ -96,22 +94,23 @@ export class OSPlacesClient {
     return `${this.apiUrl}${this.apiPath}?offset=${offset}&key=${this.apiToken}&postcode=${postcode}`;
   }
 
-  private async getResponse(uri: string, addressInfoResponse: AddressInfoResponse): Promise<any> {
-    let response = await this.request.get({
-      json: false,
-      resolveWithFullResponse: true,
-      simple: false,
-      uri: `${uri}`
-    });
-    if (response.statusCode >= 500) {
+  private async getResponse(uri: string, addressInfoResponse: AddressInfoResponse): Promise<AddressInfoResponse> {
+    const response = await this.http.get(uri, { responseType: 'text' });
+
+    const statusCode = response.status;
+    const bodyText = response.data;
+
+    if (statusCode >= 500) {
       throw new Error('Error with OS Places service');
-    } else if (response.statusCode === 404) {
+    } else if (statusCode === 404) {
       return new AddressInfoResponse(404, []);
-    } else if (response.statusCode === 401) {
+    } else if (statusCode === 401) {
       throw new Error('Authentication failed');
     }
-    const placesQueryBody = JSON.parse(response.body);
-    const header: Header = new Header(
+
+    const placesQueryBody = JSON.parse(bodyText);
+
+    const header = new Header(
       placesQueryBody.header.uri,
       placesQueryBody.header.query,
       placesQueryBody.header.offset,
@@ -123,49 +122,51 @@ export class OSPlacesClient {
       placesQueryBody.header.epoch,
       placesQueryBody.header.output_srs
     );
+
     if (addressInfoResponse.statusCode === 999) {
-      addressInfoResponse = new AddressInfoResponse(response.statusCode, []);
+      addressInfoResponse = new AddressInfoResponse(statusCode, []);
     }
+
     if (placesQueryBody.results) {
       addressInfoResponse.addAll(
         placesQueryBody.results.map((jsonAddress: any) => {
           if (!jsonAddress.DPA) {
             return new Address(
-              jsonAddress.LPI.UPRN,                             // 1
-              jsonAddress.LPI.ORGANISATION,                     // 0..1
-              jsonAddress.LPI.DEPARTMENT_NAME,                  // 0..1
-              jsonAddress.LPI.PO_BOX_NUMBER,                    // 0..1
-              jsonAddress.LPI.PAO_TEXT,                         // 0..1
-              jsonAddress.LPI.SAO_TEXT,                         // 0..1
-              jsonAddress.LPI.BUILDING_NUMBER,                  // 0..1
-              jsonAddress.LPI.STREET_DESCRIPTION,               // 0..1
-              jsonAddress.LPI.DEPENDENT_THOROUGHFARE_NAME,      // 0..1
-              jsonAddress.LPI.DEPENDENT_LOCALITY,               // 0..1
-              jsonAddress.LPI.DOUBLE_DEPENDENT_LOCALITY,        // 0..1
-              jsonAddress.LPI.TOWN_NAME,                        // 1
-              jsonAddress.LPI.POSTCODE_LOCATOR,                 // 1
-              jsonAddress.LPI.POSTAL_ADDRESS_CODE,              // 1
-              jsonAddress.LPI.ADDRESS,                          // 1
+              jsonAddress.LPI.UPRN,
+              jsonAddress.LPI.ORGANISATION,
+              jsonAddress.LPI.DEPARTMENT_NAME,
+              jsonAddress.LPI.PO_BOX_NUMBER,
+              jsonAddress.LPI.PAO_TEXT,
+              jsonAddress.LPI.SAO_TEXT,
+              jsonAddress.LPI.BUILDING_NUMBER,
+              jsonAddress.LPI.STREET_DESCRIPTION,
+              jsonAddress.LPI.DEPENDENT_THOROUGHFARE_NAME,
+              jsonAddress.LPI.DEPENDENT_LOCALITY,
+              jsonAddress.LPI.DOUBLE_DEPENDENT_LOCALITY,
+              jsonAddress.LPI.TOWN_NAME,
+              jsonAddress.LPI.POSTCODE_LOCATOR,
+              jsonAddress.LPI.POSTAL_ADDRESS_CODE,
+              jsonAddress.LPI.ADDRESS,
               new Point('Point', [jsonAddress.LPI.X_COORDINATE, jsonAddress.LPI.Y_COORDINATE]),
               jsonAddress.LPI.USRN
             );
           } else {
             return new Address(
-              jsonAddress.DPA.UPRN,                             // 1
-              jsonAddress.DPA.ORGANISATION_NAME,                // 0..1
-              jsonAddress.DPA.DEPARTMENT_NAME,                  // 0..1
-              jsonAddress.DPA.PO_BOX_NUMBER,                    // 0..1
-              jsonAddress.DPA.BUILDING_NAME,                    // 0..1
-              jsonAddress.DPA.SUB_BUILDING_NAME,                // 0..1
-              jsonAddress.DPA.BUILDING_NUMBER,                  // 0..1
-              jsonAddress.DPA.THOROUGHFARE_NAME,                // 0..1
-              jsonAddress.DPA.DEPENDENT_THOROUGHFARE_NAME,      // 0..1
-              jsonAddress.DPA.DEPENDENT_LOCALITY,               // 0..1
-              jsonAddress.DPA.DOUBLE_DEPENDENT_LOCALITY,        // 0..1
-              jsonAddress.DPA.POST_TOWN,                        // 1
-              jsonAddress.DPA.POSTCODE,                         // 1
-              jsonAddress.DPA.POSTAL_ADDRESS_CODE,              // 1
-              jsonAddress.DPA.ADDRESS,                          // 1
+              jsonAddress.DPA.UPRN,
+              jsonAddress.DPA.ORGANISATION_NAME,
+              jsonAddress.DPA.DEPARTMENT_NAME,
+              jsonAddress.DPA.PO_BOX_NUMBER,
+              jsonAddress.DPA.BUILDING_NAME,
+              jsonAddress.DPA.SUB_BUILDING_NAME,
+              jsonAddress.DPA.BUILDING_NUMBER,
+              jsonAddress.DPA.THOROUGHFARE_NAME,
+              jsonAddress.DPA.DEPENDENT_THOROUGHFARE_NAME,
+              jsonAddress.DPA.DEPENDENT_LOCALITY,
+              jsonAddress.DPA.DOUBLE_DEPENDENT_LOCALITY,
+              jsonAddress.DPA.POST_TOWN,
+              jsonAddress.DPA.POSTCODE,
+              jsonAddress.DPA.POSTAL_ADDRESS_CODE,
+              jsonAddress.DPA.ADDRESS,
               new Point('Point', [jsonAddress.DPA.X_COORDINATE, jsonAddress.DPA.Y_COORDINATE]),
               jsonAddress.DPA.UDPRN
             );
@@ -173,10 +174,14 @@ export class OSPlacesClient {
         })
       );
     }
+
+    // Recursive pagination check
     if (header.hasNextPage()) {
-      const next = this.getUri(addressInfoResponse.addresses[0].postcode, header.getNextOffset());
-      return this.getResponse(next, addressInfoResponse);
+      const nextOffset = header.getNextOffset();
+      const nextUri = this.getUri(addressInfoResponse.addresses[0].postcode, nextOffset);
+      return this.getResponse(nextUri, addressInfoResponse);
     }
+
     return addressInfoResponse;
   }
 }

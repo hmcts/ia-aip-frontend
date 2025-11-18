@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   getHelpWithFeesRefNumber,
   postHelpWithFeesRefNumber,
@@ -18,7 +19,7 @@ describe('Help with fees reference number Controller', function () {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -31,7 +32,7 @@ describe('Help with fees reference number Controller', function () {
             isAppealLate: false
           }
         } as Appeal
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {
         '__auth-token': 'atoken'
       },
@@ -53,7 +54,7 @@ describe('Help with fees reference number Controller', function () {
       redirect: sandbox.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
 
     updateAppealService = {
       submitEvent: sandbox.stub(),

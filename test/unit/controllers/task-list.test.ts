@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import { getTaskList, setupTaskListController } from '../../../app/controllers/appeal-application/task-list';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { paths } from '../../../app/paths';
@@ -12,7 +13,7 @@ describe('Task List Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -57,7 +58,7 @@ describe('Task List Controller', () => {
           reasonsForAppeal: {},
           hearingRequirements: {}
         } as Appeal
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       sectionStatuses: {},
       cookies: {},
       idam: {
@@ -73,7 +74,7 @@ describe('Task List Controller', () => {
     res = {
       render: sandbox.stub()
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

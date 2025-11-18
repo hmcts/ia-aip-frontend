@@ -165,7 +165,6 @@ describe('application-state-utils', () => {
       req.session.appeal.application.remissionOption = null;
 
       req.session.appeal.appealStatus = 'appealSubmitted';
-      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
@@ -401,7 +400,7 @@ describe('application-state-utils', () => {
     });
 
     it('when application status is awaitingRespondentEvidence should get correct \'Do This next section\'', async () => {
-      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
       req.session.appeal.appealStatus = 'awaitingRespondentEvidence';
       const result = await getAppealApplicationNextStep(req as Request);
 

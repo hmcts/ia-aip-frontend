@@ -1,5 +1,6 @@
 import config from 'config';
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   getReasonForAppeal,
   postReasonForAppeal,
@@ -18,7 +19,7 @@ describe('Reasons for Appeal Controller', function () {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -28,7 +29,7 @@ describe('Reasons for Appeal Controller', function () {
         appeal: {
           reasonsForAppeal: {}
         } as Partial<Appeal>
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       body: {},
       cookies: {},
       idam: {
@@ -47,7 +48,7 @@ describe('Reasons for Appeal Controller', function () {
       send: sandbox.stub()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
 
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });

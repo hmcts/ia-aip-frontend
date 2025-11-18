@@ -13,7 +13,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let hearingRequirements: HearingRequirements;
   hearingRequirements = {
@@ -99,7 +99,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
 
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

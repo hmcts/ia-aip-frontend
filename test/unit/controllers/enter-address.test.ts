@@ -1,5 +1,6 @@
 import { Address, OSPlacesClient, Point } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import * as _ from 'lodash';
 import {
   getManualEnterAddressPage,
@@ -20,7 +21,7 @@ describe('Personal Details Controller', function () {
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
 
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
   const osPlacesClient = new OSPlacesClient('someToken');
 
@@ -50,7 +51,7 @@ describe('Personal Details Controller', function () {
             personalDetails: {}
           }
         } as Appeal
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       app: {
         locals: {
           logger
@@ -64,7 +65,7 @@ describe('Personal Details Controller', function () {
       redirect: sinon.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 

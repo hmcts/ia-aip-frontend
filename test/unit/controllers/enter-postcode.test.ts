@@ -2,6 +2,7 @@ import { OSPlacesClient } from '@hmcts/os-places-client';
 
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   ContactDetailsControllerDependencies,
   getEnterPostcodePage,
@@ -18,7 +19,7 @@ describe('Personal Details Controller', function() {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
   const osPlacesClient = new OSPlacesClient('someToken');
 
@@ -32,7 +33,7 @@ describe('Personal Details Controller', function() {
             personalDetails: {}
           }
         } as Partial<Appeal>
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       body: {},
       cookies: {},
       idam: {
@@ -51,7 +52,7 @@ describe('Personal Details Controller', function() {
       send: sandbox.stub()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
 
     updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
   });

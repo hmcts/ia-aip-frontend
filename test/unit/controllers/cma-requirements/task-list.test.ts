@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   getTaskList,
   setupCmaRequirementsTaskListController
@@ -13,7 +14,7 @@ describe('Cma Requirements Task List Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -49,7 +50,7 @@ describe('Cma Requirements Task List Controller', () => {
             }
           }
         } as Partial<Appeal>
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       sectionStatuses: {},
       cookies: {},
       idam: {
@@ -66,7 +67,7 @@ describe('Cma Requirements Task List Controller', () => {
       render: sandbox.stub()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

@@ -1,5 +1,6 @@
 import { Address, AddressInfoResponse, OSPlacesClient, Point } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   ContactDetailsControllerDependencies,
   getPostcodeLookupPage,
@@ -20,7 +21,7 @@ describe('Personal Details Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let lookupByPostcodeStub;
 
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   const osPlacesClient = new OSPlacesClient('someToken');
@@ -38,7 +39,7 @@ describe('Personal Details Controller', function () {
             }
           }
         } as Partial<Appeal>
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       body: {},
       cookies: {},
       idam: {
@@ -57,7 +58,7 @@ describe('Personal Details Controller', function () {
       redirect: sinon.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
 
     updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
     lookupByPostcodeStub = sandbox.stub(osPlacesClient, 'lookupByPostcode');

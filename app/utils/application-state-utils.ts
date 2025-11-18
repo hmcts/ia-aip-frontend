@@ -64,28 +64,29 @@ interface DoThisNextSection {
  * @param req the request containing the session and appeal status
  */
 function getAppealStatus(req: Request) {
-  if (req.session.appeal.appealStatus === States.FINAL_BUNDLING.id
-    && req.session.appeal.history.find(event => event.id === Events.DECISION_WITHOUT_HEARING.id)) {
+  const appeal = req.session.appeal;
+  if (appeal.appealStatus === States.FINAL_BUNDLING.id
+    && appeal.history.find(event => event.id === Events.DECISION_WITHOUT_HEARING.id)) {
     return 'decidedWithoutHearing';
-  } else if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== States.ENDED.id) {
-    if (req.session.appeal.outOfTimeDecisionType === 'rejected') {
+  } else if (appeal.application.isAppealLate && appeal.appealStatus !== States.ENDED.id) {
+    if (appeal.outOfTimeDecisionType === 'rejected') {
       return 'lateAppealRejected';
     }
-    if (req.session.appeal.appealStatus === 'appealSubmitted') {
+    if (appeal.appealStatus === 'appealSubmitted') {
       return 'lateAppealSubmitted';
     }
-    return req.session.appeal.appealStatus;
-  } else if (req.session.appeal.appealStatus === States.APPEAL_STARTED.id) {
-    return _.has(req.session.appeal, 'application.homeOfficeRefNumber') ? `${req.session.appeal.appealStatus}Partial` : req.session.appeal.appealStatus;
-  } else if (req.session.appeal.appealStatus === States.AWAITING_REASONS_FOR_APPEAL.id) {
-    return _.has(req.session.appeal, 'reasonsForAppeal.applicationReason') ? `${req.session.appeal.appealStatus}Partial` : req.session.appeal.appealStatus;
-  } else if (req.session.appeal.appealStatus === States.RESPONDENT_REVIEW.id) {
-    if (req.session.appeal.history.find(event => event.id === Events.REQUEST_RESPONSE_REVIEW.id)) {
-      return req.session.appeal.appealReviewOutcome;
+    return appeal.appealStatus;
+  } else if (appeal.appealStatus === States.APPEAL_STARTED.id) {
+    return _.has(appeal, 'application.homeOfficeRefNumber') ? `${appeal.appealStatus}Partial` : appeal.appealStatus;
+  } else if (appeal.appealStatus === States.AWAITING_REASONS_FOR_APPEAL.id) {
+    return _.has(appeal, 'reasonsForAppeal.applicationReason') ? `${appeal.appealStatus}Partial` : appeal.appealStatus;
+  } else if (appeal.appealStatus === States.RESPONDENT_REVIEW.id) {
+    if (appeal.history.find(event => event.id === Events.REQUEST_RESPONSE_REVIEW.id)) {
+      return appeal.appealReviewOutcome;
     }
-    return req.session.appeal.appealStatus;
+    return appeal.appealStatus;
   } else {
-    return req.session.appeal.appealStatus;
+    return appeal.appealStatus;
   }
 }
 

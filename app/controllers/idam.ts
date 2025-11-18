@@ -1,6 +1,6 @@
-import idamExpressMiddleware from '@hmcts/ia-idam-express-middleware';
 import { NextFunction, Request, Response, Router } from 'express';
 import { idamConfig } from '../config/idam-config';
+import idamExpressMiddleware from '../middleware/ia-idam-express-middleware';
 import { checkSession, initSession, startRepresentingYourself } from '../middleware/session-middleware';
 import { paths } from '../paths';
 import { getIdamLoginUrl, getIdamRedirectUrl } from '../utils/url-utils';
@@ -46,7 +46,7 @@ function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
 async function authenticateMiddleware(req: Request, res: Response, next: NextFunction) {
   idamConfig.redirectUri = getIdamRedirectUrl(req);
   idamConfig.idamLoginUrl = getIdamLoginUrl(req);
-  await idamExpressMiddleware.authenticate(idamConfig)(req, res, next);
+  idamExpressMiddleware.authenticate(idamConfig)(req, res, next);
 }
 
 function setupIdamController(): Router {

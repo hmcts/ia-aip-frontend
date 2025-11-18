@@ -15,7 +15,7 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
   const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
@@ -66,7 +66,7 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
       render: sandbox.stub(),
       redirect: sandbox.spy()
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
     documentManagementService = { deleteFile: sandbox.stub() } as Partial<DocumentManagementService>;
   });

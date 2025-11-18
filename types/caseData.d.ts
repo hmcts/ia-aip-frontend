@@ -244,8 +244,20 @@ interface CaseData {
   utAppealReferenceNumber?: string;
   remissionOption?: string;
   asylumSupportRefNumber?: string;
+  asylumSupportReference?: string;
+  legalAidAccountNumber?: string;
+  exceptionalCircumstances?: string;
+  asylumSupportDocument?: SupportingDocument;
+  section17Document?: SupportingDocument;
+  section20Document?: SupportingDocument;
+  homeOfficeWaiverDocument?: SupportingDocument;
+  remissionEcEvidenceDocuments?: Collection<SupportingDocument>[];
+  feeRemissionType?: string;
+  remissionType?: string;
+  remissionClaim?: string;
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
+  helpWithFeesReferenceNumber?: string;
   localAuthorityLetters?: Collection<DocumentWithMetaData>[];
   correctedDecisionAndReasons: Collection<CcdDecisionAndReasons>[];
 
@@ -440,6 +452,13 @@ interface RemissionDetailsData {
   helpWithFeesReferenceNumber?: string;
   helpWithFeesOption?: string;
   localAuthorityLetters?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  legalAidAccountNumber?: string;
+  exceptionalCircumstances?: string;
+  asylumSupportDocument?: SupportingDocument;
+  section17Document?: SupportingDocument;
+  section20Document?: SupportingDocument;
+  homeOfficeWaiverDocument?: SupportingDocument;
+  remissionEcEvidenceDocuments?: Collection<SupportingDocument>[];
 }
 
 interface InterpreterLanguageRefData {

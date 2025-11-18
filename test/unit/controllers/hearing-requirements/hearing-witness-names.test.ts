@@ -13,7 +13,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let summaryList = [{ summaryRows: [{ key: { text: 'GivenName1 GivenName2 FamilyName' }, value: { html : '' }, actions: { items: [ { href: '/hearing-witness-names/remove?name=GivenName1%20GivenName2%20FamilyName' , text : 'Remove', visuallyHiddenText: 'GivenName1 GivenName2 FamilyName' }] } } ], title: 'Added witnesses' } ];
   const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
@@ -51,7 +51,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
 
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

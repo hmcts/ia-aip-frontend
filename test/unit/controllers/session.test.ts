@@ -1,5 +1,5 @@
-import config from 'config';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
+import session from 'express-session';
 import {
   getExtendSession,
   getSessionEnded,
@@ -14,7 +14,7 @@ describe('session controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -25,7 +25,7 @@ describe('session controller', () => {
         appeal: {
           application: {}
         }
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       idam: {
         userDetails: {}
       },
@@ -40,7 +40,7 @@ describe('session controller', () => {
       locals: {}
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

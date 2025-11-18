@@ -1007,9 +1007,9 @@ describe('timeline-utils', () => {
 
     it('should return filtered hearing notices from hearingDocuments', () => {
       req.session.appeal.hearingDocuments = [
-        { tag: 'hearingBundle', fileId: 'some-id-0123', dateUploaded: '2024-01-05' },
-        { tag: 'updatedHearingBundle', fileId: 'some-id-2345', dateUploaded: '2024-01-01' },
-        { tag: 'other', fileId: 'some-id-1234', dateUploaded: '2024-01-02' }
+        { tag: 'hearingBundle', fileId: 'some-id-0123', dateUploaded: '2024-01-05' } as Evidence,
+        { tag: 'updatedHearingBundle', fileId: 'some-id-2345', dateUploaded: '2024-01-01' } as Evidence,
+        { tag: 'other', fileId: 'some-id-1234', dateUploaded: '2024-01-02' } as Evidence
       ];
 
       const result = getAsyncStitchingEvent(req as Request);
@@ -1023,9 +1023,9 @@ describe('timeline-utils', () => {
         {
           value: {
             reheardHearingDocs: [
-              { tag: 'hearingBundle', fileId: 'some-id-2345', dateUploaded: '2024-03-03' },
-              { tag: 'updatedHearingBundle', fileId: 'some-id-4567', dateUploaded: '2024-03-10' },
-              { tag: 'other', fileId: 'some-id-3456', dateUploaded: '2024-04-04' }
+              { tag: 'hearingBundle', fileId: 'some-id-2345', dateUploaded: '2024-03-03' } as Evidence,
+              { tag: 'updatedHearingBundle', fileId: 'some-id-4567', dateUploaded: '2024-03-10' } as Evidence,
+              { tag: 'other', fileId: 'some-id-3456', dateUploaded: '2024-04-04' } as Evidence
             ]
           }
         }
@@ -1039,15 +1039,15 @@ describe('timeline-utils', () => {
 
     it('should handle both hearingDocuments and reheardHearingDocumentsCollection', () => {
       req.session.appeal.hearingDocuments = [
-        { tag: 'hearingBundle', fileId: 'some-id-4567', dateUploaded: '2024-01-01' },
-        { tag: 'updatedHearingBundle', fileId: 'some-id-2345', dateUploaded: '2024-01-03' }
+        { tag: 'hearingBundle', fileId: 'some-id-4567', dateUploaded: '2024-01-01' } as Evidence,
+        { tag: 'updatedHearingBundle', fileId: 'some-id-2345', dateUploaded: '2024-01-03' } as Evidence
       ];
       req.session.appeal.reheardHearingDocumentsCollection = [
         {
           value: {
             reheardHearingDocs: [
-              { tag: 'hearingBundle', fileId: 'some-id-5678', dateUploaded: '2024-03-03' },
-              { tag: 'updatedHearingBundle', fileId: 'some-id-4567', dateUploaded: '2024-03-10' }
+              { tag: 'hearingBundle', fileId: 'some-id-5678', dateUploaded: '2024-03-03' } as Evidence,
+              { tag: 'updatedHearingBundle', fileId: 'some-id-4567', dateUploaded: '2024-03-10' } as Evidence
             ]
           }
         }
@@ -1070,9 +1070,9 @@ describe('timeline-utils', () => {
 
     it('should return filtered hearing notices from hearingDocuments', () => {
       req.session.appeal.hearingDocuments = [
-        { tag: 'hearingNotice', fileId: 'some-id-0123', dateUploaded: '2024-01-05' },
-        { tag: 'hearingNoticeRelisted', fileId: 'some-id-2345', dateUploaded: '2024-01-01' },
-        { tag: 'other', fileId: 'some-id-1234', dateUploaded: '2024-01-02' }
+        { tag: 'hearingNotice', fileId: 'some-id-0123', dateUploaded: '2024-01-05' } as Evidence,
+        { tag: 'hearingNoticeRelisted', fileId: 'some-id-2345', dateUploaded: '2024-01-01' } as Evidence,
+        { tag: 'other', fileId: 'some-id-1234', dateUploaded: '2024-01-02' } as Evidence
       ];
 
       const result = getListCaseEvent(req as Request);
@@ -1086,9 +1086,9 @@ describe('timeline-utils', () => {
         {
           value: {
             reheardHearingDocs: [
-              { tag: 'reheardHearingNotice', fileId: 'some-id-2345', dateUploaded: '2024-03-03' },
-              { tag: 'reheardHearingNoticeRelisted', fileId: 'some-id-4567', dateUploaded: '2024-03-10' },
-              { tag: 'other', fileId: 'some-id-3456', dateUploaded: '2024-04-04' }
+              { tag: 'reheardHearingNotice', fileId: 'some-id-2345', dateUploaded: '2024-03-03' } as Evidence,
+              { tag: 'reheardHearingNoticeRelisted', fileId: 'some-id-4567', dateUploaded: '2024-03-10' } as Evidence,
+              { tag: 'other', fileId: 'some-id-3456', dateUploaded: '2024-04-04' } as Evidence
             ]
           }
         }
@@ -1102,15 +1102,15 @@ describe('timeline-utils', () => {
 
     it('should handle both hearingDocuments and reheardHearingDocumentsCollection', () => {
       req.session.appeal.hearingDocuments = [
-        { tag: 'hearingNotice', fileId: 'some-id-4567', dateUploaded: '2024-01-01' },
-        { tag: 'hearingNoticeRelisted', fileId: 'some-id-2345', dateUploaded: '2024-01-03' }
+        { tag: 'hearingNotice', fileId: 'some-id-4567', dateUploaded: '2024-01-01' } as Evidence,
+        { tag: 'hearingNoticeRelisted', fileId: 'some-id-2345', dateUploaded: '2024-01-03' } as Evidence
       ];
       req.session.appeal.reheardHearingDocumentsCollection = [
         {
           value: {
             reheardHearingDocs: [
-              { tag: 'reheardHearingNotice', fileId: 'some-id-5678', dateUploaded: '2024-03-03' },
-              { tag: 'reheardHearingNoticeRelisted', fileId: 'some-id-4567', dateUploaded: '2024-03-10' }
+              { tag: 'reheardHearingNotice', fileId: 'some-id-5678', dateUploaded: '2024-03-03' } as Evidence,
+              { tag: 'reheardHearingNoticeRelisted', fileId: 'some-id-4567', dateUploaded: '2024-03-10' } as Evidence
             ]
           }
         }
@@ -1126,15 +1126,15 @@ describe('timeline-utils', () => {
 
     it('should handle both hearingDocuments and reheardHearingDocumentsCollection by time', () => {
       req.session.appeal.hearingDocuments = [
-        { tag: 'hearingNotice', fileId: 'some-id-4567', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T17:00:00.000000' },
-        { tag: 'hearingNoticeRelisted', fileId: 'some-id-2345', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T12:00:00.000000' }
+        { tag: 'hearingNotice', fileId: 'some-id-4567', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T17:00:00.000000' } as Evidence,
+        { tag: 'hearingNoticeRelisted', fileId: 'some-id-2345', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T12:00:00.000000' } as Evidence
       ];
       req.session.appeal.reheardHearingDocumentsCollection = [
         {
           value: {
             reheardHearingDocs: [
-              { tag: 'reheardHearingNotice', fileId: 'some-id-5678', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T15:00:00.000000' },
-              { tag: 'reheardHearingNoticeRelisted', fileId: 'some-id-7891', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T17:00:52.000000' }
+              { tag: 'reheardHearingNotice', fileId: 'some-id-5678', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T15:00:00.000000' } as Evidence,
+              { tag: 'reheardHearingNoticeRelisted', fileId: 'some-id-7891', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T17:00:52.000000' } as Evidence
             ]
           }
         }

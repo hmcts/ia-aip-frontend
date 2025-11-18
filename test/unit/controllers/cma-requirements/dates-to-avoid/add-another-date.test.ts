@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
+import { SinonStub } from 'sinon';
 import {
   getAddAnotherDateQuestionPage, postAddAnotherDateQuestionPage,
   setupDatesToAvoidAddAnotherDateController
@@ -10,7 +11,7 @@ describe('CMA Requirements - Add Another Date Question controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -27,7 +28,7 @@ describe('CMA Requirements - Add Another Date Question controller', () => {
       render: sandbox.stub(),
       redirect: sandbox.spy()
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

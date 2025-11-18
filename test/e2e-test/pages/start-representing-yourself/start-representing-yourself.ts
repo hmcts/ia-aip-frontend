@@ -121,7 +121,7 @@ module.exports = {
       await I.see(firstName + ' ' + lastName);
       await I.see(appealRef);
       await I.see('Nothing to do next');
-      await I.see('Your appeal details have been sent to the Tribunal.');
+      await I.see('appeal details have been sent to the Tribunal.');
     });
 
     When('I grab the appeal reference from ExUi', async () => {

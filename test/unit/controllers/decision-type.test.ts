@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   getDecisionType,
   getDecisionTypeQuestion,
@@ -23,7 +24,7 @@ describe('Type of appeal Controller', () => {
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
   let pcqService: Partial<PcqService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -34,7 +35,7 @@ describe('Type of appeal Controller', () => {
         appeal: {
           application: {}
         }
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {
         '__auth-token': 'atoken'
       },
@@ -59,7 +60,7 @@ describe('Type of appeal Controller', () => {
       redirect: sinon.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

@@ -1,11 +1,11 @@
 import { OSPlacesClient } from '@hmcts/os-places-client';
 
 const express = require('express');
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
+import session from 'express-session';
 import { getEnterAddressForOutOfCountryAppeal, postEnterAddressForOutOfCountryAppeal, setupContactDetailsController } from '../../../app/controllers/appeal-application/contact-details';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
-import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -15,7 +15,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
   const osPlacesClient = new OSPlacesClient('someToken');
 
@@ -29,7 +29,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
             personalDetails: {}
           }
         } as Partial<Appeal>
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       body: {},
       idam: {
         userDetails: {
@@ -52,7 +52,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
       send: sandbox.stub()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
 
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });

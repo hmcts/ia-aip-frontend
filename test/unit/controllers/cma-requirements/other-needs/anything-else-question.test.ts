@@ -3,7 +3,6 @@ import {
   getAnythingElseQuestion, postAnythingElseQuestion,
   setupAnythingElseQuestionController
 } from '../../../../../app/controllers/cma-requirements/other-needs/anything-else-question';
-import { postHealthConditionsQuestion } from '../../../../../app/controllers/cma-requirements/other-needs/health-conditions-question';
 import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
@@ -13,7 +12,7 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
 
   beforeEach(() => {
@@ -33,7 +32,7 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
       render: sandbox.stub(),
       redirect: sandbox.spy()
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 

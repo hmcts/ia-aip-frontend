@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   getCheckAndSend,
   postCheckAndSend,
@@ -17,7 +18,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let routerGetStub: sinon.SinonStub;
   let routerPostStub: sinon.SinonStub;
 
@@ -43,7 +44,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
             evidences: [] as Evidence[]
           }
         } as Partial<Appeal>
-      } as Partial<Express.Session>
+      } as Partial<session.Session>
     } as Partial<Request>;
 
     res = {
@@ -54,7 +55,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
 
     routerGetStub = sandbox.stub(express.Router as never, 'get');
     routerPostStub = sandbox.stub(express.Router as never, 'post');
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     updateAppealService = { submitEventRefactored: sandbox.stub().returns({ state: 'reasonsForAppealSubmitted' }) } as Partial<UpdateAppealService>;
   });
 

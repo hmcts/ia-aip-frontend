@@ -34,7 +34,8 @@ function createApp() {
   });
 
   configureHelmet(app);
-
+  // static resources shouldnt send a response sid session, so need to set them up before setting the session up
+  app.use(express.static('build', { maxAge: 31557600000 }));
   app.use(setupSession());
   configureLogger(app);
   configureIdam(app);
@@ -48,7 +49,6 @@ function createApp() {
   app.locals.supportedFormats = config.get('evidenceUpload.supportedFormats');
   app.locals.trackingScripts = config.get('trackingScripts');
   if (environment !== 'test') app.use(logRequestMiddleware);
-  app.use(express.static('build', { maxAge: 31557600000 }));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());

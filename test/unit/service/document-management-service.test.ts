@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import rp from 'request-promise';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CdamDocumentManagementService } from '../../../app/service/cdam-document-management-service';

@@ -1,7 +1,8 @@
-import axios from 'axios';
 import { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
+import rp from 'request-promise';
 import PcqService from '../../../app/service/pcq-service';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -54,7 +55,7 @@ describe('PCQ service', () => {
 
   describe('CheckPcqHealth', () => {
     it('should return true when health is up', async () => {
-      sandbox.stub(axios, 'get').resolves(JSON.parse('{"data": {"status":"UP"}}'));
+      sandbox.stub(rp, 'get').resolves(JSON.parse('{"status":"UP"}'));
       const pcqService = new PcqService();
       const healthCheck = await pcqService.checkPcqHealth();
       expect(healthCheck).to.be.equal(true);
@@ -63,7 +64,7 @@ describe('PCQ service', () => {
 
   describe('CheckPcqHealth', () => {
     it('should return false when health is down', async () => {
-      sandbox.stub(axios, 'get').resolves(JSON.parse('{"status":"DOWN"}'));
+      sandbox.stub(rp, 'get').resolves(JSON.parse('{"status":"DOWN"}'));
       const pcqService = new PcqService();
       const healthCheck = await pcqService.checkPcqHealth();
       expect(healthCheck).to.be.equal(false);
@@ -73,7 +74,7 @@ describe('PCQ service', () => {
   describe('CheckPcqHealth', () => {
     it('should return false when an exception is thrown', async () => {
       const error = new Error('an error');
-      sandbox.stub(axios, 'get').resolves(error);
+      sandbox.stub(rp, 'get').resolves(error);
       const pcqService = new PcqService();
       const healthCheck = await pcqService.checkPcqHealth();
       expect(healthCheck).to.be.equal(false);

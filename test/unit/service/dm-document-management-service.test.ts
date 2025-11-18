@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { Request } from 'express';
+import rp from 'request-promise';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { DmDocumentManagementService } from '../../../app/service/dm-document-management-service';
 import IdamService from '../../../app/service/idam-service';
@@ -71,7 +71,7 @@ describe('dm-document-management-service', () => {
 
     it('should execute request', async () => {
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const getStub = sandbox.stub(axios, 'get').resolves({});
+      const getStub = sandbox.stub(rp, 'get').resolves({});
       const documentManagementService = new DmDocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
 

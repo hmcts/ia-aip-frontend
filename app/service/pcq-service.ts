@@ -1,11 +1,12 @@
-import axios from 'axios';
 import config from 'config';
 import { Response } from 'express';
+import rp from 'request-promise';
 import { v4 as uuid } from 'uuid';
 import { createToken } from '../createToken';
-import Logger from '../utils/logger';
+import Logger, { getLogLabel } from '../utils/logger';
 
 const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 
 interface PcqParams {
   serviceId: string;
@@ -27,12 +28,15 @@ export default class PcqService {
   async checkPcqHealth(): Promise<boolean> {
     const uri = `${config.get('pcq.url')}${config.get('pcq.health')}`;
     try {
-      const response = await axios.get(uri);
-      const healthResponse = response.data;
-      return healthResponse.status && healthResponse.status === 'UP';
+      let healthResponse = await rp.get({ uri, json: true });
+      if (healthResponse.status && healthResponse.status === 'UP') {
+        return Promise.resolve(true);
+      } else {
+        return Promise.resolve(false);
+      }
     } catch (error) {
       logger.trace('Cannot reach ' + uri, 'PCQ');
-      return false;
+      return Promise.resolve(false);
     }
   }
 

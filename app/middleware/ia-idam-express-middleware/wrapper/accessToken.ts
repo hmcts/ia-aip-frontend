@@ -1,34 +1,35 @@
-import axios from 'axios';
+import request from 'request-promise-native';
 
 const requestDefaults = {
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/x-www-form-urlencoded'
-  }
+  },
+  json: true
 };
 const formDefaults = { grant_type: 'authorization_code' };
 
-const accessToken = async (options = {}, args: IdamConfig) => {
+const accessToken = (options = {}, args: IdamConfig) => {
   if (args.openId) {
     const clientFormData = {
       client_id: args.idamClientID,
       client_secret: args.idamSecret
     };
-    const uri = `${args.idamApiUrl}/o/token`;
-    const form = { ...formDefaults, ...options, ...clientFormData };
-    const body = new URLSearchParams(form as Record<string, string>).toString();
-    let res = await axios.post(uri, body, requestDefaults);
-    return res.data;
+    const requestOptions = Object.assign({
+      uri: `${args.idamApiUrl}/o/token`,
+      form: Object.assign({}, formDefaults, options, clientFormData)
+    }, requestDefaults);
+    return request.post(requestOptions);
   } else {
-    const uri = `${args.idamApiUrl}/oauth2/token`;
-    const form = { ...formDefaults, ...options };
-    const body = new URLSearchParams(form as Record<string, string>).toString();
-    const auth = {
-      username: args.idamClientID,
-      password: args.idamSecret
-    };
-    let res1 = await axios.post(uri, body, { ...requestDefaults, auth });
-    return res1.data;
+    const requestOptions = Object.assign({
+      uri: `${args.idamApiUrl}/oauth2/token`,
+      form: Object.assign({}, formDefaults, options),
+      auth: {
+        user: args.idamClientID,
+        pass: args.idamSecret
+      }
+    }, requestDefaults);
+    return request.post(requestOptions);
   }
 };
 

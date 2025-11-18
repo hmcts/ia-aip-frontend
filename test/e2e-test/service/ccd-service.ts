@@ -1,5 +1,6 @@
 import axios from 'axios';
 import config from 'config';
+import rp from 'request-promise';
 import { SecurityHeaders } from '../../../app/service/authentication-service';
 import { isJWTExpired } from '../../../app/utils/jwt-utils';
 import Logger, { getLogLabel } from '../../../app/utils/logger';
@@ -30,63 +31,63 @@ function generateSupplementaryId(): Record<string, Record<string, string>> {
   return request;
 }
 
-function createOptions(userId: string, headers: SecurityHeaders) {
+function createOptions(userId: string, headers: SecurityHeaders, uri) {
   return {
+    uri: uri,
     headers: {
       Authorization: headers.userToken,
       ServiceAuthorization: headers.serviceToken,
       'content-type': 'application/json',
       UserId: userId // Hack param to prove RIA-5761.
-    }
+    },
+    json: true
   };
 }
 
-async function startCreateCase(userId: string, headers: SecurityHeaders, isLegalRep: boolean = false): Promise<StartEventResponse> {
-  const url = `${ccdBaseUrl}/${isLegalRep ? 'caseworkers' : 'citizens'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/event-triggers/startAppeal/token`;
-  const response = await axios.get(url, createOptions(
+function startCreateCase(userId: string, headers: SecurityHeaders, isLegalRep: boolean = false): Promise<StartEventResponse> {
+  return rp.get(createOptions(
     userId,
-    headers
+    headers,
+    `${ccdBaseUrl}/${isLegalRep ? 'caseworkers' : 'citizens'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/event-triggers/startAppeal/token`
   ));
-  return response.data;
 }
 
 function submitCreateCase(userId: string, headers: SecurityHeaders, startEvent: SubmitEventData, isLegalRep: boolean = false): Promise<CcdCaseDetails> {
-  const url = `${ccdBaseUrl}/${isLegalRep ? 'caseworkers' : 'citizens'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases?ignore-warning=true`;
   const options: any = createOptions(
     userId,
-    headers
-  );
+    headers,
+    `${ccdBaseUrl}/${isLegalRep ? 'caseworkers' : 'citizens'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases?ignore-warning=true`);
+  options.body = startEvent;
 
-  return axios.post(url, startEvent, options);
+  return rp.post(options);
 }
 
 function startUpdateAppeal(userId: string, caseId: string, eventId: string, headers: SecurityHeaders, citizen: boolean): Promise<StartEventResponse> {
-  const url = `${ccdBaseUrl}/${citizen ? 'citizens' : 'caseworkers'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${eventId}/token`;
-  return axios.get(url, createOptions(
+  return rp.get(createOptions(
     userId,
-    headers
+    headers,
+    `${ccdBaseUrl}/${citizen ? 'citizens' : 'caseworkers'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${eventId}/token`
   ));
 }
 
 function submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData, citizen: boolean): Promise<CcdCaseDetails> {
-  const url = `${ccdBaseUrl}/${citizen ? 'citizens' : 'caseworkers'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`;
   const options: any = createOptions(
     userId,
-    headers
-  );
+    headers,
+    `${ccdBaseUrl}/${citizen ? 'citizens' : 'caseworkers'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`);
+  options.body = event;
 
-  return axios.post(url, event, options);
+  return rp.post(options);
 }
 
 async function getAppealState(userId: string, caseId: string, headers: SecurityHeaders): Promise<string> {
-  const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`;
   const options: any = createOptions(
     userId,
-    headers
-  );
+    headers,
+    `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`);
 
-  const response = await axios.get(url, options);
-  return response.data.state;
+  const response = await rp.get(options);
+  return response.state;
 }
 
 async function requestServiceToken() {

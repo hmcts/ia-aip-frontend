@@ -1,5 +1,5 @@
-import axios from 'axios';
 import config from 'config';
+import rp from 'request-promise';
 import Logger, { getLogLabel } from '../utils/logger';
 import { asBooleanValue } from '../utils/utils';
 import { SecurityHeaders } from './authentication-service';
@@ -46,93 +46,86 @@ function generateSupplementaryId(): Record<string, Record<string, string>> {
 }
 
 class CcdService {
-  private createOptions(userId: string, headers: SecurityHeaders) {
+  private createOptions(userId: string, headers: SecurityHeaders, uri) {
     return {
+      uri: uri,
       headers: {
         Authorization: headers.userToken,
         ServiceAuthorization: headers.serviceToken,
         'content-type': 'application/json',
         UserId: userId // Hack param to prove RIA-5761.
-      }
+      },
+      json: true
     };
   }
 
-  async startCreateCase(userId: string, headers: SecurityHeaders): Promise<StartEventResponse> {
-    const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/event-triggers/startAppeal/token`;
-    const options = this.createOptions(
+  startCreateCase(userId: string, headers: SecurityHeaders): Promise<StartEventResponse> {
+    return rp.get(this.createOptions(
       userId,
-      headers
-    );
-    const response = await axios.get(url, options);
-    return response.data;
+      headers,
+      `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/event-triggers/startAppeal/token`
+    ));
   }
 
-  async submitCreateCase(userId: string, headers: SecurityHeaders, startEvent: SubmitEventData): Promise<CcdCaseDetails> {
-    const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases?ignore-warning=true`;
+  submitCreateCase(userId: string, headers: SecurityHeaders, startEvent: SubmitEventData): Promise<CcdCaseDetails> {
     const options: any = this.createOptions(
       userId,
-      headers
-    );
+      headers,
+      `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases?ignore-warning=true`);
+    options.body = startEvent;
 
-    const response = await axios.post(url, startEvent, options);
-    return response.data;
+    return rp.post(options);
   }
 
-  async startUpdateAppeal(userId: string, caseId: string, eventId: string, headers: SecurityHeaders): Promise<StartEventResponse> {
-    const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${eventId}/token`;
-    const options = this.createOptions(
+  startUpdateAppeal(userId: string, caseId: string, eventId: string, headers: SecurityHeaders): Promise<StartEventResponse> {
+    return rp.get(this.createOptions(
       userId,
-      headers
-    );
-    const response = await axios.get(url, options);
-    return response.data;
+      headers,
+      `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${eventId}/token`
+    ));
   }
 
-  async submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData): Promise<CcdCaseDetails> {
-    const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`;
+  submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData): Promise<CcdCaseDetails> {
     const options: any = this.createOptions(
       userId,
-      headers
-    );
+      headers,
+      `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`);
+    options.body = event;
 
-    const response = await axios.post(url, event, options);
-    return response.data;
+    return rp.post(options);
   }
 
-  async loadCasesForUser(userId: string, headers: SecurityHeaders): Promise<ES<CcdCaseDetails>> {
+  loadCasesForUser(userId: string, headers: SecurityHeaders): Promise<ES<CcdCaseDetails>> {
     const query = {
       query: { match_all: {} },
       sort: [{ id: { order: 'asc' } }]
     };
-    const url = `${ccdBaseUrl}/searchCases?ctid=${caseType}`;
     const options: any = this.createOptions(
       userId,
-      headers
-    );
-
-    const response = await axios.post(url, query, options);
-    return response.data;
+      headers,
+        `${ccdBaseUrl}/searchCases?ctid=${caseType}`);
+    options.body = query;
+    let response = rp.post(options);
+    return response;
   }
 
-  async retrieveCaseHistoryV2(userId: string, caseId: string, headers: SecurityHeaders): Promise<any> {
-    const url = `${ccdBaseUrl}/cases/${caseId}/events`;
-    const options = this.createOptions(
+  retrieveCaseHistoryV2(userId: string, caseId: string, headers: SecurityHeaders): Promise<any> {
+    const obj = this.createOptions(
       userId,
-      headers
-    );
+      headers,
+      `${ccdBaseUrl}/cases/${caseId}/events`);
     // The following extra headers are needed to use the v2 endpoint
-    options.headers['accept'] = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-events.v2+json;charset=UTF-8';
-    options.headers['experimental'] = 'true';
+    obj.headers['accept'] = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-events.v2+json;charset=UTF-8';
+    obj.headers['experimental'] = 'true';
 
-    const response = await axios.get(url, options);
-    return response.data;
+    return rp.get(obj);
   }
 
   async createCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     const startEventResponse = await this.startCreateCase(userId, headers);
     const supplementaryDataRequest = generateSupplementaryId();
 
-    return this.submitCreateCase(userId, headers, {
+    const createdCase = await this.submitCreateCase(userId, headers, {
       event: {
         id: startEventResponse.event_id,
         summary: 'Create case AIP',
@@ -145,6 +138,7 @@ class CcdService {
       ignore_warning: true,
       supplementary_data_request: supplementaryDataRequest
     });
+    return createdCase;
   }
 
   async updateAppeal(event, userId: string, updatedCase: CcdCaseDetails, headers: SecurityHeaders): Promise<CcdCaseDetails> {
@@ -189,7 +183,6 @@ class CcdService {
     return history;
   }
 }
-
 interface ES<T> {
   length: number;
   cases: T[];

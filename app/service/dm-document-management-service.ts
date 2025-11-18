@@ -1,10 +1,10 @@
-import axios from 'axios';
 import config from 'config';
 import { Request } from 'express';
-import FormData from 'form-data';
+import * as path from 'path';
+import rp from 'request-promise';
 import { v4 as uuid } from 'uuid';
 import Logger, { getLogLabel } from '../utils/logger';
-import { documentIdToDocStoreUrl } from '../utils/utils';
+import { documentIdToDocStoreUrl, fileNameFormatter, toHtmlLink } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 
 const documentManagementBaseUrl = config.get('documentManagement.apiUrl');
@@ -59,57 +59,57 @@ class DmDocumentManagementService {
     this.authenticationService = authenticationService;
   }
 
-  private createOptions(userId: string, headers: SecurityHeaders, formHeaders: FormData.Headers = {}) {
+  private createOptions(userId: string, headers: SecurityHeaders, uri: string) {
     return {
+      uri: uri,
       headers: {
         Authorization: headers.userToken,
         ServiceAuthorization: headers.serviceToken,
-        'user-id': userId,
-        ...formHeaders
+        'user-id': userId
       }
     };
   }
 
   private async upload(userId: string, headers: SecurityHeaders, uploadData: DmUploadData): Promise<any> {
-    const url = `${documentManagementBaseUrl}/documents`;
-    const form = new FormData();
-    form.append('files', uploadData.file.buffer, {
-      filename: uploadData.file.originalname,
-      contentType: uploadData.file.mimetype
-    });
-    form.append('classification', uploadData.classification);
-    form.append('roles', uploadData.role);
-
     const options: any = this.createOptions(
       userId,
       headers,
-      form.getHeaders()
+      `${documentManagementBaseUrl}/documents`
     );
-    const response = await axios.post(url, form, options);
-    return JSON.stringify(response.data);
+
+    options.formData = {
+      files: [ {
+        value: uploadData.file.buffer,
+        options: {
+          filename: uploadData.file.originalname,
+          contentType: uploadData.file.mimetype
+        }
+      } ],
+      classification: uploadData.classification,
+      roles: uploadData.role
+    };
+
+    return rp.post(options);
   }
 
   private async delete(userId: string, headers: SecurityHeaders, fileLocation: string): Promise<any> {
     const options: any = this.createOptions(
       userId,
-      headers
+      headers,
+      fileLocation
     );
-    return axios.delete(fileLocation, options);
+    return rp.delete(options);
   }
 
   private async fetchBinaryFile(userId: string, headers: SecurityHeaders, fileLocation: string): Promise<any> {
-    const url = fileLocation + '/binary';
-    const options = {
-      headers: {
-        'user-roles': 'caseworker-ia', ...this.createOptions(
-          userId,
-          headers
-        ).headers
-      },
-      responseType: 'arraybuffer' as const
-    };
-    const response = await axios.get(url, options);
-    return JSON.stringify(response.data);
+    let options: any = this.createOptions(
+      userId,
+      headers,
+      fileLocation + '/binary'
+    );
+    options.headers = { 'user-roles': 'caseworker-ia', ...options.headers };
+    options = { encoding: 'binary', resolveWithFullResponse: true, ...options };
+    return rp.get(options);
   }
 
   /**

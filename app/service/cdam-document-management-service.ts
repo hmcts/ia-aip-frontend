@@ -1,10 +1,9 @@
-import axios from 'axios';
 import config from 'config';
 import { Request } from 'express';
-import FormData from 'form-data';
+import rp from 'request-promise';
 import { v4 as uuid } from 'uuid';
 import Logger, { getLogLabel } from '../utils/logger';
-import { documentIdToDocStoreUrl } from '../utils/utils';
+import { documentIdToDocStoreUrl, fileNameFormatter, toHtmlLink } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 
 const cdamDocumentManagementBaseUrl = config.get('cdamDocumentManagement.apiUrl');
@@ -52,48 +51,54 @@ class CdamDocumentManagementService {
     this.authenticationService = authenticationService;
   }
 
-  private createOptions(headers: SecurityHeaders, formHeaders: FormData.Headers = {}) {
+  private createOptions(headers: SecurityHeaders, uri: string) {
     return {
+      uri: uri,
       headers: {
         Authorization: headers.userToken,
-        ServiceAuthorization: headers.serviceToken,
-        ...formHeaders
+        ServiceAuthorization: headers.serviceToken
       }
     };
   }
 
   private async upload(headers: SecurityHeaders, uploadData: CdamUploadData): Promise<any> {
-    const url = `${cdamDocumentManagementBaseUrl}/cases/documents`;
-    const form = new FormData();
-    form.append('files', uploadData.file.buffer, {
-      filename: uploadData.file.originalname,
-      contentType: uploadData.file.mimetype
-    });
-    form.append('classification', uploadData.classification);
-    form.append('caseTypeId', uploadData.caseTypeId);
-    form.append('jurisdictionId', uploadData.jurisdictionId);
     const options: any = this.createOptions(
       headers,
-      form.getHeaders()
+      `${cdamDocumentManagementBaseUrl}/cases/documents`
     );
 
-    const response = await axios.post(url, form, options);
-    return JSON.stringify(response.data);
+    options.formData = {
+      files: [ {
+        value: uploadData.file.buffer,
+        options: {
+          filename: uploadData.file.originalname,
+          contentType: uploadData.file.mimetype
+        }
+      } ],
+      classification: uploadData.classification,
+      caseTypeId: uploadData.caseTypeId,
+      jurisdictionId: uploadData.jurisdictionId
+    };
+
+    return rp.post(options);
   }
 
   private async delete(headers: SecurityHeaders, fileLocation: string): Promise<any> {
-    const options: any = this.createOptions(headers);
-    return axios.delete(fileLocation, options);
+    const options: any = this.createOptions(
+      headers,
+      fileLocation
+    );
+    return rp.delete(options);
   }
 
   private async fetchBinaryFile(headers: SecurityHeaders, fileLocation: string): Promise<any> {
-    let options: any = this.createOptions(headers);
+    let options: any = this.createOptions(
+      headers,
+      fileLocation
+    );
     options.headers = { role: 'citizen', classification: Classification.restricted, ...options.headers };
-    options = {
-      headers: { role: 'citizen', classification: Classification.restricted, ...this.createOptions(headers).headers },
-      responseType: 'arraybuffer' as const
-    };
-    return axios.get(fileLocation, options);
+    options = { encoding: 'binary', resolveWithFullResponse: true, ...options };
+    return rp.get(options);
   }
 
   /**

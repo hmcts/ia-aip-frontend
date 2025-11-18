@@ -1,13 +1,15 @@
-import axios from 'axios';
+import request from 'request-promise-native';
 
-const getUserDetails = async (authToken: string, args: IdamConfig) => {
+const getUserDetails = (authToken: string, args: IdamConfig) => {
   const userDetailsEndpoint = args.openId ? '/o/userinfo' : '/details';
-  const url = `${args.idamApiUrl}${userDetailsEndpoint}`;
+
   const options = {
-    headers: { Authorization: `Bearer ${authToken}` }
+    uri: `${args.idamApiUrl}${userDetailsEndpoint}`,
+    headers: { Authorization: `Bearer ${authToken}` },
+    json: true
   };
-  const res = await axios.get(url, options);
-  return res.data;
+
+  return request.get(options);
 };
 
 export default getUserDetails;

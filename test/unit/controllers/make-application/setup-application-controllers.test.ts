@@ -9,7 +9,7 @@ describe('Appeal application controllers setup', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
 
@@ -30,7 +30,7 @@ describe('Appeal application controllers setup', () => {
       redirect: sandbox.spy(),
       locals: {}
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     updateAppealService = {
       submitEventRefactored: sandbox.stub(),
       updateAppealService: sandbox.stub()

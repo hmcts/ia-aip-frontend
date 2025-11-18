@@ -1,6 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { getAnythingElseAnswerPage, postAnythingElseAnswerPage, setupCQAnythingElseAnswerController } from '../../../../app/controllers/clarifying-questions/anything-else-answer';
-import { postClarifyingQuestionPage } from '../../../../app/controllers/clarifying-questions/question-page';
 import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
@@ -10,7 +9,7 @@ describe('Clarifying Questions: Anything else answer controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
     {
@@ -67,7 +66,7 @@ describe('Clarifying Questions: Anything else answer controller', () => {
       render: sandbox.stub(),
       redirect: sandbox.spy()
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 

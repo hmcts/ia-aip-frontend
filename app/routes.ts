@@ -1,5 +1,4 @@
 import * as express from 'express';
-import requestPromise from 'request-promise-native';
 import { setupIndexController } from './controllers';
 import { setupAsylumSupportController } from './controllers/appeal-application/asylum-support';
 import { setupCheckAndSendController } from './controllers/appeal-application/check-and-send';
@@ -223,7 +222,7 @@ const refDataService: RefDataService = new RefDataService(authenticationService)
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
 const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance(), documentManagementService);
 const paymentService: PaymentService = new PaymentService(authenticationService, updateAppealService);
-const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
+const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), config.get('addressLookup.url'));
 const pcqService: PcqService = new PcqService();
 
 const router = express.Router();

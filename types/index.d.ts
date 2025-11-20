@@ -319,10 +319,22 @@ declare global {
     decisionHearingFeeOption?: string;
     feeSupportPersisted?: boolean;
     remissionOption?: string;
+    remissionType?: string;
+    remissionClaim?: string;
     asylumSupportRefNumber?: string;
+    asylumSupportReference?: string;
+    feeRemissionType?: string;
     helpWithFeesOption?: string;
     helpWithFeesRefNumber?: string;
+    helpWithFeesReferenceNumber?: string;
     localAuthorityLetters?: Evidence[];
+    legalAidAccountNumber?: string;
+    exceptionalCircumstances?: string;
+    asylumSupportDocument?: Evidence;
+    section17Document?: Evidence;
+    section20Document?: Evidence;
+    homeOfficeWaiverDocument?: Evidence;
+    remissionEcEvidenceDocuments?: Evidence[];
 
     lateRemissionOption?: string;
     lateAsylumSupportRefNumber?: string;
@@ -593,6 +605,13 @@ declare global {
     helpWithFeesReferenceNumber?: string;
     helpWithFeesOption?: string;
     localAuthorityLetters?: Evidence[];
+    legalAidAccountNumber?: string;
+    exceptionalCircumstances?: string;
+    asylumSupportDocument?: Evidence;
+    section17Document?: Evidence;
+    section20Document?: Evidence;
+    homeOfficeWaiverDocument?: Evidence;
+    remissionEcEvidenceDocuments?: Evidence[];
   }
 
   interface RemittalDetails {

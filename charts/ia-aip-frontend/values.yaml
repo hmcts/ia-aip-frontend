@@ -59,6 +59,7 @@ redis:
     repository: imported/bitnami/redis
   architecture: standalone
   master:
+    resourcesPreset: medium
     persistence:
       enabled: false
   auth:

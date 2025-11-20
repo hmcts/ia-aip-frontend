@@ -16,7 +16,12 @@
     <h1 class="govuk-heading-xl">{{ i18n.pages.helpWithFees.title }}</h1>
 
     {% if refundJourney %}
-      <p>{{ question.helpWithFeesHint }}</p>
+      {% if paPayLater %}
+          <p>{{ i18n.pages.helpWithFees.mayBeAbleToGetHWF }}</p>
+      {% endif %}
+      {% if not paPayLater %}
+          <p>{{ question.helpWithFeesHint }}</p>
+      {% endif %}
     {% else %}
       <p>{{ i18n.pages.helpWithFees.tips }}</p>
     {% endif %}

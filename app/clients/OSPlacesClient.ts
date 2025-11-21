@@ -27,7 +27,7 @@ class Header {
 }
 
 export class OSPlacesClient {
-  private http: AxiosInstance;
+  private readonly http: AxiosInstance;
 
   constructor(
     private readonly apiToken: string,

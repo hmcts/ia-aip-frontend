@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import session from 'express-session';
+import { Address } from '../../../app/clients/classes/Address';
 import {
   deleteHomeOfficeDecisionLetter,
   getHomeOfficeDecisionLetter,
@@ -12,7 +13,6 @@ import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
-import { Address, Point } from '../../../app/service/OSPlacesClient';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { createStructuredError } from '../../../app/utils/validations/fields-validations';
@@ -122,7 +122,7 @@ describe('Home office decision letter', function () {
       req.session.appeal.application.addressLookup = {
         result: {
           addresses: [
-            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [ 1, 2 ]), 'udprn')
+            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', 'udprn')
           ]
         }
       };

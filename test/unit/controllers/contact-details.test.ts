@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as _ from 'lodash';
+import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
 import {
   getContactDetails,
   getHasSponsor,
@@ -16,7 +17,6 @@ import {
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
-import { OSPlacesClient } from '../../../app/service/OSPlacesClient';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';

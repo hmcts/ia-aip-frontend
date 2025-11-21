@@ -1,39 +1,39 @@
-import { Address, Point } from '../../../app/service/OSPlacesClient';
+import { Address } from '../../../app/clients/classes/Address';
 import { getAddress, getLine1, getLine2 } from '../../../app/utils/address-utils';
 import { expect } from '../../utils/testUtils';
 
 describe('address-utils', () => {
   describe('address line 1', () => {
     it('build details with sub building name', () => {
-      const address = new Address('1', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn');
+      const address = new Address('buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn');
       const line1 = getLine1(address);
 
       expect(line1).to.eql('subBuildingName buildingName');
     });
 
     it('sub building name no building name', () => {
-      const address = new Address('1', 'organisationName', 'departmentName', 'poBoxNumber', undefined, 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn');
+      const address = new Address(undefined, 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn');
       const line1 = getLine1(address);
 
       expect(line1).to.eql('subBuildingName, 2 dependentThoroughfareName, thoroughfareName');
     });
 
     it('building name no sub building name', () => {
-      const address = new Address('1', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', undefined, 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn');
+      const address = new Address('buildingName', undefined, 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn');
       const line1 = getLine1(address);
 
       expect(line1).to.eql('buildingName, 2 dependentThoroughfareName, thoroughfareName');
     });
 
     it('no build details without dependant thoroughfare name', () => {
-      const address = new Address('1', 'organisationName', 'departmentName', 'poBoxNumber', undefined, undefined, 2, 'thoroughfareName', undefined, 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn');
+      const address = new Address(undefined, undefined, 2, 'thoroughfareName', undefined, 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn');
       const line1 = getLine1(address);
 
       expect(line1).to.eql('2 thoroughfareName');
     });
 
     it('no build details with dependant thoroghfare name', () => {
-      const address = new Address('1', 'organisationName', 'departmentName', 'poBoxNumber', undefined, undefined, 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn');
+      const address = new Address(undefined, undefined, 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn');
       const line1 = getLine1(address);
 
       expect(line1).to.eql('2 dependentThoroughfareName, thoroughfareName');
@@ -42,28 +42,28 @@ describe('address-utils', () => {
 
   describe('address line 2', () => {
     it('no building details no locality details', () => {
-      const address = new Address('1', 'organisationName', 'departmentName', 'poBoxNumber', undefined, undefined, 2, 'thoroughfareName', 'dependentThoroughfareName', undefined, undefined, 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn');
+      const address = new Address(undefined, undefined, 2, 'thoroughfareName', 'dependentThoroughfareName', undefined, undefined, 'postTown', 'postcode', 'formattedAddress', 'udprn');
       const line2 = getLine2(address);
 
       expect(line2).to.eql('');
     });
 
     it('no building details', () => {
-      const address = new Address('1', 'organisationName', 'departmentName', 'poBoxNumber', undefined, undefined, 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn');
+      const address = new Address(undefined, undefined, 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn');
       const line2 = getLine2(address);
 
       expect(line2).to.eql('doubleDependentLocality, dependentLocality');
     });
 
     it('no building details no double dependant locality', () => {
-      const address = new Address('1', 'organisationName', 'departmentName', 'poBoxNumber', undefined, undefined, 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', undefined, 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn');
+      const address = new Address(undefined, undefined, 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', undefined, 'postTown', 'postcode', 'formattedAddress', 'udprn');
       const line2 = getLine2(address);
 
       expect(line2).to.eql('dependentLocality');
     });
 
     it('building details', () => {
-      const address = new Address('1', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn');
+      const address = new Address('buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn');
 
       const line2 = getLine2(address);
 
@@ -73,7 +73,7 @@ describe('address-utils', () => {
 
   describe('getAddress', () => {
     it('gets full address', () => {
-      const osAddress = new Address('1', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn');
+      const osAddress = new Address('buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn');
       const address = getAddress(osAddress, 'selectedPostcode');
 
       expect(address).to.deep.eq({

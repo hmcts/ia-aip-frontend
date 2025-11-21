@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import session from 'express-session';
 import * as _ from 'lodash';
+import { Address } from '../../../app/clients/classes/Address';
+import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
 import {
   getManualEnterAddressPage,
   postManualEnterAddressPage,
@@ -8,7 +10,6 @@ import {
 } from '../../../app/controllers/appeal-application/contact-details';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
-import { Address, OSPlacesClient, Point } from '../../../app/service/OSPlacesClient';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -136,7 +137,7 @@ describe('Personal Details Controller', function () {
       req.session.appeal.application.addressLookup = {
         result: {
           addresses: [
-            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [ 1, 2 ]), 'udprn')
+            new Address('buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn')
           ]
         }
       };

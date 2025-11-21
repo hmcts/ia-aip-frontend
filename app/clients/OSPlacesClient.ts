@@ -1,53 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
-
-export class AddressInfoResponse {
-  public addresses: Address[];
-  private readonly httpStatus: number;
-
-  constructor(httpStatus: number, addresses: Address[] = []) {
-    this.addresses = addresses || [];
-    this.httpStatus = httpStatus;
-  }
-
-  public addAll(moreAddresses: Address[]) {
-    this.addresses.push(...moreAddresses);
-  }
-
-  get statusCode() {
-    return this.httpStatus;
-  }
-}
-
-export interface OSPlacesResult {
-  LPI?: Record<string, any>;
-  DPA?: Record<string, any>;
-}
-
-export class Point {
-  constructor(public readonly type: string, public readonly coordinates: number[]) {}
-}
-
-export class Address {
-  constructor(
-    public readonly uprn: string,
-    public readonly organisationName: string,
-    public readonly departmentName: string,
-    public readonly poBoxNumber: string,
-    public readonly buildingName: string,
-    public readonly subBuildingName: string,
-    public readonly buildingNumber: number,
-    public readonly thoroughfareName: string,
-    public readonly dependentThoroughfareName: string,
-    public readonly dependentLocality: string,
-    public readonly doubleDependentLocality: string,
-    public readonly postTown: string,
-    public readonly postcode: string,
-    public readonly postcodeType: string,
-    public readonly formattedAddress: string,
-    public readonly point: Point,
-    public readonly udprn: string
-  ) {}
-}
+import { Address } from './classes/Address';
+import { AddressInfoResponse } from './classes/AddressInfoResponse';
+import { OSPlacesResult } from './interfaces/OSPlacesResult';
 
 class Header {
   constructor(
@@ -152,12 +106,7 @@ export class OSPlacesClient {
 
   private mapResultToAddress(result: OSPlacesResult): Address {
     const source = result.DPA ?? result.LPI ?? {};
-    const coords = [source.X_COORDINATE, source.Y_COORDINATE];
     return new Address(
-      source.UPRN,
-      source.ORGANISATION_NAME ?? source.ORGANISATION,
-      source.DEPARTMENT_NAME,
-      source.PO_BOX_NUMBER,
       source.BUILDING_NAME ?? source.PAO_TEXT,
       source.SUB_BUILDING_NAME ?? source.SAO_TEXT,
       source.BUILDING_NUMBER,
@@ -167,9 +116,7 @@ export class OSPlacesClient {
       source.DOUBLE_DEPENDENT_LOCALITY,
       source.POST_TOWN ?? source.TOWN_NAME,
       source.POSTCODE ?? source.POSTCODE_LOCATOR,
-      source.POSTAL_ADDRESS_CODE,
       source.ADDRESS,
-      new Point('Point', coords),
       source.UDPRN ?? source.USRN
     );
   }

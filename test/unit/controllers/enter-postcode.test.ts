@@ -1,6 +1,7 @@
 const express = require('express');
 import { Request, Response } from 'express';
 import session from 'express-session';
+import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
 import {
   ContactDetailsControllerDependencies,
   getEnterPostcodePage,
@@ -8,7 +9,6 @@ import {
   setupContactDetailsController
 } from '../../../app/controllers/appeal-application/contact-details';
 import { paths } from '../../../app/paths';
-import { OSPlacesClient } from '../../../app/service/OSPlacesClient';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';

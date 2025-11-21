@@ -1,4 +1,6 @@
-import { Address, OSPlacesClient, OSPlacesResult } from '../../../app/service/OSPlacesClient';
+import { Address } from '../../../app/clients/classes/Address';
+import { OSPlacesResult } from '../../../app/clients/interfaces/OSPlacesResult';
+import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
 import { expect, sinon } from '../../utils/testUtils';
 
 const apiToken = 'test-token';
@@ -36,48 +38,34 @@ describe('OSPlacesClient', () => {
     output_srs: 'srs'
   };
 
-  const dpaResult = {
+  const dpaResult: OSPlacesResult = {
     DPA: {
-      UPRN: 'uprn',
-      ORGANISATION_NAME: 'org',
-      DEPARTMENT_NAME: 'dept',
-      PO_BOX_NUMBER: 'po',
-      BUILDING_NAME: 'bname',
-      SUB_BUILDING_NAME: 'sbname',
-      BUILDING_NUMBER: 1,
-      THOROUGHFARE_NAME: 'thoroughfare',
-      DEPENDENT_THOROUGHFARE_NAME: 'depThoroughfare',
-      DEPENDENT_LOCALITY: 'depLocality',
-      DOUBLE_DEPENDENT_LOCALITY: 'doubleDepLocality',
-      POST_TOWN: 'town',
+      BUILDING_NAME: 'buildingName',
+      SUB_BUILDING_NAME: 'subBuildingName',
+      BUILDING_NUMBER: 'buildingNumber',
+      THOROUGHFARE_NAME: 'thoroughfareName',
+      DEPENDENT_THOROUGHFARE_NAME: 'dependentThoroughfareName',
+      DEPENDENT_LOCALITY: 'dependentLocality',
+      DOUBLE_DEPENDENT_LOCALITY: 'doubleDependentLocality',
+      POST_TOWN: 'postTown',
       POSTCODE: postcode,
-      POSTAL_ADDRESS_CODE: 'type',
-      ADDRESS: 'formatted',
-      X_COORDINATE: 1,
-      Y_COORDINATE: 2,
+      ADDRESS: 'formattedAddress',
       UDPRN: 'udprn'
     }
   };
 
   const lpiResult: OSPlacesResult = {
     LPI: {
-      UPRN: 'uprn2',
-      ORGANISATION: 'org2',
-      DEPARTMENT_NAME: 'dept2',
-      PO_BOX_NUMBER: 'po2',
-      PAO_TEXT: 'bname2',
-      SAO_TEXT: 'sbname2',
-      BUILDING_NUMBER: 2,
-      STREET_DESCRIPTION: 'thoroughfare2',
-      DEPENDENT_THOROUGHFARE_NAME: 'depThoroughfare2',
-      DEPENDENT_LOCALITY: 'depLocality2',
-      DOUBLE_DEPENDENT_LOCALITY: 'doubleDepLocality2',
-      TOWN_NAME: 'town2',
-      POSTCODE_LOCATOR: 'PC2',
-      POSTAL_ADDRESS_CODE: 'type2',
-      ADDRESS: 'formatted2',
-      X_COORDINATE: 3,
-      Y_COORDINATE: 4,
+      PAO_TEXT: 'paoText',
+      SAO_TEXT: 'saoText',
+      BUILDING_NUMBER: 'buildingNumber2',
+      STREET_DESCRIPTION: 'streetDescription',
+      DEPENDENT_THOROUGHFARE_NAME: 'dependentThoroughfareName2',
+      DEPENDENT_LOCALITY: 'dependentLocality2',
+      DOUBLE_DEPENDENT_LOCALITY: 'doubleDependentLocality2',
+      TOWN_NAME: 'townName',
+      POSTCODE_LOCATOR: postcode,
+      ADDRESS: 'formattedAddress2',
       USRN: 'usrn'
     }
   };
@@ -117,18 +105,34 @@ describe('OSPlacesClient', () => {
     expect(res.statusCode).to.equal(200);
     expect(res.addresses).to.have.lengthOf(1);
     expect(res.addresses[0]).to.be.instanceOf(Address);
-    expect(res.addresses[0].uprn).to.equal('uprn');
-    expect(res.addresses[0].organisationName).to.equal('org');
+    expect(res.addresses[0].buildingName).to.equal('buildingName');
+    expect(res.addresses[0].subBuildingName).to.equal('subBuildingName');
+    expect(res.addresses[0].buildingNumber).to.equal('buildingNumber');
+    expect(res.addresses[0].thoroughfareName).to.equal('thoroughfareName');
+    expect(res.addresses[0].dependentThoroughfareName).to.equal('dependentThoroughfareName');
+    expect(res.addresses[0].dependentLocality).to.equal('dependentLocality');
+    expect(res.addresses[0].doubleDependentLocality).to.equal('doubleDependentLocality');
+    expect(res.addresses[0].postTown).to.equal('postTown');
     expect(res.addresses[0].postcode).to.equal(postcode);
+    expect(res.addresses[0].formattedAddress).to.equal('formattedAddress');
+    expect(res.addresses[0].udprn).to.equal('udprn');
   });
 
   it('parses LPI result', async () => {
     axiosGetStub.resolves({ status: 200, data: makeBody({}, [lpiResult]) });
     const res = await client.lookupByPostcode(postcode);
     expect(res.statusCode).to.equal(200);
-    expect(res.addresses[0].uprn).to.equal('uprn2');
-    expect(res.addresses[0].organisationName).to.equal('org2');
-    expect(res.addresses[0].postcode).to.equal('PC2');
+    expect(res.addresses[0].buildingName).to.equal('paoText');
+    expect(res.addresses[0].subBuildingName).to.equal('saoText');
+    expect(res.addresses[0].buildingNumber).to.equal('buildingNumber2');
+    expect(res.addresses[0].thoroughfareName).to.equal('streetDescription');
+    expect(res.addresses[0].dependentThoroughfareName).to.equal('dependentThoroughfareName2');
+    expect(res.addresses[0].dependentLocality).to.equal('dependentLocality2');
+    expect(res.addresses[0].doubleDependentLocality).to.equal('doubleDependentLocality2');
+    expect(res.addresses[0].postTown).to.equal('townName');
+    expect(res.addresses[0].postcode).to.equal(postcode);
+    expect(res.addresses[0].formattedAddress).to.equal('formattedAddress2');
+    expect(res.addresses[0].udprn).to.equal('usrn');
   });
 
   it('handles empty results', async () => {
@@ -147,8 +151,8 @@ describe('OSPlacesClient', () => {
     const res = await client.lookupByPostcode(postcode);
     expect(res.statusCode).to.equal(200);
     expect(res.addresses).to.have.lengthOf(2);
-    expect(res.addresses[0].uprn).to.equal('uprn');
-    expect(res.addresses[1].uprn).to.equal('uprn2');
+    expect(res.addresses[0].udprn).to.equal('udprn');
+    expect(res.addresses[1].udprn).to.equal('usrn');
   });
 
   it('mapResultToAddress handles missing fields', () => {

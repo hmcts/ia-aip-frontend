@@ -1,4 +1,4 @@
-import { Address } from '../service/OSPlacesClient';
+import { Address } from '../clients/classes/Address';
 
 function thoroughfareDetails(osAddress: Address) {
   let line1 = '';

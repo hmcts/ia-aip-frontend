@@ -1,8 +1,9 @@
+import axios from 'axios';
 import * as _ from 'lodash';
 import moment from 'moment';
-import rp from 'request-promise';
 import { paths } from '../../../../app/paths';
 import { axeTest } from '../../axeHelper';
+
 const mockData = require('../../../mock/ccd/mock-case-data');
 
 const { fillInDate } = require('../helper-functions');
@@ -42,19 +43,17 @@ const caseData = {
 async function setupData(newCaseData) {
   const caseDataClone = _.cloneDeep(caseData);
   _.merge(caseDataClone.case_data, newCaseData);
-  await rp.post({
-    uri: 'http://localhost:20000/setupCase',
-    body: [ caseDataClone ],
-    json: true
-  });
+  await axios.post(
+    'http://localhost:20000/setupCase', {
+      body: [caseDataClone]
+    });
 }
 
 async function setupCase(ccdCase: CcdCaseDetails) {
-  await rp.post({
-    uri: 'http://localhost:20000/setupCase',
-    body: [ ccdCase ],
-    json: true
-  });
+  await axios.post(
+    'http://localhost:20000/setupCase', {
+      body: [ccdCase]
+    });
 }
 
 const PATHS = {
@@ -196,7 +195,7 @@ module.exports = {
           PostTown: 'Town',
           PostCode: 'CM15 9BN'
         },
-        subscriptions: [ {
+        subscriptions: [{
           id: 1,
           value: {
             subscriber: 'appellant',
@@ -205,7 +204,7 @@ module.exports = {
             wantsSms: 'Yes',
             mobileNumber: '07899999999'
           }
-        } ]
+        }]
       });
     });
 
@@ -272,7 +271,7 @@ module.exports = {
           PostTown: 'Town',
           PostCode: 'CM15 9BN'
         },
-        subscriptions: [ {
+        subscriptions: [{
           id: 1,
           value: {
             subscriber: 'appellant',
@@ -281,7 +280,7 @@ module.exports = {
             wantsSms: 'Yes',
             mobileNumber: '07899999999'
           }
-        } ],
+        }],
         appealType: 'protection',
         uploadTheNoticeOfDecisionDocs: []
       });
@@ -294,7 +293,7 @@ module.exports = {
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1981-01-01',
-        subscriptions: [ {
+        subscriptions: [{
           id: 1,
           value: {
             subscriber: 'appellant',
@@ -303,7 +302,7 @@ module.exports = {
             wantsSms: 'Yes',
             mobileNumber: '07899999999'
           }
-        } ],
+        }],
         appealType: 'protection',
         uploadTheNoticeOfDecisionDocs: []
       });
@@ -330,7 +329,7 @@ module.exports = {
           PostTown: 'Town',
           PostCode: 'CM15 9BN'
         },
-        subscriptions: [ {
+        subscriptions: [{
           id: 1,
           value: {
             subscriber: 'appellant',
@@ -339,7 +338,7 @@ module.exports = {
             wantsSms: 'Yes',
             mobileNumber: '07899999999'
           }
-        } ],
+        }],
         appealType: 'refusalOfHumanRights',
         feeWithoutHearing: '80',
         feeCode: 'abc',
@@ -361,7 +360,7 @@ module.exports = {
       await fillInDate(day, month, year);
     });
 
-    Then(/^I should see error summary$/,async () => {
+    Then(/^I should see error summary$/, async () => {
       await I.seeElementInDOM('.govuk-error-summary');
       await I.seeInTitle('Error: ');
     });
@@ -371,17 +370,17 @@ module.exports = {
     });
 
     Then(/^I expect to be redirect back to the task\-list$/, async () => {
-      await I.waitInUrl(paths.appealStarted.taskList,10);
+      await I.waitInUrl(paths.appealStarted.taskList, 10);
       await I.seeInCurrentUrl(paths.appealStarted.taskList);
     });
 
     Then(/^I see "([^"]*)" in current url$/, async (key: string) => {
-      await I.waitInUrl(key,10);
+      await I.waitInUrl(key, 10);
       await I.seeInCurrentUrl(key);
     });
 
     When(/^I visit the "([^"]*)" page$/, async (key: string) => {
-      await I.waitInUrl(`${PATHS[key]}`,10);
+      await I.waitInUrl(`${PATHS[key]}`, 10);
       await I.seeInCurrentUrl(`${PATHS[key]}`);
       await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });
@@ -403,7 +402,7 @@ module.exports = {
     });
 
     Given(/^I am on the "([^"]*)" page$/, async (key: string) => {
-      await I.waitInUrl(`${PATHS[key]}`,10);
+      await I.waitInUrl(`${PATHS[key]}`, 10);
       await I.seeInCurrentUrl(`${PATHS[key]}`);
       await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });
@@ -482,7 +481,7 @@ module.exports = {
     });
 
     When('I select from the drop-down', async () => {
-      await I.selectOption('#language','Afar');
+      await I.selectOption('#language', 'Afar');
     });
 
     Then('I should see the date time and hearing centre in do this next', async () => {

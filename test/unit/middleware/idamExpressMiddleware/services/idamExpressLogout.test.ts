@@ -1,4 +1,4 @@
-import request from 'request-promise-native';
+import axios from 'axios';
 import { SinonStub } from 'sinon';
 import middleware from '../../../../../app/middleware/ia-idam-express-middleware/services/idamExpressLogout';
 import cookies from '../../../../../app/middleware/ia-idam-express-middleware/utilities/cookies';
@@ -56,7 +56,7 @@ describe('idamExpressLogout', () => {
       sandbox.stub(idamWrapper, 'setup').returns(idamFunctionsStub);
       sandbox.stub(cookies, 'get').returns(authToken);
       sandbox.stub(cookies, 'remove').returns(authToken);
-      requestDeleteStub = sandbox.stub(request, 'delete');
+      requestDeleteStub = sandbox.stub(axios, 'delete');
       handler = middleware(idamArgs);
     });
 
@@ -73,8 +73,8 @@ describe('idamExpressLogout', () => {
       setImmediate(() => {
         expect(idamWrapper.setup).to.have.been.calledOnce;
         expect(cookies.get).to.have.been.calledOnce;
-        expect(request.delete).to.have.been.calledOnce;
-        expect(request.delete).to.have.been.calledWith(options);
+        expect(axios.delete).to.have.been.calledOnce;
+        expect(axios.delete).to.have.been.calledWith(options);
         expect(cookies.remove).to.have.been.calledOnce;
       });
     });
@@ -88,8 +88,8 @@ describe('idamExpressLogout', () => {
       setImmediate(() => {
         expect(idamWrapper.setup).to.have.been.calledOnce;
         expect(cookies.get).to.have.been.calledOnce;
-        expect(request.delete).to.have.been.calledOnce;
-        expect(request.delete).to.have.been.calledWith(options);
+        expect(axios.delete).to.have.been.calledOnce;
+        expect(axios.delete).to.have.been.calledWith(options);
       });
     });
   });

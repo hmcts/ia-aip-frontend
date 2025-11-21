@@ -1,7 +1,8 @@
-import { Address, OSPlacesClient } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
+import { Address } from '../../clients/classes/Address';
+import { OSPlacesClient } from '../../clients/OSPlacesClient';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';

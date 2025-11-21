@@ -1,6 +1,6 @@
-import { Address, Point } from '@hmcts/os-places-client';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
+import { Address } from '../../../app/clients/classes/Address';
 import {
   deleteHomeOfficeDecisionLetter,
   getHomeOfficeDecisionLetter,
@@ -122,7 +122,7 @@ describe('Home office decision letter', function () {
       req.session.appeal.application.addressLookup = {
         result: {
           addresses: [
-            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [ 1, 2 ]), 'udprn')
+            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', 'udprn')
           ]
         }
       };

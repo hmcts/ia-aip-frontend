@@ -1,7 +1,8 @@
-import { Address, OSPlacesClient, Point } from '@hmcts/os-places-client';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import * as _ from 'lodash';
+import { Address } from '../../../app/clients/classes/Address';
+import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
 import {
   getManualEnterAddressPage,
   postManualEnterAddressPage,
@@ -136,7 +137,7 @@ describe('Personal Details Controller', function () {
       req.session.appeal.application.addressLookup = {
         result: {
           addresses: [
-            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [ 1, 2 ]), 'udprn')
+            new Address('buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn')
           ]
         }
       };

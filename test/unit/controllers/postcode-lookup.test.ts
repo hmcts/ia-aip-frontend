@@ -1,6 +1,8 @@
-import { Address, AddressInfoResponse, OSPlacesClient, Point } from '@hmcts/os-places-client';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
+import { Address } from '../../../app/clients/classes/Address';
+import { AddressInfoResponse } from '../../../app/clients/classes/AddressInfoResponse';
+import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
 import {
   ContactDetailsControllerDependencies,
   getPostcodeLookupPage,
@@ -94,8 +96,8 @@ describe('Personal Details Controller', function () {
 
       lookupByPostcodeStub.withArgs('W1W 7RT').resolves({
         addresses: [
-          { uprn: '1', formattedAddress: 'first address' } as Address,
-          { uprn: '2', formattedAddress: 'second address' } as Address
+          { udprn: '1', formattedAddress: 'first address' } as Address,
+          { udprn: '2', formattedAddress: 'second address' } as Address
         ]
       } as AddressInfoResponse);
 
@@ -111,8 +113,8 @@ describe('Personal Details Controller', function () {
       } as any;
       lookupByPostcodeStub.withArgs('W1W 7RT').resolves({
         addresses: [
-          { uprn: '1', formattedAddress: 'first address' } as Address,
-          { uprn: '2', formattedAddress: 'second address' } as Address
+          { udprn: '1', formattedAddress: 'first address' } as Address,
+          { udprn: '2', formattedAddress: 'second address' } as Address
         ]
       } as AddressInfoResponse);
 
@@ -125,7 +127,7 @@ describe('Personal Details Controller', function () {
   });
 
   describe('postPostcodeLookupPage', () => {
-    const addresses = [ new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn') ];
+    const addresses = [ new Address('buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn') ];
 
     it('should fail validation and render postcode-lookup.njk', function () {
       req.session.appeal.application = {

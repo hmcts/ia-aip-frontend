@@ -1,10 +1,10 @@
-import rp from 'request-promise';
+import axios from 'axios';
 import * as paymentsApi from '../../../app/api/payments-api';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('payments-api', () => {
-  let rpGetStub: sinon.SinonStub;
-  let rpPostStub: sinon.SinonStub;
+  let axiosGetStub: sinon.SinonStub;
+  let axiosPostStub: sinon.SinonStub;
   let sandbox: sinon.SinonSandbox;
   const headers = {
     userToken: 'aUserToken',
@@ -12,8 +12,8 @@ describe('payments-api', () => {
   };
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    rpGetStub = sandbox.stub(rp, 'get').resolves({});
-    rpPostStub = sandbox.stub(rp, 'post');
+    axiosGetStub = sandbox.stub(axios, 'get').resolves({});
+    axiosPostStub = sandbox.stub(axios, 'post');
   });
 
   afterEach(() => {
@@ -23,12 +23,12 @@ describe('payments-api', () => {
   it('should call create card payment endpoint', async () => {
     await paymentsApi.createCardPayment(headers, {}, 'http://aReturnUrl');
 
-    expect(rpPostStub).to.have.been.called;
+    expect(axiosPostStub).to.have.been.called;
   });
 
   it('should call paymentsDetails endpoint', async () => {
     await paymentsApi.paymentDetails(headers, 'paymentRef');
 
-    expect(rpGetStub).to.have.been.called;
+    expect(axiosGetStub).to.have.been.called;
   });
 });

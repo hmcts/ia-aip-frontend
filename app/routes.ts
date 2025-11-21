@@ -1,4 +1,5 @@
 import * as express from 'express';
+import { OSPlacesClient } from './clients/OSPlacesClient';
 import { setupIndexController } from './controllers';
 import { setupAsylumSupportController } from './controllers/appeal-application/asylum-support';
 import { setupCheckAndSendController } from './controllers/appeal-application/check-and-send';
@@ -198,7 +199,6 @@ import { CcdService } from './service/ccd-service';
 import CcdSystemService from './service/ccd-system-service';
 import { DocumentManagementService } from './service/document-management-service';
 import IdamService from './service/idam-service';
-import { OSPlacesClient } from './service/OSPlacesClient';
 import PaymentService from './service/payments-service';
 import RefDataService from './service/ref-data-service';
 import S2SService from './service/s2s-service';

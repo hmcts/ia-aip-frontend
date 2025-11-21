@@ -1,4 +1,4 @@
-import rp from 'request-promise';
+import axios from 'axios';
 import { Events } from '../../../app/data/events';
 import { SecurityHeaders } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
@@ -173,8 +173,8 @@ describe('idam-service', () => {
 
     beforeEach(() => {
       sandbox = sinon.createSandbox();
-      getRequest = sandbox.stub(rp, 'get').resolves({});
-      postRequest = sandbox.stub(rp, 'post').resolves({});
+      getRequest = sandbox.stub(axios, 'get').resolves({});
+      postRequest = sandbox.stub(axios, 'post').resolves({});
     });
 
     afterEach(() => {

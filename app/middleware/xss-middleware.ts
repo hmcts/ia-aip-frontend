@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 const createDOMPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
 
-const window = (new JSDOM('')).window;
+const window = (new JSDOM('', { url: 'http://localhost:3000' })).window;
 const DOMPurify = createDOMPurify(window);
 
 function filterRequest(req: Request, res: Response, next: NextFunction) {

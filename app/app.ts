@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
 import expectCt from 'expect-ct';
 import express from 'express';
-import helmet, { crossOriginEmbedderPolicy } from 'helmet';
+import helmet from 'helmet';
 import webpack from 'webpack';
 import webpackDevMiddleware, { Options } from 'webpack-dev-middleware';
 import internationalization from '../locale/en.json';
@@ -81,9 +81,7 @@ function createApp() {
 
 function configureHelmet(app) {
   // by setting HTTP headers appropriately.
-  app.use(helmet({
-    crossOriginResourcePolicy: { policy: 'cross-origin' }
-  }));
+  app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 
   // Helmet referrer policy
   app.use(helmet.referrerPolicy({ policy: 'origin' }));

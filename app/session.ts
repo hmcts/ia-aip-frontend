@@ -11,17 +11,19 @@ const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
 async function setupSession() {
+  const redisUrl = config.get('session.redis.url');
   logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
+
   if (useRedis) {
     logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
-    let RedisStore = require('connect-redis')(session);
-    const redisOpts = {
-      url: config.get('session.redis.url'),
-      ttl: config.get('session.redis.ttlInSeconds')
-    };
+    let RedisStore = require('connect-redis').default || require('connect-redis');
 
-    let client = redis.createClient(redisOpts);
+    let client = redis.createClient({
+      url: redisUrl
+    });
+
     await client.connect();
+
     return session({
       cookie: {
         httpOnly: true,

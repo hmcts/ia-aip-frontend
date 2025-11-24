@@ -83,6 +83,12 @@ function configureHelmet(app) {
   // by setting HTTP headers appropriately.
   app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 
+  app.use(
+        helmet({
+          crossOriginEmbedderPolicy: false // Disable COEP
+        })
+    );
+
   // Helmet referrer policy
   app.use(helmet.referrerPolicy({ policy: 'origin' }));
 

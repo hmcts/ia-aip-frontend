@@ -9501,10 +9501,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"helmet@npm:4.6.0":
-  version: 4.6.0
-  resolution: "helmet@npm:4.6.0"
-  checksum: 10/47129c540dc815a30274b687699738e7dd9acdeeaa5eb4682cba8d364a381fb502b140c7fef5b8d5f9a01d9d17ed8a17ef62c884816bd9e4535d750ce3a9a6be
+"helmet@npm:7.2.0":
+  version: 7.2.0
+  resolution: "helmet@npm:7.2.0"
+  checksum: 10/37419351755a66f48af0f7c1f25b8e55ceaf2087efb1309ab29d6f664ea72f3a6fecbbcc0c9231e45b9e2f7079d3403eb35040463a45293c876e776d0574b538
   languageName: node
   linkType: hard
 
@@ -9877,7 +9877,7 @@ __metadata:
     google-libphonenumber: "npm:^3.2.21"
     govuk-frontend: "npm:^4.7.0"
     graceful-fs: "npm:^4.2.6"
-    helmet: "npm:4.6.0"
+    helmet: "npm:7.2.0"
     http-status-codes: "npm:^1.4.0"
     https-browserify: "npm:^1.0.0"
     husky: "npm:^4.2.8"

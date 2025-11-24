@@ -17,7 +17,8 @@ function setupSession() {
     let RedisStore = require('connect-redis')(session);
     const redisOpts = {
       url: config.get('session.redis.url'),
-      ttl: config.get('session.redis.ttlInSeconds')
+      ttl: config.get('session.redis.ttlInSeconds'),
+      legacyMode: true
     };
 
     let client = redis.createClient(redisOpts);

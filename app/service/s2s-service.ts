@@ -7,7 +7,7 @@ const config = setupSecrets();
 
 const otp = require('otp');
 const s2sSecret: string = config.get('s2s.secret');
-const s2sUrl: string = config.get('s2s.url');
+const s2sUrl: string = 'http://' + config.get('s2s.url');
 const proxyHost: string = config.get('proxy.host');
 const proxyPort: number = config.get('proxy.port');
 const microServiceName: string = config.get('s2s.microserviceName');

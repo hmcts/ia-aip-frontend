@@ -1,5 +1,6 @@
 import config from 'config';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import csurf from 'csurf';
 import expectCt from 'expect-ct';
 import express from 'express';
@@ -80,9 +81,12 @@ function createApp() {
 }
 
 function configureHelmet(app) {
-  // by setting HTTP headers appropriately.
+  app.use(cors());
+
+    // by setting HTTP headers appropriately.
   app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 
+  // Helmet embedder policy
   app.use(
         helmet({
           crossOriginEmbedderPolicy: false // Disable COEP

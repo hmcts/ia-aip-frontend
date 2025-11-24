@@ -22,7 +22,7 @@ describe('Cookies Banner', () => {
     </div>`;
 
   before(() => {
-    dom = new JSDOM(html, { url: 'http://localhost' });
+    dom = new JSDOM(html, { url: 'http://localhost:3000' });
     document = dom.window.document;
     cookiesBanner = new CookiesBanner();
   });

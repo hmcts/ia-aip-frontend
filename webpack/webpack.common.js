@@ -93,7 +93,7 @@ const clientConfig = {
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: path.resolve('node_modules/govuk-frontend/govuk/assets/'),
+                    from: path.resolve('node_modules/govuk-frontend/dist/govuk/assets/'),
                     to: 'assets'
                 },
                 {

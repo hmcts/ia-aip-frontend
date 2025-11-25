@@ -22,7 +22,7 @@ function configureNunjucks(app: express.Application) {
 
   const nunjucksEnv: nunjucks.Environment = nunjucks.configure([
     'views',
-    path.resolve('node_modules/govuk-frontend/')
+    path.resolve('node_modules/govuk-frontend/dist/')
   ], {
     autoescape: true,
     express: app,

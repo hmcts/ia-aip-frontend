@@ -1,5 +1,6 @@
-import { Address, Point } from '@hmcts/os-places-client';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
+import session from 'express-session';
+import { Address } from '../../../app/clients/classes/Address';
 import {
   deleteHomeOfficeDecisionLetter,
   getHomeOfficeDecisionLetter,
@@ -27,7 +28,7 @@ describe('Home office decision letter', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
 
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -49,7 +50,7 @@ describe('Home office decision letter', function () {
             personalDetails: {}
           }
         } as Appeal
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       app: {
         locals: {
           logger
@@ -64,7 +65,7 @@ describe('Home office decision letter', function () {
       locals: {}
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
     documentManagementService = { uploadFile: sandbox.stub(), deleteFile: sandbox.stub() } as Partial<DocumentManagementService>;
   });
@@ -121,7 +122,7 @@ describe('Home office decision letter', function () {
       req.session.appeal.application.addressLookup = {
         result: {
           addresses: [
-            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [ 1, 2 ]), 'udprn')
+            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', 'udprn')
           ]
         }
       };

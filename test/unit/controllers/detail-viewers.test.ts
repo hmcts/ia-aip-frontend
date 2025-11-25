@@ -1,4 +1,5 @@
 import { application, NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   addFeeSupportStatus,
   findDocumentInReheardHearingDocCollection,
@@ -48,7 +49,7 @@ describe('DetailViewController', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let documentManagementService: Partial<DocumentManagementService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -64,7 +65,7 @@ describe('DetailViewController', () => {
           },
           application: {}
         }
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {},
       idam: {
         userDetails: {}
@@ -84,7 +85,7 @@ describe('DetailViewController', () => {
       setHeader: sandbox.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {
@@ -774,6 +775,294 @@ describe('DetailViewController', () => {
       });
     });
 
+    describe('Remission details', () => {
+      beforeEach(() => {
+        req.session.appeal.documentMap = [
+          { id: '1', url: 'someurl1' },
+          { id: '2', url: 'someUrl2' }
+        ];
+      });
+
+      it('should add legal aid account number row if legalAidAccountNumber exists', async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+        expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+          { key: { text: i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber }, value: { html: 'legalAidAccountNumber' } }
+        );
+
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionType = 'hoWaiverRemission';
+        req.session.appeal.application.remissionClaim = 'legalAid';
+        req.session.appeal.application.legalAidAccountNumber = 'legalAidAccountNumber';
+        req.session.appeal.feeWithHearing = '140';
+
+        await getAppealDetailsViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+          title: i18n.pages.detailViewers.appealDetails.title,
+          aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+          personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+          feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+          previousPage: paths.common.overview,
+          data: expectedSummaryRowsWithDlrmFeeRemission
+        });
+      });
+
+      it('should add exceptional circumstances row if exceptionalCircumstances exists', async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+        expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+          { key: { text: i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstances }, value: { html: 'Exceptional reason' } },
+          {
+            key: { text: i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstancesEvidence },
+            value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>ecDoc1.pdf</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/2'>ecDoc2.pdf</a>" }
+          }
+        );
+
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionType = 'exceptionalCircumstancesRemission';
+        req.session.appeal.application.exceptionalCircumstances = 'Exceptional reason';
+        req.session.appeal.application.remissionEcEvidenceDocuments = [
+          { fileId: '1', name: 'ecDoc1.pdf' },
+          { fileId: '2', name: 'ecDoc2.pdf' }
+        ];
+        req.session.appeal.feeWithHearing = '140';
+
+        await getAppealDetailsViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+          title: i18n.pages.detailViewers.appealDetails.title,
+          aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+          personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+          feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+          previousPage: paths.common.overview,
+          data: expectedSummaryRowsWithDlrmFeeRemission
+        });
+      });
+
+      it('should add asylum support document row if asylumSupportDocument exists', async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+        expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+          { key: { text: i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber }, value: { html: 'asylumSupportReference' } },
+          { key: {
+            text: i18n.pages.checkYourAnswers.rowTitles.asylumSupportDocument },
+            value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>asylumDoc1.pdf</a>" }
+          }
+        );
+
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionType = 'hoWaiverRemission';
+        req.session.appeal.application.remissionClaim = 'asylumSupport';
+        req.session.appeal.application.asylumSupportReference = 'asylumSupportReference';
+        req.session.appeal.application.asylumSupportDocument = { fileId: '1', name: 'asylumDoc1.pdf' };
+        req.session.appeal.feeWithHearing = '140';
+
+        await getAppealDetailsViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+          title: i18n.pages.detailViewers.appealDetails.title,
+          aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+          personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+          feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+          previousPage: paths.common.overview,
+          data: expectedSummaryRowsWithDlrmFeeRemission
+        });
+      });
+
+      it('should add section 17 document row if section17Document exists', async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+        expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+          { key: {
+            text: i18n.pages.checkYourAnswers.rowTitles.section17Document },
+            value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>section17Doc1.pdf</a>" }
+          }
+        );
+
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionType = 'hoWaiverRemission';
+        req.session.appeal.application.remissionClaim = 'section17';
+        req.session.appeal.application.section17Document = { fileId: '1', name: 'section17Doc1.pdf' };
+        req.session.appeal.feeWithHearing = '140';
+
+        await getAppealDetailsViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+          title: i18n.pages.detailViewers.appealDetails.title,
+          aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+          personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+          feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+          previousPage: paths.common.overview,
+          data: expectedSummaryRowsWithDlrmFeeRemission
+        });
+      });
+
+      it('should add section 20 document row if section20Document exists', async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+        expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+          { key: {
+            text: i18n.pages.checkYourAnswers.rowTitles.section20Document },
+            value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>section20Doc1.pdf</a>" }
+          }
+        );
+
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionType = 'hoWaiverRemission';
+        req.session.appeal.application.remissionClaim = 'section20';
+        req.session.appeal.application.section20Document = { fileId: '1', name: 'section20Doc1.pdf' };
+        req.session.appeal.feeWithHearing = '140';
+
+        await getAppealDetailsViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+          title: i18n.pages.detailViewers.appealDetails.title,
+          aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+          personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+          feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+          previousPage: paths.common.overview,
+          data: expectedSummaryRowsWithDlrmFeeRemission
+        });
+      });
+
+      it('should add home office waiver document row if homeOfficeWaiverDocument exists', async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+        expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+          {
+            key: { text: i18n.pages.checkYourAnswers.rowTitles.homeOfficeWaiverDocument },
+            value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>homeOfficeWaiverDoc1.pdf</a>" }
+          }
+        );
+
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionType = 'hoWaiverRemission';
+        req.session.appeal.application.remissionClaim = 'homeOfficeWaiver';
+        req.session.appeal.application.homeOfficeWaiverDocument = { fileId: '1', name: 'homeOfficeWaiverDoc1.pdf' };
+        req.session.appeal.feeWithHearing = '140';
+
+        await getAppealDetailsViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+          title: i18n.pages.detailViewers.appealDetails.title,
+          aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+          personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+          feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+          previousPage: paths.common.overview,
+          data: expectedSummaryRowsWithDlrmFeeRemission
+        });
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with fee support type ' +
+      'feeRemissionType if present', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+        { key: { text: 'Fee support type' }, value: { html: 'SOME FEE REMISSION TYPE' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.feeRemissionType = 'SOME FEE REMISSION TYPE';
+      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.feeWithHearing = '140';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with appealSupportReference ' +
+      'if appealSupportRefNumber missing', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportReference = 'supportRefNumber';
+      req.session.appeal.feeWithHearing = '140';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with helpWithFeesReferenceNumber ' +
+      'if helpWithFeesRefNumber missing', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+        { key: { text: 'Help with fees reference number' }, value: { html: 'helpWithFeesRefNumberValue' } }
+      );
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
+      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
+      req.session.appeal.application.helpWithFeesReferenceNumber = 'helpWithFeesRefNumberValue';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk if feeWaiverFromHo', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+      req.session.appeal.feeWithHearing = '140';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
     it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission and and DLRM fee' +
       ' refund flags are ON and remissionOption is asylumSupportFromHo', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
@@ -782,7 +1071,7 @@ describe('DetailViewController', () => {
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
         { key: { text: 'Fee amount' }, value: { html: '£140' } },
         { key: { text: 'Payment status' }, value: { html: 'Paid' } },
-        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } },
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
       );
 
@@ -933,7 +1222,35 @@ describe('DetailViewController', () => {
         amountRemitted: '1000',
         amountLeftToPay: '1000',
         remissionDecision: 'Approved',
-        asylumSupportReference: 'refNum'
+        asylumSupportReference: 'refNum',
+        legalAidAccountNumber: 'legalAidAccountNumber',
+        exceptionalCircumstances: 'Exceptional reason',
+        remissionEcEvidenceDocuments: [{
+          id: '1',
+          fileId: 'file Id 1',
+          name: 'file_1_name'
+        }] as Evidence[],
+        asylumSupportDocument: {
+          id: '2',
+          fileId: 'file Id 2',
+          name: 'file_2_name'
+        } as Evidence,
+        section17Document: {
+          id: '3',
+          fileId: 'file Id 3',
+          name: 'file_3_name'
+        } as Evidence,
+        section20Document: {
+          id: '4',
+          fileId: 'file Id 4',
+          name: 'file_4_name'
+        } as Evidence,
+        homeOfficeWaiverDocument: {
+          id: '5',
+          fileId: 'file Id 5',
+          name: 'file_5_name'
+        } as Evidence,
+        feeRemissionType: 'Section 17'
       } as RemissionDetails, {
         id: '1',
         feeAmount: '1000',
@@ -949,20 +1266,22 @@ describe('DetailViewController', () => {
         amountLeftToPay: '1000',
         remissionDecision: 'Rejected',
         remissionDecisionReason: 'Decision 2',
+        feeRemissionType: 'Section 20',
         localAuthorityLetters: [{
           id: '1',
           fileId: 'file Id 1',
           name: 'file_1_name',
           tag: 'tag1'
         }] as Evidence[]
-      } as RemissionDetails ];
+      } as RemissionDetails];
 
       const expectedSummaryRowsWithDlrmFeeRemission = {
         'aboutAppealRows': [
           { key: { text: 'In the UK' }, value: { html: 'Yes' } },
           { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
           { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
-          { key: { text: 'Home Office decision letter' },
+          {
+            key: { text: 'Home Office decision letter' },
             value: {
               html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>"
             }
@@ -971,7 +1290,8 @@ describe('DetailViewController', () => {
           { key: { text: 'Appeal type' }, value: { html: 'Protection' } },
           { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
           { key: { text: 'Reason for late appeal' }, value: { html: 'a reason for being late' } },
-          { key: { text: 'Supporting evidence' },
+          {
+            key: { text: 'Supporting evidence' },
             value: {
               html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>"
             }
@@ -986,28 +1306,40 @@ describe('DetailViewController', () => {
         ],
         'feeDetailsRows': [
           { key: { text: 'Fee amount' }, value: { html: '£140' } },
-          { key: { text: 'Payment status' }, value: {  html: 'No payment needed' } },
+          { key: { text: 'Payment status' }, value: { html: 'No payment needed' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support request approved' } },
           { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
         ],
         'feeHistoryRows': [
           [
+            { key: { text: 'Fee support type' }, value: {  html: 'Local Authority Support (Section 17)' } },
             { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
             { key: { text: 'Asylum Support reference number' }, value: { html: 'refNum' } },
+            { key: { text: 'Legal Aid account number' }, value: { html: 'legalAidAccountNumber' } },
+            { key: { text: 'Exceptional circumstances' }, value: { html: 'Exceptional reason' } },
+            { key: { text: 'Asylum support document' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 2'>file_2_name</a>" } },
+            { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 3'>file_3_name</a>" } },
+            { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 4'>file_4_name</a>" } },
+            { key: { text: 'Home Office waiver document' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 5'>file_5_name</a>" } },
+            { key: { text: 'Exceptional circumstances evidence' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" } },
             { key: { text: 'Fee support status' }, value: {  html: 'Fee support request granted' } },
             { key: { text: 'Fee to refund' }, value: { html: '£140' } }
           ],
           [
             { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
             { key: { text: 'Help with fees reference number' }, value: { html: 'Help with fees' } },
-            { key: { text: 'Fee support status' }, value: {  html: 'Fee support request partially granted' } },
-            { key: { text: 'Reason for decision' }, value: {  html: 'Decision 1' } },
+            { key: { text: 'Fee support status' }, value: { html: 'Fee support request partially granted' } },
+            { key: { text: 'Reason for decision' }, value: { html: 'Decision 1' } },
             { key: { text: 'Fee to refund' }, value: { html: '£130' } }
           ], [
+            { key: { text: 'Fee support type' }, value: {  html: 'Local Authority Support (Section 20)' } },
             { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
-            { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" } },
-            { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested refused' } },
-            { key: { text: 'Reason for decision' }, value: {  html: 'Decision 2' } }
+            {
+              key: { text: 'Local Authority letter' },
+              value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" }
+            },
+            { key: { text: 'Fee support status' }, value: { html: 'Fee support requested refused' } },
+            { key: { text: 'Reason for decision' }, value: { html: 'Decision 2' } }
           ]
         ]
       };
@@ -1028,7 +1360,8 @@ describe('DetailViewController', () => {
           id: '',
           name: ''
         },
-        data: '' } as HistoryEvent;
+        data: ''
+      } as HistoryEvent;
 
       it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and there are previousRemissionDetails', async () => {
         sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
@@ -1042,7 +1375,7 @@ describe('DetailViewController', () => {
         req.session.appeal.application.remissionDecision = 'approved';
 
         req.session.appeal.application.previousRemissionDetails = previousRemissionDetails;
-        req.session.appeal.history = [ historyEvent, historyEvent, historyEvent ];
+        req.session.appeal.history = [historyEvent, historyEvent, historyEvent];
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
         expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
@@ -1064,11 +1397,11 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
         req.session.appeal.paymentStatus = 'Paid';
         req.session.appeal.application.previousRemissionDetails = previousRemissionDetails;
-        req.session.appeal.history = [ historyEvent, historyEvent, historyEvent ];
+        req.session.appeal.history = [historyEvent, historyEvent, historyEvent];
 
         const feeDetails = [
           { key: { text: 'Fee amount' }, value: { html: '£140' } },
-          { key: { text: 'Payment status' }, value: {  html: 'Paid' } },
+          { key: { text: 'Payment status' }, value: { html: 'Paid' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
           { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
         ];
@@ -1117,8 +1450,9 @@ describe('DetailViewController', () => {
             id: '',
             name: ''
           },
-          data: '' } as HistoryEvent;
-        req.session.appeal.history = [ historyEventDayBefore, historyEvent, historyEvent, historyEvent ];
+          data: ''
+        } as HistoryEvent;
+        req.session.appeal.history = [historyEventDayBefore, historyEvent, historyEvent, historyEvent];
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
         expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
@@ -1152,7 +1486,7 @@ describe('DetailViewController', () => {
         { key: { text: 'Fee amount' }, value: { html: '£14' } },
         { key: { text: 'Fee amount paid' }, value: { html: '£14' } },
         { key: { text: 'Reason for fee change' }, value: { html: 'Decision type changed' } },
-        { key: { text: 'Payment status' }, value: {  html: 'Additional payment requested' } },
+        { key: { text: 'Payment status' }, value: { html: 'Additional payment requested' } },
         { key: { text: 'Fee to pay' }, value: { html: '£10' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
       ];
@@ -1189,7 +1523,7 @@ describe('DetailViewController', () => {
         { key: { text: 'Fee amount' }, value: { html: '£14' } },
         { key: { text: 'Fee amount paid' }, value: { html: '£8' } },
         { key: { text: 'Reason for fee change' }, value: { html: 'Decision type changed' } },
-        { key: { text: 'Payment status' }, value: {  html: 'Additional payment requested' } },
+        { key: { text: 'Payment status' }, value: { html: 'Additional payment requested' } },
         { key: { text: 'Fee to pay' }, value: { html: '£10' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
       ];
@@ -1225,7 +1559,7 @@ describe('DetailViewController', () => {
         { key: { text: 'Fee amount' }, value: { html: '£14' } },
         { key: { text: 'Fee amount paid' }, value: { html: '£14' } },
         { key: { text: 'Reason for fee change' }, value: { html: 'Fee remission changed' } },
-        { key: { text: 'Payment status' }, value: {  html: 'To be refunded' } },
+        { key: { text: 'Payment status' }, value: { html: 'To be refunded' } },
         { key: { text: 'Amount to be refunded' }, value: { html: '£10' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
       ];
@@ -1262,7 +1596,7 @@ describe('DetailViewController', () => {
         { key: { text: 'Fee amount' }, value: { html: '£14' } },
         { key: { text: 'Fee amount paid' }, value: { html: '£8' } },
         { key: { text: 'Reason for fee change' }, value: { html: 'Fee remission changed' } },
-        { key: { text: 'Payment status' }, value: {  html: 'To be refunded' } },
+        { key: { text: 'Payment status' }, value: { html: 'To be refunded' } },
         { key: { text: 'Amount to be refunded' }, value: { html: '£10' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
       ];
@@ -1297,7 +1631,7 @@ describe('DetailViewController', () => {
         { key: { text: 'Fee amount' }, value: { html: '£14' } },
         { key: { text: 'Fee amount paid' }, value: { html: '£14' } },
         { key: { text: 'Reason for fee change' }, value: { html: 'Appeal not valid' } },
-        { key: { text: 'Payment status' }, value: {  html: 'Paid' } },
+        { key: { text: 'Payment status' }, value: { html: 'Paid' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
       ];
 
@@ -1333,7 +1667,7 @@ describe('DetailViewController', () => {
         { key: { text: 'Fee amount' }, value: { html: '£14' } },
         { key: { text: 'Fee amount paid' }, value: { html: '£8' } },
         { key: { text: 'Reason for fee change' }, value: { html: 'Appeal not valid' } },
-        { key: { text: 'Payment status' }, value: {  html: 'Paid' } },
+        { key: { text: 'Payment status' }, value: { html: 'Paid' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
       ];
 
@@ -1364,7 +1698,7 @@ describe('DetailViewController', () => {
         { key: { text: 'Fee amount' }, value: { html: '£14' } },
         { key: { text: 'Fee amount paid' }, value: { html: '£14' } },
         { key: { text: 'Reason for fee change' }, value: { html: 'Appeal withdrawn' } },
-        { key: { text: 'Payment status' }, value: {  html: 'Paid' } }
+        { key: { text: 'Payment status' }, value: { html: 'Paid' } }
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
@@ -2545,77 +2879,50 @@ describe('DetailViewController', () => {
 
   describe('getHearingNoticeDocument', () => {
     it('should return the document if it exists in primary hearing documents', () => {
-      const req = {
-        session: {
-          appeal: {
-            hearingDocuments: [{ fileId: '123' }],
-            reheardHearingDocumentsCollection: []
-          }
-        },
-        params: { id: '123' }
-      };
-      const result = getHearingNoticeDocument(req);
+      req.session.appeal = {
+        hearingDocuments: [{ fileId: '123' }],
+        reheardHearingDocumentsCollection: []
+      } as Appeal;
+      req.params.id = '123';
+      const result = getHearingNoticeDocument(req as Request);
       expect(result).to.deep.equal({ fileId: '123' });
     });
 
     it('should return the document if it exists in reheard hearing documents', () => {
-      const req = {
-        session: {
-          appeal: {
-            hearingDocuments: [],
-            reheardHearingDocumentsCollection: [
-              { value: { reheardHearingDocs: [{ fileId: '123' }] } }
-            ]
-          }
-        },
-        params: { id: '123' }
-      };
-      const result = getHearingNoticeDocument(req);
+      req.session.appeal.hearingDocuments = [];
+      req.session.appeal.reheardHearingDocumentsCollection = [
+        { value: { reheardHearingDocs: [{ fileId: '123' } as Evidence] } }
+      ];
+      req.params = { id: '123' };
+      const result = getHearingNoticeDocument(req as Request);
       expect(result).to.deep.equal({ fileId: '123' });
     });
 
     it('should throw an error if the document does not exist in any collection', () => {
-      const req = {
-        session: {
-          appeal: {
-            hearingDocuments: [],
-            reheardHearingDocumentsCollection: []
-          }
-        },
-        params: { id: '123' }
-      };
-      expect(() => getHearingNoticeDocument(req)).to.throw('No hearing notice with {fileId: 123} found.');
+      req.session.appeal.hearingDocuments = [];
+      req.session.appeal.reheardHearingDocumentsCollection = [];
+      req.params = { id: '123' };
+      expect(() => getHearingNoticeDocument(req as Request)).to.throw('No hearing notice with {fileId: 123} found.');
     });
 
     it('should handle undefined reheard hearing documents collection', () => {
-      const req = {
-        session: {
-          appeal: {
-            hearingDocuments: [],
-            reheardHearingDocumentsCollection: undefined
-          }
-        },
-        params: { id: '123' }
-      };
-      expect(() => getHearingNoticeDocument(req)).to.throw('No hearing notice with {fileId: 123} found.');
+      req.session.appeal.hearingDocuments = [];
+      req.session.appeal.reheardHearingDocumentsCollection = undefined;
+      req.params = { id: '123' };
+      expect(() => getHearingNoticeDocument(req as Request)).to.throw('No hearing notice with {fileId: 123} found.');
     });
 
     it('should handle undefined primary hearing documents', () => {
-      const req = {
-        session: {
-          appeal: {
-            hearingDocuments: undefined,
-            reheardHearingDocumentsCollection: [
-              { value: { reheardHearingDocs: [{ fileId: '123' }] } }
-            ]
-          }
-        },
-        params: { id: '123' }
-      };
-      const result = getHearingNoticeDocument(req);
+      req.session.appeal.hearingDocuments = undefined;
+      req.session.appeal.reheardHearingDocumentsCollection = [
+        { value: { reheardHearingDocs: [{ fileId: '123' } as Evidence] } }
+      ];
+      req.params = { id: '123' };
+      const result = getHearingNoticeDocument(req as Request);
       expect(result).to.deep.equal({ fileId: '123' });
     });
-  });
+  })
+  ;
 
   describe('should render reheard notice of hearing', () => {
     const document = {
@@ -2843,74 +3150,48 @@ describe('DetailViewController', () => {
 
   describe('getHearingNoticeDocument', () => {
     it('should return the document if it exists in primary hearing documents', () => {
-      const req = {
-        session: {
-          appeal: {
-            hearingDocuments: [{ fileId: '123' }],
-            reheardHearingDocumentsCollection: []
-          }
-        },
-        params: { id: '123' }
-      };
-      const result = getHearingNoticeDocument(req);
+      req.session.appeal.hearingDocuments = [{ fileId: '123' } as Evidence];
+      req.session.appeal.reheardHearingDocumentsCollection = [];
+      req.params = { id: '123' };
+      const result = getHearingNoticeDocument(req as Request);
       expect(result).to.deep.equal({ fileId: '123' });
     });
 
     it('should return the document if it exists in reheard hearing documents', () => {
-      const req = {
-        session: {
-          appeal: {
-            hearingDocuments: [],
-            reheardHearingDocumentsCollection: [
-              { value: { reheardHearingDocs: [{ fileId: '123' }] } }
-            ]
-          }
-        },
-        params: { id: '123' }
-      };
-      const result = getHearingNoticeDocument(req);
+      req.session.appeal.hearingDocuments = [];
+      req.session.appeal.reheardHearingDocumentsCollection = [
+        { value: { reheardHearingDocs: [{ fileId: '123' } as Evidence] } }
+      ];
+      req.params = { id: '123' };
+
+      const result = getHearingNoticeDocument(req as Request);
       expect(result).to.deep.equal({ fileId: '123' });
     });
 
     it('should throw an error if the document does not exist in any collection', () => {
-      const req = {
-        session: {
-          appeal: {
-            hearingDocuments: [],
-            reheardHearingDocumentsCollection: []
-          }
-        },
-        params: { id: '123' }
-      };
-      expect(() => getHearingNoticeDocument(req)).to.throw('No hearing notice with {fileId: 123} found.');
+      req.session.appeal.hearingDocuments = [];
+      req.session.appeal.reheardHearingDocumentsCollection = [];
+      req.params = { id: '123' };
+
+      expect(() => getHearingNoticeDocument(req as Request)).to.throw('No hearing notice with {fileId: 123} found.');
     });
 
     it('should handle undefined reheard hearing documents collection', () => {
-      const req = {
-        session: {
-          appeal: {
-            hearingDocuments: [],
-            reheardHearingDocumentsCollection: undefined
-          }
-        },
-        params: { id: '123' }
-      };
-      expect(() => getHearingNoticeDocument(req)).to.throw('No hearing notice with {fileId: 123} found.');
+      req.session.appeal.hearingDocuments = [];
+      req.session.appeal.reheardHearingDocumentsCollection = undefined;
+      req.params = { id: '123' };
+
+      expect(() => getHearingNoticeDocument(req as Request)).to.throw('No hearing notice with {fileId: 123} found.');
     });
 
     it('should handle undefined primary hearing documents', () => {
-      const req = {
-        session: {
-          appeal: {
-            hearingDocuments: undefined,
-            reheardHearingDocumentsCollection: [
-              { value: { reheardHearingDocs: [{ fileId: '123' }] } }
-            ]
-          }
-        },
-        params: { id: '123' }
-      };
-      const result = getHearingNoticeDocument(req);
+      req.session.appeal.hearingDocuments = undefined;
+      req.session.appeal.reheardHearingDocumentsCollection = [
+        { value: { reheardHearingDocs: [{ fileId: '123' } as Evidence] } }
+      ];
+      req.params = { id: '123' };
+
+      const result = getHearingNoticeDocument(req as Request);
       expect(result).to.deep.equal({ fileId: '123' });
     });
   });
@@ -5712,7 +5993,8 @@ describe('DetailViewController', () => {
           id: '',
           name: ''
         },
-        data: '' } as HistoryEvent;
+        data: ''
+      } as HistoryEvent;
       req.session.appeal.history = [historyEvent];
     });
 
@@ -5787,4 +6069,5 @@ describe('DetailViewController', () => {
       });
     });
   });
-});
+})
+;

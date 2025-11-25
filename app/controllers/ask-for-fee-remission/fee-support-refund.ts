@@ -4,6 +4,7 @@ import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
+import { payLaterForApplicationNeeded } from '../../utils/payments-utils';
 import { remissionOptionsValidation } from '../../utils/validations/fields-validations';
 
 function getOptionsQuestion(appeal: Appeal) {
@@ -48,13 +49,16 @@ async function getFeeSupport(req: Request, res: Response, next: NextFunction) {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     const appeal = req.session.appeal;
+    const { application } = req.session.appeal;
     appeal.application.isEdit = _.has(req.query, 'edit');
+    const paPayLater = payLaterForApplicationNeeded(req) && application.appealType === 'protection';
 
     return res.render('ask-for-fee-remission/fee-support-refund.njk', {
       previousPage: paths.common.overview,
       pageTitle: i18n.pages.remissionOptionPage.refundTitle,
       formAction: paths.appealSubmitted.feeSupportRefund,
-      question: getOptionsQuestion(req.session.appeal)
+      question: getOptionsQuestion(req.session.appeal),
+      paPayLater
     });
   } catch (error) {
     next(error);
@@ -64,6 +68,7 @@ async function getFeeSupport(req: Request, res: Response, next: NextFunction) {
 function postFeeSupport() {
   return async (req: Request, res: Response, next: NextFunction) => {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    const paPayLater = payLaterForApplicationNeeded(req);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
 
     try {
@@ -75,7 +80,8 @@ function postFeeSupport() {
           previousPage: paths.common.overview,
           pageTitle: i18n.pages.remissionOptionPage.refundTitle,
           formAction: paths.appealSubmitted.feeSupportRefund,
-          question: getOptionsQuestion(req.session.appeal)
+          question: getOptionsQuestion(req.session.appeal),
+          paPayLater
         });
       }
 

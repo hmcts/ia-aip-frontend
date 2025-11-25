@@ -32,7 +32,7 @@ describe('Confirmation Page Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const headers = {};
   let mockAuthenticationService: Partial<AuthenticationService>;
   let mockCcdService: Partial<CcdService>;
@@ -133,7 +133,7 @@ describe('Confirmation Page Controller', () => {
       .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true)
       .withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(true);
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {
@@ -386,7 +386,7 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: true,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false,
+      showAskForFeeRemission: true,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: true
     });
@@ -963,24 +963,24 @@ describe('Confirmation Page Controller', () => {
   it('getAppellantName should return name from session appeal details', () => {
     req.session.appeal.application.personalDetails.givenNames = 'John';
     req.session.appeal.application.personalDetails.familyName = 'Doe';
-    const result = getAppellantName(req);
+    const result = getAppellantName(req as Request);
     expect(result).to.equal('John Doe');
   });
 
   it('getAppellantName should return name from idam userDetails', () => {
     req.idam.userDetails.name = 'ATest User';
-    const result = getAppellantName(req);
+    const result = getAppellantName(req as Request);
     expect(result).to.equal('ATest User');
   });
 
   it('getHearingDetails should return null if no hearing details', () => {
-    const result = getHearingDetails(req);
+    const result = getHearingDetails(req as Request);
     expect(result).to.be.null;
   });
 
   it('getHearingDetails should return hearing details if present', () => {
-    req.session.appeal['hearing'] = { date: '2022-10-10' };
-    const result = getHearingDetails(req);
+    req.session.appeal['hearing'] = { hearingCentre: null, time: null, date: '2022-10-10' };
+    const result = getHearingDetails(req as Request);
     expect(result).to.deep.equal({
       hearingCentre: '',
       time: '12:00 am',

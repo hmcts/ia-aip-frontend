@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import session from 'express-session';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import { AuthenticationService } from '../../../app/service/authentication-service';
@@ -752,8 +753,18 @@ describe('update-appeal-service', () => {
             feeSupportPersisted: 'No',
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
+            asylumSupportDocument: null,
+            section17Document: null,
+            section20Document: null,
+            homeOfficeWaiverDocument: null,
+            remissionEcEvidenceDocuments: null,
+            legalAidAccountNumber: null,
+            exceptionalCircumstances: null,
             localAuthorityLetters: null,
             paAppealTypeAipPaymentOption: null,
+            feeRemissionType: null,
+            asylumSupportReference: null,
+            helpWithFeesReferenceNumber: null,
             pcqId: null,
             refundConfirmationApplied: 'No',
             refundRequested: 'No',
@@ -794,6 +805,16 @@ describe('update-appeal-service', () => {
             isHearingLoopNeeded: null,
             isHearingRoomNeeded: null,
             isLateRemissionRequest: 'No',
+            feeRemissionType: null,
+            asylumSupportDocument: null,
+            section17Document: null,
+            section20Document: null,
+            homeOfficeWaiverDocument: null,
+            remissionEcEvidenceDocuments: null,
+            legalAidAccountNumber: null,
+            exceptionalCircumstances: null,
+            asylumSupportReference: null,
+            helpWithFeesReferenceNumber: null,
             asylumSupportRefNumber: null,
             decisionHearingFeeOption: null,
             feeSupportPersisted: 'No',
@@ -841,6 +862,16 @@ describe('update-appeal-service', () => {
             gwfReferenceNumber: null,
             isHearingLoopNeeded: null,
             isHearingRoomNeeded: null,
+            feeRemissionType: null,
+            asylumSupportReference: null,
+            helpWithFeesReferenceNumber: null,
+            asylumSupportDocument: null,
+            section17Document: null,
+            section20Document: null,
+            homeOfficeWaiverDocument: null,
+            remissionEcEvidenceDocuments: null,
+            legalAidAccountNumber: null,
+            exceptionalCircumstances: null,
             isLateRemissionRequest: 'No',
             asylumSupportRefNumber: null,
             decisionHearingFeeOption: null,
@@ -908,6 +939,16 @@ describe('update-appeal-service', () => {
           'asylumSupportRefNumber': null,
           'helpWithFeesOption': null,
           'helpWithFeesRefNumber': null,
+          'feeRemissionType': null,
+          'asylumSupportReference': null,
+          asylumSupportDocument: null,
+          section17Document: null,
+          section20Document: null,
+          homeOfficeWaiverDocument: null,
+          remissionEcEvidenceDocuments: null,
+          legalAidAccountNumber: null,
+          exceptionalCircumstances: null,
+          'helpWithFeesReferenceNumber': null,
           'localAuthorityLetters': null,
           'feeSupportPersisted': 'No',
           'isHearingRoomNeeded': null,
@@ -957,6 +998,16 @@ describe('update-appeal-service', () => {
           'helpWithFeesOption': null,
           'helpWithFeesRefNumber': null,
           'localAuthorityLetters': null,
+          'feeRemissionType': null,
+          'asylumSupportReference': null,
+          'helpWithFeesReferenceNumber': null,
+          asylumSupportDocument: null,
+          section17Document: null,
+          section20Document: null,
+          homeOfficeWaiverDocument: null,
+          remissionEcEvidenceDocuments: null,
+          legalAidAccountNumber: null,
+          exceptionalCircumstances: null,
           'feeSupportPersisted': 'No',
           'refundRequested': 'No',
           'isLateRemissionRequest': 'No',
@@ -1045,12 +1096,22 @@ describe('update-appeal-service', () => {
           'isHearingLoopNeeded': null,
           'isHearingRoomNeeded': null,
           'isLateRemissionRequest': 'No',
+          asylumSupportDocument: null,
+          section17Document: null,
+          section20Document: null,
+          homeOfficeWaiverDocument: null,
+          remissionEcEvidenceDocuments: null,
+          legalAidAccountNumber: null,
+          exceptionalCircumstances: null,
           'asylumSupportRefNumber': null,
           'decisionHearingFeeOption': null,
           'feeSupportPersisted': 'No',
           'helpWithFeesOption': null,
           'helpWithFeesRefNumber': null,
           'localAuthorityLetters': null,
+          'feeRemissionType': null,
+          'asylumSupportReference': null,
+          'helpWithFeesReferenceNumber': null,
           'paAppealTypeAipPaymentOption': null,
           'pcqId': null,
           'refundConfirmationApplied': 'No',
@@ -1100,11 +1161,21 @@ describe('update-appeal-service', () => {
         'decisionHearingFeeOption': null,
         'feeSupportPersisted': 'No',
         'helpWithFeesOption': null,
+        asylumSupportDocument: null,
+        section17Document: null,
+        section20Document: null,
+        homeOfficeWaiverDocument: null,
+        remissionEcEvidenceDocuments: null,
+        legalAidAccountNumber: null,
+        exceptionalCircumstances: null,
         'helpWithFeesRefNumber': null,
         'paAppealTypeAipPaymentOption': null,
         'pcqId': null,
         'isLateRemissionRequest': 'No',
         'localAuthorityLetters': null,
+        'feeRemissionType': null,
+        'asylumSupportReference': null,
+        'helpWithFeesReferenceNumber': null,
         'refundRequested': 'No',
         'remissionDecision': null,
         'remissionOption': null,
@@ -1151,8 +1222,18 @@ describe('update-appeal-service', () => {
         'decisionHearingFeeOption': null,
         'feeSupportPersisted': 'No',
         'helpWithFeesOption': null,
+        asylumSupportDocument: null,
+        section17Document: null,
+        section20Document: null,
+        homeOfficeWaiverDocument: null,
+        remissionEcEvidenceDocuments: null,
+        legalAidAccountNumber: null,
+        exceptionalCircumstances: null,
         'helpWithFeesRefNumber': null,
         'localAuthorityLetters': null,
+        'feeRemissionType': null,
+        'asylumSupportReference': null,
+        'helpWithFeesReferenceNumber': null,
         'paAppealTypeAipPaymentOption': null,
         'pcqId': null,
         'refundConfirmationApplied': 'No',
@@ -1195,8 +1276,18 @@ describe('update-appeal-service', () => {
 
       emptyApplication.hearingRequirements.isInterpreterServicesNeeded = true;
       emptyApplication.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
-      emptyApplication.hearingRequirements.appellantInterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
-      emptyApplication.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
+      emptyApplication.hearingRequirements.appellantInterpreterSpokenLanguage = {
+        languageRefData: {
+          value: {
+            label: 'Maghreb',
+            code: 'ara-mag'
+          }
+        }
+      };
+      emptyApplication.hearingRequirements.appellantInterpreterSignLanguage = {
+        languageManualEntry: ['Yes'],
+        languageManualEntryDescription: 'input sign language manually'
+      };
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData.isInterpreterServicesNeeded).to.be.equals('Yes');
@@ -1215,8 +1306,18 @@ describe('update-appeal-service', () => {
         'list_items': [{ 'code': 'witness 2', 'label': 'witness 2' }]
       };
       emptyApplication.hearingRequirements.witness2InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
-      emptyApplication.hearingRequirements.witness2InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
-      emptyApplication.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
+      emptyApplication.hearingRequirements.witness2InterpreterSpokenLanguage = {
+        languageRefData: {
+          value: {
+            label: 'Maghreb',
+            code: 'ara-mag'
+          }
+        }
+      };
+      emptyApplication.hearingRequirements.witness2InterpreterSignLanguage = {
+        languageManualEntry: ['Yes'],
+        languageManualEntryDescription: 'input sign language manually'
+      };
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData.isInterpreterServicesNeeded).to.be.equals('Yes');
@@ -1226,6 +1327,73 @@ describe('update-appeal-service', () => {
       expect(caseData.witnessListElement2).to.deep.eq(emptyApplication.hearingRequirements.witnessListElement2);
       expect(caseData.witness2InterpreterSpokenLanguage).to.deep.eq(emptyApplication.hearingRequirements.witness2InterpreterSpokenLanguage);
       expect(caseData.witness2InterpreterSignLanguage).to.deep.eq(emptyApplication.hearingRequirements.witness2InterpreterSignLanguage);
+    });
+
+    it('converts the remission details', () => {
+      emptyApplication.application.legalAidAccountNumber = 'someLegalAidAccountNumber';
+      emptyApplication.application.exceptionalCircumstances = 'someExceptionalCircumstances';
+      emptyApplication.application.remissionEcEvidenceDocuments = [
+        { fileId: '5', name: 'someRemissionEcEvidenceDocument1.pdf' },
+        { fileId: '6', name: 'someRemissionEcEvidenceDocument2.pdf' }
+      ];
+      emptyApplication.application.section17Document = { fileId: '1', name: 'someSection17Doc.pdf' };
+      emptyApplication.application.section20Document = { fileId: '2', name: 'someSection20Doc.pdf' };
+      emptyApplication.application.asylumSupportDocument = { fileId: '3', name: 'someAsylumSupportDoc.pdf' };
+      emptyApplication.application.homeOfficeWaiverDocument = { fileId: '4', name: 'someHomeOfficeWaiverDoc.pdf' };
+      emptyApplication.documentMap = [
+        { id: '1', url: 'http://example.com/section17Document' },
+        { id: '2', url: 'http://example.com/section20Document' },
+        { id: '3', url: 'http://example.com/asylumSupportDocument' },
+        { id: '4', url: 'http://example.com/homeOfficeWaiverDocument' },
+        { id: '5', url: 'http://example.com/ecDoc1' },
+        { id: '6', url: 'http://example.com/ecDoc2' }
+      ];
+      emptyApplication.application.isAppealLate = true;
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData.section17Document).to.deep.eq({
+        document_filename: 'someSection17Doc.pdf',
+        document_url: 'http://example.com/section17Document',
+        document_binary_url: 'http://example.com/section17Document/binary'
+      });
+      expect(caseData.section20Document).to.deep.eq({
+        document_url: 'http://example.com/section20Document',
+        document_filename: 'someSection20Doc.pdf',
+        document_binary_url: 'http://example.com/section20Document/binary'
+      });
+      expect(caseData.homeOfficeWaiverDocument).to.deep.eq({
+        document_url: 'http://example.com/homeOfficeWaiverDocument',
+        document_filename: 'someHomeOfficeWaiverDoc.pdf',
+        document_binary_url: 'http://example.com/homeOfficeWaiverDocument/binary'
+      });
+      expect(caseData.asylumSupportDocument).to.deep.eq({
+        document_url: 'http://example.com/asylumSupportDocument',
+        document_filename: 'someAsylumSupportDoc.pdf',
+        document_binary_url: 'http://example.com/asylumSupportDocument/binary'
+      });
+      expect(caseData.remissionEcEvidenceDocuments).to.be.length(2);
+      expect(caseData.remissionEcEvidenceDocuments).to.deep.eq([
+        {
+          id: '5',
+          value: {
+            document_url: 'http://example.com/ecDoc1',
+            document_filename: 'someRemissionEcEvidenceDocument1.pdf',
+            document_binary_url: 'http://example.com/ecDoc1/binary'
+          }
+        },
+        {
+          id: '6',
+          value: {
+            document_url: 'http://example.com/ecDoc2',
+            document_filename: 'someRemissionEcEvidenceDocument2.pdf',
+            document_binary_url: 'http://example.com/ecDoc2/binary'
+          }
+        }
+      ]);
+      expect(caseData).contains({
+        legalAidAccountNumber: 'someLegalAidAccountNumber',
+        exceptionalCircumstances: 'someExceptionalCircumstances'
+      });
     });
   });
 
@@ -1518,34 +1686,66 @@ describe('update-appeal-service', () => {
     describe('previousRemissionDetails', () => {
       const caseData: Partial<CaseData> = {
         previousRemissionDetails:
-        [{
-          id: '1',
-          value: {
-            feeAmount: '2000',
-            amountRemitted: '1000',
-            amountLeftToPay: '1000',
-            feeRemissionType: 'type1',
-            remissionDecision: 'decission1',
-            asylumSupportReference: 'refNumber1',
-            remissionDecisionReason: 'decission',
-            helpWithFeesReferenceNumber: 'refNumber2',
-            helpWithFeesOption: 'helpOption',
-            localAuthorityLetters: [
-              {
-                id: 'fa35dcae-ae4c-462d-9cce-6878326875b0',
-                value: {
-                  tag: 'additionalEvidence',
-                  document: {
+          [{
+            id: '1',
+            value: {
+              feeAmount: '2000',
+              amountRemitted: '1000',
+              amountLeftToPay: '1000',
+              feeRemissionType: 'type1',
+              remissionDecision: 'decission1',
+              asylumSupportReference: 'refNumber1',
+              remissionDecisionReason: 'decission',
+              helpWithFeesReferenceNumber: 'refNumber2',
+              legalAidAccountNumber: 'someLegalAidAccountNumber',
+              exceptionalCircumstances: 'someExceptionalCircumstances',
+              section17Document: {
+                document_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4',
+                document_filename: 'someSection17Doc.pdf',
+                document_binary_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4/binary'
+              },
+              section20Document: {
+                document_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4',
+                document_filename: 'someSection20Doc.pdf',
+                document_binary_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4/binary'
+              },
+              homeOfficeWaiverDocument: {
+                document_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4',
+                document_filename: 'someHomeOfficeWaiverDoc.pdf',
+                document_binary_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4/binary'
+              },
+              remissionEcEvidenceDocuments: [
+                {
+                  id: 'fa35dcae-ae4c-462d-9cce-6878326875h5',
+                  value: {
                     document_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4',
-                    document_filename: '1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf',
+                    document_filename: 'someRemissionEcEvidenceDocument1.pdf',
                     document_binary_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4/binary'
-                  },
-                  dateUploaded: ''
+                  }
                 }
-              }
-            ]
-          } as RemissionDetailsData
-        }] as RemissionDetailsCollection[]
+              ],
+              asylumSupportDocument: {
+                document_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4',
+                document_filename: 'someAsylumSupportDoc.pdf',
+                document_binary_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4/binary'
+              },
+              helpWithFeesOption: 'helpOption',
+              localAuthorityLetters: [
+                {
+                  id: 'fa35dcae-ae4c-462d-9cce-6878326875b0',
+                  value: {
+                    tag: 'additionalEvidence',
+                    document: {
+                      document_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4',
+                      document_filename: '1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf',
+                      document_binary_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4/binary'
+                    },
+                    dateUploaded: ''
+                  }
+                }
+              ]
+            } as RemissionDetailsData
+          }] as RemissionDetailsCollection[]
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1566,7 +1766,13 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].id).to.be.equals('fa35dcae-ae4c-462d-9cce-6878326875b0');
         expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].name).to.be.equals('1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf');
         expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].tag).to.be.equals('additionalEvidence');
-
+        expect(mappedAppeal.application.previousRemissionDetails[0].legalAidAccountNumber).to.be.equals('someLegalAidAccountNumber');
+        expect(mappedAppeal.application.previousRemissionDetails[0].exceptionalCircumstances).to.be.equals('someExceptionalCircumstances');
+        expect(mappedAppeal.application.previousRemissionDetails[0].asylumSupportDocument.name).to.be.equals('someAsylumSupportDoc.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].section20Document.name).to.be.equals('someSection20Doc.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].section17Document.name).to.be.equals('someSection17Doc.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].homeOfficeWaiverDocument.name).to.be.equals('someHomeOfficeWaiverDoc.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].remissionEcEvidenceDocuments[0].name).to.be.equals('someRemissionEcEvidenceDocument1.pdf');
       });
     });
 
@@ -1734,7 +1940,10 @@ describe('update-appeal-service', () => {
         const caseData: Partial<CaseData> = {
           appellantInterpreterLanguageCategory: ['spokenLanguageInterpreter', 'signLanguageInterpreter'],
           appellantInterpreterSpokenLanguage: { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } },
-          appellantInterpreterSignLanguage: { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' }
+          appellantInterpreterSignLanguage: {
+            languageManualEntry: ['Yes'],
+            languageManualEntryDescription: 'input sign language manually'
+          }
         };
 
         const mappedAppeal = getMappedAppeal(caseData);
@@ -1750,10 +1959,16 @@ describe('update-appeal-service', () => {
           isAnyWitnessInterpreterRequired: 'Yes',
           witness1: witness1,
           witness2: witness2,
-          witnessListElement2: { 'value': [{ 'code': 'witness 2', 'label': 'witness 2' }], 'list_items': [{ 'code': 'witness 2', 'label': 'witness 2' }] },
+          witnessListElement2: {
+            'value': [{ 'code': 'witness 2', 'label': 'witness 2' }],
+            'list_items': [{ 'code': 'witness 2', 'label': 'witness 2' }]
+          },
           witness2InterpreterLanguageCategory: ['spokenLanguageInterpreter', 'signLanguageInterpreter'],
           witness2InterpreterSpokenLanguage: { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } },
-          witness2InterpreterSignLanguage: { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' }
+          witness2InterpreterSignLanguage: {
+            languageManualEntry: ['Yes'],
+            languageManualEntryDescription: 'input sign language manually'
+          }
         };
 
         const mappedAppeal = getMappedAppeal(caseData);
@@ -1840,7 +2055,7 @@ describe('update-appeal-service', () => {
               document_url: 'http://example.com/doc1',
               document_binary_url: 'http://example.com/doc1/binary'
             }
-          }
+          } as Document
         },
         {
           id: '2',
@@ -1851,7 +2066,7 @@ describe('update-appeal-service', () => {
               document_url: 'http://example.com/doc2',
               document_binary_url: 'http://example.com/doc2/binary'
             }
-          }
+          } as Document
         }
       ];
 
@@ -2007,7 +2222,7 @@ describe('update-appeal-service', () => {
             }
           } as Appeal,
           ccdCaseId: caseId
-        } as Partial<Express.Session>
+        } as Partial<session.Session>
       } as Partial<Request>;
 
       ccdService2 = {
@@ -2022,6 +2237,16 @@ describe('update-appeal-service', () => {
       documentManagementService = new DocumentManagementService(authenticationService);
       updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, null, documentManagementService);
       expectedCaseData = {
+        'asylumSupportReference': null,
+        'helpWithFeesReferenceNumber': null,
+        'feeRemissionType': null,
+        asylumSupportDocument: null,
+        section17Document: null,
+        section20Document: null,
+        homeOfficeWaiverDocument: null,
+        remissionEcEvidenceDocuments: null,
+        legalAidAccountNumber: null,
+        exceptionalCircumstances: null,
         'journeyType': 'aip',
         'homeOfficeReferenceNumber': 'newRef',
         'appellantInUk': 'undefined',
@@ -2624,8 +2849,10 @@ describe('update-appeal-service', () => {
             dateToAvoidReason: 'Medical appointment'
           }
         }, {
-          value: { dateToAvoid: '2024-11-05',
-            dateToAvoidReason: 'Family event' }
+          value: {
+            dateToAvoid: '2024-11-05',
+            dateToAvoidReason: 'Family event'
+          }
         }]
       };
 

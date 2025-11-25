@@ -6,13 +6,6 @@ import { getNextPage, shouldValidateWhenSaveForLater } from '../../../app/utils/
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('Save for later utils', () => {
-  let sandbox: sinon.SinonSandbox;
-  let req: Partial<Request>;
-  let res: Partial<Response>;
-  let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
-  const logger: Logger = new Logger();
-
   describe('getNextPage', () => {
     it('get next page when save for later clicked', () => {
       const nextPage = getNextPage({ saveForLater: 'saveForLater' }, 'defaultPath');

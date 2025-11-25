@@ -10,7 +10,7 @@ describe('CMA Requirements - Other Needs Section: Start controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -27,7 +27,7 @@ describe('CMA Requirements - Other Needs Section: Start controller', () => {
       render: sandbox.stub(),
       redirect: sandbox.spy()
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

@@ -1,5 +1,5 @@
 const express = require('express');
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import {
   getAskForMoreTimeEvidence,
   getAskForMoreTimePage,
@@ -25,7 +25,7 @@ describe('Ask for more time Controller', function () {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -40,7 +40,7 @@ describe('Ask for more time Controller', function () {
             personalDetails: {}
           }
         } as Partial<Appeal>
-      } as Partial<Express.Session>,
+      } as Partial<Express.Request>,
       body: {},
       cookies: {
         '__auth-token': 'atoken'
@@ -63,7 +63,7 @@ describe('Ask for more time Controller', function () {
       send: sandbox.stub()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
 
     updateAppealService = {
       submitEventRefactored: sandbox.stub()

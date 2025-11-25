@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { getChangeRepresentation, getChangeRepresentationDownload, setupChangeRepresentationControllers } from '../../../app/controllers/changing-representation';
 import { paths } from '../../../app/paths';
 import { DocmosisService } from '../../../app/service/docmosis-service';
@@ -8,7 +8,7 @@ describe('Change Representation Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -43,7 +43,7 @@ describe('Change Representation Controller', () => {
       send: sandbox.stub(),
       setHeader: sandbox.spy()
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {

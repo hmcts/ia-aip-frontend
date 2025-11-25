@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
 import {
   getApplyOption,
   getHelpWithFees,
@@ -19,7 +20,7 @@ describe('Help with fees refund Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -30,7 +31,7 @@ describe('Help with fees refund Controller', () => {
         appeal: {
           application: {}
         }
-      } as Partial<Express.Session>,
+      } as Partial<session.Session>,
       cookies: {
         '__auth-token': 'atoken'
       },
@@ -52,7 +53,7 @@ describe('Help with fees refund Controller', () => {
       redirect: sinon.spy()
     } as Partial<Response>;
 
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
   });
 
   afterEach(() => {
@@ -137,7 +138,8 @@ describe('Help with fees refund Controller', () => {
         formAction: paths.appealSubmitted.helpWithFeesRefund,
         question: sinon.match.any,
         continueCancelButtons: true,
-        refundJourney: true
+        refundJourney: true,
+        paPayLater: false
       });
     });
 

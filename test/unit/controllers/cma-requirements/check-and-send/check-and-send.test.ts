@@ -13,7 +13,7 @@ describe('CMA Requirements Check and Send controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   const cmaRequirements: CmaRequirements = {
     'accessNeeds': {
@@ -79,7 +79,7 @@ describe('CMA Requirements Check and Send controller', () => {
       render: sandbox.stub(),
       redirect: sandbox.spy()
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     updateAppealService = { submitEvent: sandbox.stub().returns({ state: 'cmaRequirementsSubmitted' }) } as Partial<UpdateAppealService>;
   });
 

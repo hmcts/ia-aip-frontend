@@ -4,12 +4,27 @@ import { Events } from '../data/events';
 import { convertToAmountOfMoneyDividedBy100 } from './payments-utils';
 import { addSummaryRow } from './summary-list';
 
-function appealHasRemissionOption(application: AppealApplication) {
+function appealHasRemissionOption(application: AppealApplication, checkHelpWithFeesReferenceNumber: boolean = false) {
+  let hasHwfNumber: boolean = checkHelpWithFeesReferenceNumber
+    ? !!(application.helpWithFeesRefNumber || application.helpWithFeesReferenceNumber) : !!(application.helpWithFeesRefNumber);
+
   return ['asylumSupportFromHo', 'feeWaiverFromHo', 'under18GetSupportFromLocalAuthority', 'parentGetSupportFromLocalAuthority']
       .includes(application.remissionOption)
     || ['noneOfTheseStatements', 'iWantToGetHelpWithFees'].includes(application.remissionOption)
     && ['wantToApply', 'alreadyApplied'].includes(application.helpWithFeesOption)
-    && application.helpWithFeesRefNumber;
+    && hasHwfNumber;
+}
+
+function appealHasRemissionType(application: AppealApplication) {
+  if (application.remissionType === 'hoWaiverRemission') {
+    return appealHasRemissionClaim(application);
+  }
+  return ['helpWithFees', 'exceptionalCircumstancesRemission'].includes(application.remissionType);
+}
+
+function appealHasRemissionClaim(application: AppealApplication) {
+  return ['asylumSupport','legalAid','section17','section20','homeOfficeWaiver']
+    .includes(application.remissionClaim);
 }
 
 function appealHasNoRemissionOption(application: AppealApplication) {
@@ -102,5 +117,6 @@ export {
   getFeeSupportStatusForAppealDetails,
   getDecisionReasonRowForAppealDetails,
   getPaymentStatusRow,
-  paymentForAppealHasBeenMade
+  paymentForAppealHasBeenMade,
+  appealHasRemissionType
 };

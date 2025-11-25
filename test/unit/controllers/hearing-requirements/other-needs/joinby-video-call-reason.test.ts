@@ -12,7 +12,7 @@ describe('Hearing Requirements - Other Needs Section: Join Hearing by VideoCall 
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
 
   beforeEach(() => {
@@ -40,7 +40,7 @@ describe('Hearing Requirements - Other Needs Section: Join Hearing by VideoCall 
       render: sandbox.stub(),
       redirect: sandbox.spy()
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
+    next = sandbox.stub();
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 

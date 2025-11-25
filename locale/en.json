@@ -300,11 +300,18 @@
         "feeDetails": "Fee details",
         "feeSupportStatus": "Fee support status",
         "asylumSupportReferenceNumber": "Asylum Support reference number",
+        "legalAidAccountNumber": "Legal Aid account number",
         "feeSupportType": "Fee support type",
         "localAuthorityLetter": "Local Authority letter",
         "helpWithFeesReferenceNumber": "Help with fees reference number",
         "amountToRefund": "Amount to refund",
         "feeToRefund": "Fee to refund",
+        "exceptionalCircumstances": "Exceptional circumstances",
+        "asylumSupportDocument": "Asylum support document",
+        "section17Document": "Local Authority letter",
+        "section20Document": "Local Authority letter",
+        "homeOfficeWaiverDocument": "Home Office waiver document",
+        "exceptionalCircumstancesEvidence": "Exceptional circumstances evidence",
         "paymentStatus": "Payment status",
         "reasonForDecision": "Reason for decision",
         "feeToPay": "Fee to pay",
@@ -3867,6 +3874,7 @@
       "refundParagraph1": "You do not have to pay a fee in certain circumstances. For example, if you get asylum support. This is called a fee remission.",
       "refundParagraph2": "If you believe you did not have to pay the fee for this appeal, you can ask the Tribunal to give your money back.",
       "refundParagraph3": "Select the reason you believe you did not have to pay the fee.",
+      "refundParagraph3PaPayLater": "Select the reason you believe you do not have to pay the fee.",
       "selectOne": "<p>Select one</p>",
       "noneOfTheseStatements": "None of these statements apply to me"
     },
@@ -3920,7 +3928,8 @@
       },
       "checkAndSendWantToApply": "I want to apply for help with fees",
       "checkAndSendWillPayForAppeal": "I want to pay for the appeal now",
-      "refundsNote": "The fee you paid for this appeal is £{{ fee }}. You may be able to get a full or partial refund if you:"
+      "refundsNote": "The fee you paid for this appeal is £{{ fee }}. You may be able to get a full or partial refund if you:",
+      "mayBeAbleToGetHWF": "You may be able to get help with fees if you:"
     },
     "stepsToHelpWithFees": {
       "title": "Apply for help with fees",
@@ -3942,6 +3951,7 @@
       "title": "You have asked the Tribunal for a fee remission",
       "whatHappensNext": "What happens next",
       "bullet1": "A Legal Officer will check the information you sent and let you know if your fee will be refunded",
+      "bullet1PaPayLater": "The Tribunal will check the information you sent and let you know its decision.",
       "bullet2": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might take longer than that"
     },
     "deportationOrder": {

@@ -10,7 +10,7 @@ describe('Logger Middleware', () => {
   let logExceptionStub: SinonStub;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   const error = { message: 'This is an error' };
   const logger: Logger = new Logger();
 

@@ -1,6 +1,5 @@
 import config from 'config';
 import { Request } from 'express';
-import * as path from 'path';
 import rp from 'request-promise';
 import { v4 as uuid } from 'uuid';
 import Logger, { getLogLabel } from '../utils/logger';

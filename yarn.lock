@@ -6328,10 +6328,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"connect-redis@npm:^4.0.4":
-  version: 4.0.4
-  resolution: "connect-redis@npm:4.0.4"
-  checksum: 10/b07d4f9097354ccba55b5ad6eb5cab3a8eafddf5fa6a402d929256bfc2fe3759b0c3aa285a40774e591219e612a5b1536414d9a2c37ad14336516d902a4472c5
+"connect-redis@npm:^7.1.1":
+  version: 7.1.1
+  resolution: "connect-redis@npm:7.1.1"
+  peerDependencies:
+    express-session: ">=1"
+  checksum: 10/1a0801356783c977c6467eea5bee1e91690c7ca62b6b699cf6de0aedbeb0e481eeacc32f372eda6530bdf3867259b7230bc00cf13b295abe9349aaa50fe0c8fb
   languageName: node
   linkType: hard
 
@@ -9911,7 +9913,7 @@ __metadata:
     codeceptjs-selenoid: "npm:^1.0.4"
     concurrently: "npm:^5.3.0"
     config: "npm:^3.3.6"
-    connect-redis: "npm:^4.0.4"
+    connect-redis: "npm:^7.1.1"
     cookie-parser: "npm:^1.4.5"
     copy-webpack-plugin: "npm:^12.0.2"
     cross-env: "npm:^7.0.3"

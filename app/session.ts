@@ -10,7 +10,7 @@ const isSecure: boolean = config.get('session.cookie.secure') === true;
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
-function setupSession() {
+async function setupSession() {
   logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
   if (useRedis) {
     logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
@@ -21,6 +21,7 @@ function setupSession() {
     };
 
     let client = redis.createClient(redisOpts);
+    await client.connect();
     return session({
       cookie: {
         httpOnly: true,

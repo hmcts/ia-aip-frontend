@@ -14,13 +14,9 @@ async function setupSession() {
   logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
   if (useRedis) {
     logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
-    let RedisStore = require('connect-redis')(session);
-    const redisOpts = {
-      url: config.get('session.redis.url'),
-      ttl: config.get('session.redis.ttlInSeconds')
-    };
+    let RedisStore = require('connect-redis').default;
 
-    let client = redis.createClient(redisOpts);
+    let client = redis.createClient({ url: config.get('session.redis.url') });
     await client.connect();
     return session({
       cookie: {
@@ -33,7 +29,9 @@ async function setupSession() {
       saveUninitialized: true,
       secret: config.get('session.redis.secret'),
       rolling: true,
-      store: new RedisStore({ client })
+      store: new RedisStore({
+        client: client,
+        ttl: config.get('session.redis.ttlInSeconds')})
     });
   } else {
     return session({

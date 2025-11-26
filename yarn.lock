@@ -1780,16 +1780,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/os-places-client@npm:^1.1.2":
-  version: 1.1.7
-  resolution: "@hmcts/os-places-client@npm:1.1.7"
-  dependencies:
-    request: "npm:^2.83.0"
-    request-promise-native: "npm:^1.0.5"
-  checksum: 10/2959c55abfa0324f7a12c82b8deedfd845076a11479fa296d327798c7f248a0e2926bf00c0a487d3c886656ac118232c56d71f7105a510bb25285e5d78195ac5
-  languageName: node
-  linkType: hard
-
 "@hmcts/properties-volume@npm:^0.0.13":
   version: 0.0.13
   resolution: "@hmcts/properties-volume@npm:0.0.13"
@@ -3240,6 +3230,15 @@ __metadata:
     "@types/node": "npm:*"
     "@types/responselike": "npm:^1.0.0"
   checksum: 10/159f9fdb2a1b7175eef453ae2ced5ea04c0d2b9610cc9ccd9f9abb066d36dacb1f37acd879ace10ad7cbb649490723feb396fb7307004c9670be29636304b988
+  languageName: node
+  linkType: hard
+
+"@types/chai-as-promised@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "@types/chai-as-promised@npm:8.0.2"
+  dependencies:
+    "@types/chai": "npm:*"
+  checksum: 10/c1ff3eb32f599623f3d78ef6a2bbda06f35f62e12cc6341e1e1deb5ff1652898880d93846ad83dab03d7cb633a5939330eb1af120b52fab46eb2e5321c2d0cdc
   languageName: node
   linkType: hard
 
@@ -9877,7 +9876,6 @@ __metadata:
     "@babel/core": "npm:^7.25.2"
     "@babel/preset-env": "npm:^7.25.4"
     "@hmcts/eslint-config": "npm:^1.4.0"
-    "@hmcts/os-places-client": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@istanbuljs/nyc-config-typescript": "npm:^1.0.1"
     "@stryker-mutator/api": "npm:^4.0.0"
@@ -9887,6 +9885,7 @@ __metadata:
     "@stryker-mutator/mocha-runner": "npm:^8.7.1"
     "@stryker-mutator/typescript": "npm:^4.0.0"
     "@types/chai": "npm:^4.2.3"
+    "@types/chai-as-promised": "npm:^8.0.2"
     "@types/config": "npm:^0.0.39"
     "@types/connect-redis": "npm:^0.0.13"
     "@types/cucumber": "npm:^6.0.0"
@@ -15090,7 +15089,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"request@npm:^2.83.0, request@npm:^2.88.0, request@npm:^2.88.2":
+"request@npm:^2.88.0, request@npm:^2.88.2":
   version: 2.88.2
   resolution: "request@npm:2.88.2"
   dependencies:

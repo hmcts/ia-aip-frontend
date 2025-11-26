@@ -386,7 +386,7 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: true,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false,
+      showAskForFeeRemission: true,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: true
     });

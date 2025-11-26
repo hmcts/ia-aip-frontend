@@ -10,14 +10,18 @@ const isSecure: boolean = config.get('session.cookie.secure') === true;
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
-async function setupSession() {
+function setupSession() {
   logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
   if (useRedis) {
     logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
-    let RedisStore = require('connect-redis').default;
+    let RedisStore = require('connect-redis')(session);
+    const redisOpts = {
+      url: config.get('session.redis.url'),
+      ttl: config.get('session.redis.ttlInSeconds'),
+      legacyMode: true
+    };
 
-    let client = redis.createClient({ url: config.get('session.redis.url') });
-    await client.connect();
+    let client = redis.createClient(redisOpts);
     return session({
       cookie: {
         httpOnly: true,
@@ -29,9 +33,7 @@ async function setupSession() {
       saveUninitialized: true,
       secret: config.get('session.redis.secret'),
       rolling: true,
-      store: new RedisStore({
-        client: client,
-        ttl: config.get('session.redis.ttlInSeconds')})
+      store: new RedisStore({ client })
     });
   } else {
     return session({

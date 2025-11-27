@@ -82,6 +82,7 @@ function createApp() {
 function configureHelmet(app) {
   // by setting HTTP headers appropriately.
   app.use(helmet());
+  app.use(helmet({ crossOriginEmbedderPolicy: false }));
 
   // Helmet referrer policy
   app.use(helmet.referrerPolicy({ policy: 'origin' }));

@@ -27,14 +27,14 @@ function createApp() {
   const app: express.Application = express();
   const environment: string = process.env.NODE_ENV;
 
-  // Inject nonce Id on every request.
+    // Inject nonce Id on every request.
   app.use((req, res, next) => {
     res.locals.nonce = uuid.v4();
     next();
   });
 
   configureHelmet(app);
-  // static resources shouldnt send a response sid session, so need to set them up before setting the session up
+    // static resources shouldnt send a response sid session, so need to set them up before setting the session up
   app.use(express.static('build', { maxAge: 31557600000 }));
   app.use(setupSession());
   configureLogger(app);
@@ -59,7 +59,7 @@ function createApp() {
   if (environment === 'development' || environment === 'test' || environment === 'aatDevelopment') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
-    // @ts-ignore
+        // @ts-ignore
     const options = { stats: 'errors-only' } as Options;
     const wpDevMiddleware = webpackDevMiddleware(compiler, options);
     app.use(wpDevMiddleware);
@@ -80,14 +80,14 @@ function createApp() {
 }
 
 function configureHelmet(app) {
-  // by setting HTTP headers appropriately.
+    // by setting HTTP headers appropriately.
   app.use(helmet());
   app.use(helmet({ crossOriginEmbedderPolicy: false }));
 
-  // Helmet referrer policy
+    // Helmet referrer policy
   app.use(helmet.referrerPolicy({ policy: 'origin' }));
 
-  // Helmet content security policy (CSP) to allow only assets from same domain.
+    // Helmet content security policy (CSP) to allow only assets from same domain.
   app.use(helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: [ '\'self\'' ],
@@ -105,9 +105,9 @@ function configureHelmet(app) {
         'tagmanager.google.com',
         'fonts.googleapis.com/',
         (req: any, res: any) =>
-          req.url.includes('/view/document/')
-            ? `'unsafe-inline'`
-            : `'nonce-${res.locals.nonce}'`
+                    req.url.includes('/view/document/')
+                        ? `'unsafe-inline'`
+                        : `'nonce-${res.locals.nonce}'`
       ],
       connectSrc: [ '\'self\'', '*.gov.uk', '*.google-analytics.com', '*.platform.hmcts.net', 'https://*.dynatrace.com'],
       mediaSrc: [ '\'self\'' ],
@@ -154,5 +154,5 @@ function configureHelmet(app) {
 }
 
 export {
-  createApp
+    createApp
 };

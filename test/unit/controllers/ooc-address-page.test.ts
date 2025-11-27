@@ -1,8 +1,7 @@
-import { OSPlacesClient } from '@hmcts/os-places-client';
-
 const express = require('express');
 import { Request, Response } from 'express';
 import session from 'express-session';
+import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
 import { getEnterAddressForOutOfCountryAppeal, postEnterAddressForOutOfCountryAppeal, setupContactDetailsController } from '../../../app/controllers/appeal-application/contact-details';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';

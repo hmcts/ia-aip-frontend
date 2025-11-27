@@ -4,7 +4,7 @@ import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
-import { getFee } from '../../utils/payments-utils';
+import { getFee, payLaterForApplicationNeeded } from '../../utils/payments-utils';
 import { helpWithFeesValidation } from '../../utils/validations/fields-validations';
 
 function getApplyOption(appeal: Appeal) {
@@ -32,6 +32,8 @@ function getApplyOption(appeal: Appeal) {
 async function getHelpWithFees(req: Request, res: Response, next: NextFunction) {
   try {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    const { application } = req.session.appeal;
+    const paPayLater = payLaterForApplicationNeeded(req) && application.appealType === 'protection';
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     const appeal = req.session.appeal;
     appeal.application.isEdit = _.has(req.query, 'edit');
@@ -41,7 +43,8 @@ async function getHelpWithFees(req: Request, res: Response, next: NextFunction) 
       formAction: paths.appealSubmitted.helpWithFeesRefund,
       question: getApplyOption(req.session.appeal),
       continueCancelButtons: true,
-      refundJourney: true
+      refundJourney: true,
+      paPayLater
     });
   } catch (error) {
     next(error);

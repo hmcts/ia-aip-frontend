@@ -90,7 +90,9 @@ function configureHelmet(app) {
   app.use(
     helmet({
       // crossOriginOpenerPolicy: { policy: 'unsafe-none' }
-      crossOriginOpenerPolicy: false
+      crossOriginOpenerPolicy: false,
+      // Disable HSTS for non-prod envs
+      strictTransportSecurity: process.env.NODE_ENV === 'production'
     }));
 
   // Helmet content security policy (CSP) to allow only assets from same domain.

@@ -86,6 +86,15 @@ function configureHelmet(app) {
   // Helmet referrer policy
   app.use(helmet.referrerPolicy({ policy: 'origin' }));
 
+  // Test: Disable COOP to address failing functional tests
+  app.use(
+    helmet({
+      // crossOriginOpenerPolicy: { policy: 'unsafe-none' }
+      crossOriginOpenerPolicy: false,
+      // Disable HSTS for non-prod envs
+      strictTransportSecurity: process.env.NODE_ENV === 'production'
+    }));
+
   // Helmet content security policy (CSP) to allow only assets from same domain.
   app.use(helmet.contentSecurityPolicy({
     directives: {

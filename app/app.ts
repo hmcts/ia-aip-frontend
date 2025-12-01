@@ -109,7 +109,7 @@ function configureHelmet(app) {
           "'self'",
           'tagmanager.google.com',
           'fonts.googleapis.com/',
-          (req, res) =>
+          (req: any, res: any) =>
                         req.url.includes('/view/document/')
                             ? "'unsafe-inline'"
                             : `'nonce-${res.locals.nonce}'`

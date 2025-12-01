@@ -105,6 +105,9 @@ function configureHelmet(app) {
           'tagmanager.google.com',
           'https://*.dynatrace.com'
         ],
+        scriptSrcAttr: [
+          "'unsafe-inline'"
+        ],
         styleSrc: [
           "'self'",
           'tagmanager.google.com',

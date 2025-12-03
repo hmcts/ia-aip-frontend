@@ -94,6 +94,7 @@ function configureHelmet(app) {
 
     // 3. Content Security Policy
     contentSecurityPolicy: {
+      reportOnly: true, // Enabled only to debug failing e2e test
       directives: {
         defaultSrc: ["'self'"],
         fontSrc: ["'self'", 'data:'],

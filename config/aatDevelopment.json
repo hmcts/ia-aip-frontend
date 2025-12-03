@@ -90,7 +90,7 @@
     "apiUrl": "http://payment-api-aat.service.core-compute-aat.internal"
   },
   "iaPayments": {
-    "apiUrl": "http://ia-case-payments-api-aat.service.core-compute-aat.internal"
+    "apiUrl": "http://ia-case-documents-api-aat.service.core-compute-aat.internal"
   },
   "daysToWait": {
     "afterSubmission": 5,

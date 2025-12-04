@@ -92,6 +92,10 @@ function configureHelmet(app) {
       preload: true
     },
 
+    // Temporary addition for debugging
+    xFrameOptions: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+
     // 3. Content Security Policy
     contentSecurityPolicy: {
       directives: {

@@ -107,7 +107,8 @@ function configureHelmet(app) {
           'www.google-analytics.com',
           'www.googletagmanager.com',
           'tagmanager.google.com',
-          'https://*.dynatrace.com'
+          'https://*.dynatrace.com',
+          'https://*.jsdelivr.net'
         ],
         scriptSrcAttr: [
           "'unsafe-inline'"
@@ -126,7 +127,8 @@ function configureHelmet(app) {
           '*.gov.uk',
           '*.google-analytics.com',
           '*.platform.hmcts.net',
-          'https://*.dynatrace.com'
+          'https://*.dynatrace.com',
+          'https://*.jsdelivr.net'
         ],
         mediaSrc: ["'self'"],
         frameSrc: [
@@ -142,7 +144,8 @@ function configureHelmet(app) {
           'www.googletagmanager.com',
           'tagmanager.google.com',
           'vcc-eu4.8x8.com',
-          'https://*.dynatrace.com'
+          'https://*.dynatrace.com',
+          'https://*.jsdelivr.net'
         ]
       }
     },

@@ -82,7 +82,7 @@ function createApp() {
 function configureHelmet(app) {
   app.use(helmet({
     // 1. Referrer Policy
-    referrerPolicy: { policy: 'origin' },
+    referrerPolicy: { policy: 'no-referrer-when-downgrade' }, // changed temporarily for testing
 
     // 2. COOP and HSTS
     crossOriginOpenerPolicy: false,

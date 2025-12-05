@@ -94,10 +94,14 @@ function configureHelmet(app) {
 
     // Temporary addition for debugging
     xFrameOptions: false,
-    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    // crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginResourcePolicy: false, // debug
+    crossOriginEmbedderPolicy: false, // debug
+    originAgentCluster: false, // debug
 
     // 3. Content Security Policy
-    contentSecurityPolicy: {
+    contentSecurityPolicy: false, // debug
+    /*contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
         fontSrc: ["'self'", 'data:'],
@@ -107,8 +111,8 @@ function configureHelmet(app) {
           'www.google-analytics.com',
           'www.googletagmanager.com',
           'tagmanager.google.com',
-          'https://*.dynatrace.com',
-          'https://*.jsdelivr.net'
+          'https://!*.dynatrace.com',
+          'https://!*.jsdelivr.net'
         ],
         scriptSrcAttr: [
           "'unsafe-inline'"
@@ -127,8 +131,8 @@ function configureHelmet(app) {
           '*.gov.uk',
           '*.google-analytics.com',
           '*.platform.hmcts.net',
-          'https://*.dynatrace.com',
-          'https://*.jsdelivr.net'
+          'https://!*.dynatrace.com',
+          'https://!*.jsdelivr.net'
         ],
         mediaSrc: ["'self'"],
         frameSrc: [
@@ -144,11 +148,11 @@ function configureHelmet(app) {
           'www.googletagmanager.com',
           'tagmanager.google.com',
           'vcc-eu4.8x8.com',
-          'https://*.dynatrace.com',
-          'https://*.jsdelivr.net'
+          'https://!*.dynatrace.com',
+          'https://!*.jsdelivr.net'
         ]
       }
-    },
+    },*/
 
     // 4. Permitted Cross Domain Policies
     permittedCrossDomainPolicies: { permittedPolicies: 'none' }

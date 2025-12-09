@@ -396,6 +396,7 @@ module.exports = {
 
     Then(/^I click continue$/, async () => {
       await I.click('Continue');
+      await I.wait(5);
     });
 
     Then(/^I click the "([^"]*)" button$/, async (text) => {

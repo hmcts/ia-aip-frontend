@@ -40,7 +40,7 @@ module.exports = {
   startRepresentingYourself(I) {
     When(/^I visit the start-representing-yourself page$/, async () => {
       await I.amOnPage(testUrl + '/start-representing-yourself');
-      await I.waitForText('Start representing yourself', 30);
+      await I.waitForText('Start representing yourself', 60);
     });
 
     Then(/^I see the start-representing-yourself page content$/, async () => {

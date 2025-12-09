@@ -82,7 +82,7 @@ function createApp() {
 function configureHelmet(app) {
   app.use(helmet({
     // 1. Referrer Policy
-    referrerPolicy: { policy: 'unsafe-url' }, // changed temporarily for testing
+    referrerPolicy: { policy: 'origin' },
 
     // 2. COOP and HSTS
     crossOriginOpenerPolicy: false,
@@ -94,14 +94,10 @@ function configureHelmet(app) {
 
     // Temporary addition for debugging
     xFrameOptions: false,
-    // crossOriginResourcePolicy: { policy: 'cross-origin' },
-    crossOriginResourcePolicy: false, // debug
-    crossOriginEmbedderPolicy: false, // debug
-    originAgentCluster: false, // debug
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
 
     // 3. Content Security Policy
-    contentSecurityPolicy: false, // debug
-    /*contentSecurityPolicy: {
+    contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
         fontSrc: ["'self'", 'data:'],
@@ -111,8 +107,8 @@ function configureHelmet(app) {
           'www.google-analytics.com',
           'www.googletagmanager.com',
           'tagmanager.google.com',
-          'https://!*.dynatrace.com',
-          'https://!*.jsdelivr.net'
+          'https://*.dynatrace.com',
+          'https://*.jsdelivr.net'
         ],
         scriptSrcAttr: [
           "'unsafe-inline'"
@@ -122,17 +118,17 @@ function configureHelmet(app) {
           'tagmanager.google.com',
           'fonts.googleapis.com/',
           (req: any, res: any) =>
-                        req.url.includes('/view/document/')
-                            ? "'unsafe-inline'"
-                            : `'nonce-${res.locals.nonce}'`
+              req.url.includes('/view/document/')
+                  ? "'unsafe-inline'"
+                  : `'nonce-${res.locals.nonce}'`
         ],
         connectSrc: [
           "'self'",
           '*.gov.uk',
           '*.google-analytics.com',
           '*.platform.hmcts.net',
-          'https://!*.dynatrace.com',
-          'https://!*.jsdelivr.net'
+          'https://*.dynatrace.com',
+          'https://*.jsdelivr.net'
         ],
         mediaSrc: ["'self'"],
         frameSrc: [
@@ -148,11 +144,11 @@ function configureHelmet(app) {
           'www.googletagmanager.com',
           'tagmanager.google.com',
           'vcc-eu4.8x8.com',
-          'https://!*.dynatrace.com',
-          'https://!*.jsdelivr.net'
+          'https://*.dynatrace.com',
+          'https://*.jsdelivr.net'
         ]
       }
-    },*/
+    },
 
     // 4. Permitted Cross Domain Policies
     permittedCrossDomainPolicies: { permittedPolicies: 'none' }
@@ -162,20 +158,20 @@ function configureHelmet(app) {
 
   app.use((req, res, next) => {
     res.setHeader(
-            'Permissions-Policy',
-            'accelerometer=(),' +
-            'ambient-light-sensor=(),' +
-            'autoplay=(),' +
-            'camera=(),' +
-            'geolocation=(),' +
-            'gyroscope=(),' +
-            'magnetometer=(),' +
-            'microphone=(),' +
-            'payment=(),' +
-            'speaker=(),' +
-            'usb=(),' +
-            'vibrate=()'
-        );
+        'Permissions-Policy',
+        'accelerometer=(),' +
+        'ambient-light-sensor=(),' +
+        'autoplay=(),' +
+        'camera=(),' +
+        'geolocation=(),' +
+        'gyroscope=(),' +
+        'magnetometer=(),' +
+        'microphone=(),' +
+        'payment=(),' +
+        'speaker=(),' +
+        'usb=(),' +
+        'vibrate=()'
+    );
     next();
   });
 }

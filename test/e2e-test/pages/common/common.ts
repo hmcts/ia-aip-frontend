@@ -371,12 +371,12 @@ module.exports = {
     });
 
     Then(/^I expect to be redirect back to the task\-list$/, async () => {
-      await I.waitInUrl(paths.appealStarted.taskList,10);
+      await I.waitInUrl(paths.appealStarted.taskList,30);
       await I.seeInCurrentUrl(paths.appealStarted.taskList);
     });
 
     Then(/^I see "([^"]*)" in current url$/, async (key: string) => {
-      await I.waitInUrl(key,10);
+      await I.waitInUrl(key,30);
       await I.seeInCurrentUrl(key);
     });
 

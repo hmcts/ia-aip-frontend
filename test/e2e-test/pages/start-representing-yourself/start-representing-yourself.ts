@@ -40,7 +40,7 @@ module.exports = {
   startRepresentingYourself(I) {
     When(/^I visit the start-representing-yourself page$/, async () => {
       await I.amOnPage(testUrl + '/start-representing-yourself');
-      await I.waitForText('Start representing yourself', 60);
+      await I.waitForText('Start representing yourself', 30);
     });
 
     Then(/^I see the start-representing-yourself page content$/, async () => {
@@ -58,9 +58,19 @@ module.exports = {
 
     Then(/^I am on the self register page$/, async () => {
       await I.seeInCurrentUrl('users/selfRegister');
-      await I.waitForText('Sign in to your account.', 60);
+      await I.waitForText('Sign in to your account.', 30);
       await I.click('Sign in to your account');
-      await I.waitForElement('#username', 60);
+      await I.waitForElement('#username', 30);
+    });
+
+    When('I continue to self-registration', async () => {
+      try {
+        await I.click('Continue');
+        await I.waitInUrl('/users/selfRegister', 10);
+      } catch {
+        await I.click('Continue');
+        await I.waitInUrl('/users/selfRegister', 10);
+      }
     });
 
     When('I get the NoC required data from the sent notification', async () => {

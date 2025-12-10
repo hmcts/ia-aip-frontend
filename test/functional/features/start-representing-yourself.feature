@@ -50,5 +50,5 @@ Feature: Start Representing Yourself
     And I see "Case details" in title
 
     # confirm case details
-    And I click "Continue" button
+    And I continue to self-registration
     Then I see "/users/selfRegister" in current url

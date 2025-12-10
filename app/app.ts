@@ -80,76 +80,100 @@ function createApp() {
 }
 
 function configureHelmet(app) {
-  // by setting HTTP headers appropriately.
-  app.use(helmet());
+  app.use(helmet({
+    // 1. Referrer Policy
+    referrerPolicy: { policy: 'origin' },
 
-  // Helmet referrer policy
-  app.use(helmet.referrerPolicy({ policy: 'origin' }));
+    // 2. COOP and HSTS
+    crossOriginOpenerPolicy: false,
+    strictTransportSecurity: {
+      maxAge: 15552000,
+      includeSubDomains: true,
+      preload: true
+    },
 
-  // Helmet content security policy (CSP) to allow only assets from same domain.
-  app.use(helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: [ '\'self\'' ],
-      fontSrc: [ '\'self\' data:' ],
-      scriptSrc: [
-        '\'self\'',
-        '\'unsafe-inline\'',
-        'www.google-analytics.com',
-        'www.googletagmanager.com',
-        'tagmanager.google.com',
-        'https://*.dynatrace.com'
-      ],
-      styleSrc: [
-        '\'self\'',
-        'tagmanager.google.com',
-        'fonts.googleapis.com/',
-        (req: any, res: any) =>
-          req.url.includes('/view/document/')
-            ? `'unsafe-inline'`
-            : `'nonce-${res.locals.nonce}'`
-      ],
-      connectSrc: [ '\'self\'', '*.gov.uk', '*.google-analytics.com', '*.platform.hmcts.net', 'https://*.dynatrace.com'],
-      mediaSrc: [ '\'self\'' ],
-      frameSrc: [
-        '\'self\'',
-        'www.googletagmanager.com',
-        'vcc-eu4.8x8.com'
-      ],
-      frameAncestors: [
-        '\'self\'',
-        'www.googletagmanager.com'
-      ],
-      imgSrc: [
-        '\'self\'',
-        'data:',
-        'www.google-analytics.com',
-        'www.googletagmanager.com',
-        'tagmanager.google.com',
-        'vcc-eu4.8x8.com',
-        'https://*.dynatrace.com'
-      ]
-    }
+    // Temporary addition for debugging
+    xFrameOptions: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+
+    // 3. Content Security Policy
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        fontSrc: ["'self'", 'data:'],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          'www.google-analytics.com',
+          'www.googletagmanager.com',
+          'tagmanager.google.com',
+          'https://*.dynatrace.com',
+          'https://*.jsdelivr.net'
+        ],
+        scriptSrcAttr: [
+          "'unsafe-inline'"
+        ],
+        styleSrc: [
+          "'self'",
+          'tagmanager.google.com',
+          'fonts.googleapis.com/',
+          (req: any, res: any) =>
+              req.url.includes('/view/document/')
+                  ? "'unsafe-inline'"
+                  : `'nonce-${res.locals.nonce}'`
+        ],
+        connectSrc: [
+          "'self'",
+          '*.gov.uk',
+          '*.google-analytics.com',
+          '*.platform.hmcts.net',
+          'https://*.dynatrace.com',
+          'https://*.jsdelivr.net'
+        ],
+        mediaSrc: ["'self'"],
+        frameSrc: [
+          "'self'",
+          'www.googletagmanager.com',
+          'vcc-eu4.8x8.com'
+        ],
+        frameAncestors: ["'self'", 'www.googletagmanager.com'],
+        imgSrc: [
+          "'self'",
+          'data:',
+          'www.google-analytics.com',
+          'www.googletagmanager.com',
+          'tagmanager.google.com',
+          'vcc-eu4.8x8.com',
+          'https://*.dynatrace.com',
+          'https://*.jsdelivr.net'
+        ]
+      }
+    },
+
+    // 4. Permitted Cross Domain Policies
+    permittedCrossDomainPolicies: { permittedPolicies: 'none' }
   }));
 
-  app.use(helmet.permittedCrossDomainPolicies());
-  app.use(expectCt({ enforce: true, maxAge: 60 }));
-  app.use(featurePolicy({
-    features: {
-      accelerometer: [ '\'none\'' ],
-      ambientLightSensor: [ '\'none\'' ],
-      autoplay: [ '\'none\'' ],
-      camera: [ '\'none\'' ],
-      geolocation: [ '\'none\'' ],
-      gyroscope: [ '\'none\'' ],
-      magnetometer: [ '\'none\'' ],
-      microphone: [ '\'none\'' ],
-      payment: [ '\'none\'' ],
-      speaker: [ '\'none\'' ],
-      usb: [ '\'none\'' ],
-      vibrate: [ '\'none\'' ]
-    }
-  }));
   app.use(nocache());
+
+  app.use((req, res, next) => {
+    res.setHeader(
+        'Permissions-Policy',
+        'accelerometer=(),' +
+        'ambient-light-sensor=(),' +
+        'autoplay=(),' +
+        'camera=(),' +
+        'geolocation=(),' +
+        'gyroscope=(),' +
+        'magnetometer=(),' +
+        'microphone=(),' +
+        'payment=(),' +
+        'speaker=(),' +
+        'usb=(),' +
+        'vibrate=()'
+    );
+    next();
+  });
 }
 
 export {

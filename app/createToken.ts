@@ -18,7 +18,7 @@ const createToken = params => {
       params[p] = String(params[p]);
     });
     const strParams = JSON.stringify(params);
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
+    const cipher = crypto.createCipheriv(algorithm, key, iv as unknown as Uint8Array);
     encrypted = cipher.update(strParams, 'utf8', 'hex');
     encrypted += cipher.final('hex');
   }

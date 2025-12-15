@@ -102,7 +102,7 @@ module.exports = {
 
     Then('I see a This card type is not accepted error message', async () => {
       await I.see('This card type is not accepted');
-      await I.see('Maestro is not supported');
+      await I.see('Your card is not supported');
     });
 
     Then('I see the Your payment has been declined error page', async () => {

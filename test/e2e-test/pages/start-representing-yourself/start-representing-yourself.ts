@@ -63,16 +63,6 @@ module.exports = {
       await I.waitForElement('#username', 30);
     });
 
-    When('I continue to self-registration', async () => {
-      try {
-        await I.click('Continue');
-        await I.waitInUrl('/users/selfRegister', 10);
-      } catch {
-        await I.click('Continue');
-        await I.waitInUrl('/users/selfRegister', 10);
-      }
-    });
-
     When('I get the NoC required data from the sent notification', async () => {
       let emailBody = await waitForNocEmailSent(getCitizenUserFromThread());
       let rows: string[] = emailBody.split('\n');

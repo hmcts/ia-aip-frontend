@@ -52,7 +52,15 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 withPipeline("nodejs", product, component) {
 
   afterAlways('checkout') { sh 'yarn cache clean' }
-
+  afterAlways('build') {
+    stage('Functional Tests') {
+      try {
+        yarnBuilder.yarn('test:functional')
+      } catch (Error) {
+        unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+      }
+    }
+  }
 
   loadVaultSecrets(secrets)
 

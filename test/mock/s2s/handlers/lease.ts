@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 
 export async function setupLease(server: Mockttp) {
-  await server.forDelete('/lease').thenCallback(async () => {
+  await server.forPost('/lease').thenCallback(async () => {
     return {
       status: 200,
       json: {

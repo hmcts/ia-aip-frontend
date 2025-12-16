@@ -12,10 +12,10 @@ import ccdHandlers from '../mock/ccd/handlers';
 import dmHandlers from '../mock/document-management-store/handlers';
 import idamHandlers from '../mock/idam/handlers';
 import { setupPostcodeLookup } from '../mock/postcode-lookup/handlers/postcodeLookup';
+import { setupLease } from '../mock/s2s/handlers/lease';
 (global as any).crypto = crypto;
 
 // Your main app
-const app: express.Application = createApp();
 const port: number | string = process.env.PORT || 3000;
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
@@ -39,20 +39,22 @@ async function startMockServer(port: number, setupFns: ((ms: any) => Promise<voi
 export async function bootstrap() {
   testStateHelper.resetTestState();
 
+  // Start service mock servers
+  await startMockServer(20000, ccdHandlers);
+  await startMockServer(20001, idamHandlers);
+  await startMockServer(20002, [ setupPostcodeLookup ]);
+  await startMockServer(20003, dmHandlers);
+  await startMockServer(20004, [ setupLease ]);
+  logger.trace(`servers set up`, logLabel);
+
   // Start main app
+  const app: express.Application = createApp();
   mainServer = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
   }, app).listen(port, () => {
     logger.trace(`Main server listening`, logLabel);
   });
-
-  // Start service mock servers
-  await startMockServer(20000, ccdHandlers);
-  await startMockServer(20001, idamHandlers);
-  await startMockServer(20002, [ setupPostcodeLookup ]);
-  await startMockServer(20003, dmHandlers);
-  logger.trace(`servers set up`, logLabel);
 }
 
 export async function teardownAll() {

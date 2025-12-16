@@ -605,4 +605,3 @@ export default {
     }
   }], '_links': { 'self': { 'href': 'http://localhost:4452/cases/1590493059551672/events' } }
 };
-

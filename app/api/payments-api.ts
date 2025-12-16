@@ -1,8 +1,10 @@
 import axios from 'axios';
 import config from 'config';
 
+const paymentsApiUrl: string = config.get('payments.apiUrl');
+
 async function createCardPayment(headers, body, returnUrl): Promise<any> {
-  const url = `${config.get('payments.apiUrl')}/card-payments`;
+  const url = `${paymentsApiUrl}/card-payments`;
   const options = {
     headers: {
       Authorization: headers.userToken,
@@ -16,7 +18,7 @@ async function createCardPayment(headers, body, returnUrl): Promise<any> {
 }
 
 async function paymentDetails(headers, paymentReference): Promise<any> {
-  const uri = `${config.get('payments.apiUrl')}/card-payments/${paymentReference}/statuses`;
+  const uri = `${paymentsApiUrl}/card-payments/${paymentReference}/statuses`;
   const options = {
     headers: {
       Authorization: headers.userToken,

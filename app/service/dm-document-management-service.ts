@@ -7,7 +7,7 @@ import Logger, { getLogLabel } from '../utils/logger';
 import { documentIdToDocStoreUrl } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 
-const documentManagementBaseUrl = config.get('documentManagement.apiUrl');
+const documentManagementBaseUrl: string = config.get('documentManagement.apiUrl');
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
@@ -46,7 +46,7 @@ enum Classification {
   restricted = 'RESTRICTED'
 }
 
-class DmUploadData {
+export class DmUploadData {
   file: Express.Multer.File;
   role: string;
   classification: Classification;

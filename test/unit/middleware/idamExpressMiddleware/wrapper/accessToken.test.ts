@@ -23,7 +23,7 @@ describe('accessToken', () => {
     args.idamSecret = 'some-secret';
     postStub.resolves({ data: {} });
     // Act.
-    await accessToken(options, args);
+    await accessToken(args, options);
     // Assert.
     expect(postStub).to.be.calledOnce;
     const [uri, body, requestOptions] = postStub.getCall(0).args;
@@ -44,7 +44,7 @@ describe('accessToken', () => {
     args.openId = true;
     // Act.
     postStub.resolves({ data: {} });
-    await accessToken(options, args);
+    await accessToken(args, options);
     // Assert.
     expect(postStub).to.be.calledOnce;
     const [uri, body, requestOptions] = postStub.getCall(0).args;

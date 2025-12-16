@@ -8,7 +8,7 @@ const requestDefaults = {
 };
 const formDefaults = { grant_type: 'authorization_code' };
 
-const accessToken = async (options = {}, args: IdamConfig) => {
+const accessToken = async (args: IdamConfig, options = {}) => {
   if (args.openId) {
     const clientFormData = {
       client_id: args.idamClientID,

@@ -4,9 +4,9 @@ import Logger, { getLogLabel } from '../utils/logger';
 import { asBooleanValue } from '../utils/utils';
 import { SecurityHeaders } from './authentication-service';
 
-const ccdBaseUrl = config.get('ccd.apiUrl');
-const jurisdictionId = config.get('ccd.jurisdictionId');
-const caseType = config.get('ccd.caseType');
+const ccdBaseUrl: string = config.get('ccd.apiUrl');
+const jurisdictionId: string = config.get('ccd.jurisdictionId');
+const caseType: string = config.get('ccd.caseType');
 const timelineEnabled = asBooleanValue(config.get('features.timelineEnabled'));
 
 const logger: Logger = new Logger();

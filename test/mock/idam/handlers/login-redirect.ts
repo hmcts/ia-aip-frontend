@@ -7,14 +7,15 @@ const logLabel: string = getLogLabel(__filename);
 
 export async function setupLoginRedirect(server: Mockttp) {
   await server.forPost('/login').thenCallback(async (request) => {
-    const test1 = await request.body.getText();
-    const test2 = await request.body.getJson();
-    const test3 = await request.body.getFormData();
-    logger.trace(test1, logLabel);
-    logger.trace(test2.toString(), logLabel);
-    for (let test3Key in test3) {
-      logger.trace(test3[test3Key].toString(), logLabel);
+    const test2 = await request.body.getJson() as { username?: string };
+    logger.trace(test2.username, logLabel);
+    if (test2.username) {
+      logger.trace(test2.username, logLabel);
+    } else {
+      logger.trace('username not found', logLabel);
     }
+    logger.trace(JSON.stringify(await request.body.getJson(), null, 2), logLabel);
+
     const body = await request.body.getJson() as any;
     const { username, state, redirect_uri } = body;
     cache.put('email', username);

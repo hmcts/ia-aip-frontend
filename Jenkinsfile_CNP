@@ -58,6 +58,7 @@ withPipeline("nodejs", product, component) {
         yarnBuilder.yarn('test:functional')
       } catch (Error) {
         unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+        process.exit(1);
       }
     }
   }

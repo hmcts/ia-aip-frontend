@@ -1,7 +1,6 @@
 import config from 'config';
 import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
-import expectCt from 'expect-ct';
 import express from 'express';
 import helmet from 'helmet';
 import webpack from 'webpack';
@@ -20,7 +19,6 @@ import { setupSession } from './session';
 import { getUrl } from './utils/url-utils';
 
 const uuid = require('uuid');
-const featurePolicy = require('feature-policy');
 const nocache = require('nocache');
 
 function createApp() {
@@ -59,7 +57,6 @@ function createApp() {
   if (environment === 'development' || environment === 'test' || environment === 'aatDevelopment') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
-    // @ts-ignore
     const options = { stats: 'errors-only' } as Options;
     const wpDevMiddleware = webpackDevMiddleware(compiler, options);
     app.use(wpDevMiddleware);
@@ -85,7 +82,7 @@ function configureHelmet(app) {
     referrerPolicy: { policy: 'origin' },
 
     // 2. COOP and HSTS
-    crossOriginOpenerPolicy: false,
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
     strictTransportSecurity: {
       maxAge: 15552000,
       includeSubDomains: true,
@@ -98,7 +95,10 @@ function configureHelmet(app) {
 
     // 3. Content Security Policy
     contentSecurityPolicy: {
+      useDefaults: false,
       directives: {
+        baseUri: ["'self'"],
+        objectSrc: ["'none'"],
         defaultSrc: ["'self'"],
         fontSrc: ["'self'", 'data:'],
         scriptSrc: [

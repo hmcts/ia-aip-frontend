@@ -2,7 +2,7 @@
 properties([
     parameters([
         booleanParam(name: 'unitTestsBeforeStatic', defaultValue: false, description: 'Tick the checkbox for skip'),
-        booleanParam(name: 'functionalTestsBeforeStatic', defaultValue: false, description: 'Tick the checkbox for skip'),
+        booleanParam(name: 'functionalTestsBeforeStatic', defaultValue: true, description: 'Tick the checkbox for skip'),
     ]),
     [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend'],
     pipelineTriggers([[$class: 'GitHubPushTrigger']])

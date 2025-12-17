@@ -1,4 +1,4 @@
-import moment from "moment/moment";
+const moment = require('moment');
 import { appealWithHomeOfficeDetailsNameAndDateOfBirth } from "../index";
 
 const appealWithHomeOfficeDetailsNameAndDateOfBirthES = {

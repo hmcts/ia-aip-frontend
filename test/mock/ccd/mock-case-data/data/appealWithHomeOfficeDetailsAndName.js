@@ -1,4 +1,4 @@
-import moment from "moment/moment";
+const moment = require('moment');
 
 const appealWithHomeOfficeDetailsAndName = {
   'jurisdiction': 'IA',

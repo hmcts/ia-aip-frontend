@@ -1,53 +1,9 @@
-import axios from 'axios';
-import * as _ from 'lodash';
-import moment from 'moment';
 import { paths } from '../../../../app/paths';
 import { axeTest } from '../../axeHelper';
-
-const mockData = require('../../../mock/ccd/mock-case-data');
 
 const { fillInDate } = require('../helper-functions');
 
 const testUrl = require('config').get('testUrl');
-
-function random16DigitNumber() {
-  return Math.floor(1000000000000000 + Math.random() * 9000000000000000);
-}
-
-const caseData = {
-  'jurisdiction': 'IA',
-  'state': 'appealStarted',
-  'version': 8,
-  'case_type_id': 'Asylum',
-  'created_date': '2019-11-13T10:18:43.271',
-  'last_modified': '2019-11-13T15:35:31.356',
-  'security_classification': 'PUBLIC',
-  'case_data': {
-    'journeyType': 'aip'
-  },
-  'data_classification': {
-    'journeyType': 'PUBLIC',
-    'homeOfficeReferenceNumber': 'PUBLIC'
-  },
-  'after_submit_callback_response': null,
-  'callback_response_status_code': null,
-  'callback_response_status': null,
-  'delete_draft_response_status_code': null,
-  'delete_draft_response_status': null,
-  'security_classifications': {
-    'journeyType': 'PUBLIC',
-    'homeOfficeReferenceNumber': 'PUBLIC'
-  }
-};
-
-async function setupData(newCaseData, uid) {
-  const caseDataClone = _.cloneDeep(caseData);
-  _.merge(caseDataClone.case_data, newCaseData);
-  await axios.post(
-    `http://localhost:20000/setupCase?uid=${uid}`, {
-      body: [caseDataClone]
-    });
-}
 
 const PATHS = {
   'reasons for appeal': paths.awaitingReasonsForAppeal.decision,

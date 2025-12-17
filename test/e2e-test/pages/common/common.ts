@@ -72,22 +72,6 @@ const PATHS = {
 
 module.exports = {
   common(I) {
-    Given('I have an ended appeal', async () => {
-      await setupCase(mockData.endedAppeal, '32');
-    });
-
-    Given('I have an out of time granted decision appeal', async () => {
-      await setupCase(mockData.outOfTimeDecisionGranted, '33');
-    });
-
-    Given('I have an out of time rejected decision appeal', async () => {
-      await setupCase(mockData.outOfTimeDecisionRejected, '34');
-    });
-
-    Given('I have an out of time in-time decision appeal', async () => {
-      await setupCase(mockData.outOfTimeDecisionInTime, '35');
-    });
-
     Given('I have an appeal with home office reference', async () => {
       await setupData({ id: random16DigitNumber(), homeOfficeReferenceNumber: 'A1111111' }, '21');
     });

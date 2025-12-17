@@ -19,7 +19,11 @@ const usersToCaseData = {
   '16': [ mockData.outOfTimeDecisionInTime ],
   '17': [ mockData.uploadAddendumEvidence ],
   '18': [ mockData.decided ],
-  '19': [ mockData.ftpaOutOfTimeApplicationStarted ]
+  '19': [ mockData.ftpaOutOfTimeApplicationStarted ],
+  '32': [ mockData.endedAppeal ],
+  '33': [ mockData.outOfTimeDecisionGranted ],
+  '34': [ mockData.outOfTimeDecisionRejected ],
+  '35': [ mockData.outOfTimeDecisionInTime ]
 };
 
 module.exports = {
@@ -27,7 +31,7 @@ module.exports = {
   method: 'GET',
   cache: false,
   template: params => {
-    if (['20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'].includes(params.userId)) {
+    if (['20','21','22','23','24','25','26','27','28','29','30','31'].includes(params.userId)) {
       const caseData = cache.get(`caseData${params.userId}`);
       if (caseData) {
         return caseData;

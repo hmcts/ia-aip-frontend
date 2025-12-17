@@ -5,7 +5,6 @@ Feature: Type of appeal
 
   Scenario: Appeal type page navigation and save for later
     Given I have logged in as an appellant in state "appealStarted"
-    And I have logged in
     And I see "Do this next" in subheading
     And I click "Continue" button
 

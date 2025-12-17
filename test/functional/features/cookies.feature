@@ -5,7 +5,6 @@ Feature: Cookies banner
 
   Background: I am able to navigate through info pages
     Given I have logged in as an appellant in state "appealStarted"
-    And I have logged in
     And I am on the overview page
 
   Scenario: I view cookies and accept them

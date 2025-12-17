@@ -3,7 +3,6 @@ Feature: Submit appeal
 
   Scenario: Submit an on time new appeal
     Given I have logged in as an appellant in state "appealStarted"
-    And I have logged in
 
     Then I see "John Smith" in title
     And I see "Do this next" in subheading

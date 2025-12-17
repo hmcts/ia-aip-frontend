@@ -34,4 +34,4 @@ const appealSubmittedCaseData = {
   }
 };
 
-module.exports = { ...appealSubmittedCaseData };
+module.exports = { appealSubmittedCaseData };

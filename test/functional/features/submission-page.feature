@@ -5,8 +5,7 @@ Feature: submission
   I want to be able to submit my appeal
 
   Scenario: Submit an appeal
-    Given I have an appeal with home office details, name, date of birth, nationality, address and reason for appeal
-    And I have logged in as an appellant with email "appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal@example.com"
+    Given I have logged in as an appellant with email "appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal@example.com"
     And I am on the check your answers page
     When I click submit
     Then I should see error summary
@@ -17,8 +16,7 @@ Feature: submission
     And I see the respond by date is 5 days in the future
 
   Scenario: Submit an EU/EUSS/HU appeal
-    Given I have an EU or EUSS or HU appeal with home office details, name, date of birth, nationality, address and reason for appeal
-    And I have logged in as an appellant with email "euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal@example.com"
+    Given I have logged in as an appellant with email "euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal@example.com"
     And I am on the check your answers page
     When I click Submit and continue to pay £80 by debit or credit card
     Then I should see error summary

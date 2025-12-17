@@ -17,6 +17,16 @@ const uploadAddendumEvidence = require('./data/upload-addendum-evidence');
 const decided = require('./data/decided');
 const ftpaOutOfTimeApplicationStarted = require('./data/ftpa-out-of-time-application-started');
 const startRepresentingYourself = require('./data/start-representing-yourself');
+const appealWithHomeOfficeReference = require('./data/appealWithHomeOfficeReference');
+const appealWithHomeOfficeDetails = require('./data/appealWithHomeOfficeDetails');
+const appealWithHomeOfficeDetailsAndName = require('./data/appealWithHomeOfficeDetailsAndName');
+const appealWithHomeOfficeDetailsNameAndDateOfBirth = require('./data/appealWithHomeOfficeDetailsNameAndDateOfBirth');
+const appealWithHomeOfficeDetailsNameDateOfBirthAndNationality = require('./data/appealWithHomeOfficeDetailsNameDateOfBirthAndNationality');
+const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress = require('./data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress');
+const outOfTimeAppealWithReasonForBeingLateAnEvidence = require('./data/outOfTimeAppealWithReasonForBeingLateAnEvidence');
+const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal = require('./data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal');
+const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal = require('./data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal');
+const euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal = require('./data/euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal');
 const partialAppealStartedCaseDataES = require('./data/partial-appeal-started-es');
 const appealSubmittedCaseDataES = require('./data/appeal-submitted-es');
 const awaitingReasonsForAppealCaseDataES = require('./data/awaiting-reasons-for-appeal-es');
@@ -35,6 +45,16 @@ const outOfTimeDecisionInTimeES = require('./data/out-of-time-decision-in-time-e
 const uploadAddendumEvidenceES = require('./data/upload-addendum-evidence-es');
 const decidedES = require('./data/decided-es');
 const ftpaOutOfTimeApplicationStartedES = require('./data/ftpa-out-of-time-application-started-es');
+const appealWithHomeOfficeReferenceES =  require('./data/appealWithHomeOfficeReference-es');
+const appealWithHomeOfficeDetailsES =  require('./data/appealWithHomeOfficeDetails-es');
+const appealWithHomeOfficeDetailsAndNameES =  require('./data/appealWithHomeOfficeDetailsAndName-es');
+const appealWithHomeOfficeDetailsNameAndDateOfBirthES =  require('./data/appealWithHomeOfficeDetailsNameAndDateOfBirth-es');
+const appealWithHomeOfficeDetailsNameDateOfBirthAndNationalityES =  require('./data/appealWithHomeOfficeDetailsNameDateOfBirthAndNationality-es');
+const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddressES =  require('./data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress-es');
+const outOfTimeAppealWithReasonForBeingLateAnEvidenceES =  require('./data/outOfTimeAppealWithReasonForBeingLateAnEvidence-es');
+const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES =  require('./data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal-es');
+const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppealES =  require('./data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal-es');
+const euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES =  require('./data/euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal-es');
 
 module.exports = {
   partialAppealStartedCaseData,
@@ -57,6 +77,16 @@ module.exports = {
   decided,
   ftpaOutOfTimeApplicationStarted,
   startRepresentingYourself,
+  appealWithHomeOfficeReference,
+  appealWithHomeOfficeDetails,
+  appealWithHomeOfficeDetailsAndName,
+  appealWithHomeOfficeDetailsNameAndDateOfBirth,
+  appealWithHomeOfficeDetailsNameDateOfBirthAndNationality,
+  appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress,
+  outOfTimeAppealWithReasonForBeingLateAnEvidence,
+  appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal,
+  appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal,
+  euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal,
   partialAppealStartedCaseDataES,
   appealSubmittedCaseDataES,
   awaitingReasonsForAppealCaseDataES,
@@ -73,5 +103,15 @@ module.exports = {
   outOfTimeDecisionInTimeES,
   uploadAddendumEvidenceES,
   decidedES,
-  ftpaOutOfTimeApplicationStartedES
+  ftpaOutOfTimeApplicationStartedES,
+  appealWithHomeOfficeReferenceES,
+  appealWithHomeOfficeDetailsES,
+  appealWithHomeOfficeDetailsAndNameES,
+  appealWithHomeOfficeDetailsNameAndDateOfBirthES,
+  appealWithHomeOfficeDetailsNameDateOfBirthAndNationalityES,
+  appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddressES,
+  outOfTimeAppealWithReasonForBeingLateAnEvidenceES,
+  appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES,
+  appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppealES,
+  euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES
 };

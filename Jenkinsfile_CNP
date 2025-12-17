@@ -57,7 +57,8 @@ withPipeline("nodejs", product, component) {
       try {
         yarnBuilder.yarn('test:functional')
       } catch (Error) {
-        unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+        unstable(message: "${STAGE_NAME} is unstable: " + Error.toString());
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
         process.exit(1);
       }
     }

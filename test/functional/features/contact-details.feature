@@ -4,8 +4,7 @@ Feature: Contact details
   I want to be able to enter my contact details
 
   Scenario: Entering my contact details should open next task
-    Given I have an appeal with home office details, name, date of birth, nationality and address
-    And I have logged in as an appellant with email "appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress@example.com"
+    Given I have logged in as an appellant with email "appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress@example.com"
     Then I click continue
     And I am on the contact details page
     When I click "Save for later" button

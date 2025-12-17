@@ -4,8 +4,7 @@ Feature: Personal details nationality page
   I want to be able to nationality
 
   Scenario: Entering nationality should open next page
-    Given I have an appeal with home office details, name and date of birth
-    And I have logged in as an appellant with email "appealWithHomeOfficeDetailsNameAndDateOfBirth@example.com"
+    Given I have logged in as an appellant with email "appealWithHomeOfficeDetailsNameAndDateOfBirth@example.com"
     And I am on the personal details nationality page
     When I click "Save for later" button
     Then I am on the overview page

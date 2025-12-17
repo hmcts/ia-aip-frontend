@@ -4,8 +4,7 @@ Feature: Personal details enter address
   I want to be able to enter my address
 
   Scenario: Entering my address should open next task
-    Given I have an appeal with home office details, name, date of birth, nationality and reason for appeal
-    And I have logged in as an appellant with email "appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal@example.com"
+    Given I have logged in as an appellant with email "appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal@example.com"
     And I am on the personal details enter address page
     When I click "Save for later" button
     Then I am on the overview page

@@ -1,6 +1,7 @@
 const moment = require('moment');
 
 const appealWithHomeOfficeDetailsNameAndDateOfBirth = {
+  'id': 24,
   'jurisdiction': 'IA',
   'state': 'appealStarted',
   'version': 8,

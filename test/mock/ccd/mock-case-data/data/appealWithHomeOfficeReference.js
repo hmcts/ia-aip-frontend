@@ -1,4 +1,5 @@
 const appealWithHomeOfficeReference = {
+  'id': 21,
   'jurisdiction': 'IA',
   'state': 'appealStarted',
   'version': 8,

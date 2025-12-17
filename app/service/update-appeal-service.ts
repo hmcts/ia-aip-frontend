@@ -4,6 +4,7 @@ import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { formatDate } from '../utils/date-utils';
+import Logger, { getLogLabel } from '../utils/logger';
 import { boolToYesNo, documentIdToDocStoreUrl, extendedBoolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
@@ -48,7 +49,14 @@ export default class UpdateAppealService {
 
   async loadAppeal(req: Request) {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
+    // TODO remove logger once no issues are found
+    const logger: Logger = new Logger();
+    const logLabel: string = getLogLabel(__filename);
+    logger.trace('req.idam.userDetails.uid: ' + req.idam.userDetails.uid, logLabel);
+
     const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
+
+    logger.trace('req.session.ccdCaseId: ' + req.session.ccdCaseId, logLabel);
     req.session.ccdCaseId = ccdCase.id;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
   }

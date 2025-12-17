@@ -38,14 +38,14 @@ const usersToCaseData = {
 };
 
 module.exports = {
-  path: '/searchCases',
+  path: '/searchCases?ctid=Asylum',
   method: 'POST',
   cache: false,
   template: (params, query, body, options, headers) => {
     const logger = new Logger();
     const logLabel = getLogLabel(__filename);
-    logger.trace('DYSON hit: ' + headers, logLabel);
-    console.log('DYSON hit: ' + headers);
+    logger.trace('DYSON HEADERS: ' + headers, logLabel);
+    console.log('DYSON HEADERS: ' + headers);
     return usersToCaseData[headers['UserId']];
   }
 };

@@ -109,12 +109,9 @@ class CcdService {
       userId,
       headers
     );
-    logger.trace('headers: ', logLabel);
-    for (let headersKey in options.headers) {
-      logger.trace(`${headersKey}:${options.headers[headersKey]}`, logLabel);
-    }
-
+    logger.trace('axios request attempting: ', logLabel);
     const response = await axios.post(url, query, options);
+    logger.trace('axios request completed: ', logLabel);
     return response.data;
   }
 
@@ -174,6 +171,7 @@ class CcdService {
     logger.trace('Loading or creating case', logLabel);
     let data: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
     if (data.total > 0) {
+      logger.trace('Found case', logLabel);
       return data.cases[0];
     } else {
       logger.trace('Did not find a case', logLabel);

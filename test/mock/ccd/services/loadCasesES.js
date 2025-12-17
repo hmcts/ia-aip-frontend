@@ -1,6 +1,4 @@
 const mockData = require('../mock-case-data');
-const Logger = require("../../../../app/utils/logger");
-const { getLogLabel } = require("../../../../app/utils/logger");
 
 const usersToCaseData = {
   '1': {},
@@ -42,10 +40,6 @@ module.exports = {
   method: 'POST',
   cache: false,
   template: (params, query, body, options, headers) => {
-    const logger = new Logger();
-    const logLabel = getLogLabel(__filename);
-    logger.trace('DYSON HEADERS: ' + headers, logLabel);
-    console.log('DYSON HEADERS: ' + headers);
     return usersToCaseData[headers['UserId']];
   }
 };

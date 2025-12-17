@@ -17,6 +17,7 @@ Feature: Overview page
     Then I click continue
     Then I should see the task-list page
 
+  @testThis
   Scenario: Appeal Submitted
     Given I have logged in as an appellant in state "appealSubmitted"
     And I visit the overview page

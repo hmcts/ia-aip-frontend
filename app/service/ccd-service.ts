@@ -105,10 +105,12 @@ class CcdService {
       sort: [{ id: { order: 'asc' } }]
     };
     const url = `${ccdBaseUrl}/searchCases?ctid=${caseType}`;
+    logger.trace('url: ' + url, logLabel);
     const options: any = this.createOptions(
       userId,
       headers
     );
+    logger.trace('headers: ' + options.headers, logLabel);
 
     const response = await axios.post(url, query, options);
     return response.data;

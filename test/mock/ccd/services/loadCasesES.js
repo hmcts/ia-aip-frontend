@@ -44,7 +44,8 @@ module.exports = {
   template: headers => {
     const logger = new Logger();
     const logLabel = getLogLabel(__filename);
-    logger.trace(headers, logLabel);
-    return usersToCaseData[headers['userid']];
+    logger.trace('DYSON HEADERS: ' + headers, logLabel);
+    console.log('DYSON HEADERS: ' + headers);
+    return usersToCaseData[headers['UserId']];
   }
 };

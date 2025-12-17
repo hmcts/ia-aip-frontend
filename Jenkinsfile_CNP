@@ -1,8 +1,12 @@
 #!groovy
-properties(
-    [[$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend'],
-     pipelineTriggers([[$class: 'GitHubPushTrigger']])]
-)
+properties([
+    parameters([
+        booleanParam(name: 'unitTestsBeforeStatic', defaultValue: false, description: 'Tick the checkbox for skip'),
+        booleanParam(name: 'functionalTestsBeforeStatic', defaultValue: false, description: 'Tick the checkbox for skip'),
+    ]),
+    [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend'],
+    pipelineTriggers([[$class: 'GitHubPushTrigger']])
+])
 
 @Library("Infrastructure")
 
@@ -53,13 +57,42 @@ withPipeline("nodejs", product, component) {
 
   afterAlways('checkout') { sh 'yarn cache clean' }
   afterAlways('build') {
-    stage('Functional Tests') {
-      try {
-        yarnBuilder.yarn('test:functional')
-      } catch (Error) {
-        unstable(message: "${STAGE_NAME} is unstable: " + Error.toString());
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
-        process.exit(1);
+    if (!params.unitTestsBeforeStatic) {
+      yarnBuilder.yarn('build')
+      stage('Unit Tests') {
+        try {
+          yarnBuilder.yarn('test:unit')
+        } catch (Error) {
+          unstable(message: "${STAGE_NAME} is unstable: " + Error.toString());
+        }
+        publishHTML target: [
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "mochawesome-report",
+                reportFiles          : "mochawesome.html",
+                reportName           : "Unit & Smoke Test Report"
+        ]
+        publishHTML target: [
+            allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "test/coverage/html",
+                reportFiles          : "index.html",
+                reportName           : "Code Coverage Report"
+        ]
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
+      }
+    }
+    if (!params.functionalTestsBeforeStatic) {
+      stage('Functional Tests') {
+        try {
+          yarnBuilder.yarn('test:functional')
+        } catch (Error) {
+          unstable(message: "${STAGE_NAME} is unstable: " + Error.toString());
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
+          process.exit(1);
+        }
       }
     }
   }

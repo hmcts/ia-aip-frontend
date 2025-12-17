@@ -49,14 +49,7 @@ export default class UpdateAppealService {
 
   async loadAppeal(req: Request) {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
-    // TODO remove logger once no issues are found
-    const logger: Logger = new Logger();
-    const logLabel: string = getLogLabel(__filename);
-    logger.trace('req.idam.userDetails.uid: ' + req.idam.userDetails.uid, logLabel);
-
     const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
-
-    logger.trace('req.session.ccdCaseId: ' + req.session.ccdCaseId, logLabel);
     req.session.ccdCaseId = ccdCase.id;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
   }

@@ -1,4 +1,6 @@
 const mockData = require('../mock-case-data');
+const Logger = require("../../../../app/utils/logger");
+const { getLogLabel } = require("../../../../app/utils/logger");
 
 const usersToCaseData = {
   '1': {},
@@ -36,10 +38,13 @@ const usersToCaseData = {
 };
 
 module.exports = {
-  path: '/searchCases',
+  path: /^\/searchCases(\?.*)?$/,
   method: 'POST',
   cache: false,
   template: headers => {
+    const logger = new Logger();
+    const logLabel = getLogLabel(__filename);
+    logger.trace(headers, logLabel);
     return usersToCaseData[headers['userid']];
   }
 };

@@ -110,9 +110,18 @@ class CcdService {
       headers
     );
     logger.trace('axios request attempting: ', logLabel);
-    const response = await axios.post(url, query, options);
-    logger.trace('axios request completed: ', logLabel);
-    return response.data;
+    try {
+      const response = await axios.post(url, query, options);
+      logger.trace('axios request completed', logLabel);
+      return response.data;
+    } catch (err: any) {
+      logger.exception('axios request failed: ' + JSON.stringify({
+        status: err.response?.status,
+        data: err.response?.data,
+        url
+      }), logLabel);
+      throw err;
+    }
   }
 
   async retrieveCaseHistoryV2(userId: string, caseId: string, headers: SecurityHeaders): Promise<any> {

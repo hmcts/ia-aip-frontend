@@ -36,7 +36,7 @@ const usersToCaseData = {
 };
 
 module.exports = {
-  path: '/searchCases?ctid=Asylum',
+  path: '/searchCases',
   method: 'POST',
   cache: false,
   template: (params, query, body, options, headers) => {

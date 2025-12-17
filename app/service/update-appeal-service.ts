@@ -4,7 +4,6 @@ import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { formatDate } from '../utils/date-utils';
-import Logger, { getLogLabel } from '../utils/logger';
 import { boolToYesNo, documentIdToDocStoreUrl, extendedBoolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';

@@ -109,12 +109,8 @@ class CcdService {
       userId,
       headers
     );
-    logger.trace('axios post attempt', logLabel);
+
     const response = await axios.post(url, query, options);
-    logger.trace('axios post succeeded', logLabel);
-    for (let dataKey in response.data) {
-      logger.trace(`${dataKey}:${response.data[dataKey]}`, logLabel);
-    }
     return response.data;
   }
 

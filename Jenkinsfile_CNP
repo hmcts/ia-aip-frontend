@@ -1,8 +1,8 @@
 #!groovy
 properties([
     parameters([
-        booleanParam(name: 'unitTestsBeforeStatic', defaultValue: false, description: 'Tick the checkbox for skip'),
-        booleanParam(name: 'functionalTestsBeforeStatic', defaultValue: true, description: 'Tick the checkbox for skip'),
+        booleanParam(name: 'unitTestsBeforeStatic', defaultValue: false, description: 'Tick the checkbox to run Unit tests before Static checks'),
+        booleanParam(name: 'functionalTestsBeforeStatic', defaultValue: true, description: 'Tick the checkbox to run Functional tests before Static checks'),
     ]),
     [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend'],
     pipelineTriggers([[$class: 'GitHubPushTrigger']])
@@ -57,7 +57,7 @@ withPipeline("nodejs", product, component) {
 
   afterAlways('checkout') { sh 'yarn cache clean' }
   afterAlways('build') {
-    if (!params.unitTestsBeforeStatic) {
+    if (params.unitTestsBeforeStatic) {
       yarnBuilder.yarn('build')
       stage('Unit Tests') {
         try {
@@ -84,7 +84,7 @@ withPipeline("nodejs", product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
       }
     }
-    if (!params.functionalTestsBeforeStatic) {
+    if (params.functionalTestsBeforeStatic) {
       stage('Functional Tests') {
         try {
           yarnBuilder.yarn('test:functional')

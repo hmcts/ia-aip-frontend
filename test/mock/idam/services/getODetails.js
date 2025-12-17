@@ -20,7 +20,6 @@ const emailToUserId = {
   'preHearing@example.com': '17',
   'decided@example.com': '18',
   'ftpa-out-of-time-application-started@example.com': '19',
-
   'appealWithHomeOfficeReference@example.com': '21',
   'appealWithHomeOfficeDetails@example.com': '22',
   'appealWithHomeOfficeDetailsAndName@example.com': '23',
@@ -35,7 +34,6 @@ const emailToUserId = {
   'outOfTimeGrantedDecisionAppeal@example.com': '33',
   'outOfTimeRejectedDecisionAppeal@example.com': '34',
   'outOfTimeInTimeDecisionAppeal@example.com': '35',
-
   'setupcase@example.com': '999'
 };
 

@@ -1,8 +1,7 @@
 #!groovy
 properties([
     parameters([
-        booleanParam(name: 'unitTestsBeforeStatic', defaultValue: false, description: 'Tick the checkbox to run Unit tests before Static checks'),
-        booleanParam(name: 'functionalTestsBeforeStatic', defaultValue: true, description: 'Tick the checkbox to run Functional tests before Static checks'),
+        booleanParam(name: 'unitTestsBeforeStatic', defaultValue: false, description: 'Tick the checkbox to run Unit tests before Static checks')
     ]),
     [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend'],
     pipelineTriggers([[$class: 'GitHubPushTrigger']])
@@ -84,17 +83,6 @@ withPipeline("nodejs", product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
       }
     }
-    if (params.functionalTestsBeforeStatic) {
-      stage('Functional Tests') {
-        try {
-          yarnBuilder.yarn('test:functional')
-        } catch (Error) {
-          unstable(message: "${STAGE_NAME} is unstable: " + Error.toString());
-          steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
-          process.exit(1);
-        }
-      }
-    }
   }
 
   loadVaultSecrets(secrets)
@@ -116,6 +104,10 @@ withPipeline("nodejs", product, component) {
 
   before("functionalTest") {
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
+  }
+
+  afterAlways('functionalTest:preview') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
   }
 }
 

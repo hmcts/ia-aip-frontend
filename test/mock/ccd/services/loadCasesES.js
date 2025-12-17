@@ -38,7 +38,7 @@ const usersToCaseData = {
 };
 
 module.exports = {
-  path: /^\/searchCases(\?.*)?$/,
+  path: '/searchCases?ctid=Asylum',
   method: 'POST',
   cache: false,
   template: headers => {

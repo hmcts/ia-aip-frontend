@@ -73,9 +73,9 @@ Feature: Out of Time appeal @outOfTimeAppeal
 #  When I choose a file that is "VALID" and click the "Save and continue" button
 #  Then I should be taken to the check-and-send page
 
-  Scenario: Delete an evidence changes on reason should persist
+#  Scenario: Delete an evidence changes on reason should persist
 #  Given I have an out of time appeal with reason for being late an evidence
-#  And I have logged in
+#  And I have logged in as an appellant with email "outOfTimeAppealWithReasonForBeingLateAnEvidence@example.com"
 #  And I click "Continue" button
 #  Then I see "/about-appeal" in current url
 #

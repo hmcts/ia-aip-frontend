@@ -23,13 +23,13 @@ const usersToCaseData = {
 };
 
 module.exports = {
-  // path: '/citizens/:userId/jurisdictions/:jurisdictionId/case-types/:caseType/cases',
   path: '/searchCases',
   method: 'POST',
   cache: false,
   template: (params, query, body, options, headers) => {
-    if (headers['userid'] === '999') {
-      const caseData = cache.get('caseData');
+    const uid = headers['userid'];
+    if (['20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'].includes(uid)) {
+      const caseData = cache.get(`caseData${uid}`);
       if (caseData) {
         return {
           "total": 1,

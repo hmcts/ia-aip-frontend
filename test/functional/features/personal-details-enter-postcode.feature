@@ -5,7 +5,7 @@ Feature: Personal details enter postcode
 
   Scenario: Entering postcode should open next page
     Given I have an appeal with home office details, name, date of birth and nationality
-    And I have logged in
+    And I have logged in as an appellant with email "appealWithHomeOfficeDetailsNameDateOfBirthAndNationality@example.com"
     And I am on the personal details enter postcode page
     When I click "Save for later" button
     Then I am on the overview page

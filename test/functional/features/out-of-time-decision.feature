@@ -5,7 +5,7 @@ Feature: Out of time decision @outOfTimeDecision
 
   Scenario: Decision granted @decisionGranted
     Given I have an out of time granted decision appeal
-    And I have logged in
+    And I have logged in as an appellant with email "outOfTimeGrantedDecisionAppeal@example.com"
     Then I see "/appeal-overview" in current url
     And I see "Pedro Jimeno" in title
     And I see "The tribunal decided your late appeal can continue." in timeline
@@ -23,7 +23,7 @@ Feature: Out of time decision @outOfTimeDecision
 
   Scenario: Decision rejected @decisionRejected
     Given I have an out of time rejected decision appeal
-    And I have logged in
+    And I have logged in as an appellant with email "outOfTimeRejectedDecisionAppeal@example.com"
     Then I see "/appeal-overview" in current url
     And I see "Pedro Jimeno" in title
     And I see "The tribunal decided your late appeal cannot continue." in timeline
@@ -41,7 +41,7 @@ Feature: Out of time decision @outOfTimeDecision
 
   Scenario: Decision in time @decisionInTime
     Given I have an out of time in-time decision appeal
-    And I have logged in
+    And I have logged in as an appellant with email "outOfTimeInTimeDecisionAppeal@example.com"
     Then I see "/appeal-overview" in current url
     And I see "Pedro Jimeno" in title
     And I see "The tribunal decided your appeal is in time." in timeline

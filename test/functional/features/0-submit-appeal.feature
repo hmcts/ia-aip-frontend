@@ -1,8 +1,8 @@
 @submitAppeal
 Feature: Submit appeal
 
-  Background:
-    Given I have a blank appeal
+  Scenario: Submit an on time new appeal
+    Given I have logged in as an appellant in state "appealStarted"
     And I have logged in
 
     Then I see "John Smith" in title
@@ -82,26 +82,6 @@ Feature: Submit appeal
 #
 #    Then I see "Check your answer" in title
 
-#  Scenario: Submit an on time new appeal
 #    And I check "I believe the information I have given is true" option
 #    And I click "Send" button
 #    Then I see "Your appeal details have been sent" in title
-
-#  Scenario: Submit an out of time appeal
-#    And I click "Date letter sent" change link
-#    Then I see "What date was your decision letter sent?" in title
-#
-#    And I fill "Day" field with "10"
-#    And I fill "Month" field with "10"
-#    And I fill "Year" field with "2020"
-#    And I click "Save and continue" button
-#
-#    Then I see "Your appeal is late" in title
-#    And I fill "Why is your appeal late?" field with "My reason for being late"
-#    And I click "Save and continue" button
-#
-#    Then I see "Check your answer" in title
-#    And I check "I believe the information I have given is true" option
-#    And I click "Send" button
-#    Then I see "Your late appeal details have been sent" in title
-

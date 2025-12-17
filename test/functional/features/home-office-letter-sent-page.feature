@@ -5,7 +5,7 @@ Feature: Home office letter sent page @letterSent
 
   Scenario: Entering a date for Home office letter sent
     Given I have an appeal with home office reference
-    And I have logged in
+    And I have logged in as an appellant with email "appealWithHomeOfficeReference@example.com"
     And I am on the home office letter sent page
     When I click "Save for later" button
     Then I am on the overview page

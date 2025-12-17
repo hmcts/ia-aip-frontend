@@ -40,18 +40,18 @@ const caseData = {
   }
 };
 
-async function setupData(newCaseData) {
+async function setupData(newCaseData, uid) {
   const caseDataClone = _.cloneDeep(caseData);
   _.merge(caseDataClone.case_data, newCaseData);
   await axios.post(
-    'http://localhost:20000/setupCase', {
+    `http://localhost:20000/setupCase?uid=${uid}`, {
       body: [caseDataClone]
     });
 }
 
-async function setupCase(ccdCase: CcdCaseDetails) {
+async function setupCase(ccdCase: CcdCaseDetails, uid) {
   await axios.post(
-    'http://localhost:20000/setupCase', {
+    `http://localhost:20000/setupCase?uid=${uid}`, {
       body: [ccdCase]
     });
 }
@@ -73,27 +73,23 @@ const PATHS = {
 module.exports = {
   common(I) {
     Given('I have an ended appeal', async () => {
-      await setupCase(mockData.endedAppeal);
+      await setupCase(mockData.endedAppeal, '32');
     });
 
     Given('I have an out of time granted decision appeal', async () => {
-      await setupCase(mockData.outOfTimeDecisionGranted);
+      await setupCase(mockData.outOfTimeDecisionGranted, '33');
     });
 
     Given('I have an out of time rejected decision appeal', async () => {
-      await setupCase(mockData.outOfTimeDecisionRejected);
+      await setupCase(mockData.outOfTimeDecisionRejected, '34');
     });
 
     Given('I have an out of time in-time decision appeal', async () => {
-      await setupCase(mockData.outOfTimeDecisionInTime);
-    });
-
-    Given('I have a blank appeal', async () => {
-      await setupData({ id: random16DigitNumber() });
+      await setupCase(mockData.outOfTimeDecisionInTime, '35');
     });
 
     Given('I have an appeal with home office reference', async () => {
-      await setupData({ id: random16DigitNumber(), homeOfficeReferenceNumber: 'A1111111' });
+      await setupData({ id: random16DigitNumber(), homeOfficeReferenceNumber: 'A1111111' }, '21');
     });
 
     Given('I have an appeal with home office details', async () => {
@@ -101,7 +97,7 @@ module.exports = {
         id: random16DigitNumber(),
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD')
-      });
+      }, '22');
     });
 
     Given('I have an appeal with home office details and name', async () => {
@@ -112,7 +108,7 @@ module.exports = {
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName'
-      });
+      }, '23');
     });
 
     Given('I have an appeal with home office details, name and date of birth', async () => {
@@ -124,7 +120,7 @@ module.exports = {
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1981-01-01'
-      });
+      }, '24');
     });
 
     Given('I have an appeal with home office details, name, date of birth and nationality', async () => {
@@ -144,7 +140,7 @@ module.exports = {
             }
           }
         ]
-      });
+      }, '25');
     });
 
     Given('I have an appeal with home office details, name, date of birth, nationality and address', async () => {
@@ -170,42 +166,7 @@ module.exports = {
           PostTown: 'Town',
           PostCode: 'CM15 9BN'
         }
-      });
-    });
-
-    Given('I have a fresh appeal', async () => {
-      await setupData({
-        id: random16DigitNumber(),
-        appealType: 'protection',
-        homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
-        appellantGivenNames: 'givenName',
-        appellantFamilyName: 'familyName',
-        appellantDateOfBirth: '1981-01-01',
-        appellantNationalities: [
-          {
-            id: '1',
-            value: {
-              code: 'FI'
-            }
-          }
-        ],
-        appellantAddress: {
-          AddressLine1: 'Address line 1',
-          PostTown: 'Town',
-          PostCode: 'CM15 9BN'
-        },
-        subscriptions: [{
-          id: 1,
-          value: {
-            subscriber: 'appellant',
-            wantsEmail: 'No',
-            email: null,
-            wantsSms: 'Yes',
-            mobileNumber: '07899999999'
-          }
-        }]
-      });
+      }, '26');
     });
 
     Given('I have an out of time appeal with reason for being late an evidence', async () => {
@@ -247,7 +208,7 @@ module.exports = {
           }
         }],
         uploadTheNoticeOfDecisionDocs: []
-      });
+      }, '28');
     });
 
     Given('I have an appeal with home office details, name, date of birth, nationality, address and reason for appeal', async () => {
@@ -283,7 +244,7 @@ module.exports = {
         }],
         appealType: 'protection',
         uploadTheNoticeOfDecisionDocs: []
-      });
+      }, '29');
     });
 
     Given('I have an appeal with home office details, name, date of birth, nationality and reason for appeal', async () => {
@@ -305,7 +266,7 @@ module.exports = {
         }],
         appealType: 'protection',
         uploadTheNoticeOfDecisionDocs: []
-      });
+      }, '30');
     });
 
     Given('I have an EU or EUSS or HU appeal with home office details, name, date of birth, nationality, address and reason for appeal', async () => {
@@ -344,7 +305,7 @@ module.exports = {
         feeCode: 'abc',
         feeVersion: '2',
         uploadTheNoticeOfDecisionDocs: []
-      });
+      }, '31');
     });
 
     When(/^I click "([^"]*)" button$/, async (selector: string) => {

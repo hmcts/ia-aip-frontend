@@ -27,8 +27,8 @@ module.exports = {
   method: 'GET',
   cache: false,
   template: params => {
-    if (params.userId === '999') {
-      const caseData = cache.get('caseData');
+    if (['20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'].includes(params.userId)) {
+      const caseData = cache.get(`caseData${params.userId}`);
       if (caseData) {
         return caseData;
       }

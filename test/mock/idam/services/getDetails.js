@@ -2,7 +2,7 @@ const cache = require('memory-cache');
 
 const defaultUserId = '1';
 const emailToUserId = {
-  'no-cases@example.com' : '1',
+  'no-cases@example.com': '1',
   'has-case@example.com': '2',
   'appeal-submitted@example.com': '3',
   'awaiting-reasons-for-appeal@example.com': '4',
@@ -16,6 +16,22 @@ const emailToUserId = {
   'preHearing@example.com': '17',
   'decided@example.com': '18',
   'ftpa-out-of-time-application-started@example.com': '19',
+
+  'appealWithHomeOfficeReference@example.com': '21',
+  'appealWithHomeOfficeDetails@example.com': '22',
+  'appealWithHomeOfficeDetailsAndName@example.com': '23',
+  'appealWithHomeOfficeDetailsNameAndDateOfBirth@example.com': '24',
+  'appealWithHomeOfficeDetailsNameDateOfBirthAndNationality@example.com': '25',
+  'appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress@example.com': '26',
+  'outOfTimeAppealWithReasonForBeingLateAnEvidence@example.com': '28',
+  'appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal@example.com': '29',
+  'appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal@example.com': '30',
+  'euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal@example.com': '31',
+  'endedAppeal@example.com': '32',
+  'outOfTimeGrantedDecisionAppeal@example.com': '33',
+  'outOfTimeRejectedDecisionAppeal@example.com': '34',
+  'outOfTimeInTimeDecisionAppeal@example.com': '35',
+
   'setupcase@example.com': '999'
 };
 

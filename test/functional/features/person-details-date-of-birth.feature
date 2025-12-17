@@ -5,7 +5,7 @@ Feature: Personal details date of birth page
 
   Scenario: Entering Date of Birth should open next page
     Given I have an appeal with home office details and name
-    And I have logged in
+    And I have logged in as an appellant with email "appealWithHomeOfficeDetailsAndName@example.com"
     And I am on the personal details date of birth page
     When I click "Save for later" button
     Then I am on the overview page

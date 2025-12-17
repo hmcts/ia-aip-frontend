@@ -53,27 +53,13 @@ withPipeline("nodejs", product, component) {
 
   afterAlways('checkout') { sh 'yarn cache clean' }
   afterAlways('build') {
-    yarnBuilder.yarn('build')
-
-    stage('Unit Tests') {
-      yarnBuilder.yarn('test:unit')
-      publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "mochawesome-report",
-              reportFiles          : "mochawesome.html",
-              reportName           : "Unit & Smoke Test Report"
-      ]
-      publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "test/coverage/html",
-              reportFiles          : "index.html",
-              reportName           : "Code Coverage Report"
-      ]
-      steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
+    stage('Functional Tests') {
+      try {
+        yarnBuilder.yarn('test:functional')
+      } catch (Error) {
+        unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+        process.exit(1);
+      }
     }
   }
 

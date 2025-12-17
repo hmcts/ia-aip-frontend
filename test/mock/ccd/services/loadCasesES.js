@@ -40,6 +40,6 @@ module.exports = {
   method: 'POST',
   cache: false,
   template: (params, query, body, options, headers) => {
-    return usersToCaseData[headers['UserId']];
+    return usersToCaseData[headers['userid']];
   }
 };

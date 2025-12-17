@@ -110,7 +110,10 @@ class CcdService {
       userId,
       headers
     );
-    logger.trace('headers: ' + options.headers, logLabel);
+    logger.trace('headers: ', logLabel);
+    for (let headersKey in options.headers) {
+      logger.trace(`${headersKey}:${options.headers[headersKey]}`, logLabel);
+    }
 
     const response = await axios.post(url, query, options);
     return response.data;

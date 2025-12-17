@@ -109,19 +109,8 @@ class CcdService {
       userId,
       headers
     );
-    logger.trace('axios request attempting: ', logLabel);
-    try {
-      const response = await axios.post(url, query, options);
-      logger.trace('axios request completed', logLabel);
-      return response.data;
-    } catch (err: any) {
-      logger.exception('axios request failed: ' + JSON.stringify({
-        status: err.response?.status,
-        data: err.response?.data,
-        url
-      }), logLabel);
-      throw err;
-    }
+    const response = await axios.post(url, query, options);
+    return response.data;
   }
 
   async retrieveCaseHistoryV2(userId: string, caseId: string, headers: SecurityHeaders): Promise<any> {
@@ -180,7 +169,6 @@ class CcdService {
     logger.trace('Loading or creating case', logLabel);
     let data: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
     if (data.total > 0) {
-      logger.trace('Found case', logLabel);
       return data.cases[0];
     } else {
       logger.trace('Did not find a case', logLabel);

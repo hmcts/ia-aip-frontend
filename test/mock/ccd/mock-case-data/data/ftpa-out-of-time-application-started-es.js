@@ -1,4 +1,4 @@
-import { ftpaOutOfTimeApplicationStarted } from "../index";
+const { ftpaOutOfTimeApplicationStarted } = require("../index");
 
 const ftpaOutOfTimeApplicationStartedES = {
   "total": 1,

@@ -1,4 +1,4 @@
-import { appealWithHomeOfficeDetailsNameDateOfBirthAndNationality } from "../index";
+const { appealWithHomeOfficeDetailsNameDateOfBirthAndNationality } = require("../index");
 
 const appealWithHomeOfficeDetailsNameDateOfBirthAndNationalityES = {
   "total": 1,

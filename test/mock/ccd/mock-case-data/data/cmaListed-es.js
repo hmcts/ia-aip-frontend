@@ -1,4 +1,4 @@
-import { submittedCmaRequirements } from "../index";
+const { submittedCmaRequirements } = require("../index");
 
 const submittedCmaRequirementsES = {
   "total": 1,

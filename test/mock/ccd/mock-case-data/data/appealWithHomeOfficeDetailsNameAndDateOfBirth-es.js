@@ -1,5 +1,5 @@
 const moment = require('moment');
-import { appealWithHomeOfficeDetailsNameAndDateOfBirth } from "../index";
+const { appealWithHomeOfficeDetailsNameAndDateOfBirth } = require("../index");
 
 const appealWithHomeOfficeDetailsNameAndDateOfBirthES = {
   "total": 1,

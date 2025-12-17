@@ -1,4 +1,4 @@
-import { awaitingCmaRequirements } from "../index";
+const { awaitingCmaRequirements } = require("../index");
 
 const awaitingCmaRequirementsES = {
   "total": 1,

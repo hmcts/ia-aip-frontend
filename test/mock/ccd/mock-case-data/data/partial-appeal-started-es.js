@@ -1,4 +1,4 @@
-import { partialAppealStartedCaseData } from "../index";
+const { partialAppealStartedCaseData } = require("../index");
 
 const partialAppealStartedCaseDataES = {
   "total": 1,

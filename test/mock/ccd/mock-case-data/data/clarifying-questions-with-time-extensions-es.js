@@ -1,4 +1,4 @@
-import { clarifyingQuestionsCaseData } from "../index";
+const { clarifyingQuestionsCaseData } = require("../index");
 
 const clarifyingQuestionsCaseDataES = {
   "total": 1,

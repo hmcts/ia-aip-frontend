@@ -1,4 +1,4 @@
-import { outOfTimeDecisionGrantedCaseData } from "../index";
+const { outOfTimeDecisionGrantedCaseData } = require("../index");
 
 const outOfTimeDecisionGrantedCaseDataES = {
   "total": 1,

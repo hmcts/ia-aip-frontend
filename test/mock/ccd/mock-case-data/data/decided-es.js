@@ -1,4 +1,4 @@
-import { decided } from "../index";
+const { decided } = require("../index");
 
 const decidedES = {
   "total": 1,

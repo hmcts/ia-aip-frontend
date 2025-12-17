@@ -1,4 +1,4 @@
-import { endedAppeal } from "../index";
+const { endedAppeal } = require("../index");
 
 const endedAppealES = {
   "total": 1,

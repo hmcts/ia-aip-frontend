@@ -1,4 +1,4 @@
-import { outOfTimeAppealWithReasonForBeingLateAnEvidence } from "../index";
+const { outOfTimeAppealWithReasonForBeingLateAnEvidence } = require("../index");
 
 const outOfTimeAppealWithReasonForBeingLateAnEvidenceES = {
   "total": 1,

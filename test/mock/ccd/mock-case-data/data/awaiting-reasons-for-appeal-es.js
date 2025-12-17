@@ -1,4 +1,4 @@
-import { awaitingReasonsForAppealCaseData } from "../index";
+const { awaitingReasonsForAppealCaseData } = require("../index");
 
 const awaitingReasonsForAppealCaseDataES = {
   "total": 1,

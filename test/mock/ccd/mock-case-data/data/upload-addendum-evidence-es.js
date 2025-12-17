@@ -1,4 +1,4 @@
-import { uploadAddendumEvidence } from "../index";
+const { uploadAddendumEvidence } = require("../index");
 
 const uploadAddendumEvidenceES = {
   "total": 1,

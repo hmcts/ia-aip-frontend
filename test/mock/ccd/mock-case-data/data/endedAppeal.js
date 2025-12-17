@@ -568,6 +568,6 @@ const endedAppeal = {
     "submissionOutOfTime": "PUBLIC",
     "homeOfficeReferenceNumber": "PUBLIC"
   }
-}
+};
 
 module.exports = { ...endedAppeal };

@@ -87,13 +87,25 @@
       ".ppsx", ".rtf", ".csv"
     ]
   },
+  "dueDate": {
+    "ftpaDecisionResponse": 14,
+    "ftpaDecisionResponseOoc": 28,
+    "judgeDecisionResponse": 14,
+    "judgeDecisionResponseOoc": 28,
+    "hearingRequirements": 14
+  },
   "daysToWait": {
-    "afterSubmission": 5,
+    "afterSubmission": 14,
     "pendingPayment": 14,
+    "afterSubmissionOoc": 28,
+    "pendingPaymentOoc": 28,
     "afterReasonsForAppeal": 14,
     "afterCQSubmission": 7,
     "outOfCountry": 28,
-    "fromRemissionAppliedDate": 14
+    "fromRemissionAppliedDate": 14,
+    "cmaAdjustmentsDeadline": 14,
+    "decisionMaintained": 5,
+    "decisionWithdrawn": 14
   },
   "features": {
     "askForMoreTime": false,

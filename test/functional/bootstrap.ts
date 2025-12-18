@@ -19,6 +19,8 @@ let ccdServer: http.Server;
 let idamServer: http.Server;
 let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
+let s2sServer: http.Server;
+let pcqServer: http.Server;
 
 export async function bootstrap() {
   testStateHelper.resetTestState();
@@ -38,6 +40,8 @@ export async function bootstrap() {
   const idamApp = express();
   const postcodeLookupApp = express();
   const documentManagementStoreApp = express();
+  const s2sApp = express();
+  const pcqApp = express();
 
   const ccdOptions = {
     configDir: path.resolve(__dirname, '../mock/ccd/services/')
@@ -55,6 +59,14 @@ export async function bootstrap() {
     configDir: path.resolve(__dirname, '../mock/document-management-store/services/')
   };
 
+  const s2sOptions = {
+    configDir: path.resolve(__dirname, '../mock/s2s/services/')
+  };
+
+  const pcqOptions = {
+    configDir: path.resolve(__dirname, '../mock/pcq/services/')
+  };
+
   const ccdConfigs = dyson.getConfigurations(ccdOptions);
   dyson.registerServices(ccdApp, ccdOptions, ccdConfigs);
   ccdServer = ccdApp.listen(20000);
@@ -70,6 +82,14 @@ export async function bootstrap() {
   const documentManagementStoreConfigs = dyson.getConfigurations(documentManagementStoreOptions);
   dyson.registerServices(documentManagementStoreApp, documentManagementStoreOptions, documentManagementStoreConfigs);
   documentManagementStoreServer = documentManagementStoreApp.listen(20003);
+
+  const s2sConfigs = dyson.getConfigurations();
+  dyson.registerServices(s2sApp, s2sOptions, s2sConfigs);
+  s2sServer = s2sApp.listen(20004);
+
+  const pcqConfigs = dyson.getConfigurations();
+  dyson.registerServices(pcqApp, pcqOptions, pcqConfigs);
+  pcqServer = pcqApp.listen(20005);
 }
 
 function closeServerWithPromise(server) {
@@ -96,9 +116,14 @@ export async function teardownAll() {
     if (postcodeLookupServer && postcodeLookupServer.close) {
       await closeServerWithPromise(postcodeLookupServer);
     }
-
     if (documentManagementStoreServer && documentManagementStoreServer.close) {
       await closeServerWithPromise(documentManagementStoreServer);
+    }
+    if (s2sServer && s2sServer.close) {
+      await closeServerWithPromise(s2sServer);
+    }
+    if (pcqServer && pcqServer.close) {
+      await closeServerWithPromise(pcqServer);
     }
   } catch (e) {
     logger.exception(e, logLabel);

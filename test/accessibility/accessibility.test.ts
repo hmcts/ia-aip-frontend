@@ -33,7 +33,9 @@ describe('Test accessibility', async function() {
     // for (const page of pages) {
     //   await page.close();
     // }
-    await browser.close();
+    if (browser) {
+      await browser.close();
+    }
     await teardownAll(() => {
       console.log('Shutdown completed');
     });

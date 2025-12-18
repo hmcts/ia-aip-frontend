@@ -5,7 +5,7 @@ const { expect } = require('chai');
 describe('Screenreader text on "Delete" links', () => {
 
   const env = nunjucks.configure([
-    'node_modules/govuk-frontend',
+    'node_modules/govuk-frontend/dist',
     'views'
   ]);
 

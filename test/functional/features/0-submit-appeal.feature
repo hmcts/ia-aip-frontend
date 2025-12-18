@@ -1,4 +1,4 @@
-@submitAppeal
+@submitAppeal @testThis
 Feature: Submit appeal
 
   Scenario: Submit an on time new appeal

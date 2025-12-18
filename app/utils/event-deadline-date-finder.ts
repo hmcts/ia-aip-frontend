@@ -10,6 +10,7 @@ import { dayMonthYearFormat } from './date-utils';
 import { appealHasNoRemissionOption, appealHasRemissionOption } from './remission-utils';
 
 const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
+const daysToWaitAfterSubmissionDlrm = config.get('daysToWait.afterSubmissionDlrm');
 const daysToWaitPendingPayment = config.get('daysToWait.pendingPayment');
 const daysToWaitAfterSubmissionOoc = config.get('daysToWait.afterSubmissionOoc');
 const daysToWaitPendingPaymentOoc = config.get('daysToWait.pendingPaymentOoc');
@@ -116,7 +117,7 @@ function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemission
       if (dlrmFeeRemissionFlag &&
         !appealHasNoRemissionOption(req.session.appeal.application)) {
         let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
-        let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? daysToWaitAfterSubmissionOoc : daysToWaitAfterSubmission;
+        let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? daysToWaitAfterSubmissionOoc : daysToWaitAfterSubmissionDlrm;
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', noOfDays);
       } else {
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterSubmission);

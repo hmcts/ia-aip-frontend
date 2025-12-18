@@ -95,7 +95,8 @@
     "hearingRequirements": 14
   },
   "daysToWait": {
-    "afterSubmission": 14,
+    "afterSubmissionDlrm": 14,
+    "afterSubmission": 5,
     "pendingPayment": 14,
     "afterSubmissionOoc": 28,
     "pendingPaymentOoc": 28,

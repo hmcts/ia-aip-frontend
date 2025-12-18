@@ -124,7 +124,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'appealSubmitted';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('22 February 2020');
+      expect(result).to.be.equal('13 February 2020');
     });
 
     it('appealSubmitted with fee and setAside is enabled should return a formatted date with 14 days offset from the' +
@@ -182,7 +182,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'appealSubmitted';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('22 February 2020');
+      expect(result).to.be.equal('13 February 2020');
     });
 
     it('awaitingRespondentEvidence should return a formatted date with 14 days offset from the appealSubmission date', () => {
@@ -190,7 +190,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'awaitingRespondentEvidence';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('22 February 2020');
+      expect(result).to.be.equal('13 February 2020');
     });
 
     it('awaitingRespondentEvidence should return a formatted date with 14 days offset from the appealSubmission date' +

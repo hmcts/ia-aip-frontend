@@ -1,6 +1,6 @@
 @submitAppeal
 Feature: Submit appeal
-
+  @testThis
   Scenario: Take case up to fee choice
     Given I have logged in as an appellant in state "appealStarted"
 
@@ -84,7 +84,7 @@ Feature: Submit appeal
     And I click "Save and continue" button
 
     Then I see "Tell us about your appeal" in title
-
+  @testThis
   Scenario: Submit an on time new appeal
     Given I have logged in as an appellant with email "appealUpToFeeChoice@example.com"
     Then I see "John Smith" in title

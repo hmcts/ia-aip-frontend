@@ -32,7 +32,8 @@ const usersToCaseData = {
   '32': [mockData.endedAppeal],
   '33': [mockData.outOfTimeDecisionGranted],
   '34': [mockData.outOfTimeDecisionRejected],
-  '35': [mockData.outOfTimeDecisionInTime]
+  '35': [mockData.outOfTimeDecisionInTime],
+  '36': [mockData.appealUpToFeeChoice]
 };
 
 module.exports = {

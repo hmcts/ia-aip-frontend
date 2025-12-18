@@ -34,6 +34,7 @@ const emailToUserId = {
   'outOfTimeGrantedDecisionAppeal@example.com': '33',
   'outOfTimeRejectedDecisionAppeal@example.com': '34',
   'outOfTimeInTimeDecisionAppeal@example.com': '35',
+  'appealUpToFeeChoice@example.com': '36',
   'setupcase@example.com': '999'
 };
 

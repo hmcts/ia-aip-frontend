@@ -1,7 +1,7 @@
-@submitAppeal @testThis
+@submitAppeal
 Feature: Submit appeal
 
-  Scenario: Submit an on time new appeal
+  Scenario: Take case up to fee choice
     Given I have logged in as an appellant in state "appealStarted"
 
     Then I see "John Smith" in title
@@ -82,6 +82,14 @@ Feature: Submit appeal
     Then I see "Do you want to pay for the appeal now?" in title
     When I select No, I will pay later
     And I click "Save and continue" button
+
+    Then I see "Tell us about your appeal" in title
+
+  Scenario: Submit an on time new appeal
+    Given I have logged in as an appellant with email "appealUpToFeeChoice@example.com"
+    Then I see "John Smith" in title
+    And I see "Do this next" in subheading
+    And I click "Continue" button
 
     Then I see "Tell us about your appeal" in title
     When I click "Support to pay the fee" link

@@ -27,6 +27,7 @@ const outOfTimeAppealWithReasonForBeingLateAnEvidence = require('./data/outOfTim
 const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal = require('./data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal');
 const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal = require('./data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal');
 const euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal = require('./data/euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal');
+const appealUpToFeeChoice =  require('./data/appealUpToFeeChoice');
 const partialAppealStartedCaseDataES = require('./data/partial-appeal-started-es');
 const appealSubmittedCaseDataES = require('./data/appeal-submitted-es');
 const awaitingReasonsForAppealCaseDataES = require('./data/awaiting-reasons-for-appeal-es');
@@ -55,6 +56,7 @@ const outOfTimeAppealWithReasonForBeingLateAnEvidenceES =  require('./data/outOf
 const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES =  require('./data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal-es');
 const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppealES =  require('./data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal-es');
 const euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES =  require('./data/euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal-es');
+const appealUpToFeeChoiceES =  require('./data/appealUpToFeeChoice-es');
 
 module.exports = {
   partialAppealStartedCaseData,
@@ -87,6 +89,7 @@ module.exports = {
   appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal,
   appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal,
   euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal,
+  appealUpToFeeChoice,
   partialAppealStartedCaseDataES,
   appealSubmittedCaseDataES,
   awaitingReasonsForAppealCaseDataES,
@@ -113,5 +116,6 @@ module.exports = {
   outOfTimeAppealWithReasonForBeingLateAnEvidenceES,
   appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES,
   appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppealES,
-  euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES
+  euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES,
+  appealUpToFeeChoiceES
 };

@@ -1,19 +1,11 @@
 import { Request } from 'express';
 import { States } from '../data/states';
-import Logger, { getLogLabel } from './logger';
 
 const EA_HU_EUSS_APPEAL_TYPES = ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'];
 
-const logger: Logger = new Logger();
-const logLabel: string = getLogLabel(__filename);
-
 export function getFee(appeal: Appeal) {
-  logger.trace('getFee', logLabel);
   const { decisionHearingFeeOption } = appeal.application;
-  logger.trace(decisionHearingFeeOption, logLabel);
   const { feeWithHearing = null, feeWithoutHearing = null } = appeal;
-  logger.trace(feeWithHearing, logLabel);
-  logger.trace(feeWithoutHearing, logLabel);
   const fee = decisionHearingFeeOption === 'decisionWithHearing' ? feeWithHearing : feeWithoutHearing;
   if (fee) {
     return {

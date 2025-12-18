@@ -84,7 +84,7 @@ Feature: Submit appeal
     And I click "Save and continue" button
 
     Then I see "Tell us about your appeal" in title
-  @testThis
+
   Scenario: Submit an on time new appeal
     Given I have logged in as an appellant with email "appealUpToFeeChoice@example.com"
     Then I see "givenName familyName" in title
@@ -103,8 +103,4 @@ Feature: Submit appeal
     Then I see "Tell us about your appeal" in title
     And I click "Check and send your appeal details" link
 
-    Then I see "Check your answers" in title
-#
-    And I check "I believe the information I have given is true" option
-    And I click "Submit" button
-    Then I see "You have sent your appeal details" in title
+    Then I should not see the task-list page

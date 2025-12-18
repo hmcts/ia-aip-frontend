@@ -83,11 +83,11 @@ export async function bootstrap() {
   dyson.registerServices(documentManagementStoreApp, documentManagementStoreOptions, documentManagementStoreConfigs);
   documentManagementStoreServer = documentManagementStoreApp.listen(20003);
 
-  const s2sConfigs = dyson.getConfigurations();
+  const s2sConfigs = dyson.getConfigurations(s2sOptions);
   dyson.registerServices(s2sApp, s2sOptions, s2sConfigs);
   s2sServer = s2sApp.listen(20004);
 
-  const pcqConfigs = dyson.getConfigurations();
+  const pcqConfigs = dyson.getConfigurations(pcqOptions);
   dyson.registerServices(pcqApp, pcqOptions, pcqConfigs);
   pcqServer = pcqApp.listen(20005);
 }

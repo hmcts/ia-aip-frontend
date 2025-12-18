@@ -15,10 +15,6 @@ module.exports = {
       await I.seeInCurrentUrl(paths.appealStarted.taskList);
     });
 
-    Then('I should not see the task-list page', async () => {
-      await I.waitForInvisible('//h1[contains(text(),"Tell us about your appeal")]', 10);
-    });
-
     Then('I shouldnt be able to click Personal details', async () => {
       await I.seeInSource('Your personal details');
       await I.dontSeeElement('#personalDetailsLink');

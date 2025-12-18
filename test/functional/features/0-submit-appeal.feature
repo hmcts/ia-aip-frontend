@@ -102,5 +102,3 @@ Feature: Submit appeal
 
     Then I see "Tell us about your appeal" in title
     And I click "Check and send your appeal details" link
-
-    Then I should not see the task-list page

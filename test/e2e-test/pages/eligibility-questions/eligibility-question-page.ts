@@ -16,7 +16,7 @@ module.exports = {
       await I.checkOption('#answer-2');
       await I.click('Continue');
     });
-    When('I select No, I will pay later and click continue', async () => {
+    When('I select No, I will pay later', async () => {
       await I.checkOption('#answer-2');
     });
 

@@ -1,7 +1,8 @@
 #!groovy
 properties([
     parameters([
-        booleanParam(name: 'unitTestsBeforeStatic', defaultValue: false, description: 'Tick the checkbox to run Unit tests before Static checks')
+        booleanParam(name: 'unitTestsBeforeStatic', defaultValue: false, description: 'Tick the checkbox to run Unit tests before Static checks'),
+        booleanParam(name: 'functionalTestsBeforeStatic', defaultValue: true, description: 'Tick the checkbox to run Functional tests before Static checks'),
     ]),
     [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend'],
     pipelineTriggers([[$class: 'GitHubPushTrigger']])
@@ -81,6 +82,17 @@ withPipeline("nodejs", product, component) {
                 reportName           : "Code Coverage Report"
         ]
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
+      }
+    }
+    if (params.functionalTestsBeforeStatic) {
+      stage('Functional Tests') {
+        try {
+          yarnBuilder.yarn('test:functional')
+        } catch (Error) {
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/*'
+          unstable(message: "${STAGE_NAME} is unstable: " + Error.toString());
+          process.exit(1);
+        }
       }
     }
   }

@@ -3,17 +3,20 @@ import { Mockttp } from 'mockttp';
 
 export async function setupLoginRedirect(server: Mockttp) {
   await server.forPost('/login').thenCallback(async (request) => {
-    const bodyFormData = await request.body.getFormData();
-    const username = bodyFormData['body'] as string;
-    const state = bodyFormData['state'] as string;
-    const redirectUri = bodyFormData['redirect_uri'] as string;
+    const rawBody = request.body?.toString() ?? '{}';
+    const body = JSON.parse(rawBody);
+
+    const username = body.body;
+    const state = body.state;
+    const redirectUri = body.redirect_uri;
+
     cache.put('email', username);
 
     const stateParam = state ? `&state=${state}` : '';
     const redirectUrl = `${redirectUri}?code=123${stateParam}`;
 
     return {
-      status: 302,
+      statusCode: 302,
       headers: {
         location: redirectUrl
       }

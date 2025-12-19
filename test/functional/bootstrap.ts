@@ -11,6 +11,7 @@ import * as testStateHelper from '../e2e-test/testStateHelper';
 import ccdHandlers from '../mock/ccd/handlers';
 import dmHandlers from '../mock/document-management-store/handlers';
 import idamHandlers from '../mock/idam/handlers';
+import { setupPcqHealth } from '../mock/pcq/handlers/health';
 import { setupPostcodeLookup } from '../mock/postcode-lookup/handlers/postcodeLookup';
 import { setupLease } from '../mock/s2s/handlers/lease';
 (global as any).crypto = crypto;

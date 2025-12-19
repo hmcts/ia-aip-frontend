@@ -8,6 +8,18 @@ export async function setupLoginRedirect(server: Mockttp) {
     console.log('rawBody: ' + rawBody);
     const json = await rawBody.getJson();
     console.log('json: ' + json);
+    const buffer = await rawBody.getDecodedBuffer();
+    console.log('buffer: ' + buffer);
+    const text = await rawBody.getText();
+    console.log('text: ' + text);
+    const formData = await rawBody.getFormData();
+    console.log('formData: ' + formData);
+    for (let formDataKey in formData) {
+      console.log('formDataKey: ' + formDataKey);
+      console.log('formData value: ' + formData[formDataKey]);
+    }
+    const bufferString = buffer.toString();
+    console.log('bufferString: ' + bufferString);
     const body = JSON.parse(json.toString());
     console.log('body: ' + JSON.stringify(body));
     cache.put('email', body.username);

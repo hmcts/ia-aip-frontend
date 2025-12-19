@@ -24,7 +24,7 @@ export async function setupStartRepresentingYourself(server: Mockttp) {
     caseData.id = caseId;
     caseData.case_data.appellantPinInPost.expiryDate = expiryDate;
     return {
-      status: 200,
+      statusCode: 200,
       json: caseData
     };
   });

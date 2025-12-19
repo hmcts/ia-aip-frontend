@@ -43,7 +43,7 @@ export async function setupOtherEventStartEvent(server: Mockttp) {
     const caseId = match ? match[4] : '1';
     const eventType = match ? match[5] : 'editAppeal';
     return {
-      status: 200,
+      statusCode: 200,
       json: {
         token: `${eventType}Token`,
         case_details: {

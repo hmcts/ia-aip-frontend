@@ -23,7 +23,7 @@ export async function setupLoadHistoryV2(server: Mockttp) {
     const match = request.path.match(/\/cases\/([^/]+)\/events/);
     const caseId = match ? match[1] : '1';
     return {
-      status: 200,
+      statusCode: 200,
       json: caseIdToHistory[caseId] ?? caseIdToHistory['1']
     };
   });

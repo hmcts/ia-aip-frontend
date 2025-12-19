@@ -5,7 +5,7 @@ export async function setupTestHandler(server: Mockttp) {
     /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/event-triggers\/startAppeal\/token/
   ).thenCallback(async () => {
     return {
-      status: 200,
+      statusCode: 200,
       json: {
         token: 'startEventToken',
         case_details: {

@@ -4,7 +4,7 @@ import { documentForHandler } from './cdam-upload';
 export async function setupDmUpload(server: Mockttp) {
   await server.forPost('/documents').thenCallback(async () => {
     return {
-      status: 200,
+      statusCode: 200,
       json: {
         _embedded: {
           documents: [

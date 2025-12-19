@@ -12,7 +12,7 @@ export async function setupLoginPage(server: Mockttp) {
     if (skipLogin) {
       cache.put('email', 'skipped_login@hmcts.net');
       return {
-        status: 302,
+        statusCode: 302,
         headers: {
           location: `${redirectUri}?code=123${stateParam}`
         }
@@ -33,7 +33,7 @@ export async function setupLoginPage(server: Mockttp) {
             </body></html>
           `;
       return {
-        status: 200,
+        statusCode: 200,
         headers: { 'Content-Type': 'text/html' },
         body: html
       };

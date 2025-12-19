@@ -1,4 +1,3 @@
-import cache from 'memory-cache';
 import { Mockttp } from 'mockttp';
 import mockData from '../mock-case-data';
 
@@ -48,19 +47,12 @@ export async function setupLoadCases(server: Mockttp) {
     const userId = match ? match[1] : undefined;
     if (!userId) {
       return {
-        status: 400,
+        statusCode: 400,
         json: { error: 'Missing userId param' }
       };
     }
-    if (userId === '999') {
-      const caseData = cache.get('caseData');
-      return {
-        status: 200,
-        json: caseData ?? []
-      };
-    }
     return {
-      status: 200,
+      statusCode: 200,
       json: usersToCaseData[userId] ?? []
     };
   });

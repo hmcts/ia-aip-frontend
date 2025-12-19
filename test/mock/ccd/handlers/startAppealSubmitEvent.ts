@@ -5,7 +5,7 @@ export async function setupStartAppealSubmitEvent(server: Mockttp) {
     /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases/
   ).thenCallback(async () => {
     return {
-      status: 200,
+      statusCode: 200,
       json: {
         id: Math.floor(Math.random() * 10000000),
         jurisdiction: 'IA',

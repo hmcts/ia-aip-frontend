@@ -56,7 +56,7 @@ export async function setupOtherEventSubmitEvent(server: Mockttp) {
     const body = await request.body.getJson() as EventSubmitBody;
 
     return {
-      status: 200,
+      statusCode: 200,
       json: {
         id: Number(caseId),
         jurisdiction: 'IA',

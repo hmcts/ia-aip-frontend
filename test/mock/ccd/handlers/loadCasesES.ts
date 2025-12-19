@@ -41,7 +41,7 @@ export async function setupLoadCasesES(server: Mockttp) {
   await server.forPost('/searchCases').thenCallback(async (request) => {
     const userid = request.headers['userid'];
     return {
-      status: 200,
+      statusCode: 200,
       json: usersToCaseData[userid as string] ?? {}
     };
   });

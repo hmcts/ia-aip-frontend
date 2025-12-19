@@ -3,7 +3,7 @@ import { Mockttp } from 'mockttp';
 export async function setupPostcodeLookup(server: Mockttp) {
   await server.forGet('/search/places/v1/postcode').thenCallback(async () => {
     return {
-      status: 200,
+      statusCode: 200,
       json: {
         header: {
           uri: 'https://api.os.uk/search/places/v1/postcode/postcode?offset=0&postcode=W1W%207RT',

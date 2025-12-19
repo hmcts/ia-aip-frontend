@@ -44,7 +44,7 @@ export async function setupGetDetails(server: Mockttp) {
     const email = cache.get('email');
     const uid = emailToUserId[email] || defaultUserId;
     return {
-      status: 200,
+      statusCode: 200,
       json: {
         uid,
         email,

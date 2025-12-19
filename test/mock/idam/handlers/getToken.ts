@@ -10,7 +10,7 @@ export async function setupGetToken(server: Mockttp) {
 
   await server.forPost('/oauth2/token').thenCallback(async () => {
     return {
-      status: 200,
+      statusCode: 200,
       json: {
         access_token: token
       }

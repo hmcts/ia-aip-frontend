@@ -1,13 +1,15 @@
 import cache from 'memory-cache';
-import { Mockttp } from 'mockttp';
+import { CompletedBody, CompletedRequest, Mockttp } from 'mockttp';
 
 export async function setupLoginRedirect(server: Mockttp) {
-  await server.forPost('/login').thenCallback(async (request) => {
-    const rawBody = request.body?.toString() ?? '{}';
-    // tslint:disable-next-line:no-console
-    console.log('body: ' + rawBody);
-    const body = JSON.parse(rawBody);
-
+  await server.forPost('/login').thenCallback(async (request: CompletedRequest) => {
+    const rawBody: CompletedBody = request.body;
+    // tslint:disable:no-console
+    console.log('rawBody: ' + rawBody);
+    const json = await rawBody.getJson();
+    console.log('json: ' + json);
+    const body = JSON.parse(json.toString());
+    console.log('body: ' + JSON.stringify(body));
     cache.put('email', body.username);
 
     const stateParam = body.state ? `&state=${body.state}` : '';

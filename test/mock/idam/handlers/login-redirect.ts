@@ -4,6 +4,8 @@ import { Mockttp } from 'mockttp';
 export async function setupLoginRedirect(server: Mockttp) {
   await server.forPost('/login').thenCallback(async (request) => {
     const rawBody = request.body?.toString() ?? '{}';
+    // tslint:disable-next-line:no-console
+    console.log('body: ' + rawBody);
     const body = JSON.parse(rawBody);
 
     cache.put('email', body.username);

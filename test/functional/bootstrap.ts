@@ -45,6 +45,7 @@ export async function bootstrap() {
   await startMockServer(20002, [ setupPostcodeLookup ]);
   await startMockServer(20003, dmHandlers);
   await startMockServer(20004, [ setupLease ]);
+  await startMockServer(20005, [ setupPcqHealth ]);
   logger.trace(`servers set up`, logLabel);
 
   // Start main app

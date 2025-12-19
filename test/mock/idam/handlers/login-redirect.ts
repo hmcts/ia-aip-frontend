@@ -6,14 +6,10 @@ export async function setupLoginRedirect(server: Mockttp) {
     const rawBody = request.body?.toString() ?? '{}';
     const body = JSON.parse(rawBody);
 
-    const username = body.body;
-    const state = body.state;
-    const redirectUri = body.redirect_uri;
+    cache.put('email', body.username);
 
-    cache.put('email', username);
-
-    const stateParam = state ? `&state=${state}` : '';
-    const redirectUrl = `${redirectUri}?code=123${stateParam}`;
+    const stateParam = body.state ? `&state=${body.state}` : '';
+    const redirectUrl = `${body.redirect_uri}?code=123${stateParam}`;
 
     return {
       statusCode: 302,

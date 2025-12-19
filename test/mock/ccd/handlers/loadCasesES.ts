@@ -1,4 +1,3 @@
-import cache from 'memory-cache';
 import { Mockttp } from 'mockttp';
 import mockData from '../mock-case-data';
 
@@ -20,28 +19,27 @@ const usersToCaseData: Record<string, any> = {
   '16': mockData.outOfTimeDecisionInTimeES,
   '17': mockData.uploadAddendumEvidenceES,
   '18': mockData.decidedES,
-  '19': mockData.ftpaOutOfTimeApplicationStartedES
+  '19': mockData.ftpaOutOfTimeApplicationStartedES,
+  '21': mockData.appealWithHomeOfficeReferenceES,
+  '22': mockData.appealWithHomeOfficeDetailsES,
+  '23': mockData.appealWithHomeOfficeDetailsAndNameES,
+  '24': mockData.appealWithHomeOfficeDetailsNameAndDateOfBirthES,
+  '25': mockData.appealWithHomeOfficeDetailsNameDateOfBirthAndNationalityES,
+  '26': mockData.appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddressES,
+  '28': mockData.outOfTimeAppealWithReasonForBeingLateAnEvidenceES,
+  '29': mockData.appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES,
+  '30': mockData.appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppealES,
+  '31': mockData.euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES,
+  '32': mockData.endedAppealES,
+  '33': mockData.outOfTimeDecisionGrantedES,
+  '34': mockData.outOfTimeDecisionRejectedES,
+  '35': mockData.outOfTimeDecisionInTimeES,
+  '36': mockData.appealUpToFeeChoiceES
 };
 
 export async function setupLoadCasesES(server: Mockttp) {
   await server.forPost('/searchCases').thenCallback(async (request) => {
     const userid = request.headers['userid'];
-    if (userid === '999') {
-      const caseData = cache.get('caseData');
-      if (caseData) {
-        return {
-          status: 200,
-          json: {
-            total: 1,
-            cases: caseData
-          }
-        };
-      }
-      return {
-        status: 200,
-        json: {}
-      };
-    }
     return {
       status: 200,
       json: usersToCaseData[userid as string] ?? {}

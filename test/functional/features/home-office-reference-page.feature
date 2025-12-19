@@ -4,8 +4,7 @@ Feature: Home office reference page 3
   I want to be able to enter a home office reference number
 
   Scenario: Entering a Home Office reference number
-    Given I have a blank appeal
-    And I have logged in
+    Given I have logged in as an appellant in state "appealStarted"
     And I am on the home office reference page
     When I click "Save for later" button
     Then I am on the overview page

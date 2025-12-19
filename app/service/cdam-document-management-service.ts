@@ -7,7 +7,7 @@ import Logger, { getLogLabel } from '../utils/logger';
 import { documentIdToDocStoreUrl } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 
-const cdamDocumentManagementBaseUrl = config.get('cdamDocumentManagement.apiUrl');
+const cdamDocumentManagementBaseUrl: string = config.get('cdamDocumentManagement.apiUrl');
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
@@ -38,7 +38,7 @@ enum Classification {
   restricted = 'RESTRICTED'
 }
 
-class CdamUploadData {
+export class CdamUploadData {
   file: Express.Multer.File;
   classification: Classification;
   caseTypeId: string;
@@ -178,7 +178,6 @@ class CdamDocumentManagementService {
 
     return documentId;
   }
-
 }
 
 export {

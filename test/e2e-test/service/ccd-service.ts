@@ -10,9 +10,9 @@ const s2sUrl: string = config.get('s2s.url');
 const microServiceName: string = config.get('s2s.microserviceName');
 const otp = require('otp');
 
-const ccdBaseUrl = config.get('ccd.apiUrl');
-const jurisdictionId = config.get('ccd.jurisdictionId');
-const caseType = config.get('ccd.caseType');
+const ccdBaseUrl: string = config.get('ccd.apiUrl');
+const jurisdictionId: string = config.get('ccd.jurisdictionId');
+const caseType: string = config.get('ccd.caseType');
 const legalRepUserName: string = config.get('testAccounts.testLawFirmAUsername');
 const legalRepPassword: string = process.env.TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD;
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Request } from 'express';
 import { AuthenticationService } from '../../../app/service/authentication-service';
-import { DmDocumentManagementService } from '../../../app/service/dm-document-management-service';
+import { DmDocumentManagementService, DmUploadData } from '../../../app/service/dm-document-management-service';
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
 import Logger from '../../../app/utils/logger';
@@ -132,6 +132,97 @@ describe('dm-document-management-service', () => {
         const documentManagementService = new DmDocumentManagementService(null);
         const documentMap = documentManagementService.removeFromDocumentMapper('anotherId', req.session.appeal.documentMap);
         expect(documentMap.length).to.be.eq(1);
+      });
+    });
+  });
+
+  describe('Private methods', () => {
+    let documentManagementService: DmDocumentManagementService;
+    let authenticationService: AuthenticationService;
+
+    beforeEach(() => {
+      authenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+      documentManagementService = new DmDocumentManagementService(authenticationService);
+    });
+
+    describe('upload', () => {
+      const fileMock = {
+        fieldname: 'file',
+        originalname: 'file.txt',
+        encoding: '7bit',
+        mimetype: 'text/plain',
+        size: 4,
+        buffer: Buffer.from('test'),
+        stream: {} as any,
+        destination: '',
+        filename: '',
+        path: ''
+      };
+      it('should call axios.post with correct params and return stringified data', async () => {
+        const axiosPostStub = sandbox.stub(axios, 'post').resolves({ data: { foo: 'bar' } });
+        const formGetHeadersStub = sandbox.stub().returns({ 'content-type': 'multipart/form-data' });
+        sandbox.stub(require('form-data').prototype, 'append').callsFake(sandbox.stub());
+        sandbox.stub(require('form-data').prototype, 'getHeaders').callsFake(formGetHeadersStub);
+        const headers = { userToken: 'user', serviceToken: 'service' };
+        const uploadData = {
+          file: fileMock,
+          role: 'citizen',
+          classification: 'RESTRICTED'
+        };
+        const result = await documentManagementService['upload']('userId', headers, uploadData as DmUploadData);
+        expect(axiosPostStub).to.have.been.calledOnce;
+        expect(result).to.eq(JSON.stringify({ foo: 'bar' }));
+      });
+      it('should throw if axios.post fails', async () => {
+        const axiosPostStub = sandbox.stub(require('axios'), 'post').rejects(new Error('fail'));
+        const formGetHeadersStub = sandbox.stub().returns({});
+        sandbox.stub(require('form-data').prototype, 'getHeaders').callsFake(formGetHeadersStub);
+        const headers = { userToken: 'user', serviceToken: 'service' };
+        const uploadData = {
+          file: fileMock,
+          role: 'citizen',
+          classification: 'RESTRICTED'
+        };
+        expect(documentManagementService['upload']('userId', headers, uploadData as DmUploadData)).to.be.rejectedWith('fail');
+        axiosPostStub.restore();
+      });
+    });
+
+    describe('delete', () => {
+      it('should call axios.delete with correct params', async () => {
+        const axiosDeleteStub = sandbox.stub(axios, 'delete').resolves({ status: 204 });
+        const headers = { userToken: 'user', serviceToken: 'service' };
+        const fileLocation = 'http://file/location';
+        const result = await documentManagementService['delete']('userId', headers, fileLocation);
+        expect(axiosDeleteStub).to.have.been.calledWith(fileLocation, sinon.match.any);
+        expect(result).to.deep.equal({ status: 204 });
+        axiosDeleteStub.restore();
+      });
+      it('should throw if axios.delete fails', async () => {
+        const axiosDeleteStub = sandbox.stub(axios, 'delete').rejects(new Error('fail'));
+        const headers = { userToken: 'user', serviceToken: 'service' };
+        const fileLocation = 'http://file/location';
+        expect(documentManagementService['delete']('userId', headers, fileLocation)).to.be.rejectedWith('fail');
+        axiosDeleteStub.restore();
+      });
+    });
+
+    describe('fetchBinaryFile', () => {
+      it('should call axios.get with correct params and responseType', async () => {
+        const axiosGetStub = sandbox.stub(axios, 'get').resolves({ data: Buffer.from('binary') });
+        const headers = { userToken: 'user', serviceToken: 'service' };
+        const fileLocation = 'http://file/location';
+        const result = await documentManagementService['fetchBinaryFile']('userId', headers, fileLocation);
+        expect(axiosGetStub).to.have.been.calledWith(fileLocation + '/binary', sinon.match.hasNested('responseType', 'arraybuffer'));
+        expect(result).to.eq(JSON.stringify(Buffer.from('binary')));
+        axiosGetStub.restore();
+      });
+      it('should throw if axios.get fails', async () => {
+        const axiosGetStub = sandbox.stub(axios, 'get').rejects(new Error('fail'));
+        const headers = { userToken: 'user', serviceToken: 'service' };
+        const fileLocation = 'http://file/location';
+        expect(documentManagementService['fetchBinaryFile']('userId', headers, fileLocation)).to.be.rejectedWith('fail');
+        axiosGetStub.restore();
       });
     });
   });

@@ -1,8 +1,8 @@
 import moment from 'moment';
 
 export default {
-  "total": 1,
-  "cases": [
+  'total': 1,
+  'cases': [
     {
       'id': 26,
       'jurisdiction': 'IA',

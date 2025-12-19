@@ -96,15 +96,15 @@ export default {
     'paAppealTypeAipPaymentOption': 'payLater',
     'remissionEcEvidenceDocuments': [],
     'sendDirectionActionAvailable': 'No',
-    "uploadTheNoticeOfDecisionDocs": [
+    'uploadTheNoticeOfDecisionDocs': [
       {
-        "id": "1cdbd50e-3d6b-49e5-b7b1-98efef7ddf8c",
-        "value": {
-          "tag": "additionalEvidence",
-          "document": {
-            "document_filename": "test_doc.pdf",
-            "document_url": "http://dm-store:4506/documents/b3c88303-5186-4605-881d-bbe4dfd2ee1a",
-            "document_binary_url": "http://dm-store:4506/documents/b3c88303-5186-4605-881d-bbe4dfd2ee1a/binary"
+        'id': '1cdbd50e-3d6b-49e5-b7b1-98efef7ddf8c',
+        'value': {
+          'tag': 'additionalEvidence',
+          'document': {
+            'document_filename': 'test_doc.pdf',
+            'document_url': 'http://dm-store:4506/documents/b3c88303-5186-4605-881d-bbe4dfd2ee1a',
+            'document_binary_url': 'http://dm-store:4506/documents/b3c88303-5186-4605-881d-bbe4dfd2ee1a/binary'
           }
         }
       }

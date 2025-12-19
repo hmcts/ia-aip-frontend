@@ -1,6 +1,6 @@
 export default {
-  "total": 1,
-  "cases": [
+  'total': 1,
+  'cases': [
     {
       'id': 21,
       'jurisdiction': 'IA',

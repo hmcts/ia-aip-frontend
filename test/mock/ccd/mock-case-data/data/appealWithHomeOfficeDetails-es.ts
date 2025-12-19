@@ -1,8 +1,10 @@
-const appealWithHomeOfficeReferenceES = {
+import moment from 'moment';
+
+export default {
   "total": 1,
   "cases": [
     {
-      'id': 21,
+      'id': 22,
       'jurisdiction': 'IA',
       'state': 'appealStarted',
       'version': 8,
@@ -11,9 +13,10 @@ const appealWithHomeOfficeReferenceES = {
       'last_modified': '2019-11-13T15:35:31.356',
       'security_classification': 'PUBLIC',
       'case_data': {
-        'id': '21',
+        'journeyType': 'aip',
+        'id': '22',
         'homeOfficeReferenceNumber': 'A1111111',
-        'journeyType': 'aip'
+        'homeOfficeDecisionDate': moment().format('YYYY-MM-DD')
       },
       'data_classification': {
         'journeyType': 'PUBLIC',
@@ -31,5 +34,3 @@ const appealWithHomeOfficeReferenceES = {
     }
   ]
 }
-
-module.exports = { ...appealWithHomeOfficeReferenceES };

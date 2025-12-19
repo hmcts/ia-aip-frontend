@@ -1,10 +1,8 @@
-const moment = require('moment');
-
-const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppealES = {
+export default {
   "total": 1,
   "cases": [
     {
-      'id': 30,
+      'id': 21,
       'jurisdiction': 'IA',
       'state': 'appealStarted',
       'version': 8,
@@ -13,25 +11,9 @@ const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppealES 
       'last_modified': '2019-11-13T15:35:31.356',
       'security_classification': 'PUBLIC',
       'case_data': {
-        'journeyType': 'aip',
-        'id': '30',
+        'id': '21',
         'homeOfficeReferenceNumber': 'A1111111',
-        'homeOfficeDecisionDate': moment().format('YYYY-MM-DD'),
-        'appellantGivenNames': 'givenName',
-        'appellantFamilyName': 'familyName',
-        'appellantDateOfBirth': '1981-01-01',
-        'subscriptions': [{
-          'id': 1,
-          'value': {
-            'subscriber': 'appellant',
-            'wantsEmail': 'No',
-            'email': null,
-            'wantsSms': 'Yes',
-            'mobileNumber': '07899999999'
-          }
-        }],
-        'appealType': 'protection',
-        'uploadTheNoticeOfDecisionDocs': []
+        'journeyType': 'aip'
       },
       'data_classification': {
         'journeyType': 'PUBLIC',
@@ -49,5 +31,3 @@ const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppealES 
     }
   ]
 }
-
-module.exports = { ...appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppealES };

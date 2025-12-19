@@ -132,7 +132,6 @@ export default {
         'description': 'Why respondent submitted evidence after bundling.',
         'dateUploaded': '23 June 2022'
       }
-
     ],
     'appealReviewOutcome': 'decisionMaintained',
     'hearingCentre': 'birmingham'

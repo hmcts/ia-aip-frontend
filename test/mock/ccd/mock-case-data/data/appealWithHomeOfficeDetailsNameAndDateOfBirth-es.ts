@@ -1,6 +1,6 @@
-const moment = require('moment');
+import moment from 'moment';
 
-const appealWithHomeOfficeDetailsNameAndDateOfBirthES = {
+export default {
   "total": 1,
   "cases": [
     {
@@ -38,6 +38,3 @@ const appealWithHomeOfficeDetailsNameAndDateOfBirthES = {
     }
   ]
 }
-
-module.exports = { ...appealWithHomeOfficeDetailsNameAndDateOfBirthES };
-

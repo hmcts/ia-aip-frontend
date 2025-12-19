@@ -1,10 +1,10 @@
-const moment = require('moment');
+import moment from 'moment';
 
-const outOfTimeAppealWithReasonForBeingLateAnEvidenceES = {
+export default {
   "total": 1,
   "cases": [
     {
-      'id': 28,
+      'id': 31,
       'jurisdiction': 'IA',
       'state': 'appealStarted',
       'version': 8,
@@ -14,16 +14,9 @@ const outOfTimeAppealWithReasonForBeingLateAnEvidenceES = {
       'security_classification': 'PUBLIC',
       'case_data': {
         'journeyType': 'aip',
-        'id': '28',
-        'appealType': 'protection',
+        'id': '31',
         'homeOfficeReferenceNumber': 'A1111111',
-        'homeOfficeDecisionDate': moment().subtract(20, 'days').format('YYYY-MM-DD'),
-        'submissionOutOfTime': 'Yes',
-        'applicationOutOfTimeExplanation': 'The reason why the appeal is late',
-        'applicationOutOfTimeDocument': {
-          'document_filename': '1581607687239-fake.png',
-          'document_url': 'http://localhost:20003/documents/08a7d468-cd85-4a5c-832d-f0534b524909'
-        },
+        'homeOfficeDecisionDate': moment().format('YYYY-MM-DD'),
         'appellantGivenNames': 'givenName',
         'appellantFamilyName': 'familyName',
         'appellantDateOfBirth': '1981-01-01',
@@ -50,6 +43,10 @@ const outOfTimeAppealWithReasonForBeingLateAnEvidenceES = {
             'mobileNumber': '07899999999'
           }
         }],
+        'appealType': 'refusalOfHumanRights',
+        'feeWithoutHearing': '80',
+        'feeCode': 'abc',
+        'feeVersion': '2',
         'uploadTheNoticeOfDecisionDocs': []
       },
       'data_classification': {
@@ -68,5 +65,3 @@ const outOfTimeAppealWithReasonForBeingLateAnEvidenceES = {
     }
   ]
 }
-
-module.exports = { ...outOfTimeAppealWithReasonForBeingLateAnEvidenceES };

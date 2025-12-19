@@ -1,10 +1,10 @@
-const moment = require('moment');
+import moment from 'moment';
 
-const appealWithHomeOfficeDetailsES = {
+export default {
   "total": 1,
   "cases": [
     {
-      'id': 22,
+      'id': 25,
       'jurisdiction': 'IA',
       'state': 'appealStarted',
       'version': 8,
@@ -14,9 +14,21 @@ const appealWithHomeOfficeDetailsES = {
       'security_classification': 'PUBLIC',
       'case_data': {
         'journeyType': 'aip',
-        'id': '22',
+        'id': '25',
+        'appealType': 'protection',
         'homeOfficeReferenceNumber': 'A1111111',
-        'homeOfficeDecisionDate': moment().format('YYYY-MM-DD')
+        'homeOfficeDecisionDate': moment().format('YYYY-MM-DD'),
+        'appellantGivenNames': 'givenName',
+        'appellantFamilyName': 'familyName',
+        'appellantDateOfBirth': '1981-01-01',
+        'appellantNationalities': [
+          {
+            'id': '1',
+            'value': {
+              'code': 'FI'
+            }
+          }
+        ]
       },
       'data_classification': {
         'journeyType': 'PUBLIC',
@@ -34,5 +46,3 @@ const appealWithHomeOfficeDetailsES = {
     }
   ]
 }
-
-module.exports = { ...appealWithHomeOfficeDetailsES };

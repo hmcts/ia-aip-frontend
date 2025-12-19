@@ -1,10 +1,10 @@
-const moment = require('moment');
+import moment from 'moment';
 
-const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES = {
+export default {
   "total": 1,
   "cases": [
     {
-      'id': 29,
+      'id': 28,
       'jurisdiction': 'IA',
       'state': 'appealStarted',
       'version': 8,
@@ -14,9 +14,16 @@ const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAp
       'security_classification': 'PUBLIC',
       'case_data': {
         'journeyType': 'aip',
-        'id': '29',
+        'id': '28',
+        'appealType': 'protection',
         'homeOfficeReferenceNumber': 'A1111111',
-        'homeOfficeDecisionDate': moment().format('YYYY-MM-DD'),
+        'homeOfficeDecisionDate': moment().subtract(20, 'days').format('YYYY-MM-DD'),
+        'submissionOutOfTime': 'Yes',
+        'applicationOutOfTimeExplanation': 'The reason why the appeal is late',
+        'applicationOutOfTimeDocument': {
+          'document_filename': '1581607687239-fake.png',
+          'document_url': 'http://localhost:20003/documents/08a7d468-cd85-4a5c-832d-f0534b524909'
+        },
         'appellantGivenNames': 'givenName',
         'appellantFamilyName': 'familyName',
         'appellantDateOfBirth': '1981-01-01',
@@ -43,7 +50,6 @@ const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAp
             'mobileNumber': '07899999999'
           }
         }],
-        'appealType': 'protection',
         'uploadTheNoticeOfDecisionDocs': []
       },
       'data_classification': {
@@ -62,5 +68,3 @@ const appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAp
     }
   ]
 }
-
-module.exports = { ...appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES };

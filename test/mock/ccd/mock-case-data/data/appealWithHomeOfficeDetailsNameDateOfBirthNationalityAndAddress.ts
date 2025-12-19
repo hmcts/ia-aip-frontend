@@ -1,7 +1,7 @@
-const moment = require('moment');
+import moment from 'moment';
 
-const euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal = {
-  'id': 31,
+export default {
+  'id': 26,
   'jurisdiction': 'IA',
   'state': 'appealStarted',
   'version': 8,
@@ -11,7 +11,9 @@ const euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAn
   'security_classification': 'PUBLIC',
   'case_data': {
     'journeyType': 'aip',
-    'id': '31',
+    'id': '26',
+    'appealType': 'protection',
+    'appellantInUk': 'Yes',
     'homeOfficeReferenceNumber': 'A1111111',
     'homeOfficeDecisionDate': moment().format('YYYY-MM-DD'),
     'appellantGivenNames': 'givenName',
@@ -29,22 +31,7 @@ const euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAn
       'AddressLine1': 'Address line 1',
       'PostTown': 'Town',
       'PostCode': 'CM15 9BN'
-    },
-    'subscriptions': [{
-      'id': 1,
-      'value': {
-        'subscriber': 'appellant',
-        'wantsEmail': 'No',
-        'email': null,
-        'wantsSms': 'Yes',
-        'mobileNumber': '07899999999'
-      }
-    }],
-    'appealType': 'refusalOfHumanRights',
-    'feeWithoutHearing': '80',
-    'feeCode': 'abc',
-    'feeVersion': '2',
-    'uploadTheNoticeOfDecisionDocs': []
+    }
   },
   'data_classification': {
     'journeyType': 'PUBLIC',
@@ -60,6 +47,3 @@ const euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAn
     'homeOfficeReferenceNumber': 'PUBLIC'
   }
 };
-
-module.exports = { ...euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal };
-

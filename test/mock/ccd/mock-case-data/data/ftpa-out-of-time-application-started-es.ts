@@ -29,7 +29,6 @@ export default {
               'uniqueId': '54188ea2-ce30-4bbd-8796-635bdd0cf09c',
               'explanation': 'The Home Office has replied to your Appeal Skeleton Argument and evidence. You should review their response.\n\n# Next steps\n\nReview the Home Office response. If you want to respond to what they have said, you should email the Tribunal.\n\nIf you do not respond by the date indicated below, the case will automatically go to hearing.',
               'previousDates': [
-
               ]
             }
           },
@@ -44,7 +43,6 @@ export default {
               'explanation': "You have until the date indicated below to review the appellant's argument and evidence. You must explain whether the appellant makes a valid case for overturning the original decision.\n\nYou must respond to the Tribunal and tell them:\n\n- whether you oppose all or parts of the appellant's case\n- what your grounds are for opposing the case\n- which of the issues are agreed or not agreed\n- whether there are any further issues you wish to raise\n- whether you are prepared to withdraw to grant\n- whether the appeal can be resolved without a hearing\n\nNext steps\n\nIf you do not respond in time the Tribunal will decide how the case should proceed.",
               'directionType': 'requestRespondentReview',
               'previousDates': [
-
               ]
             }
           },
@@ -59,7 +57,6 @@ export default {
               'explanation': 'You must now tell us why you think the Home Office decision to refuse your claim is wrong.',
               'directionType': 'requestReasonsForAppeal',
               'previousDates': [
-
               ]
             }
           },
@@ -74,7 +71,6 @@ export default {
               'explanation': 'A notice of appeal has been lodged against this decision.\n\nYou must now upload all documents to the Tribunal. The Tribunal will make them accessible to the other party. You have until the date indicated below to supply the documents.\n\nYou must include:\n- the notice of decision\n- any other document provided to the appellant giving reasons for that decision\n- any statements of evidence\n- the application form\n- any record of interview with the appellant in relation to the decision being appealed\n- any other unpublished documents on which you rely\n- the notice of any other appealable decision made in relation to the appellant',
               'directionType': 'requestRespondentEvidence',
               'previousDates': [
-
               ]
             }
           }
@@ -92,7 +88,6 @@ export default {
                   'value': {
                     'name': 'Hearing documents',
                     'documents': [
-
                     ],
                     'sortIndex': 0
                   }
@@ -144,7 +139,6 @@ export default {
                   'value': {
                     'name': 'Clarifying Questions',
                     'documents': [
-
                     ],
                     'sortIndex': 3
                   }
@@ -154,7 +148,6 @@ export default {
                   'value': {
                     'name': 'Additional evidence from appellant',
                     'documents': [
-
                     ],
                     'sortIndex': 4
                   }
@@ -195,7 +188,6 @@ export default {
               ],
               'fileName': 'HU 50051 2023-ttt-hearing-bundle.pdf',
               'documents': [
-
               ],
               'stitchStatus': 'DONE',
               'hasCoversheets': 'Yes',
@@ -383,7 +375,6 @@ export default {
         'feePaymentAppealType': 'Yes',
         'localAuthorityPolicy': {
           'Organisation': {
-
           },
           'OrgPolicyCaseAssignedRole': '[LEGALREPRESENTATIVE]'
         },
@@ -405,7 +396,6 @@ export default {
           'uniqueId': '54188ea2-ce30-4bbd-8796-635bdd0cf09c',
           'explanation': 'The Home Office has replied to your Appeal Skeleton Argument and evidence. You should review their response.\n\n# Next steps\n\nReview the Home Office response. If you want to respond to what they have said, you should email the Tribunal.\n\nIf you do not respond by the date indicated below, the case will automatically go to hearing.',
           'previousDates': [
-
           ]
         },
         'listCaseHearingCentre': 'decisionWithoutHearing',
@@ -424,7 +414,6 @@ export default {
         'homeOfficeDecisionDate': '2023-04-01',
         'appealDecisionAvailable': 'Yes',
         'appealGroundsForDisplay': [
-
         ],
         'appealResponseAvailable': 'Yes',
         'appellantNameForDisplay': 'fff ttt',
@@ -595,7 +584,6 @@ export default {
                 'explanation': 'PUBLIC',
                 'previousDates': {
                   'value': [
-
                   ],
                   'classification': 'PUBLIC'
                 }
@@ -613,7 +601,6 @@ export default {
                 'directionType': 'PUBLIC',
                 'previousDates': {
                   'value': [
-
                   ],
                   'classification': 'PUBLIC'
                 }
@@ -631,7 +618,6 @@ export default {
                 'directionType': 'PUBLIC',
                 'previousDates': {
                   'value': [
-
                   ],
                   'classification': 'PUBLIC'
                 }
@@ -649,7 +635,6 @@ export default {
                 'directionType': 'PUBLIC',
                 'previousDates': {
                   'value': [
-
                   ],
                   'classification': 'PUBLIC'
                 }
@@ -674,7 +659,6 @@ export default {
                         'name': 'PUBLIC',
                         'documents': {
                           'value': [
-
                           ],
                           'classification': 'PUBLIC'
                         },
@@ -727,7 +711,6 @@ export default {
                         'name': 'PUBLIC',
                         'documents': {
                           'value': [
-
                           ],
                           'classification': 'PUBLIC'
                         },
@@ -740,7 +723,6 @@ export default {
                         'name': 'PUBLIC',
                         'documents': {
                           'value': [
-
                           ],
                           'classification': 'PUBLIC'
                         },
@@ -781,7 +763,6 @@ export default {
                 'fileName': 'PUBLIC',
                 'documents': {
                   'value': [
-
                   ],
                   'classification': 'PUBLIC'
                 },
@@ -983,7 +964,6 @@ export default {
           'value': {
             'Organisation': {
               'value': {
-
               },
               'classification': 'PUBLIC'
             },
@@ -1012,7 +992,6 @@ export default {
             'explanation': 'PUBLIC',
             'previousDates': {
               'value': [
-
               ],
               'classification': 'PUBLIC'
             }

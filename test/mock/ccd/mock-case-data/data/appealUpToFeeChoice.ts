@@ -1,6 +1,6 @@
-const moment = require('moment');
+import moment from 'moment';
 
-const appealUpToFeeChoice = {
+export default {
   'id': 36,
   'jurisdiction': 'IA',
   'state': 'appealStarted',
@@ -144,6 +144,3 @@ const appealUpToFeeChoice = {
     'homeOfficeReferenceNumber': 'PUBLIC'
   }
 };
-
-module.exports = { ...appealUpToFeeChoice };
-

@@ -1,6 +1,6 @@
-const moment = require('moment');
+import moment from 'moment';
 
-const appealUpToFeeChoiceES = {
+export default {
   "total": 1,
   "cases": [
     {
@@ -149,6 +149,3 @@ const appealUpToFeeChoiceES = {
     }
   ]
 };
-
-module.exports = { ...appealUpToFeeChoiceES };
-

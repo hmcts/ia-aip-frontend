@@ -59,7 +59,6 @@ export default {
               'dateSent': '2020-06-10',
               'explanation': 'You need to attend a case management appointment. This is a meeting with a Tribunal Caseworker to talk about your appeal. A Home Office representative may also be at the meeting.',
               'previousDates': []
-
             }
           },
           {

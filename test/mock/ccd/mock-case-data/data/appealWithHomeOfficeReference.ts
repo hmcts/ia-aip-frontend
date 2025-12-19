@@ -1,7 +1,5 @@
-const moment = require('moment');
-
-const appealWithHomeOfficeDetailsAndName = {
-  'id': 23,
+export default {
+  'id': 21,
   'jurisdiction': 'IA',
   'state': 'appealStarted',
   'version': 8,
@@ -10,13 +8,9 @@ const appealWithHomeOfficeDetailsAndName = {
   'last_modified': '2019-11-13T15:35:31.356',
   'security_classification': 'PUBLIC',
   'case_data': {
-    'journeyType': 'aip',
-    'id': '23',
-    'appealType': 'protection',
+    'id': '21',
     'homeOfficeReferenceNumber': 'A1111111',
-    'homeOfficeDecisionDate': moment().format('YYYY-MM-DD'),
-    'appellantGivenNames': 'givenName',
-    'appellantFamilyName': 'familyName'
+    'journeyType': 'aip'
   },
   'data_classification': {
     'journeyType': 'PUBLIC',
@@ -32,6 +26,3 @@ const appealWithHomeOfficeDetailsAndName = {
     'homeOfficeReferenceNumber': 'PUBLIC'
   }
 };
-
-module.exports = { ...appealWithHomeOfficeDetailsAndName };
-

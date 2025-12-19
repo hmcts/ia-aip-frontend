@@ -3,7 +3,6 @@ import { setupLoadCasesES } from './loadCasesES';
 import { setupLoadHistoryV2 } from './loadHistoryV2';
 import { setupOtherEventStartEvent } from './otherEventStartEvent';
 import { setupOtherEventSubmitEvent } from './otherEventSubmitEvent';
-import { setupSetupCase } from './setupCase';
 import { setupStartAppealStartEvent } from './startAppealStartEvent';
 import { setupStartAppealSubmitEvent } from './startAppealSubmitEvent';
 import { setupStartRepresentingYourself } from './startRepresentingYourself';
@@ -15,7 +14,6 @@ export default [
   setupLoadHistoryV2,
   setupOtherEventStartEvent,
   setupOtherEventSubmitEvent,
-  setupSetupCase,
   setupStartAppealStartEvent,
   setupStartAppealSubmitEvent,
   setupStartRepresentingYourself,

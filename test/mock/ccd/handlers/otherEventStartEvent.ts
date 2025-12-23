@@ -36,7 +36,7 @@ function getCurrentState(eventType: string): string {
 export async function setupOtherEventStartEvent(server: Mockttp) {
   await server.forGet(
     /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/event-triggers\/([^/]+)\/token/
-  ).thenCallback(async (request) => {
+  ).always().thenCallback(async (request) => {
     const match = request.url.match(
       /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/event-triggers\/([^/]+)\/token/
     );

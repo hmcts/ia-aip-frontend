@@ -55,7 +55,7 @@ export const documentForHandler = {
 };
 
 export async function setupCdamUpload(server: Mockttp) {
-  await server.forPost('/cases/documents').thenCallback(async () => {
+  await server.forPost('/cases/documents').always().thenCallback(async () => {
     return {
       statusCode: 200,
       json: {

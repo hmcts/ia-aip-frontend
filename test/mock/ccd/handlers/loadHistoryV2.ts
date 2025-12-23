@@ -19,7 +19,7 @@ const caseIdToHistory: Record<string, any> = {
 };
 
 export async function setupLoadHistoryV2(server: Mockttp) {
-  await server.forGet(/\/cases\/([^/]+)\/events/).thenCallback(async (request) => {
+  await server.forGet(/\/cases\/([^/]+)\/events/).always().thenCallback(async (request) => {
     const match = request.url.match(/\/cases\/([^/]+)\/events/);
     const caseId = match ? match[1] : '1';
     return {

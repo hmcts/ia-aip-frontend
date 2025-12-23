@@ -3,7 +3,7 @@ import { Mockttp } from 'mockttp';
 export async function setupStartAppealStartEvent(server: Mockttp) {
   await server.forGet(
     /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/event-triggers\/startAppeal\/token/
-  ).thenCallback(async () => {
+  ).always().thenCallback(async () => {
     return {
       statusCode: 200,
       json: {

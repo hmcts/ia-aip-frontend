@@ -11,7 +11,7 @@ function expiryDaysFromNow(days: number): string {
 export async function setupStartRepresentingYourself(server: Mockttp) {
   await server.forGet(
     /\/caseworkers\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)/
-  ).thenCallback(async (request) => {
+  ).always().thenCallback(async (request) => {
     const match = request.url.match(
       /\/caseworkers\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)/
     );

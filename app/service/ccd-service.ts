@@ -157,7 +157,7 @@ class CcdService {
     logger.trace('updateEventResponse.event_id: ' + updateEventResponse.event_id, logLabel);
     return this.submitUpdateAppeal(userId, updatedCase.id, headers, {
       event: {
-        id: updateEventResponse.event_id,
+        id: updateEventResponse.event_id ?? event.id,
         summary: event.summary,
         description: event.summary
       },

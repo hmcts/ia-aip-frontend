@@ -36,10 +36,10 @@ function getCurrentState(eventType: string): string {
 export async function setupOtherEventStartEvent(server: Mockttp) {
   await server.forGet()
     .always()
-    .withUrlMatching(/^.*\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/event-triggers\/([^/]+)\/token(?:\?.*)?$/)
+    .withUrlMatching(/^.*\/citizens\/([^\/]+)\/jurisdictions\/([^\/]+)\/case-types\/([^\/]+)\/cases\/([^\/]+)\/event-triggers\/([^\/]+)\/token(?:\?.*)?$/)
     .thenCallback(async (request) => {
       const match = request.path.match(
-        /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/event-triggers\/([^/]+)\/token/
+        /\/citizens\/([^\/]+)\/jurisdictions\/([^\/]+)\/case-types\/([^\/]+)\/cases\/([^\/]+)\/event-triggers\/([^\/]+)\/token/
       );
       const caseId = match ? match[4] : '1';
       const eventType = match ? match[5] : 'editAppeal';

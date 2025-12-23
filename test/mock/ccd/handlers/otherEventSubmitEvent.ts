@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import querystring from 'querystring';
 
 type EventSubmitBody = {
   data: Record<string, any>;
@@ -49,11 +50,17 @@ export async function setupOtherEventSubmitEvent(server: Mockttp) {
   await server.forPost(
     /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/events/
   ).thenCallback(async (request) => {
-    const match = request.path.match(
+    const match = request.url.match(
       /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/events/
     );
     const caseId = match ? match[4] : '1';
-    const body = await request.body.getJson() as EventSubmitBody;
+    // tslint:disable:no-console
+    console.log('caseId: ' + caseId);
+    const text = await request.body.getText();
+    console.log('text: ' + text);
+    const queryString = querystring.parse(text);
+    console.log('queryString: ' + queryString);
+    const body = JSON.parse(text) as EventSubmitBody;
 
     return {
       statusCode: 200,

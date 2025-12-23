@@ -12,7 +12,7 @@ export async function setupStartRepresentingYourself(server: Mockttp) {
   await server.forGet(
     /\/caseworkers\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)/
   ).thenCallback(async (request) => {
-    const match = request.path.match(
+    const match = request.url.match(
       /\/caseworkers\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)/
     );
     const caseId = match ? match[4] : undefined;

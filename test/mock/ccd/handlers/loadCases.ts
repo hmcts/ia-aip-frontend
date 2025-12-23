@@ -41,7 +41,7 @@ export async function setupLoadCases(server: Mockttp) {
   await server.forGet(
     /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases/
   ).thenCallback(async (request) => {
-    const match = request.path.match(
+    const match = request.url.match(
       /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases/
     );
     const userId = match ? match[1] : undefined;

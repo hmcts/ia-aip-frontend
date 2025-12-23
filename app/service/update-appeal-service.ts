@@ -75,7 +75,7 @@ export default class UpdateAppealService {
     const updateEventResponse = await this._ccdService.startUpdateAppeal(userId, caseId, event.id, securityHeaders);
     const ccdCase: CcdCaseDetails = await this._ccdService.submitUpdateAppeal(userId, caseId, securityHeaders, {
       event: {
-        id: updateEventResponse.event_id,
+        id: updateEventResponse.event_id ?? event.id,
         summary: event.summary,
         description: event.description
       },

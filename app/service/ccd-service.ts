@@ -80,7 +80,6 @@ class CcdService {
 
   async startUpdateAppeal(userId: string, caseId: string, eventId: string, headers: SecurityHeaders): Promise<StartEventResponse> {
     const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${eventId}/token`;
-    logger.trace(`CCD startUpdateAppeal URL: ${url}`, logLabel);
     const options = this.createOptions(
       userId,
       headers
@@ -91,7 +90,6 @@ class CcdService {
 
   async submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData): Promise<CcdCaseDetails> {
     const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`;
-    logger.trace(`CCD submitUpdateAppeal URL: ${url}`, logLabel);
     const options: any = this.createOptions(
       userId,
       headers
@@ -154,7 +152,7 @@ class CcdService {
     const updateEventResponse = await this.startUpdateAppeal(userId, updatedCase.id, event.id, headers);
     logger.trace(`Submitting update appeal case with event '${event.id}'`, logLabel);
     const supplementaryDataRequest = generateSupplementaryId();
-    logger.trace('updateEventResponse.event_id: ' + updateEventResponse.event_id, logLabel);
+
     return this.submitUpdateAppeal(userId, updatedCase.id, headers, {
       event: {
         id: updateEventResponse.event_id,

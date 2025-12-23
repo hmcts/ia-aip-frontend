@@ -1,4 +1,4 @@
-@submitAppeal
+@submitAppeal @testthis
 Feature: submission
   In order complete my appeal
   As a citizen

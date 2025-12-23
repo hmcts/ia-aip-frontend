@@ -54,12 +54,7 @@ export async function setupOtherEventSubmitEvent(server: Mockttp) {
       /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/events/
     );
     const caseId = match ? match[4] : '1';
-    // tslint:disable:no-console
-    console.log('caseId: ' + caseId);
     const text = await request.body.getText();
-    console.log('text: ' + text);
-    const queryString = querystring.parse(text);
-    console.log('queryString: ' + queryString);
     const body = JSON.parse(text) as EventSubmitBody;
 
     return {

@@ -37,8 +37,6 @@ export async function setupOtherEventStartEvent(server: Mockttp) {
   await server.forGet(/\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/event-triggers\/([^/]+)\/token$/)
     .always()
     .thenCallback(async (request) => {
-      // tslint:disable-next-line:no-console
-      console.log('hitting setupOtherEventStartEvent');
       const match = request.url.match(
         /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/event-triggers\/([^/]+)\/token/
       );

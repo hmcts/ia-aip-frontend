@@ -62,8 +62,6 @@ export async function setupOtherEventSubmitEvent(server: Mockttp) {
       const caseId = match ? match[4] : '1';
       const text = await request.body.getText();
       const body = JSON.parse(text) as EventSubmitBody;
-      // tslint:disable-next-line:no-console
-      console.log('hitting setupOtherEventSubmitEvent');
       return {
         statusCode: 200,
         json: {

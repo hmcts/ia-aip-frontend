@@ -1,14 +1,21 @@
 import { Mockttp } from 'mockttp';
+import { Events } from '../../../../app/data/events';
 
 type EventSubmitBody = {
   data: Record<string, any>;
-  event: { id: string };
+  event: { id: string, summary: string };
   eventType?: string;
 };
 
 function getNextState(body: EventSubmitBody): string {
   const appealType = body.data.appealType;
-  switch (body.event.id) {
+  let eventId = body.event.id;
+  if (body.event && !body.event.id && body.event.summary) {
+    eventId = Object.values(Events)
+      .find((event: any) => event.summary === body.event.summary)
+      .id;
+  }
+  switch (eventId) {
     case 'editAppeal':
       return 'appealStarted';
     case 'submitAppeal':
@@ -41,7 +48,7 @@ function getNextState(body: EventSubmitBody): string {
     case 'leadershipJudgeFtpaDecision':
       return 'ftpaDecided';
     default:
-      throw new Error(`Event type ${body.eventType} no next state set`);
+      throw new Error(`Event type ${eventId} no next state set`);
   }
 }
 

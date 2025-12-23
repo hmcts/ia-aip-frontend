@@ -34,9 +34,8 @@ function getCurrentState(eventType: string): string {
 }
 
 export async function setupOtherEventStartEvent(server: Mockttp) {
-  await server.forGet('http://localhost:20000/citizens/29/jurisdictions/IA/case-types/Asylum/cases/29/event-triggers/submitAppeal/token')
+  await server.forGet(/\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/event-triggers\/([^/]+)\/token$/)
     .always()
-    // .withUrlMatching(/^.*\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/event-triggers\/([^/]+)\/token$/)
     .thenCallback(async (request) => {
       // tslint:disable-next-line:no-console
       console.log('hitting setupOtherEventStartEvent');

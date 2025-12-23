@@ -53,9 +53,8 @@ function getNextState(body: EventSubmitBody): string {
 }
 
 export async function setupOtherEventSubmitEvent(server: Mockttp) {
-  await server.forPost()
+  await server.forPost(/\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/events$/)
     .always()
-    .withUrlMatching(/^.*\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/events$/)
     .thenCallback(async (request) => {
       const match = request.url.match(
         /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/events/

@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 
 export async function setupStartAppealSubmitEvent(server: Mockttp) {
   await server.forPost(
-    /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases/
+    /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases$/
   ).thenCallback(async () => {
     return {
       statusCode: 200,

@@ -1,9 +1,10 @@
-@submitAppeal @testthis
+@submitAppeal
 Feature: submission
   In order complete my appeal
   As a citizen
   I want to be able to submit my appeal
 
+  @testthis
   Scenario: Submit an appeal
     Given I have logged in as an appellant with email "appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal@example.com"
     And I am on the check your answers page

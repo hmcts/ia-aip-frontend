@@ -1,5 +1,4 @@
 import { Mockttp } from 'mockttp';
-import querystring from 'querystring';
 
 type EventSubmitBody = {
   data: Record<string, any>;

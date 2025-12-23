@@ -152,7 +152,7 @@ class CcdService {
     const updateEventResponse = await this.startUpdateAppeal(userId, updatedCase.id, event.id, headers);
     logger.trace(`Submitting update appeal case with event '${event.id}'`, logLabel);
     const supplementaryDataRequest = generateSupplementaryId();
-
+    logger.trace('updateEventResponse.event_id: ' + updateEventResponse.event_id, logLabel);
     return this.submitUpdateAppeal(userId, updatedCase.id, headers, {
       event: {
         id: updateEventResponse.event_id,

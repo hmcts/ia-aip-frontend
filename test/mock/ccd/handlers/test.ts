@@ -3,7 +3,7 @@ import { Mockttp } from 'mockttp';
 export async function setupTestHandler(server: Mockttp) {
   await server.forGet(
     /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/event-triggers\/startAppeal\/token/
-  ).always().thenCallback(async () => {
+  ).thenCallback(async () => {
     return {
       statusCode: 200,
       json: {

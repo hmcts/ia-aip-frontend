@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 
 export async function setupPostcodeLookup(server: Mockttp) {
-  await server.forGet('/search/places/v1/postcode').always().thenCallback(async () => {
+  await server.forGet('/search/places/v1/postcode').thenCallback(async () => {
     return {
       statusCode: 200,
       json: {

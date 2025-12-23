@@ -4,7 +4,7 @@ import { Mockttp } from 'mockttp';
 const skipLogin = process.env.SKIP_LOGIN === 'true';
 
 export async function setupRegisterPage(server: Mockttp) {
-  await server.forGet('/users/selfRegister').always().thenCallback(async (request) => {
+  await server.forGet('/users/selfRegister').thenCallback(async (request) => {
     const url = new URL(request.url, 'http://localhost');
     const redirectUri = url.searchParams.get('redirect_uri') ?? '';
     const stateParam = url.searchParams.get('state') ?? '';

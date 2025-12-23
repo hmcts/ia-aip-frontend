@@ -38,7 +38,7 @@ const usersToCaseData: Record<string, any> = {
 };
 
 export async function setupLoadCasesES(server: Mockttp) {
-  await server.forPost('/searchCases').always().thenCallback(async (request) => {
+  await server.forPost('/searchCases').thenCallback(async (request) => {
     const userid = request.headers['userid'];
     return {
       statusCode: 200,

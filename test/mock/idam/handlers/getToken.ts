@@ -8,7 +8,7 @@ export async function setupGetToken(server: Mockttp) {
     { expiresIn: '1h' }
   );
 
-  await server.forPost('/oauth2/token').always().thenCallback(async () => {
+  await server.forPost('/oauth2/token').thenCallback(async () => {
     return {
       statusCode: 200,
       json: {

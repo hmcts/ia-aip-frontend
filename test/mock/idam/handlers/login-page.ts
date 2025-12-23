@@ -4,7 +4,7 @@ import { Mockttp } from 'mockttp';
 const skipLogin = process.env.SKIP_LOGIN === 'true';
 
 export async function setupLoginPage(server: Mockttp) {
-  await server.forGet('/login').always().thenCallback(async (request) => {
+  await server.forGet('/login').thenCallback(async (request) => {
     const url = new URL(request.url, 'http://localhost');
     const redirectUri = url.searchParams.get('redirect_uri') ?? '';
     const stateParam = url.searchParams.get('state') ?? '';

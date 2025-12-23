@@ -40,7 +40,7 @@ const emailToUserId: Record<string, string> = {
 };
 
 export async function setupGetDetails(server: Mockttp) {
-  await server.forGet('/details').always().thenCallback(async () => {
+  await server.forGet('/details').thenCallback(async () => {
     const email = cache.get('email');
     const uid = emailToUserId[email] || defaultUserId;
     return {

@@ -3,7 +3,7 @@ import { CompletedRequest, Mockttp } from 'mockttp';
 import querystring from 'querystring';
 
 export async function setupLoginRedirect(server: Mockttp) {
-  await server.forPost('/login').always().thenCallback(async (request: CompletedRequest) => {
+  await server.forPost('/login').thenCallback(async (request: CompletedRequest) => {
     const rawBody = request.body;
 
     const text = await rawBody.getText();

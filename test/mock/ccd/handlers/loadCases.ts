@@ -40,7 +40,7 @@ const usersToCaseData: Record<string, any[]> = {
 export async function setupLoadCases(server: Mockttp) {
   await server.forGet(
     /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases/
-  ).always().thenCallback(async (request) => {
+  ).thenCallback(async (request) => {
     const match = request.url.match(
       /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases/
     );

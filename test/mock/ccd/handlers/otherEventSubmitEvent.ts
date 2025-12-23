@@ -46,47 +46,48 @@ function getNextState(body: EventSubmitBody): string {
 }
 
 export async function setupOtherEventSubmitEvent(server: Mockttp) {
-  await server.forPost(
-    /.*\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/events/
-  ).thenCallback(async (request) => {
-    const match = request.url.match(
-      /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/events/
-    );
-    const caseId = match ? match[4] : '1';
-    const text = await request.body.getText();
-    const body = JSON.parse(text) as EventSubmitBody;
-    // tslint:disable-next-line:no-console
-    console.log('hitting setupOtherEventSubmitEvent');
-    return {
-      statusCode: 200,
-      json: {
-        id: Number(caseId),
-        jurisdiction: 'IA',
-        state: getNextState(body),
-        version: 10,
-        case_type_id: 'Asylum',
-        created_date: '2019-11-13T10:18:43.271',
-        last_modified: '2019-11-15T11:28:36.109',
-        security_classification: 'PUBLIC',
-        case_data: { ...body.data },
-        data_classification: {
-          journeyType: 'PUBLIC',
-          homeOfficeReferenceNumber: 'PUBLIC'
-        },
-        after_submit_callback_response: {
-          confirmation_header: '# Appeal saved\nYou still need to submit it',
-          confirmation_body:
-            '#### Ready to submit?\n\n[Submit your appeal](/case/IA/Asylum/1573640323267110/trigger/submitAppeal) when you are ready.\n\n#### Not ready to submit yet?\nYou can return to the case to make changes.'
-        },
-        callback_response_status_code: 200,
-        callback_response_status: 'CALLBACK_COMPLETED',
-        delete_draft_response_status_code: null,
-        delete_draft_response_status: null,
-        security_classifications: {
-          journeyType: 'PUBLIC',
-          homeOfficeReferenceNumber: 'PUBLIC'
+  await server.forPost()
+    .always()
+    .withUrlMatching(/^.*\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/events$/)
+    .thenCallback(async (request) => {
+      const match = request.url.match(
+        /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/([^/]+)\/events/
+      );
+      const caseId = match ? match[4] : '1';
+      const text = await request.body.getText();
+      const body = JSON.parse(text) as EventSubmitBody;
+      // tslint:disable-next-line:no-console
+      console.log('hitting setupOtherEventSubmitEvent');
+      return {
+        statusCode: 200,
+        json: {
+          id: Number(caseId),
+          jurisdiction: 'IA',
+          state: getNextState(body),
+          version: 10,
+          case_type_id: 'Asylum',
+          created_date: '2019-11-13T10:18:43.271',
+          last_modified: '2019-11-15T11:28:36.109',
+          security_classification: 'PUBLIC',
+          case_data: { ...body.data },
+          data_classification: {
+            journeyType: 'PUBLIC',
+            homeOfficeReferenceNumber: 'PUBLIC'
+          },
+          after_submit_callback_response: {
+            confirmation_header: '# Appeal saved\nYou still need to submit it',
+            confirmation_body:
+              '#### Ready to submit?\n\n[Submit your appeal](/case/IA/Asylum/1573640323267110/trigger/submitAppeal) when you are ready.\n\n#### Not ready to submit yet?\nYou can return to the case to make changes.'
+          },
+          callback_response_status_code: 200,
+          callback_response_status: 'CALLBACK_COMPLETED',
+          delete_draft_response_status_code: null,
+          delete_draft_response_status: null,
+          security_classifications: {
+            journeyType: 'PUBLIC',
+            homeOfficeReferenceNumber: 'PUBLIC'
+          }
         }
-      }
-    };
-  });
+      };
+    });
 }

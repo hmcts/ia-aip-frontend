@@ -27,10 +27,8 @@ const mockServers: { server: any; port: number }[] = [];
 async function startMockServer(port: number, setupFns: ((ms: any) => Promise<void>)[]) {
   const mockServer: Mockttp = getLocal({ debug: false });
   await mockServer.start(port);
-
-  for (const fn of setupFns) {
-    await fn(mockServer);
-  }
+  const setupFnsArray: Promise<void>[] = setupFns.map(fn => fn(mockServer));
+  await Promise.all(setupFnsArray);
 
   mockServers.push({ server: mockServer, port });
   logger.trace(`Mockttp server listening on port ${port}`, logLabel);

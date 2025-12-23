@@ -42,10 +42,8 @@ export async function setupOtherEventStartEvent(server: Mockttp) {
     );
     const caseId = match ? match[4] : '1';
     const eventType = match ? match[5] : 'editAppeal';
-    const requestBody = await request.body.getText();
     // tslint:disable-next-line:no-console
-    console.log('startEvent requestBody: ' + requestBody);
-    const body = JSON.parse(requestBody);
+    console.log('eventType: ' + eventType);
     return {
       statusCode: 200,
       json: {

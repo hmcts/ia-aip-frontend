@@ -66,7 +66,7 @@
     "cross-env": "^7.0.3",
     "crypto-browserify": "^3.12.1",
     "csurf": "^1.11.0",
-    "diff": "^3.5.0",
+    "diff": "^8.0.3",
     "dompurify": "^3.2.4",
     "dyson": "^4.1.0",
     "expect-ct": "^0.3.0",

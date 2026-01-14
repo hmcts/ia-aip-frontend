@@ -7232,13 +7232,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff@npm:^3.5.0":
-  version: 3.5.0
-  resolution: "diff@npm:3.5.0"
-  checksum: 10/cfbc2df98d6f8eb82c0f7735c8468695f65189d31f95a708d4c97cd96a8083fdfd83d87a067a29924ae7d8ff64f578e7da78391af537815750268555fe0df9f0
-  languageName: node
-  linkType: hard
-
 "diff@npm:^4.0.1, diff@npm:^4.0.2":
   version: 4.0.2
   resolution: "diff@npm:4.0.2"
@@ -7250,6 +7243,13 @@ __metadata:
   version: 5.2.0
   resolution: "diff@npm:5.2.0"
   checksum: 10/01b7b440f83a997350a988e9d2f558366c0f90f15be19f4aa7f1bb3109a4e153dfc3b9fbf78e14ea725717017407eeaa2271e3896374a0181e8f52445740846d
+  languageName: node
+  linkType: hard
+
+"diff@npm:^8.0.3":
+  version: 8.0.3
+  resolution: "diff@npm:8.0.3"
+  checksum: 10/52f957e1fa53db4616ff5f4811b92b22b97a160c12a2f86f22debd4181227b0f6751aa8fd711d6a8fcf4618acb13b86bc702e6d9d6d6ed82acfd00c9cb26ace2
   languageName: node
   linkType: hard
 
@@ -9805,7 +9805,7 @@ __metadata:
     css-minimizer-webpack-plugin: "npm:^7.0.2"
     csurf: "npm:^1.11.0"
     cucumber: "npm:^6.0.3"
-    diff: "npm:^3.5.0"
+    diff: "npm:^8.0.3"
     dompurify: "npm:^3.2.4"
     dotenv-extended: "npm:^2.9.0"
     dyson: "npm:^4.1.0"

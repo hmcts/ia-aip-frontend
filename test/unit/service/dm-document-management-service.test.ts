@@ -214,7 +214,7 @@ describe('dm-document-management-service', () => {
         const fileLocation = 'http://file/location';
         const result = await documentManagementService['fetchBinaryFile']('userId', headers, fileLocation);
         expect(axiosGetStub).to.have.been.calledWith(fileLocation + '/binary', sinon.match.hasNested('responseType', 'arraybuffer'));
-        expect(result).to.eq(JSON.stringify(Buffer.from('binary')));
+        expect(result).to.deep.eq({ data: Buffer.from('binary') });
         axiosGetStub.restore();
       });
       it('should throw if axios.get fails', async () => {

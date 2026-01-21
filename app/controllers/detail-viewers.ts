@@ -891,7 +891,7 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
         console.log(response);
         if (response.status === 200) {
           res.setHeader('content-type', response.headers['content-type']);
-          res.send(Buffer.from(response.body, 'binary'));
+          res.send(Buffer.from(response.data, 'binary'));
           return;
         }
       }

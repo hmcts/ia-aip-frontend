@@ -26,7 +26,7 @@ async function paymentDetails(headers, paymentReference): Promise<any> {
     }
   };
   const response = await axios.get(uri, options);
-  return response.data;
+  return JSON.stringify(response.data);
 }
 
 export {

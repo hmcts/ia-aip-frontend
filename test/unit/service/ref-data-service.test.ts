@@ -75,6 +75,6 @@ describe('Ref Data Service', () => {
 
     expect(authenticationService.getSecurityHeaders).to.have.been.called;
     expect(commonRefDataLovStub).to.have.been.called;
-    expect(result).to.be.eql(refDataResponse.data);
+    expect(result).to.be.eql(JSON.stringify(refDataResponse.data));
   });
 });

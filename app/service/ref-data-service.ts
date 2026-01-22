@@ -12,6 +12,6 @@ export default class RefDataService {
   async getCommonRefData(req: Request, dataType) {
     const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const commonRefData = await refDataApi.commonRefDataLov(securityHeaders, dataType);
-    return commonRefData.data;
+    return JSON.stringify(commonRefData.data);
   }
 }

@@ -12,21 +12,25 @@ describe('Ref Data Service', () => {
   let res: Partial<Response>;
   let commonRefDataLovStub: sinon.SinonStub;
   let sandbox: sinon.SinonSandbox;
-  const refDataResponse = { 'list_of_values': [
-    {
-      'category_key': 'InterpreterLanguage',
-      'key': 'hun',
-      'value_en': 'Hungarian',
-      'value_cy': '',
-      'hint_text_en': '',
-      'hint_text_cy': '',
-      'lov_order': null,
-      'parent_category': '',
-      'parent_key': '',
-      'active_flag': 'Y',
-      'child_nodes': null
+  const refDataResponse = {
+    data: {
+      'list_of_values': [
+        {
+          'category_key': 'InterpreterLanguage',
+          'key': 'hun',
+          'value_en': 'Hungarian',
+          'value_cy': '',
+          'hint_text_en': '',
+          'hint_text_cy': '',
+          'lov_order': null,
+          'parent_category': '',
+          'parent_key': '',
+          'active_flag': 'Y',
+          'child_nodes': null
+        }
+      ]
     }
-  ]};
+  };
 
   const logger: Logger = new Logger();
 
@@ -71,6 +75,6 @@ describe('Ref Data Service', () => {
 
     expect(authenticationService.getSecurityHeaders).to.have.been.called;
     expect(commonRefDataLovStub).to.have.been.called;
-    expect(result).to.be.eql(refDataResponse);
+    expect(result).to.be.eql(refDataResponse.data);
   });
 });

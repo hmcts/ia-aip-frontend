@@ -887,9 +887,11 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
       const documentLocationUrl: string = documentIdToDocStoreUrl(documentId, req.session.appeal.documentMap);
       if (documentLocationUrl) {
         const response = await documentManagementService.fetchFile(req, documentLocationUrl);
-        if (response.statusCode === 200) {
+        // tslint:disable-next-line:no-console
+        console.log(response);
+        if (response.status === 200) {
           res.setHeader('content-type', response.headers['content-type']);
-          res.send(Buffer.from(response.body, 'binary'));
+          res.send(Buffer.from(response.data, 'binary'));
           return;
         }
       }

@@ -14,7 +14,7 @@ async function createCardPayment(headers, body, returnUrl): Promise<any> {
     }
   };
   const response = await axios.post(url, body, options);
-  return JSON.stringify(response.data);
+  return response.data;
 }
 
 async function paymentDetails(headers, paymentReference): Promise<any> {

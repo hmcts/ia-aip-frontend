@@ -108,8 +108,7 @@ class DmDocumentManagementService {
       },
       responseType: 'arraybuffer' as const
     };
-    const response = await axios.get(url, options);
-    return JSON.stringify(response.data);
+    return axios.get(url, options);
   }
 
   /**

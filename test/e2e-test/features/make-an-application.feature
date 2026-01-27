@@ -1,7 +1,5 @@
 @nightly-test
 Feature: Make an application
-
-  @testy-test
   Scenario: Ask to withdraw
     Given I am on home page
     When I have logged in for the e2e as an appellant in state "appealSubmitted"

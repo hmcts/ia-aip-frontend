@@ -1,129 +1,72 @@
+// Add this at the top of test/functional/bootstrap.ts
+import crypto from 'crypto';
 import express from 'express';
 import fs from 'graceful-fs';
-import http from 'http';
 import https from 'https';
+import { getLocal, Mockttp } from 'mockttp';
 import * as process from 'process';
 import { createApp } from '../../app/app';
 import Logger, { getLogLabel } from '../../app/utils/logger';
 import * as testStateHelper from '../e2e-test/testStateHelper';
+import ccdHandlers from '../mock/ccd/handlers';
+import dmHandlers from '../mock/document-management-store/handlers';
+import idamHandlers from '../mock/idam/handlers';
+import { setupPcqHealth } from '../mock/pcq/handlers/health';
+import { setupPostcodeLookup } from '../mock/postcode-lookup/handlers/postcodeLookup';
+import { setupLease } from '../mock/s2s/handlers/lease';
+(global as any).crypto = crypto;
 
-const dyson = require('dyson');
-const path = require('path');
-
-const app: express.Application = createApp();
+// Your main app
 const port: number | string = process.env.PORT || 3000;
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
-let server: https.Server;
-let ccdServer: http.Server;
-let idamServer: http.Server;
-let postcodeLookupServer: http.Server;
-let documentManagementStoreServer: http.Server;
-let s2sServer: http.Server;
-let pcqServer: http.Server;
+
+let mainServer: https.Server;
+const mockServers: { server: any; port: number }[] = [];
+
+async function startMockServer(port: number, setupFns: ((ms: any) => Promise<void>)[]) {
+  const mockServer: Mockttp = getLocal({ debug: false });
+  await mockServer.start(port);
+  const setupFnsArray: Promise<void>[] = setupFns.map(fn => fn(mockServer));
+  await Promise.all(setupFnsArray);
+
+  mockServers.push({ server: mockServer, port });
+  logger.trace(`Mockttp server listening on port ${port}`, logLabel);
+  return mockServer;
+}
 
 export async function bootstrap() {
   testStateHelper.resetTestState();
-  server = https.createServer({
+
+  // Start service mock servers
+  await startMockServer(20000, ccdHandlers);
+  await startMockServer(20001, idamHandlers);
+  await startMockServer(20002, [ setupPostcodeLookup ]);
+  await startMockServer(20003, dmHandlers);
+  await startMockServer(20004, [ setupLease ]);
+  await startMockServer(20005, [ setupPcqHealth ]);
+  logger.trace(`servers set up`, logLabel);
+
+  // Start main app
+  const app: express.Application = createApp();
+  mainServer = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
   }, app).listen(port, () => {
-    logger.trace(`Server  listening on port ${port}`, logLabel);
-  })
-    .on('error',
-      (error: Error) => {
-        logger.exception(`Unable to start server because of ${error.message}`, logLabel);
-      }
-    );
-
-  const ccdApp = express();
-  const idamApp = express();
-  const postcodeLookupApp = express();
-  const documentManagementStoreApp = express();
-  const s2sApp = express();
-  const pcqApp = express();
-
-  const ccdOptions = {
-    configDir: path.resolve(__dirname, '../mock/ccd/services/')
-  };
-
-  const idamOptions = {
-    configDir: path.resolve(__dirname, '../mock/idam/services/')
-  };
-
-  const postcodeLookupOptions = {
-    configDir: path.resolve(__dirname, '../mock/postcode-lookup/services/')
-  };
-
-  const documentManagementStoreOptions = {
-    configDir: path.resolve(__dirname, '../mock/document-management-store/services/')
-  };
-
-  const s2sOptions = {
-    configDir: path.resolve(__dirname, '../mock/s2s/services/')
-  };
-
-  const pcqOptions = {
-    configDir: path.resolve(__dirname, '../mock/pcq/services/')
-  };
-
-  const ccdConfigs = dyson.getConfigurations(ccdOptions);
-  dyson.registerServices(ccdApp, ccdOptions, ccdConfigs);
-  ccdServer = ccdApp.listen(20000);
-
-  const idamConfigs = dyson.getConfigurations(idamOptions);
-  dyson.registerServices(idamApp, idamOptions, idamConfigs);
-  idamServer = idamApp.listen(20001);
-
-  const postcodeLookupConfigs = dyson.getConfigurations(postcodeLookupOptions);
-  dyson.registerServices(postcodeLookupApp, postcodeLookupOptions, postcodeLookupConfigs);
-  postcodeLookupServer = postcodeLookupApp.listen(20002);
-
-  const documentManagementStoreConfigs = dyson.getConfigurations(documentManagementStoreOptions);
-  dyson.registerServices(documentManagementStoreApp, documentManagementStoreOptions, documentManagementStoreConfigs);
-  documentManagementStoreServer = documentManagementStoreApp.listen(20003);
-
-  const s2sConfigs = dyson.getConfigurations(s2sOptions);
-  dyson.registerServices(s2sApp, s2sOptions, s2sConfigs);
-  s2sServer = s2sApp.listen(20004);
-
-  const pcqConfigs = dyson.getConfigurations(pcqOptions);
-  dyson.registerServices(pcqApp, pcqOptions, pcqConfigs);
-  pcqServer = pcqApp.listen(20005);
-}
-
-function closeServerWithPromise(server) {
-  return new Promise(function (resolve, reject) {
-    server.close((err, result) => {
-      if (err) return reject(err);
-      logger.trace('closed server', logLabel);
-      resolve(result);
-    });
+    logger.trace(`Main server listening`, logLabel);
   });
 }
 
 export async function teardownAll() {
   try {
-    if (server && server.close) {
-      await closeServerWithPromise(server);
+    if (mainServer) {
+      await new Promise<void>(resolve =>
+        mainServer.close(() => resolve()));
     }
-    if (ccdServer && ccdServer.close) {
-      await closeServerWithPromise(ccdServer);
-    }
-    if (idamServer && idamServer.close) {
-      await closeServerWithPromise(idamServer);
-    }
-    if (postcodeLookupServer && postcodeLookupServer.close) {
-      await closeServerWithPromise(postcodeLookupServer);
-    }
-    if (documentManagementStoreServer && documentManagementStoreServer.close) {
-      await closeServerWithPromise(documentManagementStoreServer);
-    }
-    if (s2sServer && s2sServer.close) {
-      await closeServerWithPromise(s2sServer);
-    }
-    if (pcqServer && pcqServer.close) {
-      await closeServerWithPromise(pcqServer);
+
+    for (const { server, port } of mockServers) {
+      await server.stop();  // mockttp supports stop()
+      logger.trace(`Stopped mock server on port ${port}`, logLabel);
     }
   } catch (e) {
     logger.exception(e, logLabel);

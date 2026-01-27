@@ -87,10 +87,11 @@ withPipeline("nodejs", product, component) {
     if (params.functionalTestsBeforeStatic) {
       stage('Functional Tests') {
         try {
+          env.IS_FUNCTIONAL_TEST = 'true'
           yarnBuilder.yarn('test:functional')
         } catch (Error) {
-          steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/*'
           unstable(message: "${STAGE_NAME} is unstable: " + Error.toString());
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/*'
           process.exit(1);
         }
       }

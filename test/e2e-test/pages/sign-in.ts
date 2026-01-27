@@ -72,6 +72,12 @@ module.exports = {
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
+    Given(/^I have logged in as an appellant with email "([^"]*)"$/, async (email) => {
+      I.amOnPage(testUrl + paths.common.login);
+      signInForUser(email);
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
+    });
+
     Given(/^I have logged in as an appellant in state "([^"]*)"$/, async (appealState) => {
       I.amOnPage(testUrl + paths.common.login);
 

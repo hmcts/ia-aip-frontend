@@ -1,4 +1,4 @@
-const appellantPinInPost = {
+export default {
   'id': undefined,
   'jurisdiction': 'IA',
   'state': 'appealSubmitted',
@@ -16,5 +16,3 @@ const appellantPinInPost = {
     'appellantFamilyName': 'Smith'
   }
 };
-
-module.exports = { ...appellantPinInPost };

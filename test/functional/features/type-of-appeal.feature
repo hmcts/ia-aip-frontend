@@ -4,8 +4,7 @@ Feature: Type of appeal
   I want to be able to enter my type of appeal
 
   Scenario: Appeal type page navigation and save for later
-    Given I have a blank appeal
-    And I have logged in
+    Given I have logged in as an appellant in state "appealStarted"
     And I see "Do this next" in subheading
     And I click "Continue" button
 

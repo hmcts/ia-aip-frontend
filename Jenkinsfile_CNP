@@ -1,8 +1,12 @@
 #!groovy
-properties(
-    [[$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend'],
-     pipelineTriggers([[$class: 'GitHubPushTrigger']])]
-)
+properties([
+    parameters([
+        booleanParam(name: 'unitTestsBeforeStatic', defaultValue: false, description: 'Tick the checkbox to run Unit tests before Static checks'),
+        booleanParam(name: 'functionalTestsBeforeStatic', defaultValue: false, description: 'Tick the checkbox to run Functional tests before Static checks NB. This will have at least 4 failing tests due to LaunchDarkly not being set up before static checks - issue with apiKey injection.'),
+    ]),
+    [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend'],
+    pipelineTriggers([[$class: 'GitHubPushTrigger']])
+])
 
 @Library("Infrastructure")
 
@@ -52,28 +56,45 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 withPipeline("nodejs", product, component) {
 
   afterAlways('checkout') { sh 'yarn cache clean' }
-  afterAlways('build') {
-    yarnBuilder.yarn('build')
-
-    stage('Unit Tests') {
-      yarnBuilder.yarn('test:unit')
-      publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "mochawesome-report",
-              reportFiles          : "mochawesome.html",
-              reportName           : "Unit & Smoke Test Report"
-      ]
-      publishHTML target: [
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "test/coverage/html",
-              reportFiles          : "index.html",
-              reportName           : "Code Coverage Report"
-      ]
-      steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
+  before('build') {
+    if (params.unitTestsBeforeStatic) {
+      yarnBuilder.yarn('build')
+      stage('Unit Tests') {
+        try {
+          yarnBuilder.yarn('test:unit')
+        } catch (Error) {
+          unstable(message: "${STAGE_NAME} is unstable: " + Error.toString());
+        }
+        publishHTML target: [
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "mochawesome-report",
+                reportFiles          : "mochawesome.html",
+                reportName           : "Unit & Smoke Test Report"
+        ]
+        publishHTML target: [
+            allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "test/coverage/html",
+                reportFiles          : "index.html",
+                reportName           : "Code Coverage Report"
+        ]
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
+      }
+    }
+    if (params.functionalTestsBeforeStatic) {
+      stage('Functional Tests') {
+        try {
+          env.IS_FUNCTIONAL_TEST = 'true'
+          yarnBuilder.yarn('test:functional')
+        } catch (Error) {
+          unstable(message: "${STAGE_NAME} is unstable: " + Error.toString());
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/*'
+          process.exit(1);
+        }
+      }
     }
   }
 
@@ -96,6 +117,10 @@ withPipeline("nodejs", product, component) {
 
   before("functionalTest") {
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
+  }
+
+  afterAlways('functionalTest:preview') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
   }
 }
 

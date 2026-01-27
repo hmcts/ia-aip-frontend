@@ -1,16 +1,17 @@
+import axios from 'axios';
 import config from 'config';
-import rp from 'request-promise';
 
 function commonRefDataLov(headers, dataType): Promise<any> {
+  const refDataApiUrl: string = config.get('refData.apiUrl');
+  const url = `${refDataApiUrl}/refdata/commondata/lov/categories/${dataType}`;
   const options = {
-    uri: `${config.get('refData.apiUrl')}/refdata/commondata/lov/categories/${dataType}`,
     headers: {
       Authorization: headers.userToken,
       ServiceAuthorization: headers.serviceToken,
       'content-type': 'application/json'
     }
   };
-  return rp.get(options);
+  return axios.get(url, options);
 }
 
 export {

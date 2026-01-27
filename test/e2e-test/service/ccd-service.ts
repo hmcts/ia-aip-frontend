@@ -1,6 +1,5 @@
 import axios from 'axios';
 import config from 'config';
-import rp from 'request-promise';
 import { SecurityHeaders } from '../../../app/service/authentication-service';
 import { isJWTExpired } from '../../../app/utils/jwt-utils';
 import Logger, { getLogLabel } from '../../../app/utils/logger';
@@ -11,9 +10,9 @@ const s2sUrl: string = config.get('s2s.url');
 const microServiceName: string = config.get('s2s.microserviceName');
 const otp = require('otp');
 
-const ccdBaseUrl = config.get('ccd.apiUrl');
-const jurisdictionId = config.get('ccd.jurisdictionId');
-const caseType = config.get('ccd.caseType');
+const ccdBaseUrl: string = config.get('ccd.apiUrl');
+const jurisdictionId: string = config.get('ccd.jurisdictionId');
+const caseType: string = config.get('ccd.caseType');
 const legalRepUserName: string = config.get('testAccounts.testLawFirmAUsername');
 const legalRepPassword: string = process.env.TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD;
 
@@ -31,63 +30,63 @@ function generateSupplementaryId(): Record<string, Record<string, string>> {
   return request;
 }
 
-function createOptions(userId: string, headers: SecurityHeaders, uri) {
+function createOptions(userId: string, headers: SecurityHeaders) {
   return {
-    uri: uri,
     headers: {
       Authorization: headers.userToken,
       ServiceAuthorization: headers.serviceToken,
       'content-type': 'application/json',
       UserId: userId // Hack param to prove RIA-5761.
-    },
-    json: true
+    }
   };
 }
 
-function startCreateCase(userId: string, headers: SecurityHeaders, isLegalRep: boolean = false): Promise<StartEventResponse> {
-  return rp.get(createOptions(
+async function startCreateCase(userId: string, headers: SecurityHeaders, isLegalRep: boolean = false): Promise<StartEventResponse> {
+  const url = `${ccdBaseUrl}/${isLegalRep ? 'caseworkers' : 'citizens'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/event-triggers/startAppeal/token`;
+  const response = await axios.get(url, createOptions(
     userId,
-    headers,
-    `${ccdBaseUrl}/${isLegalRep ? 'caseworkers' : 'citizens'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/event-triggers/startAppeal/token`
+    headers
   ));
+  return response.data;
 }
 
 function submitCreateCase(userId: string, headers: SecurityHeaders, startEvent: SubmitEventData, isLegalRep: boolean = false): Promise<CcdCaseDetails> {
+  const url = `${ccdBaseUrl}/${isLegalRep ? 'caseworkers' : 'citizens'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases?ignore-warning=true`;
   const options: any = createOptions(
     userId,
-    headers,
-    `${ccdBaseUrl}/${isLegalRep ? 'caseworkers' : 'citizens'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases?ignore-warning=true`);
-  options.body = startEvent;
+    headers
+  );
 
-  return rp.post(options);
+  return axios.post(url, startEvent, options);
 }
 
 function startUpdateAppeal(userId: string, caseId: string, eventId: string, headers: SecurityHeaders, citizen: boolean): Promise<StartEventResponse> {
-  return rp.get(createOptions(
+  const url = `${ccdBaseUrl}/${citizen ? 'citizens' : 'caseworkers'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${eventId}/token`;
+  return axios.get(url, createOptions(
     userId,
-    headers,
-    `${ccdBaseUrl}/${citizen ? 'citizens' : 'caseworkers'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${eventId}/token`
+    headers
   ));
 }
 
 function submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData, citizen: boolean): Promise<CcdCaseDetails> {
+  const url = `${ccdBaseUrl}/${citizen ? 'citizens' : 'caseworkers'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`;
   const options: any = createOptions(
     userId,
-    headers,
-    `${ccdBaseUrl}/${citizen ? 'citizens' : 'caseworkers'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`);
-  options.body = event;
+    headers
+  );
 
-  return rp.post(options);
+  return axios.post(url, event, options);
 }
 
 async function getAppealState(userId: string, caseId: string, headers: SecurityHeaders): Promise<string> {
+  const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`;
   const options: any = createOptions(
     userId,
-    headers,
-    `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`);
+    headers
+  );
 
-  const response = await rp.get(options);
-  return response.state;
+  const response = await axios.get(url, options);
+  return response.data.state;
 }
 
 async function requestServiceToken() {

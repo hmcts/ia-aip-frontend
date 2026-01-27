@@ -1,4 +1,4 @@
-import rp from 'request-promise';
+import axios from 'axios';
 import * as paymentsApi from '../../../app/api/payments-api';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -10,10 +10,12 @@ describe('payments-api', () => {
     userToken: 'aUserToken',
     serviceToken: 'aServiceToken'
   };
+  let data;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    rpGetStub = sandbox.stub(rp, 'get').resolves({});
-    rpPostStub = sandbox.stub(rp, 'post');
+    data = {};
+    rpGetStub = sandbox.stub(axios, 'get').resolves({});
+    rpPostStub = sandbox.stub(axios, 'post').resolves({ data: data });
   });
 
   afterEach(() => {

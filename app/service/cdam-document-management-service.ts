@@ -1,12 +1,13 @@
+import axios from 'axios';
 import config from 'config';
 import { Request } from 'express';
-import rp from 'request-promise';
+import FormData from 'form-data';
 import { v4 as uuid } from 'uuid';
 import Logger, { getLogLabel } from '../utils/logger';
-import { documentIdToDocStoreUrl, fileNameFormatter, toHtmlLink } from '../utils/utils';
+import { documentIdToDocStoreUrl } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 
-const cdamDocumentManagementBaseUrl = config.get('cdamDocumentManagement.apiUrl');
+const cdamDocumentManagementBaseUrl: string = config.get('cdamDocumentManagement.apiUrl');
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
@@ -37,7 +38,7 @@ enum Classification {
   restricted = 'RESTRICTED'
 }
 
-class CdamUploadData {
+export class CdamUploadData {
   file: Express.Multer.File;
   classification: Classification;
   caseTypeId: string;
@@ -51,54 +52,48 @@ class CdamDocumentManagementService {
     this.authenticationService = authenticationService;
   }
 
-  private createOptions(headers: SecurityHeaders, uri: string) {
+  private createOptions(headers: SecurityHeaders, formHeaders: FormData.Headers = {}) {
     return {
-      uri: uri,
       headers: {
         Authorization: headers.userToken,
-        ServiceAuthorization: headers.serviceToken
+        ServiceAuthorization: headers.serviceToken,
+        ...formHeaders
       }
     };
   }
 
   private async upload(headers: SecurityHeaders, uploadData: CdamUploadData): Promise<any> {
+    const url = `${cdamDocumentManagementBaseUrl}/cases/documents`;
+    const form = new FormData();
+    form.append('files', uploadData.file.buffer, {
+      filename: uploadData.file.originalname,
+      contentType: uploadData.file.mimetype
+    });
+    form.append('classification', uploadData.classification);
+    form.append('caseTypeId', uploadData.caseTypeId);
+    form.append('jurisdictionId', uploadData.jurisdictionId);
     const options: any = this.createOptions(
       headers,
-      `${cdamDocumentManagementBaseUrl}/cases/documents`
+      form.getHeaders()
     );
 
-    options.formData = {
-      files: [ {
-        value: uploadData.file.buffer,
-        options: {
-          filename: uploadData.file.originalname,
-          contentType: uploadData.file.mimetype
-        }
-      } ],
-      classification: uploadData.classification,
-      caseTypeId: uploadData.caseTypeId,
-      jurisdictionId: uploadData.jurisdictionId
-    };
-
-    return rp.post(options);
+    const response = await axios.post(url, form, options);
+    return JSON.stringify(response.data);
   }
 
   private async delete(headers: SecurityHeaders, fileLocation: string): Promise<any> {
-    const options: any = this.createOptions(
-      headers,
-      fileLocation
-    );
-    return rp.delete(options);
+    const options: any = this.createOptions(headers);
+    return axios.delete(fileLocation, options);
   }
 
   private async fetchBinaryFile(headers: SecurityHeaders, fileLocation: string): Promise<any> {
-    let options: any = this.createOptions(
-      headers,
-      fileLocation
-    );
+    let options: any = this.createOptions(headers);
     options.headers = { role: 'citizen', classification: Classification.restricted, ...options.headers };
-    options = { encoding: 'binary', resolveWithFullResponse: true, ...options };
-    return rp.get(options);
+    options = {
+      headers: { role: 'citizen', classification: Classification.restricted, ...this.createOptions(headers).headers },
+      responseType: 'arraybuffer' as const
+    };
+    return axios.get(fileLocation, options);
   }
 
   /**
@@ -183,7 +178,6 @@ class CdamDocumentManagementService {
 
     return documentId;
   }
-
 }
 
 export {

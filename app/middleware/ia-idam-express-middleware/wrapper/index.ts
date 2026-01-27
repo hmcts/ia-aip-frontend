@@ -17,7 +17,7 @@ export const setup = (args: IdamConfig = {}) => {
   };
 
   const getAccessToken = options => {
-    return accessToken(options, args);
+    return accessToken(args, options);
   };
 
   const getServiceAuth = () => {

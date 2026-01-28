@@ -18,7 +18,7 @@
               }) }}
             {% elif question.value %}
               {{ govukTag({
-                  text: "TO DO",
+                  text: "To do",
                   classes: "govuk-tag--blue"
               }) }}
             {% endif %}
@@ -38,14 +38,14 @@
               }) }}
             {% else %}
                 {{ govukTag({
-                  text: "TO DO",
+                  text: "To do",
                   classes: "govuk-tag--blue"
                 }) }}
             {% endif %}
           {% else %}
             {{ anythingElseQuestion.value.question }}
             {{ govukTag({
-                text: "CANNOT START YET",
+                text: "Cannot start yet",
                 classes: "govuk-tag--grey"
             }) }}
           {% endif %}
@@ -59,13 +59,13 @@
           {% if questionsCompleted and anythingElseCompleted %}
             <a href={{ paths.awaitingClarifyingQuestionsAnswers.checkAndSend }}>{{ i18n.pages.clarifyingQuestionsList.sections.checkAndSend.itemTitle }}</a>
             {{ govukTag({
-                  text: "TO DO",
+                  text: "To do",
                   classes: "govuk-tag--blue"
             }) }}
           {% else %}
             {{ i18n.pages.clarifyingQuestionsList.sections.checkAndSend.itemTitle }}
             {{ govukTag({
-                  text: "CANNOT START YET",
+                  text: "Cannot start yet",
                   classes: "govuk-tag--grey"
             }) }}
           {% endif %}

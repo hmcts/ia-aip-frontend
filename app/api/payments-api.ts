@@ -1,30 +1,32 @@
+import axios from 'axios';
 import config from 'config';
-import rp from 'request-promise';
 
-function createCardPayment(headers, body, returnUrl): Promise<any> {
+const paymentsApiUrl: string = config.get('payments.apiUrl');
+
+async function createCardPayment(headers, body, returnUrl): Promise<any> {
+  const url = `${paymentsApiUrl}/card-payments`;
   const options = {
-    uri: `${config.get('payments.apiUrl')}/card-payments`,
     headers: {
       Authorization: headers.userToken,
       ServiceAuthorization: headers.serviceToken,
       'return-url': returnUrl,
       'service-callback-url': `${config.get('iaPayments.apiUrl')}/payment-updates`
-    },
-    body,
-    json: true
+    }
   };
-  return rp.post(options);
+  const response = await axios.post(url, body, options);
+  return response.data;
 }
 
-function paymentDetails(headers, paymentReference): Promise<any> {
+async function paymentDetails(headers, paymentReference): Promise<any> {
+  const uri = `${paymentsApiUrl}/card-payments/${paymentReference}/statuses`;
   const options = {
-    uri: `${config.get('payments.apiUrl')}/card-payments/${paymentReference}/statuses`,
     headers: {
       Authorization: headers.userToken,
       ServiceAuthorization: headers.serviceToken
     }
   };
-  return rp.get(options);
+  const response = await axios.get(uri, options);
+  return JSON.stringify(response.data);
 }
 
 export {

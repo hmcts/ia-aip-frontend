@@ -7,9 +7,9 @@ import { SystemAuthenticationService } from './system-authentication-service';
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
-const ccdBaseUrl = config.get('ccd.apiUrl');
-const jurisdictionId = config.get('ccd.jurisdictionId');
-const caseType = config.get('ccd.caseType');
+const ccdBaseUrl: string = config.get('ccd.apiUrl');
+const jurisdictionId: string = config.get('ccd.jurisdictionId');
+const caseType: string = config.get('ccd.caseType');
 
 export interface PipValidation {
   accessValidated: boolean;

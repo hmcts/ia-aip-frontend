@@ -4,8 +4,7 @@ Feature: Personal details name page
   I want to be able to enter my name
 
   Scenario: Entering name should open next page
-    Given I have an appeal with home office details
-    And I have logged in
+    Given I have logged in as an appellant with email "appealWithHomeOfficeDetails@example.com"
     And I am on the personal details name page
     When I click "Save for later" button
     Then I am on the overview page

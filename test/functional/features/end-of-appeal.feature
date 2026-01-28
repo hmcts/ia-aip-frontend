@@ -4,8 +4,7 @@ Feature: End of appeal @endappeal
   I want to be able to enter my type of appeal
 
   Scenario: Ended appeal
-    Given I have an ended appeal
-    And I have logged in
+    Given I have logged in as an appellant with email "endedAppeal@example.com"
     Then I see "Pedro Jimeno" in title
     And I see "Do this next" in subheading
 

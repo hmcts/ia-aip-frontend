@@ -10,9 +10,20 @@ import { dayMonthYearFormat } from './date-utils';
 import { appealHasNoRemissionOption, appealHasRemissionOption } from './remission-utils';
 
 const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
+const daysToWaitAfterSubmissionDlrm = config.get('daysToWait.afterSubmissionDlrm');
+const daysToWaitPendingPayment = config.get('daysToWait.pendingPayment');
+const daysToWaitAfterSubmissionOoc = config.get('daysToWait.afterSubmissionOoc');
+const daysToWaitPendingPaymentOoc = config.get('daysToWait.pendingPaymentOoc');
 const daysToWaitAfterReasonsForAppeal = config.get('daysToWait.afterReasonsForAppeal');
 const daysToWaitAfterCQSubmission = config.get('daysToWait.afterCQSubmission');
-const daysToWaitPendingPayment = config.get('daysToWait.pendingPayment');
+const dueDateFtpaDecisionResponse = config.get('dueDate.ftpaDecisionResponse');
+const dueDateJudgeDecisionResponse = config.get('dueDate.judgeDecisionResponse');
+const dueDateFtpaDecisionResponseOoc = config.get('dueDate.ftpaDecisionResponseOoc');
+const dueDateJudgeDecisionResponseOoc = config.get('dueDate.judgeDecisionResponseOoc');
+const cmaAdjustmentsDeadline = config.get('daysToWait.cmaAdjustmentsDeadline');
+const daysToWaitAfterDecisionMaintained = config.get('daysToWait.decisionMaintained');
+const daysToWaitAfterDecisionWithdrawn = config.get('daysToWait.decisionWithdrawn');
+const dueDateHearingRequirements = config.get('dueDate.hearingRequirements');
 
 /**
  * Finds a targeted direction, retrieves it's due date and returns it as a string with the correct date format
@@ -68,7 +79,7 @@ function getDueDateForAppellantToRespondToJudgeDecision(req: Request, ftpaSetAsi
 
   let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
   // if it's out of country appeal it's 28 days otherwise it's 14 days
-  let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : 14;
+  let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? dueDateJudgeDecisionResponseOoc : dueDateJudgeDecisionResponse;
   return moment(theDateOfdecisionAndReasons).add(noOfDays, 'days').format(dayMonthYearFormat);
 }
 
@@ -79,7 +90,7 @@ function getDueDateForAppellantToRespondToJudgeDecision(req: Request, ftpaSetAsi
 function getDueDateForAppellantToRespondToFtpaDecision(req: Request) {
   let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
   // if it's out of country appeal it's 28 days otherwise it's 14 days
-  let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : 14;
+  let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? dueDateFtpaDecisionResponseOoc : dueDateFtpaDecisionResponse;
   return moment(req.session.appeal.ftpaAppellantDecisionDate).add(noOfDays, 'days').format(dayMonthYearFormat);
 }
 
@@ -106,7 +117,7 @@ function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemission
       if (dlrmFeeRemissionFlag &&
         !appealHasNoRemissionOption(req.session.appeal.application)) {
         let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
-        let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : daysToWaitAfterReasonsForAppeal;
+        let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? daysToWaitAfterSubmissionOoc : daysToWaitAfterSubmissionDlrm;
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', noOfDays);
       } else {
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterSubmission);
@@ -116,7 +127,7 @@ function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemission
     case 'pendingPayment': {
       if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
         let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
-        let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : daysToWaitAfterReasonsForAppeal;
+        let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? daysToWaitPendingPaymentOoc : daysToWaitPendingPayment;
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', noOfDays);
       } else {
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitPendingPayment);
@@ -151,21 +162,21 @@ function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemission
     }
     case 'cmaAdjustmentsAgreed':
     case 'cmaRequirementsSubmitted': {
-      formattedDeadline = getFormattedEventHistoryDate(history, 'submitCmaRequirements', 14);
+      formattedDeadline = getFormattedEventHistoryDate(history, 'submitCmaRequirements', cmaAdjustmentsDeadline);
       break;
     }
     case 'decisionMaintained': {
-      formattedDeadline = getFormattedEventHistoryDate(history, 'requestRespondentReview', 5);
+      formattedDeadline = getFormattedEventHistoryDate(history, 'requestRespondentReview', daysToWaitAfterDecisionMaintained);
       break;
     }
     case 'decisionWithdrawn':
     case 'respondentReview': {
-      formattedDeadline = getFormattedEventHistoryDate(history, 'requestRespondentReview', 14);
+      formattedDeadline = getFormattedEventHistoryDate(history, 'requestRespondentReview', daysToWaitAfterDecisionWithdrawn);
       break;
     }
     case 'listing':
     case 'draftHearingRequirements': {
-      formattedDeadline = getFormattedEventHistoryDate(history, 'draftHearingRequirements', 14);
+      formattedDeadline = getFormattedEventHistoryDate(history, 'draftHearingRequirements', dueDateHearingRequirements);
       break;
     }
     case 'submitHearingRequirements':

@@ -247,12 +247,12 @@ describe('DetailViewController', () => {
 
       const fetchResponse = {
         headers: { 'content-type': 'image/png' },
-        statusCode: 200,
-        body: 'someBinaryContent'
+        status: 200,
+        data: 'someBinaryContent'
       };
 
       documentManagementService.fetchFile = sandbox.stub().returns(fetchResponse);
-      const expectedBuffer = Buffer.from(fetchResponse.body, 'binary');
+      const expectedBuffer = Buffer.from(fetchResponse.data, 'binary');
       await getDocumentViewer(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
       expect(res.setHeader).to.have.been.calledOnceWith('content-type', 'image/png');
       expect(res.send).to.have.been.calledOnceWith(expectedBuffer);

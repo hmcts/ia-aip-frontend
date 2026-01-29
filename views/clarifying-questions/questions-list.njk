@@ -14,7 +14,7 @@
             <a href={{ url }}>{{ i18n.pages.clarifyingQuestionsList.sections.questions.itemTitle }} {{ loop.index }} </a>
             {% if question.value.answer %}
               {{ govukTag({
-                  text: "SAVED"
+                  text: "Saved"
               }) }}
             {% elif question.value %}
               {{ govukTag({
@@ -34,7 +34,7 @@
             <a href="{{ paths.awaitingClarifyingQuestionsAnswers.anythingElseQuestionPage }}">{{ anythingElseQuestion.value.question }}</a>
             {% if anythingElseQuestion.value.answer %}
               {{ govukTag({
-                  text: "SAVED"
+                  text: "Saved"
               }) }}
             {% else %}
                 {{ govukTag({

@@ -114,6 +114,9 @@ withPipeline("nodejs", product, component) {
   env.PCQ_URL = 'https://pcq.aat.platform.hmcts.net'
   env.PCQ_RETURN_URL = env.TEST_URL + '/about-appeal'
   env.IDAM_TESTING_SUPPORT_URL = 'https://idam-testing-support-api.aat.platform.hmcts.net'
+  env.PUPPETEER_SKIP_DOWNLOAD = 'true'
+  env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'true'
+  env.APPLICATIONINSIGHTS_NO_DIAGNOSTIC_CHANNEL = 'true'
 
   before("functionalTest") {
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'

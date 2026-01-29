@@ -3,7 +3,6 @@ declare namespace Express {
     idam?: {
       userDetails: IdamDetails;
     };
-    csrfToken?: () => string;
   }
 
   interface Partial<SessionData> {

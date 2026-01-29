@@ -10,8 +10,7 @@ import Logger from './utils/logger';
 
 function configureLogger(app: express.Application) {
   const iKey: string = config.get('appInsights.instrumentationKey');
-  const logger: Logger = new Logger(iKey);
-  app.locals.logger = logger;
+  app.locals.logger = new Logger(iKey);
 }
 
 function configureNunjucks(app: express.Application) {

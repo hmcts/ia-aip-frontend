@@ -1,4 +1,4 @@
-import * as applicationInsights from 'applicationinsights';
+import { TelemetryClient } from 'applicationinsights';
 import chalk from 'chalk';
 
 enum SEVERITY {
@@ -8,71 +8,67 @@ enum SEVERITY {
 }
 
 interface ILogger {
-  setIkey: (ikey: string) => void;
   exception: (message: string, label: string) => void;
   request: (message: string, label: string) => void;
   trace: (message: string, label: string) => void;
 }
 
 export default class Logger implements ILogger {
-  private client: applicationInsights.TelemetryClient = null;
+  private client: TelemetryClient | null = null;
 
-  constructor(iKeyVal: string = null) {
-    if (iKeyVal) {
-      applicationInsights.setup(iKeyVal).start();
-      this.client = applicationInsights.defaultClient;
+  constructor(
+    connectionString: string | null = null,
+    client?: TelemetryClient   // 👈 add this
+  ) {
+    if (client) {
+      this.client = client;
+    } else if (connectionString) {
+      this.client = new TelemetryClient(connectionString);
     }
-  }
-
-  setIkey(iKeyVal) {
-    applicationInsights.setup(iKeyVal).start();
-    this.client = applicationInsights.defaultClient;
   }
 
   request(message: string, label: string) {
-    if (this.client) {
-      this.client.trackTrace({ message });
-    }
+    this.client?.trackTrace({ message, severity: SEVERITY.REQUEST.toString() });
     this.console(message, label, SEVERITY.REQUEST);
   }
 
   trace(message: string, label: string) {
-    if (this.client) this.client.trackTrace({ message });
+    this.client?.trackTrace({ message, severity: SEVERITY.TRACE.toString() });
     this.console(message, label, SEVERITY.TRACE);
   }
 
   traceWorker(message: string, label: string) {
     const workerThreads = require('node:worker_threads');
-    if (this.client) this.client.trackTrace({ message: message });
+    this.client?.trackTrace({ message, severity: SEVERITY.TRACE.toString() });
     this.console(message, label, SEVERITY.TRACE, workerThreads.threadId);
   }
 
   exception(message: string, label: string) {
-    if (this.client) this.client.trackException({ exception: new Error(message) });
+    this.client?.trackException({ exception: new Error(message) });
     this.console(message, label, SEVERITY.EXCEPTION);
   }
 
-  console(message: string, label: string, severity?: number, workerId: number = null) {
-    const log: string = `[${label}]: ${message}`;
-    const worker: string = workerId === null ? '' : `[0${workerId}] `;
+  private console(message: string, label: string, severity?: number, workerId: number = null) {
+    const log = `[${label}]: ${message}`;
+    const worker = workerId === null ? '' : `[0${workerId}] `;
+
+    // tslint:disable:no-console
     switch (severity) {
       case SEVERITY.REQUEST:
-        // tslint:disable:no-console
         console.log(chalk.white(`${worker}Request: ${log}`));
         break;
       case SEVERITY.TRACE:
-        console.warn(chalk.green(`${worker}Info: ${log} `));
+        console.warn(chalk.green(`${worker}Info: ${log}`));
         break;
       case SEVERITY.EXCEPTION:
         console.error(chalk.red(`${worker}Exception: ${log}`));
         break;
-      default:
-        break;
     }
+    // tslint:enable:no-console
   }
 }
+
 export function getLogLabel(path: string) {
-  let paths: string[];
-  paths = path.split('\\').pop().split('/');
-  return paths[paths.length - 2] + '/' + paths[paths.length - 1 ];
+  const paths = path.split('\\').pop()?.split('/') ?? [];
+  return `${paths[paths.length - 2]}/${paths[paths.length - 1]}`;
 }

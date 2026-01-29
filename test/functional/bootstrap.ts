@@ -14,7 +14,6 @@ import idamHandlers from '../mock/idam/handlers';
 import { setupPcqHealth } from '../mock/pcq/handlers/health';
 import { setupPostcodeLookup } from '../mock/postcode-lookup/handlers/postcodeLookup';
 import { setupLease } from '../mock/s2s/handlers/lease';
-(global as any).crypto = crypto;
 
 // Your main app
 const port: number | string = process.env.PORT || 3000;

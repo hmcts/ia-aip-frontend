@@ -1,5 +1,4 @@
 // Add this at the top of test/functional/bootstrap.ts
-import crypto from 'crypto';
 import express from 'express';
 import fs from 'graceful-fs';
 import https from 'https';

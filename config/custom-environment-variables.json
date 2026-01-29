@@ -3,7 +3,7 @@
   "currentEnvironment": "NODE_ENV",
   "httpProxy": "HTTP_PROXY",
   "appInsights": {
-    "instrumentationKey": "APPLICATIONINSIGHTS_CONNECTION_STRING"
+    "instrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY"
   },
   "trackingScripts": "TRACKING_SCRIPTS",
   "node": {

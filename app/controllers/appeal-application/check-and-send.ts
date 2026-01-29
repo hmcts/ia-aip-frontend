@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
 import { appealTypes } from '../../data/appeal-types';
@@ -16,7 +17,7 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { formatTextForCYA } from '../../utils/utils';
 import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
 
-async function createSummaryRowsFrom(req: Request) {
+async function createSummaryRowsFrom(req: Request<Params>) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
   const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
   const dlrmInternalFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false);
@@ -296,7 +297,7 @@ async function createSummaryRowsFrom(req: Request) {
 }
 
 function getCheckAndSend(paymentService: PaymentService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
       const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, defaultFlag);
@@ -329,7 +330,7 @@ function getCheckAndSend(paymentService: PaymentService) {
 }
 
 function postCheckAndSend(updateAppealService: UpdateAppealService, paymentService: PaymentService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     const request = req.body;
     try {
       const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
@@ -370,7 +371,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
 }
 
 function getPayLater(paymentService: PaymentService, payingImmediately: boolean) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
       if (!paymentsFlag) return res.redirect(paths.common.overview);
@@ -384,7 +385,7 @@ function getPayLater(paymentService: PaymentService, payingImmediately: boolean)
 }
 
 function getFinishPayment(updateAppealService: UpdateAppealService, paymentService: PaymentService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       let event;
       let redirectUrl;

@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
@@ -9,7 +10,7 @@ import { postHearingRequirementsYesNoHandler, setCheckedAttributeToQuestion } fr
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 const pageTitle = i18n.pages.hearingRequirements.otherNeedsSection.pastExperiences.title;
 const formAction = paths.submitHearingRequirements.otherNeedsPastExperiences;
-function getHearingPastExperiencesQuestion(req: Request, res: Response, next: NextFunction) {
+function getHearingPastExperiencesQuestion(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const question = getQuestion(req.session.appeal);
     return res.render('templates/radio-question-page.njk', {
@@ -41,7 +42,7 @@ function getQuestion(appeal: Appeal) {
 }
 
 function postHearingPastExperiencesQuestion(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.otherNeeds.pastExperiencesAnswerRequired;
       const question = getQuestion(req.session.appeal);

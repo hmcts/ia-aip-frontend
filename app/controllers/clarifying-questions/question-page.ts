@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
@@ -9,7 +10,7 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage, hasPendingTimeExtension, nowIsoDate } from '../../utils/utils';
 import { textAreaValidation } from '../../utils/validations/fields-validations';
 
-function getClarifyingQuestionPage(req: Request, res: Response, next: NextFunction) {
+function getClarifyingQuestionPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const questionOrder = parseInt(req.params.id, 10) - 1;
@@ -27,7 +28,7 @@ function getClarifyingQuestionPage(req: Request, res: Response, next: NextFuncti
 }
 
 function postClarifyingQuestionPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'answer','saveForLater')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');

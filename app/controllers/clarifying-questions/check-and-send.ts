@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../locale/en.json';
 import { CQ_NOTHING_ELSE } from '../../data/constants';
 import { Events } from '../../data/events';
@@ -14,7 +15,7 @@ function buildEvidencesList(evidences: Evidence[]): string[] {
   });
 }
 
-function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
+function getCheckAndSendPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const previousPage: string = paths.awaitingClarifyingQuestionsAnswers.questionsList;
     const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
@@ -80,7 +81,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
 }
 
 function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (req.body['saveForLater']) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -107,7 +108,7 @@ function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getYourAnswersPage(req: Request, res: Response, next: NextFunction) {
+function getYourAnswersPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const previousPage: string = paths.common.overview;
     const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.clarifyingQuestionsAnswers ].filter(question => question.value.directionId ? question.value.directionId === req.params.id : true);

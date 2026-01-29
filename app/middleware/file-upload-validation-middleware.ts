@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import * as path from 'path';
 import i18n from '../../locale/en.json';
 
@@ -24,7 +25,7 @@ const uploadConfiguration = multer({
   fileFilter
 }).single('file-upload');
 
-function handleFileUploadErrors(err: any, req: Request, res: Response, next: NextFunction) {
+function handleFileUploadErrors(err: any, req: Request<Params>, res: Response, next: NextFunction) {
   let error: string;
   let errorCode: string;
   if (err instanceof multer.MulterError) {
@@ -47,7 +48,7 @@ function handleFileUploadErrors(err: any, req: Request, res: Response, next: Nex
 }
 
 // Middleware to enforce file size limit - needs to be placed before handleFileUploadErrors middleware
-function enforceFileSizeLimit(req: Request, res: Response, next: NextFunction) {
+function enforceFileSizeLimit(req: Request<Params>, res: Response, next: NextFunction) {
   if (req.file && req.file.size > maxFileSizeInMb * 1024 * 1024) {
     delete req.file;
     return next(new multer.MulterError('LIMIT_FILE_SIZE'));

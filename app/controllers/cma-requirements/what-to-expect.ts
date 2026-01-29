@@ -1,7 +1,8 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { paths } from '../../paths';
 
-function getCmaGuidancePage(req: Request, res: Response, next: NextFunction) {
+function getCmaGuidancePage(req: Request<Params>, res: Response, next: NextFunction) {
   const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
   try {
     return res.render('case-management-appointment/what-to-expect.njk', {

@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../locale/en.json';
 import { Events } from '../data/events';
 import { convertToAmountOfMoneyDividedBy100 } from './payments-utils';
@@ -31,11 +31,11 @@ function appealHasNoRemissionOption(application: AppealApplication) {
   return 'noneOfTheseStatements' === application.remissionOption && 'willPayForAppeal' === application.helpWithFeesOption;
 }
 
-function hasFeeRemissionDecision(req: Request) {
+function hasFeeRemissionDecision(req: Request<Params>) {
   return !!req.session.appeal.application.remissionDecision;
 }
 
-function getFeeSupportStatusForAppealDetails(req: Request) {
+function getFeeSupportStatusForAppealDetails(req: Request<Params>) {
   if (hasFeeRemissionDecision(req)) {
     const remissionDecision = req.session.appeal.application.remissionDecision;
     switch (remissionDecision) {
@@ -51,7 +51,7 @@ function getFeeSupportStatusForAppealDetails(req: Request) {
   }
 }
 
-function getDecisionReasonRowForAppealDetails(req: Request) {
+function getDecisionReasonRowForAppealDetails(req: Request<Params>) {
   const remissionDecision = req.session.appeal.application.remissionDecision;
   const remissionDecisionReason = req.session.appeal.application.remissionDecisionReason;
   switch (remissionDecision) {
@@ -74,7 +74,7 @@ function getDecisionReasonRowForAppealDetails(req: Request) {
   }
 }
 
-function getPaymentStatusRow(req: Request) {
+function getPaymentStatusRow(req: Request<Params>) {
   const { paymentStatus = null } = req.session.appeal;
   const { application } = req.session.appeal;
   const { remissionDecision, isLateRemissionRequest } = application;
@@ -105,7 +105,7 @@ function getPaymentStatusRow(req: Request) {
 Following submission, remission can be decided.
 In such cases, the payment status changed to 'PAID' automatically without the occurrence of a payment event.
 This function verifies whether a payment event has been triggered or not. */
-function paymentForAppealHasBeenMade(req: Request) {
+function paymentForAppealHasBeenMade(req: Request<Params>) {
   return req.session.appeal.history
     && req.session.appeal.history.some(history => [Events.PAYMENT_APPEAL.id, Events.MARK_APPEAL_PAID.id].includes(history.id));
 }

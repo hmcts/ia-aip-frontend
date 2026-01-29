@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import * as _ from 'lodash';
 import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
 import {

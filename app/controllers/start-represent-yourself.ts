@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import CcdSystemService from '../service/ccd-system-service';
@@ -6,7 +7,7 @@ import { addSummaryRow } from '../utils/summary-list';
 import { formatCaseId } from '../utils/utils';
 import { createStructuredError } from '../utils/validations/fields-validations';
 
-function getStartRepresentingYourself(req: Request, res: Response, next: NextFunction) {
+function getStartRepresentingYourself(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     res.render('start-representing-yourself/start-representing-yourself.njk', {
       nextPage: paths.startRepresentingYourself.enterCaseNumber
@@ -16,7 +17,7 @@ function getStartRepresentingYourself(req: Request, res: Response, next: NextFun
   }
 }
 
-function getEnterCaseReference(req: Request, res: Response, next: NextFunction) {
+function getEnterCaseReference(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     let validationErrors: ValidationErrors;
 
@@ -49,7 +50,7 @@ function getEnterCaseReference(req: Request, res: Response, next: NextFunction) 
   }
 }
 
-function postEnterCaseReference(req: Request, res: Response, next: NextFunction) {
+function postEnterCaseReference(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const caseReferenceNumber = req.body['caseReferenceNumber'];
     if (!validCaseReferenceNumber(caseReferenceNumber)) {
@@ -81,7 +82,7 @@ function validCaseReferenceNumber(value: string): boolean {
   return value && (CASE_REFERENCE_NUMBER_REGEX.test(value) || CASE_REFERENCE_NUMBER_WITH_DASHES_REGEX.test(value));
 }
 
-function getEnterSecurityCode(req: Request, res: Response, next: NextFunction) {
+function getEnterSecurityCode(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     let validationErrors: ValidationErrors;
 
@@ -104,7 +105,7 @@ function getEnterSecurityCode(req: Request, res: Response, next: NextFunction) {
 }
 
 function postValidateAccess(ccdSystemService: CcdSystemService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (req.session.startRepresentingYourself.id === undefined) {
         res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
@@ -138,7 +139,7 @@ function validAccessCode(value: string): boolean {
   return value && ACCESS_CODE_REGEX.test(value);
 }
 
-function getConfirmCaseDetails(req: Request, res: Response, next: NextFunction) {
+function getConfirmCaseDetails(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     if (!req.session.startRepresentingYourself.accessValidated) {
       res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
@@ -162,7 +163,7 @@ function getConfirmCaseDetails(req: Request, res: Response, next: NextFunction) 
   }
 }
 
-function postConfirmCaseDetails(req: Request, res: Response, next: NextFunction) {
+function postConfirmCaseDetails(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     if (!req.session.startRepresentingYourself.accessValidated) {
       res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');

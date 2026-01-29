@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import session from 'express-session';
 import { Address } from '../../../app/clients/classes/Address';
 import { AddressInfoResponse } from '../../../app/clients/classes/AddressInfoResponse';

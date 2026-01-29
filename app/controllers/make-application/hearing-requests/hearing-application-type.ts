@@ -1,11 +1,12 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import i18n from '../../../../locale/en.json';
 import { applicationTypes } from '../../../data/application-types';
 import { paths } from '../../../paths';
 import { createStructuredError } from '../../../utils/validations/fields-validations';
 
-function getHearingApplicationType(req: Request, res: Response, next: NextFunction) {
+function getHearingApplicationType(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     let validationErrors: ValidationErrors;
@@ -63,7 +64,7 @@ function getHearingApplicationType(req: Request, res: Response, next: NextFuncti
   }
 }
 
-function postHearingApplicationType(req: Request, res: Response, next: NextFunction) {
+function postHearingApplicationType(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const decision = req.body[i18n.pages.makeApplication.askChangeHearing.question.name];
 

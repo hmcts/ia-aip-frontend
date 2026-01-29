@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import { appealTypes } from '../../data/appeal-types';
 import { FEATURE_FLAGS } from '../../data/constants';
@@ -11,7 +12,7 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { typeOfAppealValidation } from '../../utils/validations/fields-validations';
 
-async function getAppealTypes(req: Request) {
+async function getAppealTypes(req: Request<Params>) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
   const types = paymentsFlag ? appealTypes : appealTypes.filter(type => type.value === 'protection' || type.value === 'revocationOfProtection');
   const appealType = req.session.appeal.application && req.session.appeal.application.appealType || [];
@@ -21,7 +22,7 @@ async function getAppealTypes(req: Request) {
   });
 }
 
-async function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
+async function getTypeOfAppeal(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -35,7 +36,7 @@ async function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) 
 }
 
 function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'appealType')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');

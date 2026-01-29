@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
@@ -11,7 +12,7 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { formatTextForCYA, isFtpaFeatureEnabled } from '../../utils/utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
-async function makeFtpaApplication(req: Request, res: Response, next: NextFunction) {
+async function makeFtpaApplication(req: Request<Params>, res: Response, next: NextFunction) {
   const ftpaFlag = await isFtpaFeatureEnabled(req);
   if (!ftpaFlag) return res.redirect(paths.common.overview);
 
@@ -38,7 +39,7 @@ async function makeFtpaApplication(req: Request, res: Response, next: NextFuncti
   }
 }
 
-async function getReason(req: Request, res: Response, next: NextFunction, config: any) {
+async function getReason(req: Request<Params>, res: Response, next: NextFunction, config: any) {
 
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
@@ -65,7 +66,7 @@ async function getReason(req: Request, res: Response, next: NextFunction, config
   }
 }
 
-async function getFtpaOutOfTimeReason(req: Request, res: Response, next: NextFunction) {
+async function getFtpaOutOfTimeReason(req: Request<Params>, res: Response, next: NextFunction) {
   const ftpaFlag = await isFtpaFeatureEnabled(req);
   if (!ftpaFlag) return res.redirect(paths.common.overview);
 
@@ -86,7 +87,7 @@ async function getFtpaOutOfTimeReason(req: Request, res: Response, next: NextFun
   return getReason(req, res, next, config);
 }
 
-function postFtpaOutOfTimeReason(req: Request, res: Response, next: NextFunction) {
+function postFtpaOutOfTimeReason(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const ftpaOutOfTimeReason = req.body['ftpaOutOfTimeReason'];
     if (!ftpaOutOfTimeReason) {
@@ -100,7 +101,7 @@ function postFtpaOutOfTimeReason(req: Request, res: Response, next: NextFunction
   }
 }
 
-async function getFtpaReason(req: Request, res: Response, next: NextFunction) {
+async function getFtpaReason(req: Request<Params>, res: Response, next: NextFunction) {
   const ftpaFlag = await isFtpaFeatureEnabled(req);
   if (!ftpaFlag) return res.redirect(paths.common.overview);
 
@@ -125,7 +126,7 @@ async function getFtpaReason(req: Request, res: Response, next: NextFunction) {
   return getReason(req, res, next, config);
 }
 
-function postFtpaReason(req: Request, res: Response, next: NextFunction) {
+function postFtpaReason(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const ftpaReason = req.body['ftpaReason'];
     if (!ftpaReason) {
@@ -139,7 +140,7 @@ function postFtpaReason(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getProvideEvidenceQuestion(req: Request, res: Response, next: NextFunction, config: any) {
+function getProvideEvidenceQuestion(req: Request<Params>, res: Response, next: NextFunction, config: any) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     let validationErrors: ValidationErrors;
@@ -183,7 +184,7 @@ function getProvideEvidenceQuestion(req: Request, res: Response, next: NextFunct
   }
 }
 
-function getProvideFtpaOutOfTimeEvidenceQuestion(req: Request, res: Response, next: NextFunction) {
+function getProvideFtpaOutOfTimeEvidenceQuestion(req: Request<Params>, res: Response, next: NextFunction) {
   const config = {
     provideEvidence: 'ftpaOutOfTimeProvideEvidence',
     previousPage: paths.ftpa.ftpaOutOfTimeReason,
@@ -193,7 +194,7 @@ function getProvideFtpaOutOfTimeEvidenceQuestion(req: Request, res: Response, ne
   return getProvideEvidenceQuestion(req, res, next, config);
 }
 
-function postProvideOutOfTimeEvidenceQuestion(req: Request, res: Response, next: NextFunction) {
+function postProvideOutOfTimeEvidenceQuestion(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const ftpaOutOfTimeProvideEvidence = req.body['answer'];
 
@@ -212,7 +213,7 @@ function postProvideOutOfTimeEvidenceQuestion(req: Request, res: Response, next:
   }
 }
 
-function getProvideFtpaEvidenceQuestion(req: Request, res: Response, next: NextFunction) {
+function getProvideFtpaEvidenceQuestion(req: Request<Params>, res: Response, next: NextFunction) {
   const config = {
     provideEvidence: 'ftpaProvideEvidence',
     previousPage: paths.ftpa.ftpaReason,
@@ -222,7 +223,7 @@ function getProvideFtpaEvidenceQuestion(req: Request, res: Response, next: NextF
   return getProvideEvidenceQuestion(req, res, next, config);
 }
 
-function postProvideEvidenceQuestion(req: Request, res: Response, next: NextFunction) {
+function postProvideEvidenceQuestion(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const ftpaProvideEvidence = req.body['answer'];
 
@@ -241,7 +242,7 @@ function postProvideEvidenceQuestion(req: Request, res: Response, next: NextFunc
   }
 }
 
-function getProvideDocument(req: Request, res: Response, next: NextFunction, config: any) {
+function getProvideDocument(req: Request<Params>, res: Response, next: NextFunction, config: any) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     let validationErrors: ValidationErrors;
@@ -272,7 +273,7 @@ function getProvideDocument(req: Request, res: Response, next: NextFunction, con
   }
 }
 
-function postFtpaOutOfTimeEvidence(req: Request, res: Response, next: NextFunction) {
+function postFtpaOutOfTimeEvidence(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     if ((req.session.appeal.ftpaAppellantOutOfTimeDocuments || []).length > 0) {
       res.redirect(paths.ftpa.ftpaReason);
@@ -284,7 +285,7 @@ function postFtpaOutOfTimeEvidence(req: Request, res: Response, next: NextFuncti
   }
 }
 
-function postFtpaEvidence(req: Request, res: Response, next: NextFunction) {
+function postFtpaEvidence(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     if ((req.session.appeal.ftpaAppellantEvidenceDocuments || []).length > 0) {
       res.redirect(paths.ftpa.ftpaCheckAndSend);
@@ -296,7 +297,7 @@ function postFtpaEvidence(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getProvideOutOfTimeEvidenceDocument(req: Request, res: Response, next: NextFunction) {
+function getProvideOutOfTimeEvidenceDocument(req: Request<Params>, res: Response, next: NextFunction) {
   const config = {
     title: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaEvidence.title,
     adviceHeader: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaEvidence.adviceHeader,
@@ -311,7 +312,7 @@ function getProvideOutOfTimeEvidenceDocument(req: Request, res: Response, next: 
   return getProvideDocument(req, res, next, config);
 }
 
-function getProvideEvidenceDocument(req: Request, res: Response, next: NextFunction) {
+function getProvideEvidenceDocument(req: Request<Params>, res: Response, next: NextFunction) {
   const config = {
     title: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaEvidence.title,
     adviceHeader: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaEvidence.adviceHeader,
@@ -327,7 +328,7 @@ function getProvideEvidenceDocument(req: Request, res: Response, next: NextFunct
 }
 
 function uploadEvidence(documentManagementService: DocumentManagementService, pathId: string, evidenceName: string) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     const redirectTo = paths.ftpa[pathId];
     try {
       if (!req.file) {
@@ -351,7 +352,7 @@ function uploadEvidence(documentManagementService: DocumentManagementService, pa
 }
 
 function deleteEvidence(documentManagementService: DocumentManagementService, pathId: string, evidenceName: string) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (req.query.id) {
         const evidenceDocuments: Evidence[] = [...(req.session.appeal[evidenceName] || []).filter(document => document.fileId !== req.query.id)];
@@ -369,7 +370,7 @@ function deleteEvidence(documentManagementService: DocumentManagementService, pa
   };
 }
 
-function getFtpaCheckAndSend(req: Request, res: Response, next: NextFunction) {
+function getFtpaCheckAndSend(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const summaryLists: SummaryList[] = buildSummaryList(req);
     const previousPage = req.session.appeal.ftpaProvideEvidence === i18n.pages.ftpaApplication.ftpaEvidenceQuestion.options.yes.value
@@ -388,7 +389,7 @@ function getFtpaCheckAndSend(req: Request, res: Response, next: NextFunction) {
 }
 
 function postFtpaCheckAndSend(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const appeal: Appeal = {
         ...req.session.appeal
@@ -411,7 +412,7 @@ function postFtpaCheckAndSend(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getConfirmation(req: Request, res: Response, next: NextFunction) {
+function getConfirmation(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('templates/confirmation-page.njk', {
       title: i18n.pages.ftpaApplication.ftpaConfirmation.title,
@@ -422,7 +423,7 @@ function getConfirmation(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function buildSummaryList(req: Request): SummaryList[] {
+function buildSummaryList(req: Request<Params>): SummaryList[] {
   const summaryLists: SummaryList[] = [];
   const summaryRows: SummaryRow[] = [];
   const ftpaEvidence = req.session.appeal.ftpaAppellantEvidenceDocuments;
@@ -465,14 +466,14 @@ function buildSummaryList(req: Request): SummaryList[] {
   return summaryLists;
 }
 
-function isFtpaApplicationOutOfTime(req: Request): boolean {
+function isFtpaApplicationOutOfTime(req: Request<Params>): boolean {
   const dueDate: string = getDueDateForAppellantToRespondToJudgeDecision(req);
 
   return dueDate ? moment(dueDate).isBefore(moment(new Date().toString())) : false;
 }
 
 function validate(redirectUrl: string) {
-  return (_req: Request, res: Response, next: NextFunction) => {
+  return (_req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (res.locals.errorCode) {
         return res.redirect(`${redirectUrl}?error=${res.locals.errorCode}`);

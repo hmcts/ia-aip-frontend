@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express-serve-static-core';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import {

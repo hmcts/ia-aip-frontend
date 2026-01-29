@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import * as refDataApi from '../../../app/api/ref-data-api';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import RefDataService from '../../../app/service/ref-data-service';

@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import validator from 'validator';
 import i18n from '../../../locale/en.json';
@@ -44,7 +45,7 @@ function getOptions(selectionPresent, answer) {
   }
 }
 
-function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
+function getAccessNeeds(req: Request<Params>, res: Response, next: NextFunction) {
   const { hearingRequirements } = req.session.appeal;
   const witnessesOnHearing = hearingRequirements && hearingRequirements.witnessesOnHearing || false;
   try {
@@ -57,7 +58,7 @@ function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getNeedInterpreterPage(req: Request, res: Response, next: NextFunction) {
+function getNeedInterpreterPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const selectionPresent = _.has(req.session.appeal, 'hearingRequirements.isInterpreterServicesNeeded') || null;
     return res.render('templates/radio-question-page.njk', {
@@ -78,7 +79,7 @@ function getNeedInterpreterPage(req: Request, res: Response, next: NextFunction)
 }
 
 function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.accessNeeds.selectInterpreter;
       const pageContent = {
@@ -116,7 +117,7 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getInterpreterSupportAppellantWitnesses(req: Request, res: Response, next: NextFunction) {
+function getInterpreterSupportAppellantWitnesses(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const { hearingRequirements } = req.session.appeal;
     const isInterpreterServicesNeeded = hearingRequirements && hearingRequirements.isInterpreterServicesNeeded || false;
@@ -139,7 +140,7 @@ function getInterpreterSupportAppellantWitnesses(req: Request, res: Response, ne
 }
 
 function postInterpreterSupportAppellantWitnesses(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'selections')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -203,7 +204,7 @@ function postInterpreterSupportAppellantWitnesses(updateAppealService: UpdateApp
   };
 }
 
-function getWitnessesInterpreterNeeds(req: Request, res: Response, next: NextFunction) {
+function getWitnessesInterpreterNeeds(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const { hearingRequirements } = req.session.appeal;
     const witnessNames = hearingRequirements && hearingRequirements.witnessNames || [];
@@ -218,7 +219,7 @@ function getWitnessesInterpreterNeeds(req: Request, res: Response, next: NextFun
 }
 
 function postWitnessesInterpreterNeeds(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'selections')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -278,7 +279,7 @@ function postWitnessesInterpreterNeeds(updateAppealService: UpdateAppealService)
   };
 }
 
-function getInterpreterTypePage(req: Request, res: Response, next: NextFunction) {
+function getInterpreterTypePage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const { hearingRequirements } = req.session.appeal;
     let pageQuestion = '';
@@ -323,7 +324,7 @@ function getInterpreterTypePage(req: Request, res: Response, next: NextFunction)
 }
 
 function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       let pageQuestion = '';
       let checkboxHintText = '';
@@ -405,7 +406,7 @@ function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
 
 function handleGetInterpreterSpokenSignLanguagePage(refDataServiceObj: RefDataService, spokenSignLanguageConfig: SpokenSignLanguageConfig) {
 
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       let selectedWitnessesList = null;
       let pageTitle = '';
@@ -474,7 +475,7 @@ function getInterpreterSpokenLanguagePage(refDataServiceObj: RefDataService) {
 }
 
 function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealService, refDataServiceObj: RefDataService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       let selectedWitnessesList: string[] = null;
       let pageTitle = '';
@@ -595,7 +596,7 @@ function getInterpreterSignLanguagePage(refDataServiceObj: RefDataService) {
 }
 
 function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealService, refDataServiceObj: RefDataService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       let selectedWitnessesList: string[] = null;
       let pageTitle = '';
@@ -704,7 +705,7 @@ function convertWitnessListToCheckboxItem(witnessNames: WitnessName[], hearingRe
   return checkboxList;
 }
 
-function getPrepareInterpreterLanguageType(req: Request, res: Response, languageTypeFieldString: string, languageList: DynamicList,
+function getPrepareInterpreterLanguageType(req: Request<Params>, res: Response, languageTypeFieldString: string, languageList: DynamicList,
   formAction, formPageTitle, formPageText, formDropdownListText, formCheckBoxText, formLanguageManuallyText,
   selectedWitnessesList?: string[]) {
   const { hearingRequirements } = req.session.appeal;
@@ -737,7 +738,7 @@ function getPrepareInterpreterLanguageType(req: Request, res: Response, language
   });
 }
 
-function preparePostInterpreterLanguageSubmissionObj(req: Request, languageList: DynamicList): InterpreterLanguageRefData {
+function preparePostInterpreterLanguageSubmissionObj(req: Request<Params>, languageList: DynamicList): InterpreterLanguageRefData {
   let interpreterSpokenOrSignLanguage: InterpreterLanguageRefData = {};
   if (req.body.languageRefData) {
     interpreterSpokenOrSignLanguage.languageRefData = { ...languageList };
@@ -814,7 +815,7 @@ function clearUnnecessaryInterpreterCachedData(hearingRequirements: HearingRequi
   }
 }
 
-function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) {
+function getAdditionalLanguage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
     return res.render('hearing-requirements/language-details.njk', {
@@ -829,7 +830,7 @@ function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) 
 }
 
 function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -893,7 +894,7 @@ function buildLanguageList(interpreterLanguages: InterpreterLanguage[]): Summary
 }
 
 function addMoreLanguagePostAction() {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
       let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
       const validation = selectedRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.accessNeeds.addLanguageDialect);
@@ -923,7 +924,7 @@ function addMoreLanguagePostAction() {
 }
 
 function removeLanguagePostAction() {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
       let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
       const nameToRemove: string = req.query.name as string;
@@ -935,7 +936,7 @@ function removeLanguagePostAction() {
   };
 }
 
-function getStepFreeAccessPage(req: Request, res: Response, next: NextFunction) {
+function getStepFreeAccessPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const selectionPresent = _.has(req.session.appeal, 'hearingRequirements.isHearingRoomNeeded') || null;
     return res.render('templates/radio-question-page.njk', {
@@ -956,7 +957,7 @@ function getStepFreeAccessPage(req: Request, res: Response, next: NextFunction) 
 }
 
 function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.accessNeeds.stepFreeAccess;
       const pageContent = {
@@ -988,7 +989,7 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getHearingLoopPage(req: Request, res: Response, next: NextFunction) {
+function getHearingLoopPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const selectionPresent = _.has(req.session.appeal, 'hearingRequirements.isHearingLoopNeeded') || null;
     return res.render('templates/radio-question-page.njk', {
@@ -1009,7 +1010,7 @@ function getHearingLoopPage(req: Request, res: Response, next: NextFunction) {
 }
 
 function postHearingLoopPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const selectionPresent = _.has(req.session.appeal, 'hearingRequirements.isHearingLoopNeeded') || null;
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.accessNeeds.hearingLoop;
@@ -1043,7 +1044,7 @@ function postHearingLoopPage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function checkAndSetReqBodyParameter(req: Request) {
+function checkAndSetReqBodyParameter(req: Request<Params>) {
   if (!req.body.languageManualEntry) {
     req.body.languageManualEntry = '';
   }
@@ -1084,7 +1085,7 @@ function setupHearingAccessNeedsController(middleware: Middleware[], updateAppea
   return router;
 }
 
-async function retrieveInterpreterDynamicListByDataType(refDataServiceObj: RefDataService, req: Request, dataType: String): Promise<DynamicList> {
+async function retrieveInterpreterDynamicListByDataType(refDataServiceObj: RefDataService, req: Request<Params>, dataType: String): Promise<DynamicList> {
   const data = await refDataServiceObj.getCommonRefData(req, dataType);
   return convertCommonRefDataToValueList(data);
 }

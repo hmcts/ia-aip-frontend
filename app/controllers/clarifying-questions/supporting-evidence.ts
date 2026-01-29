@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import { Events } from '../../../app/data/events';
 import i18n from '../../../locale/en.json';
@@ -11,7 +12,7 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
-function getSupportingEvidenceUploadPage(req: Request, res: Response, next: NextFunction) {
+function getSupportingEvidenceUploadPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const questionOrder = parseInt(req.params.id, 10) - 1;
@@ -29,7 +30,7 @@ function getSupportingEvidenceUploadPage(req: Request, res: Response, next: Next
 }
 
 function postSupportingEvidenceUpload(documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
         const questionOrder = parseInt(req.params.id, 10) - 1;
@@ -75,7 +76,7 @@ function postSupportingEvidenceUpload(documentManagementService: DocumentManagem
 }
 
 function getSupportingEvidenceDelete(documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const fileId: string = req.query.id as string;
 
@@ -105,7 +106,7 @@ function getSupportingEvidenceDelete(documentManagementService: DocumentManageme
   };
 }
 
-function postSupportingEvidenceSubmit(req: Request, res: Response, next: NextFunction) {
+function postSupportingEvidenceSubmit(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     if (req.body.saveForLater) {
       return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');

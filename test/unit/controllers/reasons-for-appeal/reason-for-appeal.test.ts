@@ -1,5 +1,6 @@
 import config from 'config';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import session from 'express-session';
 import {
   getReasonForAppeal,

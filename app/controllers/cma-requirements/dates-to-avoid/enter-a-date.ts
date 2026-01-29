@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../../../locale/en.json';
@@ -13,7 +14,7 @@ import { isDateInRange } from '../../../utils/validations/fields-validations';
 const formActionUrl = paths.awaitingCmaRequirements.datesToAvoidEnterDate;
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
-function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: Request, res: Response) {
+function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: Request<Params>, res: Response) {
   if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
     return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
   }
@@ -57,7 +58,7 @@ function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: 
   return onSuccess();
 }
 
-function getEnterADatePageWithId(req: Request, res: Response, next: NextFunction) {
+function getEnterADatePageWithId(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const dateId = req.params.id;
     const formActionWithId = `${formActionUrl}/${dateId}`;
@@ -83,7 +84,7 @@ function getEnterADatePageWithId(req: Request, res: Response, next: NextFunction
   }
 }
 
-function getEnterADatePage(req: Request, res: Response, next: NextFunction) {
+function getEnterADatePage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
 
     const { datesToAvoid } = req.session.appeal.cmaRequirements;
@@ -109,7 +110,7 @@ function getEnterADatePage(req: Request, res: Response, next: NextFunction) {
 }
 
 function postEnterADatePage(updateAppealService: UpdateAppealService) {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
 
       const onSuccess = async () => {
@@ -140,7 +141,7 @@ function postEnterADatePage(updateAppealService: UpdateAppealService) {
 }
 
 function postEnterADatePageWithId(updateAppealService: UpdateAppealService) {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
       const dateId = req.params.id;
       const formActionWithId = `${formActionUrl}/${dateId}`;

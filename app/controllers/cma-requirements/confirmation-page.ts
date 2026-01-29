@@ -1,9 +1,10 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { addDaysToDate } from '../../utils/date-utils';
 
-function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
+function getConfirmationPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     res.render('templates/confirmation-page.njk', {
       title: i18n.pages.cmaRequirementsConfirmation.title,

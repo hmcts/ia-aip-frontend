@@ -48,7 +48,7 @@ export default class Logger implements ILogger {
     this.console(message, label, SEVERITY.EXCEPTION);
   }
 
-  private console(message: string, label: string, severity?: number, workerId: number = null) {
+  public console(message: string, label: string, severity?: number, workerId: number = null) {
     const log = `[${label}]: ${message}`;
     const worker = workerId === null ? '' : `[0${workerId}] `;
 

@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
@@ -25,7 +26,7 @@ async function getModel(nextId, answer) {
   };
 }
 
-async function eligibilityQuestionGet(req: Request, res: Response, next: NextFunction) {
+async function eligibilityQuestionGet(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     let nextId = _.get(req.query, 'id', '0');
     if (!req.session.eligibility) {
@@ -41,7 +42,7 @@ async function eligibilityQuestionGet(req: Request, res: Response, next: NextFun
   }
 }
 
-async function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction) {
+async function eligibilityQuestionPost(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const questionId = req.body.questionId;
     const answer = req.body.answer;
@@ -82,7 +83,7 @@ async function eligibilityQuestionPost(req: Request, res: Response, next: NextFu
   }
 }
 
-function getEligible(req: Request, res: Response, next: NextFunction) {
+function getEligible(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     if (!req.session.eligibility) {
       req.session.eligibility = {};
@@ -97,7 +98,7 @@ function getEligible(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function getIneligible(req: Request, res: Response, next: NextFunction) {
+async function getIneligible(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const i18nIneligible = await getI18nIneligible();
     const questionId: string = req.query.id as string;

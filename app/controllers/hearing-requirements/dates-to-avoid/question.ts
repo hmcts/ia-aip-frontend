@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../../../locale/en.json';
@@ -28,7 +29,7 @@ function getQuestion(appeal: Appeal) {
   return question;
 }
 
-function getDatesToAvoidQuestion(req: Request, res: Response, next: NextFunction) {
+function getDatesToAvoidQuestion(req: Request<Params>, res: Response, next: NextFunction) {
 
   const startDate = getHearingStartDate(req.session.appeal.directions);
   const availableHearingDates = {
@@ -51,7 +52,7 @@ function getDatesToAvoidQuestion(req: Request, res: Response, next: NextFunction
 }
 
 function postDatesToAvoidQuestion(updateAppealService: UpdateAppealService) {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.datesToAvoid.datesToAvoidAnswerRequired;
       const startDate = getHearingStartDate(req.session.appeal.directions);

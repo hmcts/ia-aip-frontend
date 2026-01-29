@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
@@ -8,7 +9,7 @@ import { deleteSupportingEvidence, getRequestSent, uploadSupportingEvidence } fr
 import { getPath } from './make-application-controllers-helper';
 
 function validate(pathPrefix: string) {
-  return (_req: Request, res: Response, next: NextFunction) => {
+  return (_req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (res.locals.errorCode) {
         let redirectUrl = getPath(pathPrefix, _req.session.appeal.makeAnApplicationTypes.value.code);

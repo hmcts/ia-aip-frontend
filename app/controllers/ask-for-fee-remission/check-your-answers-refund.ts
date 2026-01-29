@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
@@ -7,7 +8,7 @@ import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 
-async function getCheckYourAnswersRefund(req: Request, res: Response, next: NextFunction) {
+async function getCheckYourAnswersRefund(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
@@ -22,7 +23,7 @@ async function getCheckYourAnswersRefund(req: Request, res: Response, next: Next
 }
 
 function postCheckYourAnswersRefund(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     try {
@@ -47,7 +48,7 @@ function postCheckYourAnswersRefund(updateAppealService: UpdateAppealService) {
   };
 }
 
-async function createSummaryRowsFrom(req: Request) {
+async function createSummaryRowsFrom(req: Request<Params>) {
   const application = req.session.appeal.application;
   const editParameter = '?edit';
   const lateRemissionOption = application.lateRemissionOption;

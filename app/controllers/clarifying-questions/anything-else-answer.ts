@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { CQ_NOTHING_ELSE } from '../../data/constants';
@@ -10,7 +11,7 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage, nowIsoDate } from '../../utils/utils';
 import { textAreaValidation } from '../../utils/validations/fields-validations';
 
-function getAnythingElseAnswerPage(req: Request, res: Response, next: NextFunction) {
+function getAnythingElseAnswerPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const { draftClarifyingQuestionsAnswers } = req.session.appeal;
@@ -35,7 +36,7 @@ function getAnythingElseAnswerPage(req: Request, res: Response, next: NextFuncti
 }
 
 function postAnythingElseAnswerPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'anything-else','saveForLater')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');

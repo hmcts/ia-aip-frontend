@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import Logger, { getLogLabel } from '../../../utils/logger';
 import config from '../config';
 import cookies from '../utilities/cookies';
@@ -11,7 +12,7 @@ const idamExpressProtect = (args: IdamConfig = {}) => {
 
   const tokenCookieName = args.tokenCookieName || config.tokenCookieName;
 
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request<Params>, res: Response, next: NextFunction) => {
     const authToken = cookies.get(req, tokenCookieName);
 
     if (authToken) {

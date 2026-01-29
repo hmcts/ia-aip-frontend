@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import Logger, { getLogLabel } from '../../../utils/logger';
 import config from '../config';
 import cookies from '../utilities/cookies';
@@ -12,7 +13,7 @@ const idamExpressLogout = (args: IdamConfig = {}) => {
 
   const tokenCookieName = args.tokenCookieName || config.tokenCookieName;
 
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     const authToken = cookies.get(req, tokenCookieName);
     const logoutUrl = `${idamFunctions.getIdamApiUrl()}/session/${authToken}`;
     const options = {

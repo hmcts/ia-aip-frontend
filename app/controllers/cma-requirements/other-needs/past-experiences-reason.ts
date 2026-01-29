@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
@@ -19,7 +20,7 @@ let pageContent = {
   timeExtensionAllowed: false
 };
 
-function getPastExperiencesReason(req: Request, res: Response, next: NextFunction) {
+function getPastExperiencesReason(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const { otherNeeds } = req.session.appeal.cmaRequirements;
     const savedReason: string = otherNeeds.pastExperiencesReason;
@@ -32,7 +33,7 @@ function getPastExperiencesReason(req: Request, res: Response, next: NextFunctio
 }
 
 function postPastExperiencesReason(updateAppealService: UpdateAppealService) {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
       const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.pastExperiencesReasonRequired;
 

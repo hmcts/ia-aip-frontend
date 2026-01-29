@@ -1,7 +1,8 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { paths } from '../paths';
 
-function getFileNotFoundPage(req: Request, res: Response, next: NextFunction) {
+function getFileNotFoundPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('./errors/file-not-found.njk', {
       previousPage: {

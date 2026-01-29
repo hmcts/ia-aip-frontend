@@ -1,5 +1,5 @@
 import config from 'config';
-import { Request } from 'express';
+import type { Request } from 'express-serve-static-core';
 import moment from 'moment';
 import { Events } from '../data/events';
 import {
@@ -66,7 +66,7 @@ function getFormattedEventHistoryDate(history: HistoryEvent[], eventTagToLookFor
  * @param req the request containing the appeal information
  * @returns deadline for the appeallnt to respond to Judge's decision
  */
-function getDueDateForAppellantToRespondToJudgeDecision(req: Request, ftpaSetAsideFeatureEnabled: Boolean = false) {
+function getDueDateForAppellantToRespondToJudgeDecision(req: Request<Params>, ftpaSetAsideFeatureEnabled: Boolean = false) {
 
   let theDateOfdecisionAndReasons;
   if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled.valueOf())) {
@@ -87,7 +87,7 @@ function getDueDateForAppellantToRespondToJudgeDecision(req: Request, ftpaSetAsi
  * @param req the request containing the appeal information
  * @returns deadline for the appeallant to respond to FTPA decision
  */
-function getDueDateForAppellantToRespondToFtpaDecision(req: Request) {
+function getDueDateForAppellantToRespondToFtpaDecision(req: Request<Params>) {
   let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
   // if it's out of country appeal it's 28 days otherwise it's 14 days
   let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? dueDateFtpaDecisionResponseOoc : dueDateFtpaDecisionResponse;
@@ -100,7 +100,7 @@ function getDueDateForAppellantToRespondToFtpaDecision(req: Request) {
  * @param req the request containing  all the directions in session
  * @param dlrmFeeRemissionFlag value of DLRM_FEE_REMISSION_FEATURE_FLAG
  */
-function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemissionFlag: Boolean = false, ftpaSetAsideFeatureEnabled: Boolean = false): string {
+function getDeadline(currentAppealStatus: string, req: Request<Params>, dlrmFeeRemissionFlag: Boolean = false, ftpaSetAsideFeatureEnabled: Boolean = false): string {
 
   const history = req.session.appeal.history;
   let formattedDeadline;

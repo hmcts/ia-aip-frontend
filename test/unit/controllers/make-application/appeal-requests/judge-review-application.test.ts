@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { getJudgeReviewApplication, postJudgeReviewApplication } from '../../../../../app/controllers/make-application/appeal-requests/judge-review-application';
 import { paths } from '../../../../../app/paths';
 import i18n from '../../../../../locale/en.json';

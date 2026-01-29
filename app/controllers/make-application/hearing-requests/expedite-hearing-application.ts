@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../../locale/en.json';
 import { paths } from '../../../paths';
 import { createStructuredError } from '../../../utils/validations/fields-validations';
 import { makeApplicationControllersHelper } from '../make-application-controllers-helper';
 
-function getExpediteHearingApplication(req: Request, res: Response, next: NextFunction) {
+function getExpediteHearingApplication(req: Request<Params>, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
       askHearingSooner: createStructuredError('askHearingSooner', i18n.validationErrors.makeApplication.askHearingSooner)
@@ -19,7 +20,7 @@ function getExpediteHearingApplication(req: Request, res: Response, next: NextFu
   return makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req, res, next, config);
 }
 
-function postExpediteHearingApplication(req: Request, res: Response, next: NextFunction) {
+function postExpediteHearingApplication(req: Request<Params>, res: Response, next: NextFunction) {
   const redirectToSuccessPath = paths.makeApplication.supportingEvidenceExpedite;
   const redirectToErrorPath = `${paths.makeApplication.expedite}?error=askHearingSooner`;
   return makeApplicationControllersHelper.postProvideMakeAnApplicationDetails(req, res, next, redirectToSuccessPath, redirectToErrorPath);

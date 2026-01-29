@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { paths } from '../../paths';
 import { buildSectionObject, cmaRequirementsStatus } from '../../utils/tasks-utils';
 
@@ -16,7 +17,7 @@ function getCmaRequirementsStatus(status: ApplicationStatus) {
   ];
 }
 
-function getTaskList(req: Request, res: Response, next: NextFunction) {
+function getTaskList(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const status: ApplicationStatus = cmaRequirementsStatus(req.session.appeal);
     const statusOverview = getCmaRequirementsStatus(status);

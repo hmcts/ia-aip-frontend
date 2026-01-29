@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import { appealApplicationStatus, buildSectionObject } from '../../utils/tasks-utils';
 
-async function getAppealStageStatus(req: Request) {
+async function getAppealStageStatus(req: Request<Params>) {
   let drlmFeeRemissionFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
   const status = appealApplicationStatus(req.session.appeal, drlmFeeRemissionFeatureFlag);
   const paymentsFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
@@ -29,7 +30,7 @@ async function getAppealStageStatus(req: Request) {
   ];
 }
 
-async function getTaskList(req: Request, res: Response, next: NextFunction) {
+async function getTaskList(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const statusOverview = await getAppealStageStatus(req);
     return res.render('appeal-application/task-list.njk', { data: statusOverview });

@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express-serve-static-core';
 import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
@@ -46,7 +46,7 @@ export default class UpdateAppealService {
     return this._authenticationService;
   }
 
-  async loadAppeal(req: Request) {
+  async loadAppeal(req: Request<Params>) {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
     const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
@@ -88,7 +88,7 @@ export default class UpdateAppealService {
   }
 
   // TODO: remove submitEvent when all app is refactored using new submitEvent
-  async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
+  async submitEvent(event, req: Request<Params>): Promise<CcdCaseDetails> {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
     const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
     const currentUserId = req.idam.userDetails.uid;

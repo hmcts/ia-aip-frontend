@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
@@ -399,7 +400,7 @@ function buildDatesToAvoidSummaryList(datesToAvoid: DatesToAvoid) {
   return datesToAvoidSummaryLists;
 }
 
-function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
+function getCheckAndSendPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const previousPage: string = paths.awaitingCmaRequirements.taskList;
     const cmaRequirements: CmaRequirements = req.session.appeal.cmaRequirements;
@@ -452,7 +453,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
 }
 
 function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_CMA_REQUIREMENTS, req);
       req.session.appeal.appealStatus = updatedAppeal.state;

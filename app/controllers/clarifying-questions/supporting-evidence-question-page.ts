@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { Events } from '../../../app/data/events';
 import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
@@ -7,7 +8,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { documentIdToDocStoreUrl } from '../../utils/utils';
 import { yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
-function getSupportingEvidenceQuestionPage(req: Request, res: Response, next: NextFunction) {
+function getSupportingEvidenceQuestionPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const options = [
       {
@@ -34,7 +35,7 @@ function getSupportingEvidenceQuestionPage(req: Request, res: Response, next: Ne
 }
 
 function postSupportingEvidenceQuestionPage(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (req.body.saveAndAskMoreTime) {
         req.session.appeal.application.saveAndAskForTime = true;

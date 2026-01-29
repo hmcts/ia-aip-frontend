@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
@@ -20,7 +21,7 @@ const pageContent = {
   timeExtensionAllowed: false
 };
 
-function getSingleSexHearingAllMaleReason(req: Request, res: Response, next: NextFunction) {
+function getSingleSexHearingAllMaleReason(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const { otherNeeds } = req.session.appeal.hearingRequirements;
     const savedReason: string = otherNeeds.singleSexAppointmentReason;
@@ -34,7 +35,7 @@ function getSingleSexHearingAllMaleReason(req: Request, res: Response, next: Nex
 }
 
 function postSingleSexHearingAllMaleReason(updateAppealService: UpdateAppealService) {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'reason')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');

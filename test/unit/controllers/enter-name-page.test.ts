@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { getNamePage, postNamePage, setupHomeOfficeDetailsController } from '../../../app/controllers/appeal-application/home-office-details';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';

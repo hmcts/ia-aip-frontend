@@ -1,11 +1,12 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { idamConfig } from '../config/idam-config';
 import idamExpressMiddleware from '../middleware/ia-idam-express-middleware';
 import { checkSession, initSession, startRepresentingYourself } from '../middleware/session-middleware';
 import { paths } from '../paths';
 import { getIdamLoginUrl, getIdamRedirectUrl } from '../utils/url-utils';
 
-function getLogin(req: Request, res: Response, next: NextFunction) {
+function getLogin(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     res.redirect(paths.common.overview);
   } catch (e) {
@@ -13,7 +14,7 @@ function getLogin(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getLogout(req: Request, res: Response, next: NextFunction) {
+function getLogout(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     res.redirect(paths.common.start);
   } catch (e) {
@@ -30,7 +31,7 @@ function isValidUrl(urlString: string): boolean {
   }
 }
 
-function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
+function getRedirectUrl(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     let redirectTo = req.session.redirectUrl || paths.common.overview;
     if (!isValidUrl(redirectTo)) {
@@ -43,7 +44,7 @@ function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function authenticateMiddleware(req: Request, res: Response, next: NextFunction) {
+async function authenticateMiddleware(req: Request<Params>, res: Response, next: NextFunction) {
   idamConfig.redirectUri = getIdamRedirectUrl(req);
   idamConfig.idamLoginUrl = getIdamLoginUrl(req);
   idamExpressMiddleware.authenticate(idamConfig)(req, res, next);

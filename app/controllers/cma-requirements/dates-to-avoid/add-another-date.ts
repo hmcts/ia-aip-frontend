@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../../locale/en.json';
 import { paths } from '../../../paths';
 import { postCmaRequirementsYesNoHandler } from '../common';
@@ -11,7 +12,7 @@ const question = {
   options: [ { value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' } ]
 };
 
-function getAddAnotherDateQuestionPage(req: Request, res: Response, next: NextFunction) {
+function getAddAnotherDateQuestionPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     res.render('templates/radio-question-page.njk', {
       previousPage,
@@ -26,7 +27,7 @@ function getAddAnotherDateQuestionPage(req: Request, res: Response, next: NextFu
   }
 }
 
-function postAddAnotherDateQuestionPage(req: Request, res: Response, next: NextFunction) {
+function postAddAnotherDateQuestionPage(req: Request<Params>, res: Response, next: NextFunction) {
 
   const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.datesToAvoid.addAnotherDateAnswerRequired;
 

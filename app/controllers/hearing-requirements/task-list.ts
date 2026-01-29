@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { paths } from '../../paths';
 import { buildSectionObject, submitHearingRequirementsStatus } from '../../utils/tasks-utils';
 
@@ -18,7 +19,7 @@ function getSubmitHearingRequirementsStatus(status: ApplicationStatus) {
   ];
 }
 
-function getTaskList(req: Request, res: Response, next: NextFunction) {
+function getTaskList(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const status: ApplicationStatus = submitHearingRequirementsStatus(req.session.appeal);
     const statusOverview = getSubmitHearingRequirementsStatus(status);

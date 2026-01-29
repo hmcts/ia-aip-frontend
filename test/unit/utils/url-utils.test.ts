@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { getIdamLoginUrl, getIdamRedirectUrl } from '../../../app/utils/url-utils';
 import { expect } from '../../utils/testUtils';
 

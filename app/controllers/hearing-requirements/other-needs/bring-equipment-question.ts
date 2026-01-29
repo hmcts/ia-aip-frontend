@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
@@ -10,7 +11,7 @@ const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } 
 const pageTitle = i18n.pages.hearingRequirements.otherNeedsSection.bringEquipment.title;
 const formAction = paths.submitHearingRequirements.otherNeedsMultimediaEquipmentQuestion;
 
-function getHearingMultimediaEquipmentQuestion(req: Request, res: Response, next: NextFunction) {
+function getHearingMultimediaEquipmentQuestion(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const question = getQuestion(req.session.appeal);
     return res.render('templates/radio-question-page.njk', {
@@ -42,7 +43,7 @@ function getQuestion(appeal: Appeal) {
 }
 
 function postHearingMultimediaEquipmentQuestion(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.otherNeeds.multimediaEvidenceAnswerRequired;
       const question = getQuestion(req.session.appeal);

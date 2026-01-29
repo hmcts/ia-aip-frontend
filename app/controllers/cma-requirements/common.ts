@@ -1,11 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import * as _ from 'lodash';
 import { paths } from '../../paths';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { textAreaValidation, yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
-function handleCmaRequirementsYesNo(onValidationError, onValidationErrorMessage: string, onSuccess, req: Request, res: Response, next: NextFunction) {
+function handleCmaRequirementsYesNo(onValidationError, onValidationErrorMessage: string, onSuccess, req: Request<Params>, res: Response, next: NextFunction) {
   try {
     if (!shouldValidateWhenSaveForLater(req.body, 'reason')) {
       return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -21,7 +22,7 @@ function handleCmaRequirementsYesNo(onValidationError, onValidationErrorMessage:
   }
 }
 
-export function postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request, res: Response, next: NextFunction) {
+export function postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request<Params>, res: Response, next: NextFunction) {
 
   const onValidationError = (validations) => res.render('templates/radio-question-page.njk', {
     ...pageContent,
@@ -39,7 +40,7 @@ export function postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMe
   );
 }
 
-function handleCmaRequirementsReason(onValidationError, onValidationErrorMessage: string, onSuccess, req: Request, next: NextFunction) {
+function handleCmaRequirementsReason(onValidationError, onValidationErrorMessage: string, onSuccess, req: Request<Params>, next: NextFunction) {
   try {
     const { reason } = req.body;
     const validations = textAreaValidation(reason, 'reason', onValidationErrorMessage);
@@ -52,7 +53,7 @@ function handleCmaRequirementsReason(onValidationError, onValidationErrorMessage
   }
 }
 
-export function getCmaRequirementsReasonHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request, res: Response, next: NextFunction) {
+export function getCmaRequirementsReasonHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request<Params>, res: Response, next: NextFunction) {
   const onValidationError = (validations) => res.render('templates/textarea-question-page.njk', {
     ...pageContent,
     errorList: Object.values(validations),
@@ -68,7 +69,7 @@ export function getCmaRequirementsReasonHandler(pageContent, onValidationErrorMe
   );
 }
 
-export function handleCmaRequirementsSaveForLater(req: Request, res: Response) {
+export function handleCmaRequirementsSaveForLater(req: Request<Params>, res: Response) {
   if (_.has(req.session, 'appeal.cmaRequirements.isEdit')
     && req.session.appeal.cmaRequirements.isEdit === true) {
     req.session.appeal.cmaRequirements.isEdit = false;

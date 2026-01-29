@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
@@ -12,7 +13,7 @@ import { isAddendumEvidenceUploadState } from '../../utils/application-state-uti
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
-function getProvideMoreEvidence(req: Request, res: Response, next: NextFunction) {
+function getProvideMoreEvidence(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     let validationErrors: ValidationErrors;
@@ -48,7 +49,7 @@ function getProvideMoreEvidence(req: Request, res: Response, next: NextFunction)
   }
 }
 
-function getReasonForLateEvidence(req: Request, res: Response, next: NextFunction) {
+function getReasonForLateEvidence(req: Request<Params>, res: Response, next: NextFunction) {
   if ((req.session.appeal.addendumEvidence || []).length === 0) {
     return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
   }
@@ -75,7 +76,7 @@ function getReasonForLateEvidence(req: Request, res: Response, next: NextFunctio
   }
 }
 
-function postReasonForLateEvidence(req: Request, res: Response, next: NextFunction) {
+function postReasonForLateEvidence(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     let addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence || [])];
 
@@ -102,7 +103,7 @@ function postReasonForLateEvidence(req: Request, res: Response, next: NextFuncti
   }
 }
 
-function postProvideMoreEvidence(req: Request, res: Response, next: NextFunction) {
+function postProvideMoreEvidence(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const additionalEvidenceDocuments = req.session.appeal.additionalEvidence || [];
     if (additionalEvidenceDocuments.length > 0) {
@@ -117,7 +118,7 @@ function postProvideMoreEvidence(req: Request, res: Response, next: NextFunction
 }
 
 function validate(redirectToUrl: string) {
-  return (_req: Request, res: Response, next: NextFunction) => {
+  return (_req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       let errorCode: string;
       if (res.locals.errorCode) {
@@ -134,7 +135,7 @@ function validate(redirectToUrl: string) {
 }
 
 function uploadProvideMoreEvidence(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     if (!req.file) {
       return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
     }
@@ -145,7 +146,7 @@ function uploadProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
 }
 
 function postProvideMoreEvidenceCheckAndSend(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     if (isAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
       return postAddendumEvidence(req, res, updateAppealService).catch(e => next(e));
     } else {
@@ -155,7 +156,7 @@ function postProvideMoreEvidenceCheckAndSend(updateAppealService: UpdateAppealSe
 }
 
 function deleteProvideMoreEvidence(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     if (req.query.id) {
       if (isAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
         return deleteAddendumEvidence(req, res, documentManagementService).catch(e => next(e));
@@ -167,7 +168,7 @@ function deleteProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
   };
 }
 
-function getProvideMoreEvidenceCheckAndSend(req: Request, res: Response, next: NextFunction) {
+function getProvideMoreEvidenceCheckAndSend(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     if (isAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
       return getProvideAddendumEvidenceCheckAndSend(req, res);
@@ -179,7 +180,7 @@ function getProvideMoreEvidenceCheckAndSend(req: Request, res: Response, next: N
   }
 }
 
-function getConfirmation(req: Request, res: Response, next: NextFunction) {
+function getConfirmation(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     if (isAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
       return res.render('templates/confirmation-page.njk', {
@@ -198,7 +199,7 @@ function getConfirmation(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getHomeOfficeEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
+function getHomeOfficeEvidenceDocuments(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const homeOfficeAddendumEvidenceDocuments = getUploadedAddendumEvidenceDocuments(req, 'Respondent');
     const summaryList: SummaryList[] = buildUploadedAddendumEvidenceDocumentsSummaryList(homeOfficeAddendumEvidenceDocuments);
@@ -214,7 +215,7 @@ function getHomeOfficeEvidenceDocuments(req: Request, res: Response, next: NextF
   }
 }
 
-function getAdditionalEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
+function getAdditionalEvidenceDocuments(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const additionalEvidenceDocuments = (req.session.appeal.additionalEvidenceDocuments || [])
       .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
@@ -230,7 +231,7 @@ function getAdditionalEvidenceDocuments(req: Request, res: Response, next: NextF
   }
 }
 
-function getLrAdditionalEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
+function getLrAdditionalEvidenceDocuments(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const additionalEvidenceDocuments = (req.session.appeal.additionalEvidenceDocuments || [])
       .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
@@ -247,7 +248,7 @@ function getLrAdditionalEvidenceDocuments(req: Request, res: Response, next: Nex
   }
 }
 
-function getAppellantAddendumEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
+function getAppellantAddendumEvidenceDocuments(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const appellantAddendumEvidenceDocuments = getUploadedAddendumEvidenceDocuments(req, 'Appellant');
     const summaryList: SummaryList[] = buildUploadedAddendumEvidenceDocumentsSummaryList(appellantAddendumEvidenceDocuments);
@@ -263,7 +264,7 @@ function getAppellantAddendumEvidenceDocuments(req: Request, res: Response, next
   }
 }
 
-function getAddendumEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
+function getAddendumEvidenceDocuments(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const addendumEvidenceDocuments = getUploadedAddendumEvidenceDocuments(req, 'TCW');
     const summaryList: SummaryList[] = buildUploadedAddendumEvidenceDocumentsSummaryList(addendumEvidenceDocuments);
@@ -418,7 +419,7 @@ function buildUploadedAddendumEvidenceDocumentsSummaryList(addendumEvidenceDocum
   return addendumEvidenceSummaryLists;
 }
 
-async function uploadAddendumEvidence(req: Request, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
+async function uploadAddendumEvidence(req: Request<Params>, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
   const featureEnabled = await isUploadAddendumEvidenceFeatureEnabled(req);
   if (!featureEnabled) {
     return res.redirect(paths.common.overview);
@@ -439,7 +440,7 @@ async function uploadAddendumEvidence(req: Request, res: Response, documentManag
   return res.redirect(paths.common.provideMoreEvidenceForm);
 }
 
-async function uploadAdditionalEvidence(req: Request, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
+async function uploadAdditionalEvidence(req: Request<Params>, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
   const additionalEvidenceDocument: DocumentUploadResponse = await documentManagementService.uploadFile(req);
   const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence || [])];
 
@@ -455,7 +456,7 @@ async function uploadAdditionalEvidence(req: Request, res: Response, documentMan
   return res.redirect(paths.common.provideMoreEvidenceForm);
 }
 
-function getProvideAddendumEvidenceCheckAndSend(req: Request, res: Response) {
+function getProvideAddendumEvidenceCheckAndSend(req: Request<Params>, res: Response) {
   const summaryList: SummaryList[] = buildAddendumEvidenceDocumentsSummaryList(req.session.appeal.addendumEvidence);
 
   if (summaryList.length < 1) {
@@ -470,7 +471,7 @@ function getProvideAddendumEvidenceCheckAndSend(req: Request, res: Response) {
   });
 }
 
-function getProvideAdditionalEvidenceCheckAndSend(req: Request, res: Response) {
+function getProvideAdditionalEvidenceCheckAndSend(req: Request<Params>, res: Response) {
   const summaryList: SummaryList[] = buildAdditionalEvidenceDocumentsSummaryList(req.session.appeal.additionalEvidence);
 
   if (summaryList.length < 1) {
@@ -485,7 +486,7 @@ function getProvideAdditionalEvidenceCheckAndSend(req: Request, res: Response) {
   });
 }
 
-async function postAddendumEvidence(req: Request, res: Response, updateAppealService: UpdateAppealService): Promise<any> {
+async function postAddendumEvidence(req: Request<Params>, res: Response, updateAppealService: UpdateAppealService): Promise<any> {
   const featureEnabled = await isUploadAddendumEvidenceFeatureEnabled(req);
   if (!featureEnabled) {
     return res.redirect(paths.common.overview);
@@ -507,7 +508,7 @@ async function postAddendumEvidence(req: Request, res: Response, updateAppealSer
   return res.redirect(paths.common.provideMoreEvidenceConfirmation);
 }
 
-async function postAdditionalEvidence(req: Request, res: Response, updateAppealService: UpdateAppealService): Promise<any> {
+async function postAdditionalEvidence(req: Request<Params>, res: Response, updateAppealService: UpdateAppealService): Promise<any> {
   const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence || [])];
   const appeal: Appeal = {
     ...req.session.appeal,
@@ -524,7 +525,7 @@ async function postAdditionalEvidence(req: Request, res: Response, updateAppealS
   return res.redirect(paths.common.provideMoreEvidenceConfirmation);
 }
 
-async function deleteAddendumEvidence(req: Request, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
+async function deleteAddendumEvidence(req: Request<Params>, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
   const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence.filter(document => document.fileId !== req.query.id) || [])];
   const documentMap: DocumentMap[] = [...(req.session.appeal.documentMap.filter(document => document.id !== req.query.id) || [])];
 
@@ -536,7 +537,7 @@ async function deleteAddendumEvidence(req: Request, res: Response, documentManag
   return res.redirect(paths.common.provideMoreEvidenceForm);
 }
 
-async function deleteAdditionalEvidence(req: Request, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
+async function deleteAdditionalEvidence(req: Request<Params>, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
   const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence.filter(document => document.fileId !== req.query.id) || [])];
   const documentMap: DocumentMap[] = [...(req.session.appeal.documentMap.filter(document => document.id !== req.query.id) || [])];
 
@@ -548,13 +549,13 @@ async function deleteAdditionalEvidence(req: Request, res: Response, documentMan
   return res.redirect(paths.common.provideMoreEvidenceForm);
 }
 
-async function isUploadAddendumEvidenceFeatureEnabled(req: Request) {
+async function isUploadAddendumEvidenceFeatureEnabled(req: Request<Params>) {
   const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
   const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, defaultFlag);
   return uploadAddendumEvidenceFeatureEnabled;
 }
 
-function getUploadedAddendumEvidenceDocuments(req: Request, uploadedBy: string): Evidence[] {
+function getUploadedAddendumEvidenceDocuments(req: Request<Params>, uploadedBy: string): Evidence[] {
   let documents = [];
   if (uploadedBy === 'TCW') {
     documents = (req.session.appeal.addendumEvidenceDocuments || [])

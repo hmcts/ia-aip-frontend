@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import * as _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
@@ -9,7 +10,7 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { formatTextForCYA, nowIsoDate } from '../../utils/utils';
 
-function getCheckAndSend(req: Request, res: Response, next: NextFunction): void {
+function getCheckAndSend(req: Request<Params>, res: Response, next: NextFunction): void {
   try {
     const editParameter: string = '?edit';
     let previousPage: string = paths.awaitingReasonsForAppeal.supportingEvidence;
@@ -44,7 +45,7 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction): void 
 }
 
 function postCheckAndSend(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body)) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');

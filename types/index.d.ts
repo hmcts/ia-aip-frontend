@@ -656,4 +656,6 @@ declare global {
     witnessValue?: string;
     appellantValue: string;
   }
+
+  type Params = { id?: string, documentId?: string };
 }

@@ -1,5 +1,6 @@
 import config from 'config';
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
@@ -19,7 +20,7 @@ import {
 
 const askForMoreTimeFeatureEnabled: boolean = asBooleanValue(config.get('features.askForMoreTime'));
 
-function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
+function getReasonForAppeal(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.reasonsForAppeal.isEdit = _.has(req.query, 'edit');
     return res.render('reasons-for-appeal/reason-for-appeal-page.njk', {
@@ -34,7 +35,7 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
 }
 
 function postReasonForAppeal(updateAppealService: UpdateAppealService) {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
 
       const validation = reasonForAppealDecisionValidation(req.body);
@@ -80,7 +81,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getAdditionalSupportingEvidenceQuestionPage(req: Request, res: Response, next: NextFunction) {
+function getAdditionalSupportingEvidenceQuestionPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.reasonsForAppeal.isEdit = _.has(req.query, 'edit');
     return res.render('reasons-for-appeal/supporting-evidence-page.njk', {
@@ -92,7 +93,7 @@ function getAdditionalSupportingEvidenceQuestionPage(req: Request, res: Response
   }
 }
 
-function postAdditionalSupportingEvidenceQuestionPage(req: Request, res: Response, next: NextFunction) {
+function postAdditionalSupportingEvidenceQuestionPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const { answer } = req.body;
     const validations = yesOrNoRequiredValidation(req.body, i18n.validationErrors.reasonForAppeal.supportingEvidenceRequired);
@@ -114,7 +115,7 @@ function postAdditionalSupportingEvidenceQuestionPage(req: Request, res: Respons
   }
 }
 
-function getSupportingEvidenceUploadPage(req: Request, res: Response, next: NextFunction) {
+function getSupportingEvidenceUploadPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
 
     req.session.appeal.reasonsForAppeal.isEdit = _.has(req.query, 'edit');
@@ -132,7 +133,7 @@ function getSupportingEvidenceUploadPage(req: Request, res: Response, next: Next
 }
 
 function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
       if (req.body['saveForLater']) {
         if (_.has(req.session, 'appeal.reasonsForAppeal.isEdit')
@@ -169,7 +170,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
 }
 
 function postSupportingEvidenceUploadFile(documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
         const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
@@ -204,7 +205,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
 }
 
 function getSupportingEvidenceDeleteFile(documentManagementService: DocumentManagementService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const fileId: string = req.query.id as string;
       if (fileId) {
@@ -219,7 +220,7 @@ function getSupportingEvidenceDeleteFile(documentManagementService: DocumentMana
   };
 }
 
-function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
+function getConfirmationPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('reasons-for-appeal/confirmation-page.njk', {
       date: addDaysToDate(14)

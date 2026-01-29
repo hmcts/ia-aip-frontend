@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
@@ -14,7 +15,7 @@ const question = {
   options: [ { value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' } ]
 };
 
-function getPrivateAppointmentQuestion(req: Request, res: Response, next: NextFunction) {
+function getPrivateAppointmentQuestion(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('templates/radio-question-page.njk', {
       previousPage,
@@ -29,7 +30,7 @@ function getPrivateAppointmentQuestion(req: Request, res: Response, next: NextFu
 }
 
 function postPrivateAppointmentQuestion(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.privateAppointmentAnswerRequired;
 
     const pageContent = {

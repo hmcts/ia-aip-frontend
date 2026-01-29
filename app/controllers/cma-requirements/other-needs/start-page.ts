@@ -1,7 +1,8 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { paths } from '../../../paths';
 
-function getCMARequirementsStartPage(req: Request, res: Response, next: NextFunction) {
+function getCMARequirementsStartPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const previousPage = paths.awaitingCmaRequirements.taskList;
 

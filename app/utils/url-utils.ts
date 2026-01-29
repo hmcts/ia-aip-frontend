@@ -1,5 +1,6 @@
 import config from 'config';
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import * as _ from 'lodash';
 import { idamConfig } from '../config/idam-config';
 import { paths } from '../paths';
@@ -11,11 +12,11 @@ export function getUrl(protocol: string, host: string, path: string): string {
   return protocol + '://' + host + portString + path;
 }
 
-export function getIdamRedirectUrl(req: Request): string {
+export function getIdamRedirectUrl(req: Request<Params>): string {
   return getUrl('https', req.hostname, '/redirectUrl');
 }
 
-export function getIdamLoginUrl(req: Request) {
+export function getIdamLoginUrl(req: Request<Params>) {
   if (req.query['register']) {
     return idamConfig.idamRegistrationUrl;
   }
@@ -28,7 +29,7 @@ export function getIdamLoginUrl(req: Request) {
  * @param res the response
  * @param redirectUrl the page to be redirected if action is not an edit
  */
-export function getConditionalRedirectUrl(req: Request, res: Response, redirectUrl: string) {
+export function getConditionalRedirectUrl(req: Request<Params>, res: Response, redirectUrl: string) {
 
   if (_.get(req.session, 'appeal.application.isEdit', false)
     && req.session.appeal.application.isEdit === true) {

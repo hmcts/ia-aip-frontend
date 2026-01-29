@@ -1,17 +1,18 @@
 import config from 'config';
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import moment from 'moment';
 import { idamConfig } from '../config/idam-config';
 import idamExpressMiddleware from '../middleware/ia-idam-express-middleware';
 import { checkSession } from '../middleware/session-middleware';
 import { paths } from '../paths';
 
-function getExtendSession(req: Request, res: Response, next: NextFunction): void {
+function getExtendSession(req: Request<Params>, res: Response, next: NextFunction): void {
   const timeout = moment().add(config.get('session.cookie.maxAgeInMs'), 'milliseconds');
   res.send({ timeout });
 }
 
-function getSessionEnded(req: Request, res: Response, next: NextFunction) {
+function getSessionEnded(req: Request<Params>, res: Response, next: NextFunction) {
   res.locals.authenticated = false;
   return res.render('session/session-ended.njk');
 }

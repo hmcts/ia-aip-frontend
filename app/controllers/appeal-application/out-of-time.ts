@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import * as _ from 'lodash';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
@@ -10,7 +11,7 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { createStructuredError, textAreaValidation } from '../../utils/validations/fields-validations';
 
-function getAppealLate(req: Request, res: Response, next: NextFunction) {
+function getAppealLate(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const { application } = req.session.appeal;
     const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
@@ -29,7 +30,7 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
 }
 
 function postAppealLate(documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'appeal-late')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview);
@@ -100,7 +101,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
 }
 
 function postAppealLateDeleteFile(documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const evidence: Evidence = req.session.appeal.application.lateAppeal.evidence;
       await documentManagementService.deleteFile(req, evidence.fileId);

@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { INTERNAL_SERVER_ERROR, NOT_FOUND } from 'http-status-codes';
 import { pageNotFoundHandler, serverErrorHandler } from '../../../app/handlers/error-handler';
 import Logger from '../../../app/utils/logger';

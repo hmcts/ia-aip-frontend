@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { buildHearingRequirementsSummarySections } from './hearing-requirements-summary-sections';
 
-function getYourHearingNeedsPage(req: Request, res: Response, next: NextFunction) {
+function getYourHearingNeedsPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const hearingRequirements: HearingRequirements = req.session.appeal.hearingRequirements;
     const hearingRequirementsSummarySections = buildHearingRequirementsSummarySections(hearingRequirements, false);
@@ -20,7 +21,7 @@ function getYourHearingNeedsPage(req: Request, res: Response, next: NextFunction
 }
 
 function postYourHearingNeedsPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       // TODO: check if we need to submit these changes to any CCD event
       res.redirect(paths.common.overview);

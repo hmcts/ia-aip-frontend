@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
@@ -29,7 +30,7 @@ function getApplyOption(appeal: Appeal) {
   };
 }
 
-async function getHelpWithFees(req: Request, res: Response, next: NextFunction) {
+async function getHelpWithFees(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     const { application } = req.session.appeal;
@@ -52,7 +53,7 @@ async function getHelpWithFees(req: Request, res: Response, next: NextFunction) 
 }
 
 function postHelpWithFees() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
 

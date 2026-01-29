@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { getGuidancePageText } from '../utils/guidance-page-utils';
 
-function getCaseworkerPage(req: Request, res: Response, next: NextFunction) {
+function getCaseworkerPage(req: Request<Params>, res: Response, next: NextFunction) {
   const text = getGuidancePageText('caseworker');
   try {
     return res.render('guidance-pages/guidance-page.njk', {
@@ -19,7 +20,7 @@ function getCaseworkerPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getMoreHelpPage(req: Request, res: Response, next: NextFunction) {
+function getMoreHelpPage(req: Request<Params>, res: Response, next: NextFunction) {
   const text = getGuidancePageText('helpWithAppeal');
   try {
     return res.render('guidance-pages/guidance-page.njk', {
@@ -34,7 +35,7 @@ function getMoreHelpPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getHomeOfficeDocumentsPage(req: Request, res: Response, next: NextFunction) {
+function getHomeOfficeDocumentsPage(req: Request<Params>, res: Response, next: NextFunction) {
   const text = getGuidancePageText('homeOfficeDocuments');
   try {
     return res.render('guidance-pages/guidance-page.njk', {
@@ -49,7 +50,7 @@ function getHomeOfficeDocumentsPage(req: Request, res: Response, next: NextFunct
   }
 }
 
-function getEvidenceToSupportAppealPage(req: Request, res: Response, next: NextFunction) {
+function getEvidenceToSupportAppealPage(req: Request<Params>, res: Response, next: NextFunction) {
   const text = getGuidancePageText('evidenceToSupportAppeal');
   try {
     return res.render('guidance-pages/guidance-page.njk', {
@@ -64,7 +65,7 @@ function getEvidenceToSupportAppealPage(req: Request, res: Response, next: NextF
   }
 }
 
-function getWhatToExpectAtHearing(req: Request, res: Response, next: NextFunction) {
+function getWhatToExpectAtHearing(req: Request<Params>, res: Response, next: NextFunction) {
   const text = getGuidancePageText('whatToExpectAtHearing');
   try {
     return res.render('guidance-pages/guidance-page.njk', {
@@ -78,7 +79,7 @@ function getWhatToExpectAtHearing(req: Request, res: Response, next: NextFunctio
     next(e);
   }
 }
-function getUnderstandingHearingBundle(req: Request, res: Response, next: NextFunction) {
+function getUnderstandingHearingBundle(req: Request<Params>, res: Response, next: NextFunction) {
   const text = getGuidancePageText('understandingHearingBundle');
   try {
     return res.render('guidance-pages/guidance-page.njk', {
@@ -93,7 +94,7 @@ function getUnderstandingHearingBundle(req: Request, res: Response, next: NextFu
   }
 }
 
-function getHomeOfficeWithdrawDecision(req: Request, res: Response, next: NextFunction) {
+function getHomeOfficeWithdrawDecision(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('guidance-pages/guidance-page.njk', {
       showContactUs: true,
@@ -108,7 +109,7 @@ function getHomeOfficeWithdrawDecision(req: Request, res: Response, next: NextFu
   }
 }
 
-function getHomeOfficeMaintainDecision(req: Request, res: Response, next: NextFunction) {
+function getHomeOfficeMaintainDecision(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('guidance-pages/guidance-page.njk', {
       showContactUs: true,
@@ -122,7 +123,7 @@ function getHomeOfficeMaintainDecision(req: Request, res: Response, next: NextFu
   }
 }
 
-function getDocumentsPage(req: Request, res: Response, next: NextFunction) {
+function getDocumentsPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('guidance-pages/online-guidance-support/documents.njk');
   } catch (e) {
@@ -130,7 +131,7 @@ function getDocumentsPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getFourStagesPage(req: Request, res: Response, next: NextFunction) {
+function getFourStagesPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('guidance-pages/online-guidance-support/four-stages-of-process.njk');
   } catch (e) {
@@ -138,7 +139,7 @@ function getFourStagesPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getNotificationsSupportPage(req: Request, res: Response, next: NextFunction) {
+function getNotificationsSupportPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('guidance-pages/online-guidance-support/notifications.njk');
   } catch (e) {
@@ -146,7 +147,7 @@ function getNotificationsSupportPage(req: Request, res: Response, next: NextFunc
   }
 }
 
-function getOfflineProcessesPage(req: Request, res: Response, next: NextFunction) {
+function getOfflineProcessesPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('guidance-pages/online-guidance-support/offline-process.njk');
   } catch (e) {
@@ -154,7 +155,7 @@ function getOfflineProcessesPage(req: Request, res: Response, next: NextFunction
   }
 }
 
-function getGuidanceSupportPage(req: Request, res: Response, next: NextFunction) {
+function getGuidanceSupportPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('guidance-pages/online-guidance-support/guidance.njk');
   } catch (e) {
@@ -162,7 +163,7 @@ function getGuidanceSupportPage(req: Request, res: Response, next: NextFunction)
   }
 }
 
-function getHowToHelpPage(req: Request, res: Response, next: NextFunction) {
+function getHowToHelpPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('guidance-pages/online-guidance-support/how-to-help.njk');
   } catch (e) {
@@ -170,7 +171,7 @@ function getHowToHelpPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getGiveFeedbackPage(req: Request, res: Response, next: NextFunction) {
+function getGiveFeedbackPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('guidance-pages/online-guidance-support/how-to-give-feedback.njk');
   } catch (e) {
@@ -178,7 +179,7 @@ function getGiveFeedbackPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getWhatIsService(req: Request, res: Response, next: NextFunction) {
+function getWhatIsService(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('guidance-pages/online-guidance-support/what-is-service.njk');
   } catch (e) {
@@ -186,7 +187,7 @@ function getWhatIsService(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getGettingStartedPage(req: Request, res: Response, next: NextFunction) {
+function getGettingStartedPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('guidance-pages/online-guidance-support/getting-started.njk');
   } catch (e) {

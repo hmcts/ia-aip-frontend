@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
@@ -63,7 +63,7 @@ interface DoThisNextSection {
  * Returns the appeal status, overrides status if the appeal is late .
  * @param req the request containing the session and appeal status
  */
-function getAppealStatus(req: Request) {
+function getAppealStatus(req: Request<Params>) {
   const appeal = req.session.appeal;
   if (appeal.appealStatus === States.FINAL_BUNDLING.id
     && appeal.history.find(event => event.id === Events.DECISION_WITHOUT_HEARING.id)) {
@@ -94,7 +94,7 @@ function getAppealStatus(req: Request) {
  * Returns the reason for moving an appeal offline.
  * @param req the request containing the session and appeal status
  */
-function getMoveAppealOfflineReason(req: Request) {
+function getMoveAppealOfflineReason(req: Request<Params>) {
   return req.session.appeal.removeAppealFromOnlineReason;
 }
 
@@ -102,7 +102,7 @@ function getMoveAppealOfflineReason(req: Request) {
  * Returns the date an appeal is moved offline.
  * @param req the request containing the session and appeal status
  */
-function getMoveAppealOfflineDate(req: Request) {
+function getMoveAppealOfflineDate(req: Request<Params>) {
   return req.session.appeal.removeAppealFromOnlineDate;
 }
 
@@ -112,7 +112,7 @@ function getMoveAppealOfflineDate(req: Request) {
  * e.g 'awaitingReasonsForAppealPartial' which should be defined in APPEAL_STATE.
  * @param req the request containing the session and appeal status
  */
-async function getAppealApplicationNextStep(req: Request) {
+async function getAppealApplicationNextStep(req: Request<Params>) {
   const currentAppealStatus = getAppealStatus(req);
   const pendingTimeExtension = hasPendingTimeExtension(req.session.appeal);
   const applications = getAppellantApplications(req.session.appeal.makeAnApplications);
@@ -734,7 +734,7 @@ function isAddendumEvidenceUploadState(appealStatus: string): Boolean {
     States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id].includes(appealStatus);
 }
 
-function eventByLegalRep(req: Request, eventId: string, state: string): boolean {
+function eventByLegalRep(req: Request<Params>, eventId: string, state: string): boolean {
   return (req.session.appeal.history || []).filter(event => event.id === eventId
     && event.state
     && event.state.id === state
@@ -742,7 +742,7 @@ function eventByLegalRep(req: Request, eventId: string, state: string): boolean 
     && event.user.id !== req.idam.userDetails.uid).length > 0;
 }
 
-function getRemissionDecisionParagraphs(req: Request) {
+function getRemissionDecisionParagraphs(req: Request<Params>) {
   let doThisNextSection: DoThisNextSection;
   const remissionDecision = req.session.appeal.application.remissionDecision;
   switch (remissionDecision) {
@@ -808,19 +808,19 @@ function getFeeRemissionParagraph(deadLineDate: string) {
   return doThisNextSection;
 }
 
-function remissionDecisionEventIsTheLatest(req: Request) {
+function remissionDecisionEventIsTheLatest(req: Request<Params>) {
   return hasFeeRemissionDecision(req) && isEventLatestInHistoryList(req, Events.RECORD_REMISSION_DECISION.id);
 }
 
-function requestFeeRemissionEventIsTheLatest(req: Request) {
+function requestFeeRemissionEventIsTheLatest(req: Request<Params>) {
   return appealHasRemissionOption(req.session.appeal.application) && isEventLatestInHistoryList(req, Events.REQUEST_FEE_REMISSION.id);
 }
 
-function isEventLatestInHistoryList(req: Request, eventId: string) {
+function isEventLatestInHistoryList(req: Request<Params>, eventId: string) {
   return req.session.appeal.history && req.session.appeal.history.length > 0 ? req.session.appeal.history[0].id === eventId : false;
 }
 
-function transferredToUpperTribunal(req: Request): boolean {
+function transferredToUpperTribunal(req: Request<Params>): boolean {
   return req.session.appeal.utAppealReferenceNumber == null ? false : true;
 }
 

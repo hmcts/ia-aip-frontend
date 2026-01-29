@@ -1,11 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../../locale/en.json';
 import { applicationTypes } from '../../../data/application-types';
 import { paths } from '../../../paths';
 import { createStructuredError } from '../../../utils/validations/fields-validations';
 import { makeApplicationControllersHelper } from '../make-application-controllers-helper';
 
-function getChangeDetailsApplication(req: Request, res: Response, next: NextFunction) {
+function getChangeDetailsApplication(req: Request<Params>, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
       askUpdateDetails: createStructuredError('askUpdateDetails', i18n.validationErrors.makeApplication.askUpdateDetails)
@@ -27,7 +28,7 @@ function getChangeDetailsApplication(req: Request, res: Response, next: NextFunc
   return makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req, res, next, config);
 }
 
-function postChangeDetailsApplication(req: Request, res: Response, next: NextFunction) {
+function postChangeDetailsApplication(req: Request<Params>, res: Response, next: NextFunction) {
   const redirectToSuccessPath = paths.makeApplication.supportingEvidenceUpdateAppealDetails;
   const redirectToErrorPath = `${paths.makeApplication.updateAppealDetails}?error=askUpdateDetails`;
   return makeApplicationControllersHelper.postProvideMakeAnApplicationDetails(req, res, next, redirectToSuccessPath, redirectToErrorPath);

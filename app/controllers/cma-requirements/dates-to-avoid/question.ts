@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
@@ -14,7 +15,7 @@ const question = {
   options: [ { value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' } ]
 };
 
-function getDatesToAvoidQuestion(req: Request, res: Response, next: NextFunction) {
+function getDatesToAvoidQuestion(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('templates/radio-question-page.njk', {
       previousPage,
@@ -29,7 +30,7 @@ function getDatesToAvoidQuestion(req: Request, res: Response, next: NextFunction
 }
 
 function postDatesToAvoidQuestion(updateAppealService: UpdateAppealService) {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
       const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.datesToAvoid.datesToAvoidAnswerRequired;
 

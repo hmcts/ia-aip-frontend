@@ -1,9 +1,9 @@
 import config from 'config';
-import { Request } from 'express';
+import type { Request } from 'express-serve-static-core';
 import moment from 'moment';
 import { dayMonthYearFormat, timeFormat } from './date-utils';
 
-function getHearingDate(req: Request): string {
+function getHearingDate(req: Request<Params>): string {
   let formattedDeadline;
 
   const dueDate = req.session.appeal.hearing.date;
@@ -11,7 +11,7 @@ function getHearingDate(req: Request): string {
   return formattedDeadline;
 }
 
-function getHearingTime(req: Request): string {
+function getHearingTime(req: Request<Params>): string {
   let hearingTime;
 
   const dueDate = req.session.appeal.hearing.date;
@@ -19,7 +19,7 @@ function getHearingTime(req: Request): string {
   return hearingTime;
 }
 
-function getHearingCentre(req: Request): string {
+function getHearingCentre(req: Request<Params>): string {
   const HearingCentre = req.session.appeal.hearing.hearingCentre;
   switch (HearingCentre) {
     case 'taylorHouse':
@@ -54,7 +54,7 @@ function getHearingCentre(req: Request): string {
   }
 }
 
-function getHearingCentreEmail(req: Request): string {
+function getHearingCentreEmail(req: Request<Params>): string {
   const hearingCentre = (req.session.appeal.hearing.hearingCentre !== '') ? req.session.appeal.hearing.hearingCentre : req.session.appeal.hearingCentre;
   switch (hearingCentre) {
     case 'taylorHouse':

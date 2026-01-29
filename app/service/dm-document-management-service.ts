@@ -1,6 +1,6 @@
 import axios from 'axios';
 import config from 'config';
-import { Request } from 'express';
+import type { Request } from 'express-serve-static-core';
 import FormData from 'form-data';
 import { v4 as uuid } from 'uuid';
 import Logger, { getLogLabel } from '../utils/logger';
@@ -118,7 +118,7 @@ class DmDocumentManagementService {
    * @property {Express.Multer.File} req.file - the file to be uploaded
    * @property {string} req.idam.userDetails.uid - the user id
    */
-  async uploadFile(req: Request): Promise<DocumentUploadResponse> {
+  async uploadFile(req: Request<Params>): Promise<DocumentUploadResponse> {
     const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const userId: string = req.idam.userDetails.uid;
 
@@ -146,7 +146,7 @@ class DmDocumentManagementService {
    * @property {string} req.idam.userDetails.uid - the user id
    * @param fileLocation - the target file url to be deleted
    */
-  async deleteFile(req: Request, fileId: string): Promise<DocumentUploadResponse> {
+  async deleteFile(req: Request<Params>, fileId: string): Promise<DocumentUploadResponse> {
     const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const userId: string = req.idam.userDetails.uid;
     const documentLocationUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
@@ -161,7 +161,7 @@ class DmDocumentManagementService {
    * @property {string} req.idam.userDetails.id - the user id
    * @param fileLocation - the target file url to be fetched
    */
-  async fetchFile(req: Request, fileLocation: string) {
+  async fetchFile(req: Request<Params>, fileLocation: string) {
     const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const userId: string = req.idam.userDetails.uid;
     logger.trace(`Received call from user '${userId}' to fetch file`, logLabel);

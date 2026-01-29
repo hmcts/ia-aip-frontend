@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
@@ -19,7 +20,7 @@ import {
   nationalityValidation
 } from '../../utils/validations/fields-validations';
 
-function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
+function getHomeOfficeDetails(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -34,7 +35,7 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
 }
 
 function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'homeOfficeRefNumber')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview);
@@ -72,7 +73,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getNamePage(req: Request, res: Response, next: NextFunction) {
+function getNamePage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const personalDetails = req.session.appeal.application.personalDetails || null;
@@ -88,7 +89,7 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
 }
 
 function postNamePage(updateAppealService: UpdateAppealService) {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'familyName', 'givenNames')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -134,7 +135,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
+function getDateOfBirthPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -150,7 +151,7 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
 }
 
 function postDateOfBirth(updateAppealService: UpdateAppealService) {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -193,7 +194,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getNationalityPage(req: Request, res: Response, next: NextFunction) {
+function getNationalityPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -212,7 +213,7 @@ function getNationalityPage(req: Request, res: Response, next: NextFunction) {
 }
 
 function postNationalityPage(updateAppealService: UpdateAppealService) {
-  return async function (req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request<Params>, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'nationality', 'stateless')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -255,7 +256,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
+function getDateLetterSent(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -270,7 +271,7 @@ function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
 }
 
 function postDateLetterSent(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -317,7 +318,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getDateLetterReceived(req: Request, res: Response, next: NextFunction) {
+function getDateLetterReceived(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -332,7 +333,7 @@ function getDateLetterReceived(req: Request, res: Response, next: NextFunction) 
 }
 
 function postDateLetterReceived(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) { return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved'); }
       const validation = dateLetterReceivedValidation(req.body);

@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
@@ -15,7 +16,7 @@ const yesOrNoOption = (answer: boolean) => [
   { text: 'No', value: 'no', checked: answer === false }
 ];
 
-function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
+function getAccessNeeds(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('case-management-appointment/access-needs-page.njk', {
       previousPage: paths.common.overview
@@ -25,7 +26,7 @@ function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getNeedInterpreterPage(req: Request, res: Response, next: NextFunction) {
+function getNeedInterpreterPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const { accessNeeds } = req.session.appeal.cmaRequirements;
     const answer = _.get(accessNeeds, 'isInterpreterServicesNeeded', null);
@@ -45,7 +46,7 @@ function getNeedInterpreterPage(req: Request, res: Response, next: NextFunction)
 }
 
 function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.accessNeeds.selectInterpreter;
       const pageContent = {
@@ -91,7 +92,7 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) {
+function getAdditionalLanguage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('case-management-appointment/additional-language.njk', {
       previousPage: paths.awaitingCmaRequirements.accessNeedsInterpreter,
@@ -103,7 +104,7 @@ function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) 
 }
 
 function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -136,7 +137,7 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getStepFreeAccessPage(req: Request, res: Response, next: NextFunction) {
+function getStepFreeAccessPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const { isHearingRoomNeeded, isInterpreterServicesNeeded } = req.session.appeal.cmaRequirements.accessNeeds;
     const backButton = isInterpreterServicesNeeded === true ? paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage : paths.awaitingCmaRequirements.accessNeedsInterpreter;
@@ -159,7 +160,7 @@ function getStepFreeAccessPage(req: Request, res: Response, next: NextFunction) 
 }
 
 function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
 
       const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.accessNeeds.stepFreeAccess;
@@ -194,7 +195,7 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getHearingLoopPage(req: Request, res: Response, next: NextFunction) {
+function getHearingLoopPage(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const { isHearingLoopNeeded } = req.session.appeal.cmaRequirements.accessNeeds;
     const answer = isHearingLoopNeeded || null;
@@ -216,7 +217,7 @@ function getHearingLoopPage(req: Request, res: Response, next: NextFunction) {
 }
 
 function postHearingLoopPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
 
       const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.accessNeeds.hearingLoop;

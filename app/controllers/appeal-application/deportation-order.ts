@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
@@ -31,7 +32,7 @@ function getDeportationOrderOptionsQuestion(appeal: Appeal) {
   };
 }
 
-async function getDeportationOrder(req: Request, res: Response, next: NextFunction) {
+async function getDeportationOrder(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     const dlrmInternalFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false);
     if (!dlrmInternalFeatureFlag) return res.redirect(paths.common.overview);
@@ -50,7 +51,7 @@ async function getDeportationOrder(req: Request, res: Response, next: NextFuncti
 }
 
 function postDeportationOrder(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     const dlrmInternalFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false);
     if (!dlrmInternalFeatureFlag) return res.redirect(paths.common.overview);
 

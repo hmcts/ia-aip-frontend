@@ -1,4 +1,6 @@
 {
-  "testsRun": [],
+  "testsRun": [
+    "Check home page and health endpoint"
+  ],
   "testsPassed": []
 }

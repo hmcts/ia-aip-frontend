@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
@@ -18,7 +19,7 @@ enum SexType {
   ALL_FEMALE = 'All female'
 }
 
-function getSingleSexTypeAppointmentQuestion(req: Request, res: Response, next: NextFunction) {
+function getSingleSexTypeAppointmentQuestion(req: Request<Params>, res: Response, next: NextFunction) {
   try {
     return res.render('templates/radio-question-page.njk', {
       previousPage,
@@ -33,7 +34,7 @@ function getSingleSexTypeAppointmentQuestion(req: Request, res: Response, next: 
 }
 
 function postSingleSexTypeAppointmentQuestion(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.singleSexTypeAppointmentRequired;
 
     const pageContent = {

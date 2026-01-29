@@ -1,4 +1,5 @@
-import { application, NextFunction, Request, Response, Router } from 'express';
+import { application, NextFunction, Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import _ from 'lodash';
 import moment from 'moment';
 import { FEATURE_FLAGS } from '../data/constants';
@@ -25,7 +26,7 @@ function checkAppealEnded(appealStatus: string): boolean {
   return appealStatus && appealStatus.toUpperCase() === 'ENDED';
 }
 
-function getAppellantName(req: Request) {
+function getAppellantName(req: Request<Params>) {
   let name = req.idam.userDetails.name;
   if (_.has(req.session.appeal, 'application.personalDetails.givenNames')) {
     name = `${req.session.appeal.application.personalDetails.givenNames} ${req.session.appeal.application.personalDetails.familyName}`;
@@ -33,7 +34,7 @@ function getAppellantName(req: Request) {
   return name;
 }
 
-function getHearingDetails(req: Request): Hearing {
+function getHearingDetails(req: Request<Params>): Hearing {
   let hearingDetails: Hearing = {
     hearingCentre: '', time: '', date: ''
   };
@@ -122,7 +123,7 @@ function isAppealInProgress(appealStatus: string) {
 }
 
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request<Params>, res: Response, next: NextFunction) => {
     try {
       // TODO: remove after Feature flag for AIP Hearing (Bundling) is permanently switched on
       const hearingBundleFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);

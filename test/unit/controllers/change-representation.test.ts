@@ -1,4 +1,5 @@
-import { Request, Response, Router } from 'express';
+import { Response, Router } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { getChangeRepresentation, getChangeRepresentationDownload, setupChangeRepresentationControllers } from '../../../app/controllers/changing-representation';
 import { paths } from '../../../app/paths';
 import { DocmosisService } from '../../../app/service/docmosis-service';

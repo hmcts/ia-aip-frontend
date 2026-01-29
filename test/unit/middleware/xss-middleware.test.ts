@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
+import type { Request } from 'express-serve-static-core';
 import { filterRequest } from '../../../app/middleware/xss-middleware';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('session-middleware', () => {
   let sandbox: sinon.SinonSandbox;
-  let req: Request;
+  let req: Request<Params>;
   let res: Response;
   let next: sinon.SinonStub;
 

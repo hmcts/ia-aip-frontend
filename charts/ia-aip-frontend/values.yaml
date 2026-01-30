@@ -32,7 +32,6 @@ nodejs:
     ia:
       secrets:
         - idam-secret
-        - csrf-secret
         - addressLookupToken
         - s2s-secret
         - ia-redis-access-key

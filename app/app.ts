@@ -1,6 +1,6 @@
 import config from 'config';
 import cookieParser from 'cookie-parser';
-import { doubleCsrf } from 'csrf-csrf';
+import csurf from 'csurf';
 import expectCt from 'expect-ct';
 import express from 'express';
 import helmet from 'helmet';
@@ -22,20 +22,6 @@ import { getUrl } from './utils/url-utils';
 const uuid = require('uuid');
 const featurePolicy = require('feature-policy');
 const nocache = require('nocache');
-const csrfSecret: string = config.get('csrf.secret');
-const {
-  generateCsrfToken,
-  doubleCsrfProtection
-} = doubleCsrf({
-  getSessionIdentifier(req: Express.Request): string {
-    return req.sessionID;
-  },
-  cookieName: '_csrf',
-  cookieOptions: {
-    secure: true
-  },
-  getSecret: () => csrfSecret
-});
 
 function createApp() {
   const app: express.Application = express();
@@ -67,7 +53,7 @@ function createApp() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
-
+  app.use(csurf());
   app.post('*', uploadConfiguration, enforceFileSizeLimit, handleFileUploadErrors);
   app.post('*', filterRequest);
 
@@ -78,12 +64,10 @@ function createApp() {
     const options = { stats: 'errors-only' } as Options;
     const wpDevMiddleware = webpackDevMiddleware(compiler, options);
     app.use(wpDevMiddleware);
-  } else {
-    app.use(doubleCsrfProtection);
   }
 
   app.use((req, res, next) => {
-    res.locals.csrfToken = generateCsrfToken(req, res);
+    res.locals.csrfToken = req.csrfToken();
     res.locals.host = getUrl(req.protocol, req.hostname, '');
     next();
   });

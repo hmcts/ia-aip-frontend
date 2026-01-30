@@ -26,6 +26,7 @@ nodejs:
     ia:
       secrets:
         - idam-secret
+        - csrf-secret
         - addressLookupToken
         - s2s-secret
         - AppInsightsInstrumentationKey

@@ -22,6 +22,7 @@ import { getUrl } from './utils/url-utils';
 const uuid = require('uuid');
 const featurePolicy = require('feature-policy');
 const nocache = require('nocache');
+const csrfSecret: string = config.get('csrf.secret');
 const {
   generateCsrfToken,
   doubleCsrfProtection
@@ -33,7 +34,7 @@ const {
   cookieOptions: {
     secure: true
   },
-  getSecret: () => 'supersecret'
+  getSecret: () => csrfSecret
 });
 
 function createApp() {
@@ -65,18 +66,18 @@ function createApp() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
-  app.use(doubleCsrfProtection);
 
   app.post('*', uploadConfiguration, enforceFileSizeLimit, handleFileUploadErrors);
   app.post('*', filterRequest);
 
-  if (environment === 'development' || environment === 'test' || environment === 'aatDevelopment') {
+  if (!['test', 'development', 'aatDevelopment'].includes(environment)) {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
     // @ts-ignore
     const options = { stats: 'errors-only' } as Options;
     const wpDevMiddleware = webpackDevMiddleware(compiler, options);
     app.use(wpDevMiddleware);
+    app.use(doubleCsrfProtection);
   }
 
   app.use((req, res, next) => {

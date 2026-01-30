@@ -10,29 +10,34 @@ Feature: Start Representing Yourself
 
     # proceed to enter case reference number page
     When I click the "Start now" button
+    And I check page accessibility
     Then I see "/start-representing-yourself/enter-case-number" in current url
     And I see "Enter your online case reference number" in title
 
     # entered incorrectly formatted case reference number
     When I fill "caseReferenceNumber" field with "1234-invalid-1234"
     And I click the "Continue" button
+    And I check page accessibility
     Then I should see error summary
 
     # case with expired pip
     # entered correctly formatted case reference number
     When I fill "caseReferenceNumber" field with "1111-2222-3333-4444"
     And I click the "Continue" button
+    And I check page accessibility
     Then I see "/start-representing-yourself/enter-security-code" in current url
     And I see "Enter your security code" in title
 
     # entered incorrectly formatted access code
     When I fill "accessCode" field with "INVALID"
     And I click "Continue" button
+    And I check page accessibility
     Then I should see error summary
 
     # entered correctly formatted access code
     When I fill "accessCode" field with "ABCD1234EFGH"
     And I click "Continue" button
+    And I check page accessibility
     Then I see "/start-representing-yourself/enter-case-number?error=pipValidationFailed" in current url
     And I should see error summary
 
@@ -40,15 +45,18 @@ Feature: Start Representing Yourself
     # entered valid case reference number
     When I fill "caseReferenceNumber" field with "1234-1234-1234-1234"
     And I click the "Continue" button
+    And I check page accessibility
     Then I see "/start-representing-yourself/enter-security-code" in current url
     And I see "Enter your security code" in title
 
     # entered valid access code
     When I fill "accessCode" field with "ABCD1234EFGH"
     And I click "Continue" button
+    And I check page accessibility
     Then I see "/start-representing-yourself/confirm-case-details" in current url
     And I see "Case details" in title
 
     # confirm case details
     And I click "Continue" button
+    And I check page accessibility
     Then I see "/users/selfRegister" in current url

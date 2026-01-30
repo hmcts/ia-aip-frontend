@@ -17,6 +17,7 @@ def secrets = [
     'ia-${env}': [
         secret('s2s-secret', 'S2S_SECRET'),
         secret('idam-secret', 'IDAM_SECRET'),
+        secret('csrf-secret', 'CSRF_SECRET'),
         secret('saucelabs', 'SAUCELABS_SECRET'),
         secret('launch-darkly-sdk-key', 'LAUNCH_DARKLY_SDK_KEY'),
         secret('dm-url', 'DOC_MANAGEMENT_URL'),
@@ -123,7 +124,19 @@ withPipeline("nodejs", product, component) {
   }
 
   afterAlways('functionalTest:preview') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
-  }
+      builder.yarn('generate-report')
+      publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "allure-report",
+              reportFiles          : 'index.html',
+              reportName           : 'Functional E2E Tests'
+      ])
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-report/**/*'
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-results/*'
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/accessibility/*'
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'accessibility-issues.json'
 }
 

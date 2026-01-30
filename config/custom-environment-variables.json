@@ -11,6 +11,9 @@
     "hostname": "EXTERNAL_HOSTNAME",
     "port": "PORT"
   },
+  "csrf": {
+    "secret": "CSRF_SECRET"
+  },
   "ssl": {
     "hpkp": {
       "maxAge": "HPKP_MAXAGE",

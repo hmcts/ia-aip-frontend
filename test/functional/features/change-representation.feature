@@ -7,6 +7,7 @@ Feature: Change Representation
   Scenario: Access guidance on what to do if I stop representing myself
     Given I have logged in as an appellant in state "preHearing"
     When I click the I am no longer representing myself link
+    And I check page accessibility
     Then I should see the If you are no longer representing yourself page
     Then I should see a Document download button
 

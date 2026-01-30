@@ -15,6 +15,9 @@
     "hostname": "localhost",
     "port": 3000
   },
+  "csrf": {
+    "secret": "CSRF_SECRET"
+  },
   "ssl": {
     "hpkp": {
       "maxAge": "3600",

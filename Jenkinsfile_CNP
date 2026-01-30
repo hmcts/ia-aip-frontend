@@ -135,7 +135,7 @@ withPipeline("nodejs", product, component) {
     ])
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-report/**/*'
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-results/*'
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
     stage('Accessibility Check') {
       try {
         yarnBuilder.yarn('test:check-accessibility')

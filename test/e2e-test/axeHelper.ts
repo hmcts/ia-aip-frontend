@@ -6,7 +6,7 @@ import Logger, { getLogLabel } from '../../app/utils/logger';
 
 const container = require('codeceptjs').container;
 const accessibilityIssuesPath = path.resolve(__dirname, '../../accessibility-issues.json');
-const accessibilityContentsPath = path.resolve(__dirname, '../../accessibility-contents.json');
+const accessibilityUrlsPath = path.resolve(__dirname, '../../accessibility-urls.json');
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
@@ -23,9 +23,9 @@ type ReadableAxeResult = {
 
 export async function axeTest() {
   const page = container.helpers('Puppeteer').page;
-  const content = page.content();
-  if (hasContentBeenScanned(content)) {
-    logger.trace(`content already scanned for accessibility`, logLabel);
+  const url = page.url();
+  if (hasUrlBeenScanned(url)) {
+    logger.trace(`url already scanned for accessibility`, logLabel);
     return;
   }
   let accessibilityScanResults = null;
@@ -51,7 +51,7 @@ export async function axeTest() {
       logger.exception(`Accessibility scan attempt ${i} failed: ${error}`, logLabel);
     }
   }
-  addScannedContent(content);
+  addScannedUrl(url);
   if (accessibilityScanResults && accessibilityScanResults.violations.length > 0) {
     accessibilityScanResults.violations.forEach((violationType) => {
       let instances: ReadableAxeResult[] = violationType.nodes.map(
@@ -133,26 +133,26 @@ function addViolations(violations: ReadableAxeResult[]) {
   writeIssues(issues);
 }
 
-type AccessibilityContents = {
-  scannedContents: string[];
+type AccessibilityUrls = {
+  scannedUrls: string[];
 };
 
-function readAccessibilityContents(): AccessibilityContents {
-  const data = fs.readFileSync(accessibilityContentsPath, 'utf8');
+function readAccessibilityUrls(): AccessibilityUrls {
+  const data = fs.readFileSync(accessibilityUrlsPath, 'utf8');
   return JSON.parse(data);
 }
 
-function writeAccessibilityContents(updatedContents: AccessibilityContents) {
-  fs.writeFileSync(accessibilityContentsPath, JSON.stringify(updatedContents, null, 2), 'utf8');
+function writeAccessibilityUrls(updatedUrls: AccessibilityUrls) {
+  fs.writeFileSync(accessibilityUrlsPath, JSON.stringify(updatedUrls, null, 2), 'utf8');
 }
 
-function hasContentBeenScanned(content: string): boolean {
-  const contents: AccessibilityContents = readAccessibilityContents();
-  return contents.scannedContents.includes(content);
+function hasUrlBeenScanned(url: string): boolean {
+  const urls: AccessibilityUrls = readAccessibilityUrls();
+  return urls.scannedUrls.includes(url);
 }
 
-function addScannedContent(content: string) {
-  const contents: AccessibilityContents = readAccessibilityContents();
-  contents.scannedContents.push(content);
-  writeAccessibilityContents(contents);
+function addScannedUrl(url: string) {
+  const urls: AccessibilityUrls = readAccessibilityUrls();
+  urls.scannedUrls.push(url);
+  writeAccessibilityUrls(urls);
 }

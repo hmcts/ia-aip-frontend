@@ -40,6 +40,7 @@ const {
 function createApp() {
   const app: express.Application = express();
   const environment: string = process.env.NODE_ENV;
+  const isDevEnv = ['test', 'development', 'aatDevelopment'].includes(environment);
 
   // Inject nonce Id on every request.
   app.use((req, res, next) => {
@@ -70,13 +71,14 @@ function createApp() {
   app.post('*', uploadConfiguration, enforceFileSizeLimit, handleFileUploadErrors);
   app.post('*', filterRequest);
 
-  if (!['test', 'development', 'aatDevelopment'].includes(environment)) {
+  if (isDevEnv) {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
     // @ts-ignore
     const options = { stats: 'errors-only' } as Options;
     const wpDevMiddleware = webpackDevMiddleware(compiler, options);
     app.use(wpDevMiddleware);
+  } else {
     app.use(doubleCsrfProtection);
   }
 

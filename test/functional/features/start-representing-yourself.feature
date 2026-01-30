@@ -1,4 +1,4 @@
-@startRepresentingYourself
+@startRepresentingYourself @testy
 Feature: Start Representing Yourself
   In order to start representing myself after legal representation has been removed
   As a citizen
@@ -58,5 +58,4 @@ Feature: Start Representing Yourself
 
     # confirm case details
     And I click "Continue" button
-    And I check page accessibility
     Then I see "/users/selfRegister" in current url

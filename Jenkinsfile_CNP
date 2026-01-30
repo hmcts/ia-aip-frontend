@@ -138,5 +138,6 @@ withPipeline("nodejs", product, component) {
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/accessibility/*'
       steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'accessibility-issues.json'
+  }
 }
 

@@ -6,6 +6,7 @@ import Logger, { getLogLabel } from '../../app/utils/logger';
 
 const container = require('codeceptjs').container;
 const accessibilityIssuesPath = path.resolve(__dirname, '../../accessibility-issues.json');
+const accessibilityContentsPath = path.resolve(__dirname, '../../accessibility-contents.json');
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
@@ -22,6 +23,11 @@ type ReadableAxeResult = {
 
 export async function axeTest() {
   const page = container.helpers('Puppeteer').page;
+  const content = page.content();
+  if (hasContentBeenScanned(content)) {
+    logger.trace(`content already scanned for accessibility`, logLabel);
+    return;
+  }
   let accessibilityScanResults = null;
   const retries = 5;
   for (let i = 1; i <= retries; i++) {
@@ -45,6 +51,7 @@ export async function axeTest() {
       logger.exception(`Accessibility scan attempt ${i} failed: ${error}`, logLabel);
     }
   }
+  addScannedContent(content);
   if (accessibilityScanResults && accessibilityScanResults.violations.length > 0) {
     accessibilityScanResults.violations.forEach((violationType) => {
       let instances: ReadableAxeResult[] = violationType.nodes.map(
@@ -124,4 +131,28 @@ function addViolations(violations: ReadableAxeResult[]) {
   // Add unique violations to the existing list
   issues.violations.push(...uniqueViolations);
   writeIssues(issues);
+}
+
+type AccessibilityContents = {
+  scannedContents: string[];
+};
+
+function readAccessibilityContents(): AccessibilityContents {
+  const data = fs.readFileSync(accessibilityContentsPath, 'utf8');
+  return JSON.parse(data);
+}
+
+function writeAccessibilityContents(updatedContents: AccessibilityContents) {
+  fs.writeFileSync(accessibilityContentsPath, JSON.stringify(updatedContents, null, 2), 'utf8');
+}
+
+function hasContentBeenScanned(content: string): boolean {
+  const contents: AccessibilityContents = readAccessibilityContents();
+  return contents.scannedContents.includes(content);
+}
+
+function addScannedContent(content: string) {
+  const contents: AccessibilityContents = readAccessibilityContents();
+  contents.scannedContents.push(content);
+  writeAccessibilityContents(contents);
 }

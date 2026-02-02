@@ -82,7 +82,7 @@ export function failureCheck() {
   console.log('Scenarios passed: ' + testState.testsPassed.length);
   console.log('---------------------');
   if (uniqueTitles.length > 0 && testState.testsPassed.length === uniqueTitles.length) {
-    // process.exit(0);
+    process.exit(0);
   } else {
     const failedTests = uniqueTitles.filter(title => !testState.testsPassed.includes(title));
     console.log('Scenarios failed: ', failedTests);

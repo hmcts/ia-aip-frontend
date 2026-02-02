@@ -41,7 +41,7 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
       return this.getTestFlagValue(flag);
     }
     const username = _.get(req, 'idam.userDetails.sub', 'user-is-not-logged-in');
-    return ldClient.variation(flag, { key: username }, defaultReturn);
+    return ldClient.variation(flag, {  kind: 'user', key: username }, defaultReturn);
   }
 
   public static close() {

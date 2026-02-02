@@ -10032,9 +10032,9 @@ __metadata:
     joi: "npm:^17.4.0"
     jsdom: "npm:^24.1.0"
     jsonwebtoken: "npm:9.0.3"
-    jwt-decode: "npm:^2.2.0"
-    karma: "npm:^6.3.12"
-    launchdarkly-node-server-sdk: "npm:^6.4.0"
+    jwt-decode: "npm:^4.0.0"
+    karma: "npm:^6.4.4"
+    launchdarkly-node-server-sdk: "npm:^7.0.4"
     lodash: "npm:^4.17.23"
     memory-cache: "npm:^0.2.0"
     mini-css-extract-plugin: "npm:^2.9.0"
@@ -11269,14 +11269,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwt-decode@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "jwt-decode@npm:2.2.0"
-  checksum: 10/2d368aeb1d355b58af73a422e10c44d1adfd444f77f3a95bdc124696bde9cfe8423a9e43cdbce8761eb667252e25a59b5e36d30ebf4b6d2a8f8b107c2f25f358
+"jwt-decode@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "jwt-decode@npm:4.0.0"
+  checksum: 10/87b569e4a9a0067fb0d592bcf3b2ac3e638e49beee28620eeb07bef1b4470f4077dea68c15d191dd68e076846c3af8394be3bcaecffedc6e97433b221fdbbcf3
   languageName: node
   linkType: hard
 
-"karma@npm:^6.3.12":
+"karma@npm:^6.4.4":
   version: 6.4.4
   resolution: "karma@npm:6.4.4"
   dependencies:
@@ -11363,18 +11363,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"launchdarkly-node-server-sdk@npm:^6.4.0":
-  version: 6.4.3
-  resolution: "launchdarkly-node-server-sdk@npm:6.4.3"
+"launchdarkly-node-server-sdk@npm:^7.0.4":
+  version: 7.0.4
+  resolution: "launchdarkly-node-server-sdk@npm:7.0.4"
   dependencies:
-    async: "npm:^3.1.0"
+    async: "npm:^3.2.4"
     launchdarkly-eventsource: "npm:1.4.4"
     lru-cache: "npm:^6.0.0"
     node-cache: "npm:^5.1.0"
-    semver: "npm:^7.3.0"
+    semver: "npm:^7.5.4"
     tunnel: "npm:0.0.6"
     uuid: "npm:^8.3.2"
-  checksum: 10/9d3489fc3272b6212e8897733bee3f1304a6243e7bd85d4107fa5cd5f6acb2424a0e738e2d8fac0b4117c18f917f8ceb89b38f69add9efb290c91292ba7dd061
+  checksum: 10/52a524002b5ff645135b2e20c2a7bd8812f3c430c834e9fd39bd1dcf58355e216aacd6a2f5103a8eb82bac0f275c55bebc4c2594868b903b1c740d5a5fe762a5
   languageName: node
   linkType: hard
 

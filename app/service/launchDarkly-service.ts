@@ -5,7 +5,7 @@ import Logger from '../utils/logger';
 
 const logger: Logger = new Logger();
 const launchDarklyLabel: string = 'LaunchDarkly service';
-const LaunchDarkly = require('launchdarkly-node-server-sdk');
+const LaunchDarkly = require('@launchdarkly/node-server-sdk');
 const config = setupSecrets();
 const ldKey: string = config.get('launchDarkly.sdkKey');
 const ldClient = LaunchDarkly.init(ldKey);
@@ -63,8 +63,8 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
       case 'dlrm-setaside-feature-flag':
       case 'dlrm-refund-feature-flag':
       case 'dlrm-internal-feature-flag':
-        return true;
       case 'use-ccd-document-am':
+        return true;
       default:
         return false;
     }

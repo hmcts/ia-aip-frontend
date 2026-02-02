@@ -48,9 +48,15 @@ export default class UpdateAppealService {
 
   async loadAppeal(req: Request) {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
-    const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
-    req.session.ccdCaseId = ccdCase.id;
-    req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
+    const ccdCases: CcdCaseDetails[] = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
+
+    // Store all cases in session for case list display
+    req.session.ccdCases = ccdCases;
+
+    if (ccdCases.length === 1) {
+      req.session.ccdCaseId = ccdCases[0].id;
+      req.session.appeal = this.mapCcdCaseToAppeal(ccdCases[0]);
+    }
   }
 
   private getDate(ccdDate): AppealDate {

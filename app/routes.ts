@@ -33,6 +33,7 @@ import {
   setupStepToHelpWithFeesRefundController
 } from './controllers/ask-for-fee-remission/steps-to-help-with-fees-refund';
 import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
+import { setupCaseListController } from './controllers/case-list';
 import { setupChangeRepresentationControllers } from './controllers/changing-representation';
 import { setupCQAnythingElseAnswerController } from './controllers/clarifying-questions/anything-else-answer';
 import { setupCQAnythingElseQuestionController } from './controllers/clarifying-questions/anything-else-question';
@@ -99,6 +100,7 @@ import {
 import { setupCMARequirementsStartPageController } from './controllers/cma-requirements/other-needs/start-page';
 import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
 import { setupcmaGuidancePageController } from './controllers/cma-requirements/what-to-expect';
+import { setupCreateCaseController } from './controllers/create-case';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';
@@ -186,6 +188,7 @@ import {
   setupCheckAndSendController as setupReasonsForAppealCheckAndSendController
 } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
+import { setupSelectCaseController } from './controllers/select-case';
 import { setupSessionController } from './controllers/session';
 import { setupStartRepresentingMyselfControllers } from './controllers/start-represent-yourself';
 import { setupStartController } from './controllers/startController';
@@ -235,6 +238,9 @@ const startRepresentingMyselfPublicControllers = setupStartRepresentingMyselfCon
 const middleware = [isJourneyAllowedMiddleware];
 
 const applicationOverview = setupApplicationOverviewController(updateAppealService);
+const caseList = setupCaseListController(updateAppealService);
+const createCase = setupCreateCaseController(updateAppealService);
+const selectCase = setupSelectCaseController(updateAppealService);
 const taskListController = setupTaskListController(middleware);
 const homeOfficeDetailsController = setupHomeOfficeDetailsController(middleware, updateAppealService);
 const typeOfAppealController = setupTypeOfAppealController(middleware, updateAppealService);
@@ -400,6 +406,9 @@ router.use(contactDetailsController);
 router.use(confirmationController);
 router.use(checkAndSendController);
 router.use(outOfTimeController);
+router.use(caseList);
+router.use(createCase);
+router.use(selectCase);
 router.use(applicationOverview);
 
 router.use(reasonsForAppealController);

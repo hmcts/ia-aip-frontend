@@ -1,0 +1,57 @@
+{% set pageTitleName = "Appeals list" %}
+{% extends "layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">Appeals List</h1>
+
+  {% if ccdCaseDetails and ccdCaseDetails.length %}
+    <div class="govuk-body">
+      <p class="govuk-body">Total appeals: {{ ccdCaseDetails.length }}</p>
+    </div>
+
+    {{ govukTable({
+      firstCellIsHeader: false,
+      head: [
+        {
+          text: "Case ID"
+        },
+        {
+          text: "State"
+        },
+        {
+          text: "Created Date"
+        },
+        {
+          text: "Last Modified"
+        }
+      ],
+      rows: ccdCaseDetails | map(function(caseDetail) {
+        return [
+          {
+            html: '<a href="/cases/' + caseDetail.id + '" class="govuk-link">' + caseDetail.id + '</a>'
+          },
+          {
+            text: caseDetail.state
+          },
+          {
+            text: caseDetail.created_date if caseDetail.created_date else '-'
+          },
+          {
+            text: caseDetail.last_modified if caseDetail.last_modified else '-'
+          }
+        ]
+      })
+    }) }}
+
+  {% else %}
+    <p class="govuk-body">No case details available.</p>
+  {% endif %}
+
+  {{ govukButton({
+    text: "Create a new appeal",
+    href: paths.common.createCase
+  }) }}
+
+{% endblock %}

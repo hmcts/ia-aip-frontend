@@ -9,6 +9,9 @@
   "features": {
     "timelineEnabled": true
   },
+  "launchDarkly": {
+    "sdkKey": "sdk-test-key"
+  },
   "cdamDocumentManagement": {
     "apiUrl": "CASE_DOCUMENT_AM_URL"
   },

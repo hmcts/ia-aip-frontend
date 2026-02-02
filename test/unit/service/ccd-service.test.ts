@@ -20,7 +20,7 @@ describe('idam-service', () => {
   let loadCaseStub;
   let createCaseStub;
 
-  describe('loadOrCreateCase loads a case', () => {
+  describe('loadOrCreateCase loads cases', () => {
     const ccdService = new CcdService();
 
     before(async () => {
@@ -32,6 +32,77 @@ describe('idam-service', () => {
       createCaseStub = sinon.mock(ccdService).expects('createCase').never();
 
       loadedCase = await ccdService.loadOrCreateCase(userId, headers);
+    });
+
+    it('should return a list of cases', async () => {
+      const mockCases = [
+        { id: '1', caseData: { field: 'value1' } },
+        { id: '2', caseData: { field: 'value2' } }
+      ];
+      loadCasesStub.resolves({ cases: mockCases, length: 2, total: 2 });
+
+      const result = await ccdService.loadOrCreateCase(userId, headers);
+
+      expect(result).to.be.an('array');
+      expect(result).to.have.length(2);
+      expect(result[0]).to.deep.equal(mockCases[0]);
+      expect(result[1]).to.deep.equal(mockCases[1]);
+      sinon.assert.notCalled(createCaseStub);
+    });describe('loadOrCreateCase', () => {
+      const ccdService = new CcdService();
+      const headers = {} as SecurityHeaders;
+      const userId = 'userId';
+
+      let loadCasesStub: sinon.SinonStub;
+      let createCaseStub: sinon.SinonStub;
+
+      beforeEach(() => {
+        loadCasesStub = sinon.stub(ccdService, 'loadCasesForUser');
+        createCaseStub = sinon.stub(ccdService, 'createCase');
+      });
+
+      afterEach(() => {
+        sinon.restore();
+      });
+
+      it('should return a list of cases when cases exist', async () => {
+        const mockCases = [
+          { id: '1', caseData: { field: 'value1' } },
+          { id: '2', caseData: { field: 'value2' } }
+        ];
+        loadCasesStub.resolves({ cases: mockCases, length: 2, total: 2 });
+
+        const result = await ccdService.loadOrCreateCase(userId, headers);
+
+        expect(result).to.be.an('array');
+        expect(result).to.have.length(2);
+        expect(result[0]).to.deep.equal(mockCases[0]);
+        expect(result[1]).to.deep.equal(mockCases[1]);
+        sinon.assert.notCalled(createCaseStub);
+      });
+
+      it('should create and return a new case when no cases exist', async () => {
+        const newCase = { id: 'newCaseId', caseData: { field: 'newValue' } };
+        loadCasesStub.resolves({ cases: [], length: 0, total: 0 });
+        createCaseStub.resolves(newCase);
+
+        const result = await ccdService.loadOrCreateCase(userId, headers);
+
+        expect(result).to.be.an('array');
+        expect(result).to.have.length(1);
+        expect(result[0]).to.deep.equal(newCase);
+        sinon.assert.calledOnce(createCaseStub);
+      });
+
+      it('should handle undefined cases gracefully', async () => {
+        loadCasesStub.resolves({ cases: undefined, length: 0, total: 0 });
+
+        const result = await ccdService.loadOrCreateCase(userId, headers);
+
+        expect(result).to.be.an('array');
+        expect(result).to.have.length(0);
+        sinon.assert.notCalled(createCaseStub);
+      });
     });
 
     it('loads the first case', () => {

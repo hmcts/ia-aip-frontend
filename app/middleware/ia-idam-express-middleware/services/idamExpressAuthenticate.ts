@@ -20,7 +20,7 @@ const idamExpressAuthenticate = (args: IdamConfig) => {
       cookies.remove(res, stateCookieName);
     }
 
-    const getState = args.state || uuidv4();
+    const getState = args.state || uuidv4;
 
     const redirectUser = () => {
       const state = getState();

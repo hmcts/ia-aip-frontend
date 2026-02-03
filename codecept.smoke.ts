@@ -14,7 +14,7 @@ exports.config = {
   },
   helpers: {
     Puppeteer: {
-      url: 'https://immigration-appeal.aat.platform.hmcts.net',
+      url: config.get('testUrl'),
       show: config.get('showTests'),
       chrome: {
         acceptInsecureCerts: true

@@ -8,7 +8,7 @@ import {
 import { currentUserDetails, signInForUserFromThread } from './helper-functions';
 
 const { signInForUser } = require('./helper-functions');
-const testUrl = 'https://immigration-appeal.aat.platform.hmcts.net';
+const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
 
 module.exports = {

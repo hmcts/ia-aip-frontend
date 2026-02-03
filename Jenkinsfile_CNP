@@ -57,9 +57,6 @@ withPipeline("nodejs", product, component) {
 
   afterAlways('checkout') { sh 'yarn cache clean' }
   before('build') {
-    yarnBuilder.yarn('build')
-    yarnBuilder.yarn('test:smoke')
-    process.exit(1);
     if (params.unitTestsBeforeStatic) {
       yarnBuilder.yarn('build')
       stage('Unit Tests') {

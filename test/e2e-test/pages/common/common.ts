@@ -3,7 +3,7 @@ import { axeTest } from '../../axeHelper';
 
 const { fillInDate } = require('../helper-functions');
 
-const testUrl = 'https://immigration-appeal.aat.platform.hmcts.net';
+const testUrl = require('config').get('testUrl');
 
 const PATHS = {
   'reasons for appeal': paths.awaitingReasonsForAppeal.decision,

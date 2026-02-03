@@ -1,4 +1,6 @@
 import config from 'config';
+import RedisStore from 'connect-redis';
+import { redisClient } from './redisClient';
 import Logger, { getLogLabel } from './utils/logger';
 
 const redis = require('redis');
@@ -14,13 +16,13 @@ function setupSession() {
   logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
   if (useRedis) {
     logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
-    let RedisStore = require('connect-redis')(session);
-    const redisOpts = {
-      url: config.get('session.redis.url'),
-      ttl: config.get('session.redis.ttlInSeconds')
-    };
-
-    let client = redis.createClient(redisOpts);
+    redisClient.connect().catch(err => {
+      logger.exception('Error connecting to redis: ' + err.message, logLabel);
+      throw err;
+    });
+    let redisStore = new RedisStore(
+      { client: redisClient, ttl: config.get('session.redis.ttlInSeconds') }
+    );
     return session({
       cookie: {
         httpOnly: true,
@@ -32,7 +34,7 @@ function setupSession() {
       saveUninitialized: true,
       secret: config.get('session.redis.secret'),
       rolling: true,
-      store: new RedisStore({ client })
+      store: redisStore
     });
   } else {
     return session({

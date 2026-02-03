@@ -1,9 +1,8 @@
 import config from 'config';
-import RedisStore from 'connect-redis';
+import { RedisStore } from 'connect-redis';
 import { redisClient } from './redisClient';
 import Logger, { getLogLabel } from './utils/logger';
 
-const redis = require('redis');
 const session = require('express-session');
 
 const useRedis: boolean = config.get('session.useRedis') === true;
@@ -13,9 +12,9 @@ const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
 function setupSession() {
-  logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
+  logger.trace(`connecting to redis on [${config.get('session.redis.url')}]`, logLabel);
   if (useRedis) {
-    logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
+    logger.trace(`connecting to redis on [${config.get('session.redis.url')}]`, logLabel);
     redisClient.connect().catch(err => {
       logger.exception('Error connecting to redis: ' + err.message, logLabel);
       throw err;

@@ -66,7 +66,7 @@
     "express": "^4.19.2",
     "express-session": "^1.19.0",
     "feature-policy": "^0.6.0",
-    "global-jsdom": "^24.0.0",
+    "global-jsdom": "^28.0.0",
     "google-libphonenumber": "^3.2.44",
     "govuk-frontend": "^5.14.0",
     "graceful-fs": "^4.2.11",
@@ -75,7 +75,7 @@
     "https-browserify": "^1.0.0",
     "i18n": "^0.15.3",
     "joi": "^18.0.2",
-    "jsdom": "^24.1.0",
+    "jsdom": "^28.0.0",
     "jwt-decode": "^4.0.0",
     "karma": "^6.4.4",
     "lodash": "^4.17.23",
@@ -96,7 +96,6 @@
     "url": "^0.11.4",
     "uuid": "^11.1.0",
     "validator": "^13.15.26",
-    "webdriverio": "^6.12.1",
     "webpack": "^5.104.1",
     "webpack-cli": "^6.0.1",
     "webpack-dev-middleware": "^7.4.5",
@@ -170,6 +169,7 @@
     "tslint-no-unused-expression-chai": "^0.1.4",
     "typescript": "^5.9.3",
     "uuid-validate": "^0.0.3",
+    "webdriverio": "^6.12.1",
     "webpack-shell-plugin": "^0.5.0"
   },
   "cypress-cucumber-preprocessor": {

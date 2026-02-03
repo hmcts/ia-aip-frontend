@@ -19,7 +19,7 @@ import { router } from './routes';
 import { setupSession } from './session';
 import { getUrl } from './utils/url-utils';
 
-const uuid = require('uuid');
+import { v4 as uuidv4 } from 'uuid';
 const featurePolicy = require('feature-policy');
 const nocache = require('nocache');
 
@@ -30,7 +30,7 @@ function createApp() {
 
   // Inject nonce Id on every request.
   app.use((req, res, next) => {
-    res.locals.nonce = uuid.v4();
+    res.locals.nonce = uuidv4();
     next();
   });
 

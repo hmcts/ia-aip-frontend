@@ -2,7 +2,7 @@ import { SinonStub } from 'sinon';
 import config from '../../../../../app/middleware/ia-idam-express-middleware/config';
 import middleware from '../../../../../app/middleware/ia-idam-express-middleware/services/idamExpressLanding';
 import idamWrapper from '../../../../../app/middleware/ia-idam-express-middleware/wrapper';
-import Logger from '../../../../../app/utils/logger';
+import Logger, * as LoggerModule from '../../../../../app/utils/logger';
 import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('idamExpressLanding', () => {
@@ -50,6 +50,11 @@ describe('idamExpressLanding', () => {
 
       sandbox.stub(idamWrapper, 'setup').returns(idamFunctionsStub);
       loggerStub = sandbox.createStubInstance(Logger);
+
+      sandbox.stub(LoggerModule, 'default').callsFake(function FakeLogger() {
+        return loggerStub;
+      } as any);
+
       handler = middleware(idamArgs);
     });
 
@@ -176,7 +181,7 @@ describe('idamExpressLanding', () => {
       handler(req, res, next);
 
       expect(res.redirect).to.have.been.calledOnce;
-      expect(loggerStub.exception).to.not.have.been.called;
+      expect(loggerStub.exception).to.have.been.calledOnce;
     });
 
     it('removes old state cookie', () => {

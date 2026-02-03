@@ -1,4 +1,4 @@
-@import "node_modules/govuk-frontend/dist/govuk/all";
+@import "govuk-frontend/dist/govuk/all";
 @import "_cookie-banner";
 @import "_date-component";
 @import "_evidence-list";
@@ -8,7 +8,7 @@
 @import "_timeline-component.scss";
 @import "_header";
 @import "_timeout-modal";
-@import "save-buttons-component";
+@import "_save-buttons-component";
 @import "_remission-summary";
 
 body {

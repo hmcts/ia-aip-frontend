@@ -16,10 +16,10 @@ describe('Out of Country Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-  sinon.useFakeTimers(new Date('2025-06-15'));
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    sandbox.useFakeTimers(new Date('2025-06-15'));
     req = {
       body: {},
       session: {

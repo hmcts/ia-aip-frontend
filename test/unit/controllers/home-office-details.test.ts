@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import session from 'express-session';
 import moment from 'moment';
 import {
@@ -24,7 +24,6 @@ describe('Home Office Details Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-  sinon.useFakeTimers(new Date('2025-06-15'));
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();

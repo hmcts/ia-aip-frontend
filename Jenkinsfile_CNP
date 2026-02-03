@@ -59,6 +59,7 @@ withPipeline("nodejs", product, component) {
   before('build') {
     yarnBuilder.yarn('build')
     yarnBuilder.yarn('test:smoke')
+    process.exit(1);
     if (params.unitTestsBeforeStatic) {
       yarnBuilder.yarn('build')
       stage('Unit Tests') {

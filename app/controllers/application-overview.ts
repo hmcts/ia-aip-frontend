@@ -124,6 +124,14 @@ function isAppealInProgress(appealStatus: string) {
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (req.query.caseId) {
+        await updateAppealService.loadAppealByCaseId(req.query.caseId as string, req);
+      }
+
+      if (!req.session.appeal || !req.session.appeal.application) {
+        return res.redirect(paths.common.casesList);
+      }
+
       // TODO: remove after Feature flag for AIP Hearing (Bundling) is permanently switched on
       const hearingBundleFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
       if (req.session.appeal.appealStatus === 'preHearing' || req.session.appeal.appealStatus === 'preHearingOutOfCountryFeatureDisabled') {

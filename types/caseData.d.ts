@@ -27,6 +27,14 @@ interface CcdCaseDetails {
   last_modified?: string;
 }
 
+interface CaseListItem {
+  id: string;
+  appealReferenceNumber: string;
+  state: string;
+  appellantGivenNames: string;
+  appellantFamilyName: string;
+}
+
 interface PinInPost {
   pinUsed: 'Yes' | 'No';
 }

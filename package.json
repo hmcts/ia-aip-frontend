@@ -147,8 +147,5 @@
     "webdriverio": "^9.23.3",
     "webpack-shell-plugin": "^0.5.0"
   },
-  "resolutions": {
-    "mocha": "^10.8.2"
-  },
   "packageManager": "yarn@4.10.3"
 }

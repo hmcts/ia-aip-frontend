@@ -1,5 +1,4 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import * as _ from 'lodash';
 import { Events } from '../data/events';
 import { paths } from '../paths';
@@ -25,7 +24,7 @@ const PIN_USED_UPDATE = {
   }
 };
 
-async function startRepresentingYourself(req: Request<Params>, res: Response, next: NextFunction) {
+async function startRepresentingYourself(req: Request, res: Response, next: NextFunction) {
   if (req.session.startRepresentingYourself === undefined) {
     return next();
   }
@@ -52,7 +51,7 @@ async function startRepresentingYourself(req: Request<Params>, res: Response, ne
   }
 }
 
-async function initSession(req: Request<Params>, res: Response, next: NextFunction) {
+async function initSession(req: Request, res: Response, next: NextFunction) {
   try {
     await updateAppealService.loadAppeal(req);
     next();
@@ -62,7 +61,7 @@ async function initSession(req: Request<Params>, res: Response, next: NextFuncti
 }
 
 function checkSession(args: any = {}) {
-  return (req: Request<Params>, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     const tokenCookieName = args.tokenCookieName || '__auth-token';
     if (req.cookies && req.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application')) {
       res.clearCookie(tokenCookieName, { path: '/' });
@@ -86,7 +85,7 @@ function replacer(key, value) {
   }
 }
 
-function logSession(req: Request<Params>, res: Response, next: NextFunction) {
+function logSession(req: Request, res: Response, next: NextFunction) {
   try {
     const logger: Logger = req.app.locals.logger;
     logger.request(JSON.stringify(req.session, replacer, 2), 'logSession');

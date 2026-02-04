@@ -1,4 +1,4 @@
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import IdamService from '../../../app/service/idam-service';
 import { expect } from '../../utils/testUtils';
 

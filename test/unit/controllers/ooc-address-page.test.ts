@@ -1,6 +1,5 @@
 const express = require('express');
-import { Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
 import { getEnterAddressForOutOfCountryAppeal, postEnterAddressForOutOfCountryAppeal, setupContactDetailsController } from '../../../app/controllers/appeal-application/contact-details';

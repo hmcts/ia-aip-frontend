@@ -1,12 +1,11 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import i18n from '../../../../locale/en.json';
 import { applicationTypes } from '../../../data/application-types';
 import { paths } from '../../../paths';
 import { createStructuredError } from '../../../utils/validations/fields-validations';
 import { makeApplicationControllersHelper } from '../make-application-controllers-helper';
 
-function getChangeHearingTypeApplication(req: Request<Params>, res: Response, next: NextFunction) {
+function getChangeHearingTypeApplication(req: Request, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
       askChangeHearingType: createStructuredError('askChangeHearingType', i18n.validationErrors.makeApplication.askChangeHearingType)
@@ -28,7 +27,7 @@ function getChangeHearingTypeApplication(req: Request<Params>, res: Response, ne
   return makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req, res, next, config);
 }
 
-function postChangeHearingTypeApplication(req: Request<Params>, res: Response, next: NextFunction) {
+function postChangeHearingTypeApplication(req: Request, res: Response, next: NextFunction) {
   const redirectToSuccessPath = paths.makeApplication.supportingEvidenceChangeHearingType;
   const redirectToErrorPath = `${paths.makeApplication.changeHearingType}?error=askChangeHearingType`;
   return makeApplicationControllersHelper.postProvideMakeAnApplicationDetails(req, res, next, redirectToSuccessPath, redirectToErrorPath);

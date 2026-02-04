@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { DmDocumentManagementService, DmUploadData } from '../../../app/service/dm-document-management-service';
 import IdamService from '../../../app/service/idam-service';

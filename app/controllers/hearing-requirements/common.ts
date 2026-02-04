@@ -1,5 +1,4 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import * as _ from 'lodash';
 import moment from 'moment';
 import { paths } from '../../paths';
@@ -7,7 +6,7 @@ import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { textAreaValidation, yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
-function handleHearingRequirementsYesNo(onValidationError, onValidationErrorMessage: string, onSuccess, req: Request<Params>, res: Response, next: NextFunction) {
+function handleHearingRequirementsYesNo(onValidationError, onValidationErrorMessage: string, onSuccess, req: Request, res: Response, next: NextFunction) {
   try {
     if (!shouldValidateWhenSaveForLater(req.body, 'reason')) {
       return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -23,11 +22,11 @@ function handleHearingRequirementsYesNo(onValidationError, onValidationErrorMess
   }
 }
 
-export function postHearingRequirementsYesNoHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request<Params>, res: Response, next: NextFunction) {
+export function postHearingRequirementsYesNoHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request, res: Response, next: NextFunction) {
   postHearingRequirementsYesNoHandlerWithTemplate(pageContent, onValidationErrorMessage, onSuccess, req, res, next, 'templates/radio-question-page.njk');
 }
 
-export function postHearingRequirementsYesNoHandlerWithTemplate(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request<Params>, res: Response, next: NextFunction, template: string) {
+export function postHearingRequirementsYesNoHandlerWithTemplate(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request, res: Response, next: NextFunction, template: string) {
 
   const onValidationError = (validations) => res.render(template, {
     ...pageContent,
@@ -50,7 +49,7 @@ export function setCheckedAttributeToQuestion(question, resultFound: boolean) {
   question.options[1] = Object.assign(question.options[1], { checked: resultFound === false });
 }
 
-function handleHearingRequirementsReason(onValidationError, onValidationErrorMessage: string, onSuccess, req: Request<Params>, next: NextFunction) {
+function handleHearingRequirementsReason(onValidationError, onValidationErrorMessage: string, onSuccess, req: Request, next: NextFunction) {
   try {
     const { reason } = req.body;
     const validations = textAreaValidation(reason, 'reason', onValidationErrorMessage);
@@ -63,7 +62,7 @@ function handleHearingRequirementsReason(onValidationError, onValidationErrorMes
   }
 }
 
-export function getHearingRequirementsReasonHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request<Params>, res: Response, next: NextFunction) {
+export function getHearingRequirementsReasonHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request, res: Response, next: NextFunction) {
   const onValidationError = (validations) => res.render('templates/textarea-question-page.njk', {
     ...pageContent,
     errorList: Object.values(validations),
@@ -79,7 +78,7 @@ export function getHearingRequirementsReasonHandler(pageContent, onValidationErr
   );
 }
 
-export function handleHearingRequirementsSaveForLater(req: Request<Params>, res: Response) {
+export function handleHearingRequirementsSaveForLater(req: Request, res: Response) {
   if (_.has(req.session, 'appeal.hearingRequirements.isEdit')
     && req.session.appeal.hearingRequirements.isEdit === true) {
     req.session.appeal.hearingRequirements.isEdit = false;

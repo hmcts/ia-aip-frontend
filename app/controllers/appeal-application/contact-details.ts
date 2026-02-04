@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { Address } from '../../clients/classes/Address';
@@ -26,7 +25,7 @@ import {
   textAreaValidation
 } from '../../utils/validations/fields-validations';
 
-function getContactDetails(req: Request<Params>, res: Response, next: NextFunction) {
+function getContactDetails(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.previousPage = paths.appealStarted.contactDetails;
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
@@ -42,7 +41,7 @@ function getContactDetails(req: Request<Params>, res: Response, next: NextFuncti
 }
 
 function postContactDetails(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'selections')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -98,13 +97,13 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
   };
 }
 
-async function isOutOfCountryAppeal(req: Request<Params>) {
+async function isOutOfCountryAppeal(req: Request) {
   let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
   let outOfCountryFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.OUT_OF_COUNTRY, false);
   return (outOfCountryFeatureEnabled && appealOutOfCountry && appealOutOfCountry === 'Yes');
 }
 
-function getEnterAddressForOutOfCountryAppeal(req: Request<Params>, res: Response, next: NextFunction) {
+function getEnterAddressForOutOfCountryAppeal(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.previousPage = paths.appealStarted.contactDetails;
     const oocAddress = req.session.appeal.application.appellantOutOfCountryAddress || null;
@@ -125,7 +124,7 @@ function getEnterAddressForOutOfCountryAppeal(req: Request<Params>, res: Respons
 }
 
 function postEnterAddressForOutOfCountryAppeal(updateAppealService: UpdateAppealService) {
-  return async function (req: Request<Params>, res: Response, next: NextFunction) {
+  return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'outofcountry-address')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -169,7 +168,7 @@ function postEnterAddressForOutOfCountryAppeal(updateAppealService: UpdateAppeal
   };
 }
 
-function getEnterPostcodePage(req: Request<Params>, res: Response, next: NextFunction) {
+function getEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.previousPage = paths.appealStarted.enterPostcode;
     _.set(req.session.appeal.application, 'addressLookup', {});
@@ -184,7 +183,7 @@ function getEnterPostcodePage(req: Request<Params>, res: Response, next: NextFun
   }
 }
 
-function postEnterPostcodePage(req: Request<Params>, res: Response, next: NextFunction) {
+function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = postcodeValidation(req.body);
     if (validation !== null) {
@@ -224,7 +223,7 @@ function buildAddressList(addressLookupResult) {
 }
 
 function getPostcodeLookupPage(osPlacesClient: OSPlacesClient) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     req.session.previousPage = paths.appealStarted.postcodeLookup;
     try {
       const postcode = _.get(req.session.appeal.application, 'personalDetails.address.postcode');
@@ -244,7 +243,7 @@ function getPostcodeLookupPage(osPlacesClient: OSPlacesClient) {
   };
 }
 
-function postPostcodeLookupPage(req: Request<Params>, res: Response, next: NextFunction) {
+function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction) {
   try {
     if (!shouldValidateWhenSaveForLater(req.body, 'address')) {
       return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -276,7 +275,7 @@ function findAddress(udprn: string, addresses: Address[]): Address {
   return (udprn && addresses) ? addresses.find(address => address.udprn === udprn) : null;
 }
 
-function getManualEnterAddressPage(req: Request<Params>, res: Response, next: NextFunction) {
+function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const address = _.get(req.session.appeal.application, 'personalDetails.address');
@@ -290,7 +289,7 @@ function getManualEnterAddressPage(req: Request<Params>, res: Response, next: Ne
 }
 
 function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'address-line-1', 'address-line-2', 'address-town', 'address-county', 'address-postcode')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -343,7 +342,7 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
   };
 }
 
-async function getHasSponsor(req: Request<Params>, res: Response, next: NextFunction) {
+async function getHasSponsor(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const application = req.session.appeal.application;
@@ -366,7 +365,7 @@ async function getHasSponsor(req: Request<Params>, res: Response, next: NextFunc
 }
 
 function postHasSponsor(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const validation = hasSponsorValidation(req.body);
 
@@ -412,7 +411,7 @@ function postHasSponsor(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getSponsorName(req: Request<Params>, res: Response, next: NextFunction) {
+function getSponsorName(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const sponsorGivenNames = req.session.appeal.application.sponsorGivenNames || null;
@@ -428,7 +427,7 @@ function getSponsorName(req: Request<Params>, res: Response, next: NextFunction)
 }
 
 function postSponsorName(updateAppealService: UpdateAppealService) {
-  return async function (req: Request<Params>, res: Response, next: NextFunction) {
+  return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'sponsorFamilyName', 'sponsorGivenNames')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -468,7 +467,7 @@ function postSponsorName(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getSponsorAddress(req: Request<Params>, res: Response, next: NextFunction) {
+function getSponsorAddress(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const address = req.session.appeal.application.sponsorAddress || null;
@@ -482,7 +481,7 @@ function getSponsorAddress(req: Request<Params>, res: Response, next: NextFuncti
 }
 
 function postSponsorAddress(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'address-line-1', 'address-line-2', 'address-town', 'address-county', 'address-postcode')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -532,7 +531,7 @@ function postSponsorAddress(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getSponsorContactDetails(req: Request<Params>, res: Response, next: NextFunction) {
+function getSponsorContactDetails(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const { application } = req.session.appeal;
@@ -547,7 +546,7 @@ function getSponsorContactDetails(req: Request<Params>, res: Response, next: Nex
 }
 
 function postSponsorContactDetails(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'selections')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -595,7 +594,7 @@ function postSponsorContactDetails(updateAppealService: UpdateAppealService) {
   };
 }
 
-async function getSponsorAuthorisation(req: Request<Params>, res: Response, next: NextFunction) {
+async function getSponsorAuthorisation(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const answer = req.session.appeal.application.sponsorAuthorisation;
@@ -615,7 +614,7 @@ async function getSponsorAuthorisation(req: Request<Params>, res: Response, next
 }
 
 function postSponsorAuthorisation(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const validation = sponsorAuthorisationValidation(req.body);
 

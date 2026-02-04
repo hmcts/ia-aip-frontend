@@ -1,5 +1,4 @@
-import { Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { Request, Response } from 'express';
 import { health, liveness } from '../../../app/controllers/health';
 import { expect, sinon } from '../../utils/testUtils';
 

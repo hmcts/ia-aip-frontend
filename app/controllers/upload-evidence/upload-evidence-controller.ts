@@ -1,5 +1,4 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import i18n from '../../../locale/en.json';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
@@ -17,9 +16,9 @@ export interface EvidenceUploadConfig {
   nextPath: string;
   askForMoreTimeFeatureEnabled: boolean;
   updateCcdEvent: any; // todo work out how to put an enum here
-  getEvidenceFromSessionFunction: (req: Request<Params>) => any;
-  addEvidenceToSessionFunction: (evidence: any, req: Request<Params>) => void;
-  removeEvidenceFromSessionFunction: (id: string, req: Request<Params>) => void;
+  getEvidenceFromSessionFunction: (req: Request) => any;
+  addEvidenceToSessionFunction: (evidence: any, req: Request) => void;
+  removeEvidenceFromSessionFunction: (id: string, req: Request) => void;
 }
 
 const evidenceYesNoTemplate: string = 'ask-for-more-time/supporting-evidence-yes-or-no.njk';
@@ -37,7 +36,7 @@ export function getEvidenceYesNo(previousPage: string, extraPageModel, res: Resp
 export function postEvidenceYesNo(previousPage: string,
                                   extraPageModel,
                                   evidenceUploadConfig: EvidenceUploadConfig,
-                                  req: Request<Params>,
+                                  req: Request,
                                   res: Response,
                                   next: NextFunction) {
   try {
@@ -78,7 +77,7 @@ function getEvidenceUploadPageOptions(evidences, evidenceUploadConfig: EvidenceU
 }
 
 export function getUploadPage(evidenceUploadConfig: EvidenceUploadConfig,
-                              req: Request<Params>,
+                              req: Request,
                               res: Response,
                               next: NextFunction) {
   try {
@@ -93,7 +92,7 @@ export function getUploadPage(evidenceUploadConfig: EvidenceUploadConfig,
 }
 
 export function postUploadFile(documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService, evidenceUploadConfig: EvidenceUploadConfig) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
         const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
@@ -126,7 +125,7 @@ export function postUploadFile(documentManagementService: DocumentManagementServ
 }
 
 export function getSupportingEvidenceDeleteFile(documentManagementService: DocumentManagementService, evidenceUploadConfig: EvidenceUploadConfig) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const fileId: string = req.query.id as string;
       if (fileId) {
@@ -141,7 +140,7 @@ export function getSupportingEvidenceDeleteFile(documentManagementService: Docum
 }
 
 export function postSupportingEvidence(updateAppealService: UpdateAppealService, evidenceUploadConfig: EvidenceUploadConfig) {
-  return async function (req: Request<Params>, res: Response, next: NextFunction) {
+  return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const evidences = evidenceUploadConfig.getEvidenceFromSessionFunction(req);
 

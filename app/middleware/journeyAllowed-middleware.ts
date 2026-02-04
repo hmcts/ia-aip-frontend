@@ -1,12 +1,10 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import { paths } from '../paths';
 import { hasPendingTimeExtension } from '../utils/utils';
 
-const isJourneyAllowedMiddleware = (req: Request<Params>, res: Response, next: NextFunction) => {
+const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const currentPath: string = req.path;
-  // @ts-ignore
-  const appealStatusPathsCopy = { ...paths[req.session.appeal.appealStatus] } || {};
+  const appealStatusPathsCopy = { ...paths[req.session.appeal.appealStatus] };
   const appealStatusPaths = Object.values(appealStatusPathsCopy).map((path: string) => {
     if (Object.keys(req.params).length === 0) return path;
     const matches = path.match(/\/:([^\/]+)\/?$/);
@@ -65,7 +63,7 @@ const isJourneyAllowedMiddleware = (req: Request<Params>, res: Response, next: N
   return res.redirect(paths.common.forbidden);
 };
 
-const isTimeExtensionsInProgress = (req: Request<Params>, res: Response, next: NextFunction) => {
+const isTimeExtensionsInProgress = (req: Request, res: Response, next: NextFunction) => {
   if (!hasPendingTimeExtension(req.session.appeal)) {
     return next();
   }

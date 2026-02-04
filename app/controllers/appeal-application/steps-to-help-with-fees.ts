@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
@@ -8,7 +7,7 @@ import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getRedirectPage } from '../../utils/utils';
 
-async function getStepsToHelpWithFees(req: Request<Params>, res: Response, next: NextFunction) {
+async function getStepsToHelpWithFees(req: Request, res: Response, next: NextFunction) {
   try {
     const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
@@ -24,7 +23,7 @@ async function getStepsToHelpWithFees(req: Request<Params>, res: Response, next:
 }
 
 function postStepsToHelpWithFees(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
     async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {

@@ -1,5 +1,4 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import { getTransferHearingApplication, postTransferHearingApplication } from '../../../../../app/controllers/make-application/hearing-requests/transfer-hearing-application';
 import { expect, sinon } from '../../../../utils/testUtils';
 

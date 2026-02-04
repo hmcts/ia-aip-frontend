@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
@@ -35,7 +34,7 @@ function getPayNowQuestion(appeal: Appeal) {
   return question;
 }
 
-async function getPayNow(req: Request<Params>, res: Response, next: NextFunction) {
+async function getPayNow(req: Request, res: Response, next: NextFunction) {
   try {
     const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
     if (!paymentsFlag) return res.redirect(paths.common.overview);

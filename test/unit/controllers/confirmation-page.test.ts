@@ -1,5 +1,4 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import { SinonSpy } from 'sinon';
 import { postAsylumSupport } from '../../../app/controllers/appeal-application/asylum-support';
 import {

@@ -1,7 +1,7 @@
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 
 export default class IdamService {
-  getUserToken(req: Request<Params>) {
+  getUserToken(req: Request) {
     return `Bearer ${req.cookies['__auth-token']}`;
   }
 }

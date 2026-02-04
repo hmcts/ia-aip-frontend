@@ -1,4 +1,4 @@
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from '../../../app/utils/cma-hearing-details';
 import { getDeadline, getDueDateForAppellantToRespondToJudgeDecision, getFormattedDirectionDueDate } from '../../../app/utils/event-deadline-date-finder';
 import Logger from '../../../app/utils/logger';

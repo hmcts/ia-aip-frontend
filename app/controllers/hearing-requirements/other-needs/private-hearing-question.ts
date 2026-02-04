@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
@@ -11,7 +10,7 @@ const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } 
 const pageTitle = i18n.pages.hearingRequirements.otherNeedsSection.privateHearing.title;
 const formAction = paths.submitHearingRequirements.otherNeedsPrivateHearingQuestion;
 
-function getPrivateHearingQuestion(req: Request<Params>, res: Response, next: NextFunction) {
+function getPrivateHearingQuestion(req: Request, res: Response, next: NextFunction) {
   try {
     const question = getQuestion(req.session.appeal);
     return res.render('templates/radio-question-page.njk', {
@@ -43,7 +42,7 @@ function getQuestion(appeal: Appeal) {
 }
 
 function postPrivateHearingQuestion(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.otherNeeds.privateAppointmentAnswerRequired;
       const question = getQuestion(req.session.appeal);

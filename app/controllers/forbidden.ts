@@ -1,8 +1,7 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
 
-function getForbiddenPage(req: Request<Params>, res: Response, next: NextFunction) {
+function getForbiddenPage(req: Request, res: Response, next: NextFunction) {
   try {
     res.render('forbidden/forbidden.njk');
   } catch (e) {

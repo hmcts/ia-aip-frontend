@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
 import { applicationTypes } from '../../data/application-types';
 import { Events } from '../../data/events';
@@ -30,7 +29,7 @@ export const askForMoreTimeEvidenceUploadConfig: EvidenceUploadConfig = {
   nextPath: paths.common.askForMoreTimeCheckAndSend,
   askForMoreTimeFeatureEnabled: false,
   updateCcdEvent: Events.MAKE_AN_APPLICATION,
-  addEvidenceToSessionFunction: function (evidences, req: Request<Params>) {
+  addEvidenceToSessionFunction: function (evidences, req: Request) {
     if (!req.session.appeal.makeAnApplicationEvidence) {
       req.session.appeal.makeAnApplicationEvidence = [];
     }
@@ -39,13 +38,13 @@ export const askForMoreTimeEvidenceUploadConfig: EvidenceUploadConfig = {
   getEvidenceFromSessionFunction: function (req) {
     return req.session.appeal.makeAnApplicationEvidence || [];
   },
-  removeEvidenceFromSessionFunction: function (fileId: string, req: Request<Params>) {
+  removeEvidenceFromSessionFunction: function (fileId: string, req: Request) {
     req.session.appeal.makeAnApplicationEvidence = req.session.appeal.makeAnApplicationEvidence
       .filter((evidence: Evidence) => evidence.fileId !== fileId);
   }
 };
 
-function getAskForMoreTimePage(req: Request<Params>, res: Response, next: NextFunction) {
+function getAskForMoreTimePage(req: Request, res: Response, next: NextFunction) {
   try {
     res.render('./ask-for-more-time/ask-for-more-time.njk', {
       previousPage: paths.common.overview,
@@ -56,7 +55,7 @@ function getAskForMoreTimePage(req: Request<Params>, res: Response, next: NextFu
   }
 }
 
-function getCancelAskForMoreTime(req: Request<Params>, res: Response) {
+function getCancelAskForMoreTime(req: Request, res: Response) {
   req.session.appeal.askForMoreTime = {};
   const nextPage = getNextPage(req.body, paths.common.overview);
   return getConditionalRedirectUrl(req, res, nextPage);
@@ -64,7 +63,7 @@ function getCancelAskForMoreTime(req: Request<Params>, res: Response) {
 
 // TODO: remove updateAppealService inject if not needed
 function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
-  return async function (req: Request<Params>, res: Response, next: NextFunction) {
+  return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const { askForMoreTime } = req.body;
       const validation = askForMoreTimeValidation(req.body);
@@ -107,11 +106,11 @@ function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getAskForMoreTimeEvidence(req: Request<Params>, res: Response, next: NextFunction) {
+function getAskForMoreTimeEvidence(req: Request, res: Response, next: NextFunction) {
   getEvidenceYesNo(paths.common.askForMoreTimeReason, {}, res, next);
 }
 
-function postAdditionalSupportingEvidenceQuestionPage(req: Request<Params>, res: Response, next: NextFunction) {
+function postAdditionalSupportingEvidenceQuestionPage(req: Request, res: Response, next: NextFunction) {
   postEvidenceYesNo(
     paths.common.askForMoreTimeReason,
     {},
@@ -122,7 +121,7 @@ function postAdditionalSupportingEvidenceQuestionPage(req: Request<Params>, res:
   );
 }
 
-function getUploadEvidence(req: Request<Params>, res: Response, next: NextFunction) {
+function getUploadEvidence(req: Request, res: Response, next: NextFunction) {
   getUploadPage(askForMoreTimeEvidenceUploadConfig,
     req,
     res,
@@ -142,7 +141,7 @@ function postSubmitEvidence(updateAppealService: UpdateAppealService) {
   return postSupportingEvidence(updateAppealService, askForMoreTimeEvidenceUploadConfig);
 }
 
-function getCheckAndSend(req: Request<Params>, res: Response, next: NextFunction) {
+function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
     const reasonFormattingPreserved = formatTextForCYA(req.session.appeal.makeAnApplicationDetails);
     const summaryRows = [
@@ -174,7 +173,7 @@ function getCheckAndSend(req: Request<Params>, res: Response, next: NextFunction
 }
 
 function postCheckAndSend(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.MAKE_AN_APPLICATION, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
@@ -192,7 +191,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getConfirmation(req: Request<Params>, res: Response, next: NextFunction) {
+function getConfirmation(req: Request, res: Response, next: NextFunction) {
   try {
     const saveAndAskForMoreTime = req.session.appeal.application.saveAndAskForTime || false ? '?save-and-ask-for-more-time' : '?ask-for-more-time';
     req.session.appeal.application.saveAndAskForTime = false;

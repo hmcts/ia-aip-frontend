@@ -1,5 +1,4 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import { getChangeHearingTypeApplication, postChangeHearingTypeApplication } from '../../../../../app/controllers/make-application/appeal-requests/change-hearing-type-application';
 import { paths } from '../../../../../app/paths';
 import i18n from '../../../../../locale/en.json';

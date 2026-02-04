@@ -1,4 +1,4 @@
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import moment from 'moment';
 import nl2br from 'nl2br';
 import * as path from 'path';
@@ -123,51 +123,51 @@ export function formatCaseId(caseId: any) {
   return caseStr.toString();
 }
 
-export async function isFtpaFeatureEnabled(req: Request<Params>) {
+export async function isFtpaFeatureEnabled(req: Request) {
   const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
   const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
   return isFtpaFeatureEnabled;
 }
 
-export function isNonStandardDirectionEnabled(req: Request<Params>) {
+export function isNonStandardDirectionEnabled(req: Request) {
   return req.session.appeal.nonStandardDirectionEnabled;
 }
 
-export function isReadonlyApplicationEnabled(req: Request<Params>) {
+export function isReadonlyApplicationEnabled(req: Request) {
   return req.session.appeal.readonlyApplicationEnabled;
 }
 
-export function isUpdateTribunalDecide(req: Request<Params>, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+export function isUpdateTribunalDecide(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
   return (ftpaSetAsideFeatureEnabled &&
     req.session.appeal.history &&
     req.session.appeal.history.find(event => event.id === Events.UPDATE_TRIBUNAL_DECISION.id) !== undefined &&
     req.session.appeal.appealStatus === 'decided');
 }
 
-export function isUpdateTribunalDecideWithRule31(req: Request<Params>, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+export function isUpdateTribunalDecideWithRule31(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
   return (isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) &&
     req.session.appeal.updateTribunalDecisionList === 'underRule31');
 }
 
-export function isUpdateTribunalDecideWithRule32(req: Request<Params>, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+export function isUpdateTribunalDecideWithRule32(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
   return (isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) &&
     req.session.appeal.updateTribunalDecisionList === 'underRule32');
 }
 
-export function getLatestUpdateTribunalDecisionHistory(req: Request<Params>, ftpaSetAsideFeatureEnabled: boolean = false): HistoryEvent {
+export function getLatestUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): HistoryEvent {
   return isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) ? req.session.appeal.history
     .filter(history => history.id === Events.UPDATE_TRIBUNAL_DECISION.id)
     .sort((a: any, b: any) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())[0] : null;
 }
 
-export function isRemissionDecisionDecided(req: Request<Params>, refundFeatureEnabled: boolean = false): boolean {
+export function isRemissionDecisionDecided(req: Request, refundFeatureEnabled: boolean = false): boolean {
   return (refundFeatureEnabled &&
     req.session.appeal.history &&
     req.session.appeal.history.find(event => event.id === Events.RECORD_REMISSION_DECISION.id) !== undefined &&
     !!req.session.appeal.application.remissionDecision);
 }
 
-export function getLatestUpdateRemissionDecionsEventHistory(req: Request<Params>, refundFeatureEnabled: boolean = false): HistoryEvent {
+export function getLatestUpdateRemissionDecionsEventHistory(req: Request, refundFeatureEnabled: boolean = false): HistoryEvent {
   return isRemissionDecisionDecided(req, refundFeatureEnabled) ? req.session.appeal.history
     .filter(history => history.id === Events.RECORD_REMISSION_DECISION.id)
     .sort((a: any, b: any) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())[0] : null;

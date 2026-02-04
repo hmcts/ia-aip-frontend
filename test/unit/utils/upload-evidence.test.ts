@@ -1,5 +1,4 @@
-import { Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { Request, Response } from 'express';
 import { askForMoreTimeEvidenceUploadConfig } from '../../../app/controllers/ask-for-more-time/ask-for-more-time';
 import { expect, sinon } from '../../utils/testUtils';
 

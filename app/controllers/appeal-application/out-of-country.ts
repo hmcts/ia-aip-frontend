@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
@@ -10,7 +9,7 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { appellantInUkValidation, dateLeftUkValidation, gwfReferenceNumberValidation, oocHrEeaValidation } from '../../utils/validations/fields-validations';
 
-async function getAppellantInUk(req: Request<Params>, res: Response, next: NextFunction) {
+async function getAppellantInUk(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -32,7 +31,7 @@ async function getAppellantInUk(req: Request<Params>, res: Response, next: NextF
 }
 
 function postAppellantInUk(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const validation = appellantInUkValidation(req.body);
 
@@ -72,7 +71,7 @@ function postAppellantInUk(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getOocHrInside(req: Request<Params>, res: Response, next: NextFunction) {
+function getOocHrInside(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -87,7 +86,7 @@ function getOocHrInside(req: Request<Params>, res: Response, next: NextFunction)
 }
 
 function postOocHrInside(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -130,7 +129,7 @@ function postOocHrInside(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getGwfReference(req: Request<Params>, res: Response, next: NextFunction) {
+function getGwfReference(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -145,7 +144,7 @@ function getGwfReference(req: Request<Params>, res: Response, next: NextFunction
 }
 
 function postGwfReference(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'gwfReferenceNumber')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview);
@@ -182,7 +181,7 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
   };
 }
 
-async function getOocHrEea(req: Request<Params>, res: Response, next: NextFunction) {
+async function getOocHrEea(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -200,7 +199,7 @@ async function getOocHrEea(req: Request<Params>, res: Response, next: NextFuncti
 }
 
 function postOocHrEea(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const validation = oocHrEeaValidation(req.body);
 
@@ -238,7 +237,7 @@ function postOocHrEea(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getOocProtectionDepartureDate(req: Request<Params>, res: Response, next: NextFunction) {
+function getOocProtectionDepartureDate(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -253,7 +252,7 @@ function getOocProtectionDepartureDate(req: Request<Params>, res: Response, next
 }
 
 function postOocProtectionDepartureDate(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');

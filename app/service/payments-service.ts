@@ -1,5 +1,4 @@
-import { Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { Request, Response } from 'express';
 import * as paymentApi from '../api/payments-api';
 import { Events } from '../data/events';
 import { paths } from '../paths';
@@ -17,7 +16,7 @@ export default class PaymentService {
   }
 
   // TODO: use the actual fee to initiate the payment
-  async createCardPayment(req: Request<Params>, fee) {
+  async createCardPayment(req: Request, fee) {
     const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const body = {
       amount: fee.calculated_amount,
@@ -45,13 +44,13 @@ export default class PaymentService {
     return results;
   }
 
-  async getPaymentDetails(req: Request<Params>, paymentReference) {
+  async getPaymentDetails(req: Request, paymentReference) {
     const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const paymentDetails = await paymentApi.paymentDetails(securityHeaders, paymentReference);
     return paymentDetails;
   }
 
-  async initiatePayment(req: Request<Params>, res: Response, fee: any) {
+  async initiatePayment(req: Request, res: Response, fee: any) {
     const { paymentReference } = req.session.appeal || null;
     if (paymentReference) {
       const paymentDetails = JSON.parse(await this.getPaymentDetails(req, req.session.appeal.paymentReference));

@@ -1,12 +1,11 @@
-import { Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { Request, Response, Router } from 'express';
 import { paths } from '../paths';
 
-function health(req: Request<Params>, res: Response) {
+function health(req: Request, res: Response) {
   res.json({ status: 'UP' });
 }
 
-function liveness(req: Request<Params>, res: Response) {
+function liveness(req: Request, res: Response) {
   res.json({});
 }
 

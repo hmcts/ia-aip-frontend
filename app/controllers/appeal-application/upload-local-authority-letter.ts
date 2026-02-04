@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
@@ -11,7 +10,7 @@ import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
-async function getLocalAuthorityLetter(req: Request<Params>, res: Response, next: NextFunction) {
+async function getLocalAuthorityLetter(req: Request, res: Response, next: NextFunction) {
   try {
     const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
@@ -44,7 +43,7 @@ async function getLocalAuthorityLetter(req: Request<Params>, res: Response, next
 }
 
 function postLocalAuthorityLetter(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
     async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
@@ -72,7 +71,7 @@ function postLocalAuthorityLetter(updateAppealService: UpdateAppealService) {
   };
 }
 
-function validate(req: Request<Params>, res: Response, next: NextFunction) {
+function validate(req: Request, res: Response, next: NextFunction) {
   try {
     let errorCode: string;
     if (res.locals.errorCode) {
@@ -88,7 +87,7 @@ function validate(req: Request<Params>, res: Response, next: NextFunction) {
 }
 
 function uploadLocalAuthorityLetter(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
         let localAuthorityLetterEvidences: Evidence[] = req.session.appeal.application.localAuthorityLetters || [];
@@ -117,7 +116,7 @@ function uploadLocalAuthorityLetter(updateAppealService: UpdateAppealService, do
 }
 
 function deleteLocalAuthorityLetter(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.query.id) {
         await documentManagementService.deleteFile(req, req.query.id as string);

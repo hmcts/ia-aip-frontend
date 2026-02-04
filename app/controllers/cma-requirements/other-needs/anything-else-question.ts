@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
@@ -14,7 +13,7 @@ const question = {
   options: [ { value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' } ]
 };
 
-function getAnythingElseQuestion(req: Request<Params>, res: Response, next: NextFunction) {
+function getAnythingElseQuestion(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('templates/radio-question-page.njk', {
       previousPage,
@@ -29,7 +28,7 @@ function getAnythingElseQuestion(req: Request<Params>, res: Response, next: Next
 }
 
 function postAnythingElseQuestion(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.anythingElseAnswerRequired;
       const pageContent = {

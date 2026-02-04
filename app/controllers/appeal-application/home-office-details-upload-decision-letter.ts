@@ -1,6 +1,5 @@
 
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
@@ -12,7 +11,7 @@ import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
-function getHomeOfficeDecisionLetter(req: Request<Params>, res: Response, next: NextFunction) {
+function getHomeOfficeDecisionLetter(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     let validationErrors: ValidationErrors;
@@ -43,7 +42,7 @@ function getHomeOfficeDecisionLetter(req: Request<Params>, res: Response, next: 
   }
 }
 
-async function postHomeOfficeDecisionLetter(req: Request<Params>, res: Response, next: NextFunction) {
+async function postHomeOfficeDecisionLetter(req: Request, res: Response, next: NextFunction) {
   try {
     const dlrmInternalFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_INTERNAL_FEATURE_FLAG, false);
     const decisionLetterUploads = req.session.appeal.application.homeOfficeLetter || [];
@@ -67,7 +66,7 @@ async function postHomeOfficeDecisionLetter(req: Request<Params>, res: Response,
   }
 }
 
-function validate(req: Request<Params>, res: Response, next: NextFunction) {
+function validate(req: Request, res: Response, next: NextFunction) {
   try {
     let errorCode: string;
     if (res.locals.errorCode) {
@@ -83,7 +82,7 @@ function validate(req: Request<Params>, res: Response, next: NextFunction) {
 }
 
 function uploadHomeOfficeDecisionLetter(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
         let homeOfficeLetterEvidences: Evidence[] = req.session.appeal.application.homeOfficeLetter || [];
@@ -112,7 +111,7 @@ function uploadHomeOfficeDecisionLetter(updateAppealService: UpdateAppealService
 }
 
 function deleteHomeOfficeDecisionLetter(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.query.id) {
         await documentManagementService.deleteFile(req, req.query.id as string);

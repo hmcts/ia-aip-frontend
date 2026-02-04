@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
@@ -28,7 +28,7 @@ import {
  * @param event the event containing the date and id.
  * @param req the request containing the session to update the timeExtensionsMap
  */
-function constructEventObject(event: HistoryEvent, req: Request<Params>) {
+function constructEventObject(event: HistoryEvent, req: Request) {
 
   let eventContent = i18n.pages.overviewPage.timeline[event.id];
   if (isUploadEvidenceEventByLegalRep(req, event)) {
@@ -77,7 +77,7 @@ function constructEventObject(event: HistoryEvent, req: Request<Params>) {
  * @param states optional use if a section must be constructed within a specific state only
  * @param req the request containing the session to update the timeExtensionsMap
  */
-function constructSection(eventsToLookFor: string[], events: HistoryEvent[], states: string[] | null, req: Request<Params>) {
+function constructSection(eventsToLookFor: string[], events: HistoryEvent[], states: string[] | null, req: Request) {
   const filteredEvents = states
         ? events.filter(event => eventsToLookFor.includes(event.id) && states.includes(event.state.id))
         : events.filter(event => eventsToLookFor.includes(event.id));
@@ -86,7 +86,7 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
         .map(event => constructEventObject(event, req));
 }
 
-function getApplicationEvents(req: Request<Params>): any[] {
+function getApplicationEvents(req: Request): any[] {
   const applicationEvents = isReadonlyApplicationEnabled(req)
         ? req.session.appeal.makeAnApplications
         : getAppellantApplications(req.session.appeal.makeAnApplications);
@@ -140,7 +140,7 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
   });
 }
 
-function getDirectionHistory(req: Request<Params>): any[] {
+function getDirectionHistory(req: Request): any[] {
   if (isNonStandardDirectionEnabled(req)) {
     return (req.session.appeal.directions || [])
       .filter(direction => (
@@ -178,7 +178,7 @@ function getDirectionHistory(req: Request<Params>): any[] {
   }
 }
 
-function getListCaseEvent(req: Request<Params>): any[] {
+function getListCaseEvent(req: Request): any[] {
   let hearingNotices: Evidence[] = [];
   let hearingNoticeTags: string[] = ['hearingNotice', 'hearingNoticeRelisted',
     'reheardHearingNotice', 'reheardHearingNoticeRelisted'];
@@ -219,7 +219,7 @@ function getListCaseEvent(req: Request<Params>): any[] {
         });
 }
 
-function getAsyncStitchingEvent(req: Request<Params>): any[] {
+function getAsyncStitchingEvent(req: Request): any[] {
   let hearingBundles: Evidence[] = [];
   let hearingBundleTags: string[] = ['hearingBundle', 'updatedHearingBundle'];
   if (req.session.appeal.hearingDocuments) {
@@ -255,7 +255,7 @@ function getAsyncStitchingEvent(req: Request<Params>): any[] {
     .sort((a: any, b: any) => b.dateTimeObject - a.dateTimeObject);
 }
 
-function getUpdateTribunalDecisionHistory(req: Request<Params>, ftpaSetAsideFeatureEnabled: boolean): any[] {
+function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
   let latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
 
   if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled)) {
@@ -297,7 +297,7 @@ function getUpdateTribunalDecisionHistory(req: Request<Params>, ftpaSetAsideFeat
   }
 }
 
-function getUpdateTribunalDecisionDocumentHistory(req: Request<Params>, ftpaSetAsideFeatureEnabled: boolean): any[] {
+function getUpdateTribunalDecisionDocumentHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
   if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.updateTribunalDecisionAndReasonsFinalCheck === 'Yes') {
 
     let latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
@@ -315,7 +315,7 @@ function getUpdateTribunalDecisionDocumentHistory(req: Request<Params>, ftpaSetA
   }
 }
 
-async function getAppealApplicationHistory(req: Request<Params>, updateAppealService: UpdateAppealService) {
+async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
   const { application } = req.session.appeal;
@@ -526,20 +526,20 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
   };
 }
 
-function isUploadEvidenceEventByLegalRep(req: Request<Params>, event: HistoryEvent) {
+function isUploadEvidenceEventByLegalRep(req: Request, event: HistoryEvent) {
   return [
     Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
     Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id
   ].includes(event.id) && event.user.id !== req.idam.userDetails.uid;
 }
 
-function isRecordAdjournmentEventAndCaseAdjourned(req: Request<Params>, event: HistoryEvent) {
+function isRecordAdjournmentEventAndCaseAdjourned(req: Request, event: HistoryEvent) {
   const caseAdjourned = req.session.appeal.appealStatus === States.ADJOURNED.id;
 
   return (event.id === Events.RECORD_ADJOURNMENT_DETAILS.id) && caseAdjourned;
 }
 
-function filterEventsForHearingRequirementsSection(req: Request<Params>) {
+function filterEventsForHearingRequirementsSection(req: Request) {
   const targetEvents = [
     Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
     Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,

@@ -1,4 +1,4 @@
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import { v4 as uuid } from 'uuid';
 import { FEATURE_FLAGS } from '../data/constants';
 import { AuthenticationService } from './authentication-service';
@@ -15,7 +15,7 @@ class DocumentManagementService {
     this.cdamDocumentManagementService = new CdamDocumentManagementService(authenticationService);
   }
 
-  async useCDAM(req: Request<Params>) {
+  async useCDAM(req: Request) {
     return LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false);
   }
 
@@ -26,7 +26,7 @@ class DocumentManagementService {
    * @property {Express.Multer.File} req.file - the file to be uploaded
    * @property {string} req.idam.userDetails.uid - the user id
    */
-  async uploadFile(req: Request<Params>): Promise<DocumentUploadResponse> {
+  async uploadFile(req: Request): Promise<DocumentUploadResponse> {
     if (await this.useCDAM(req)) {
       return this.cdamDocumentManagementService.uploadFile(req);
     } else {
@@ -40,7 +40,7 @@ class DocumentManagementService {
    * @property {string} req.idam.userDetails.uid - the user id
    * @param fileLocation - the target file url to be deleted
    */
-  async deleteFile(req: Request<Params>, fileId: string): Promise<DocumentUploadResponse> {
+  async deleteFile(req: Request, fileId: string): Promise<DocumentUploadResponse> {
     if (await this.useCDAM(req)) {
       return this.cdamDocumentManagementService.deleteFile(req, fileId);
     } else {
@@ -54,7 +54,7 @@ class DocumentManagementService {
    * @property {string} req.idam.userDetails.id - the user id
    * @param fileLocation - the target file url to be fetched
    */
-  async fetchFile(req: Request<Params>, fileLocation: string) {
+  async fetchFile(req: Request, fileLocation: string) {
     if (await this.useCDAM(req)) {
       return this.cdamDocumentManagementService.fetchFile(req, fileLocation);
     } else {

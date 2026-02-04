@@ -1,5 +1,4 @@
-import { Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import * as _ from 'lodash';
 import { Address } from '../../../app/clients/classes/Address';

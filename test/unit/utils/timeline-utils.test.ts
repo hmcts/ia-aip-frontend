@@ -1,4 +1,4 @@
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import { States } from '../../../app/data/states';

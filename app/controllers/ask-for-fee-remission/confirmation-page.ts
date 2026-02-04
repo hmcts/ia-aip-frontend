@@ -1,11 +1,10 @@
 import config from 'config';
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../../paths';
 import { addDaysToDate } from '../../utils/date-utils';
 import { payLaterForApplicationNeeded } from '../../utils/payments-utils';
 
-function getConfirmationPage(req: Request<Params>, res: Response, next: NextFunction) {
+function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   req.app.locals.logger.trace(`Successful AIP appeal submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
 
   try {

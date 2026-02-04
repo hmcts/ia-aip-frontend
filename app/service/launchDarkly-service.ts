@@ -1,4 +1,4 @@
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import _ from 'lodash';
 import { setupSecrets } from '../setupSecrets';
 import Logger from '../utils/logger';
@@ -11,7 +11,7 @@ const ldKey: string = config.get('launchDarkly.sdkKey');
 const ldClient = LaunchDarkly.init(ldKey);
 
 interface ILaunchDarklyService {
-  getVariation: (req: Request<Params>, flag: string, defaultReturn: boolean) => {};
+  getVariation: (req: Request, flag: string, defaultReturn: boolean) => {};
 }
 
 export default class LaunchDarklyService implements ILaunchDarklyService {
@@ -36,7 +36,7 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
     });
   }
 
-  async getVariation(req: Request<Params>, flag: string, defaultReturn: boolean) {
+  async getVariation(req: Request, flag: string, defaultReturn: boolean) {
     if (process.env.IS_FUNCTIONAL_TEST === 'true') {
       return this.getTestFlagValue(flag);
     }

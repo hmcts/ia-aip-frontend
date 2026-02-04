@@ -1,17 +1,16 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { makeApplicationControllersHelper } from './make-application-controllers-helper';
 
-function getProvideSupportingEvidenceYesOrNo(req: Request<Params>, res: Response, next: NextFunction) {
+function getProvideSupportingEvidenceYesOrNo(req: Request, res: Response, next: NextFunction) {
   const previousPage = paths.makeApplication[`${req.session.appeal.makeAnApplicationTypes.value.code}`];
   const formAction = makeApplicationControllersHelper.getPath('supportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code);
   return makeApplicationControllersHelper.getProvideSupportingEvidenceYesOrNo(req, res, next, previousPage, formAction);
 }
 
-function postProvideSupportingEvidenceYesOrNo(req: Request<Params>, res: Response, next: NextFunction) {
+function postProvideSupportingEvidenceYesOrNo(req: Request, res: Response, next: NextFunction) {
   const config = {
     pathToProvideSupportingEvidence: makeApplicationControllersHelper.getPath('provideSupportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code),
     pathToSupportingEvidence: makeApplicationControllersHelper.getPath('supportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code),
@@ -20,7 +19,7 @@ function postProvideSupportingEvidenceYesOrNo(req: Request<Params>, res: Respons
   return makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req, res, next, config);
 }
 
-function getProvideSupportingEvidence(req: Request<Params>, res: Response, next: NextFunction) {
+function getProvideSupportingEvidence(req: Request, res: Response, next: NextFunction) {
   const config = {
     evidenceUploadAction: paths.makeApplication.provideSupportingEvidenceUploadFile,
     evidenceCTA: paths.makeApplication.provideSupportingEvidenceDeleteFile,
@@ -30,7 +29,7 @@ function getProvideSupportingEvidence(req: Request<Params>, res: Response, next:
   return makeApplicationControllersHelper.getProvideSupportingEvidence(req, res, next, config);
 }
 
-function postProvideSupportingEvidence(req: Request<Params>, res: Response, next: NextFunction) {
+function postProvideSupportingEvidence(req: Request, res: Response, next: NextFunction) {
   const config = {
     pathToCheckYourAnswer: makeApplicationControllersHelper.getPath('checkAnswer', req.session.appeal.makeAnApplicationTypes.value.code),
     pathToProvideSupportingEvidence: makeApplicationControllersHelper.getPath('provideSupportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code)
@@ -38,7 +37,7 @@ function postProvideSupportingEvidence(req: Request<Params>, res: Response, next
   return makeApplicationControllersHelper.postProvideSupportingEvidence(req, res, next, config);
 }
 
-function getProvideSupportingEvidenceCheckAndSend(req: Request<Params>, res: Response, next: NextFunction) {
+function getProvideSupportingEvidenceCheckAndSend(req: Request, res: Response, next: NextFunction) {
   const pathToProvideSupportingEvidence = makeApplicationControllersHelper.getPath('provideSupportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code);
   const pathToMakeApplicationDetails = makeApplicationControllersHelper.getPath('', req.session.appeal.makeAnApplicationTypes.value.code);
   const config = {
@@ -55,7 +54,7 @@ function postProvideSupportingEvidenceCheckAndSend(updateAppealService: UpdateAp
   return makeApplicationControllersHelper.postProvideSupportingEvidenceCheckAndSend(updateAppealService);
 }
 
-function getRequestSent(req: Request<Params>, res: Response, next: NextFunction) {
+function getRequestSent(req: Request, res: Response, next: NextFunction) {
   return makeApplicationControllersHelper.getRequestSent(req, res, next);
 }
 

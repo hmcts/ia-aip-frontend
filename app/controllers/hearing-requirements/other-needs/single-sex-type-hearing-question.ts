@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
@@ -26,7 +25,7 @@ function getQuestion(appeal: Appeal) {
   return question;
 }
 
-function getSingleSexTypeHearingQuestion(req: Request<Params>, res: Response, next: NextFunction) {
+function getSingleSexTypeHearingQuestion(req: Request, res: Response, next: NextFunction) {
   const question = getQuestion(req.session.appeal);
   try {
     return res.render('templates/radio-question-page.njk', {
@@ -42,7 +41,7 @@ function getSingleSexTypeHearingQuestion(req: Request<Params>, res: Response, ne
 }
 
 function postSingleSexTypeHearingQuestion(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.otherNeeds.singleSexTypeHearingRequired;
     const question = getQuestion(req.session.appeal);
     const pageContent = {

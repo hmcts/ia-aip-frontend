@@ -1,8 +1,7 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
 
-function getCookiesPage(req: Request<Params>, res: Response, next: NextFunction) {
+function getCookiesPage(req: Request, res: Response, next: NextFunction) {
   res.render('footer/cookies.njk', {
     previousPage: {
       attributes: { onclick: 'history.go(-1); return false;' }
@@ -10,7 +9,7 @@ function getCookiesPage(req: Request<Params>, res: Response, next: NextFunction)
   });
 }
 
-function getPrivacyPolicyPage(req: Request<Params>, res: Response, next: NextFunction) {
+function getPrivacyPolicyPage(req: Request, res: Response, next: NextFunction) {
   res.render('footer/privacy-policy.njk', {
     previousPage: {
       attributes: { onclick: 'history.go(-1); return false;' }
@@ -18,7 +17,7 @@ function getPrivacyPolicyPage(req: Request<Params>, res: Response, next: NextFun
   });
 }
 
-function getTermsAndConditionsPage(req: Request<Params>, res: Response, next: NextFunction) {
+function getTermsAndConditionsPage(req: Request, res: Response, next: NextFunction) {
   res.render('footer/terms-and-conditions.njk', {
     previousPage: {
       attributes: { onclick: 'history.go(-1); return false;' }
@@ -26,7 +25,7 @@ function getTermsAndConditionsPage(req: Request<Params>, res: Response, next: Ne
   });
 }
 
-function getAccessibilityPage(req: Request<Params>, res: Response, next: NextFunction) {
+function getAccessibilityPage(req: Request, res: Response, next: NextFunction) {
   res.render('footer/accessibility-statement.njk', {
     previousPage: {
       attributes: { onclick: 'history.go(-1); return false;' }

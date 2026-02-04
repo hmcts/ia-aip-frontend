@@ -1,4 +1,4 @@
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import { States } from '../data/states';
 
 const EA_HU_EUSS_APPEAL_TYPES = ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'];
@@ -17,7 +17,7 @@ export function getFee(appeal: Appeal) {
   throw new Error('Fee is not available');
 }
 
-export function payNowForApplicationNeeded(req: Request<Params>): boolean {
+export function payNowForApplicationNeeded(req: Request): boolean {
   const { appealType } = req.session.appeal.application;
   const { paAppealTypeAipPaymentOption, paymentStatus } = req.session.appeal;
   const payNowProtection = appealType === 'protection' && paAppealTypeAipPaymentOption === 'payNow';
@@ -25,7 +25,7 @@ export function payNowForApplicationNeeded(req: Request<Params>): boolean {
   return (payNowProtection || payNowEaHuEuss) && paymentStatus !== 'Paid';
 }
 
-export function payLaterForApplicationNeeded(req: Request<Params>): boolean {
+export function payLaterForApplicationNeeded(req: Request): boolean {
   const { appealType } = req.session.appeal.application;
   const { paAppealTypeAipPaymentOption = null, paymentStatus = null, appealStatus } = req.session.appeal;
   const payLaterProtection = appealStatus !== States.APPEAL_STARTED.id && appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater' && paymentStatus !== 'Paid';

@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import { v4 as uuid } from 'uuid';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
@@ -14,7 +13,7 @@ import {
 } from '../../utils/validations/fields-validations';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
-function getWitnessNamesPage(req: Request<Params>, res: Response, next: NextFunction) {
+function getWitnessNamesPage(req: Request, res: Response, next: NextFunction) {
   try {
     let witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
     const summaryList = buildWitnessNamesList(witnessNames);
@@ -32,7 +31,7 @@ function getWitnessNamesPage(req: Request<Params>, res: Response, next: NextFunc
 }
 
 function postWitnessNamesPage(updateAppealService: UpdateAppealService) {
-  return async function (req: Request<Params>, res: Response, next: NextFunction) {
+  return async function (req: Request, res: Response, next: NextFunction) {
     try {
       let witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
       const validation = witnessesValidation(witnessNames);
@@ -66,7 +65,7 @@ function renderPage (res: Response, validation: ValidationErrors, witnessNames: 
 }
 
 function addMoreWitnessPostAction() {
-  return async function (req: Request<Params>, res: Response, next: NextFunction) {
+  return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, ['witnessName', 'witnessFamilyName'])) {
         return getConditionalRedirectUrl(req, res, paths.submitHearingRequirements.taskList + '?saved');
@@ -91,7 +90,7 @@ function addMoreWitnessPostAction() {
 }
 
 function removeWitnessPostAction() {
-  return async function (req: Request<Params>, res: Response, next: NextFunction) {
+  return async function (req: Request, res: Response, next: NextFunction) {
     try {
       let witnessNames: WitnessName[] = req.session.appeal.hearingRequirements.witnessNames || [];
       const nameToRemove: string = req.query.name as string;

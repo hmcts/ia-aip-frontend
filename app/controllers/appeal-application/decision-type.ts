@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
@@ -45,7 +44,7 @@ function getDecisionTypeQuestion(appeal: Appeal, dlrmSetAsideFlag: boolean = fal
   return question;
 }
 
-async function getDecisionType(req: Request<Params>, res: Response, next: NextFunction) {
+async function getDecisionType(req: Request, res: Response, next: NextFunction) {
   try {
     const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
     const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
@@ -64,7 +63,7 @@ async function getDecisionType(req: Request<Params>, res: Response, next: NextFu
 }
 
 function postDecisionType(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     async function persistAppeal(appeal: Appeal, paymentsFlag) {
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], paymentsFlag);
       req.session.appeal = {

@@ -1,14 +1,13 @@
 const multer = require('multer');
-import { expect } from 'chai';
-import { Response } from 'express';
-import type { Request } from 'express-serve-static-core';
-import sinon, { SinonStub } from 'sinon';
+import { Request, Response } from 'express';
+import { SinonStub } from 'sinon';
 import {
   enforceFileSizeLimit, fileFilter, handleFileUploadErrors, uploadConfiguration
 } from '../../../app/middleware/file-upload-validation-middleware';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('#handleFileUploadErrors middleware', () => {
-  let req: Request<Params>;
+  let req: Request;
   let res: Response;
   let next: SinonStub;
   let sandbox: sinon.SinonSandbox;
@@ -50,7 +49,7 @@ describe('#handleFileUploadErrors middleware', () => {
 });
 
 describe('#enforceFileSizeLimit middleware', () => {
-  let req: Request<Params>;
+  let req: Request;
   let res: Response;
   let next: SinonStub;
   let sandbox: sinon.SinonSandbox;

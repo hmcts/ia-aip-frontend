@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import {
   convertToAmountOfMoneyDividedBy100,
   getFee,

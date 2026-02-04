@@ -1,4 +1,4 @@
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import Logger from '../../../app/utils/logger';
 import {
   appealHasNoRemissionOption,
@@ -15,7 +15,7 @@ import { expect, sinon } from '../../utils/testUtils';
 
 describe('Remission fields utils', () => {
   let sandbox: sinon.SinonSandbox;
-  let req: Request<Params>;
+  let req: Request;
   const logger: Logger = new Logger();
 
   beforeEach(() => {

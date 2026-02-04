@@ -1,4 +1,4 @@
-import type { Request } from 'express-serve-static-core';
+import { Request } from 'express';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CdamDocumentManagementService } from '../../../app/service/cdam-document-management-service';

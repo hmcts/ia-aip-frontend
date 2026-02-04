@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { applicationTypes } from '../../data/application-types';
@@ -10,7 +9,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { addSummaryRow } from '../../utils/summary-list';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
-function getProvideMakeAnApplicationDetails(req: Request<Params>, res: Response, next: NextFunction, config: any) {
+function getProvideMakeAnApplicationDetails(req: Request, res: Response, next: NextFunction, config: any) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     let validationErrors: ValidationErrors;
@@ -47,7 +46,7 @@ function getProvideMakeAnApplicationDetails(req: Request<Params>, res: Response,
   }
 }
 
-function postProvideMakeAnApplicationDetails(req: Request<Params>, res: Response, next: NextFunction, redirectToSuccessPath: string, redirectToErrorPath: string) {
+function postProvideMakeAnApplicationDetails(req: Request, res: Response, next: NextFunction, redirectToSuccessPath: string, redirectToErrorPath: string) {
   try {
     const makeAnApplicationDetails = req.body['makeAnApplicationDetails'];
 
@@ -65,7 +64,7 @@ function postProvideMakeAnApplicationDetails(req: Request<Params>, res: Response
   }
 }
 
-function getProvideSupportingEvidenceYesOrNo(req: Request<Params>, res: Response, next: NextFunction, previousPage: string, formAction: string) {
+function getProvideSupportingEvidenceYesOrNo(req: Request, res: Response, next: NextFunction, previousPage: string, formAction: string) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     let validationErrors: ValidationErrors;
@@ -109,7 +108,7 @@ function getProvideSupportingEvidenceYesOrNo(req: Request<Params>, res: Response
   }
 }
 
-function postProvideSupportingEvidenceYesOrNo(req: Request<Params>, res: Response, next: NextFunction, config: any) {
+function postProvideSupportingEvidenceYesOrNo(req: Request, res: Response, next: NextFunction, config: any) {
   try {
     const makeAnApplicationProvideEvidence = req.body['answer'];
 
@@ -128,7 +127,7 @@ function postProvideSupportingEvidenceYesOrNo(req: Request<Params>, res: Respons
   }
 }
 
-function getProvideSupportingEvidence(req: Request<Params>, res: Response, next: NextFunction, config: any) {
+function getProvideSupportingEvidence(req: Request, res: Response, next: NextFunction, config: any) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     let validationErrors: ValidationErrors;
@@ -158,7 +157,7 @@ function getProvideSupportingEvidence(req: Request<Params>, res: Response, next:
   }
 }
 
-function postProvideSupportingEvidence(req: Request<Params>, res: Response, next: NextFunction, config: any) {
+function postProvideSupportingEvidence(req: Request, res: Response, next: NextFunction, config: any) {
   try {
     if ((req.session.appeal.makeAnApplicationEvidence || []).length > 0) {
       res.redirect(config.pathToCheckYourAnswer);
@@ -170,7 +169,7 @@ function postProvideSupportingEvidence(req: Request<Params>, res: Response, next
   }
 }
 
-function getProvideSupportingEvidenceCheckAndSend(req: Request<Params>, res: Response, next: NextFunction, config: any) {
+function getProvideSupportingEvidenceCheckAndSend(req: Request, res: Response, next: NextFunction, config: any) {
   try {
     const summaryLists: SummaryList[] = buildSupportingEvidenceDocumentsSummaryList(req, config.pathToProvideSupportingEvidenceNoLeadingSlash, config.pathToMakeApplicationDetailsNoLeadingSlash);
     const previousPage = req.session.appeal.makeAnApplicationProvideEvidence === i18n.pages.makeApplication.provideSupportingEvidenceYesOrNo.options.yes.value
@@ -189,7 +188,7 @@ function getProvideSupportingEvidenceCheckAndSend(req: Request<Params>, res: Res
 }
 
 function postProvideSupportingEvidenceCheckAndSend(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       delete (req.session.appeal.makeAnApplicationProvideEvidence);
       const appeal: Appeal = {
@@ -212,7 +211,7 @@ function postProvideSupportingEvidenceCheckAndSend(updateAppealService: UpdateAp
   };
 }
 
-function getRequestSent(req: Request<Params>, res: Response, next: NextFunction) {
+function getRequestSent(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('templates/confirmation-page.njk', {
       title: i18n.pages.makeApplication.requestSent.title,
@@ -224,7 +223,7 @@ function getRequestSent(req: Request<Params>, res: Response, next: NextFunction)
 }
 
 function uploadSupportingEvidence(documentManagementService: DocumentManagementService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const redirectTo = getPath('provideSupportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code);
       if (!req.file) {
@@ -251,7 +250,7 @@ function uploadSupportingEvidence(documentManagementService: DocumentManagementS
 }
 
 function deleteSupportingEvidence(documentManagementService: DocumentManagementService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const redirectTo = getPath('provideSupportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code);
       if (req.query.id) {
@@ -270,7 +269,7 @@ function deleteSupportingEvidence(documentManagementService: DocumentManagementS
   };
 }
 
-function buildSupportingEvidenceDocumentsSummaryList(req: Request<Params>, pathToProvideSupportingEvidenceNoLeadingSlash: string, pathToMakeApplicationDetailsNoLeadingSlash: string): SummaryList[] {
+function buildSupportingEvidenceDocumentsSummaryList(req: Request, pathToProvideSupportingEvidenceNoLeadingSlash: string, pathToMakeApplicationDetailsNoLeadingSlash: string): SummaryList[] {
   const summaryLists: SummaryList[] = [];
   const summaryRows: SummaryRow[] = [];
   const hasProvideEvidence = req.session.appeal.makeAnApplicationProvideEvidence === i18n.pages.makeApplication.provideSupportingEvidenceYesOrNo.options.yes.value;

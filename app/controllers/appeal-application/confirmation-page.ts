@@ -1,6 +1,5 @@
 import config from 'config';
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
@@ -11,7 +10,7 @@ import { addDaysToDate } from '../../utils/date-utils';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../../utils/payments-utils';
 import { appealHasRemissionOption } from '../../utils/remission-utils';
 
-function getConfirmationPage(req: Request<Params>, res: Response, next: NextFunction) {
+function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   req.app.locals.logger.trace(`Successful AIP appeal submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
   try {
     const { application } = req.session.appeal;
@@ -38,7 +37,7 @@ function getConfirmationPage(req: Request<Params>, res: Response, next: NextFunc
 }
 
 function getConfirmationPaidPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     req.app.locals.logger.trace(`Successful AIP paid after submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
 
     try {

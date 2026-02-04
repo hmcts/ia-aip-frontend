@@ -1,6 +1,5 @@
 const express = require('express');
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import {
   getDateOfBirthPage,
   postDateOfBirth,

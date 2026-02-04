@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
@@ -7,7 +6,7 @@ import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import { asylumSupportValidation } from '../../utils/validations/fields-validations';
 
-async function getAsylumSupport(req: Request<Params>, res: Response, next: NextFunction) {
+async function getAsylumSupport(req: Request, res: Response, next: NextFunction) {
   try {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
@@ -26,7 +25,7 @@ async function getAsylumSupport(req: Request<Params>, res: Response, next: NextF
 }
 
 function postAsylumSupport() {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
 

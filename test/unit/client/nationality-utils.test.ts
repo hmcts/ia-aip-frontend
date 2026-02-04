@@ -1,5 +1,5 @@
 import { addNationalityEventListener, addStatelessEventListener } from '../../../client/nationality-utils';
-import { expect, sinon } from '../../../test/utils/testUtils';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('nationality utils', () => {
   let sandbox: sinon.SinonSandbox;

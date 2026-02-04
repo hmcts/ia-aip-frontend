@@ -1,5 +1,4 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import { appealOutOfTimeMiddleware } from '../../../app/middleware/outOfTime-middleware';
 import { expect, sinon } from '../../utils/testUtils';
 

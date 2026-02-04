@@ -1,12 +1,11 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import i18n from '../../../../locale/en.json';
 import { applicationTypes } from '../../../data/application-types';
 import { paths } from '../../../paths';
 import { createStructuredError } from '../../../utils/validations/fields-validations';
 import { makeApplicationControllersHelper } from '../make-application-controllers-helper';
 
-function getJudgeReviewApplication(req: Request<Params>, res: Response, next: NextFunction) {
+function getJudgeReviewApplication(req: Request, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
       askJudgeReview: createStructuredError('askJudgeReview', i18n.validationErrors.makeApplication.askJudgeReview)
@@ -28,7 +27,7 @@ function getJudgeReviewApplication(req: Request<Params>, res: Response, next: Ne
   return makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req, res, next, config);
 }
 
-function postJudgeReviewApplication(req: Request<Params>, res: Response, next: NextFunction) {
+function postJudgeReviewApplication(req: Request, res: Response, next: NextFunction) {
   const redirectToSuccessPath = paths.makeApplication.supportingEvidenceJudgesReview;
   const redirectToErrorPath = `${paths.makeApplication.judgesReview}?error=askJudgeReview`;
   return makeApplicationControllersHelper.postProvideMakeAnApplicationDetails(req, res, next, redirectToSuccessPath, redirectToErrorPath);

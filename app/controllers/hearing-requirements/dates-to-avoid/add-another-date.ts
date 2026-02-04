@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
 import i18n from '../../../../locale/en.json';
 import { paths } from '../../../paths';
@@ -15,7 +14,7 @@ const question = {
   options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
 };
 
-function getAddAnotherDateQuestionPage(req: Request<Params>, res: Response, next: NextFunction) {
+function getAddAnotherDateQuestionPage(req: Request, res: Response, next: NextFunction) {
   try {
     const startDate = getHearingStartDate(req.session.appeal.directions);
     const availableHearingDates = {
@@ -37,7 +36,7 @@ function getAddAnotherDateQuestionPage(req: Request<Params>, res: Response, next
   }
 }
 
-function postAddAnotherDateQuestionPage(req: Request<Params>, res: Response, next: NextFunction) {
+function postAddAnotherDateQuestionPage(req: Request, res: Response, next: NextFunction) {
   const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.datesToAvoid.addAnotherDateAnswerRequired;
   const startDate = getHearingStartDate(req.session.appeal.directions);
   const availableHearingDates = {

@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
@@ -11,7 +10,7 @@ const previousPage = paths.submitHearingRequirements.otherNeeds;
 const pageTitle = i18n.pages.hearingRequirements.otherNeedsSection.joinHearingByVideoCall.title;
 const formAction = paths.submitHearingRequirements.otherNeedsVideoAppointment;
 
-function getJoinHearingByVideoCallQuestion(req: Request<Params>, res: Response, next: NextFunction) {
+function getJoinHearingByVideoCallQuestion(req: Request, res: Response, next: NextFunction) {
   try {
     const question = getQuestion(req.session.appeal);
     return res.render('hearing-requirements/other-needs/join-hearing-by-videocall.njk', {
@@ -43,7 +42,7 @@ function getQuestion(appeal: Appeal) {
 }
 
 function postJoinHearingByVideoCallQuestion(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.otherNeeds.joinHearingByVideoCallRequired;
       const question = getQuestion(req.session.appeal);

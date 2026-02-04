@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
@@ -20,7 +19,7 @@ let pageContent = {
   timeExtensionAllowed: false
 };
 
-function getJoinByVideoCallReason(req: Request<Params>, res: Response, next: NextFunction) {
+function getJoinByVideoCallReason(req: Request, res: Response, next: NextFunction) {
   try {
     const { otherNeeds } = req.session.appeal.hearingRequirements;
     const savedReason: string = otherNeeds.remoteVideoCallDescription;
@@ -34,7 +33,7 @@ function getJoinByVideoCallReason(req: Request<Params>, res: Response, next: Nex
 }
 
 function postJoinByVideoCallReason(updateAppealService: UpdateAppealService) {
-  return async function (req: Request<Params>, res: Response, next: NextFunction) {
+  return async function (req: Request, res: Response, next: NextFunction) {
     try {
 
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.otherNeeds.joinHearingByVideoCallReasonRequired;

@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
@@ -14,7 +13,7 @@ const yesOrNoOption = (answer: boolean) => [
   { text: 'No', value: 'no', checked: answer === false }
 ];
 
-function getWitnessesOnHearingQuestion(req: Request<Params>, res: Response, next: NextFunction) {
+function getWitnessesOnHearingQuestion(req: Request, res: Response, next: NextFunction) {
   try {
     const answer = req.session.appeal.hearingRequirements.witnessesOnHearing;
     const question = {
@@ -37,7 +36,7 @@ function getWitnessesOnHearingQuestion(req: Request<Params>, res: Response, next
 }
 
 function postWitnessesOnHearingQuestion(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.witnessesSection.witnessesOnHearingRequired;
       const pageContent = {

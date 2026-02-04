@@ -1,5 +1,4 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import { SinonStub } from 'sinon';
 import { logErrorMiddleware, logRequestMiddleware } from '../../../app/middleware/logger';
 import Logger from '../../../app/utils/logger';

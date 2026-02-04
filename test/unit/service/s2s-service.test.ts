@@ -2,7 +2,6 @@ import axios from 'axios';
 import S2SService from '../../../app/service/s2s-service';
 import * as jwtUtils from '../../../app/utils/jwt-utils';
 import { expect, sinon } from '../../utils/testUtils';
-import { buildStub } from '../setup';
 
 describe('s2s-service', () => {
   let sandbox: sinon.SinonSandbox;
@@ -53,7 +52,7 @@ describe('s2s-service', () => {
     const jwtStub = sandbox.stub(jwtUtils, 'isJWTExpired').callsFake(() => {
       return true;
     });
-
+    const buildStub = sandbox.stub(s2s, 'buildRequest');
     buildStub.resolves(requestStub);
 
     const result = await s2s.getServiceToken();

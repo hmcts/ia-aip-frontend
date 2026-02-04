@@ -1,5 +1,4 @@
-import { application, NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { application, NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import {
   addFeeSupportStatus,

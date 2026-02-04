@@ -1,8 +1,7 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../../paths';
 
-function getQuestionsList(req: Request<Params>, res: Response, next: NextFunction) {
+function getQuestionsList(req: Request, res: Response, next: NextFunction) {
   const questions = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
   const anythingElseQuestion: ClarifyingQuestion<Evidence> = questions.pop();
   const questionsCompleted: boolean = questions.reduce((acc, question) => acc && !!question.value.answer, true);

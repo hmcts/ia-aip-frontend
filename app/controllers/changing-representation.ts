@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
 import { DocmosisService } from '../service/docmosis-service';
 import { formatDate } from '../utils/date-utils';
@@ -8,7 +7,7 @@ import { formatCaseId, toIsoDate } from '../utils/utils';
 const docmosis: DocmosisService = new DocmosisService();
 
 function getChangeRepresentation() {
-  return (req: Request<Params>, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     try {
       return res.render('change-representation.njk', {
         previousPage: paths.common.overview,
@@ -21,7 +20,7 @@ function getChangeRepresentation() {
 }
 
 function getChangeRepresentationDownload() {
-  return async (req: Request<Params>, res: Response, next: NextFunction): Promise<void> => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const response = await docmosis.render('noticeOfChangeDetails', getDetails(req));
       if (response.success) {
@@ -37,7 +36,7 @@ function getChangeRepresentationDownload() {
   };
 }
 
-function getDetails(req: Request<Params>) {
+function getDetails(req: Request) {
   return {
     onlineCaseReferenceNumber: formatCaseId(req.session.appeal.ccdCaseId),
     appellantGivenNames: req.session.appeal.application.personalDetails.givenNames,

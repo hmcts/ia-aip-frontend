@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import PcqService from '../../../app/service/pcq-service';
 import Logger from '../../../app/utils/logger';

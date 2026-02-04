@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
@@ -7,7 +6,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { handleHearingRequirementsSaveForLater } from './common';
 import { buildHearingRequirementsSummarySections } from './hearing-requirements-summary-sections';
 
-function getCheckAndSendPage(req: Request<Params>, res: Response, next: NextFunction) {
+function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
   try {
     const hearingRequirements: HearingRequirements = req.session.appeal.hearingRequirements;
     const hearingRequirementsSummarySections = buildHearingRequirementsSummarySections(hearingRequirements,true);
@@ -24,7 +23,7 @@ function getCheckAndSendPage(req: Request<Params>, res: Response, next: NextFunc
 }
 
 function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.body['saveForLater']) {
         await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);

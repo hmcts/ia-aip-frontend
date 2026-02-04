@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { expect } from 'chai';
-import sinon from 'sinon';
 import { DocmosisService } from '../../../app/service/docmosis-service';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('docmosis-service', () => {
   let sandbox: sinon.SinonSandbox;

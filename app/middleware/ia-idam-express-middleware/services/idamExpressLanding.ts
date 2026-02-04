@@ -1,5 +1,4 @@
-import { NextFunction, Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response } from 'express';
 import { jwtDecode } from 'jwt-decode';
 import Logger, { getLogLabel } from '../../../utils/logger';
 import config from '../config';
@@ -14,7 +13,7 @@ const idamExpressLanding = (args: IdamConfig) => {
   const tokenCookieName = args.tokenCookieName || config.tokenCookieName;
   const stateCookieName = args.stateCookieName || config.stateCookieName;
 
-  return (req: Request<Params>, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     const authToken: string = req.query[tokenCookieName] as string;
     const code = req.query.code;
 

@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
@@ -9,7 +8,7 @@ import { DocumentManagementService } from '../../service/document-management-ser
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
-async function getLocalAuthorityLetterRefund(req: Request<Params>, res: Response, next: NextFunction) {
+async function getLocalAuthorityLetterRefund(req: Request, res: Response, next: NextFunction) {
   try {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
@@ -43,7 +42,7 @@ async function getLocalAuthorityLetterRefund(req: Request<Params>, res: Response
 }
 
 function postLocalAuthorityLetterRefund() {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
 
@@ -61,7 +60,7 @@ function postLocalAuthorityLetterRefund() {
   };
 }
 
-function validate(req: Request<Params>, res: Response, next: NextFunction) {
+function validate(req: Request, res: Response, next: NextFunction) {
   try {
     let errorCode: string;
     if (res.locals.errorCode) {
@@ -77,7 +76,7 @@ function validate(req: Request<Params>, res: Response, next: NextFunction) {
 }
 
 function uploadLocalAuthorityLetterRefund(documentManagementService: DocumentManagementService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
         let localAuthorityLetterEvidences: Evidence[] = req.session.appeal.application.lateLocalAuthorityLetters || [];
@@ -95,7 +94,7 @@ function uploadLocalAuthorityLetterRefund(documentManagementService: DocumentMan
 }
 
 function deleteLocalAuthorityLetterRefund(documentManagementService: DocumentManagementService) {
-  return async (req: Request<Params>, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.query.id) {
         await documentManagementService.deleteFile(req, req.query.id as string);

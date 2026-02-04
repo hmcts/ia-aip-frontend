@@ -1,6 +1,5 @@
 const express = require('express');
-import { Response } from 'express';
-import type { Request } from 'express-serve-static-core';
+import { Request, Response } from 'express';
 import {
   getAskForMoreTimeEvidence,
   getAskForMoreTimePage,

@@ -12,6 +12,7 @@
             <thead class="govuk-table__head">
               <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.appealRef }}</th>
+                <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.caseRef }}</th>
                 <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.appellant }}</th>
                 <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.status }}</th>
               </tr>
@@ -21,11 +22,12 @@
                 <tr class="govuk-table__row">
                   <td class="govuk-table__cell">
                     <a class="govuk-link" href="{{ previousPage }}?caseId={{ case.id }}">
-                      {{ case.appealReferenceNumber or case.id }}
+                      {{ case.appealReferenceNumber }}
                     </a>
                   </td>
+                  <td class="govuk-table__cell">{{ case.id }}</td>
                   <td class="govuk-table__cell">{{ case.appellantGivenNames }} {{ case.appellantFamilyName }}</td>
-                  <td class="govuk-table__cell">{{ case.state }}</td>
+                  <td class="govuk-table__cell">{{ "DRAFT" if case.state == "appealStarted" else case.state }}</td>
                 </tr>
               {% endfor %}
             </tbody>

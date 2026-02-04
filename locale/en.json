@@ -872,6 +872,7 @@
       "title": "Your appeals",
       "columns": {
         "appealRef": "Appeal reference",
+        "caseRef": "Case reference",
         "appellant": "Appellant",
         "status": "Status"
       },

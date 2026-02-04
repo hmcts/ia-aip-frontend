@@ -4,8 +4,7 @@ Feature: Cookies banner
   I should be able to accept, reject and read cookies in this service
 
   Background: I am able to navigate through info pages
-    Given I have a blank appeal
-    And I have logged in
+    Given I have logged in as an appellant in state "appealStarted"
     And I am on the overview page
 
   Scenario: I view cookies and accept them

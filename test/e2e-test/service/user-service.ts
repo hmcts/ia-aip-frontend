@@ -54,7 +54,8 @@ async function createUser(userInfo: UserInfo) {
   const timestamp = Date.now();
   userInfo.email = userInfo.email.replace('@', `${timestamp}@`);
   try {
-    await axios.post(`${idamTestingSupportUrl}/test/idam/users`, {
+    logger.traceWorker(`Creating user: ${userInfo.email}`, logLabel);
+    const response = await axios.post(`${idamTestingSupportUrl}/test/idam/users`, {
       password: userInfo.password,
       user: {
         email: userInfo.email,
@@ -69,9 +70,8 @@ async function createUser(userInfo: UserInfo) {
       },
       timeout: 10000
     });
+    userInfo.userId = response.data.id;
     userInfo.userToken = await getUserToken(userInfo);
-    userInfo.userId = await getUserId(userInfo.userToken);
-    logger.traceWorker(`Creating user: ${userInfo.email}`, logLabel);
   } catch (error) {
     logger.exception(`Error in createUser: ${error.message}`, logLabel);
   }

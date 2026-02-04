@@ -1,61 +1,9 @@
-import * as _ from 'lodash';
-import moment from 'moment';
-import rp from 'request-promise';
 import { paths } from '../../../../app/paths';
 import { axeTest } from '../../axeHelper';
-const mockData = require('../../../mock/ccd/mock-case-data');
 
 const { fillInDate } = require('../helper-functions');
 
 const testUrl = require('config').get('testUrl');
-
-function random16DigitNumber() {
-  return Math.floor(1000000000000000 + Math.random() * 9000000000000000);
-}
-
-const caseData = {
-  'jurisdiction': 'IA',
-  'state': 'appealStarted',
-  'version': 8,
-  'case_type_id': 'Asylum',
-  'created_date': '2019-11-13T10:18:43.271',
-  'last_modified': '2019-11-13T15:35:31.356',
-  'security_classification': 'PUBLIC',
-  'case_data': {
-    'journeyType': 'aip'
-  },
-  'data_classification': {
-    'journeyType': 'PUBLIC',
-    'homeOfficeReferenceNumber': 'PUBLIC'
-  },
-  'after_submit_callback_response': null,
-  'callback_response_status_code': null,
-  'callback_response_status': null,
-  'delete_draft_response_status_code': null,
-  'delete_draft_response_status': null,
-  'security_classifications': {
-    'journeyType': 'PUBLIC',
-    'homeOfficeReferenceNumber': 'PUBLIC'
-  }
-};
-
-async function setupData(newCaseData) {
-  const caseDataClone = _.cloneDeep(caseData);
-  _.merge(caseDataClone.case_data, newCaseData);
-  await rp.post({
-    uri: 'http://localhost:20000/setupCase',
-    body: [ caseDataClone ],
-    json: true
-  });
-}
-
-async function setupCase(ccdCase: CcdCaseDetails) {
-  await rp.post({
-    uri: 'http://localhost:20000/setupCase',
-    body: [ ccdCase ],
-    json: true
-  });
-}
 
 const PATHS = {
   'reasons for appeal': paths.awaitingReasonsForAppeal.decision,
@@ -73,281 +21,6 @@ const PATHS = {
 
 module.exports = {
   common(I) {
-    Given('I have an ended appeal', async () => {
-      await setupCase(mockData.endedAppeal);
-    });
-
-    Given('I have an out of time granted decision appeal', async () => {
-      await setupCase(mockData.outOfTimeDecisionGranted);
-    });
-
-    Given('I have an out of time rejected decision appeal', async () => {
-      await setupCase(mockData.outOfTimeDecisionRejected);
-    });
-
-    Given('I have an out of time in-time decision appeal', async () => {
-      await setupCase(mockData.outOfTimeDecisionInTime);
-    });
-
-    Given('I have a blank appeal', async () => {
-      await setupData({ id: random16DigitNumber() });
-    });
-
-    Given('I have an appeal with home office reference', async () => {
-      await setupData({ id: random16DigitNumber(), homeOfficeReferenceNumber: 'A1111111' });
-    });
-
-    Given('I have an appeal with home office details', async () => {
-      await setupData({
-        id: random16DigitNumber(),
-        homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('YYYY-MM-DD')
-      });
-    });
-
-    Given('I have an appeal with home office details and name', async () => {
-      await setupData({
-        id: random16DigitNumber(),
-        appealType: 'protection',
-        homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
-        appellantGivenNames: 'givenName',
-        appellantFamilyName: 'familyName'
-      });
-    });
-
-    Given('I have an appeal with home office details, name and date of birth', async () => {
-      await setupData({
-        id: random16DigitNumber(),
-        appealType: 'protection',
-        homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
-        appellantGivenNames: 'givenName',
-        appellantFamilyName: 'familyName',
-        appellantDateOfBirth: '1981-01-01'
-      });
-    });
-
-    Given('I have an appeal with home office details, name, date of birth and nationality', async () => {
-      await setupData({
-        id: random16DigitNumber(),
-        appealType: 'protection',
-        homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
-        appellantGivenNames: 'givenName',
-        appellantFamilyName: 'familyName',
-        appellantDateOfBirth: '1981-01-01',
-        appellantNationalities: [
-          {
-            id: '1',
-            value: {
-              code: 'FI'
-            }
-          }
-        ]
-      });
-    });
-
-    Given('I have an appeal with home office details, name, date of birth, nationality and address', async () => {
-      await setupData({
-        id: random16DigitNumber(),
-        appealType: 'protection',
-        appellantInUk: 'Yes',
-        homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
-        appellantGivenNames: 'givenName',
-        appellantFamilyName: 'familyName',
-        appellantDateOfBirth: '1981-01-01',
-        appellantNationalities: [
-          {
-            id: '1',
-            value: {
-              code: 'FI'
-            }
-          }
-        ],
-        appellantAddress: {
-          AddressLine1: 'Address line 1',
-          PostTown: 'Town',
-          PostCode: 'CM15 9BN'
-        }
-      });
-    });
-
-    Given('I have a fresh appeal', async () => {
-      await setupData({
-        id: random16DigitNumber(),
-        appealType: 'protection',
-        homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
-        appellantGivenNames: 'givenName',
-        appellantFamilyName: 'familyName',
-        appellantDateOfBirth: '1981-01-01',
-        appellantNationalities: [
-          {
-            id: '1',
-            value: {
-              code: 'FI'
-            }
-          }
-        ],
-        appellantAddress: {
-          AddressLine1: 'Address line 1',
-          PostTown: 'Town',
-          PostCode: 'CM15 9BN'
-        },
-        subscriptions: [ {
-          id: 1,
-          value: {
-            subscriber: 'appellant',
-            wantsEmail: 'No',
-            email: null,
-            wantsSms: 'Yes',
-            mobileNumber: '07899999999'
-          }
-        } ]
-      });
-    });
-
-    Given('I have an out of time appeal with reason for being late an evidence', async () => {
-      await setupData({
-        id: random16DigitNumber(),
-        appealType: 'protection',
-        homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().subtract(20, 'days').format('YYYY-MM-DD'),
-        submissionOutOfTime: 'Yes',
-        applicationOutOfTimeExplanation: 'The reason why the appeal is late',
-        applicationOutOfTimeDocument: {
-          document_filename: '1581607687239-fake.png',
-          document_url: 'http://localhost:20003/documents/08a7d468-cd85-4a5c-832d-f0534b524909'
-        },
-        appellantGivenNames: 'givenName',
-        appellantFamilyName: 'familyName',
-        appellantDateOfBirth: '1981-01-01',
-        appellantNationalities: [
-          {
-            id: '1',
-            value: {
-              code: 'FI'
-            }
-          }
-        ],
-        appellantAddress: {
-          AddressLine1: 'Address line 1',
-          PostTown: 'Town',
-          PostCode: 'CM15 9BN'
-        },
-        subscriptions: [{
-          id: 1,
-          value: {
-            subscriber: 'appellant',
-            wantsEmail: 'No',
-            email: null,
-            wantsSms: 'Yes',
-            mobileNumber: '07899999999'
-          }
-        }],
-        uploadTheNoticeOfDecisionDocs: []
-      });
-    });
-
-    Given('I have an appeal with home office details, name, date of birth, nationality, address and reason for appeal', async () => {
-      await setupData({
-        id: random16DigitNumber(),
-        homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
-        appellantGivenNames: 'givenName',
-        appellantFamilyName: 'familyName',
-        appellantDateOfBirth: '1981-01-01',
-        appellantNationalities: [
-          {
-            id: '1',
-            value: {
-              code: 'FI'
-            }
-          }
-        ],
-        appellantAddress: {
-          AddressLine1: 'Address line 1',
-          PostTown: 'Town',
-          PostCode: 'CM15 9BN'
-        },
-        subscriptions: [ {
-          id: 1,
-          value: {
-            subscriber: 'appellant',
-            wantsEmail: 'No',
-            email: null,
-            wantsSms: 'Yes',
-            mobileNumber: '07899999999'
-          }
-        } ],
-        appealType: 'protection',
-        uploadTheNoticeOfDecisionDocs: []
-      });
-    });
-
-    Given('I have an appeal with home office details, name, date of birth, nationality and reason for appeal', async () => {
-      await setupData({
-        homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
-        appellantGivenNames: 'givenName',
-        appellantFamilyName: 'familyName',
-        appellantDateOfBirth: '1981-01-01',
-        subscriptions: [ {
-          id: 1,
-          value: {
-            subscriber: 'appellant',
-            wantsEmail: 'No',
-            email: null,
-            wantsSms: 'Yes',
-            mobileNumber: '07899999999'
-          }
-        } ],
-        appealType: 'protection',
-        uploadTheNoticeOfDecisionDocs: []
-      });
-    });
-
-    Given('I have an EU or EUSS or HU appeal with home office details, name, date of birth, nationality, address and reason for appeal', async () => {
-      await setupData({
-        id: random16DigitNumber(),
-        homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
-        appellantGivenNames: 'givenName',
-        appellantFamilyName: 'familyName',
-        appellantDateOfBirth: '1981-01-01',
-        appellantNationalities: [
-          {
-            id: '1',
-            value: {
-              code: 'FI'
-            }
-          }
-        ],
-        appellantAddress: {
-          AddressLine1: 'Address line 1',
-          PostTown: 'Town',
-          PostCode: 'CM15 9BN'
-        },
-        subscriptions: [ {
-          id: 1,
-          value: {
-            subscriber: 'appellant',
-            wantsEmail: 'No',
-            email: null,
-            wantsSms: 'Yes',
-            mobileNumber: '07899999999'
-          }
-        } ],
-        appealType: 'refusalOfHumanRights',
-        feeWithoutHearing: '80',
-        feeCode: 'abc',
-        feeVersion: '2',
-        uploadTheNoticeOfDecisionDocs: []
-      });
-    });
-
     When(/^I click "([^"]*)" button$/, async (selector: string) => {
       await I.wait(1);
       await I.click(selector);
@@ -361,7 +34,7 @@ module.exports = {
       await fillInDate(day, month, year);
     });
 
-    Then(/^I should see error summary$/,async () => {
+    Then(/^I should see error summary$/, async () => {
       await I.seeElementInDOM('.govuk-error-summary');
       await I.seeInTitle('Error: ');
     });
@@ -371,17 +44,17 @@ module.exports = {
     });
 
     Then(/^I expect to be redirect back to the task\-list$/, async () => {
-      await I.waitInUrl(paths.appealStarted.taskList,10);
+      await I.waitInUrl(paths.appealStarted.taskList, 10);
       await I.seeInCurrentUrl(paths.appealStarted.taskList);
     });
 
     Then(/^I see "([^"]*)" in current url$/, async (key: string) => {
-      await I.waitInUrl(key,10);
+      await I.waitInUrl(key, 10);
       await I.seeInCurrentUrl(key);
     });
 
     When(/^I visit the "([^"]*)" page$/, async (key: string) => {
-      await I.waitInUrl(`${PATHS[key]}`,10);
+      await I.waitInUrl(`${PATHS[key]}`, 10);
       await I.seeInCurrentUrl(`${PATHS[key]}`);
       await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });
@@ -403,7 +76,7 @@ module.exports = {
     });
 
     Given(/^I am on the "([^"]*)" page$/, async (key: string) => {
-      await I.waitInUrl(`${PATHS[key]}`,10);
+      await I.waitInUrl(`${PATHS[key]}`, 10);
       await I.seeInCurrentUrl(`${PATHS[key]}`);
       await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });
@@ -482,7 +155,7 @@ module.exports = {
     });
 
     When('I select from the drop-down', async () => {
-      await I.selectOption('#language','Afar');
+      await I.selectOption('#language', 'Afar');
     });
 
     Then('I should see the date time and hearing centre in do this next', async () => {

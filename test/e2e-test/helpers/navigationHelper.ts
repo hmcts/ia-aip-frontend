@@ -10,9 +10,9 @@ class NavigationHelper extends HelperClass {
     const helper = this.helpers['Puppeteer']; // Or change to another Helper
     try {
       await helper.wait(timeout);
-      assert.ok(helper.page.url().includes('appeal-overview'));
+      assert.ok(helper.page.url().includes('cases-list'));
       await helper.see('Sign out');
-      await helper.seeInTitle(`Your appeal overview`);
+      await helper.seeInTitle(`Your appeals`);
       return true;
     } catch (err) {
       return false;

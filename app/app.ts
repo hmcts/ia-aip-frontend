@@ -2,7 +2,7 @@ import config from 'config';
 import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
 import express, { Application, type NextFunction, type Request, type Response } from 'express';
-import helmet from 'helmet';
+import helmet, { expectCt } from 'helmet';
 
 import { v4 as uuidv4 } from 'uuid';
 import webpack from 'webpack';
@@ -85,27 +85,6 @@ function createApp() {
   return app;
 }
 
-function permissionsPolicy(req: Request, res: Response, next: NextFunction) {
-  res.setHeader(
-    'Permissions-Policy',
-    [
-      'accelerometer=()',
-      'ambient-light-sensor=()',
-      'autoplay=()',
-      'camera=()',
-      'geolocation=()',
-      'gyroscope=()',
-      'magnetometer=()',
-      'microphone=()',
-      'payment=()',
-      'speaker=()',
-      'usb=()',
-      'vibrate=()'
-    ].join(', ')
-  );
-  next();
-}
-
 function configureHelmet(app: Application) {
   app.use(
     helmet({
@@ -164,7 +143,11 @@ function configureHelmet(app: Application) {
       }
     })
   );
-
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
+    next();
+  });
+  app.use(expectCt({ enforce: true, maxAge: 60 }));
   app.use(featurePolicy({
     features: {
       accelerometer: ['\'none\''],
@@ -181,15 +164,29 @@ function configureHelmet(app: Application) {
       vibrate: ['\'none\'']
     }
   }));
-
   app.use(permissionsPolicy);
-
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
-    next();
-  });
-
   app.use(nocache());
+}
+
+function permissionsPolicy(req: Request, res: Response, next: NextFunction) {
+  res.setHeader(
+    'Permissions-Policy',
+    [
+      'accelerometer=()',
+      'ambient-light-sensor=()',
+      'autoplay=()',
+      'camera=()',
+      'geolocation=()',
+      'gyroscope=()',
+      'magnetometer=()',
+      'microphone=()',
+      'payment=()',
+      'speaker=()',
+      'usb=()',
+      'vibrate=()'
+    ].join(', ')
+  );
+  next();
 }
 
 export {

@@ -28,3 +28,7 @@ ia-aip-frontend.iml
 keys/
 keys/server.key
 keys/server.cert
+/functional.env
+/createCase.env
+/aat.env
+/.mirrord/mirrord.json

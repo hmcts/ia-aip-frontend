@@ -13,7 +13,7 @@
     "lint": "tslint --project .",
     "fortifyScan": "./test/java/gradlew -p test/java fortifyScan",
     "test": "yarn genCert && yarn test:unit",
-    "test:unit": "rm -rf test/coverage && cross-env NODE_ENV=test DEFAULT_LAUNCH_DARKLY_FLAG=false nyc mocha --require ts-node/register --require test/unit/setup.ts --recursive \"test/unit/**/*.test.ts\" --reporter mochawesome --exit",
+    "test:unit": "rm -rf test/coverage && cross-env NODE_ENV=test DEFAULT_LAUNCH_DARKLY_FLAG=false nyc mocha --require ts-node/register/transpile-only --require test/unit/setup.ts --recursive \"test/unit/**/*.test.ts\" --reporter mochawesome --exit",
     "test:unit-file": "rm -rf test/coverage && cross-env NODE_ENV=test DEFAULT_LAUNCH_DARKLY_FLAG=false nyc mocha --exit",
     "test:coverage": "nyc report",
     "test:a11y": "echo 'Accessibility check runs in functional tests'",

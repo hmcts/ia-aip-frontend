@@ -1,14 +1,18 @@
 import config from 'config';
-import { createClient } from 'redis';
+import { createClient, RedisClientType } from 'redis';
 import Logger, { getLogLabel } from './utils/logger';
 
-const logger: Logger = new Logger();
-const logLabel: string = getLogLabel(__filename);
+export function createRedisClient(): RedisClientType {
+  const logger = new Logger();
+  const logLabel = getLogLabel(__filename);
 
-export const redisClient = createClient({
-  url: config.get('session.redis.url')
-});
+  const client: RedisClientType = createClient({
+    url: config.get('session.redis.url')
+  });
 
-redisClient.on('error', err => {
-  logger.exception(`Redis Client Error because of ${err.message}`, logLabel);
-});
+  client.on('error', err => {
+    logger.exception(`Redis Client Error because of ${err.message}`, logLabel);
+  });
+
+  return client;
+}

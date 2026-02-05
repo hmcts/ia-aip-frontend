@@ -1,45 +1,69 @@
+import config from 'config';
 import * as redis from 'redis';
-import * as loggerModule from '../../../app/utils/logger';
+import LoggerModule, * as LoggerExports from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
+let createRedisClient: any;
 
-describe('redis client', () => {
-  let sandbox: sinon.SinonSandbox;
+describe('createRedisClient', () => {
+  let createClientStub: sinon.SinonStub;
+  let configStub: sinon.SinonStub;
   let onStub: sinon.SinonStub;
   let exceptionStub: sinon.SinonStub;
+  let getLogLabelStub: sinon.SinonStub;
+
+  const fakeClient = {
+    // tslint:disable-next-line:no-empty
+    on: () => {}
+  } as any;
 
   beforeEach(() => {
-    sandbox = sinon.createSandbox();
-    onStub = sandbox.stub();
-    exceptionStub = sandbox.stub();
+    onStub = sinon.stub(fakeClient, 'on');
 
-    sandbox.stub(redis, 'createClient').returns({
-      on: onStub
-    } as any);
+    createClientStub = sinon.stub(redis, 'createClient').returns(fakeClient);
 
-    sandbox.stub(loggerModule.default.prototype, 'exception').callsFake(exceptionStub);
+    configStub = sinon.stub(config, 'get').returns('redis://localhost:6379');
+
+    exceptionStub = sinon.stub();
+    sinon.stub(LoggerModule.prototype, 'exception').callsFake(exceptionStub);
+
+    getLogLabelStub = sinon
+      .stub(LoggerExports, 'getLogLabel')
+      .returns('label');
+    createRedisClient = require('../../../app/redisClient').createRedisClient;
   });
 
-  afterEach(() => {
-    sandbox.restore();
-    delete require.cache[require.resolve('../../../app/redisClient')];
+  afterEach(() => sinon.restore());
+
+  it('creates redis client with config url', () => {
+    createRedisClient();
+
+    expect(createClientStub.calledOnceWithExactly({
+      url: 'redis://localhost:6379'
+    })).to.be.true;
   });
 
-  it('registers error handler', () => {
-    require('../../../app/redisClient');
+  it('registers error handler on client', () => {
+    createRedisClient();
 
-    expect(onStub.calledWith('error')).to.equal(true);
+    expect(onStub.calledOnceWith('error', sinon.match.func)).to.be.true;
   });
 
   it('logs exception when redis emits error', () => {
-    require('../../../app/redisClient');
+    createRedisClient();
 
-    const errorHandler = onStub.firstCall.args[1];
+    const handler = onStub.firstCall.args[1];
 
-    const error = new Error('boom');
+    handler(new Error('boom'));
 
-    errorHandler(error);
+    expect(exceptionStub.calledOnceWith(
+      'Redis Client Error because of boom',
+      'label'
+    )).to.be.true;
+  });
 
-    expect(exceptionStub.calledOnce).to.equal(true);
-    expect(exceptionStub.firstCall.args[0]).to.contain('boom');
+  it('returns the created client', () => {
+    const result = createRedisClient();
+
+    expect(result).to.equal(fakeClient);
   });
 });

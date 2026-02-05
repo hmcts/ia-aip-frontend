@@ -874,8 +874,10 @@
         "appealRef": "Appeal reference",
         "caseRef": "Case reference",
         "appellant": "Appellant",
-        "status": "Status"
+        "status": "Status",
+        "options": "Options"
       },
+      "viewLink": "View",
       "noCases": "You do not have any appeals.",
       "createNewAppeal": "Create a new appeal"
     },

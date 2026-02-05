@@ -1,15 +1,20 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
 import UpdateAppealService from '../service/update-appeal-service';
+import { getStateName } from '../utils/utils';
 
 function getCasesList(req: Request, res: Response, next: NextFunction) {
   try {
     const casesList = req.session.casesList || [];
+    const casesWithStateName = casesList.map(caseItem => ({
+      ...caseItem,
+      stateName: getStateName(caseItem.state)
+    }));
 
     return res.render('cases-list.njk', {
       previousPage: paths.common.overview,
       createNewAppealUrl: paths.common.createNewAppeal,
-      cases: casesList
+      cases: casesWithStateName
     });
   } catch (e) {
     next(e);

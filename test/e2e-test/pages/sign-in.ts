@@ -13,7 +13,7 @@ const i18n = require('../../../locale/en.json');
 
 async function navigateFromCasesListToOverview(I) {
   await I.waitInUrl(paths.common.casesList, 30);
-  await I.click('a.govuk-link', '.govuk-table__body');
+  await I.click(i18n.pages.casesList.viewLink, '.govuk-table__body');
   await I.waitInUrl(paths.common.overview, 30);
 }
 

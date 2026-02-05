@@ -15,19 +15,19 @@
                 <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.caseRef }}</th>
                 <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.appellant }}</th>
                 <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.status }}</th>
+                <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.options }}</th>
               </tr>
             </thead>
             <tbody class="govuk-table__body">
               {% for case in cases %}
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">
-                    <a class="govuk-link" href="{{ previousPage }}?caseId={{ case.id }}">
-                      {{ case.appealReferenceNumber }}
-                    </a>
-                  </td>
+                  <td class="govuk-table__cell">{{ case.appealReferenceNumber }}</td>
                   <td class="govuk-table__cell">{{ case.id }}</td>
                   <td class="govuk-table__cell">{{ case.appellantGivenNames }} {{ case.appellantFamilyName }}</td>
-                  <td class="govuk-table__cell">{{ "DRAFT" if case.state == "appealStarted" else case.state }}</td>
+                  <td class="govuk-table__cell">{{ "DRAFT" if case.state == "appealStarted" else case.stateName }}</td>
+                  <td class="govuk-table__cell">
+                    <a class="govuk-link" href="{{ previousPage }}?caseId={{ case.id }}">{{ i18n.pages.casesList.viewLink }}</a>
+                  </td>
                 </tr>
               {% endfor %}
             </tbody>

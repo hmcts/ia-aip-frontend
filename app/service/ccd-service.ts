@@ -102,7 +102,7 @@ class CcdService {
   async loadCasesListForUser(userId: string, headers: SecurityHeaders): Promise<ES<CcdCaseDetails>> {
     const query = {
       query: { match_all: {} },
-      _source: ['reference', 'appealReferenceNumber', 'state', 'appellantGivenNames', 'appellantFamilyName'],
+      _source: ['reference', 'data.appealReferenceNumber', 'state', 'data.appellantGivenNames', 'data.appellantFamilyName'],
       sort: [{ id: { order: 'asc' } }]
     };
     const url = `${ccdBaseUrl}/searchCases?ctid=${caseType}`;

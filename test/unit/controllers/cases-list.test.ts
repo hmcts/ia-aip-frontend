@@ -45,13 +45,32 @@ describe('Cases List Controller', () => {
     sandbox.restore();
   });
 
-  it('should render cases-list.njk with cases from session', () => {
+  it('should render cases-list.njk with cases from session including stateName', () => {
     getCasesList(req as Request, res as Response, next);
+
+    const expectedCases = [
+      {
+        id: '1234',
+        appealReferenceNumber: 'PA/0001/2022',
+        state: 'appealStarted',
+        appellantGivenNames: 'John',
+        appellantFamilyName: 'Smith',
+        stateName: 'Appeal started'
+      },
+      {
+        id: '1235',
+        appealReferenceNumber: 'PA/0002/2022',
+        state: 'appealSubmitted',
+        appellantGivenNames: 'Jane',
+        appellantFamilyName: 'Doe',
+        stateName: 'Appeal submitted'
+      }
+    ];
 
     expect(res.render).to.have.been.calledWith('cases-list.njk', {
       previousPage: paths.common.overview,
       createNewAppealUrl: paths.common.createNewAppeal,
-      cases: req.session.casesList
+      cases: expectedCases
     });
   });
 

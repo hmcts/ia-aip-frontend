@@ -34,12 +34,13 @@ describe('docmosis-service', () => {
     });
 
     it('render throws error', async () => {
-      axiosStub = sandbox.stub(axios, 'post').returns(Promise.reject(new Error('error-message')));
+      const error = new Error('error-message');
+      axiosStub = sandbox.stub(axios, 'post').returns(Promise.reject(error));
 
       const response = await new DocmosisService().render('template-key', {});
 
       expect(response.success).to.be.eq(false);
-      expect(response.error).to.be.eq('error-message');
+      expect(response.error).to.be.eq(error);
     });
   });
 

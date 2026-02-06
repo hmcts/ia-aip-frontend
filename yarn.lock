@@ -3313,12 +3313,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.19.32":
-  version: 20.19.32
-  resolution: "@types/node@npm:20.19.32"
+"@types/node@npm:^24.10.11":
+  version: 24.10.11
+  resolution: "@types/node@npm:24.10.11"
   dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10/539e892da014abf6404d0e56d79e8eb6f7b6c47ac1a955752e05b84e164c1cf3c90748af97fe073dc1282f5ea0a12bfeefbfa79622d3fc1b75dfe2b6dc5d53bc
+    undici-types: "npm:~7.16.0"
+  checksum: 10/ff7124058917a0f658637ac0137a3906c83c1dc78928228d8045a06ae8b6a02c1f15bf1fbe86c8d6f1839ccdd6033f3d79d615493f196f54b9130c50a65a64fa
   languageName: node
   linkType: hard
 
@@ -8948,7 +8948,7 @@ __metadata:
     "@types/lodash": "npm:^4.17.23"
     "@types/mocha": "npm:10.0.10"
     "@types/multer": "npm:^2.0.0"
-    "@types/node": "npm:^20.19.32"
+    "@types/node": "npm:^24.10.11"
     "@types/nunjucks": "npm:^3.2.6"
     "@types/sinon": "npm:^21.0.0"
     "@types/sinon-chai": "npm:^4.0.0"

@@ -53,7 +53,6 @@
     "crypto-browserify": "^3.12.1",
     "csurf": "^1.11.0",
     "dompurify": "^3.3.1",
-    "expect-ct": "^0.3.0",
     "express": "^4.22.1",
     "express-session": "^1.19.0",
     "feature-policy": "^0.6.0",

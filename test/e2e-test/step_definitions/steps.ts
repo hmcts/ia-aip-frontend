@@ -49,6 +49,7 @@ const { applyForFTPAAppellant } = require('../pages/ftpa/apply-for-ftpa');
 const { homeOfficeUpload } = require('../pages/home-office-details/home-office-upload-decision-letter');
 const { deportationOrder } = require('../pages/home-office-details/deportation-order');
 const { feeSupport } = require('../pages/fee-support/fee-support');
+const { casesList } = require('../pages/cases-list/cases-list');
 
 const { I } = inject();
 
@@ -109,3 +110,4 @@ applyForFTPAAppellant(I);
 homeOfficeUpload(I);
 deportationOrder(I);
 feeSupport(I);
+casesList(I);

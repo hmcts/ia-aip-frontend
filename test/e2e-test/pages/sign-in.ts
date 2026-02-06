@@ -13,7 +13,12 @@ const i18n = require('../../../locale/en.json');
 
 async function navigateFromCasesListToOverview(I) {
   await I.waitInUrl(paths.common.casesList, 30);
-  await I.click(i18n.pages.casesList.viewLink, '.govuk-table__body');
+  const hasCases = await I.grabNumberOfVisibleElements('.govuk-table__body');
+  if (hasCases > 0) {
+    await I.click('View', '.govuk-table__body');
+  } else {
+    await I.click(i18n.pages.casesList.createNewAppeal);
+  }
   await I.waitInUrl(paths.common.overview, 30);
 }
 

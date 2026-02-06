@@ -1,9 +1,9 @@
 // Add this at the top of test/functional/bootstrap.ts
+import https from 'https';
+import * as process from 'process';
 import express from 'express';
 import fs from 'graceful-fs';
-import https from 'https';
 import { getLocal, Mockttp } from 'mockttp';
-import * as process from 'process';
 import { createApp } from '../../app/app';
 import Logger, { getLogLabel } from '../../app/utils/logger';
 import * as testStateHelper from '../e2e-test/testStateHelper';
@@ -43,7 +43,7 @@ export async function bootstrap() {
   await startMockServer(20003, dmHandlers);
   await startMockServer(20004, [ setupLease ]);
   await startMockServer(20005, [ setupPcqHealth ]);
-  logger.trace(`servers set up`, logLabel);
+  logger.trace('servers set up', logLabel);
 
   // Start main app
   const app: express.Application = createApp();
@@ -51,7 +51,7 @@ export async function bootstrap() {
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
   }, app).listen(port, () => {
-    logger.trace(`Main server listening`, logLabel);
+    logger.trace('Main server listening', logLabel);
   });
 }
 

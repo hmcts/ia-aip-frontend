@@ -1,10 +1,10 @@
-const multer = require('multer');
 import { Request, Response } from 'express';
 import { SinonStub } from 'sinon';
 import {
   enforceFileSizeLimit, fileFilter, handleFileUploadErrors, uploadConfiguration
 } from '../../../app/middleware/file-upload-validation-middleware';
 import { expect, sinon } from '../../utils/testUtils';
+const multer = require('multer');
 
 describe('#handleFileUploadErrors middleware', () => {
   let req: Request;
@@ -25,7 +25,7 @@ describe('#handleFileUploadErrors middleware', () => {
     // error message will show max file size as 0.001MB
 
     handleFileUploadErrors(new multer.MulterError('LIMIT_FILE_SIZE'), req, res, next);
-    expect(res.locals.multerError).to.equal(`The selected file must be smaller than {{maxFileSizeInMb}}MB`);
+    expect(res.locals.multerError).to.equal('The selected file must be smaller than {{maxFileSizeInMb}}MB');
     expect(next.calledOnceWith()).to.be.true;
   });
 

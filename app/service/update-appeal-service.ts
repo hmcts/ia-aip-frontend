@@ -55,9 +55,8 @@ export default class UpdateAppealService {
 
   private getDate(ccdDate): AppealDate {
     if (ccdDate) {
-      let dateLetterSent;
       const decisionDate = new Date(ccdDate);
-      dateLetterSent = {
+      const dateLetterSent = {
         year: decisionDate.getFullYear().toString(),
         month: (decisionDate.getMonth() + 1).toString(),
         day: decisionDate.getDate().toString()
@@ -156,11 +155,11 @@ export default class UpdateAppealService {
     let ftpaApplicationRespondentDocument: Evidence = null;
     let ftpaApplicationAppellantDocument: Evidence = null;
     let requestClarifyingQuestionsDirection: Collection<CcdDirection>;
-    let cmaRequirements: CmaRequirements = {};
-    let hearingRequirements: HearingRequirements = {};
+    const cmaRequirements: CmaRequirements = {};
+    const hearingRequirements: HearingRequirements = {};
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
-    let hasPendingTimeExtension = false;
-    let documentMap: DocumentMap[] = [];
+    const hasPendingTimeExtension = false;
+    const documentMap: DocumentMap[] = [];
     let updatedDecisionAndReasons: DecisionAndReasons[] = null;
     let rule32NoticeDocs: Evidence = null;
     let previousRemissionDetails: RemissionDetails[] = null;
@@ -292,7 +291,7 @@ export default class UpdateAppealService {
     }
 
     if (caseData.isInterpreterServicesNeeded) {
-      let isInterpreterServicesNeeded: boolean = yesNoToBool(caseData.isInterpreterServicesNeeded);
+      const isInterpreterServicesNeeded: boolean = yesNoToBool(caseData.isInterpreterServicesNeeded);
       let interpreterLanguage = {};
       let isHearingRoomNeeded: boolean = null;
       let isHearingLoopNeeded: boolean = null;
@@ -316,19 +315,19 @@ export default class UpdateAppealService {
     // Other Needs section
     if (caseData.multimediaEvidence) {
 
-      let multimediaEvidence: boolean = yesNoToBool(caseData.multimediaEvidence);
+      const multimediaEvidence: boolean = yesNoToBool(caseData.multimediaEvidence);
       let bringOwnMultimediaEquipment: boolean = null;
       let bringOwnMultimediaEquipmentReason: string = null;
-      let singleSexAppointment: boolean = yesNoToBool(caseData.singleSexCourt);
+      const singleSexAppointment: boolean = yesNoToBool(caseData.singleSexCourt);
       let singleSexTypeAppointment: 'All female' | 'All male' = null;
       let singleSexAppointmentReason: string = null;
-      let privateAppointment: boolean = yesNoToBool(caseData.inCameraCourt);
+      const privateAppointment: boolean = yesNoToBool(caseData.inCameraCourt);
       let privateAppointmentReason: string = null;
-      let healthConditions: boolean = yesNoToBool(caseData.physicalOrMentalHealthIssues);
+      const healthConditions: boolean = yesNoToBool(caseData.physicalOrMentalHealthIssues);
       let healthConditionsReason: string = null;
-      let pastExperiences: boolean = yesNoToBool(caseData.pastExperiences);
+      const pastExperiences: boolean = yesNoToBool(caseData.pastExperiences);
       let pastExperiencesReason: string = null;
-      let anythingElse: boolean = yesNoToBool(caseData.additionalRequests);
+      const anythingElse: boolean = yesNoToBool(caseData.additionalRequests);
       let anythingElseReason: string = null;
 
       if (multimediaEvidence) {
@@ -474,8 +473,8 @@ export default class UpdateAppealService {
     }
 
     for (let index = 0; index < 10; index++) {
-      let witnessString = 'witness' + (index + 1);
-      let witnessObj = caseData[witnessString] as WitnessDetails;
+      const witnessString = 'witness' + (index + 1);
+      const witnessObj = caseData[witnessString] as WitnessDetails;
       if (witnessObj) {
         hearingRequirements[witnessString] = {
           witnessPartyId: witnessObj.witnessPartyId,
@@ -484,22 +483,22 @@ export default class UpdateAppealService {
         };
       }
 
-      let witnessListElementString = 'witnessListElement' + (index + 1);
+      const witnessListElementString = 'witnessListElement' + (index + 1);
       if (caseData[witnessListElementString]) {
         hearingRequirements[witnessListElementString] = caseData[witnessListElementString];
       }
 
-      let witnessInterpreterLanguageCategoryString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
+      const witnessInterpreterLanguageCategoryString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
       if (caseData[witnessInterpreterLanguageCategoryString]) {
         hearingRequirements[witnessInterpreterLanguageCategoryString] = caseData[witnessInterpreterLanguageCategoryString];
       }
 
-      let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
+      const witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
       if (caseData[witnessInterpreterSpokenLanguageFieldString]) {
         hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = caseData[witnessInterpreterSpokenLanguageFieldString];
       }
 
-      let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
+      const witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
       if (caseData[witnessInterpreterSignLanguageFieldString]) {
         hearingRequirements[witnessInterpreterSignLanguageFieldString] = caseData[witnessInterpreterSignLanguageFieldString];
       }
@@ -860,7 +859,7 @@ export default class UpdateAppealService {
         // } as Document;
       } as Collection<Document>;
     });
-  }
+  };
 
   mapAppealEvidencesToDocumentsCaseData = (evidences: Evidence[], documentMap: DocumentMap[]): Collection<SupportingDocument>[] => {
     return evidences.map((evidence) => {
@@ -874,7 +873,7 @@ export default class UpdateAppealService {
         } as SupportingDocument
       } as Collection<SupportingDocument>;
     });
-  }
+  };
 
   mapUploadTheNoticeOfDecisionDocs = (evidences: Evidence[], documentMap: DocumentMap[], tag: string = null): Collection<DocumentWithMetaData>[] => {
     return evidences.map((evidence: Evidence) => {
@@ -893,7 +892,7 @@ export default class UpdateAppealService {
         }
       } as Collection<DocumentWithMetaData>;
     });
-  }
+  };
 
   mapCaseDataDocumentsToAppealEvidences = (documents: Collection<DocumentWithMetaData>[], documentMap: DocumentMap[]): Evidence[] => {
     return documents.map(document => {
@@ -906,7 +905,7 @@ export default class UpdateAppealService {
         ...document.value.description && { description: document.value.description }
       } as Evidence;
     });
-  }
+  };
 
   private mapCcdClarifyingQuestionsToAppeal(clarifyingQuestions: ClarifyingQuestion<Collection<SupportingDocument>>[], documentMap: DocumentMap[]): ClarifyingQuestion<Evidence>[] {
     return clarifyingQuestions.map(answer => {
@@ -1055,7 +1054,7 @@ export default class UpdateAppealService {
     return docs.map((doc: Collection<DocumentWithMetaData>): Evidence => {
       return this.mapDocWithMetadataToEvidence(doc, documentMap);
     });
-  }
+  };
 
   private mapDocWithMetadataToEvidence = (doc: Collection<DocumentWithMetaData>, documentMap: DocumentMap[]): Evidence => {
     const fileId = this._documentManagementService.addToDocumentMapper(doc.value.document.document_url, documentMap);
@@ -1069,7 +1068,7 @@ export default class UpdateAppealService {
       ...doc.value.dateUploaded && { dateUploaded: doc.value.dateUploaded },
       ...doc.value.dateTimeUploaded && { dateTimeUploaded: doc.value.dateTimeUploaded }
     };
-  }
+  };
 
   private mapAdditionalEvidenceToDocumentWithDescriptionArray = (docs: AdditionalEvidence[], documentMap: DocumentMap[]): Evidence[] => {
     const evidences = docs.map((doc: AdditionalEvidence): Evidence => {
@@ -1086,7 +1085,7 @@ export default class UpdateAppealService {
       };
     });
     return evidences;
-  }
+  };
 
   private mapMakeApplicationsToSession = (makeAnApplications: Collection<Application<Collection<SupportingDocument>>>[], documentMap: DocumentMap[]): Collection<Application<Evidence>>[] => {
     return makeAnApplications.map((application) => {
@@ -1098,7 +1097,7 @@ export default class UpdateAppealService {
         }
       };
     });
-  }
+  };
 
   private mapHearingOtherNeedsFromCCDCase(caseData, hearingRequirements: HearingRequirements) {
 
@@ -1795,8 +1794,8 @@ export default class UpdateAppealService {
 
       for (let index = 0; index < 10; index++) {
         if (_.has(appeal.hearingRequirements, 'witnessNames')) {
-          let witnessString = 'witness' + (index + 1);
-          let witnessObj: WitnessName = appeal.hearingRequirements.witnessNames[index];
+          const witnessString = 'witness' + (index + 1);
+          const witnessObj: WitnessName = appeal.hearingRequirements.witnessNames[index];
           caseData[witnessString] = witnessObj ? {
             witnessPartyId: witnessObj.witnessPartyId,
             witnessName: witnessObj.witnessGivenNames,

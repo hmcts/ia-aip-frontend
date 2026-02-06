@@ -69,7 +69,7 @@ describe('Session Timeout', () => {
   describe('addListeners', () => {
     it('should add click listener and call extendSession when click on button', () => {
       extendSessionStub = sandbox.stub(sessionTimeout, 'extendSession');
-      let extendButton = document.querySelector('#extend-session');
+      const extendButton = document.querySelector('#extend-session');
       sessionTimeout.addListeners();
       const evt = new MouseEvent('click', {
         view: window,
@@ -85,7 +85,7 @@ describe('Session Timeout', () => {
   describe('removeListeners', () => {
     it('should remove click listener and dont call extendSession when click on button', () => {
       extendSessionStub = sandbox.stub(sessionTimeout, 'extendSession');
-      let extendButton = document.querySelector('#extend-session');
+      const extendButton = document.querySelector('#extend-session');
       sessionTimeout.removeListeners();
       const evt = new MouseEvent('click', {
         view: window,

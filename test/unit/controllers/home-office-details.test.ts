@@ -556,7 +556,7 @@ describe('Home Office Details Controller', function () {
     it('should fail validation and render a validation error with day in future', async () => {
       const currentDate = new Date();
 
-      let tomorrowDate = new Date();
+      const tomorrowDate = new Date();
       tomorrowDate.setDate(currentDate.getDate() + 1);
 
       req.body['day'] = tomorrowDate.getDate();
@@ -589,7 +589,7 @@ describe('Home Office Details Controller', function () {
     it('should fail validation and render a validation error with invalid date', async () => {
       const currentDate = new Date();
 
-      let tomorrowDate = new Date();
+      const tomorrowDate = new Date();
       tomorrowDate.setDate(currentDate.getDate() + 1);
 
       req.body['day'] = 31;

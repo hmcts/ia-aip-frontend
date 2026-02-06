@@ -185,10 +185,10 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   const hasSponsor = application.hasSponsor && application.hasSponsor === 'Yes';
   const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
 
-  let aboutAppealRows = [];
-  let personalDetailsRows = [];
-  let feeDetailsRows = [];
-  let feeHistoryRows = [];
+  const aboutAppealRows = [];
+  const personalDetailsRows = [];
+  const feeDetailsRows = [];
+  const feeHistoryRows = [];
 
   // about appeal section
   aboutAppealRows.push(
@@ -251,7 +251,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   // fee section
   if (!['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
     if (appealHasRemissionOption(application, true) || appealHasRemissionType(application)) {
-      let hasHoWaiverRemissionType = application.remissionType && application.remissionType === 'hoWaiverRemission';
+      const hasHoWaiverRemissionType = application.remissionType && application.remissionType === 'hoWaiverRemission';
       await addPaymentDetails(req, application, feeDetailsRows);
       if (application.feeRemissionType && application.feeRemissionType !== '') {
         if (localAuthorityFeeRemissionTypes.has(application.feeRemissionType)) {
@@ -802,7 +802,7 @@ function setupCmaRequirementsViewer(req: Request) {
 
 async function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let drlmFeeRemissionFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+    const drlmFeeRemissionFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (drlmFeeRemissionFeatureFlag) {
       const data = await getAppealDlrmFeeRemissionDetails(req);
       return res.render('templates/details-with-fees-viewer.njk', {
@@ -828,7 +828,7 @@ async function getAppealDetailsViewer(req: Request, res: Response, next: NextFun
 
 function getReasonsForAppealViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const data = setupAnswersReasonsForAppeal(req, false);
     return res.render('detail-viewers/reasons-for-appeal-details-viewer.njk', {
       previousPage: previousPage,
@@ -841,7 +841,7 @@ function getReasonsForAppealViewer(req: Request, res: Response, next: NextFuncti
 
 function getLrReasonsForAppealViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const data = setupAnswersReasonsForAppeal(req, true);
     return res.render('detail-viewers/reasons-for-appeal-details-viewer.njk', {
       hint: i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.hint,
@@ -855,7 +855,7 @@ function getLrReasonsForAppealViewer(req: Request, res: Response, next: NextFunc
 
 function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     let documents = [];
 
     if (_.has(req.session.appeal, 'respondentDocuments')) {
@@ -984,7 +984,7 @@ function getMakeAnApplicationDecisionWhatNext(makeAnApplicationEvent: Collection
 
 function getCmaRequirementsViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const {
       interpreter,
       stepFree,
@@ -1017,7 +1017,7 @@ function getCmaRequirementsViewer(req: Request, res: Response, next: NextFunctio
 
 function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const endedAppealDoc = req.session.appeal.tribunalDocuments.find(doc => ['endAppeal', 'endAppealAutomatically'].includes(doc.tag));
     const fileNameFormatted = fileNameFormatter(endedAppealDoc.name);
     const data = [
@@ -1035,8 +1035,8 @@ function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
 }
 
 function findDocumentInReheardHearingDocCollection(collections, fileId: string): Evidence | undefined {
-  for (let collection of collections) {
-    let documentCollection = collection.value ? collection.value : {};
+  for (const collection of collections) {
+    const documentCollection = collection.value ? collection.value : {};
     const docs = documentCollection.reheardHearingDocs;
     if (docs) {
       const document: Evidence = docs.find((doc: Evidence) => doc.fileId === fileId);
@@ -1049,19 +1049,19 @@ function findDocumentInReheardHearingDocCollection(collections, fileId: string):
 }
 
 function getLatestHearingNoticeDocument(appeal: Appeal): Evidence | undefined {
-  let reheardHearingDocuments: Evidence[] = appeal.reheardHearingDocuments || [];
-  let hearingDocuments: Evidence[] = (appeal.hearingDocuments || []).concat(reheardHearingDocuments);
-  let reheardHearingDocumentsCollection: ReheardHearingDocs<Evidence>[] = appeal.reheardHearingDocumentsCollection || [];
-  for (let collection of reheardHearingDocumentsCollection) {
-    let documentCollection = collection.value ? collection.value : {};
+  const reheardHearingDocuments: Evidence[] = appeal.reheardHearingDocuments || [];
+  const hearingDocuments: Evidence[] = (appeal.hearingDocuments || []).concat(reheardHearingDocuments);
+  const reheardHearingDocumentsCollection: ReheardHearingDocs<Evidence>[] = appeal.reheardHearingDocumentsCollection || [];
+  for (const collection of reheardHearingDocumentsCollection) {
+    const documentCollection = collection.value ? collection.value : {};
     const docs: Evidence[] = documentCollection.reheardHearingDocs;
     if (docs) {
       hearingDocuments.push(...docs);
     }
   }
-  let hearingNoticeTags = new Set(['hearingNotice', 'hearingNoticeRelisted',
+  const hearingNoticeTags = new Set(['hearingNotice', 'hearingNoticeRelisted',
     'reheardHearingNotice', 'reheardHearingNoticeRelisted']);
-  let hearingNotices: Evidence[] = hearingDocuments.filter((doc: Evidence) =>
+  const hearingNotices: Evidence[] = hearingDocuments.filter((doc: Evidence) =>
     hearingNoticeTags.has(doc.tag));
   hearingNotices.sort((a: Evidence, b: Evidence) => {
     if (a.dateTimeUploaded && b.dateTimeUploaded) {
@@ -1079,7 +1079,7 @@ function getHearingNoticeDocument(req: Request): Evidence {
   if (id === 'latest') {
     return getLatestHearingNoticeDocument(appeal);
   }
-  let hearingDocuments = appeal.hearingDocuments ? appeal.hearingDocuments : [];
+  const hearingDocuments = appeal.hearingDocuments ? appeal.hearingDocuments : [];
   let hearingNoticeDocument = hearingDocuments.find((doc: Evidence) => doc.fileId === id);
   if (!hearingNoticeDocument) {
     hearingNoticeDocument = findDocumentInReheardHearingDocCollection(appeal.reheardHearingDocumentsCollection || [], id);
@@ -1092,7 +1092,7 @@ function getHearingNoticeDocument(req: Request): Evidence {
 
 function getHearingNoticeViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const hearingNoticeDocument: Evidence = getHearingNoticeDocument(req);
     const data = [];
     const fileNameFormatted = fileNameFormatter(hearingNoticeDocument.name);
@@ -1111,7 +1111,7 @@ function getHearingNoticeViewer(req: Request, res: Response, next: NextFunction)
 
 function getHearingAdjournmentNoticeViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const hearingAdjournmentNoticeDocuments = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'noticeOfAdjournedHearing');
     const data = [];
     hearingAdjournmentNoticeDocuments.forEach(document => {
@@ -1132,7 +1132,7 @@ function getHearingAdjournmentNoticeViewer(req: Request, res: Response, next: Ne
 
 function getDecisionAndReasonsViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const coverLetterDocument = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'decisionAndReasonsCoverLetter');
     const finalDecisionAndReasonsPdfDoc = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'finalDecisionAndReasonsPdf');
 
@@ -1160,10 +1160,10 @@ async function getUpdatedTribunalDecisionWithRule32Viewer(req: Request, res: Res
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
   if (ftpaSetAsideFeatureEnabled) {
     try {
-      let previousPage: string = paths.common.overview;
+      const previousPage: string = paths.common.overview;
 
-      let rule32Document = req.session.appeal.rule32NoticeDocs;
-      let fileNameFormatted = fileNameFormatter(rule32Document.name);
+      const rule32Document = req.session.appeal.rule32NoticeDocs;
+      const fileNameFormatted = fileNameFormatter(rule32Document.name);
 
       const data = [];
       data.push(addSummaryRow(i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.documentText, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${rule32Document.fileId}'>${fileNameFormatted}</a>`]));
@@ -1181,7 +1181,7 @@ async function getUpdatedTribunalDecisionWithRule32Viewer(req: Request, res: Res
 
 function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const recordOutOfTimeDecisionDoc = req.session.appeal.tribunalDocuments.find(doc => doc.tag === 'recordOutOfTimeDecisionDocument');
     const fileNameFormatted = fileNameFormatter(recordOutOfTimeDecisionDoc.name);
     const data = [
@@ -1258,14 +1258,13 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
     if (req.session.appeal.reheardHearingDocumentsCollection) {
       req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {
         if (collection.value) {
-          let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
+          const filteredCollection: Evidence[] = collection.value.reheardHearingDocs
             .filter(doc => doc.tag === 'hearingBundle' || doc.tag === 'updatedHearingBundle');
           hearingBundles.push(...filteredCollection);
         }
       });
     }
-    let bundleData: SummaryRow[] = [];
-    let title: string;
+    const bundleData: SummaryRow[] = [];
     let subtitle1: string | null = null;
     let subtitle2: string | null = null;
     hearingBundles.sort((a, b) => {
@@ -1295,7 +1294,7 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
         ? i18n.pages.detailViewers.hearingBundle.previousSubtitlePlural
         : i18n.pages.detailViewers.hearingBundle.previousSubtitle;
     }
-    title = bundleData.length > 2
+    const title = bundleData.length > 2
       ? i18n.pages.detailViewers.hearingBundle.titlePlural
       : i18n.pages.detailViewers.hearingBundle.title;
     return res.render('templates/details-viewer-hearing-bundles.njk', {
@@ -1313,7 +1312,7 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
 
 function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const ftpaGrounds = req.session.appeal.ftpaAppellantGrounds;
     const ftpaEvidenceDocuments = req.session.appeal.ftpaAppellantEvidenceDocuments;
     const ftpaOutOfTimeApplicationReason = req.session.appeal.ftpaAppellantOutOfTimeExplanation;
@@ -1360,7 +1359,7 @@ async function getFtpaDecisionDetails(req: Request, res: Response, next: NextFun
 
 async function getFtpaRespondentDecisionDetails(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const ftpaGroundsDocuments = req.session.appeal.ftpaRespondentGroundsDocuments;
     const ftpaEvidenceDocuments = req.session.appeal.ftpaRespondentEvidenceDocuments;
     const ftpaOutOfTimeApplicationReason = req.session.appeal.ftpaRespondentOutOfTimeExplanation;
@@ -1428,7 +1427,7 @@ async function getFtpaRespondentDecisionDetails(req: Request, res: Response, nex
 
 async function getFtpaAppellantDecisionDetails(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const ftpaGrounds = req.session.appeal.ftpaAppellantGrounds;
     const ftpaEvidenceDocuments = req.session.appeal.ftpaAppellantEvidenceDocuments;
     const ftpaOutOfTimeApplicationReason = req.session.appeal.ftpaAppellantOutOfTimeExplanation;
@@ -1506,7 +1505,7 @@ function getDirectionHistory(req: Request, res: Response, next: NextFunction) {
     const baseUniqueId = match ? match[1] : req.params.id;
     const partyType = match ? match[2] : null;
 
-    let direction: Direction = req.session.appeal.directions.find(
+    const direction: Direction = req.session.appeal.directions.find(
       direction => direction.uniqueId === baseUniqueId
     );
 
@@ -1528,7 +1527,7 @@ function getDirectionHistory(req: Request, res: Response, next: NextFunction) {
 
 function getAppellantDirectionHistoryDetails(req: Request, res: Response, next: NextFunction, direction: Direction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const data = [];
     data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.appellant.explanation, [formatTextForCYA(direction.explanation)]));
     data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.appellant.dateDue, [formatTextForCYA(moment(direction.dateDue).format(dayMonthYearFormat))]));
@@ -1546,7 +1545,7 @@ function getAppellantDirectionHistoryDetails(req: Request, res: Response, next: 
 
 function getRespondentDirectionHistoryDetails(req: Request, res: Response, next: NextFunction, direction: Direction) {
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const data = [];
     data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.respondent.explanation, [formatTextForCYA(direction.explanation)]));
     data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.respondent.dateDue, [formatTextForCYA(moment(direction.dateDue).format(dayMonthYearFormat))]));
@@ -1566,7 +1565,7 @@ async function getUpdatedDecisionAndReasonsViewer(req: Request, res: Response, n
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
   if (ftpaSetAsideFeatureEnabled) {
     try {
-      let previousPage: string = paths.common.overview;
+      const previousPage: string = paths.common.overview;
       const updatedDecisionAndReasons = req.session.appeal.updatedDecisionAndReasons;
       const coverLetterDocument = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'decisionAndReasonsCoverLetter');
       const finalDecisionAndReasonsPdfDoc = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'finalDecisionAndReasonsPdf');
@@ -1619,7 +1618,7 @@ async function getUpdatedDecisionAndReasonsViewer(req: Request, res: Response, n
 async function getRemittalDocumentsViewer(req: Request, res: Response, next: NextFunction) {
 
   try {
-    let previousPage: string = paths.common.overview;
+    const previousPage: string = paths.common.overview;
     const remittalDocuments = req.session.appeal.remittalDocuments;
     const remittalDocs: SummaryList[] = [];
 

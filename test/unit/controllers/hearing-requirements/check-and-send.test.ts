@@ -17,8 +17,7 @@ describe('Hearing Requirements Check and Send controller', () => {
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   const logger: Logger = new Logger();
-  let hearingRequirements: HearingRequirements;
-  hearingRequirements = {
+  const hearingRequirements: HearingRequirements = {
     'datesToAvoid': {
       'isDateCannotAttend': true,
       'dates': [{

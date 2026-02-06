@@ -1,12 +1,12 @@
 import config from 'config';
 
-const events = require('./case-events/index.js');
 import { createLegalRepCase, getAppealState, getSecurityHeaders, updateAppeal } from './ccd-service';
 import {
   getCitizenUserFromThread,
   getUserId,
   UserInfo
 } from './user-service';
+const events = require('./case-events/index.js');
 
 enum State {
   appealStarted = 'appealStarted',
@@ -41,7 +41,7 @@ const legalRepPassword: string = process.env.TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD
 async function triggerEvent(user: UserInfo, object: string, userRunningEvent: string, appealType?: string, isLegalRep: boolean = false) {
   const json = JSON.parse(object);
   const event = json.event;
-  let caseData = json.case_data || {};
+  const caseData = json.case_data || {};
   if (['submitAppeal', 'editAppeal'].includes(event.id)) {
     caseData.appellantGivenNames = user.forename;
     caseData.appellantFamilyName = user.surname;

@@ -20,7 +20,7 @@ function setupSession() {
       logger.exception('Error connecting to redis: ' + err.message, logLabel);
       throw err;
     });
-    let redisStore = new RedisStore(
+    const redisStore = new RedisStore(
       { client: redisClient, ttl: config.get('session.redis.ttlInSeconds') }
     );
     return session({

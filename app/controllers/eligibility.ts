@@ -70,7 +70,7 @@ async function eligibilityQuestionPost(req: Request, res: Response, next: NextFu
 
     req.session.eligibility[questionId] = { answer };
 
-    let nextQuestionId = _.toNumber(questionId) + 1;
+    const nextQuestionId = _.toNumber(questionId) + 1;
     const isLastQuestion = nextQuestionId === i18nEligibility.length;
 
     const nextPage = await isEligibilityQuestion(questionId, answer, i18nEligibility) ?

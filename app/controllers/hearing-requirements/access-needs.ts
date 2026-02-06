@@ -176,8 +176,8 @@ function postInterpreterSupportAppellantWitnesses(updateAppealService: UpdateApp
           if (req.session.appeal.hearingRequirements.witnessNames && req.session.appeal.hearingRequirements.witnessNames.length === 1) {
             const witnessObj = req.session.appeal.hearingRequirements && req.session.appeal.hearingRequirements.witnessNames[0];
 
-            let witnessName = formatWitnessName(witnessObj);
-            let valueList: Value[] = [{ code: witnessName, label: witnessName }];
+            const witnessName = formatWitnessName(witnessObj);
+            const valueList: Value[] = [{ code: witnessName, label: witnessName }];
             req.session.appeal.hearingRequirements['witnessListElement1'] = { value: valueList, list_items: valueList };
 
             redirectLink = (paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=' + 0);
@@ -246,12 +246,12 @@ function postWitnessesInterpreterNeeds(updateAppealService: UpdateAppealService)
           .map(index => validator.toInt(index)); // Convert to integer
 
       witnessNames.forEach((witness, index) => {
-        let witnessName = formatWitnessName(witness);
-        let witnessListElementString = 'witnessListElement' + (index + 1);
-        let value: Value[] = [];
-        let valueObj: Value = { code: witnessName, label: witnessName };
+        const witnessName = formatWitnessName(witness);
+        const witnessListElementString = 'witnessListElement' + (index + 1);
+        const value: Value[] = [];
+        const valueObj: Value = { code: witnessName, label: witnessName };
 
-        for (let selectedWitnessIndex of selectedWitnessesList) {
+        for (const selectedWitnessIndex of selectedWitnessesList) {
           if (index === selectedWitnessIndex) {
             value.push(valueObj);
             break;
@@ -293,7 +293,7 @@ function getInterpreterTypePage(req: Request, res: Response, next: NextFunction)
 
       if (selectedWitnessesList && selectedWitnessesList.length > 0) {
 
-        let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
+        const witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
 
         pageQuestion = i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.witnessTitle.replace('{witnessName}', witnessComponent.witnessFullName);
         interpreterSpokenLanguage = witnessComponent.witnessInterpreterLanguageCategory ? witnessComponent.witnessInterpreterLanguageCategory.includes(spokenLanguageInterpreterString) : false;
@@ -338,7 +338,7 @@ function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
 
       if (req.body.selectedWitnessesList) {
         selectedWitnessesList = req.body.selectedWitnessesList.toString().split(',') || [];
-        let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
+        const witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
         pageQuestion = i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.witnessTitle.replace('{witnessName}', witnessComponent.witnessFullName);
       } else {
         pageQuestion = i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.title;
@@ -356,7 +356,7 @@ function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
         });
       }
 
-      let interpreterLanguageCategory = [];
+      const interpreterLanguageCategory = [];
       if (req.body.selections.includes(spokenLanguageInterpreterString)) {
         interpreterLanguageCategory.push(spokenLanguageInterpreterString);
       }
@@ -368,7 +368,7 @@ function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
       if (req.body.selectedWitnessesList) {
 
         selectedWitnessesList = req.body.selectedWitnessesList.toString().split(',') || [];
-        let witnessInterpreterLanguageCategoryString = 'witness' + (parseInt(selectedWitnessesList[0], 10) + 1) + 'InterpreterLanguageCategory';
+        const witnessInterpreterLanguageCategoryString = 'witness' + (parseInt(selectedWitnessesList[0], 10) + 1) + 'InterpreterLanguageCategory';
 
         req.session.appeal.hearingRequirements[witnessInterpreterLanguageCategoryString] = interpreterLanguageCategory;
         if (req.session.appeal.hearingRequirements[witnessInterpreterLanguageCategoryString].includes(spokenLanguageInterpreterString)) {
@@ -417,7 +417,7 @@ function handleGetInterpreterSpokenSignLanguagePage(refDataServiceObj: RefDataSe
         selectedWitnessesList = req.query.selectedWitnesses.toString().split(',') || [];
 
         if (selectedWitnessesList && selectedWitnessesList.length > 0) {
-          let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
+          const witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
           pageTitle = spokenSignLanguageConfig.pageTitle.witnessValue.replace('{witnessName}', witnessComponent.witnessFullName);
           interpreterSpokenSignLanguageFieldString = witnessComponent[spokenSignLanguageConfig.interpreterSpokenSignLanguageFieldString.witnessValue];
         }
@@ -450,7 +450,7 @@ function handleGetInterpreterSpokenSignLanguagePage(refDataServiceObj: RefDataSe
 
 function getInterpreterSpokenLanguagePage(refDataServiceObj: RefDataService) {
 
-  let spokenLanguageConfig: SpokenSignLanguageConfig = {
+  const spokenLanguageConfig: SpokenSignLanguageConfig = {
     pageTitle: {
       witnessValue: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.witnessTitle,
       appellantValue: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.pageTitle
@@ -488,7 +488,7 @@ function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealServ
 
       if (req.body.selectedWitnessesList) {
         selectedWitnessesList = req.body.selectedWitnessesList.toString().split(',') || [];
-        let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
+        const witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
         pageTitle = i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.witnessTitle.replace('{witnessName}', witnessComponent.witnessFullName);
       } else {
         pageTitle = i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.pageTitle;
@@ -514,11 +514,11 @@ function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealServ
         });
       }
 
-      let interpreterSpokenLanguage = preparePostInterpreterLanguageSubmissionObj(req, interpreterSpokenSignLanguageDynamicList);
+      const interpreterSpokenLanguage = preparePostInterpreterLanguageSubmissionObj(req, interpreterSpokenSignLanguageDynamicList);
       let redirectLink = null;
       if (req.body.selectedWitnessesList) {
         selectedWitnessesList = req.body.selectedWitnessesList.toString().split(',') || [];
-        let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
+        const witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
 
         req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterSpokenLanguageFieldString] = interpreterSpokenLanguage;
 
@@ -542,8 +542,8 @@ function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealServ
           if (req.session.appeal.hearingRequirements.witnessNames && req.session.appeal.hearingRequirements.witnessNames.length === 1) {
             const witnessObj = req.session.appeal.hearingRequirements && req.session.appeal.hearingRequirements.witnessNames[0];
 
-            let witnessName = formatWitnessName(witnessObj);
-            let valueList: Value[] = [{ code: witnessName, label: witnessName }];
+            const witnessName = formatWitnessName(witnessObj);
+            const valueList: Value[] = [{ code: witnessName, label: witnessName }];
             req.session.appeal.hearingRequirements['witnessListElement1'] = { value: valueList, list_items: valueList };
 
             redirectLink = (paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=' + 0);
@@ -571,7 +571,7 @@ function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealServ
 
 function getInterpreterSignLanguagePage(refDataServiceObj: RefDataService) {
 
-  let signLanguageConfig: SpokenSignLanguageConfig = {
+  const signLanguageConfig: SpokenSignLanguageConfig = {
     pageTitle: {
       witnessValue: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.witnessTitle,
       appellantValue: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.pageTitle
@@ -609,7 +609,7 @@ function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealServic
 
       if (req.body.selectedWitnessesList) {
         selectedWitnessesList = req.body.selectedWitnessesList.toString().split(',') || [];
-        let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
+        const witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
         pageTitle = i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.witnessTitle.replace('{witnessName}', witnessComponent.witnessFullName);
       } else {
         pageTitle = i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.pageTitle;
@@ -635,12 +635,12 @@ function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealServic
         });
       }
 
-      let interpreterSignLanguage = preparePostInterpreterLanguageSubmissionObj(req, interpreterSpokenSignLanguageDynamicList);
+      const interpreterSignLanguage = preparePostInterpreterLanguageSubmissionObj(req, interpreterSpokenSignLanguageDynamicList);
       let redirectLink = null;
       if (req.body.selectedWitnessesList) {
 
         selectedWitnessesList = req.body.selectedWitnessesList.toString().split(',') || [];
-        let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
+        const witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, selectedWitnessesList[0]);
 
         req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterSignLanguageFieldString] = interpreterSignLanguage;
 
@@ -658,8 +658,8 @@ function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealServic
           if (req.session.appeal.hearingRequirements.witnessNames && req.session.appeal.hearingRequirements.witnessNames.length === 1) {
             const witnessObj = req.session.appeal.hearingRequirements && req.session.appeal.hearingRequirements.witnessNames[0];
 
-            let witnessName = formatWitnessName(witnessObj);
-            let valueList: Value[] = [{ code: witnessName, label: witnessName }];
+            const witnessName = formatWitnessName(witnessObj);
+            const valueList: Value[] = [{ code: witnessName, label: witnessName }];
             req.session.appeal.hearingRequirements['witnessListElement1'] = { value: valueList, list_items: valueList };
 
             redirectLink = (paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=' + 0);
@@ -690,9 +690,9 @@ function convertWitnessListToCheckboxItem(witnessNames: WitnessName[], hearingRe
   if (witnessNames && witnessNames.length > 0) {
     checkboxList = [];
     witnessNames.forEach((witness, index) => {
-      let witnessListElementString = 'witnessListElement' + (index + 1);
-      let witnessName = formatWitnessName(witness);
-      let checked: boolean = (hearingRequirements &&
+      const witnessListElementString = 'witnessListElement' + (index + 1);
+      const witnessName = formatWitnessName(witness);
+      const checked: boolean = (hearingRequirements &&
         hearingRequirements[witnessListElementString] &&
         hearingRequirements[witnessListElementString].value &&
         hearingRequirements[witnessListElementString].value.length > 0)
@@ -738,10 +738,10 @@ function getPrepareInterpreterLanguageType(req: Request, res: Response, language
 }
 
 function preparePostInterpreterLanguageSubmissionObj(req: Request, languageList: DynamicList): InterpreterLanguageRefData {
-  let interpreterSpokenOrSignLanguage: InterpreterLanguageRefData = {};
+  const interpreterSpokenOrSignLanguage: InterpreterLanguageRefData = {};
   if (req.body.languageRefData) {
     interpreterSpokenOrSignLanguage.languageRefData = { ...languageList };
-    for (let languageObj of interpreterSpokenOrSignLanguage.languageRefData.list_items) {
+    for (const languageObj of interpreterSpokenOrSignLanguage.languageRefData.list_items) {
       if (req.body.languageRefData === languageObj.code) {
         interpreterSpokenOrSignLanguage.languageRefData.value = languageObj;
         break;
@@ -758,7 +758,7 @@ function showSelectedLanguage(selectedlanguageCode: Object, languageList) {
   let resultList = languageList;
   if (selectedlanguageCode && languageList) {
     resultList = languageList.map((language) => {
-      let selected = selectedlanguageCode === language.value;
+      const selected = selectedlanguageCode === language.value;
       return {
         text: language.text,
         value: language.value,
@@ -770,7 +770,7 @@ function showSelectedLanguage(selectedlanguageCode: Object, languageList) {
 }
 
 function convertDynamicListToSelectItemList(obj: DynamicList) {
-  let selectItemList = [];
+  const selectItemList = [];
   if (obj && obj.list_items) {
     selectItemList.push({ 'text': 'Select language', value: '' });
     obj.list_items.forEach((language) => {
@@ -784,7 +784,7 @@ function convertDynamicListToSelectItemList(obj: DynamicList) {
 function convertCommonRefDataToValueList(commonRefData: any): DynamicList {
   let vauleList: Value[];
   if (commonRefData) {
-    let commonRefDataObject = JSON.parse(commonRefData);
+    const commonRefDataObject = JSON.parse(commonRefData);
     vauleList = [];
     commonRefDataObject['list_of_values']
       .filter(obj => obj['active_flag'] === 'Y')
@@ -816,7 +816,7 @@ function clearUnnecessaryInterpreterCachedData(hearingRequirements: HearingRequi
 
 function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) {
   try {
-    let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
+    const interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
     return res.render('hearing-requirements/language-details.njk', {
       previousPage: previousPage,
       items: isoLanguages,
@@ -834,7 +834,7 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
-      let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
+      const interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
       const validation = interpreterLanguagesValidation(interpreterLanguages);
       if (validation) {
         return renderPage(res, validation, interpreterLanguages);
@@ -895,7 +895,7 @@ function buildLanguageList(interpreterLanguages: InterpreterLanguage[]): Summary
 function addMoreLanguagePostAction() {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
+      const interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
       const validation = selectedRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.accessNeeds.addLanguageDialect);
       const validationDialect = selectedRequiredValidationDialect(req.body, i18n.validationErrors.hearingRequirements.accessNeeds.addLanguageDialect);
       const language: string = req.body['language'] as string;
@@ -925,7 +925,7 @@ function addMoreLanguagePostAction() {
 function removeLanguagePostAction() {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
+      const interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
       const nameToRemove: string = req.query.name as string;
       req.session.appeal.hearingRequirements.interpreterLanguages = interpreterLanguages.filter(interpreterLanguage => interpreterLanguage.language !== nameToRemove);
       return res.redirect(paths.submitHearingRequirements.hearingLanguageDetails);

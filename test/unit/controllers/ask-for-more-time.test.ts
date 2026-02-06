@@ -1,4 +1,3 @@
-const express = require('express');
 import { Request, Response } from 'express';
 import {
   getAskForMoreTimeEvidence,
@@ -19,6 +18,7 @@ import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { formatTextForCYA } from '../../../app/utils/utils';
 import { expect, sinon } from '../../utils/testUtils';
+const express = require('express');
 
 describe('Ask for more time Controller', function () {
   let sandbox: sinon.SinonSandbox;
@@ -159,7 +159,7 @@ describe('Ask for more time Controller', function () {
   });
 
   describe('postAskForMoreTimePage', function () {
-    let askForMoreReason = 'The reason';
+    const askForMoreReason = 'The reason';
     beforeEach(() => {
       updateAppealService.submitEventRefactored = sandbox.stub().returns({
         askForMoreTime: {

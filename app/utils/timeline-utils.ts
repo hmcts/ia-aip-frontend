@@ -187,7 +187,7 @@ function getListCaseEvent(req: Request): any[] {
   if (req.session.appeal.reheardHearingDocumentsCollection) {
     req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {
       if (collection.value) {
-        let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
+        const filteredCollection: Evidence[] = collection.value.reheardHearingDocs
                     .filter(doc => hearingNoticeTags.includes(doc.tag));
         hearingNotices.push(...filteredCollection);
       }
@@ -220,14 +220,14 @@ function getListCaseEvent(req: Request): any[] {
 
 function getAsyncStitchingEvent(req: Request): any[] {
   let hearingBundles: Evidence[] = [];
-  let hearingBundleTags: string[] = ['hearingBundle', 'updatedHearingBundle'];
+  const hearingBundleTags: string[] = ['hearingBundle', 'updatedHearingBundle'];
   if (req.session.appeal.hearingDocuments) {
     hearingBundles = req.session.appeal.hearingDocuments.filter((doc: Evidence) => hearingBundleTags.includes(doc.tag));
   }
   if (req.session.appeal.reheardHearingDocumentsCollection) {
     req.session.appeal.reheardHearingDocumentsCollection.forEach((collection: ReheardHearingDocs<Evidence>) => {
       if (collection.value) {
-        let filteredCollection: Evidence[] = collection.value.reheardHearingDocs
+        const filteredCollection: Evidence[] = collection.value.reheardHearingDocs
           .filter(doc => hearingBundleTags.includes(doc.tag));
         hearingBundles.push(...filteredCollection);
       }
@@ -255,12 +255,12 @@ function getAsyncStitchingEvent(req: Request): any[] {
 }
 
 function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
-  let latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
+  const latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
 
   if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled)) {
     let timelineText = '';
     let originalTribunalDecision;
-    let newTribunalDecision = req.session.appeal.updatedAppealDecision && req.session.appeal.updatedAppealDecision.toLowerCase() || null;
+    const newTribunalDecision = req.session.appeal.updatedAppealDecision && req.session.appeal.updatedAppealDecision.toLowerCase() || null;
     if (req.session.appeal.typesOfUpdateTribunalDecision && req.session.appeal.typesOfUpdateTribunalDecision.value) {
       if (req.session.appeal.typesOfUpdateTribunalDecision.value.label.includes('Yes')) {
         originalTribunalDecision = (newTribunalDecision === 'allowed') ? 'dismissed' : 'allowed';
@@ -299,7 +299,7 @@ function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabl
 function getUpdateTribunalDecisionDocumentHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
   if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.updateTribunalDecisionAndReasonsFinalCheck === 'Yes') {
 
-    let latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
+    const latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
 
     return [{
       date: moment(latestUpdateTribunalDecisionHistory.createdDate).format('DD MMMM YYYY'),
@@ -354,9 +354,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const directionsHistory = getDirectionHistory(req);
   let paymentEvent = [];
   let appealRemissionSection: any[];
-  let appealRemissionDecisionSection: any[];
   let manageAFeeUpdate: any[];
-  let argumentSection: any[];
   const manageAFeeUpdateEvents = req.session.appeal.history.filter(event => Events.MANAGE_A_FEE_UPDATE.id.includes(event.id));
 
   if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application) && application.isLateRemissionRequest) {
@@ -369,10 +367,10 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     paymentEvent = getApplicationHistoryPaymentEvent(paymentDate);
   }
 
-  argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
+  const argumentSection: any[] = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
-  appealRemissionDecisionSection = getApplicationHistoryAppealRemissionSection(req, manageAFeeUpdate, refundFeatureEnabled, appealRemissionSection, application, applicationEvents, submitCQHistory, directionsHistory);
+  const appealRemissionDecisionSection: any[] = getApplicationHistoryAppealRemissionSection(req, manageAFeeUpdate, refundFeatureEnabled, appealRemissionSection, application, applicationEvents, submitCQHistory, directionsHistory);
 
   const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
   const updatedTribunalDecisionDocumentHistory = getUpdateTribunalDecisionDocumentHistory(req, ftpaSetAsideFeatureEnabled);

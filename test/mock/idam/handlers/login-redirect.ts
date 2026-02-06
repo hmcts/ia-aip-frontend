@@ -1,5 +1,5 @@
-import { CompletedRequest, Mockttp } from 'mockttp';
 import querystring from 'querystring';
+import { CompletedRequest, Mockttp } from 'mockttp';
 import cache from '../../cache';
 
 export async function setupLoginRedirect(server: Mockttp) {

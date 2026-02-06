@@ -23,20 +23,34 @@ export default [
       'chai-friendly': chaiFriendly
     },
     rules: {
-      // quotes: ['error', 'single', { avoidEscape: true }],
-      'prefer-const': 'off',
-      'quotes': 'off',
+      quotes: ['error', 'single', { avoidEscape: true }],
 
       semi: ['error', 'always'],
       'space-before-function-paren': 'off',
       'no-console': ['error', { allow: ['warn', 'error', 'info'] }],
-
-      // 'import/order': ['error', {
-      //   'alphabetize': {
-      //     "order": "asc",
-      //     "caseInsensitive": true
-      //   }
-      // }],
+      'import/order': ['error', {
+        'groups': [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index',
+          'type'
+        ],
+        'pathGroups': [
+          {
+            pattern: 'app/**',
+            group: 'internal',
+            position: 'before'
+          }
+        ],
+        'pathGroupsExcludedImportTypes': ['builtin', 'external'],
+        'alphabetize': {
+          order: 'asc',
+          caseInsensitive: true
+        },
+      }],
 
       'no-unused-expressions': 'off',
       '@typescript-eslint/no-unsafe-function-type': 'off',

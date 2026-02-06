@@ -1,8 +1,8 @@
+import path from 'path';
 import config from 'config';
 import express from 'express';
 import * as _ from 'lodash';
 import * as nunjucks from 'nunjucks';
-import path from 'path';
 import { setupIdamConfig } from './config/idam-config';
 import { paths } from './paths';
 import S2SService from './service/s2s-service';

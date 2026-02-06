@@ -12,7 +12,7 @@ class NavigationHelper extends HelperClass {
       await helper.wait(timeout);
       assert.ok(helper.page.url().includes('appeal-overview'));
       await helper.see('Sign out');
-      await helper.seeInTitle(`Your appeal overview`);
+      await helper.seeInTitle('Your appeal overview');
       return true;
     } catch (err) {
       return false;

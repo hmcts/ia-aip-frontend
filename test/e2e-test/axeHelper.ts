@@ -1,7 +1,7 @@
-import AxePuppeteer from '@axe-core/puppeteer';
-import { expect } from 'chai';
 import fs from 'fs';
 import * as path from 'path';
+import AxePuppeteer from '@axe-core/puppeteer';
+import { expect } from 'chai';
 import Logger, { getLogLabel } from '../../app/utils/logger';
 
 const container = require('codeceptjs').container;
@@ -25,7 +25,7 @@ export async function axeTest() {
   const page = container.helpers('Puppeteer').page;
   const url = page.url();
   if (hasUrlBeenScanned(url)) {
-    logger.trace(`url already scanned for accessibility`, logLabel);
+    logger.trace('url already scanned for accessibility', logLabel);
     return;
   }
   let accessibilityScanResults = null;
@@ -54,7 +54,7 @@ export async function axeTest() {
   addScannedUrl(url);
   if (accessibilityScanResults && accessibilityScanResults.violations.length > 0) {
     accessibilityScanResults.violations.forEach((violationType) => {
-      let instances: ReadableAxeResult[] = violationType.nodes.map(
+      const instances: ReadableAxeResult[] = violationType.nodes.map(
         (violationInstance) => {
           return {
             issue: violationType.help,
@@ -72,9 +72,9 @@ export async function axeTest() {
 }
 
 function generateViolationLogs(violations: ReadableAxeResult[]) {
-  let logs: string[] = [];
+  const logs: string[] = [];
   violations.forEach((violation: ReadableAxeResult) => {
-    let log = `Issue: ${violation.issue}\nImpact: ${violation.impact}\nFailure Summary: `
+    const log = `Issue: ${violation.issue}\nImpact: ${violation.impact}\nFailure Summary: `
       + `${violation.failureSummary}\nTarget HTML Object: ${violation.targetHtmlObject}\nFull HTML: `
       + `${violation.fullHtml}\nPage URL: ${violation.pageUrl}`;
     logs.push(log);

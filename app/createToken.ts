@@ -1,6 +1,6 @@
 'use strict';
-import config from 'config';
 import * as crypto from 'crypto';
+import config from 'config';
 
 const algorithm = 'aes-256-gcm';
 const bufferSize = 16;

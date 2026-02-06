@@ -18,7 +18,7 @@ describe('docmosis-service', () => {
     it('render returns 400', async () => {
       axiosStub = sandbox.stub(axios, 'post').returns(Promise.resolve({ status: 400, statusText: 'status-message' }));
 
-      let response = await new DocmosisService().render('template-key', { 'field-name': 'field-value' });
+      const response = await new DocmosisService().render('template-key', { 'field-name': 'field-value' });
 
       expect(response.success).to.be.eq(false);
       expect(response.error).to.be.eq('status-message');
@@ -27,7 +27,7 @@ describe('docmosis-service', () => {
     it('render returns 200', async () => {
       axiosStub = sandbox.stub(axios, 'post').returns(Promise.resolve({ status: 200, statusText: 'OK', data:  'pdf-file' }));
 
-      let response = await new DocmosisService().render('template-key', { 'field-name': 'field-value' });
+      const response = await new DocmosisService().render('template-key', { 'field-name': 'field-value' });
 
       expect(response.success).to.be.eq(true);
       expect(response.document).to.deep.equal(Buffer.from('pdf-file', 'binary'));
@@ -36,7 +36,7 @@ describe('docmosis-service', () => {
     it('render throws error', async () => {
       axiosStub = sandbox.stub(axios, 'post').returns(Promise.reject(new Error('error-message')));
 
-      let response = await new DocmosisService().render('template-key', {});
+      const response = await new DocmosisService().render('template-key', {});
 
       expect(response.success).to.be.eq(false);
       expect(response.error).to.be.eq('error-message');

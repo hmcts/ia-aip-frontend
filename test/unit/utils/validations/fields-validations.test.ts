@@ -144,7 +144,7 @@ describe('fields-validations', () => {
       sandbox.useFakeTimers(new Date('2025-06-15'));
       const currentDate = new Date('2025-06-15');
 
-      let tomorrowDate = new Date('2025-06-15');
+      const tomorrowDate = new Date('2025-06-15');
       tomorrowDate.setDate(currentDate.getDate() + 1);
 
       const notValidYear1 = { day: '1', month: '1', year: '5000' };
@@ -450,7 +450,7 @@ describe('fields-validations', () => {
         '+54 911 1234 5678',
         '+54 911-1234-5678'];
       phoneNumbers.forEach((phoneNumber: string) => {
-        let validationResult = contactDetailsValidation({
+        const validationResult = contactDetailsValidation({
           contactDetails: 'text-message',
           'text-message-value': phoneNumber
         });

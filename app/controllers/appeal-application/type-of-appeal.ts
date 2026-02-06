@@ -76,10 +76,10 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const citizenInUk: boolean = (req.session.appeal.application.appellantInUk === 'Yes') || false;
 
-      let defaultRedirect = getDefaultRedirect(citizenInUk, req.session.appeal.application.appealType);
-      let editingModeRedirect = paths.appealStarted.checkAndSend;
+      const defaultRedirect = getDefaultRedirect(citizenInUk, req.session.appeal.application.appealType);
+      const editingModeRedirect = paths.appealStarted.checkAndSend;
 
-      let redirectPage = getRedirectPage(editingMode, editingModeRedirect, req.body.saveForLater, defaultRedirect);
+      const redirectPage = getRedirectPage(editingMode, editingModeRedirect, req.body.saveForLater, defaultRedirect);
 
       return res.redirect(redirectPage);
     } catch (error) {

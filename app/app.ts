@@ -2,7 +2,7 @@ import config from 'config';
 import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
 import express, { Application, type NextFunction, type Request, type Response } from 'express';
-import helmet, { expectCt } from 'helmet';
+import helmet from 'helmet';
 
 import { v4 as uuidv4 } from 'uuid';
 import webpack from 'webpack';
@@ -139,14 +139,14 @@ function configureHelmet(app: Application) {
             'https://*.dynatrace.com'
           ]
         }
-      }
+      },
+      permittedCrossDomainPolicies: { permittedPolicies: 'none' }
     })
   );
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
     next();
   });
-  app.use(expectCt({ enforce: true, maxAge: 60 }));
   app.use(featurePolicy({
     features: {
       accelerometer: ['\'none\''],

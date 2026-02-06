@@ -72,8 +72,8 @@ describe('idamExpressLogout', () => {
       setImmediate(() => {
         expect(idamWrapper.setup).to.have.been.calledOnce;
         expect(cookies.get).to.have.been.calledOnce;
-        expect(axios.delete).to.have.been.calledOnce;
-        expect(axios.delete).to.have.been.calledWith(logoutUrl, options);
+        expect(requestDeleteStub).to.have.been.calledOnce;
+        expect(requestDeleteStub).to.have.been.calledWith(logoutUrl, options);
         expect(cookies.remove).to.have.been.calledOnce;
       });
     });
@@ -87,8 +87,8 @@ describe('idamExpressLogout', () => {
       setImmediate(() => {
         expect(idamWrapper.setup).to.have.been.calledOnce;
         expect(cookies.get).to.have.been.calledOnce;
-        expect(axios.delete).to.have.been.calledOnce;
-        expect(axios.delete).to.have.been.calledWith(logoutUrl, options);
+        expect(requestDeleteStub).to.have.been.calledOnce;
+        expect(requestDeleteStub).to.have.been.calledWith(logoutUrl, options);
       });
     });
   });

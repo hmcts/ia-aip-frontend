@@ -12,7 +12,7 @@ const get = (req, cookieName) => {
   if (req.cookies) {
     return req.cookies[cookieName];
   }
-  return undefined; // eslint-disable-line no-undefined
+  return undefined;
 };
 
 const remove = (res, cookieName) => {

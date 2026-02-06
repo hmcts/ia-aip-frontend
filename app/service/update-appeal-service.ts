@@ -168,12 +168,12 @@ export default class UpdateAppealService {
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
-      if (Subscriber.APPELLANT === value.subscriber) {
+      if (Subscriber.APPELLANT.valueOf() === value.subscriber) {
         return {
           email: value.email || null,
-          wantsEmail: (YesOrNo.YES === value.wantsEmail),
+          wantsEmail: (YesOrNo.YES.valueOf() === value.wantsEmail),
           phone: value.mobileNumber || null,
-          wantsSms: (YesOrNo.YES === value.wantsSms)
+          wantsSms: (YesOrNo.YES.valueOf() === value.wantsSms)
         };
       }
     }, {}) || { email: null, wantsEmail: false, phone: null, wantsSms: false };
@@ -182,9 +182,9 @@ export default class UpdateAppealService {
       const value = sponsorSubscription.value;
       return {
         email: value.email || null,
-        wantsEmail: (YesOrNo.YES === value.wantsEmail),
+        wantsEmail: (YesOrNo.YES.valueOf() === value.wantsEmail),
         phone: value.mobileNumber || null,
-        wantsSms: (YesOrNo.YES === value.wantsSms)
+        wantsSms: (YesOrNo.YES.valueOf() === value.wantsSms)
       };
     }, {}) || { sponsorEmail: null, sponsorWantsEmail: false, phone: null, wantsSms: false };
 

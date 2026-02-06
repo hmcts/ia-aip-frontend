@@ -1,4 +1,3 @@
-/* tslint:disable:no-console */
 import { Request } from 'express';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
@@ -45,7 +44,7 @@ function constructEventObject(event: HistoryEvent, req: Request) {
     eventContent = i18n.pages.overviewPage.timeline[event.id][sourceOfRemittal];
   }
 
-  let eventObject = eventContent
+  const eventObject = eventContent
         ? {
           date: moment(event.createdDate).format('DD MMMM YYYY'),
           dateObject: new Date(event.createdDate),
@@ -180,7 +179,7 @@ function getDirectionHistory(req: Request): any[] {
 
 function getListCaseEvent(req: Request): any[] {
   let hearingNotices: Evidence[] = [];
-  let hearingNoticeTags: string[] = ['hearingNotice', 'hearingNoticeRelisted',
+  const hearingNoticeTags: string[] = ['hearingNotice', 'hearingNoticeRelisted',
     'reheardHearingNotice', 'reheardHearingNoticeRelisted'];
   if (req.session.appeal.hearingDocuments) {
     hearingNotices = req.session.appeal.hearingDocuments.filter((doc: Evidence) => hearingNoticeTags.includes(doc.tag));

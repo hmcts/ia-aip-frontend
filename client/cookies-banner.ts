@@ -19,7 +19,6 @@ export default class CookiesBanner implements ICookies {
   init() {
     this.cookieBanner = document.querySelector('#cookie-banner');
     if (isNull(this.cookieBanner)) { return; }
-    // tslint:disable-next-line
     if (!window.gtag) window.gtag = () => { };
     this.acceptCookiesButton = document.querySelector('#acceptCookies');
     this.rejectCookiesButton = document.querySelector('#rejectCookies');

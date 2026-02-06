@@ -33,6 +33,7 @@ async function eligibilityQuestionGet(req: Request, res: Response, next: NextFun
       nextId = '0';
     }
 
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     const answer = _.get(req.session.eligibility, nextId + '.answer', '');
 
     return res.render('eligibility/eligibility-question.njk', await getModel(nextId, answer));

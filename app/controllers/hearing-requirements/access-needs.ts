@@ -523,11 +523,11 @@ function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealServ
         req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterSpokenLanguageFieldString] = interpreterSpokenLanguage;
 
         if (req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterLanguageCategoryFieldString] && req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterLanguageCategoryFieldString].includes(signLanguageInterpreterString)) {
-          redirectLink = paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection + '?selectedWitnesses=' + selectedWitnessesList;
+          redirectLink = paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection + '?selectedWitnesses=' + selectedWitnessesList.toString();
         } else {
           selectedWitnessesList.shift();
           if (selectedWitnessesList && selectedWitnessesList.length > 0) {
-            redirectLink = paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=' + selectedWitnessesList;
+            redirectLink = paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=' + selectedWitnessesList.toString();
           } else {
             redirectLink = paths.submitHearingRequirements.hearingStepFreeAccess;
           }
@@ -646,7 +646,7 @@ function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealServic
 
         selectedWitnessesList.shift();
         if (selectedWitnessesList && selectedWitnessesList.length > 0) {
-          redirectLink = paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=' + selectedWitnessesList;
+          redirectLink = paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=' + selectedWitnessesList.toString();
         } else {
           redirectLink = paths.submitHearingRequirements.hearingStepFreeAccess;
         }

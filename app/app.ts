@@ -65,7 +65,6 @@ function createApp() {
   if (isDevEnv) {
     const [serverDevConfig, clientDevConfig] = webpackDevConfig;
     const compiler = webpack([serverDevConfig, clientDevConfig]);
-    // @ts-ignore
     const options = { stats: 'errors-only' } as Options;
     const wpDevMiddleware = webpackDevMiddleware(compiler, options);
     app.use(wpDevMiddleware);

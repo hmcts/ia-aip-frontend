@@ -182,7 +182,7 @@ async function waitForStateChange(user: UserInfo, expectedState: State): Promise
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const currentState = await getAppealState(user.userId, user.caseId, await getSecurityHeaders(user));
-    if (currentState === expectedState) {
+    if (currentState === expectedState.valueOf()) {
       return;
     }
     if (attempt < maxAttempts) {

@@ -198,7 +198,7 @@ describe('Session Timeout', () => {
     });
 
     it('should not extend session and call removeListeners and stopCounters', (done) => {
-      const rejected = new Promise((_, r) => r());
+      const rejected = Promise.reject(new Error(''));
       axiosStub = sandbox.stub(axios, 'get').withArgs(paths.common.extendSession).returns(rejected);
 
       restartCountersStub = sandbox.stub(sessionTimeout, 'restartCounters');

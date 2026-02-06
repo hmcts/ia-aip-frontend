@@ -34,7 +34,7 @@ describe('docmosis-service', () => {
     });
 
     it('render throws error', async () => {
-      axiosStub = sandbox.stub(axios, 'post').returns(Promise.reject('error-message'));
+      axiosStub = sandbox.stub(axios, 'post').returns(Promise.reject(new Error('error-message')));
 
       let response = await new DocmosisService().render('template-key', {});
 

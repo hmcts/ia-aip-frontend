@@ -12,7 +12,7 @@ describe('createRedisClient', () => {
   let getLogLabelStub: sinon.SinonStub;
 
   const fakeClient = {
-    // tslint:disable-next-line:no-empty
+    // eslint-disable-next-line:no-empty
     on: () => {}
   } as any;
 

@@ -2044,7 +2044,6 @@ describe('update-appeal-service', () => {
         { id: '2', url: 'http://example.com/doc2' }
       ];
 
-      // @ts-ignore
       const expected: Collection<Document>[] = [
         {
           id: '1',

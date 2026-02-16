@@ -32,6 +32,7 @@ function createApp() {
   const app: express.Application = express();
   const environment: string = process.env.NODE_ENV;
   const isDevEnv = ['test', 'development', 'aatDevelopment'].includes(environment);
+  app.use(router);
 
   // Inject nonce Id on every request.
   app.use((req, res, next) => {
@@ -76,7 +77,6 @@ function createApp() {
     next();
   });
   app.use(isUserAuthenticated);
-  app.use(router);
   app.use(logErrorMiddleware);
   app.use(pageNotFoundHandler);
   app.use(serverErrorHandler);

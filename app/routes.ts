@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import * as express from 'express';
 import { OSPlacesClient } from './clients/OSPlacesClient';
 import { setupIndexController } from './controllers';
 import { setupAsylumSupportController } from './controllers/appeal-application/asylum-support';
@@ -222,6 +222,8 @@ const updateAppealService: UpdateAppealService = new UpdateAppealService(new Ccd
 const paymentService: PaymentService = new PaymentService(authenticationService, updateAppealService);
 const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), config.get('addressLookup.url'));
 
+const router = express.Router();
+
 const indexController = setupIndexController();
 const startController = setupStartController();
 const notFoundController = setupNotFoundController();
@@ -349,133 +351,131 @@ const outOfCountryFeatureToggleController = setupOutOfCountryFeatureToggleContro
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 const deportationOrderController = setupDeportationOrderController(middleware, updateAppealService);
 
-function routerSetup(router: Router): Router {
 // not protected by idam
-  router.use(indexController);
-  router.use(startController);
-  router.use(eligibilityController);
-  router.use(GuidancePages);
-  router.use(footerController);
-  router.use(sessionController);
-  router.use(notFoundController);
-  router.use(startRepresentingMyselfPublicControllers);
+router.use(indexController);
+router.use(startController);
+router.use(eligibilityController);
+router.use(GuidancePages);
+router.use(footerController);
+router.use(sessionController);
+router.use(notFoundController);
+router.use(startRepresentingMyselfPublicControllers);
 
 // protected by idam
-  router.use(idamController);
-  router.use(askForMoreTime);
+router.use(idamController);
+router.use(askForMoreTime);
 // router.use(initSession);
-  if ((process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'aatDevelopment') && sessionLoggerEnabled) {
-    router.use(logSession);
-  }
-
-  const privatePages = PageSetup.GetImplementations();
-  for (let x = 0; x < privatePages.length; x++) {
-    const page = new privatePages[x]();
-    router.use(page.initialise(middleware, updateAppealService, documentManagementService));
-  }
-
-  router.use(taskListController);
-  router.use(homeOfficeDetailsController);
-  router.use(typeOfAppealController);
-  router.use(decisionTypeController);
-  router.use(feeSupportController);
-  router.use(feeSupportRefundController);
-  router.use(asylumSupportController);
-  router.use(asylumSupportRefundController);
-  router.use(feeWaiverController);
-  router.use(feeWaiverRefundController);
-  router.use(helpWithFeesController);
-  router.use(helpWithFeesRefundController);
-  router.use(helpWithFeesReferenceNumberController);
-  router.use(helpWithFeesReferenceNumberRefundController);
-  router.use(stepsToHelpWithFeesController);
-  router.use(stepsToHelpWithFeesRefundController);
-  router.use(checkYourAnswersRefundController);
-  router.use(confirmationRefundController);
-  router.use(contactDetailsController);
-  router.use(confirmationController);
-  router.use(checkAndSendController);
-  router.use(outOfTimeController);
-  router.use(applicationOverview);
-
-  router.use(reasonsForAppealController);
-  router.use(reasonsForAppealCYAController);
-  router.use(clarifyingQuestionsListController);
-  router.use(clarifyingQuestionPageController);
-  router.use(clarifyingQuestionsSupportingEvidenceController);
-  router.use(clarifyingQuestionsSupportingEvidenceUploadController);
-  router.use(clarifyingQuestionsAnythingElseQuestionController);
-  router.use(clarifyingQuestionsAnythingElseAnswerController);
-  router.use(clarifyingQuestionsCYAController);
-  router.use(clarifyingQuestionsConfirmationPageController);
-  router.use(submitHearingRequirementsTaskListController);
-  router.use(submitHearingRequirementsFeatureToggleController);
-  router.use(witnessesOnHearingQuestionController);
-  router.use(witnessesOutsideUkQuestionController);
-  router.use(witnessNamesController);
-  router.use(submitHearingRequirementsAccessNeedsController);
-  router.use(hearingRequirementsOtherNeedsStartPageController);
-  router.use(hearingRequirementsOtherNeedsAnythingElseQuestionController);
-  router.use(hearingRequirementsOtherNeedsHealthConditionsQuestionController);
-  router.use(hearingRequirementsOtherNeedsJoinByVideoCallAppointmentQuestionController);
-  router.use(hearingRequirementsOtherNeedsJoinByVideoCallReasonController);
-  router.use(hearingRequirementsOtherNeedsBringEquipmentQuestionController);
-  router.use(hearingRequirementsOtherNeedsBringEquipmentReasonController);
-  router.use(hearingRequirementsOtherNeedsMultimediaEvidenceQuestionController);
-  router.use(hearingRequirementsOtherNeedsPastExperiencesQuestionController);
-  router.use(hearingRequirementsOtherNeedsPrivateHearingQuestionController);
-  router.use(hearingRequirementsOtherNeedsSingleSexHearingQuestionController);
-  router.use(hearingRequirementsOtherNeedsSingleSexTypeQuestionController);
-  router.use(hearingRequirementsOtherNeedsSingleSexHearingAllFemaleReasonController);
-  router.use(hearingRequirementsOtherNeedsSingleSexHearingAllMaleReasonController);
-  router.use(hearingRequirementsOtherNeedsHealthConditionsReasonController);
-  router.use(hearingRequirementsOtherNeedsPastExperiencesReasonController);
-  router.use(hearingRequirementsOtherNeedsPrivateHearingReasonController);
-  router.use(hearingRequirementsOtherNeedsAnythingElseReasonController);
-  router.use(hearingRequirementsCYAController);
-  router.use(yourHearingNeedsController);
-  router.use(hearingRequirementConfirmationController);
-  router.use(hearingDatesToAvoidQuestionController);
-  router.use(hearingDatesToAvoidEnterADateController);
-  router.use(hearingDatesToAvoidReasonsController);
-  router.use(hearingDatesToAvoidAddAnotherDateController);
-  router.use(cmaRequirementsTaskListController);
-  router.use(cmaRequirementsStartPageController);
-  router.use(cmaRequirementsAccessNeedsController);
-  router.use(cmaRequirementsMultimediaEvidenceQuestionController);
-  router.use(cmaRequirementsBringEquipmentQuestionController);
-  router.use(cmaRequirementsBringEquipmentReasonController);
-  router.use(cmaRequirementsSingleSexAppointmentQuestionController);
-  router.use(cmaRequirementsSingleSexTypeAppointmentQuestionController);
-  router.use(cmaRequirementsSingleSexAllMaleReasonAppointmentController);
-  router.use(cmaRequirementsSingleSexAllFemaleReasonAppointmentController);
-  router.use(cmaRequirementsPrivateAppointmentQuestionController);
-  router.use(cmaRequirementsPrivateReasonController);
-  router.use(cmaRequirementsHealthConditionsQuestionController);
-  router.use(cmaRequirementsHealthConditionsReasonController);
-  router.use(cmaRequirementsPastExperiencesQuestionController);
-  router.use(cmaRequirementsPastExperiencesReasonController);
-  router.use(cmaRequirementsAnythingElseQuestionController);
-  router.use(cmaRequirementsAnythingElseReasonController);
-  router.use(cmaRequirementsDatesToAvoidQuestionController);
-  router.use(cmaRequirementsDatesToAvoidEnterADateController);
-  router.use(cmaRequirementsDatesToAvoidReasonController);
-  router.use(cmaRequirementsDatesToAvoidAddAnotherDateController);
-  router.use(cmaRequirementsCYAController);
-  router.use(cmaRequirementsConfirmationController);
-  router.use(whatToExpectAtCmaNextController);
-  router.use(provideMoreEvidence);
-  router.use(outOfCountryController);
-  router.use(makeApplicationControllers);
-  router.use(changeRepresentationControllers);
-  router.use(ftpaApplicationControlers);
-
-  router.use(hearingBundleFeatureToggleController);
-  router.use(outOfCountryFeatureToggleController);
-
-  router.use(detailViewersController);
-  router.use(forbiddenController);
-  router.use(deportationOrderController);
-  return router;
+if ((process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'aatDevelopment') && sessionLoggerEnabled) {
+  router.use(logSession);
 }
-export { routerSetup };
+
+const privatePages = PageSetup.GetImplementations();
+for (let x = 0; x < privatePages.length; x++) {
+  const page = new privatePages[x]();
+  router.use(page.initialise(middleware, updateAppealService, documentManagementService));
+}
+
+router.use(taskListController);
+router.use(homeOfficeDetailsController);
+router.use(typeOfAppealController);
+router.use(decisionTypeController);
+router.use(feeSupportController);
+router.use(feeSupportRefundController);
+router.use(asylumSupportController);
+router.use(asylumSupportRefundController);
+router.use(feeWaiverController);
+router.use(feeWaiverRefundController);
+router.use(helpWithFeesController);
+router.use(helpWithFeesRefundController);
+router.use(helpWithFeesReferenceNumberController);
+router.use(helpWithFeesReferenceNumberRefundController);
+router.use(stepsToHelpWithFeesController);
+router.use(stepsToHelpWithFeesRefundController);
+router.use(checkYourAnswersRefundController);
+router.use(confirmationRefundController);
+router.use(contactDetailsController);
+router.use(confirmationController);
+router.use(checkAndSendController);
+router.use(outOfTimeController);
+router.use(applicationOverview);
+
+router.use(reasonsForAppealController);
+router.use(reasonsForAppealCYAController);
+router.use(clarifyingQuestionsListController);
+router.use(clarifyingQuestionPageController);
+router.use(clarifyingQuestionsSupportingEvidenceController);
+router.use(clarifyingQuestionsSupportingEvidenceUploadController);
+router.use(clarifyingQuestionsAnythingElseQuestionController);
+router.use(clarifyingQuestionsAnythingElseAnswerController);
+router.use(clarifyingQuestionsCYAController);
+router.use(clarifyingQuestionsConfirmationPageController);
+router.use(submitHearingRequirementsTaskListController);
+router.use(submitHearingRequirementsFeatureToggleController);
+router.use(witnessesOnHearingQuestionController);
+router.use(witnessesOutsideUkQuestionController);
+router.use(witnessNamesController);
+router.use(submitHearingRequirementsAccessNeedsController);
+router.use(hearingRequirementsOtherNeedsStartPageController);
+router.use(hearingRequirementsOtherNeedsAnythingElseQuestionController);
+router.use(hearingRequirementsOtherNeedsHealthConditionsQuestionController);
+router.use(hearingRequirementsOtherNeedsJoinByVideoCallAppointmentQuestionController);
+router.use(hearingRequirementsOtherNeedsJoinByVideoCallReasonController);
+router.use(hearingRequirementsOtherNeedsBringEquipmentQuestionController);
+router.use(hearingRequirementsOtherNeedsBringEquipmentReasonController);
+router.use(hearingRequirementsOtherNeedsMultimediaEvidenceQuestionController);
+router.use(hearingRequirementsOtherNeedsPastExperiencesQuestionController);
+router.use(hearingRequirementsOtherNeedsPrivateHearingQuestionController);
+router.use(hearingRequirementsOtherNeedsSingleSexHearingQuestionController);
+router.use(hearingRequirementsOtherNeedsSingleSexTypeQuestionController);
+router.use(hearingRequirementsOtherNeedsSingleSexHearingAllFemaleReasonController);
+router.use(hearingRequirementsOtherNeedsSingleSexHearingAllMaleReasonController);
+router.use(hearingRequirementsOtherNeedsHealthConditionsReasonController);
+router.use(hearingRequirementsOtherNeedsPastExperiencesReasonController);
+router.use(hearingRequirementsOtherNeedsPrivateHearingReasonController);
+router.use(hearingRequirementsOtherNeedsAnythingElseReasonController);
+router.use(hearingRequirementsCYAController);
+router.use(yourHearingNeedsController);
+router.use(hearingRequirementConfirmationController);
+router.use(hearingDatesToAvoidQuestionController);
+router.use(hearingDatesToAvoidEnterADateController);
+router.use(hearingDatesToAvoidReasonsController);
+router.use(hearingDatesToAvoidAddAnotherDateController);
+router.use(cmaRequirementsTaskListController);
+router.use(cmaRequirementsStartPageController);
+router.use(cmaRequirementsAccessNeedsController);
+router.use(cmaRequirementsMultimediaEvidenceQuestionController);
+router.use(cmaRequirementsBringEquipmentQuestionController);
+router.use(cmaRequirementsBringEquipmentReasonController);
+router.use(cmaRequirementsSingleSexAppointmentQuestionController);
+router.use(cmaRequirementsSingleSexTypeAppointmentQuestionController);
+router.use(cmaRequirementsSingleSexAllMaleReasonAppointmentController);
+router.use(cmaRequirementsSingleSexAllFemaleReasonAppointmentController);
+router.use(cmaRequirementsPrivateAppointmentQuestionController);
+router.use(cmaRequirementsPrivateReasonController);
+router.use(cmaRequirementsHealthConditionsQuestionController);
+router.use(cmaRequirementsHealthConditionsReasonController);
+router.use(cmaRequirementsPastExperiencesQuestionController);
+router.use(cmaRequirementsPastExperiencesReasonController);
+router.use(cmaRequirementsAnythingElseQuestionController);
+router.use(cmaRequirementsAnythingElseReasonController);
+router.use(cmaRequirementsDatesToAvoidQuestionController);
+router.use(cmaRequirementsDatesToAvoidEnterADateController);
+router.use(cmaRequirementsDatesToAvoidReasonController);
+router.use(cmaRequirementsDatesToAvoidAddAnotherDateController);
+router.use(cmaRequirementsCYAController);
+router.use(cmaRequirementsConfirmationController);
+router.use(whatToExpectAtCmaNextController);
+router.use(provideMoreEvidence);
+router.use(outOfCountryController);
+router.use(makeApplicationControllers);
+router.use(changeRepresentationControllers);
+router.use(ftpaApplicationControlers);
+
+router.use(hearingBundleFeatureToggleController);
+router.use(outOfCountryFeatureToggleController);
+
+router.use(detailViewersController);
+router.use(forbiddenController);
+router.use(deportationOrderController);
+
+export { router };

@@ -15,7 +15,7 @@ import { remissionOptionsValidation } from '../../utils/validations/fields-valid
 function getRemissionOptionsQuestion(appeal: Appeal) {
   const fee = getFee(appeal).calculated_amount;
 
-  let remissionOption = appeal.application.remissionOption || null;
+  const remissionOption = appeal.application.remissionOption || null;
   const selectionHint = i18n.pages.remissionOptionPage.options.noneOfTheseStatements.hint;
   return {
     title: i18n.pages.remissionOptionPage.title,
@@ -113,7 +113,7 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
       await persistAppeal(appeal);
       const defaultRedirect = getFeeSupportRedirectPage(selectedValue);
-      let redirectPage = getRedirectPage(isEdit, defaultRedirect, req.body.saveForLater, defaultRedirect);
+      const redirectPage = getRedirectPage(isEdit, defaultRedirect, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
     } catch (error) {
       next(error);

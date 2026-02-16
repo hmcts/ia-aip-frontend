@@ -11,7 +11,7 @@ function addAriaExpandedAttribute() {
 function addAriaExpandedEventListener() {
   document.querySelectorAll('details').forEach(detail => {
     detail.addEventListener('toggle', () => {
-      detail.open ? detail.setAttribute('aria-expanded', 'true') : detail.setAttribute('aria-expanded', 'false');
+      detail.setAttribute('aria-expanded', detail.open ? 'true': 'false');
     });
   });
 }

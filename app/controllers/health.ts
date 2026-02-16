@@ -9,7 +9,6 @@ function liveness(req: Request, res: Response) {
   res.json({});
 }
 
-/* istanbul ignore next */
 function setupHealthController(): Router {
   const router = Router();
   router.get(paths.common.health, health);

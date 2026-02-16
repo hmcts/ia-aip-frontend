@@ -1,8 +1,7 @@
-import { expect } from 'chai';
 import config from 'config';
-import sinon from 'sinon';
 import { getFileUploadError } from '../../../app/utils/upload-utils';
 import i18n from '../../../locale/en.json';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('getFileUploadError', () => {
   let configStub: sinon.SinonStub;

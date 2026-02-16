@@ -85,7 +85,7 @@ describe('createSummaryRowsFrom', () => {
     };
 
     const rows: any[] = await createSummaryRowsFrom(req as Request);
-    const appealLateRow = addSummaryRow('Reason for late appeal', [formatTextForCYA(req.session.appeal.application.lateAppeal.reason), `<p class=\"govuk-!-font-weight-bold\">Supporting evidence</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/fileId'>filename</a>`], paths.appealStarted.appealLate);
+    const appealLateRow = addSummaryRow('Reason for late appeal', [formatTextForCYA(req.session.appeal.application.lateAppeal.reason), '<p class=\"govuk-!-font-weight-bold\">Supporting evidence</p><a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/fileId\'>filename</a>'], paths.appealStarted.appealLate);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(appealLateRow);
     expect(rows).to.be.deep.equal(mockedRows);
@@ -184,7 +184,7 @@ describe('createSummaryRowsFrom', () => {
 
     const deportationOrderRow = { key: { text: 'Deportation order' }, value: { html: 'Deportation order has not been made' }, actions: { items: [{ href: '/deportation-order?edit', text: 'Change' }] } };
 
-    let mockedRows: SummaryRow[] = getMockedSummaryRows().splice(14,0, deportationOrderRow);
+    const mockedRows: SummaryRow[] = getMockedSummaryRows().splice(14,0, deportationOrderRow);
     mockedRows.splice(1, 0, deportationOrderRow);
 
     const testData = [

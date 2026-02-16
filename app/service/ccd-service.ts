@@ -38,9 +38,9 @@ function extractHistoryDetails(historyEvents: any[]): HistoryEvent[] {
 }
 
 function generateSupplementaryId(): Record<string, Record<string, string>> {
-  let serviceId: Record<string, string> = {};
+  const serviceId: Record<string, string> = {};
   serviceId['HMCTSServiceId'] = 'BFA1';
-  let request: Record<string, Record<string, string>> = {};
+  const request: Record<string, Record<string, string>> = {};
   request['$set'] = serviceId;
   return request;
 }
@@ -168,7 +168,7 @@ class CcdService {
 
   async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     logger.trace('Loading or creating case', logLabel);
-    let data: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
+    const data: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
     if (data.total > 0) {
       return data.cases[0];
     } else {

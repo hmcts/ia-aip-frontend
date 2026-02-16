@@ -9,12 +9,14 @@ Feature: Overview page
     When I visit the overview page
     Then I should see the 'do this next section' for 'New - Appeal started'
     And I click continue
+    And I check page accessibility
     Then I should see the task-list page
 
   Scenario: Saved Appeal Started
     Given I have logged in as an appellant in state "Saved appealStarted"
     Then I should see the 'do this next section' for 'Saved - Appeal started'
     Then I click continue
+    And I check page accessibility
     Then I should see the task-list page
 
   Scenario: Appeal Submitted
@@ -23,8 +25,10 @@ Feature: Overview page
     Then I should see the 'do this next section' for 'Appeal submitted'
     And I see the respond by date is "09 June 2020"
     When I click "What is a Tribunal Caseworker?" link
+    And I check page accessibility
     Then I should see the 'Tribunal Caseworker' guidance page
     When I click "Back" button
+    And I check page accessibility
     Then I should see the appeal overview page
 
 
@@ -33,10 +37,13 @@ Feature: Overview page
     When I visit the overview page
     Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
     When I click "Understanding your Home Office documents" link
+    And I check page accessibility
     Then I should see the 'Understanding your Home Office documents' guidance page
     When I click "Back" button
+    And I check page accessibility
     Then I should see the appeal overview page
     Then I click continue
+    And I check page accessibility
     Then I should see the reasons for appeal decision page
 
   Scenario: Saved Awaiting Reasons for appeal
@@ -44,10 +51,13 @@ Feature: Overview page
     When I visit the overview page
     Then I should see the 'do this next section' for 'Saved - Awaiting reasons for appeal'
     When I click "Understanding your Home Office documents" link
+    And I check page accessibility
     Then I should see the 'Understanding your Home Office documents' guidance page
     When I click "Back" button
+    And I check page accessibility
     Then I should see the appeal overview page
     Then I click continue
+    And I check page accessibility
     Then I should see the reasons for appeal decision page
 
   # Scenario: Awaiting Reasons for appeal with time extension
@@ -65,10 +75,13 @@ Feature: Overview page
     When I visit the overview page
     Then I should see the 'do this next section' for 'awaitingCmaRequirements'
     When I click "What to expect at a case management appointment" link
+    And I check page accessibility
 #    Then I should see the 'What to expect at a case management appointment' guidance page
     When I click "Back" button
+    And I check page accessibility
     Then I should see the appeal overview page
     Then I click continue
+    And I check page accessibility
     Then I should see the cma requirements task-list page
 
   # Scenario: Awaiting CMA requirements appeal with time extension

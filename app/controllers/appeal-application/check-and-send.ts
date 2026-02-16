@@ -402,7 +402,7 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
             refundConfirmationApplied: false
           }
         };
-        req.app.locals.logger.trace(`Payment success`, 'Finishing payment');
+        req.app.locals.logger.trace('Payment success', 'Finishing payment');
         if (req.session.appeal.appealStatus === 'appealStarted') {
           event = Events.SUBMIT_APPEAL;
           redirectUrl = paths.appealSubmitted.confirmation;

@@ -77,9 +77,9 @@ function getDueDateForAppellantToRespondToJudgeDecision(req: Request, ftpaSetAsi
     theDateOfdecisionAndReasons = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'finalDecisionAndReasonsPdf').dateUploaded;
   }
 
-  let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+  const appealOutOfCountry = req.session.appeal.appealOutOfCountry;
   // if it's out of country appeal it's 28 days otherwise it's 14 days
-  let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? dueDateJudgeDecisionResponseOoc : dueDateJudgeDecisionResponse;
+  const noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? dueDateJudgeDecisionResponseOoc : dueDateJudgeDecisionResponse;
   return moment(theDateOfdecisionAndReasons).add(noOfDays, 'days').format(dayMonthYearFormat);
 }
 
@@ -88,9 +88,9 @@ function getDueDateForAppellantToRespondToJudgeDecision(req: Request, ftpaSetAsi
  * @returns deadline for the appeallant to respond to FTPA decision
  */
 function getDueDateForAppellantToRespondToFtpaDecision(req: Request) {
-  let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+  const appealOutOfCountry = req.session.appeal.appealOutOfCountry;
   // if it's out of country appeal it's 28 days otherwise it's 14 days
-  let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? dueDateFtpaDecisionResponseOoc : dueDateFtpaDecisionResponse;
+  const noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? dueDateFtpaDecisionResponseOoc : dueDateFtpaDecisionResponse;
   return moment(req.session.appeal.ftpaAppellantDecisionDate).add(noOfDays, 'days').format(dayMonthYearFormat);
 }
 
@@ -116,8 +116,8 @@ function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemission
     case 'awaitingRespondentEvidence': {
       if (dlrmFeeRemissionFlag &&
         !appealHasNoRemissionOption(req.session.appeal.application)) {
-        let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
-        let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? daysToWaitAfterSubmissionOoc : daysToWaitAfterSubmissionDlrm;
+        const appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+        const noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? daysToWaitAfterSubmissionOoc : daysToWaitAfterSubmissionDlrm;
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', noOfDays);
       } else {
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterSubmission);
@@ -126,8 +126,8 @@ function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemission
     }
     case 'pendingPayment': {
       if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
-        let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
-        let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? daysToWaitPendingPaymentOoc : daysToWaitPendingPayment;
+        const appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+        const noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? daysToWaitPendingPaymentOoc : daysToWaitPendingPayment;
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', noOfDays);
       } else {
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitPendingPayment);

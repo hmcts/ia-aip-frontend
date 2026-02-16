@@ -17,7 +17,7 @@ exports.config = {
       url: config.get('testUrl'),
       show: config.get('showTests'),
       chrome: {
-        ignoreHTTPSErrors: true
+        acceptInsecureCerts: true
       },
       restart: true
     },

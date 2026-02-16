@@ -41,7 +41,7 @@ describe('Ftpa application controllers setup', () => {
     {
       fileId: 'fileId',
       name: 'name',
-      dateUploaded: formatDate(new Date().toString()),
+      dateUploaded: formatDate(new Date().toISOString()),
       tag: 'finalDecisionAndReasonsPdf'
     }
   ];

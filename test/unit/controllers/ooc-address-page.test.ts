@@ -1,4 +1,3 @@
-const express = require('express');
 import { Request, Response } from 'express';
 import session from 'express-session';
 import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
@@ -8,6 +7,7 @@ import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
+const express = require('express');
 
 describe('Personal Details Controller - Out of Country Address Page', function () {
   let sandbox: sinon.SinonSandbox;

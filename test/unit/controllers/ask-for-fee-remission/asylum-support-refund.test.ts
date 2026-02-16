@@ -146,7 +146,7 @@ describe('Asylum support refund Controller', function () {
         'asylumSupportRefNumber': '1324'
       };
 
-      let application = req.session.appeal.application;
+      const application = req.session.appeal.application;
       application.lateHelpWithFeesOption = 'test value';
       application.lateHelpWithFeesRefNumber = 'test value';
       application.lateLocalAuthorityLetters = [];

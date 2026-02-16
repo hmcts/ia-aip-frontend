@@ -21,7 +21,7 @@ async function getLocalAuthorityLetterRefund(req: Request, res: Response, next: 
       };
     }
     const localAuthorityLetterEvidences = req.session.appeal.application.lateLocalAuthorityLetters || [];
-    let previousPage = paths.appealSubmitted.feeSupportRefund;
+    const previousPage = paths.appealSubmitted.feeSupportRefund;
 
     res.render('appeal-application/fee-support/upload-local-authority-letter.njk', {
       title: i18n.pages.uploadLocalAuthorityLetter.title,
@@ -79,7 +79,7 @@ function uploadLocalAuthorityLetterRefund(documentManagementService: DocumentMan
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
-        let localAuthorityLetterEvidences: Evidence[] = req.session.appeal.application.lateLocalAuthorityLetters || [];
+        const localAuthorityLetterEvidences: Evidence[] = req.session.appeal.application.lateLocalAuthorityLetters || [];
         const localAuthorityLetter: Evidence = await documentManagementService.uploadFile(req);
         localAuthorityLetterEvidences.push(localAuthorityLetter);
         const application = req.session.appeal.application;

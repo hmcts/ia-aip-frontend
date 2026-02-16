@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from 'express';
 import * as path from 'path';
+import { NextFunction, Request, Response } from 'express';
 import i18n from '../../locale/en.json';
 
-const multer = require('multer');
 const config = require('config');
+const multer = require('multer');
 const maxFileSizeInMb: number = config.get('evidenceUpload.maxFileSizeInMb');
 const SUPPORTED_FORMATS: string[] = config.get('evidenceUpload.supportedFormats');
 

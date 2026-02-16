@@ -307,7 +307,7 @@ describe('getStatus', () => {
     };
     status.homeOfficeDetails.active = true;
     status.homeOfficeDetailsOOC.active = true;
-    let cosa = appealApplicationStatus(appeal, true);
+    const cosa = appealApplicationStatus(appeal, true);
     expect(appealApplicationStatus(appeal, true)).to.deep.eq(status);
   });
 

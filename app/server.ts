@@ -1,6 +1,6 @@
+import https from 'https';
 import express from 'express';
 import fs from 'graceful-fs';
-import https from 'https';
 import { createApp } from './app';
 import { setupSecrets } from './setupSecrets';
 import Logger, { getLogLabel } from './utils/logger';

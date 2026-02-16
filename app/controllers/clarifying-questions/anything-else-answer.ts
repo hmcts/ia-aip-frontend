@@ -80,7 +80,7 @@ function postAnythingElseAnswerPage(updateAppealService: UpdateAppealService) {
         req.session.appeal.application.saveAndAskForTime = true;
         return res.redirect(paths.common.askForMoreTimeReason);
       }
-      let redirectPage = getRedirectPage(
+      const redirectPage = getRedirectPage(
         editingMode,
         paths.awaitingClarifyingQuestionsAnswers.checkAndSend,
         req.body.saveForLater,

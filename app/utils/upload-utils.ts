@@ -6,7 +6,7 @@ import i18n from '../../locale/en.json';
  * @param errorCode the error code value to be used for the error message
  */
 export function getFileUploadError(errorCode: string): string {
-  let errorMessage: string = i18n.validationErrors.fileUpload[`${errorCode}`];
+  const errorMessage: string = i18n.validationErrors.fileUpload[`${errorCode}`];
   if (!errorMessage) {
     return i18n.validationErrors.fileUpload.noFileSelected;
   }

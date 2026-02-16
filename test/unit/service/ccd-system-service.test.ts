@@ -143,7 +143,7 @@ describe('ccd-system-service', () => {
 
     describe('pipValidation in time', () => {
       beforeEach(() => {
-        axiosStub = sandbox.stub(axios, 'get').returns(Promise.reject({}));
+        axiosStub = sandbox.stub(axios, 'get').returns(Promise.reject(new Error('Error')));
       });
 
       it('should return validation failed response when retrieving case details fails', async () => {

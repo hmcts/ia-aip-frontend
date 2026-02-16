@@ -9,8 +9,7 @@ function liveness(req: Request, res: Response) {
   res.json({});
 }
 
-function setupHealthController(): Router {
-  const router = Router();
+function setupHealthController(router: Router): Router {
   router.get(paths.common.health, health);
   router.get(paths.common.liveness, liveness);
   router.get(paths.common.healthLiveness, liveness);

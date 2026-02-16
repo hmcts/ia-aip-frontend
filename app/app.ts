@@ -10,6 +10,7 @@ import webpackDevMiddleware, { Options } from 'webpack-dev-middleware';
 import internationalization from '../locale/en.json';
 import webpackDevConfig from '../webpack/webpack.dev.js';
 import { configureIdam, configureLogger, configureNunjucks, configureS2S } from './app-config';
+import { setupHealthController } from './controllers/health';
 import { pageNotFoundHandler, serverErrorHandler } from './handlers/error-handler';
 import {
   enforceFileSizeLimit,
@@ -20,7 +21,7 @@ import { isUserAuthenticated } from './middleware/is-user-authenticated';
 import { logErrorMiddleware, logRequestMiddleware } from './middleware/logger';
 import { filterRequest } from './middleware/xss-middleware';
 import { paths } from './paths';
-import { router } from './routes';
+import { routerSetup } from './routes';
 import { setupSession } from './session';
 import { getUrl } from './utils/url-utils';
 
@@ -32,8 +33,9 @@ function createApp() {
   const app: express.Application = express();
   const environment: string = process.env.NODE_ENV;
   const isDevEnv = ['test', 'development', 'aatDevelopment'].includes(environment);
-  app.use(router);
+  const router = express.Router();
 
+  app.use(setupHealthController(router));
   // Inject nonce Id on every request.
   app.use((req, res, next) => {
     res.locals.nonce = uuidv4();
@@ -77,6 +79,7 @@ function createApp() {
     next();
   });
   app.use(isUserAuthenticated);
+  app.use(routerSetup(router));
   app.use(logErrorMiddleware);
   app.use(pageNotFoundHandler);
   app.use(serverErrorHandler);

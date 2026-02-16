@@ -18,7 +18,8 @@ describe('Steps to help with fees Refund Controller', function () {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -45,10 +46,13 @@ describe('Steps to help with fees Refund Controller', function () {
       } as any
     } as Partial<Request>;
 
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sandbox.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -73,13 +77,13 @@ describe('Steps to help with fees Refund Controller', function () {
       const middleware = [];
 
       setupStepToHelpWithFeesRefundController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund);
+      expect(routerGetStub.calledWith(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund)).to.equal(true);
     });
 
     it('should render steps-to-help-with-fees.njk', async () => {
       await getStepsToHelpWithFees(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/steps-to-help-with-fees.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/steps-to-help-with-fees.njk', {
         previousPage: paths.appealSubmitted.helpWithFeesRefund,
         refundJourney: true
       });
@@ -87,21 +91,21 @@ describe('Steps to help with fees Refund Controller', function () {
 
     it('should redirect help-with-fees-ref-number.njk', async () => {
       await postStepsToHelpWithFees()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.helpWithFeesReferenceNumberRefund);
+      expect(redirectStub.calledWith(paths.appealSubmitted.helpWithFeesReferenceNumberRefund)).to.equal(true);
     });
 
     it('when in edit mode should redirect check-and-send.njk and reset isEdit flag', async () => {
       req.query = { 'edit': '' };
       await postStepsToHelpWithFees()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWithMatch(new RegExp(`${paths.appealSubmitted.helpWithFeesReferenceNumberRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.helpWithFeesReferenceNumberRefund}(?!.*\\bedit\\b)`));
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {
       req.query = { 'edit': '' };
       await getStepsToHelpWithFees(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/steps-to-help-with-fees.njk');
+      expect(renderStub.calledOnceWith('appeal-application/fee-support/steps-to-help-with-fees.njk')).to.equal(true);
     });
   });
 
@@ -117,12 +121,12 @@ describe('Steps to help with fees Refund Controller', function () {
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await getStepsToHelpWithFees(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await postStepsToHelpWithFees()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
   });
 
@@ -131,7 +135,7 @@ describe('Steps to help with fees Refund Controller', function () {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
       await getStepsToHelpWithFees(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

@@ -14,7 +14,9 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonSpy;
+  let submit: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -28,12 +30,15 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
         } as Partial<Appeal>
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.spy();
+    submit = sandbox.stub();
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEvent: submit } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -47,8 +52,8 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
       const middleware: Middleware[] = [];
 
       setupAnythingElseQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElse);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElse);
+      expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElse)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElse)).to.equal(true);
     });
   });
 
@@ -68,17 +73,17 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
         saveAndContinue: true
 
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
+      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
         expectedArgs
       );
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getAnythingElseQuestion(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -107,16 +112,16 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
         saveAndContinue: true
 
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
       await postAnythingElseQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElseReasons);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.anythingElse).to.be.true;
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElseReasons)).to.equal(true);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.anythingElse).to.equal(true);
+      expect(submit.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
 
     });
 
@@ -124,17 +129,17 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
       req.body['answer'] = 'no';
       await postAnythingElseQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.anythingElse).to.be.false;
+      expect(submit.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.taskList)).to.equal(true);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.anythingElse).to.equal(false);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postAnythingElseQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

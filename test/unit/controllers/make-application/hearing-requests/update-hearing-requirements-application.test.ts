@@ -7,6 +7,7 @@ describe('Hearing application controllers setup', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -29,9 +30,10 @@ describe('Hearing application controllers setup', () => {
         }
       }
     } as Partial<Request>;
+    redirectStub = sandbox.stub();
     res = {
       render: sandbox.stub(),
-      redirect: sandbox.spy(),
+      redirect: redirectStub,
       locals: {}
     } as Partial<Response>;
     next = sandbox.stub();
@@ -44,22 +46,22 @@ describe('Hearing application controllers setup', () => {
   describe('getUpdateHearingRequirementsApplication', () => {
     it('should catch an error and redirect with error', () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
 
       getUpdateHearingRequirementsApplication(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
   describe('postUpdateHearingRequirementsApplication', () => {
     it('should catch an error and redirect with error', () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
 
       postUpdateHearingRequirementsApplication(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 });

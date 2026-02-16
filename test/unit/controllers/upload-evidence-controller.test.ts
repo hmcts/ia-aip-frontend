@@ -20,9 +20,11 @@ describe('upload evidence controller', () => {
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
   const logger: Logger = new Logger();
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   let uploadEvidenceConfig: Partial<EvidenceUploadConfig>;
-
+  let addEvidenceSpy: sinon.SinonSpy;
+  let removeEvidenceSpy: sinon.SinonSpy;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -46,17 +48,22 @@ describe('upload evidence controller', () => {
         }
       } as any
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      locals: sandbox.spy(),
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: redirectStub,
+      locals: sandbox.spy()
     } as Partial<Response>;
 
     next = sandbox.stub();
     updateAppealService = { submitEvent: sandbox.stub() };
     documentManagementService = { uploadFile: sandbox.stub(), deleteFile: sandbox.stub() };
 
+    addEvidenceSpy = sandbox.spy();
+    removeEvidenceSpy = sandbox.spy();
     uploadEvidenceConfig = {
       evidenceDeletePath: 'evidenceDeletePath',
       evidenceYesNoPath: 'evidenceYesNoPath',
@@ -68,8 +75,8 @@ describe('upload evidence controller', () => {
       getEvidenceFromSessionFunction: () => {
         return evidence;
       },
-      addEvidenceToSessionFunction: sandbox.spy(),
-      removeEvidenceFromSessionFunction: sandbox.spy()
+      addEvidenceToSessionFunction: addEvidenceSpy,
+      removeEvidenceFromSessionFunction: removeEvidenceSpy
     } as Partial<EvidenceUploadConfig>;
   });
 
@@ -80,7 +87,7 @@ describe('upload evidence controller', () => {
   it('getEvidenceYesNo', () => {
     getEvidenceYesNo('previousPage', { extra: 'model' }, res as Response, next);
 
-    expect(res.render).to.have.been.calledOnce.calledWith('ask-for-more-time/supporting-evidence-yes-or-no.njk', {
+    expect(renderStub).to.be.calledOnceWith('ask-for-more-time/supporting-evidence-yes-or-no.njk', {
       previousPage: 'previousPage',
       extra: 'model'
     });
@@ -96,7 +103,7 @@ describe('upload evidence controller', () => {
         text: 'Select Yes if you want to provide supporting evidence'
       };
 
-      expect(res.render).to.have.been.calledOnce.calledWith('ask-for-more-time/supporting-evidence-yes-or-no.njk', {
+      expect(renderStub).to.be.calledOnceWith('ask-for-more-time/supporting-evidence-yes-or-no.njk', {
         errorList: [ expectedError ],
         error: { answer: expectedError },
         previousPage: 'previousPage',
@@ -108,14 +115,14 @@ describe('upload evidence controller', () => {
       req.body.answer = 'yes';
       postEvidenceYesNo('previousPage', { extra: 'model' }, uploadEvidenceConfig as EvidenceUploadConfig, req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledOnce.calledWith('evidenceUploadPath');
+      expect(redirectStub.calledOnceWith('evidenceUploadPath')).to.equal(true);
     });
 
     it('no have evidence', () => {
       req.body.answer = 'no';
       postEvidenceYesNo('previousPage', { extra: 'model' }, uploadEvidenceConfig as EvidenceUploadConfig, req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledOnce.calledWith('nextPath');
+      expect(redirectStub.calledOnceWith('nextPath')).to.equal(true);
     });
 
     it('no have evidence removes any old evidence', () => {
@@ -130,15 +137,15 @@ describe('upload evidence controller', () => {
       };
       postEvidenceYesNo('previousPage', { extra: 'model' }, uploadEvidenceConfig as EvidenceUploadConfig, req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledOnce.calledWith('nextPath');
-      expect(uploadEvidenceConfig.removeEvidenceFromSessionFunction).to.have.been.calledWith('fileId', req);
+      expect(redirectStub.calledOnceWith('nextPath')).to.equal(true);
+      expect(removeEvidenceSpy.calledWith('fileId', req)).to.equal(true);
     });
   });
 
   it('getUploadPage', () => {
     getUploadPage(uploadEvidenceConfig as EvidenceUploadConfig, req as Request, res as Response, next);
 
-    expect(res.render).to.have.been.calledOnce.calledWith('upload-evidence/evidence-upload-page.njk', {
+    expect(renderStub).to.be.calledOnceWith('upload-evidence/evidence-upload-page.njk', {
       evidences: evidence,
       evidenceCTA: 'evidenceDeletePath',
       previousPage: 'evidenceYesNoPath',
@@ -158,7 +165,7 @@ describe('upload evidence controller', () => {
       };
 
       await postUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('upload-evidence/evidence-upload-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('upload-evidence/evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [expectedError],
         evidenceCTA: 'evidenceDeletePath',
@@ -181,7 +188,7 @@ describe('upload evidence controller', () => {
       res.locals.errorCode = 'incorrectFormat';
 
       await postUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('upload-evidence/evidence-upload-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('upload-evidence/evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidenceCTA: 'evidenceDeletePath',
@@ -206,7 +213,7 @@ describe('upload evidence controller', () => {
       res.locals.errorCode = 'fileTooLarge';
 
       await postUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('upload-evidence/evidence-upload-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('upload-evidence/evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidenceCTA: 'evidenceDeletePath',
@@ -241,8 +248,8 @@ describe('upload evidence controller', () => {
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
 
       await postUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
-      expect(uploadEvidenceConfig.addEvidenceToSessionFunction).to.have.been.calledOnce.calledWith({ fileId: 'someUUID', name: 'name.png' }, req);
-      expect(res.redirect).to.have.been.calledOnce.calledWith('evidenceUploadPath');
+      expect(addEvidenceSpy.calledOnceWith({ fileId: 'someUUID', name: 'name.png' }, req)).to.equal(true);
+      expect(redirectStub.calledOnceWith('evidenceUploadPath')).to.equal(true);
     });
   });
 
@@ -254,33 +261,33 @@ describe('upload evidence controller', () => {
       req.query['id'] = 'someUUID';
 
       const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       await getSupportingEvidenceDeleteFile(documentManagementService as DocumentManagementService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getEvidenceYesNo('previousPage', { extra: 'model' }, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       postEvidenceYesNo('previousPage', { extra: 'model' }, uploadEvidenceConfig as EvidenceUploadConfig, req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('Should delete successfully when click on delete link and redirect to the upload-page page', async () => {
@@ -290,8 +297,8 @@ describe('upload evidence controller', () => {
       req.query['id'] = 'someUUID';
       await getSupportingEvidenceDeleteFile(documentManagementService as DocumentManagementService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
 
-      expect(uploadEvidenceConfig.removeEvidenceFromSessionFunction).to.have.been.calledWith(req.query['id'], req);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(uploadEvidenceConfig.evidenceUploadPath);
+      expect(removeEvidenceSpy.calledWith(req.query['id'], req)).to.equal(true);
+      expect(redirectStub.calledOnceWith(uploadEvidenceConfig.evidenceUploadPath)).to.equal(true);
     });
   });
 });

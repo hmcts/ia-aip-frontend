@@ -12,6 +12,7 @@ describe('Appeal application controllers setup', () => {
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
+  let redirectStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -25,9 +26,10 @@ describe('Appeal application controllers setup', () => {
         }
       }
     } as Partial<Request>;
+    redirectStub = sandbox.stub();
     res = {
       render: sandbox.stub(),
-      redirect: sandbox.spy(),
+      redirect: redirectStub,
       locals: {}
     } as Partial<Response>;
     next = sandbox.stub();
@@ -49,9 +51,9 @@ describe('Appeal application controllers setup', () => {
       const middleware: Middleware[] = [];
 
       setupMakeApplicationControllers(middleware, updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceDeleteFile);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.requestSent);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceUploadFile);
+      expect(routerGetStub.calledWith(paths.makeApplication.provideSupportingEvidenceDeleteFile)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.requestSent)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.provideSupportingEvidenceUploadFile)).to.equal(true);
     });
   });
 
@@ -60,7 +62,7 @@ describe('Appeal application controllers setup', () => {
       req.session.appeal.makeAnApplicationTypes.value.code = 'expedite';
       validate('provideSupportingEvidence')(req as Request, res as Response, next);
 
-      expect(next).to.have.been.called;
+      expect(next.called).to.equal(true);
     });
 
     it('should redirect with error code', async () => {
@@ -68,18 +70,18 @@ describe('Appeal application controllers setup', () => {
       res.locals.errorCode = 'anError';
       validate('provideSupportingEvidence')(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.makeApplication.provideSupportingEvidenceExpedite}?error=anError`);
+      expect(redirectStub.calledWith(`${paths.makeApplication.provideSupportingEvidenceExpedite}?error=anError`)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       req.session.appeal.makeAnApplicationTypes.value.code = 'expedite';
       res.locals.errorCode = 'anError';
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
 
       validate('provideSupportingEvidence')(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 });

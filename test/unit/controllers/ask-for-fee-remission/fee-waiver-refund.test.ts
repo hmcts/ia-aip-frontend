@@ -18,6 +18,8 @@ describe('Fee waiver Refund Controller', function () {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -45,10 +47,13 @@ describe('Fee waiver Refund Controller', function () {
       } as any
     } as Partial<Request>;
 
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sandbox.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -73,13 +78,13 @@ describe('Fee waiver Refund Controller', function () {
       const middleware = [];
 
       setupFeeWaiverRefundController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealSubmitted.feeWaiverRefund);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealSubmitted.feeWaiverRefund);
+      expect(routerGetStub.calledWith(paths.appealSubmitted.feeWaiverRefund)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealSubmitted.feeWaiverRefund)).to.equal(true);
     });
 
     it('should render fee-waiver.njk', async () => {
       await getFeeWaiver(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/fee-waiver.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/fee-waiver.njk', {
         previousPage: paths.appealSubmitted.feeSupportRefund,
         refundJourney: true
       });
@@ -87,21 +92,21 @@ describe('Fee waiver Refund Controller', function () {
 
     it('should redirect CYA page', async () => {
       await postFeeWaiver()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.checkYourAnswersRefund);
+      expect(redirectStub.calledWith(paths.appealSubmitted.checkYourAnswersRefund)).to.equal(true);
     });
 
     it('when in edit mode should redirect check-and-send.njk and reset isEdit flag', async () => {
       req.query = { 'edit': '' };
       await postFeeWaiver()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {
       req.query = { 'edit': '' };
       await getFeeWaiver(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/fee-waiver.njk');
+      expect(renderStub.calledOnceWith('appeal-application/fee-support/fee-waiver.njk')).to.equal(true);
     });
 
     it('should reset values from other journeys if it present', async () => {
@@ -113,10 +118,10 @@ describe('Fee waiver Refund Controller', function () {
       application.lateLocalAuthorityLetters = [];
 
       await postFeeWaiver()(req as Request, res as Response, next);
-      expect(application.lateRemissionOption).to.be.eq('test value');
-      expect(application.lateHelpWithFeesOption).to.be.null;
-      expect(application.lateHelpWithFeesRefNumber).to.be.null;
-      expect(application.lateLocalAuthorityLetters).to.be.null;
+      expect(application.lateRemissionOption).to.equal('test value');
+      expect(application.lateHelpWithFeesOption).to.equal(null);
+      expect(application.lateHelpWithFeesRefNumber).to.equal(null);
+      expect(application.lateLocalAuthorityLetters).to.equal(null);
     });
   });
 
@@ -132,12 +137,12 @@ describe('Fee waiver Refund Controller', function () {
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await getFeeWaiver(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await postFeeWaiver()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
   });
 
@@ -146,7 +151,7 @@ describe('Fee waiver Refund Controller', function () {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
       await getFeeWaiver(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

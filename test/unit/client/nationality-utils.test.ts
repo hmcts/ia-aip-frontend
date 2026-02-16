@@ -24,7 +24,7 @@ describe('nationality utils', () => {
       const addEventListenerStub: sinon.SinonStub = sandbox.stub(document.querySelector('#nationality'), 'addEventListener');
       addNationalityEventListener();
 
-      expect(addEventListenerStub).to.have.been.calledWith('change');
+      expect(addEventListenerStub.calledWith('change')).to.equal(true);
     });
   });
 
@@ -33,7 +33,7 @@ describe('nationality utils', () => {
       const addEventListenerStub: sinon.SinonStub = sandbox.stub(document.querySelector('#stateless'), 'addEventListener');
       addStatelessEventListener();
 
-      expect(addEventListenerStub).to.have.been.calledWith('change');
+      expect(addEventListenerStub.calledWith('change')).to.equal(true);
     });
   });
 });

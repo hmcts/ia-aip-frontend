@@ -36,6 +36,9 @@ describe('Guidance page controller', () => {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -62,14 +65,17 @@ describe('Guidance page controller', () => {
       body: {}
     } as Partial<Request>;
 
-    updateAppealService = { submitEvent: sandbox.stub() };
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
 
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
+    updateAppealService = { submitEvent: submitStub } as Partial<UpdateAppealService>;
     next = sandbox.stub();
   });
 
@@ -82,23 +88,23 @@ describe('Guidance page controller', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
       setupGuidancePagesController();
-      expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeDocuments);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.evidenceToSupportAppeal);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.moreHelp);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.tribunalCaseworker);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.whatIsIt);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.documents);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.fourStages);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.notifications);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.giveFeedback);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.howToHelp);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.offlineProcesses);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.guidance);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.gettingStarted);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.whatToExpectAtHearing);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.understandingHearingBundle);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeWithdrawDecision);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeWithdrawDecision);
+      expect(routerGetStub.calledWith(paths.common.homeOfficeDocuments)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.evidenceToSupportAppeal)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.moreHelp)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.tribunalCaseworker)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.whatIsIt)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.documents)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.fourStages)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.notifications)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.giveFeedback)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.howToHelp)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.offlineProcesses)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.guidance)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.gettingStarted)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.whatToExpectAtHearing)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.understandingHearingBundle)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.homeOfficeWithdrawDecision)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.homeOfficeWithdrawDecision)).to.equal(true);
     });
   });
 
@@ -106,7 +112,7 @@ describe('Guidance page controller', () => {
     const text = getGuidancePageText('whatToExpectAtHearing');
 
     getWhatToExpectAtHearing(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+    expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
       showContactUs: true,
       previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
       page: text
@@ -116,7 +122,7 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('understandingHearingBundle');
 
       getUnderstandingHearingBundle(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
@@ -128,7 +134,7 @@ describe('Guidance page controller', () => {
     const text = getGuidancePageText('understandingHearingBundle');
 
     getUnderstandingHearingBundle(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+    expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
       showContactUs: true,
       previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
       page: text
@@ -138,7 +144,7 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('understandingHearingBundle');
 
       getUnderstandingHearingBundle(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
@@ -151,7 +157,7 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('caseworker');
 
       getCaseworkerPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
@@ -160,11 +166,11 @@ describe('Guidance page controller', () => {
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getCaseworkerPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
   });
@@ -174,7 +180,7 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('homeOfficeDocuments');
 
       getHomeOfficeDocumentsPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
@@ -183,11 +189,11 @@ describe('Guidance page controller', () => {
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getHomeOfficeDocumentsPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -196,7 +202,7 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('helpWithAppeal');
 
       getMoreHelpPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
@@ -205,11 +211,11 @@ describe('Guidance page controller', () => {
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getMoreHelpPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -218,7 +224,7 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('evidenceToSupportAppeal');
 
       getEvidenceToSupportAppealPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
@@ -227,11 +233,11 @@ describe('Guidance page controller', () => {
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getEvidenceToSupportAppealPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -239,7 +245,7 @@ describe('Guidance page controller', () => {
     it('should render guidance-pages/guidance-page.njk', () => {
 
       getHomeOfficeWithdrawDecision(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         hearingCentreEmail: getHearingCentreEmail(req as Request),
@@ -249,11 +255,11 @@ describe('Guidance page controller', () => {
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getHomeOfficeWithdrawDecision(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -261,7 +267,7 @@ describe('Guidance page controller', () => {
     it('should render guidance-pages/guidance-page.njk', () => {
 
       getHomeOfficeMaintainDecision(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: i18n.pages.guidancePages.maintainDecision
@@ -270,155 +276,155 @@ describe('Guidance page controller', () => {
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getHomeOfficeMaintainDecision(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getWhatIsService', () => {
     it('should render guidance-pages/online-guidance-support/what-is-service.njk', () => {
       getWhatIsService(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/what-is-service.njk');
+      expect(renderStub.calledOnceWith('guidance-pages/online-guidance-support/what-is-service.njk')).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getWhatIsService(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getDocumentsPage', () => {
     it('should render guidance-pages/online-guidance-support/documents.njk', () => {
       getDocumentsPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/documents.njk');
+      expect(renderStub.calledOnceWith('guidance-pages/online-guidance-support/documents.njk')).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getDocumentsPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getFourStagesPage', () => {
     it('should render guidance-pages/online-guidance-support/four-stages-of-process.njk', () => {
       getFourStagesPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/four-stages-of-process.njk');
+      expect(renderStub.calledOnceWith('guidance-pages/online-guidance-support/four-stages-of-process.njk')).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getFourStagesPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getNotificationsSupportPage', () => {
     it('should render guidance-pages/online-guidance-support/notifications.njk', () => {
       getNotificationsSupportPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/notifications.njk');
+      expect(renderStub.calledOnceWith('guidance-pages/online-guidance-support/notifications.njk')).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getNotificationsSupportPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getGiveFeedbackPage', () => {
     it('should render guidance-pages/online-guidance-support/how-to-give-feedback.njk', () => {
       getGiveFeedbackPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/how-to-give-feedback.njk');
+      expect(renderStub.calledOnceWith('guidance-pages/online-guidance-support/how-to-give-feedback.njk')).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getGiveFeedbackPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getHowToHelpPage', () => {
     it('should render guidance-pages/online-guidance-support/how-to-help.njk', () => {
       getHowToHelpPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/how-to-help.njk');
+      expect(renderStub.calledOnceWith('guidance-pages/online-guidance-support/how-to-help.njk')).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getHowToHelpPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getOfflineProcessesPage', () => {
     it('should render guidance-pages/online-guidance-support/offline-process.njk', () => {
       getOfflineProcessesPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/offline-process.njk');
+      expect(renderStub.calledOnceWith('guidance-pages/online-guidance-support/offline-process.njk')).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getOfflineProcessesPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getGuidanceSupportPage', () => {
     it('should render guidance-pages/online-guidance-support/guidance.njk', () => {
       getGuidanceSupportPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/guidance.njk');
+      expect(renderStub.calledOnceWith('guidance-pages/online-guidance-support/guidance.njk')).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getGuidanceSupportPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getGettingStartedPage', () => {
     it('should render guidance-pages/online-guidance-support/getting-started.njk', () => {
       getGettingStartedPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/getting-started.njk');
+      expect(renderStub.calledOnceWith('guidance-pages/online-guidance-support/getting-started.njk')).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getGettingStartedPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

@@ -56,7 +56,7 @@ describe('setupHearingRequirementsFeatureToggleController', () => {
     req.session.appeal.appealStatus = 'submitHearingRequirements';
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
     setupHearingRequirementsFeatureToggleController([hearingRequirementsMiddleware]);
-    expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
+    expect(routerGetStub.calledWith(paths.submitHearingRequirements.taskList)).to.equal(true);
   });
 
     // there are no paths to write any reasonable tests here
@@ -64,6 +64,6 @@ describe('setupHearingRequirementsFeatureToggleController', () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(false);
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
     const router = setupHearingBundleFeatureToggleController([hearingBundleFeatureMiddleware]);
-    expect(router).not.null;
+    expect(router).to.not.equal(null);
   });
 });

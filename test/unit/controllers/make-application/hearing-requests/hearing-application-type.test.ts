@@ -11,7 +11,8 @@ describe('Hearing applications types controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let question;
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -33,9 +34,13 @@ describe('Hearing applications types controller', () => {
         }
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy(),
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub,
       locals: {}
     } as Partial<Response>;
     next = sandbox.stub();
@@ -94,7 +99,7 @@ describe('Hearing applications types controller', () => {
       };
       getHearingApplicationType(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('make-application/radio-button-question-page.njk', {
+      expect(renderStub).to.be.calledWith('make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -118,17 +123,17 @@ describe('Hearing applications types controller', () => {
       };
       getHearingApplicationType(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('make-application/radio-button-question-page.njk', {
+      expect(renderStub).to.be.calledWith('make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getHearingApplicationType(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -138,22 +143,22 @@ describe('Hearing applications types controller', () => {
       postHearingApplicationType(req as Request, res as Response, next);
 
       expect(req.session.appeal.makeAnApplicationTypes.value.code === 'expedite');
-      expect(res.redirect).to.have.been.calledWith(paths.makeApplication.expedite);
+      expect(redirectStub.calledWith(paths.makeApplication.expedite)).to.equal(true);
     });
 
     it('should catch an error and call next with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       postHearingApplicationType(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
 
     it('should redirect with error', async () => {
       req.body[i18n.pages.makeApplication.askChangeHearing.question.name] = null;
       postHearingApplicationType(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.makeApplication.askChangeHearing}?error=askChangeHearing`);
+      expect(redirectStub.calledWith(`${paths.makeApplication.askChangeHearing}?error=askChangeHearing`)).to.equal(true);
     });
   });
 });

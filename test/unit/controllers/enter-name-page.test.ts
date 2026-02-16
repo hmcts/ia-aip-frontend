@@ -16,6 +16,11 @@ describe('Home Office Details Controller', function () {
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
+  let submitRefactoredStub: sinon.SinonStub;
+
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -42,15 +47,20 @@ describe('Home Office Details Controller', function () {
       } as any
     } as unknown as Partial<Request>;
 
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+    submitRefactoredStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sandbox.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     updateAppealService = {
-      submitEventRefactored: sandbox.stub(),
-      submitEvent: sandbox.stub()
+      submitEventRefactored: submitRefactoredStub,
+      submitEvent: submitStub
     } as Partial<UpdateAppealService>;
 
     next = sandbox.stub();
@@ -67,28 +77,28 @@ describe('Home Office Details Controller', function () {
       const middleware = [];
 
       setupHomeOfficeDetailsController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.name, middleware);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.name, middleware);
+      expect(routerGetStub.calledWith(paths.appealStarted.name, middleware)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.name, middleware)).to.equal(true);
     });
   });
 
   describe('getNamesPage', () => {
     it('should render personal-details/name.njk', function () {
       getNamePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk');
+      expect(renderStub.calledOnceWith('appeal-application/personal-details/name.njk')).to.equal(true);
     });
 
     it('when called with edit should render personal-details/name.njk and update session', function () {
       req.query = { 'edit': '' };
       getNamePage(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk');
+      expect(renderStub.calledOnceWith('appeal-application/personal-details/name.njk')).to.equal(true);
     });
 
     it('gets name from session', function () {
       req.session.appeal.application.personalDetails = { givenNames: 'givenName', familyName: 'familyName', dob: null };
       getNamePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk',
+      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/name.njk',
         {
           personalDetails: {
             dob: null,
@@ -104,7 +114,7 @@ describe('Home Office Details Controller', function () {
       req.session.appeal.application.personalDetails = { givenNames: 'givenName', familyName: 'familyName', dob: null };
       req.session.appeal.application.outsideUkWhenApplicationMade = 'Yes';
       getNamePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk',
+      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/name.njk',
         {
           personalDetails: {
             dob: null,
@@ -134,7 +144,7 @@ describe('Home Office Details Controller', function () {
           }
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         application: {
           personalDetails: {
             familyName: req.body.familyName,
@@ -146,8 +156,8 @@ describe('Home Office Details Controller', function () {
     it('should validate and redirect to next page personal-details/date-of-birth', async () => {
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.dob);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.dob)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
@@ -155,9 +165,9 @@ describe('Home Office Details Controller', function () {
       appeal.application.isEdit = true;
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
     it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -166,8 +176,8 @@ describe('Home Office Details Controller', function () {
       };
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
@@ -177,25 +187,25 @@ describe('Home Office Details Controller', function () {
       };
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
     it('should redirect to CYA page and validate when save for later clicked', async () => {
       req.body.saveForLater = 'saveForLater';
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
   });
 
   describe('Should catch an error.', () => {
     it('getPageName should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getNamePage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should fail validation and render personal-details/name.njk with error', async () => {
@@ -214,8 +224,8 @@ describe('Home Office Details Controller', function () {
         text: 'Enter your given name or names'
       };
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.render).to.have.been.calledWith(
+      expect(submitStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
         'appeal-application/personal-details/name.njk',
         {
           error: {
@@ -245,8 +255,8 @@ describe('Home Office Details Controller', function () {
         text: 'Enter your given name or names'
       };
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.render).to.have.been.calledWith(
+      expect(submitStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
         'appeal-application/personal-details/name.njk',
         {
           error: {

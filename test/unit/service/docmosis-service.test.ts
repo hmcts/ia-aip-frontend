@@ -20,8 +20,8 @@ describe('docmosis-service', () => {
 
       const response = await new DocmosisService().render('template-key', { 'field-name': 'field-value' });
 
-      expect(response.success).to.be.eq(false);
-      expect(response.error).to.be.eq('status-message');
+      expect(response.success).to.equal(false);
+      expect(response.error).to.equal('status-message');
     });
 
     it('render returns 200', async () => {
@@ -29,7 +29,7 @@ describe('docmosis-service', () => {
 
       const response = await new DocmosisService().render('template-key', { 'field-name': 'field-value' });
 
-      expect(response.success).to.be.eq(true);
+      expect(response.success).to.equal(true);
       expect(response.document).to.deep.equal(Buffer.from('pdf-file', 'binary'));
     });
 
@@ -39,8 +39,8 @@ describe('docmosis-service', () => {
 
       const response = await new DocmosisService().render('template-key', {});
 
-      expect(response.success).to.be.eq(false);
-      expect(response.error).to.be.eq(error);
+      expect(response.success).to.equal(false);
+      expect(response.error).to.equal(error);
     });
   });
 

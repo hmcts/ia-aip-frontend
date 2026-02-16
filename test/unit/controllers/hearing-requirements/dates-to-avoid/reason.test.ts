@@ -14,6 +14,9 @@ describe('Hearing Requirements - Reason controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
+  let submitStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   const datesToAvoid: CmaDateToAvoid[] = [
     {
       date: {
@@ -40,12 +43,20 @@ describe('Hearing Requirements - Reason controller', () => {
         }
       }
     } as Partial<Request>;
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
+
+    updateAppealService = {
+      submitEvent: submitStub
+    } as Partial<UpdateAppealService>;
+
     next = sandbox.stub();
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -59,10 +70,10 @@ describe('Hearing Requirements - Reason controller', () => {
       const middleware: Middleware[] = [];
 
       setupHearingDatesToAvoidReasonController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingDateToAvoidReasons);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingDateToAvoidReasonsWithId);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingDateToAvoidReasons);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingDateToAvoidReasonsWithId);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.hearingDateToAvoidReasons)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.hearingDateToAvoidReasonsWithId)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.submitHearingRequirements.hearingDateToAvoidReasons)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.submitHearingRequirements.hearingDateToAvoidReasonsWithId)).to.equal(true);
     });
   });
 
@@ -81,15 +92,15 @@ describe('Hearing Requirements - Reason controller', () => {
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getDatesToAvoidReason(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -110,17 +121,17 @@ describe('Hearing Requirements - Reason controller', () => {
         timeExtensionAllowed: false
       };
       getDatesToAvoidReasonWithId(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       req.params.id = '0';
 
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getDatesToAvoidReasonWithId(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -129,23 +140,23 @@ describe('Hearing Requirements - Reason controller', () => {
 
       await postDatesToAvoidReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk');
+      expect(renderStub.calledWith('templates/textarea-question-page.njk')).to.equal(true);
     });
 
     it('should validate and redirect to add another date page', async () => {
       req.body['reason'] = 'the answer here';
       await postDatesToAvoidReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingDateToAvoidNew);
+      expect(submitStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.hearingDateToAvoidNew)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postDatesToAvoidReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -177,7 +188,7 @@ describe('Hearing Requirements - Reason controller', () => {
         timeExtensionAllowed: false
       };
 
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should validate and redirect to taskList page', async () => {
@@ -185,18 +196,18 @@ describe('Hearing Requirements - Reason controller', () => {
 
       req.body['reason'] = 'the answer here';
       await postDatesToAvoidReasonWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
+      expect(submitStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.taskList)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       req.params.id = '0';
 
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postDatesToAvoidReasonWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

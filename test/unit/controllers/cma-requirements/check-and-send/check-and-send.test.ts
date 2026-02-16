@@ -64,6 +64,10 @@ describe('CMA Requirements Check and Send controller', () => {
     }
   };
 
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
+
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -75,12 +79,17 @@ describe('CMA Requirements Check and Send controller', () => {
         }
       }
     } as Partial<Request>;
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
-    updateAppealService = { submitEvent: sandbox.stub().returns({ state: 'cmaRequirementsSubmitted' }) } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEvent: submitStub.returns({ state: 'cmaRequirementsSubmitted' }) } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -94,15 +103,15 @@ describe('CMA Requirements Check and Send controller', () => {
       const middleware: Middleware[] = [];
 
       setupCmaRequirementsCYAController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.checkAndSend);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.checkAndSend);
+      expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.checkAndSend)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingCmaRequirements.checkAndSend)).to.equal(true);
     });
   });
 
   describe('getCheckAndSendPage', () => {
     it('should render CYA template page', () => {
       getCheckAndSendPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk');
+      expect(renderStub.calledWith('templates/check-and-send.njk')).to.equal(true);
     });
 
     it('should render CYA template page with requirements', () => {
@@ -330,15 +339,15 @@ describe('CMA Requirements Check and Send controller', () => {
 
       getCheckAndSendPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getCheckAndSendPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -346,18 +355,18 @@ describe('CMA Requirements Check and Send controller', () => {
     it('should submit CQ and redirect to confirmation page', async () => {
       await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.cmaRequirements).to.eql(cmaRequirements);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.SUBMIT_CMA_REQUIREMENTS, req);
-      expect(req.session.appeal.appealStatus).to.be.equal('cmaRequirementsSubmitted');
-      expect(res.redirect).to.have.been.calledWith(paths.cmaRequirementsSubmitted.confirmation);
+      expect(req.session.appeal.cmaRequirements).to.deep.equal(cmaRequirements);
+      expect(submitStub.calledWith(Events.SUBMIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(req.session.appeal.appealStatus).to.equal('cmaRequirementsSubmitted');
+      expect(redirectStub.calledWith(paths.cmaRequirementsSubmitted.confirmation)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
 
       await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

@@ -102,7 +102,9 @@ describe('CYA Refund Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -128,18 +130,21 @@ describe('CYA Refund Controller', function () {
         }
       } as any
     } as Partial<Request>;
+    submitStub = sandbox.stub();
 
     updateAppealService = {
-      submitEventRefactored: sandbox.stub().returns({
+      submitEventRefactored: submitStub.returns({
         state: 'appealSubmitted',
         case_data: { appealReferenceNumber: 'PA/1234567' }
       })
     };
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
 
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sandbox.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -165,8 +170,8 @@ describe('CYA Refund Controller', function () {
       const middleware = [];
 
       setupCheckYourAnswersRefundController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealSubmitted.checkYourAnswersRefund);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealSubmitted.checkYourAnswersRefund);
+      expect(routerGetStub.calledWith(paths.appealSubmitted.checkYourAnswersRefund)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealSubmitted.checkYourAnswersRefund)).to.equal(true);
     });
 
     it('should render check-and-send.njk', async () => {
@@ -181,7 +186,7 @@ describe('CYA Refund Controller', function () {
         }
       }];
       await getCheckYourAnswersRefund(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('ask-for-fee-remission/check-and-send.njk', {
+      expect(renderStub).to.be.calledOnceWith('ask-for-fee-remission/check-and-send.njk', {
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         summaryRows
       });
@@ -198,8 +203,8 @@ describe('CYA Refund Controller', function () {
 
       await postCheckYourAnswersRefund(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.REQUEST_FEE_REMISSION, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.confirmationRefund);
+      expect(submitStub.calledWith(Events.REQUEST_FEE_REMISSION, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealSubmitted.confirmationRefund)).to.equal(true);
     });
 
     it('should create fee rows when fee support values are present and dlrm-refund set aside enabled', async () => {
@@ -264,7 +269,7 @@ describe('CYA Refund Controller', function () {
             req.session.appeal.application.lateRemissionOption = input;
             const remissionOptionRow = addSummaryRow('Fee statement', [expectedResponse], paths.appealSubmitted.feeSupportRefund + editParameter);
             mockedRows.push(remissionOptionRow);
-            expect(rows).to.be.deep.equal(mockedRows);
+            expect(rows).to.deep.equal(mockedRows);
             mockedRows.pop();
           });
         });
@@ -285,12 +290,12 @@ describe('CYA Refund Controller', function () {
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await getCheckYourAnswersRefund(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await postCheckYourAnswersRefund(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
   });
 });

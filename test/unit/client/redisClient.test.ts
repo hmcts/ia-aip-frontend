@@ -39,13 +39,13 @@ describe('createRedisClient', () => {
 
     expect(createClientStub.calledOnceWithExactly({
       url: 'redis://localhost:6379'
-    })).to.be.true;
+    })).to.equal(true);
   });
 
   it('registers error handler on client', () => {
     createRedisClient();
 
-    expect(onStub.calledOnceWith('error', sinon.match.func)).to.be.true;
+    expect(onStub.calledOnceWith('error', sinon.match.func)).to.equal(true);
   });
 
   it('logs exception when redis emits error', () => {
@@ -58,7 +58,7 @@ describe('createRedisClient', () => {
     expect(exceptionStub.calledOnceWith(
       'Redis Client Error because of boom',
       'label'
-    )).to.be.true;
+    )).to.equal(true);
   });
 
   it('returns the created client', () => {

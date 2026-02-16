@@ -14,7 +14,9 @@ describe('Hearing Requirements - Other Needs Section: Join Hearing by VideoCall 
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
-
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -36,12 +38,20 @@ describe('Hearing Requirements - Other Needs Section: Join Hearing by VideoCall 
         '__auth-token': 'atoken'
       }
     } as Partial<Request>;
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
+
+    updateAppealService = {
+      submitEventRefactored: submitRefactoredStub
+    } as Partial<UpdateAppealService>;
+
     next = sandbox.stub();
-    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -55,8 +65,8 @@ describe('Hearing Requirements - Other Needs Section: Join Hearing by VideoCall 
       const middleware: Middleware[] = [];
 
       setupJoinByVideoCallAppointmentReasonController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsVideoAppointmentReason);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsVideoAppointmentReason);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.otherNeedsVideoAppointmentReason)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.submitHearingRequirements.otherNeedsVideoAppointmentReason)).to.equal(true);
     });
   });
 
@@ -77,7 +87,7 @@ describe('Hearing Requirements - Other Needs Section: Join Hearing by VideoCall 
       };
 
       getJoinByVideoCallReason(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should render template with saved answer', () => {
@@ -98,15 +108,15 @@ describe('Hearing Requirements - Other Needs Section: Join Hearing by VideoCall 
       };
 
       getJoinByVideoCallReason(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getJoinByVideoCallReason(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -136,7 +146,7 @@ describe('Hearing Requirements - Other Needs Section: Join Hearing by VideoCall 
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
 
     });
 
@@ -144,16 +154,16 @@ describe('Hearing Requirements - Other Needs Section: Join Hearing by VideoCall 
       req.body['reason'] = 'the answer here';
       await postJoinByVideoCallReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsMultimediaEvidenceQuestion);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsMultimediaEvidenceQuestion)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postJoinByVideoCallReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

@@ -15,7 +15,9 @@ describe('CMA Requirements - Other Needs Section: Single sex type appointment Qu
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
-
+  let submitStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -29,12 +31,20 @@ describe('CMA Requirements - Other Needs Section: Single sex type appointment Qu
         } as Partial<Appeal>
       }
     } as Partial<Request>;
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub,
+      send: sandbox.stub()
     } as Partial<Response>;
+
+    updateAppealService = {
+      submitEvent: submitStub
+    } as Partial<UpdateAppealService>;
     next = sandbox.stub();
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -48,8 +58,8 @@ describe('CMA Requirements - Other Needs Section: Single sex type appointment Qu
       const middleware: Middleware[] = [];
 
       setupSingleSexTypeAppointmentQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment);
+      expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment)).to.equal(true);
     });
   });
 
@@ -68,17 +78,17 @@ describe('CMA Requirements - Other Needs Section: Single sex type appointment Qu
         },
         saveAndContinue: true
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
+      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
         expectedArgs
       );
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getSingleSexTypeAppointmentQuestion(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -106,33 +116,33 @@ describe('CMA Requirements - Other Needs Section: Single sex type appointment Qu
         },
         saveAndContinue: true
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
       await postSingleSexTypeAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAllMaleAppointment);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All male');
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.otherNeedsAllMaleAppointment)).to.equal(true);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.equal('All male');
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
       await postSingleSexTypeAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAllFemaleAppointment);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All female');
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.otherNeedsAllFemaleAppointment)).to.equal(true);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.equal('All female');
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postSingleSexTypeAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

@@ -33,11 +33,12 @@ describe('Ref Data Service', () => {
   };
 
   const logger: Logger = new Logger();
-
+  let headersStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    headersStub = sandbox.stub();
     authenticationService = {
-      getSecurityHeaders: sandbox.stub().resolves()
+      getSecurityHeaders: headersStub.resolves()
     };
     refDataService = new RefDataService(authenticationService as AuthenticationService);
     commonRefDataLovStub = sandbox.stub(refDataApi, 'commonRefDataLov').resolves(refDataResponse);
@@ -73,8 +74,8 @@ describe('Ref Data Service', () => {
   it('should get common ref data (e.g. InterpreterLanguage)', async() => {
     const result = await refDataService.getCommonRefData(req as Request, 'InterpreterLanguage');
 
-    expect(authenticationService.getSecurityHeaders).to.have.been.called;
-    expect(commonRefDataLovStub).to.have.been.called;
-    expect(result).to.be.eql(JSON.stringify(refDataResponse.data));
+    expect(headersStub.called).to.equal(true);
+    expect(commonRefDataLovStub.called).to.equal(true);
+    expect(result).to.deep.equal(JSON.stringify(refDataResponse.data));
   });
 });

@@ -11,7 +11,8 @@ describe('Make application common', () => {
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -33,10 +34,12 @@ describe('Make application common', () => {
         }
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy(),
-      locals: {}
+      render: renderStub,
+      locals: {},
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
     updateAppealService = {
@@ -52,7 +55,7 @@ describe('Make application common', () => {
   describe('getProvideSupportingEvidenceYesOrNo', () => {
     it('should catch an error and redirect with error', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       req.session.appeal.makeAnApplicationTypes = {
         value: {
           code: 'expedite',
@@ -62,14 +65,14 @@ describe('Make application common', () => {
 
       getProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
   describe('postProvideSupportingEvidenceYesOrNo', () => {
     it('should catch an error and redirect with error', () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       req.session.appeal.makeAnApplicationTypes = {
         value: {
           code: 'expedite',
@@ -79,14 +82,14 @@ describe('Make application common', () => {
 
       postProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
   describe('getProvideSupportingEvidence', () => {
     it('should catch an error and redirect with error', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       req.session.appeal.makeAnApplicationTypes = {
         value: {
           code: 'expedite',
@@ -96,14 +99,14 @@ describe('Make application common', () => {
 
       getProvideSupportingEvidence(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
   describe('getProvideSupportingEvidenceCheckAndSend', () => {
     it('should catch an error and redirect with error', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       req.session.appeal.makeAnApplicationTypes = {
         value: {
           code: 'expedite',
@@ -113,25 +116,25 @@ describe('Make application common', () => {
 
       getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
   describe('getRequestSent', () => {
     it('should catch an error and redirect with error', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getRequestSent(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
   describe('uploadSupportingEvidence', () => {
     it('should catch an error and redirect with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       req.session.appeal.makeAnApplicationTypes = {
         value: {
           code: 'expedite',
@@ -141,14 +144,14 @@ describe('Make application common', () => {
 
       await uploadSupportingEvidence(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
   describe('deleteSupportingEvidence', () => {
     it('should catch an error and redirect with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       req.session.appeal.makeAnApplicationTypes = {
         value: {
           code: 'expedite',
@@ -158,7 +161,7 @@ describe('Make application common', () => {
 
       await deleteSupportingEvidence(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 });

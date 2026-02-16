@@ -11,6 +11,9 @@ describe('Clarifying Questions: Anything else answer controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonSpy;
+  let submit: sinon.SinonStub;
   const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
     {
       id: 'id1',
@@ -62,12 +65,15 @@ describe('Clarifying Questions: Anything else answer controller', () => {
         }
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.spy();
+    submit = sandbox.stub();
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
-    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEventRefactored: submit } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -81,23 +87,23 @@ describe('Clarifying Questions: Anything else answer controller', () => {
       const middleware: Middleware[] = [];
 
       setupCQAnythingElseAnswerController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage}`);
-      expect(routerPostStub).to.have.been.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage}`);
+      expect(routerGetStub.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage}`)).to.equal(true);
+      expect(routerPostStub.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage}`)).to.equal(true);
     });
   });
 
   describe('getAnythingElseAnswerPage', () => {
     it('should render template', () => {
       getAnythingElseAnswerPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk');
+      expect(renderStub.calledWith('templates/textarea-question-page.njk')).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getAnythingElseAnswerPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -115,7 +121,7 @@ describe('Clarifying Questions: Anything else answer controller', () => {
     it('should fail validation and render template with errors', async () => {
       await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk');
+      expect(renderStub.calledWith('templates/textarea-question-page.njk')).to.equal(true);
     });
 
     it('should validate and redirect to supporting evidence question page', async () => {
@@ -129,8 +135,8 @@ describe('Clarifying Questions: Anything else answer controller', () => {
       } as Appeal);
       await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(':id', '3'));
+      expect(submit.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(':id', '3'))).to.equal(true);
     });
 
     it('should validate and redirect to overview page', async () => {
@@ -145,22 +151,22 @@ describe('Clarifying Questions: Anything else answer controller', () => {
       } as Appeal);
       await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submit.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should not validate and render with errors', async () => {
       await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.called;
+      expect(renderStub.called).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

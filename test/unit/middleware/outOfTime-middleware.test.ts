@@ -7,6 +7,7 @@ describe('appealOutOfTime Middleware', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -24,10 +25,11 @@ describe('appealOutOfTime Middleware', () => {
       app: {} as any,
       body: {}
     } as Partial<Request>;
+    redirectStub = sandbox.stub();
     res = {
       render: sandbox.stub(),
       send: sandbox.stub(),
-      redirect: sandbox.stub() as () => void
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -39,13 +41,13 @@ describe('appealOutOfTime Middleware', () => {
 
   it('should call next if appeal is not late', () => {
     appealOutOfTimeMiddleware(req as Request, res as Response, next);
-    expect(next).to.have.been.calledOnce;
+    expect(next.callCount).to.equal(1);
   });
 
   it('should redirect to appeal late page if appeal is late', () => {
     req.session.appeal.application.isAppealLate = true;
     appealOutOfTimeMiddleware(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledOnce;
+    expect(redirectStub.callCount).to.equal(1);
   });
 
   it('should call next if appeal is late but a reason has been provided', () => {
@@ -54,6 +56,6 @@ describe('appealOutOfTime Middleware', () => {
       reason: 'The reason why I am late'
     };
     appealOutOfTimeMiddleware(req as Request, res as Response, next);
-    expect(next).to.have.been.calledOnce;
+    expect(next.callCount).to.equal(1);
   });
 });

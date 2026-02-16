@@ -14,6 +14,9 @@ describe('CMA Requirements - Reason controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
+  let submitStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   const datesToAvoid: CmaDateToAvoid[] = [
     {
       date: {
@@ -40,12 +43,20 @@ describe('CMA Requirements - Reason controller', () => {
         }
       }
     } as Partial<Request>;
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
+
+    updateAppealService = {
+      submitEvent: submitStub
+    } as Partial<UpdateAppealService>;
+
     next = sandbox.stub();
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -59,10 +70,10 @@ describe('CMA Requirements - Reason controller', () => {
       const middleware: Middleware[] = [];
 
       setupDatesToAvoidReasonController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidReason);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidReasonWithId);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidReason);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidReasonWithId);
+      expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidReason)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidReasonWithId)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidReason)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidReasonWithId)).to.equal(true);
     });
   });
 
@@ -81,15 +92,15 @@ describe('CMA Requirements - Reason controller', () => {
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getDatesToAvoidReason(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -110,17 +121,17 @@ describe('CMA Requirements - Reason controller', () => {
         timeExtensionAllowed: false
       };
       getDatesToAvoidReasonWithId(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       req.params.id = '0';
 
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getDatesToAvoidReasonWithId(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -129,23 +140,23 @@ describe('CMA Requirements - Reason controller', () => {
 
       await postDatesToAvoidReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk');
+      expect(renderStub.calledWith('templates/textarea-question-page.njk')).to.equal(true);
     });
 
     it('should validate and redirect to add another date page', async () => {
       req.body['reason'] = 'the answer here';
       await postDatesToAvoidReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidAddAnotherDate);
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidAddAnotherDate)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postDatesToAvoidReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -177,7 +188,7 @@ describe('CMA Requirements - Reason controller', () => {
         timeExtensionAllowed: false
       };
 
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should validate and redirect to CYA page', async () => {
@@ -185,18 +196,18 @@ describe('CMA Requirements - Reason controller', () => {
 
       req.body['reason'] = 'the answer here';
       await postDatesToAvoidReasonWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.checkAndSend);
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.checkAndSend)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       req.params.id = '0';
 
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postDatesToAvoidReasonWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

@@ -14,7 +14,9 @@ describe('Hearing Requirements - Single sex all male Reason controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
-
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -36,12 +38,20 @@ describe('Hearing Requirements - Single sex all male Reason controller', () => {
         '__auth-token': 'atoken'
       }
     } as Partial<Request>;
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub,
+      send: sandbox.stub()
     } as Partial<Response>;
+
+    updateAppealService = {
+      submitEventRefactored: submitRefactoredStub
+    } as Partial<UpdateAppealService>;
     next = sandbox.stub();
-    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -55,8 +65,8 @@ describe('Hearing Requirements - Single sex all male Reason controller', () => {
       const middleware: Middleware[] = [];
 
       setupSingleSexHearingAllMaleReasonController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsAllMaleHearing);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsAllMaleHearing);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.otherNeedsAllMaleHearing)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.submitHearingRequirements.otherNeedsAllMaleHearing)).to.equal(true);
     });
   });
 
@@ -77,7 +87,7 @@ describe('Hearing Requirements - Single sex all male Reason controller', () => {
       };
 
       getSingleSexHearingAllMaleReason(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should render template with saved answer', () => {
@@ -98,15 +108,15 @@ describe('Hearing Requirements - Single sex all male Reason controller', () => {
       };
 
       getSingleSexHearingAllMaleReason(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getSingleSexHearingAllMaleReason(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -115,7 +125,7 @@ describe('Hearing Requirements - Single sex all male Reason controller', () => {
       req.body.saveForLater = 'saveForLater';
       await postSingleSexHearingAllMaleReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should fail validation and render template with errors', async () => {
@@ -143,7 +153,7 @@ describe('Hearing Requirements - Single sex all male Reason controller', () => {
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
 
     });
 
@@ -151,16 +161,16 @@ describe('Hearing Requirements - Single sex all male Reason controller', () => {
       req.body['reason'] = 'the answer here';
       await postSingleSexHearingAllMaleReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsPrivateHearingQuestion);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsPrivateHearingQuestion)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postSingleSexHearingAllMaleReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

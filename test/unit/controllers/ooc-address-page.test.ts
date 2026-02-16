@@ -17,7 +17,9 @@ describe('Personal Details Controller - Out of Country Address Page', function (
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
   const osPlacesClient = new OSPlacesClient('someToken');
-
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -45,15 +47,21 @@ describe('Personal Details Controller - Out of Country Address Page', function (
       } as any
     } as Partial<Request>;
 
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      redirect: sandbox.spy(),
-      render: sandbox.stub(),
-      send: sandbox.stub()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
 
-    next = sandbox.stub();
+    updateAppealService = {
+      submitEventRefactored: submitRefactoredStub
+    } as Partial<UpdateAppealService>;
 
-    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
+    next = sandbox.stub();
   });
 
   afterEach(() => {
@@ -66,8 +74,8 @@ describe('Personal Details Controller - Out of Country Address Page', function (
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
       setupContactDetailsController(middleware, { updateAppealService, osPlacesClient } as any);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.oocAddress, middleware);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.oocAddress, middleware);
+      expect(routerGetStub.calledWith(paths.appealStarted.oocAddress, middleware)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.oocAddress, middleware)).to.equal(true);
     });
   });
 
@@ -85,7 +93,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
         }
       };
       getEnterAddressForOutOfCountryAppeal(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should render template with saved answer', () => {
@@ -104,14 +112,14 @@ describe('Personal Details Controller - Out of Country Address Page', function (
       };
 
       getEnterAddressForOutOfCountryAppeal(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getEnterAddressForOutOfCountryAppeal(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
   });
@@ -141,7 +149,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
           value: ''
         }
       };
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
 
     });
 
@@ -149,16 +157,16 @@ describe('Personal Details Controller - Out of Country Address Page', function (
       req.body['outofcountry-address'] = 'the answer here';
       await postEnterAddressForOutOfCountryAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.hasSponsor);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.hasSponsor)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postEnterAddressForOutOfCountryAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

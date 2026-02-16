@@ -22,7 +22,8 @@ describe('Personal Details Controller', function () {
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
   let lookupByPostcodeStub;
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
@@ -54,10 +55,13 @@ describe('Personal Details Controller', function () {
       } as any
     } as Partial<Request>;
 
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -79,15 +83,15 @@ describe('Personal Details Controller', function () {
         updateAppealService,
         osPlacesClient
       } as ContactDetailsControllerDependencies);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.postcodeLookup, middleware);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.postcodeLookup, middleware);
+      expect(routerGetStub.calledWith(paths.appealStarted.postcodeLookup, middleware)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.postcodeLookup, middleware)).to.equal(true);
     });
   });
 
   describe('getPostcodeLookupPage', () => {
     it('should redirect to enter postcode page if postcode not present', async () => {
       await getPostcodeLookupPage(osPlacesClient)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.enterPostcode);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.enterPostcode)).to.equal(true);
     });
 
     it('should render appeal-application/personal-details/postcode-lookup.njk', async () => {
@@ -105,7 +109,7 @@ describe('Personal Details Controller', function () {
       } as AddressInfoResponse);
 
       await getPostcodeLookupPage(osPlacesClient)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/postcode-lookup.njk');
+      expect(renderStub.calledOnceWith('appeal-application/personal-details/postcode-lookup.njk')).to.equal(true);
     });
 
     it('should catch an exception and call next()', async () => {
@@ -122,10 +126,10 @@ describe('Personal Details Controller', function () {
       } as AddressInfoResponse);
 
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await getPostcodeLookupPage(osPlacesClient)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -145,7 +149,7 @@ describe('Personal Details Controller', function () {
       } as any;
       postPostcodeLookupPage(req as Request, res as Response, next);
       const error = { href: '#address', key: 'address', text: 'Select your address' };
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/postcode-lookup.njk',
+      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/postcode-lookup.njk',
         {
           addresses: [{ text: '1 address found', value: '' }, { text: 'formattedAddress', value: 'udprn' }],
           error: { address: error },
@@ -168,7 +172,7 @@ describe('Personal Details Controller', function () {
       } as any;
       req.body.address = 'an address';
       postPostcodeLookupPage(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.enterAddress);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.enterAddress)).to.equal(true);
     });
 
     it('should catch an exception and call next()', () => {
@@ -183,10 +187,10 @@ describe('Personal Details Controller', function () {
         }
       } as any;
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       req.body.address = '123';
       postPostcodeLookupPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

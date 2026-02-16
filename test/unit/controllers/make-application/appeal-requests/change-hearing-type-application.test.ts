@@ -63,7 +63,7 @@ describe('Appeal application controllers setup', () => {
 
       getChangeHearingTypeApplication(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('make-application/details-question-page.njk', {
+      expect(res.render).to.be.calledWith('make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -74,7 +74,7 @@ describe('Appeal application controllers setup', () => {
 
       getChangeHearingTypeApplication(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -85,7 +85,7 @@ describe('Appeal application controllers setup', () => {
 
       postChangeHearingTypeApplication(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 });

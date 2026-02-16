@@ -23,7 +23,7 @@ describe('Nationalities', () => {
       }
     ];
     const countriesList = getNationalitiesOptions(list, '', 'Please select a nationality');
-    expect(countriesList).to.be.deep.eq(options);
+    expect(countriesList).to.deep.equal(options);
   });
 
   it('should getNationalitiesOptions with a selected option', () => {
@@ -43,6 +43,6 @@ describe('Nationalities', () => {
       }
     ];
     const countriesList = getNationalitiesOptions(list, 'AX', 'Please select a nationality');
-    expect(countriesList).to.be.deep.eq(options);
+    expect(countriesList).to.deep.equal(options);
   });
 });

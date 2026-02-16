@@ -35,7 +35,7 @@ describe('idam-service', () => {
     });
 
     it('loads the first case', () => {
-      expect(loadedCase).eq(expectedCase);
+      expect(loadedCase).to.equal(expectedCase);
     });
 
     it('does not create a new case', () => {
@@ -60,7 +60,7 @@ describe('idam-service', () => {
     });
 
     it('creates a case', () => {
-      expect(loadedCase).eq(expectedCase);
+      expect(loadedCase).to.equal(expectedCase);
     });
   });
 
@@ -94,7 +94,7 @@ describe('idam-service', () => {
 
       const ccdCaseDetails = await ccdService.createCase(userId, headers);
 
-      expect(ccdCaseDetails).eq(expectedResult);
+      expect(ccdCaseDetails).to.equal(expectedResult);
     });
   });
 
@@ -130,7 +130,7 @@ describe('idam-service', () => {
         case_data: caseData as CaseData
       }, headers);
 
-      expect(caseDetails).eq(expectedResult);
+      expect(caseDetails).to.equal(expectedResult);
     });
   });
 
@@ -184,37 +184,37 @@ describe('idam-service', () => {
     it('startCreateCase', async () => {
       await ccdService.startCreateCase(userId, headers);
 
-      expect(getRequest).to.have.been.called;
+      expect(getRequest.called).to.equal(true);
     });
 
     it('submitCreateCase', async () => {
       await ccdService.submitCreateCase(userId, headers, {} as any);
 
-      expect(postRequest).to.have.been.called;
+      expect(postRequest.called).to.equal(true);
     });
 
     it('loadCasesForUser', async () => {
       await ccdService.loadCasesForUser(userId, headers);
 
-      expect(postRequest).to.have.been.called;
+      expect(postRequest.called).to.equal(true);
     });
 
     it('startUpdateAppeal with "editAppeal"', async () => {
       await ccdService.startUpdateAppeal(userId, caseId, Events.EDIT_APPEAL.id, headers);
 
-      expect(getRequest).to.have.been.called;
+      expect(getRequest.called).to.equal(true);
     });
 
     it('submitUpdateCase', async () => {
       await ccdService.submitUpdateAppeal(userId, caseId, headers, {} as any);
 
-      expect(postRequest).to.have.been.called;
+      expect(postRequest.called).to.equal(true);
     });
 
     it('retrieveCaseHistoryV2', async () => {
       await ccdService.retrieveCaseHistoryV2(userId, caseId, headers);
 
-      expect(getRequest).to.have.been.called;
+      expect(getRequest.called).to.equal(true);
     });
   });
 

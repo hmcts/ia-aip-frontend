@@ -27,26 +27,26 @@ describe('is-user-authenticated middleware', () => {
   it('should return false if user is not authenticated', () => {
     isUserAuthenticated(req as Request, res as Response, next);
 
-    expect(res.locals.authenticated).to.be.false;
+    expect(res.locals.authenticated).to.equal(false);
   });
 
   it('should return true if user is not authenticated', () => {
     req.cookies['__auth-token'] = 'aToken';
     isUserAuthenticated(req as Request, res as Response, next);
 
-    expect(res.locals.authenticated).to.be.true;
+    expect(res.locals.authenticated).to.equal(true);
   });
 
   it('should set redirect url', () => {
     req.originalUrl = '/ask-judge-review';
     isUserAuthenticated(req as Request, res as Response, next);
 
-    expect(req.session.redirectUrl).to.eql('/ask-judge-review');
+    expect(req.session.redirectUrl).to.deep.equal('/ask-judge-review');
   });
 
   it('should set redirect url', () => {
     isUserAuthenticated(req as Request, res as Response, next);
 
-    expect(req.session.redirectUrl).to.be.undefined;
+    expect(req.session.redirectUrl).to.equal(undefined);
   });
 });

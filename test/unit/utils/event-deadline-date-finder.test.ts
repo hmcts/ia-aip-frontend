@@ -116,7 +116,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'appealStarted';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.null;
+      expect(result).to.equal(null);
     });
 
     it('appealSubmitted should return a formatted date with 5 days offset from the appealSubmission date', () => {
@@ -124,7 +124,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'appealSubmitted';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('13 February 2020');
+      expect(result).to.equal('13 February 2020');
     });
 
     it('appealSubmitted with fee and setAside is enabled should return a formatted date with 14 days offset from the' +
@@ -134,7 +134,7 @@ describe('event-deadline-date-finder', () => {
       req.session.appeal.application.appealType = 'refusalOfHumanRights';
       const result = getDeadline(currentAppealStatus, req as Request, true);
 
-      expect(result).to.be.equal('22 February 2020');
+      expect(result).to.equal('22 February 2020');
     });
 
     it('lateAppealSubmitted with fee and setAside is enabled should return a formatted date with 14 days offset from the' +
@@ -144,7 +144,7 @@ describe('event-deadline-date-finder', () => {
       req.session.appeal.application.appealType = 'euSettlementScheme';
       const result = getDeadline(currentAppealStatus, req as Request, true);
 
-      expect(result).to.be.equal('22 February 2020');
+      expect(result).to.equal('22 February 2020');
     });
 
     it('pendingPayment should return a formatted date with 14 days offset from the appealSubmission date', () => {
@@ -152,7 +152,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'pendingPayment';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('22 February 2020');
+      expect(result).to.equal('22 February 2020');
     });
 
     it('pendingPayment should return a formatted date with 14 days offset from the appealSubmission date when dlrmFeeRemission' +
@@ -163,7 +163,7 @@ describe('event-deadline-date-finder', () => {
 
       const result = getDeadline(currentAppealStatus, req as Request, true);
 
-      expect(result).to.be.equal('22 February 2020');
+      expect(result).to.equal('22 February 2020');
     });
 
     it('pendingPayment should return a formatted date with 28 days offset from the appealSubmission date when dlrmFeeRemission' +
@@ -174,7 +174,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'pendingPayment';
       const result = getDeadline(currentAppealStatus, req as Request, true);
 
-      expect(result).to.be.equal('07 March 2020');
+      expect(result).to.equal('07 March 2020');
     });
 
     it('awaitingRespondentEvidence should return a formatted date with 14 days offset from the appealSubmission date', () => {
@@ -182,7 +182,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'appealSubmitted';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('13 February 2020');
+      expect(result).to.equal('13 February 2020');
     });
 
     it('awaitingRespondentEvidence should return a formatted date with 14 days offset from the appealSubmission date', () => {
@@ -190,7 +190,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'awaitingRespondentEvidence';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('13 February 2020');
+      expect(result).to.equal('13 February 2020');
     });
 
     it('awaitingRespondentEvidence should return a formatted date with 14 days offset from the appealSubmission date' +
@@ -199,7 +199,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'awaitingRespondentEvidence';
       const result = getDeadline(currentAppealStatus, req as Request, true);
 
-      expect(result).to.be.equal('22 February 2020');
+      expect(result).to.equal('22 February 2020');
     });
     it('awaitingRespondentEvidence should return a formatted date with 28 days offset from the appealSubmission date' +
       ' when dlrmFeeRemission is enabled and appeal is out of country', () => {
@@ -208,7 +208,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'awaitingRespondentEvidence';
       const result = getDeadline(currentAppealStatus, req as Request, true);
 
-      expect(result).to.be.equal('07 March 2020');
+      expect(result).to.equal('07 March 2020');
     });
 
     it('awaitingReasonsForAppeal should return a formatted date with the requestReasonForAppeal direction due date', () => {
@@ -216,7 +216,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'awaitingReasonsForAppeal';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('01 September 2020');
+      expect(result).to.equal('01 September 2020');
     });
 
     it('reasonsForAppealSubmitted should return a formatted date with 14 days offset from the submitReasonsForAppeal event', () => {
@@ -224,7 +224,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'reasonsForAppealSubmitted';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('03 March 2020');
+      expect(result).to.equal('03 March 2020');
     });
 
     it('caseUnderReview should return a formatted date with 14 days offset from the buildCase event', () => {
@@ -232,7 +232,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'caseUnderReview';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('03 March 2020');
+      expect(result).to.equal('03 March 2020');
     });
 
     it('awaitingCmaRequirements should return a formatted  date with the requestCmaRequirements direction due date', () => {
@@ -240,7 +240,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'awaitingCmaRequirements';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('21 May 2020');
+      expect(result).to.equal('21 May 2020');
     });
 
     it('should return a formatted date for decisionWithdrawn state', () => {
@@ -248,7 +248,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'decisionWithdrawn';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('03 March 2020');
+      expect(result).to.equal('03 March 2020');
     });
 
     it('submitHearingRequirements should return a formatted  date with the legalRepresentativeHearingRequirements direction due date', () => {
@@ -256,7 +256,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'submitHearingRequirements';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('28 July 2020');
+      expect(result).to.equal('28 July 2020');
     });
 
     it('should return a formatted date for decisionWithdrawn state @thisONes', () => {
@@ -264,7 +264,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'decisionWithdrawn';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('03 March 2020');
+      expect(result).to.equal('03 March 2020');
     });
 
     it('submitHearingRequirements should return a formatted  date with the legalRepresentativeHearingRequirements direction due date', () => {
@@ -272,7 +272,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'submitHearingRequirements';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('28 July 2020');
+      expect(result).to.equal('28 July 2020');
     });
 
     it('should return a formatted date for decisionWithdrawn state @thisONes', () => {
@@ -280,7 +280,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'decisionWithdrawn';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('03 March 2020');
+      expect(result).to.equal('03 March 2020');
     });
 
     it('submitHearingRequirements should return a formatted  date with the legalRepresentativeHearingRequirements direction due date', () => {
@@ -288,7 +288,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'submitHearingRequirements';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('28 July 2020');
+      expect(result).to.equal('28 July 2020');
     });
 
     it('should return a formatted date for decisionWithdrawn state @thisONes', () => {
@@ -296,7 +296,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'decisionWithdrawn';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('03 March 2020');
+      expect(result).to.equal('03 March 2020');
     });
 
     it('should return a formatted date for decisionMaintained state', () => {
@@ -304,7 +304,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'decisionMaintained';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('23 February 2020');
+      expect(result).to.equal('23 February 2020');
     });
 
     it('should return a formatted date for respondentReview state', () => {
@@ -312,191 +312,191 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'respondentReview';
       const result = getDeadline(currentAppealStatus, req as Request);
 
-      expect(result).to.be.equal('03 March 2020');
+      expect(result).to.equal('03 March 2020');
     });
 
     it('cmaListed should return the formatted date', () => {
       const result = getHearingDate(req as Request);
-      expect(result).to.be.equal('11 August 2020');
+      expect(result).to.equal('11 August 2020');
     });
 
     it('cmaListed should return the correct hearing centre', () => {
       const result = getHearingCentre(req as Request);
-      expect(result).to.be.equal('Taylor House');
+      expect(result).to.equal('Taylor House');
     });
 
     it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'manchester';
       const result = getHearingCentre(req as Request);
-      expect(result).to.be.equal('Manchester');
+      expect(result).to.equal('Manchester');
     });
 
     it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'glasgow';
       const result = getHearingCentre(req as Request);
-      expect(result).to.be.equal('Glasgow');
+      expect(result).to.equal('Glasgow');
     });
 
     it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'newport';
       const result = getHearingCentre(req as Request);
-      expect(result).to.be.equal('Newport');
+      expect(result).to.equal('Newport');
     });
 
     it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'bradford';
       const result = getHearingCentre(req as Request);
-      expect(result).to.be.equal('Bradford');
+      expect(result).to.equal('Bradford');
     });
 
     it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'northShields';
       const result = getHearingCentre(req as Request);
-      expect(result).to.be.equal('North Shields');
+      expect(result).to.equal('North Shields');
     });
 
     it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'hattonCross';
       const result = getHearingCentre(req as Request);
-      expect(result).to.be.equal('Hatton Cross');
+      expect(result).to.equal('Hatton Cross');
     });
 
     it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'birmingham';
       const result = getHearingCentre(req as Request);
-      expect(result).to.be.equal('Birmingham');
+      expect(result).to.equal('Birmingham');
     });
 
     it('cmaListed should return a blank hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = '';
       const result = getHearingCentre(req as Request);
-      expect(result).to.be.equal('');
+      expect(result).to.equal('');
     });
 
     it('cmaListed should return the hearing centre email for an ended case not listed', () => {
       req.session.appeal.hearing.hearingCentre = '';
       req.session.appeal.hearingCentre = 'taylorHouse';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case not listed', () => {
       req.session.appeal.hearing.hearingCentre = '';
       req.session.appeal.hearingCentre = 'manchester';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_MANCHESTER_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_MANCHESTER_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case not listed', () => {
       req.session.appeal.hearing.hearingCentre = '';
       req.session.appeal.hearingCentre = 'glasgow';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_GLASGOW_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_GLASGOW_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case not listed', () => {
       req.session.appeal.hearing.hearingCentre = '';
       req.session.appeal.hearingCentre = 'newport';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_NEWPORT_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_NEWPORT_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case not listed', () => {
       req.session.appeal.hearing.hearingCentre = '';
       req.session.appeal.hearingCentre = 'bradford';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_BRADFORD_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_BRADFORD_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case not listed', () => {
       req.session.appeal.hearing.hearingCentre = '';
       req.session.appeal.hearingCentre = 'northShields';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_NORTH_SHIELDS_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_NORTH_SHIELDS_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case not listed', () => {
       req.session.appeal.hearing.hearingCentre = '';
       req.session.appeal.hearingCentre = 'hattonCross';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_HATTON_CROSS_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_HATTON_CROSS_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case not listed', () => {
       req.session.appeal.hearing.hearingCentre = '';
       req.session.appeal.hearingCentre = 'birmingham';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_BIRMINGHAM_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_BIRMINGHAM_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
       req.session.appeal.hearing.hearingCentre = 'taylorHouse';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
       req.session.appeal.hearing.hearingCentre = 'manchester';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_MANCHESTER_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_MANCHESTER_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
       req.session.appeal.hearing.hearingCentre = 'glasgow';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_GLASGOW_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_GLASGOW_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
       req.session.appeal.hearing.hearingCentre = 'newport';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_NEWPORT_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_NEWPORT_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
       req.session.appeal.hearing.hearingCentre = 'bradford';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_BRADFORD_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_BRADFORD_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
       req.session.appeal.hearing.hearingCentre = 'northShields';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_NORTH_SHIELDS_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_NORTH_SHIELDS_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
       req.session.appeal.hearing.hearingCentre = 'hattonCross';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_HATTON_CROSS_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_HATTON_CROSS_EMAIL');
     });
 
     it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
       req.session.appeal.hearing.hearingCentre = 'birmingham';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_BIRMINGHAM_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_BIRMINGHAM_EMAIL');
     });
 
     it('getHearingCentreEmail should return the hearing centre email based on the hearing.hearingCentre for an ended case previously listed', () => {
       req.session.appeal.hearing.hearingCentre = 'birmingham';
       req.session.appeal.hearingCentre = 'hattonCross';
       const result = getHearingCentreEmail(req as Request);
-      expect(result).to.be.equal('IA_HEARING_CENTRE_BIRMINGHAM_EMAIL');
+      expect(result).to.equal('IA_HEARING_CENTRE_BIRMINGHAM_EMAIL');
     });
 
     it('cmaListed should return the formatted hearing centre', () => {
       const result = getHearingTime(req as Request);
-      expect(result).to.be.equal('10:00 am');
+      expect(result).to.equal('10:00 am');
     });
 
     it('getFormattedDirectionDueDate should return due date from first directive with matching tag (multiple tags)', () => {
       const result = getFormattedDirectionDueDate(req.session.appeal.directions, ['requestReasonsForAppeal', 'requestCaseBuilding']);
-      expect(result).to.be.equal('01 September 2020');
+      expect(result).to.equal('01 September 2020');
     });
 
     it('getFormattedDirectionDueDate should return due date from first directive with matching tag', () => {
       const result = getFormattedDirectionDueDate(req.session.appeal.directions, ['requestCaseBuilding']);
-      expect(result).to.be.equal('28 August 2020');
+      expect(result).to.equal('28 August 2020');
     });
 
     it('getDueDateForAppellantToRespondToJudgeDecision should return due date when triggered updateTribunalDecision event with rule 31', () => {
@@ -507,7 +507,7 @@ describe('event-deadline-date-finder', () => {
       req.session.appeal.updateTribunalDecisionList = 'underRule31';
 
       const result = getDueDateForAppellantToRespondToJudgeDecision(req as Request, true);
-      expect(result).to.be.equal('19 March 2024');
+      expect(result).to.equal('19 March 2024');
     });
 
     it('getDueDateForAppellantToRespondToJudgeDecision should return due date when triggered updateTribunalDecision event with rule 31 and OOC', () => {
@@ -519,7 +519,7 @@ describe('event-deadline-date-finder', () => {
       req.session.appeal.appealOutOfCountry = 'Yes';
 
       const result = getDueDateForAppellantToRespondToJudgeDecision(req as Request, true);
-      expect(result).to.be.equal('02 April 2024');
+      expect(result).to.equal('02 April 2024');
     });
 
     it('getDueDateForAppellantToRespondToJudgeDecision should return due date when triggered updateTribunalDecision event with rule 32', () => {
@@ -528,7 +528,7 @@ describe('event-deadline-date-finder', () => {
       req.session.appeal.updateTribunalDecisionList = 'underRule32';
 
       const result = getDueDateForAppellantToRespondToJudgeDecision(req as Request, true);
-      expect(result).to.be.equal(null);
+      expect(result).to.equal(null);
     });
 
     it('getDueDateForAppellantToRespondToJudgeDecision should return due date from finalDecisionAndReasonsPdf tag when the flag of DLRM set aside is off', () => {
@@ -544,7 +544,7 @@ describe('event-deadline-date-finder', () => {
       ];
 
       const result = getDueDateForAppellantToRespondToJudgeDecision(req as Request, false);
-      expect(result).to.be.equal('13 March 2024');
+      expect(result).to.equal('13 March 2024');
     });
 
     it('getDueDateForAppellantToRespondToJudgeDecision should return due date from finalDecisionAndReasonsPdf tag when the flag of DLRM set aside is off and OOC', () => {
@@ -561,7 +561,7 @@ describe('event-deadline-date-finder', () => {
       ];
 
       const result = getDueDateForAppellantToRespondToJudgeDecision(req as Request, false);
-      expect(result).to.be.equal('27 March 2024');
+      expect(result).to.equal('27 March 2024');
     });
   });
 });

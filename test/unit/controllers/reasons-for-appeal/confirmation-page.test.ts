@@ -60,12 +60,12 @@ describe('Confirmation Page Controller', () => {
     const middleware = [];
 
     setupHearingRequirementsConfirmationPage(middleware);
-    expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.confirmation, middleware);
+    expect(routerGetStub.calledWith(paths.submitHearingRequirements.confirmation, middleware)).to.equal(true);
   });
 
   it('getConfirmationPage should render confirmation.njk', () => {
     getHearingRequirementsConfirmationPage(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
+    expect(res.render).to.be.calledOnceWith('templates/confirmation-page.njk', {
       title: i18n.pages.hearingRequirements.confirmation.title,
       whatNextListItems: i18n.pages.hearingRequirements.confirmation.whatNextListItems,
       info: i18n.pages.hearingRequirements.confirmation.info,
@@ -77,6 +77,6 @@ describe('Confirmation Page Controller', () => {
     const error = new Error('the error');
     res.render = sandbox.stub().throws(error);
     getHearingRequirementsConfirmationPage(req as Request, res as Response, next);
-    expect(next).to.have.been.calledOnce.calledWith(error);
+    expect(next.calledOnceWith(error)).to.equal(true);
   });
 });

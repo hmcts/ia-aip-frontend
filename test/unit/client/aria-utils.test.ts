@@ -16,13 +16,13 @@ describe('aria utils', () => {
   describe('addAriaExpandedAttribute', () => {
     it('should add aria-expanded attr to detail when details tag is closed', () => {
       utils.addAriaExpandedAttribute();
-      expect(details.getAttribute('aria-expanded')).to.be.eql('false');
+      expect(details.getAttribute('aria-expanded')).to.deep.equal('false');
     });
 
     it('should add aria-expanded attr to detail when details tag is open', () => {
       details.toggleAttribute('open');
       utils.addAriaExpandedAttribute();
-      expect(details.getAttribute('aria-expanded')).to.be.eql('true');
+      expect(details.getAttribute('aria-expanded')).to.deep.equal('true');
     });
   });
 
@@ -31,7 +31,7 @@ describe('aria utils', () => {
       const addEventListenerStub: sinon.SinonStub = sandbox.stub(document.querySelector('details'), 'addEventListener');
       utils.addAriaExpandedEventListener();
 
-      expect(addEventListenerStub).to.have.been.called.calledWith('toggle');
+      expect(addEventListenerStub.calledWith('toggle')).to.equal(true);
     });
   });
 });

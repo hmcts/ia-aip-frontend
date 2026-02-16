@@ -22,6 +22,6 @@ describe('ref-data-api', () => {
   it('should call common ref data LoV endpoint', async () => {
     await refDataApi.commonRefDataLov(headers, 'InterpreterLanguage');
 
-    expect(axiosGetStub).to.have.been.called;
+    expect(axiosGetStub.called).to.equal(true);
   });
 });

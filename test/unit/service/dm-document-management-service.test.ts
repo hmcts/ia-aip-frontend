@@ -53,8 +53,8 @@ describe('dm-document-management-service', () => {
       const documentManagementService = new DmDocumentManagementService(authenticationService);
       await documentManagementService.deleteFile(req as Request, 'fileId');
 
-      expect(deleteStub).to.have.been.calledWith('anUID', sinon.match.any, 'file-url.com');
-      expect(req.session.appeal.documentMap.length).to.be.eq(0);
+      expect(deleteStub.calledWith('anUID', sinon.match.any, 'file-url.com')).to.equal(true);
+      expect(req.session.appeal.documentMap.length).to.equal(0);
     });
 
   });
@@ -66,7 +66,7 @@ describe('dm-document-management-service', () => {
       const documentManagementService = new DmDocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
 
-      expect(fetchStub).to.have.been.calledWith(sinon.match.any, sinon.match.any, 'http://store/documents/ID');
+      expect(fetchStub.calledWith(sinon.match.any, sinon.match.any, 'http://store/documents/ID')).to.equal(true);
     });
 
     it('should execute request', async () => {
@@ -75,7 +75,7 @@ describe('dm-document-management-service', () => {
       const documentManagementService = new DmDocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
 
-      expect(getStub).to.have.been.calledWith(sinon.match.any);
+      expect(getStub.calledWith(sinon.match.any)).to.equal(true);
     });
   });
 
@@ -92,8 +92,8 @@ describe('dm-document-management-service', () => {
       const documentManagementService = new DmDocumentManagementService(authenticationService);
       await documentManagementService.uploadFile(req as Request);
 
-      expect(uploadStub).to.have.been.calledWith(sinon.match.any, sinon.match.any);
-      expect(req.session.appeal.documentMap.length).to.be.eq(1);
+      expect(uploadStub.calledWith(sinon.match.any, sinon.match.any)).to.equal(true);
+      expect(req.session.appeal.documentMap.length).to.equal(1);
     });
 
   });
@@ -119,7 +119,7 @@ describe('dm-document-management-service', () => {
         ];
         const documentManagementService = new DmDocumentManagementService(null);
         const documentMap = documentManagementService.removeFromDocumentMapper('fileId', req.session.appeal.documentMap);
-        expect(documentMap.length).to.be.eq(0);
+        expect(documentMap.length).to.equal(0);
       });
 
       it('should leave documentMap as it is if document not found', () => {
@@ -131,7 +131,7 @@ describe('dm-document-management-service', () => {
         ];
         const documentManagementService = new DmDocumentManagementService(null);
         const documentMap = documentManagementService.removeFromDocumentMapper('anotherId', req.session.appeal.documentMap);
-        expect(documentMap.length).to.be.eq(1);
+        expect(documentMap.length).to.equal(1);
       });
     });
   });
@@ -170,7 +170,7 @@ describe('dm-document-management-service', () => {
           classification: 'RESTRICTED'
         };
         const result = await documentManagementService['upload']('userId', headers, uploadData as DmUploadData);
-        expect(axiosPostStub).to.have.been.calledOnce;
+        expect(axiosPostStub.callCount).to.equal(1);
         expect(result).to.eq(JSON.stringify({ foo: 'bar' }));
       });
       it('should throw if axios.post fails', async () => {
@@ -194,7 +194,7 @@ describe('dm-document-management-service', () => {
         const headers = { userToken: 'user', serviceToken: 'service' };
         const fileLocation = 'http://file/location';
         const result = await documentManagementService['delete']('userId', headers, fileLocation);
-        expect(axiosDeleteStub).to.have.been.calledWith(fileLocation, sinon.match.any);
+        expect(axiosDeleteStub.calledWith(fileLocation, sinon.match.any)).to.equal(true);
         expect(result).to.deep.equal({ status: 204 });
         axiosDeleteStub.restore();
       });
@@ -213,7 +213,7 @@ describe('dm-document-management-service', () => {
         const headers = { userToken: 'user', serviceToken: 'service' };
         const fileLocation = 'http://file/location';
         const result = await documentManagementService['fetchBinaryFile']('userId', headers, fileLocation);
-        expect(axiosGetStub).to.have.been.calledWith(fileLocation + '/binary', sinon.match.hasNested('responseType', 'arraybuffer'));
+        expect(axiosGetStub.calledWith(fileLocation + '/binary', sinon.match.hasNested('responseType', 'arraybuffer'))).to.equal(true);
         expect(result).to.deep.eq({ data: Buffer.from('binary') });
         axiosGetStub.restore();
       });

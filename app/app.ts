@@ -10,6 +10,7 @@ import webpackDevMiddleware, { Options } from 'webpack-dev-middleware';
 import internationalization from '../locale/en.json';
 import webpackDevConfig from '../webpack/webpack.dev.js';
 import { configureIdam, configureLogger, configureNunjucks, configureS2S } from './app-config';
+import { health, liveness } from './controllers/health';
 import { pageNotFoundHandler, serverErrorHandler } from './handlers/error-handler';
 import {
   enforceFileSizeLimit,
@@ -32,6 +33,11 @@ function createApp() {
   const app: express.Application = express();
   const environment: string = process.env.NODE_ENV;
   const isDevEnv = ['test', 'development', 'aatDevelopment'].includes(environment);
+
+  app.get(paths.common.health, health);
+  app.get(paths.common.liveness, liveness);
+  app.get(paths.common.healthLiveness, liveness);
+  app.get(paths.common.healthReadiness, health);
 
   // Inject nonce Id on every request.
   app.use((req, res, next) => {

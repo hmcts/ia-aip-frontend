@@ -106,7 +106,6 @@ import { setupFooterController } from './controllers/footer';
 import { setupForbiddenController } from './controllers/forbidden';
 import { setupFtpaApplicationController } from './controllers/ftpa/ftpa-application';
 import { setupGuidancePagesController } from './controllers/guidance-page';
-import { setupHealthController } from './controllers/health';
 import { setupHearingAccessNeedsController } from './controllers/hearing-requirements/access-needs';
 import { setupHearingRequirementsCYAController } from './controllers/hearing-requirements/check-and-send';
 import { setupHearingRequirementsConfirmationPage } from './controllers/hearing-requirements/confirmation-page';
@@ -227,7 +226,6 @@ const router = express.Router();
 
 const indexController = setupIndexController();
 const startController = setupStartController();
-const healthController = setupHealthController();
 const notFoundController = setupNotFoundController();
 const idamController = setupIdamController();
 const startRepresentingMyselfPublicControllers = setupStartRepresentingMyselfControllers(new CcdSystemService(new SystemAuthenticationService(), S2SService.getInstance()));
@@ -355,7 +353,6 @@ const deportationOrderController = setupDeportationOrderController(middleware, u
 
 // not protected by idam
 router.use(indexController);
-router.use(healthController);
 router.use(startController);
 router.use(eligibilityController);
 router.use(GuidancePages);

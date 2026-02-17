@@ -1,9 +1,8 @@
 import config from 'config';
-import { RedisStore } from 'connect-redis';
-import { createRedisClient } from './redisClient';
 import Logger, { getLogLabel } from './utils/logger';
 
 const session = require('express-session');
+const redis = require('redis');
 
 const useRedis: boolean = config.get('session.useRedis') === true;
 const isSecure: boolean = config.get('session.cookie.secure') === true;
@@ -12,17 +11,16 @@ const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
 function setupSession() {
-  const redisClient = createRedisClient();
-  logger.trace(`connecting to redis on [${config.get('session.redis.url')}]`, logLabel);
+  logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
   if (useRedis) {
-    logger.trace(`connecting to redis on [${config.get('session.redis.url')}]`, logLabel);
-    redisClient.connect().catch(err => {
-      logger.exception('Error connecting to redis: ' + err.message, logLabel);
-      throw err;
-    });
-    const redisStore = new RedisStore(
-      { client: redisClient, ttl: config.get('session.redis.ttlInSeconds') }
-    );
+    logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
+    const RedisStore = require('connect-redis')(session);
+    const redisOpts = {
+      url: config.get('session.redis.url'),
+      ttl: config.get('session.redis.ttlInSeconds')
+    };
+
+    const client = redis.createClient(redisOpts);
     return session({
       cookie: {
         httpOnly: true,
@@ -34,7 +32,7 @@ function setupSession() {
       saveUninitialized: true,
       secret: config.get('session.redis.secret'),
       rolling: true,
-      store: redisStore
+      store: new RedisStore({ client })
     });
   } else {
     return session({

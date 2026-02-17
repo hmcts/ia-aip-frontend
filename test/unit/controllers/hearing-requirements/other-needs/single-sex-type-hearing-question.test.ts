@@ -14,7 +14,9 @@ describe('Hearing Requirements - Other Needs Section: Single sex type hearing Qu
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
-
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -36,12 +38,19 @@ describe('Hearing Requirements - Other Needs Section: Single sex type hearing Qu
         '__auth-token': 'atoken'
       }
     } as Partial<Request>;
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
+
+    updateAppealService = {
+      submitEventRefactored: submitRefactoredStub
+    } as Partial<UpdateAppealService>;
     next = sandbox.stub();
-    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -55,8 +64,8 @@ describe('Hearing Requirements - Other Needs Section: Single sex type hearing Qu
       const middleware: Middleware[] = [];
 
       setupSingleSexTypeHearingQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsSingleSexTypeHearing);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsSingleSexTypeHearing);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.otherNeedsSingleSexTypeHearing)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.submitHearingRequirements.otherNeedsSingleSexTypeHearing)).to.equal(true);
     });
   });
 
@@ -76,17 +85,17 @@ describe('Hearing Requirements - Other Needs Section: Single sex type hearing Qu
         },
         saveAndContinue: true
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
+      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
         expectedArgs
       );
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getSingleSexTypeHearingQuestion(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -115,33 +124,33 @@ describe('Hearing Requirements - Other Needs Section: Single sex type hearing Qu
         },
         saveAndContinue: true
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
       await postSingleSexTypeHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsAllMaleHearing);
-      expect(req.session.appeal.hearingRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All male');
+      expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsAllMaleHearing)).to.equal(true);
+      expect(req.session.appeal.hearingRequirements.otherNeeds.singleSexTypeAppointment).to.equal('All male');
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
       await postSingleSexTypeHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsAllFemaleHearing);
-      expect(req.session.appeal.hearingRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All female');
+      expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsAllFemaleHearing)).to.equal(true);
+      expect(req.session.appeal.hearingRequirements.otherNeeds.singleSexTypeAppointment).to.equal('All female');
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postSingleSexTypeHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

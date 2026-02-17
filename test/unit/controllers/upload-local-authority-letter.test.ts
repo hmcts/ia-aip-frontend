@@ -24,7 +24,11 @@ describe('Local authority letter', function () {
 
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let uploadStub: sinon.SinonStub;
+  let deleteStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -52,18 +56,27 @@ describe('Local authority letter', function () {
       } as any
     } as Partial<Request>;
 
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy(),
+      redirect: redirectStub,
       locals: {}
     } as Partial<Response>;
 
+    updateAppealService = {
+      submitEventRefactored: submitRefactoredStub
+    } as Partial<UpdateAppealService>;
+
     next = sandbox.stub();
-    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
+    uploadStub = sandbox.stub();
+    deleteStub = sandbox.stub();
     documentManagementService = {
-      uploadFile: sandbox.stub(),
-      deleteFile: sandbox.stub()
+      uploadFile: uploadStub,
+      deleteFile: deleteStub
     } as Partial<DocumentManagementService>;
   });
 
@@ -77,10 +90,10 @@ describe('Local authority letter', function () {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware = [];
       new SetupLocalAuthorityLetterController().initialise(middleware, updateAppealService, documentManagementService as DocumentManagementService);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.localAuthorityLetter);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.localAuthorityLetterDelete);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.localAuthorityLetter);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.localAuthorityLetterUpload);
+      expect(routerGetStub.calledWith(paths.appealStarted.localAuthorityLetter)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.localAuthorityLetterDelete)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.localAuthorityLetter)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.localAuthorityLetterUpload)).to.equal(true);
     });
   });
 
@@ -89,7 +102,7 @@ describe('Local authority letter', function () {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await postLocalAuthorityLetter(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.appealStarted.localAuthorityLetter}?error=noFileSelected`);
+      expect(redirectStub.calledWith(`${paths.appealStarted.localAuthorityLetter}?error=noFileSelected`)).to.equal(true);
     });
 
     it('should redirect to \'/about-appeal\' if local authority letter upload present and not in editing mode', async () => {
@@ -97,7 +110,7 @@ describe('Local authority letter', function () {
       req.session.appeal.application.localAuthorityLetters = [{ fileId: 'id', name: 'name' } as Evidence];
       await postLocalAuthorityLetter(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+      expect(redirectStub.calledWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
     it('should redirect to \'/check-answers\' if local authority letter upload present and in editing mode', async () => {
@@ -106,18 +119,18 @@ describe('Local authority letter', function () {
       req.session.appeal.application.localAuthorityLetters = [{ fileId: 'id', name: 'name' } as Evidence];
       await postLocalAuthorityLetter(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       req.session.appeal.application.isEdit = true;
       req.session.appeal.application.localAuthorityLetters = [{ fileId: 'id', name: 'name' } as Evidence];
       await postLocalAuthorityLetter(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -125,24 +138,24 @@ describe('Local authority letter', function () {
     it('should call next if no multer errors', () => {
       validate(req as Request, res as Response, next);
 
-      expect(next).to.have.been.called;
+      expect(next.called).to.equal(true);
     });
 
     it('should redirect to \'/upload-local-authority-letter\' with error code', async () => {
       res.locals.errorCode = 'anError';
       validate(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.called;
+      expect(redirectStub.called).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       res.locals.errorCode = 'anError';
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
 
       validate(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -155,20 +168,20 @@ describe('Local authority letter', function () {
       req.file = file as Express.Multer.File;
       await uploadLocalAuthorityLetter(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(documentManagementService.uploadFile).to.have.been.called;
-      expect(updateAppealService.submitEventRefactored).to.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.localAuthorityLetter);
+      expect(uploadStub.called).to.equal(true);
+      expect(submitRefactoredStub.called).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.localAuthorityLetter)).to.equal(true);
     });
 
     it('should redirect to \'/upload-local-authority-letter\' with no file selected error', async () => {
       await uploadLocalAuthorityLetter(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.appealStarted.localAuthorityLetter}?error=noFileSelected`);
+      expect(redirectStub.calledWith(`${paths.appealStarted.localAuthorityLetter}?error=noFileSelected`)).to.equal(true);
     });
 
     it('should catch an error and redirect with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       const file = {
         originalname: 'file.png',
         mimetype: 'type'
@@ -176,7 +189,7 @@ describe('Local authority letter', function () {
       req.file = file as Express.Multer.File;
       await uploadLocalAuthorityLetter(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -187,20 +200,20 @@ describe('Local authority letter', function () {
       req.query.id = 'anId';
       await deleteLocalAuthorityLetter(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(documentManagementService.deleteFile).to.have.been.called;
-      expect(updateAppealService.submitEventRefactored).to.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.localAuthorityLetter);
+      expect(deleteStub.called).to.equal(true);
+      expect(submitRefactoredStub.called).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.localAuthorityLetter)).to.equal(true);
     });
 
     it('should catch an error and call next with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       req.session.appeal.application.localAuthorityLetters = [{ fileId: 'anId', name: 'name' } as Evidence];
       req.session.appeal.documentMap = [{ id: 'anId', url: 'documentStoreUrl' }];
       req.query.id = 'anId';
       await deleteLocalAuthorityLetter(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 });

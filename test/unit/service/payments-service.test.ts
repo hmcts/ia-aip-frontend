@@ -15,18 +15,22 @@ describe('Payments Service', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let createCardPaymentStub: sinon.SinonStub;
-  let paymentDetailsStub: sinon.SinonStub;
+  let securityHeadersStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   let sandbox: sinon.SinonSandbox;
   const createCardPaymentResponse = { reference: 'thePaymentReference', _links: { next_url: { href: 'http://govPaymentPayment' } } };
   const logger: Logger = new Logger();
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    securityHeadersStub = sandbox.stub().resolves();
+    submitStub = sandbox.stub().resolves({ paymentReference: 'thePaymentReference' });
     authenticationService = {
-      getSecurityHeaders: sandbox.stub().resolves()
+      getSecurityHeaders: securityHeadersStub
     };
     updateAppealService = {
-      submitEventRefactored: sandbox.stub().resolves({ paymentReference: 'thePaymentReference' })
+      submitEventRefactored: submitStub
     };
     paymentService = new PaymentService(authenticationService as AuthenticationService, updateAppealService as UpdateAppealService);
     createCardPaymentStub = sandbox.stub(paymentsApi, 'createCardPayment').resolves(createCardPaymentResponse);
@@ -54,8 +58,9 @@ describe('Payments Service', () => {
         }
       }
     } as Partial<Request>;
+    redirectStub = sandbox.stub();
     res = {
-      redirect: sandbox.spy()
+      redirect: redirectStub
     } as Partial<Response>;
   });
 
@@ -66,19 +71,19 @@ describe('Payments Service', () => {
   it('should createCardPayment', async() => {
     const result = await paymentService.createCardPayment(req as Request, 'theFee');
 
-    expect(authenticationService.getSecurityHeaders).to.have.been.called;
-    expect(createCardPaymentStub).to.have.been.called;
-    expect(updateAppealService.submitEventRefactored).to.have.been.called;
-    expect(result).to.be.eql(createCardPaymentResponse);
-    expect(req.session.appeal.paymentReference).to.be.eql('thePaymentReference');
+    expect(securityHeadersStub.called).to.equal(true);
+    expect(createCardPaymentStub.called).to.equal(true);
+    expect(submitStub.called).to.equal(true);
+    expect(result).to.deep.equal(createCardPaymentResponse);
+    expect(req.session.appeal.paymentReference).to.deep.equal('thePaymentReference');
   });
 
   it('should get payment details', async () => {
-    paymentDetailsStub = sandbox.stub(paymentsApi, 'paymentDetails').resolves({});
+    sandbox.stub(paymentsApi, 'paymentDetails').resolves({});
     const details = await paymentService.getPaymentDetails(req as Request, 'thePaymentRef');
 
-    expect(authenticationService.getSecurityHeaders).to.have.been.called;
-    expect(details).to.be.eql({});
+    expect(securityHeadersStub.called).to.equal(true);
+    expect(details).to.deep.equal({});
   });
 
   describe('initiatePayment', () => {
@@ -86,27 +91,27 @@ describe('Payments Service', () => {
       const spy = sandbox.spy(paymentService, 'createCardPayment');
       await paymentService.initiatePayment(req as Request, res as Response, 'aFee');
 
-      expect(spy).to.have.been.called;
-      expect(res.redirect).to.have.been.calledWith('http://govPaymentPayment');
+      expect(spy.called).to.equal(true);
+      expect(redirectStub.calledWith('http://govPaymentPayment')).to.equal(true);
     });
 
     it('should initiate a payment if payment reference is present and status is Success initiatePayment', async () => {
       req.session.appeal.paymentReference = 'aRef';
       req.session.appeal.application.refundConfirmationApplied = false;
-      paymentDetailsStub = sandbox.stub(paymentsApi, 'paymentDetails').resolves(JSON.stringify({ status: 'Success' }));
+      sandbox.stub(paymentsApi, 'paymentDetails').resolves(JSON.stringify({ status: 'Success' }));
       await paymentService.initiatePayment(req as Request, res as Response, 'aFee');
 
-      expect(res.redirect).to.have.been.calledWith(paths.common.finishPayment);
+      expect(redirectStub.calledWith(paths.common.finishPayment)).to.equal(true);
     });
 
     it('should initiate a payment if payment reference is present and status is Initiated initiatePayment', async () => {
       const spy = sandbox.spy(paymentService, 'createCardPayment');
       req.session.appeal.paymentReference = 'aRef';
-      paymentDetailsStub = sandbox.stub(paymentsApi, 'paymentDetails').resolves(JSON.stringify({ status: 'Initiated' }));
+      sandbox.stub(paymentsApi, 'paymentDetails').resolves(JSON.stringify({ status: 'Initiated' }));
       await paymentService.initiatePayment(req as Request, res as Response, 'aFee');
 
-      expect(spy).to.have.been.called;
-      expect(res.redirect).to.have.been.calledWith('http://govPaymentPayment');
+      expect(spy.called).to.equal(true);
+      expect(redirectStub.calledWith('http://govPaymentPayment')).to.equal(true);
     });
   });
 });

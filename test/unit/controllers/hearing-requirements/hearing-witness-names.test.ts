@@ -16,6 +16,8 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
   let next: sinon.SinonStub;
   const summaryList = [{ summaryRows: [{ key: { text: 'GivenName1 GivenName2 FamilyName' }, value: { html : '' }, actions: { items: [ { href: '/hearing-witness-names/remove?name=GivenName1%20GivenName2%20FamilyName' , text : 'Remove', visuallyHiddenText: 'GivenName1 GivenName2 FamilyName' }] } } ], title: 'Added witnesses' } ];
   const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -44,9 +46,12 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         }
       }
     } as unknown as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
 
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
@@ -65,8 +70,8 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       const middleware: Middleware[] = [];
 
       setupWitnessNamesController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.hearingWitnessNames)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.submitHearingRequirements.hearingWitnessNames)).to.equal(true);
     });
   });
 
@@ -81,7 +86,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       };
 
       getWitnessNamesPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
+      expect(renderStub.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs)).to.equal(true);
     });
 
     it('should not show the add button if the witnesses size is equal to 10', async () => {
@@ -106,16 +111,16 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         isShowingAddButton: false
       };
       getWitnessNamesPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
+      expect(renderStub.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs)).to.equal(true);
 
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getWitnessNamesPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -139,7 +144,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         summaryList: [ { summaryRows: [], title: 'Added witnesses' } ],
         isShowingAddButton: true
       };
-      expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
+      expect(renderStub.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs)).to.equal(true);
 
     });
 
@@ -147,16 +152,16 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       req.body['witnessName'] = 'My witness name';
       req.body['witnessFamilyName'] = 'Family name';
       await postWitnessNamesPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.witnessOutsideUK);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.witnessOutsideUK)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       req.session.appeal.hearingRequirements.witnessNames = [];
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postWitnessNamesPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -185,7 +190,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         summaryList: [ { summaryRows: [], title: 'Added witnesses' } ],
         isShowingAddButton: true
       };
-      expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
+      expect(renderStub.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs)).to.equal(true);
 
     });
 
@@ -199,16 +204,16 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         'witnessFamilyName': 'Family name'
       };
       expect(req.session.appeal.hearingRequirements.witnessNames).to.deep.include(witnessName);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.hearingWitnessNames)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       req.session.appeal.hearingRequirements.witnessNames = [];
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postWitnessNamesPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -222,7 +227,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         'witnessFamilyName': 'FamilyName'
       };
       expect(req.session.appeal.hearingRequirements.witnessNames).to.not.deep.include(witnessName);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.hearingWitnessNames)).to.equal(true);
     });
 
     it('should clear cached old witness information and relocate their index', async () => {
@@ -245,17 +250,17 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       await removeWitnessPostAction()(req as Request, res as Response, next);
 
       expect(req.session.appeal.hearingRequirements.witnessNames).to.not.deep.include(witnessNamesList[0]);
-      expect(req.session.appeal.hearingRequirements.witnessListElement1.list_items[0].label).to.be.equal(formattedWitnessPangName);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
+      expect(req.session.appeal.hearingRequirements.witnessListElement1.list_items[0].label).to.equal(formattedWitnessPangName);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.hearingWitnessNames)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       req.session.appeal.hearingRequirements.witnessNames = [];
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postWitnessNamesPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

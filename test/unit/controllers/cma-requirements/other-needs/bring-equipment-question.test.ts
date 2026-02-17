@@ -15,7 +15,10 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonSpy;
+  let submitStub: sinon.SinonStub;
+  
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -29,12 +32,17 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
         } as Partial<Appeal>
       }
     } as Partial<Request>;
+
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.spy();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEvent: submitStub } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -48,8 +56,8 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
       const middleware: Middleware[] = [];
 
       setupBringMultimediaEquipmentQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
+      expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion)).to.equal(true);
     });
   });
 
@@ -69,17 +77,17 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
         },
         saveAndContinue: true
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
+      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
         expectedArgs
       );
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getBringMultimediaEquipmentQuestion(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -109,33 +117,33 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
         saveAndContinue: true
 
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
       await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.true;
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment)).to.equal(true);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.bringOwnMultimediaEquipment).to.equal(true);
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
       await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.false;
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason)).to.equal(true);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.bringOwnMultimediaEquipment).to.equal(false);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

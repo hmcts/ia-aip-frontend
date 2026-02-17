@@ -16,6 +16,7 @@ describe('Cma Requirements Task List Controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
+  let renderStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -62,9 +63,10 @@ describe('Cma Requirements Task List Controller', () => {
         }
       } as any
     } as Partial<Request>;
+    renderStub = sandbox.stub();
 
     res = {
-      render: sandbox.stub()
+      render: renderStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -78,12 +80,12 @@ describe('Cma Requirements Task List Controller', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
     const middleware = [];
     setupCmaRequirementsTaskListController(middleware);
-    expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
+    expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.taskList)).to.equal(true);
   });
 
   it('getTaskList should render task-list.njk', () => {
     getTaskList(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('cma-requirements/task-list.njk');
+    expect(renderStub.calledOnceWith('cma-requirements/task-list.njk')).to.equal(true);
   });
 
   it('getTaskList should render task-list.njk with status data', () => {
@@ -102,7 +104,7 @@ describe('Cma Requirements Task List Controller', () => {
     } ];
 
     getTaskList(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('cma-requirements/task-list.njk', {
+    expect(renderStub).to.be.calledOnceWith('cma-requirements/task-list.njk', {
       previousPage: paths.common.overview,
       data: mockData
     });
@@ -110,8 +112,8 @@ describe('Cma Requirements Task List Controller', () => {
 
   it('getTaskList should catch an exception and call next()', () => {
     const error = new Error('the error');
-    res.render = sandbox.stub().throws(error);
+    res.render = renderStub.throws(error);
     getTaskList(req as Request, res as Response, next);
-    expect(next).to.have.been.calledOnce.calledWith(error);
+    expect(next.calledOnceWith(error)).to.equal(true);
   });
 });

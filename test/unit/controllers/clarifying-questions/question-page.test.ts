@@ -37,7 +37,9 @@ describe('Question-page controller', () => {
       }
     }
   ];
-
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -58,10 +60,14 @@ describe('Question-page controller', () => {
         }
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
+
     next = sandbox.stub();
   });
 
@@ -76,8 +82,8 @@ describe('Question-page controller', () => {
       const middleware: Middleware[] = [];
 
       setupClarifyingQuestionPageController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.question}`);
-      expect(routerPostStub).to.have.been.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.question}`);
+      expect(routerGetStub.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.question}`)).to.equal(true);
+      expect(routerPostStub.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.question}`)).to.equal(true);
     });
   });
 
@@ -87,7 +93,7 @@ describe('Question-page controller', () => {
       const questionOrderNo = parseInt(req.params.id, 10) - 1;
       getClarifyingQuestionPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.called.calledWith(
+      expect(renderStub).to.be.calledWith(
         'clarifying-questions/question-page.njk',
         {
           previousPage: paths.awaitingClarifyingQuestionsAnswers.questionsList,
@@ -102,10 +108,10 @@ describe('Question-page controller', () => {
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getClarifyingQuestionPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -116,8 +122,9 @@ describe('Question-page controller', () => {
       appeal = {
         ...req.session.appeal
       };
+      submitRefactoredStub = sandbox.stub();
       updateAppealService = {
-        submitEventRefactored: sandbox.stub().returns({
+        submitEventRefactored: submitRefactoredStub.returns({
           clarifyingQuestionsAnswers: clarifyingQuestions,
           appealStatus: 'newState'
         } as Appeal)
@@ -137,7 +144,7 @@ describe('Question-page controller', () => {
       };
       await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith(
+      expect(renderStub).to.be.calledWith(
         'clarifying-questions/question-page.njk',
         {
           previousPage: paths.awaitingClarifyingQuestionsAnswers.questionsList,
@@ -159,10 +166,10 @@ describe('Question-page controller', () => {
       const questionOrderNo = parseInt(req.params.id, 10) - 1;
       await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.answer).to.be.eql(req.body.answer);
-      expect(res.redirect).to.have.been.calledOnce;
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id));
+      expect(submitRefactoredStub.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.answer).to.deep.equal(req.body.answer);
+      expect(redirectStub.callCount).to.equal(1);
+      expect(redirectStub.calledOnceWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id))).to.equal(true);
 
     });
 
@@ -175,18 +182,18 @@ describe('Question-page controller', () => {
       const questionOrderNo = parseInt(req.params.id, 10) - 1;
       await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.answer).to.be.eql(req.body.answer);
-      expect(res.redirect).to.have.been.calledOnce;
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview + '?saved');
+      expect(submitRefactoredStub.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.answer).to.deep.equal(req.body.answer);
+      expect(redirectStub.callCount).to.equal(1);
+      expect(redirectStub.calledOnceWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

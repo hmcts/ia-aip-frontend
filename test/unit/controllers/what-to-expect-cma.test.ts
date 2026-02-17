@@ -13,6 +13,7 @@ describe('CMA Guidance Controller', function() {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
+  let renderStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -37,9 +38,10 @@ describe('CMA Guidance Controller', function() {
     } as Partial<Request>;
 
     updateAppealService = { submitEvent: sandbox.stub() };
+    renderStub = sandbox.stub();
 
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
       redirect: sinon.spy()
     } as Partial<Response>;
@@ -54,16 +56,16 @@ describe('CMA Guidance Controller', function() {
   describe('getWhatToExpectPage', () => {
     it('getCmaGuidancePage should render to guidance  page', function() {
       getCmaGuidancePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('case-management-appointment/what-to-expect.njk',{
+      expect(renderStub).to.be.calledWith('case-management-appointment/what-to-expect.njk',{
         previousPage : { attributes: { onclick: 'history.go(-1); return false;' } }
       });
     });
 
     it('should catch exception and call next with the error', function () {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getCmaGuidancePage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -72,7 +74,7 @@ describe('CMA Guidance Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const middleware = [];
       setupcmaGuidancePageController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.whatToExpectAtCMA);
+      expect(routerGetStub.calledWith(paths.common.whatToExpectAtCMA)).to.equal(true);
     });
   });
 });

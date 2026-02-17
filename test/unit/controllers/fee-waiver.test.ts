@@ -20,6 +20,9 @@ describe('Fee waiver Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -46,18 +49,21 @@ describe('Fee waiver Controller', function () {
         }
       } as any
     } as Partial<Request>;
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
 
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sandbox.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
 
     updateAppealService = {
       submitEvent: sandbox.stub(),
-      submitEventRefactored: sandbox.stub().returns({
+      submitEventRefactored: submitStub.returns({
         case_data: {
           asylumSupportRefNumber: 'A1234567'
         }
@@ -76,8 +82,8 @@ describe('Fee waiver Controller', function () {
       const middleware = [];
 
       setupFeeWaiverController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.feeWaiver);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.feeWaiver);
+      expect(routerGetStub.calledWith(paths.appealStarted.feeWaiver)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.feeWaiver)).to.equal(true);
     });
   });
 
@@ -85,7 +91,7 @@ describe('Fee waiver Controller', function () {
     it('should render fee-waiver.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await getFeeWaiver(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/fee-waiver.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/fee-waiver.njk', {
         previousPage: paths.appealStarted.feeSupport,
         saveAndContinue: true
       });
@@ -95,13 +101,13 @@ describe('Fee waiver Controller', function () {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
       await getFeeWaiver(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
       await getFeeWaiver(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
   });
 
@@ -117,7 +123,7 @@ describe('Fee waiver Controller', function () {
         }
       };
 
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitStub.returns({
         application: {
           appealType: 'human-rights'
         }
@@ -142,8 +148,8 @@ describe('Fee waiver Controller', function () {
 
       await postFeeWaiver(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
     it('when save for later should redirect task-list.njk', async () => {
@@ -166,8 +172,8 @@ describe('Fee waiver Controller', function () {
       req.body['saveForLater'] = 'saveForLater';
       await postFeeWaiver(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('when in edit mode should redirect check-and-send.njk and reset isEdit flag', async () => {
@@ -190,24 +196,24 @@ describe('Fee waiver Controller', function () {
 
       await postFeeWaiver(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
     it('should catch exception and call next with the error', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       await postFeeWaiver(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
       await postFeeWaiver(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should reset values from other journeys if it present', async () => {
@@ -235,7 +241,7 @@ describe('Fee waiver Controller', function () {
 
       await postFeeWaiver(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
     });
   });
 });

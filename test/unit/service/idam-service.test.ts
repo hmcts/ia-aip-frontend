@@ -11,6 +11,6 @@ describe('idam-service', () => {
       }
     } as Request);
 
-    expect(userToken).eq(`Bearer ${authToken}`);
+    expect(userToken).to.equal(`Bearer ${authToken}`);
   });
 });

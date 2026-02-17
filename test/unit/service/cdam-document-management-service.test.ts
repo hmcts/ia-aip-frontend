@@ -56,8 +56,8 @@ describe('cdam-document-management-service', () => {
       const documentManagementService = new CdamDocumentManagementService(authenticationService);
       await documentManagementService.deleteFile(req as Request, 'fileId');
 
-      expect(deleteStub).to.have.been.calledWith(sinon.match.any, config.get('cdamDocumentManagement').apiUrl + '/cases/documents/ID');
-      expect(req.session.appeal.documentMap.length).to.be.eq(0);
+      expect(deleteStub.calledWith(sinon.match.any, config.get('cdamDocumentManagement').apiUrl + '/cases/documents/ID')).to.equal(true);
+      expect(req.session.appeal.documentMap.length).to.equal(0);
     });
 
   });
@@ -69,7 +69,7 @@ describe('cdam-document-management-service', () => {
       const documentManagementService = new CdamDocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
 
-      expect(fetchStub).to.have.been.calledWith(sinon.match.any, config.get('cdamDocumentManagement').apiUrl + '/cases/documents/ID/binary');
+      expect(fetchStub.calledWith(sinon.match.any, config.get('cdamDocumentManagement').apiUrl + '/cases/documents/ID/binary')).to.equal(true);
     });
 
   });
@@ -87,8 +87,8 @@ describe('cdam-document-management-service', () => {
       const documentManagementService = new CdamDocumentManagementService(authenticationService);
       await documentManagementService.uploadFile(req as Request);
 
-      expect(uploadStub).to.have.been.calledWith(sinon.match.any, sinon.match.any);
-      expect(req.session.appeal.documentMap.length).to.be.eq(1);
+      expect(uploadStub.calledWith(sinon.match.any, sinon.match.any)).to.equal(true);
+      expect(req.session.appeal.documentMap.length).to.equal(1);
     });
 
   });
@@ -114,7 +114,7 @@ describe('cdam-document-management-service', () => {
         ];
         const documentManagementService = new CdamDocumentManagementService(null);
         const documentMap = documentManagementService.removeFromDocumentMapper('fileId', req.session.appeal.documentMap);
-        expect(documentMap.length).to.be.eq(0);
+        expect(documentMap.length).to.equal(0);
       });
 
       it('should leave documentMap as it is if document not found', () => {
@@ -126,7 +126,7 @@ describe('cdam-document-management-service', () => {
         ];
         const documentManagementService = new CdamDocumentManagementService(null);
         const documentMap = documentManagementService.removeFromDocumentMapper('anotherId', req.session.appeal.documentMap);
-        expect(documentMap.length).to.be.eq(1);
+        expect(documentMap.length).to.equal(1);
       });
     });
   });
@@ -166,7 +166,7 @@ describe('cdam-document-management-service', () => {
           jurisdictionId: 'IA'
         };
         const result = await documentManagementService['upload'](headers, uploadData as CdamUploadData);
-        expect(axiosPostStub).to.have.been.calledOnce;
+        expect(axiosPostStub.callCount).to.equal(1);
         expect(result).to.eq(JSON.stringify({ foo: 'bar' }));
       });
       it('should throw if axios.post fails', async () => {
@@ -190,7 +190,7 @@ describe('cdam-document-management-service', () => {
         const headers = { userToken: 'user', serviceToken: 'service' };
         const fileLocation = 'http://file/location';
         const result = await documentManagementService['delete'](headers, fileLocation);
-        expect(axiosDeleteStub).to.have.been.calledWith(fileLocation, sinon.match.any);
+        expect(axiosDeleteStub.calledWith(fileLocation, sinon.match.any)).to.equal(true);
         expect(result).to.deep.equal({ status: 204 });
       });
       it('should throw if axios.delete fails', async () => {
@@ -207,7 +207,7 @@ describe('cdam-document-management-service', () => {
         const headers = { userToken: 'user', serviceToken: 'service' };
         const fileLocation = 'http://file/location';
         const result = await documentManagementService['fetchBinaryFile'](headers, fileLocation);
-        expect(axiosGetStub).to.have.been.calledWith(fileLocation, sinon.match.hasNested('responseType', 'arraybuffer'));
+        expect(axiosGetStub.calledWith(fileLocation, sinon.match.hasNested('responseType', 'arraybuffer'))).to.equal(true);
         expect(result).to.deep.equal({ data: Buffer.from('binary') });
       });
       it('should throw if axios.get fails', async () => {

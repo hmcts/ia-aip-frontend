@@ -36,10 +36,13 @@ describe('idamExpressLogout', () => {
   });
 
   describe('middleware', () => {
-    sandbox = sinon.createSandbox();
     let handler;
     let requestDeleteStub: SinonStub;
+    let setupStub: SinonStub;
+    let cookieGet: SinonStub;
+    let cookieRemove: SinonStub;
     beforeEach(() => {
+      sandbox = sinon.createSandbox();
       req = { cookies: {} };
       res = { cookie: sandbox.stub() };
       next = sandbox.stub();
@@ -52,9 +55,9 @@ describe('idamExpressLogout', () => {
         getAccessToken: sandbox.stub().returns(accessToken)
       };
 
-      sandbox.stub(idamWrapper, 'setup').returns(idamFunctionsStub);
-      sandbox.stub(cookies, 'get').returns(authToken);
-      sandbox.stub(cookies, 'remove').returns(authToken);
+      setupStub = sandbox.stub(idamWrapper, 'setup').returns(idamFunctionsStub);
+      cookieGet = sandbox.stub(cookies, 'get').returns(authToken);
+      cookieRemove = sandbox.stub(cookies, 'remove').returns(authToken);
       requestDeleteStub = sandbox.stub(axios, 'delete');
       handler = middleware(idamArgs);
     });
@@ -70,11 +73,11 @@ describe('idamExpressLogout', () => {
       handler(req, res, next);
 
       setImmediate(() => {
-        expect(idamWrapper.setup).to.have.been.calledOnce;
-        expect(cookies.get).to.have.been.calledOnce;
-        expect(requestDeleteStub).to.have.been.calledOnce;
-        expect(requestDeleteStub).to.have.been.calledWith(logoutUrl, options);
-        expect(cookies.remove).to.have.been.calledOnce;
+        expect(setupStub.callCount).to.equal(1);
+        expect(cookieGet.callCount).to.equal(1);
+        expect(requestDeleteStub.callCount).to.equal(1);
+        expect(requestDeleteStub.calledWith(logoutUrl, options)).to.equal(true);
+        expect(cookieRemove.callCount).to.equal(1);
       });
     });
 
@@ -85,10 +88,11 @@ describe('idamExpressLogout', () => {
       handler(req, res, next);
       // Assert
       setImmediate(() => {
-        expect(idamWrapper.setup).to.have.been.calledOnce;
-        expect(cookies.get).to.have.been.calledOnce;
-        expect(requestDeleteStub).to.have.been.calledOnce;
-        expect(requestDeleteStub).to.have.been.calledWith(logoutUrl, options);
+        expect(setupStub.callCount).to.equal(1);
+        expect(cookieGet.callCount).to.equal(1);
+        expect(requestDeleteStub.callCount).to.equal(1);
+        expect(requestDeleteStub.calledWith(logoutUrl, options)).to.equal(true);
+        expect(cookieRemove.called).to.equal(false);
       });
     });
   });

@@ -76,11 +76,11 @@ describe('idamExpressLanding', () => {
       handler(req, res, next);
 
       setImmediate(() => {
-        expect(idamFunctionsStub.getAccessToken).to.have.been.calledOnce;
-        expect(idamFunctionsStub.getUserDetails).to.have.been.calledOnce;
-        expect(res.cookie).to.have.been.calledOnce;
-        expect(next).to.have.been.calledOnce;
-        expect(loggerExceptionStub).to.not.have.been.called;
+        expect(idamFunctionsStub.getAccessToken.callCount).to.equal(1);
+        expect(idamFunctionsStub.getUserDetails.callCount).to.equal(1);
+        expect(res.cookie.callCount).to.equal(1);
+        expect(next.callCount).to.equal(1);
+        expect(loggerExceptionStub.called).to.equal(false);
       });
     });
 
@@ -94,13 +94,13 @@ describe('idamExpressLanding', () => {
       handler(req, res, next);
 
       setImmediate(() => {
-        expect(idamFunctionsStub.getAccessToken).to.have.been.calledOnce;
-        expect(idamFunctionsStub.getUserDetails).to.have.been.calledOnce;
-        expect(res.cookie).to.have.been.calledOnce;
-        expect(req.cookies['__auth-token']).to.eql(response.access_token);
-        expect(next).to.have.been.calledOnce;
+        expect(idamFunctionsStub.getAccessToken.callCount).to.equal(1);
+        expect(idamFunctionsStub.getUserDetails.callCount).to.equal(1);
+        expect(res.cookie.callCount).to.equal(1);
+        expect(req.cookies['__auth-token']).to.deep.equal(response.access_token);
+        expect(next.callCount).to.equal(1);
         expect(req.idam.userDetails).to.equal(userDetails);
-        expect(loggerExceptionStub).to.not.have.been.called;
+        expect(loggerExceptionStub.called).to.equal(false);
       });
     });
 
@@ -112,11 +112,11 @@ describe('idamExpressLanding', () => {
       handler(req, res, next);
 
       setImmediate(() => {
-        expect(idamFunctionsStub.getAccessToken).to.have.been.calledOnce;
-        expect(res.redirect).to.have.been.calledOnce;
-        expect(res.redirect).to.have.been.calledWith('/');
-        expect(next).to.not.have.been.called;
-        expect(loggerExceptionStub).to.have.been.calledOnce;
+        expect(idamFunctionsStub.getAccessToken.callCount).to.equal(1);
+        expect(res.redirect.callCount).to.equal(1);
+        expect(res.redirect.calledWith('/')).to.equal(true);
+        expect(next.called).to.equal(false);
+        expect(loggerExceptionStub.callCount).to.equal(1);
       });
     });
 
@@ -133,11 +133,11 @@ describe('idamExpressLanding', () => {
         handler(req, res, next);
 
         setImmediate(() => {
-          expect(idamFunctionsStub.getUserDetails).to.have.been.calledOnce;
-          expect(res.cookie).to.have.been.calledOnce;
-          expect(next).to.have.been.calledOnce;
+          expect(idamFunctionsStub.getUserDetails.callCount).to.equal(1);
+          expect(res.cookie.callCount).to.equal(1);
+          expect(next.callCount).to.equal(1);
           expect(req.cookies[config.tokenCookieName]).to.equal(testToken);
-          expect(loggerExceptionStub).to.not.have.been.called;
+          expect(loggerExceptionStub.called).to.equal(false);
         });
       });
 
@@ -146,9 +146,9 @@ describe('idamExpressLanding', () => {
 
         handler(req, res, next);
 
-        expect(res.redirect).to.not.have.been.called;
-        expect(next).to.have.been.calledOnce;
-        expect(loggerExceptionStub).to.not.have.been.called;
+        expect(res.redirect.called).to.equal(false);
+        expect(next.callCount).to.equal(1);
+        expect(loggerExceptionStub.called).to.equal(false);
       });
 
       it('should redirect if authToken is unauthorised', () => {
@@ -157,10 +157,10 @@ describe('idamExpressLanding', () => {
         handler(req, res, next);
 
         setImmediate(() => {
-          expect(res.redirect).to.have.been.calledOnce;
+          expect(res.redirect.callCount).to.equal(1);
           expect(res.redirect.calledWith('/')).to.equal(true);
-          expect(next).to.not.have.been.called;
-          expect(loggerExceptionStub).to.have.been.calledOnce;
+          expect(next.called).to.equal(false);
+          expect(loggerExceptionStub.callCount).to.equal(1);
         });
       });
     });
@@ -174,8 +174,8 @@ describe('idamExpressLanding', () => {
       handler(req, res, next);
 
       setImmediate(() => {
-        expect(res.redirect).to.have.been.calledOnce;
-        expect(loggerExceptionStub).to.have.been.calledOnce;
+        expect(res.redirect.callCount).to.equal(1);
+        expect(loggerExceptionStub.callCount).to.equal(1);
       });
     });
 
@@ -184,8 +184,8 @@ describe('idamExpressLanding', () => {
       const handler = middleware(idamArgs);
       handler(req, res, next);
 
-      expect(res.redirect).to.have.been.calledOnce;
-      expect(loggerExceptionStub).to.have.been.calledOnce;
+      expect(res.redirect.callCount).to.equal(1);
+      expect(loggerExceptionStub.callCount).to.equal(1);
     });
 
     it('removes old state cookie', () => {
@@ -198,8 +198,8 @@ describe('idamExpressLanding', () => {
       handler(req, res, next);
 
       setImmediate(() => {
-        expect(res.clearCookie).to.have.been.calledOnce;
-        expect(loggerExceptionStub).to.have.been.calledOnce;
+        expect(res.clearCookie.callCount).to.equal(1);
+        expect(loggerExceptionStub.callCount).to.equal(1);
       });
     });
   });

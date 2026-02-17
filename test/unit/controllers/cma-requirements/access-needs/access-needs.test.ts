@@ -17,7 +17,9 @@ describe('case management appointment controller', () => {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: SinonStub;
   const logger: Logger = new Logger();
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonSpy;
+  let submitStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -42,12 +44,15 @@ describe('case management appointment controller', () => {
       body: {}
     } as Partial<Request>;
 
-    updateAppealService = { submitEvent: sandbox.stub() };
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.spy();
 
+    updateAppealService = { submitEvent: submitStub };
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -64,15 +69,15 @@ describe('case management appointment controller', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       setupAccessNeedsController(middleware,updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
+      expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess)).to.equal(true);
     });
   });
 
   describe('getAdditionalLanguage', () => {
     it('getAdditionalLanguage should getAdditionalLanguage.njk', () => {
       getAdditionalLanguage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-management-appointment/additional-language.njk', {
+      expect(renderStub).to.be.calledOnceWith('case-management-appointment/additional-language.njk', {
         items: isoLanguages,
         previousPage: paths.awaitingCmaRequirements.accessNeedsInterpreter
       });
@@ -80,10 +85,10 @@ describe('case management appointment controller', () => {
   });
 
   describe('getHearingLoop', () => {
-    it('getHearingLoop should render get-hearing-loop.njk with no option loaded', () => {
+    it('getHearingLoop should renderStub get-hearing-loop.njk with no option loaded', () => {
       req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = null;
       getHearingLoopPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
         previousPage: paths.awaitingCmaRequirements.accessNeedsStepFreeAccess,
         formAction: '/appointment-hearing-loop',
         pageTitle: 'Will you or anyone coming with you need a hearing loop?',
@@ -97,9 +102,9 @@ describe('case management appointment controller', () => {
       });
     });
 
-    it('getHearingLoop should render get-hearing-loop.njk', () => {
+    it('getHearingLoop should renderStub get-hearing-loop.njk', () => {
       getHearingLoopPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
         previousPage: paths.awaitingCmaRequirements.accessNeedsStepFreeAccess,
         formAction: '/appointment-hearing-loop',
         pageTitle: 'Will you or anyone coming with you need a hearing loop?',
@@ -115,9 +120,9 @@ describe('case management appointment controller', () => {
   });
 
   describe('getNeedInterpreterPage', () => {
-    it('getNeedInterpreterPage should render getNeedInterpreterPage', () => {
+    it('getNeedInterpreterPage should renderStub getNeedInterpreterPage', () => {
       getNeedInterpreterPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
         formAction: '/appointment-interpreter',
         pageTitle: 'Will you or anyone coming with you need an interpreter?',
         previousPage: '/appointment-access-needs',
@@ -131,9 +136,9 @@ describe('case management appointment controller', () => {
   });
 
   describe('getStepFreeAccessPage', () => {
-    it('getStepFreeAccessPage should render getStepFreeAccessPage', () => {
+    it('getStepFreeAccessPage should renderStub getStepFreeAccessPage', () => {
       getStepFreeAccessPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
         formAction: '/appointment-step-free-access',
         previousPage: paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage,
         pageTitle: 'Will you or anyone coming with you need step-free access?',
@@ -149,9 +154,9 @@ describe('case management appointment controller', () => {
   });
 
   describe('getAccessNeeds', () => {
-    it('getAccessNeeds should render get access needs.njk', () => {
+    it('getAccessNeeds should renderStub get access needs.njk', () => {
       getAccessNeeds(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-management-appointment/access-needs-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('case-management-appointment/access-needs-page.njk', {
         previousPage: paths.common.overview
       });
     });
@@ -164,7 +169,7 @@ describe('case management appointment controller', () => {
 
         await postStepFreeAccessPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
+        expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
           error: { answer: { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
           previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
@@ -181,18 +186,18 @@ describe('case management appointment controller', () => {
 
       });
 
-      it('should redirect to overview page if save for later and not validation required', async () => {
+      it('should redirectStub to overview page if save for later and not validation required', async () => {
         req.body.saveForLater = 'saveForLater';
         await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+        expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
       });
 
       it('should show validation error if no option is selected needs Interperter', async () => {
         req.body.answer = '';
         req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = null;
         await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
+        expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
           error: {  'answer': { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
           formAction: '/appointment-interpreter',
@@ -207,25 +212,25 @@ describe('case management appointment controller', () => {
         });
       });
 
-      it('should redirect to overview page if save for later and not validation required', async () => {
+      it('should redirectStub to overview page if save for later and not validation required', async () => {
         req.body.saveForLater = 'saveForLater';
         await postStepFreeAccessPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+        expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
       });
 
-      it('should redirect to overview page if save for later and not validation required', async () => {
+      it('should redirectStub to overview page if save for later and not validation required', async () => {
         req.body.saveForLater = 'saveForLater';
         await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+        expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
       });
 
       it('should show validation error if no option is selected post hearing loop', async () => {
         req.body.answer = '';
 
         await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
+        expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' }],
           error: { 'answer': { href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' } },
           previousPage: paths.awaitingCmaRequirements.accessNeedsStepFreeAccess,
@@ -246,7 +251,7 @@ describe('case management appointment controller', () => {
 
         await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(res.render).to.have.been.calledWith('case-management-appointment/additional-language.njk', {
+        expect(renderStub).to.be.calledWith('case-management-appointment/additional-language.njk', {
           errorList: [{ href: '#language', key: 'language', text: 'Select language and add dialect' }],
           errors: {  'language': { href: '#language', key: 'language', text: 'Select language and add dialect' } },
           previousPage: paths.appealStarted.taskList,
@@ -254,39 +259,39 @@ describe('case management appointment controller', () => {
         });
       });
 
-      it('should redirect to overview page if save for later and not validation required', async () => {
+      it('should redirectStub to overview page if save for later and not validation required', async () => {
         req.body.language = '';
         req.body.saveForLater = 'saveForLater';
         await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+        expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
       });
 
-      it('should redirect to overview page if save for later and not validation required', async () => {
+      it('should redirectStub to overview page if save for later and not validation required', async () => {
         req.body.answer = '';
         req.body.saveForLater = 'saveForLater';
         await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+        expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
       });
     });
   });
 
-  describe('posts with redirect', () => {
+  describe('posts with redirectStub', () => {
     it('should show validation error if no option is selected post additional language', async () => {
       req.body.answer = 'no';
 
       await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.taskList)).to.equal(true);
     });
 
     it('should validate when yes is selected', async () => {
       req.body.answer = 'yes';
       await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage)).to.equal(true);
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
 
     });
 
@@ -294,21 +299,21 @@ describe('case management appointment controller', () => {
       req.body.answer = 'no';
       await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess)).to.equal(true);
     });
 
     it('should show validation error if no option is selected post additional answer', async () => {
       req.body.answer = 'true';
       await postStepFreeAccessPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsHearingLoop);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.accessNeedsHearingLoop)).to.equal(true);
     });
 
     it('should show validation error if no option is selected post additional answer', async () => {
       req.body.answer = 'yes';
       req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = false;
       getStepFreeAccessPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
+      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', {
         formAction: '/appointment-step-free-access',
         pageTitle: 'Will you or anyone coming with you need step-free access?',
         previousPage: '/appointment-interpreter',
@@ -326,71 +331,71 @@ describe('case management appointment controller', () => {
       req.body.language = 'Test';
 
       await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess)).to.equal(true);
     });
 
     it('getAccessNeeds should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getAccessNeeds(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('getAccessNeeds should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getStepFreeAccessPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('getAccessNeeds should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getNeedInterpreterPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('getAccessNeeds should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getAdditionalLanguage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('getAccessNeeds should catch an exception and call next()', async () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postStepFreeAccessPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('getAccessNeeds should catch an exception and call next()', async () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('getAccessNeeds should catch an exception and call next()', async () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('getAccessNeeds should catch an exception and call next()', async () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('getHearingLoopPage should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getHearingLoopPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

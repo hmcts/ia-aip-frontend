@@ -84,14 +84,14 @@ describe('OSPlacesClient', () => {
   it('throws on 500 error', async () => {
     axiosGetStub.resolves({ status: 500, data: 'Internal error' });
     expect(client.lookupByPostcode(postcode)).to.be.rejectedWith('Error with OS Places service');
-    expect(axiosGetStub.calledOnceWith(baseUri, { responseType: 'text' })).to.be.true;
+    expect(axiosGetStub.calledOnceWith(baseUri, { responseType: 'text' })).to.equal(true);
   });
 
   it('returns 404 response', async () => {
     axiosGetStub.resolves({ status: 404, data: 'Not found' });
     const res = await client.lookupByPostcode(postcode);
     expect(res.statusCode).to.equal(404);
-    expect(res.addresses).to.eql([]);
+    expect(res.addresses).to.deep.equal([]);
   });
 
   it('throws on 401 error', async () => {
@@ -139,7 +139,7 @@ describe('OSPlacesClient', () => {
     axiosGetStub.resolves({ status: 200, data: makeBody({}, []) });
     const res = await client.lookupByPostcode(postcode);
     expect(res.statusCode).to.equal(200);
-    expect(res.addresses).to.eql([]);
+    expect(res.addresses).to.deep.equal([]);
   });
 
   it('handles pagination', async () => {

@@ -119,7 +119,7 @@ describe('Remission fields utils', () => {
         appeal.application.remissionOption = remissionOption;
         appeal.application.helpWithFeesOption = helpWithFeesOption;
         appeal.application.helpWithFeesRefNumber = helpWithFeesRefNumber;
-        expect(appealHasRemissionOption(appeal.application)).to.be.deep.equal(expectedResponse);
+        expect(appealHasRemissionOption(appeal.application)).to.deep.equal(expectedResponse);
       });
     });
   });
@@ -130,7 +130,7 @@ describe('Remission fields utils', () => {
     appeal.application.remissionOption = 'noneOfTheseStatements';
     appeal.application.helpWithFeesOption = 'willPayForAppeal';
 
-    expect(appealHasNoRemissionOption(appeal.application)).to.be.deep.equal(true);
+    expect(appealHasNoRemissionOption(appeal.application)).to.deep.equal(true);
   });
 
   it('check appeal has or has not remission decision', () => {
@@ -164,7 +164,7 @@ describe('Remission fields utils', () => {
                                  }) => {
       it(`should be ${description}`, () => {
         appeal.application.remissionDecision = remissionDecision;
-        expect(hasFeeRemissionDecision(req)).to.be.deep.equal(expectedResponse);
+        expect(hasFeeRemissionDecision(req)).to.deep.equal(expectedResponse);
       });
     });
   });
@@ -175,7 +175,7 @@ describe('Remission fields utils', () => {
     appeal.application.remissionOption = 'noneOfTheseStatements';
     appeal.application.helpWithFeesOption = 'willPayForAppeal';
 
-    expect(appealHasNoRemissionOption(appeal.application)).to.be.deep.equal(true);
+    expect(appealHasNoRemissionOption(appeal.application)).to.deep.equal(true);
   });
 
   it('should return proper fee support status for appeal details', () => {
@@ -210,7 +210,7 @@ describe('Remission fields utils', () => {
                       }) => {
       it(`should be ${description}`, () => {
         appeal.application.remissionDecision = remissionDecision;
-        expect(getFeeSupportStatusForAppealDetails(req)).to.be.deep.equal(expectedResponse);
+        expect(getFeeSupportStatusForAppealDetails(req)).to.deep.equal(expectedResponse);
       });
     });
   });
@@ -251,7 +251,7 @@ describe('Remission fields utils', () => {
                       }) => {
       it(`should be ${description}`, () => {
         appeal.application.remissionDecision = remissionDecision;
-        expect(getDecisionReasonRowForAppealDetails(req)).to.be.deep.equal(expectedResponse);
+        expect(getDecisionReasonRowForAppealDetails(req)).to.deep.equal(expectedResponse);
       });
     });
   });
@@ -309,7 +309,7 @@ describe('Remission fields utils', () => {
                         description
                       }) => {
       it(`should be ${description}`, () => {
-        expect(paymentForAppealHasBeenMade(req)).to.be.deep.equal(expectedResponse);
+        expect(paymentForAppealHasBeenMade(req)).to.deep.equal(expectedResponse);
       });
     });
   });
@@ -436,7 +436,7 @@ describe('Remission fields utils', () => {
       appeal.application.remissionDecision = remissionDecision;
       appeal.application.isLateRemissionRequest = isLateRemissionRequest;
       appeal.history = history;
-      expect(getPaymentStatusRow(req)).to.be.deep.equal(response);
+      expect(getPaymentStatusRow(req)).to.deep.equal(response);
     });
   });
 });

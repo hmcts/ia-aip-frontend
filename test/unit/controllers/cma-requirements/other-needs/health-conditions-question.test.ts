@@ -15,6 +15,9 @@ describe('CMA Requirements - Other Needs Section: Health Conditions Question con
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -29,12 +32,18 @@ describe('CMA Requirements - Other Needs Section: Health Conditions Question con
         } as Partial<Appeal>
       }
     } as Partial<Request>;
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
+
+    updateAppealService = { submitEvent: submitStub } as Partial<UpdateAppealService>;
     next = sandbox.stub();
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -48,8 +57,8 @@ describe('CMA Requirements - Other Needs Section: Health Conditions Question con
       const middleware: Middleware[] = [];
 
       setupHealthConditionsQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditions);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditions);
+      expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditions)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditions)).to.equal(true);
     });
   });
 
@@ -68,17 +77,17 @@ describe('CMA Requirements - Other Needs Section: Health Conditions Question con
         },
         saveAndContinue: true
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
+      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
         expectedArgs
       );
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getHealthConditionsQuestion(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -107,33 +116,33 @@ describe('CMA Requirements - Other Needs Section: Health Conditions Question con
         saveAndContinue: true
 
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
       await postHealthConditionsQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditionsReason);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.healthConditions).to.be.true;
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditionsReason)).to.equal(true);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.healthConditions).to.equal(true);
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
       await postHealthConditionsQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPastExperiences);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.healthConditions).to.be.false;
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.otherNeedsPastExperiences)).to.equal(true);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.healthConditions).to.equal(false);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postHealthConditionsQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

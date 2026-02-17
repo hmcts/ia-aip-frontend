@@ -16,7 +16,9 @@ describe('Out of Country Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     sandbox.useFakeTimers(new Date('2025-06-15'));
@@ -43,18 +45,21 @@ describe('Out of Country Controller', function () {
         }
       } as any
     } as Partial<Request>;
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
 
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sandbox.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
 
     updateAppealService = {
       submitEvent: sandbox.stub(),
-      submitEventRefactored: sandbox.stub().returns({
+      submitEventRefactored: submitRefactoredStub.returns({
         case_data: {
           homeOfficeReferenceNumber: 'A1234567'
         }
@@ -73,16 +78,16 @@ describe('Out of Country Controller', function () {
       const middleware = [];
 
       setupOutOfCountryController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.appealOutOfCountry);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.appealOutOfCountry);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.oocHrInside);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.oocHrInside);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.gwfReference);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.gwfReference);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.oocHrEea);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.oocHrEea);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.oocProtectionDepartureDate);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.oocProtectionDepartureDate);
+      expect(routerGetStub.calledWith(paths.appealStarted.appealOutOfCountry)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.appealOutOfCountry)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.oocHrInside)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.oocHrInside)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.gwfReference)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.gwfReference)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.oocHrEea)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.oocHrEea)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.oocProtectionDepartureDate)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.oocProtectionDepartureDate)).to.equal(true);
     });
   });
 
@@ -94,7 +99,7 @@ describe('Out of Country Controller', function () {
     it('should render appeal-out-of-country.njk with payments feature flag OFF', async () => {
       req.session.appeal.appealOutOfCountry = 'No';
       await getAppellantInUk(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/appeal-out-of-country.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/appeal-out-of-country.njk', {
         question: 'Are you currently living in the United Kingdom?',
         description: undefined,
         modal: undefined,
@@ -110,7 +115,7 @@ describe('Out of Country Controller', function () {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
       await getTypeOfAppeal(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -125,7 +130,7 @@ describe('Out of Country Controller', function () {
         }
       };
 
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         application: {
           appellantInUk: 'No'
         }
@@ -136,8 +141,8 @@ describe('Out of Country Controller', function () {
       req.body['answer'] = 'No';
       await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.typeOfAppeal);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.typeOfAppeal)).to.equal(true);
     });
 
     it('should fail validation and appeal-out-of-country.njk with a validation error', async () => {
@@ -150,8 +155,8 @@ describe('Out of Country Controller', function () {
 
       await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/appeal-out-of-country.njk', {
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/appeal-out-of-country.njk', {
         question: 'Are you currently living in the United Kingdom?',
         description: undefined,
         modal: undefined,
@@ -166,9 +171,9 @@ describe('Out of Country Controller', function () {
     it('postAppellantInUk should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'appealOutOfCountry': undefined };
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -184,7 +189,7 @@ describe('Out of Country Controller', function () {
         year: '2022'
       };
       getOocHrInside(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/hr-inside.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/hr-inside.njk', {
         dateClientLeaveUk: req.session.appeal.application.dateClientLeaveUk,
         previousPage: paths.appealStarted.oocHrEea
       });
@@ -192,9 +197,9 @@ describe('Out of Country Controller', function () {
 
     it('getOocHrInside should catch exception and call next with the error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getOocHrInside(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -217,7 +222,7 @@ describe('Out of Country Controller', function () {
         }
       };
 
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         application: {
           isAppealLate: false,
           dateClientLeaveUk: {
@@ -235,8 +240,8 @@ describe('Out of Country Controller', function () {
       req.body['year'] = 1993;
       await postOocHrInside(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
     it('should fail validation and render hr-inside.njk with a validation error', async () => {
@@ -249,8 +254,8 @@ describe('Out of Country Controller', function () {
 
       await postOocHrInside(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/hr-inside.njk', {
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/hr-inside.njk', {
         error: { day: expectedError },
         errorList: [expectedError],
         dateClientLeaveUk: {
@@ -263,9 +268,9 @@ describe('Out of Country Controller', function () {
     it('postOocHrInside should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'dateClientLeaveUk': undefined };
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postOocHrInside(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -281,7 +286,7 @@ describe('Out of Country Controller', function () {
         year: '2022'
       };
       getOocProtectionDepartureDate(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
         dateClientLeaveUk: req.session.appeal.application.dateClientLeaveUk,
         previousPage: paths.appealStarted.typeOfAppeal
       });
@@ -289,9 +294,9 @@ describe('Out of Country Controller', function () {
 
     it('getOocProtectionDepartureDate should catch exception and call next with the error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getOocProtectionDepartureDate(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -314,7 +319,7 @@ describe('Out of Country Controller', function () {
         }
       };
 
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         application: {
           isAppealLate: false,
           dateClientLeaveUk: {
@@ -332,8 +337,8 @@ describe('Out of Country Controller', function () {
       req.body['year'] = 1993;
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
     it('should fail validation and render ooc-protection-departure-date.njk with a validation error', async () => {
@@ -346,8 +351,8 @@ describe('Out of Country Controller', function () {
 
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
         error: { day: expectedError },
         errorList: [expectedError],
         dateClientLeaveUk: {
@@ -384,8 +389,8 @@ describe('Out of Country Controller', function () {
 
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
         error: { [expectedError.key]: expectedError },
         errorList: [expectedError],
         dateClientLeaveUk: {
@@ -413,8 +418,8 @@ describe('Out of Country Controller', function () {
 
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
         error: { day: expectedError },
         errorList: [expectedError],
         dateClientLeaveUk: {
@@ -442,8 +447,8 @@ describe('Out of Country Controller', function () {
 
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
         error: { day: expectedError },
         errorList: [expectedError],
         dateClientLeaveUk: {
@@ -456,9 +461,9 @@ describe('Out of Country Controller', function () {
     it('postOocProtectionDepartureDate should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'dateClientLeaveUk': undefined };
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

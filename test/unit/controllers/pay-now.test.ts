@@ -25,7 +25,9 @@ describe('Pay now Controller @payNow', () => {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -50,13 +52,19 @@ describe('Pay now Controller @payNow', () => {
       } as any
     } as Partial<Request>;
 
-    updateAppealService = { submitEventRefactored: sandbox.stub() };
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
 
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: redirectStub
     } as Partial<Response>;
+
+    updateAppealService = {
+      submitEventRefactored: submitRefactoredStub
+    } as Partial<UpdateAppealService>;
 
     next = sandbox.stub();
   });
@@ -71,8 +79,8 @@ describe('Pay now Controller @payNow', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
       new SetupPayNowController().initialise(middleware, updateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.payNow);
-      expect(routerPostStub).to.have.been.calledWith(paths.appealStarted.payNow);
+      expect(routerGetStub.calledWith(paths.appealStarted.payNow)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.appealStarted.payNow)).to.equal(true);
     });
   });
 
@@ -97,7 +105,7 @@ describe('Pay now Controller @payNow', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       const question = getPayNowQuestion(req.session.appeal);
 
-      expect(question).to.be.eql(expectedQuestion);
+      expect(question).to.deep.equal(expectedQuestion);
     });
 
     it('should return the question with option checked', () => {
@@ -120,7 +128,7 @@ describe('Pay now Controller @payNow', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       const question = getPayNowQuestion(req.session.appeal);
 
-      expect(question).to.be.eql(expectedQuestion);
+      expect(question).to.deep.equal(expectedQuestion);
     });
   });
 
@@ -128,13 +136,13 @@ describe('Pay now Controller @payNow', () => {
     it('should redirect to overview page when feature flag OFF', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getPayNow(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should render radio-question-page.njk template with payments feature flag ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       await getPayNow(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
         previousPage: paths.appealStarted.decisionType,
         pageTitle: i18n.pages.payNow.title,
         formAction: paths.appealStarted.payNow,
@@ -147,7 +155,7 @@ describe('Pay now Controller @payNow', () => {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
       await getPayNow(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -158,7 +166,7 @@ describe('Pay now Controller @payNow', () => {
         ...req.session.appeal
       };
 
-      updateAppealService.submitEventRefactored = sandbox.stub();
+      updateAppealService.submitEventRefactored = submitRefactoredStub;
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
     });
 
@@ -167,7 +175,7 @@ describe('Pay now Controller @payNow', () => {
       req.session.appeal.application.appealType = 'revocationOfProtection';
       await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk');
+      expect(renderStub.calledOnceWith('templates/radio-question-page.njk')).to.equal(true);
     });
 
     it('should validate and redirect to the task-list page for revocationOfProtection appeal type', async () => {
@@ -175,8 +183,8 @@ describe('Pay now Controller @payNow', () => {
       appeal.paAppealTypeAipPaymentOption = 'payNow';
       await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
     it('should validate and redirect to the task-list page for refusalOfHumanRights appeal type', async () => {
@@ -184,17 +192,17 @@ describe('Pay now Controller @payNow', () => {
       appeal.paAppealTypeAipPaymentOption = 'payLater';
       await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
     it('getDecisionType should catch exception and call next with the error', async () => {
       req.body['answer'] = 'decisionWithHearing';
       const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -205,7 +213,7 @@ describe('Pay now Controller @payNow', () => {
     req.body['answer'] = 'decisionWithoutHearing';
     req.session.appeal.application.appealType = 'protection';
     await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+    expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
   });
 
   it('should redirect to the PCQ page when payments feature flag ON but PCQ feature flag ON and appealType is is protection, PCQ is Up', async () => {
@@ -217,7 +225,7 @@ describe('Pay now Controller @payNow', () => {
     sandbox.stub(PcqService.prototype, 'checkPcqHealth').resolves(true);
     sandbox.stub(PcqService.prototype, 'getPcqId').resolves('test001');
     await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledOnce.calledWith(sinon.match('pcq'));
+    expect(redirectStub.calledOnceWith(sinon.match('pcq'))).to.equal(true);
   });
 
   it('should redirect to the task-list page when payments feature flag ON but PCQ feature flag ON and appealType is is protection, PCQ is Down', async () => {
@@ -228,7 +236,7 @@ describe('Pay now Controller @payNow', () => {
     req.session.appeal.application.appealType = 'protection';
     sandbox.stub(PcqService.prototype, 'checkPcqHealth').resolves(false);
     await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+    expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
   });
 
   it('should redirect to the task-list page when payments feature flag ON, PCQ feature flag ON, appealType is protection, but there is pcqId', async () => {
@@ -239,13 +247,13 @@ describe('Pay now Controller @payNow', () => {
     req.session.appeal.application.appealType = 'protection';
     req.session.appeal.pcqId = 'AAA';
     await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+    expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
   });
 
   it('should redirect to overview page when feature flag OFF', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+    expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
   });
 
 });

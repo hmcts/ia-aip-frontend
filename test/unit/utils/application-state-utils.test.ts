@@ -112,7 +112,7 @@ describe('application-state-utils', () => {
       req.session.appeal.appealStatus = 'unknown';
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql(
+      expect(result).to.deep.equal(
         {
           deadline: 'TBC',
           descriptionParagraphs: [
@@ -167,7 +167,7 @@ describe('application-state-utils', () => {
       req.session.appeal.appealStatus = 'appealSubmitted';
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         cta: null,
         deadline: '13 February 2020',
         descriptionParagraphs: [
@@ -191,7 +191,7 @@ describe('application-state-utils', () => {
 
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         allowedAskForMoreTime: false,
         cta: null,
         deadline: '13 February 2020',
@@ -225,7 +225,7 @@ describe('application-state-utils', () => {
       ] as HistoryEvent[];
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         cta: null,
         deadline: '07 March 2020',
         descriptionParagraphs: [
@@ -257,7 +257,7 @@ describe('application-state-utils', () => {
       ] as HistoryEvent[];
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         cta: null,
         deadline: '07 March 2020',
         descriptionParagraphs: [
@@ -274,7 +274,7 @@ describe('application-state-utils', () => {
       req.session.appeal.appealStatus = 'pendingPayment';
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         descriptionParagraphs: [
           i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
           i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
@@ -301,7 +301,7 @@ describe('application-state-utils', () => {
 
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         cta: null,
         deadline: '07 March 2020',
         descriptionParagraphs: [
@@ -318,7 +318,7 @@ describe('application-state-utils', () => {
       req.session.appeal.appealStatus = 'listing';
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         cta: null,
         deadline: '25 January 2022',
         descriptionParagraphs: [
@@ -350,7 +350,7 @@ describe('application-state-utils', () => {
 
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         cta: null,
         deadline: '25 January 2022',
         descriptionParagraphs: [
@@ -386,7 +386,7 @@ describe('application-state-utils', () => {
       ] as HistoryEvent[];
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         cta: null,
         deadline: '07 March 2020',
         descriptionParagraphs: [
@@ -404,7 +404,7 @@ describe('application-state-utils', () => {
       req.session.appeal.appealStatus = 'awaitingRespondentEvidence';
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         'allowedAskForMoreTime': false,
         'cta': null,
         'deadline': dlrmFeeRemissionFlag ? '22 February 2020' : '13 February 2020',
@@ -426,7 +426,7 @@ describe('application-state-utils', () => {
 
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         'allowedAskForMoreTime': false,
         'cta': {
           url: null,
@@ -468,7 +468,7 @@ describe('application-state-utils', () => {
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and no pending time extension', async () => {
         const result = await getAppealApplicationNextStep(req as Request);
 
-        expect(result).to.eql(
+        expect(result).to.deep.equal(
           {
             allowedAskForMoreTime: true,
             cta: {
@@ -502,7 +502,7 @@ describe('application-state-utils', () => {
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
         const result = await getAppealApplicationNextStep(req as Request);
 
-        expect(result).to.eql(
+        expect(result).to.deep.equal(
           {
             allowedAskForMoreTime: true,
             cta: {
@@ -535,7 +535,7 @@ describe('application-state-utils', () => {
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
         const result = await getAppealApplicationNextStep(req as Request);
 
-        expect(result).to.eql(
+        expect(result).to.deep.equal(
           {
             allowedAskForMoreTime: true,
             cta: {
@@ -568,7 +568,7 @@ describe('application-state-utils', () => {
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
         const result = await getAppealApplicationNextStep(req as Request);
 
-        expect(result).to.eql(
+        expect(result).to.deep.equal(
           {
             allowedAskForMoreTime: true,
             cta: {
@@ -623,7 +623,7 @@ describe('application-state-utils', () => {
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
         const result = await getAppealApplicationNextStep(req as Request);
 
-        expect(result).to.eql(
+        expect(result).to.deep.equal(
           {
             cta: {
               respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
@@ -659,7 +659,7 @@ describe('application-state-utils', () => {
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
         const result = await getAppealApplicationNextStep(req as Request);
 
-        expect(result).to.eql(
+        expect(result).to.deep.equal(
           {
             cta: {
               respondBy: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime,
@@ -694,7 +694,7 @@ describe('application-state-utils', () => {
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
         const result = await getAppealApplicationNextStep(req as Request);
 
-        expect(result).to.eql(
+        expect(result).to.deep.equal(
           {
             cta: {
               respondBy: i18n.pages.overviewPage.doThisNext.nowRespondBy,
@@ -729,7 +729,7 @@ describe('application-state-utils', () => {
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
         const result = await getAppealApplicationNextStep(req as Request);
 
-        expect(result).to.eql(
+        expect(result).to.deep.equal(
           {
             cta: {
               respondBy: i18n.pages.overviewPage.doThisNext.stillRespondBy,
@@ -757,7 +757,7 @@ describe('application-state-utils', () => {
       req.session.appeal.appealStatus = 'reasonsForAppealSubmitted';
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         cta: null,
         deadline: '03 March 2020',
         descriptionParagraphs: [
@@ -772,7 +772,7 @@ describe('application-state-utils', () => {
       req.session.appeal.appealStatus = 'respondentReview';
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         descriptionParagraphs: [
           i18n.pages.overviewPage.doThisNext.respondentReview.detailsSent,
           i18n.pages.overviewPage.doThisNext.respondentReview.dueDate
@@ -797,7 +797,7 @@ describe('application-state-utils', () => {
         hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
       };
 
-      expect(result).to.eql(expected);
+      expect(result).to.deep.equal(expected);
     });
 
     it('should return \'Do This next section\' when application status is decisionMaintained', async () => {
@@ -816,7 +816,7 @@ describe('application-state-utils', () => {
         hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
       };
 
-      expect(result).to.eql(expected);
+      expect(result).to.deep.equal(expected);
     });
 
     it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section.', async () => {
@@ -836,14 +836,14 @@ describe('application-state-utils', () => {
         'info': null
       };
 
-      expect(result).to.eql(expected);
+      expect(result).to.deep.equal(expected);
     });
 
     it('when application status is clarifyingQuestionsAnswersSubmitted should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'clarifyingQuestionsAnswersSubmitted';
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql({
+      expect(result).to.deep.equal({
         'allowedAskForMoreTime': false,
         'cta': null,
         'deadline': null,
@@ -875,14 +875,14 @@ describe('application-state-utils', () => {
         }
       };
 
-      expect(result).to.eql(expected);
+      expect(result).to.deep.equal(expected);
     });
 
     it('when application status is cmaRequirementsSubmitted should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'cmaRequirementsSubmitted';
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql(
+      expect(result).to.deep.equal(
         {
           'allowedAskForMoreTime': false,
           'cta': null,
@@ -903,7 +903,7 @@ describe('application-state-utils', () => {
       req.session.appeal.appealStatus = 'cmaAdjustmentsAgreed';
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql(
+      expect(result).to.deep.equal(
         {
           'allowedAskForMoreTime': false,
           'cta': null,
@@ -970,7 +970,7 @@ describe('application-state-utils', () => {
         }
       };
 
-      expect(result).to.eql(expected);
+      expect(result).to.deep.equal(expected);
     });
 
     it('should return \'Do This next section\' when application status is submitHearingRequirements and a pending time extension', async () => {
@@ -985,7 +985,7 @@ describe('application-state-utils', () => {
       req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
       const result = await getAppealApplicationNextStep(req as Request);
 
-      expect(result).to.eql(
+      expect(result).to.deep.equal(
         {
           allowedAskForMoreTime: true,
           cta: {
@@ -1126,7 +1126,7 @@ describe('application-state-utils', () => {
 
     const expected = getPreHearingAndFinalBundling();
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application status is finalBundling should get correct Do this next section.', async () => {
@@ -1136,7 +1136,7 @@ describe('application-state-utils', () => {
 
     const expected = getPreHearingAndFinalBundling();
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application status is finalBundling and appellant just took over case should get correct Do this next section.', async () => {
@@ -1159,7 +1159,7 @@ describe('application-state-utils', () => {
     const expected = getPreHearingAndFinalBundling();
     expected['descriptionParagraphs'][0] = 'The hearing bundle is ready to view. This is a record of all the information and evidence about this appeal. You should read it carefully.';
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   function getPreHearingAndFinalBundling() {
@@ -1216,7 +1216,7 @@ describe('application-state-utils', () => {
       }
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application status is decided should get correct Do this next section - FTPA enabled.', async () => {
@@ -1252,7 +1252,7 @@ describe('application-state-utils', () => {
       }
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application status is decided  with rule 31 after triggering updateTribunalDecision event - DLRM set aside enabled.', async () => {
@@ -1276,9 +1276,9 @@ describe('application-state-utils', () => {
     };
     const result = await getAppealApplicationNextStep(req as Request);
 
-    expect(result.decision).to.eql(req.session.appeal.updatedAppealDecision);
-    expect(result.descriptionParagraphs).to.eql(expected.descriptionParagraphs);
-    expect(result.deadline).to.eql('18 March 2024');
+    expect(result.decision).to.deep.equal(req.session.appeal.updatedAppealDecision);
+    expect(result.descriptionParagraphs).to.deep.equal(expected.descriptionParagraphs);
+    expect(result.deadline).to.deep.equal('18 March 2024');
   });
 
   it('when application status is decided with rule 32 after triggering updateTribunalDecision event - DLRM set aside enabled.', async () => {
@@ -1309,7 +1309,7 @@ describe('application-state-utils', () => {
       }
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application status is appealSubmitted and appeal is late, status should be lateAppealSubmitted.', () => {
@@ -1318,7 +1318,7 @@ describe('application-state-utils', () => {
 
     const result = getAppealStatus(req as Request);
 
-    expect(result).to.eql('lateAppealSubmitted');
+    expect(result).to.deep.equal('lateAppealSubmitted');
   });
 
   it('when application status is appealSubmitted and appeal is not late, status should be appealSubmitted.', () => {
@@ -1327,7 +1327,7 @@ describe('application-state-utils', () => {
 
     const result = getAppealStatus(req as Request);
 
-    expect(result).to.eql('appealSubmitted');
+    expect(result).to.deep.equal('appealSubmitted');
   });
 
   it('when application status is ftpaSubmitted after respondent ftpa application should get correct Do this next section.', async () => {
@@ -1363,7 +1363,7 @@ describe('application-state-utils', () => {
       'descriptionParagraphs': ['The Home Office has applied for permission to appeal to the Upper Tribunal. The Tribunal will contact you when the judge has decided the application.']
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application status is ftpaSubmitted after appellant ftpa application should get correct Do this next section.', async () => {
@@ -1402,7 +1402,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is granted for respondent ftpa application should get correct Do this next section.', async () => {
@@ -1421,7 +1421,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is refused for respondent ftpa application should get correct Do this next section.', async () => {
@@ -1440,7 +1440,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is partially granted for respondent ftpa application should get correct Do this next section.', async () => {
@@ -1459,7 +1459,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when respondent ftpa application is partially granted by resident judge, should get correct Do this next section.', async () => {
@@ -1478,7 +1478,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is not admitted for respondent ftpa application should get correct Do this next section.', async () => {
@@ -1497,7 +1497,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is decided as reheardRule35 for respondent ftpa application should get correct Do this next section.', async () => {
@@ -1521,7 +1521,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is decided as remadeRule31 for respondent ftpa application should get correct Do this next section.', async () => {
@@ -1544,7 +1544,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is decided as remadeRule32 for respondent ftpa application should get correct Do this next section.', async () => {
@@ -1567,7 +1567,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is decided as reheardRule35 for respondent ftpa application should get correct Do this next section.', async () => {
@@ -1590,7 +1590,7 @@ describe('application-state-utils', () => {
         'There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing.'
       ]
     };
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is decided as remadeRule31 for respondent ftpa application should get correct Do this next section.', async () => {
@@ -1613,7 +1613,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is decided as remadeRule32 for respondent ftpa application should get correct Do this next section.', async () => {
@@ -1636,7 +1636,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is granted for appellant ftpa application should get correct Do this next section.', async () => {
@@ -1661,7 +1661,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is refused for appellant ftpa application should get correct Do this next section.', async () => {
@@ -1688,7 +1688,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is partially granted for appellant ftpa application should get correct Do this next section.', async () => {
@@ -1716,7 +1716,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application is not admitted for appellant ftpa application should get correct Do this next section.', async () => {
@@ -1744,7 +1744,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when appellant ftpa application is not admitted by resident judge, should get correct Do this next section.', async () => {
@@ -1772,7 +1772,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('when application status is appealTakenOffline and removeAppealFromOnlineReason and date can be read.', () => {
@@ -1783,8 +1783,8 @@ describe('application-state-utils', () => {
     const result = getMoveAppealOfflineReason(req as Request);
     const offlineDate = getMoveAppealOfflineDate(req as Request);
 
-    expect(result).to.eql('Reason to move an appeal offline');
-    expect(offlineDate).to.eql('2021-06-30');
+    expect(result).to.deep.equal('Reason to move an appeal offline');
+    expect(offlineDate).to.deep.equal('2021-06-30');
   });
 
   it('when application has not ended and outOfTimeDecisionType is rejected and appeal is late status, should be lateAppealRejected.', () => {
@@ -1794,7 +1794,7 @@ describe('application-state-utils', () => {
 
     const result = getAppealStatus(req as Request);
 
-    expect(result).to.eql('lateAppealRejected');
+    expect(result).to.deep.equal('lateAppealRejected');
   });
 
   it('when application has ended and outOfTimeDecisionType is rejected and appeal is late status, should be ended.', () => {
@@ -1804,7 +1804,7 @@ describe('application-state-utils', () => {
 
     const result = getAppealStatus(req as Request);
 
-    expect(result).to.eql('ended');
+    expect(result).to.deep.equal('ended');
   });
 
   it('when application hasn\'t ended and isAppealLate.', () => {
@@ -1813,7 +1813,7 @@ describe('application-state-utils', () => {
     req.session.appeal.outOfTimeDecisionType = 'rejected';
     const result = getAppealStatus(req as Request);
 
-    expect(result).to.eql('lateAppealRejected');
+    expect(result).to.deep.equal('lateAppealRejected');
   });
 
   it('when application hasn\'t ended and appealStatus === appealSubmitted.', () => {
@@ -1822,7 +1822,7 @@ describe('application-state-utils', () => {
     req.session.appeal.outOfTimeDecisionType = 'approved';
     const result = getAppealStatus(req as Request);
 
-    expect(result).to.eql('lateAppealSubmitted');
+    expect(result).to.deep.equal('lateAppealSubmitted');
   });
 
   it('when application hasn\'t ended and appealStatus !== appealSubmitted.', () => {
@@ -1831,7 +1831,7 @@ describe('application-state-utils', () => {
     req.session.appeal.outOfTimeDecisionType = 'approved';
     const result = getAppealStatus(req as Request);
 
-    expect(result).to.eql('aappealSubmitted');
+    expect(result).to.deep.equal('aappealSubmitted');
   });
 
   it('when application is in final bundling state after decision without hearing, should return correct do this next.', async () => {
@@ -1852,7 +1852,7 @@ describe('application-state-utils', () => {
       ]
     };
 
-    expect(result).to.eql(expected);
+    expect(result).to.deep.equal(expected);
   });
 
   it('check isEventLatestInHistoryList work as expected', async () => {
@@ -1907,7 +1907,7 @@ describe('application-state-utils', () => {
     testData.forEach(({ history, expectedResponse, evenId, description }) => {
       it(`should be ${description}`, () => {
         appeal.history = history;
-        expect(isEventLatestInHistoryList(req as Request, evenId)).to.be.deep.equal(expectedResponse);
+        expect(isEventLatestInHistoryList(req as Request, evenId)).to.deep.equal(expectedResponse);
       });
     });
   });
@@ -1926,7 +1926,7 @@ describe('application-state-utils', () => {
       }
     ] as HistoryEvent[];
 
-    expect(remissionDecisionEventIsTheLatest(req as Request)).to.be.deep.equal(true);
+    expect(remissionDecisionEventIsTheLatest(req as Request)).to.deep.equal(true);
   });
 
   it('check requestFeeRemissionEventIsTheLatest work as expected', async () => {
@@ -1943,7 +1943,7 @@ describe('application-state-utils', () => {
       }
     ] as HistoryEvent[];
 
-    expect(requestFeeRemissionEventIsTheLatest(req as Request)).to.be.deep.equal(true);
+    expect(requestFeeRemissionEventIsTheLatest(req as Request)).to.deep.equal(true);
   });
 
   it('when application status is appealSubmitted with decision Approved for fee refund and flag is enabled should get correct \'Do This' +
@@ -1965,7 +1965,7 @@ describe('application-state-utils', () => {
     ] as HistoryEvent[];
     const result = await getAppealApplicationNextStep(req as Request);
 
-    expect(result).to.eql({
+    expect(result).to.deep.equal({
       cta: null,
       deadline: '07 March 2020',
       descriptionParagraphs: [
@@ -2000,7 +2000,7 @@ describe('application-state-utils', () => {
     ] as HistoryEvent[];
     const result = await getAppealApplicationNextStep(req as Request);
 
-    expect(result).to.eql({
+    expect(result).to.deep.equal({
       cta: {},
       deadline: '07 March 2020',
       feeLeftToPay: '40',
@@ -2038,7 +2038,7 @@ describe('application-state-utils', () => {
     ] as HistoryEvent[];
     const result = await getAppealApplicationNextStep(req as Request);
 
-    expect(result).to.eql({
+    expect(result).to.deep.equal({
       cta: {},
       deadline: '07 March 2020',
       feeForAppeal: '140',
@@ -2074,7 +2074,7 @@ describe('application-state-utils', () => {
     ] as HistoryEvent[];
     const result = await getAppealApplicationNextStep(req as Request);
 
-    expect(result).to.eql({
+    expect(result).to.deep.equal({
       cta: {},
       deadline: '07 March 2020',
       feeForAppeal: '140',
@@ -2090,16 +2090,16 @@ describe('application-state-utils', () => {
 
   it('isAddendumEvidenceUploadState', async () => {
     const disabledFlag = 'preHearingOutOfCountryFeatureDisabled';
-    expect(isAddendumEvidenceUploadState(disabledFlag)).to.be.true;
+    expect(isAddendumEvidenceUploadState(disabledFlag)).to.equal(true);
     const enabledFlag = 'appealSubmitted';
-    expect(isAddendumEvidenceUploadState(enabledFlag)).to.be.false;
+    expect(isAddendumEvidenceUploadState(enabledFlag)).to.equal(false);
     for (const state in States) {
       const stateId = States[state].id;
       if ([States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id,
         States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id].includes(stateId)) {
-        expect(isAddendumEvidenceUploadState(stateId)).to.be.true;
+        expect(isAddendumEvidenceUploadState(stateId)).to.equal(true);
       } else {
-        expect(isAddendumEvidenceUploadState(stateId)).to.be.false;
+        expect(isAddendumEvidenceUploadState(stateId)).to.equal(false);
       }
     }
   });

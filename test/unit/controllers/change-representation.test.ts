@@ -9,9 +9,12 @@ describe('Change Representation Controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: sinon.SinonStub;
-
+  let send: sinon.SinonStub;
+  let headerSpy: sinon.SinonSpy;
+  let renderStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    send = sandbox.stub();
     req = {
       query: {},
       body: {},
@@ -38,10 +41,12 @@ describe('Change Representation Controller', () => {
         }
       }
     } as Partial<Request>;
+    headerSpy = sandbox.spy();
+    renderStub = sandbox.stub();
     res = {
-      render: sandbox.stub(),
-      send: sandbox.stub(),
-      setHeader: sandbox.spy()
+      render: renderStub,
+      send: send,
+      setHeader: headerSpy
     } as Partial<Response>;
     next = sandbox.stub();
   });
@@ -54,14 +59,14 @@ describe('Change Representation Controller', () => {
     const routerStub: sinon.SinonStub = sandbox.stub(Router as never, 'get');
     const middleware: Middleware[] = [];
     setupChangeRepresentationControllers(middleware);
-    expect(routerStub).to.have.been.calledWith(paths.common.changeRepresentation);
-    expect(routerStub).to.have.been.calledWith(paths.common.changeRepresentationDownload);
+    expect(routerStub.calledWith(paths.common.changeRepresentation)).to.equal(true);
+    expect(routerStub.calledWith(paths.common.changeRepresentationDownload)).to.equal(true);
   });
 
   describe('getChangeRepresentation', () => {
     it('should render change-representation.njk', () => {
       getChangeRepresentation()(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('change-representation.njk', {
+      expect(renderStub).to.be.calledOnceWith('change-representation.njk', {
         previousPage: paths.common.overview,
         onlineCaseReferenceNumber: '5827-8410-0185-6205',
         appellantGivenNames: 'Pedro',
@@ -73,7 +78,7 @@ describe('Change Representation Controller', () => {
     it('display reference number even if it is not 16 characters', () => {
       req.session.appeal.ccdCaseId = '582784100185620';
       getChangeRepresentation()(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('change-representation.njk', {
+      expect(renderStub).to.be.calledOnceWith('change-representation.njk', {
         previousPage: paths.common.overview,
         onlineCaseReferenceNumber: '582784100185620',
         appellantGivenNames: 'Pedro',
@@ -84,11 +89,11 @@ describe('Change Representation Controller', () => {
 
     it('should catch errors', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getChangeRepresentation()(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -100,9 +105,9 @@ describe('Change Representation Controller', () => {
 
       await getChangeRepresentationDownload()(req as Request, res as Response, next);
 
-      expect(res.setHeader).to.have.been.calledWith('content-type', 'application/pdf');
-      expect(res.setHeader).to.have.been.calledWith('content-disposition', 'attachment; filename="Notice of Change details.pdf"');
-      expect(res.send).to.have.been.calledOnceWith(pdf);
+      expect(headerSpy.calledWith('content-type', 'application/pdf')).to.equal(true);
+      expect(headerSpy.calledWith('content-disposition', 'attachment; filename="Notice of Change details.pdf"')).to.equal(true);
+      expect(send.calledOnceWith(pdf)).to.equal(true);
     });
 
     it('should call next with error', async () => {
@@ -112,7 +117,7 @@ describe('Change Representation Controller', () => {
 
       await getChangeRepresentationDownload()(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(message);
+      expect(next.calledOnceWith(message)).to.equal(true);
     });
 
     it('should catch errors', async () => {
@@ -121,7 +126,7 @@ describe('Change Representation Controller', () => {
 
       await getChangeRepresentationDownload()(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

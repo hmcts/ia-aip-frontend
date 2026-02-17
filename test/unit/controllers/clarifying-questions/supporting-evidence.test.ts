@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getSupportingEvidenceDelete,
   getSupportingEvidenceUploadPage,
@@ -6,10 +6,7 @@ import {
   postSupportingEvidenceUpload,
   setupClarifyingQuestionsSupportingEvidenceUploadController
 } from '../../../../app/controllers/clarifying-questions/supporting-evidence';
-import {
-  EvidenceUploadConfig,
-  postSupportingEvidence
-} from '../../../../app/controllers/upload-evidence/upload-evidence-controller';
+import { EvidenceUploadConfig } from '../../../../app/controllers/upload-evidence/upload-evidence-controller';
 import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';
@@ -24,7 +21,10 @@ describe('Question-page controller', () => {
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
   let evidenceUploadConfig: Partial<EvidenceUploadConfig>;
-
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let deleteStub: sinon.SinonStub;
   const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
     {
       id: 'id1',
@@ -60,22 +60,30 @@ describe('Question-page controller', () => {
       session: {
         appeal: {
           application: {},
-          documentMap: [ ],
-          draftClarifyingQuestionsAnswers: [ ...clarifyingQuestions ]
+          documentMap: [],
+          draftClarifyingQuestionsAnswers: [...clarifyingQuestions]
         }
       }
     } as Partial<Request>;
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
-    next = sandbox.stub();
+
     updateAppealService = {
-      submitEventRefactored: sandbox.stub(),
-      updateAppealService: sandbox.stub()
+      submitEventRefactored: submitRefactoredStub
     } as Partial<UpdateAppealService>;
-    documentManagementService = { deleteFile: sandbox.stub() };
-    evidenceUploadConfig = { };
+    next = sandbox.stub();
+    deleteStub = sandbox.stub();
+    documentManagementService = {
+      deleteFile: deleteStub
+    };
+    evidenceUploadConfig = {};
   });
 
   afterEach(() => {
@@ -89,10 +97,10 @@ describe('Question-page controller', () => {
       const middleware: Middleware[] = [];
 
       setupClarifyingQuestionsSupportingEvidenceUploadController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceSubmit);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceDeleteFile);
+      expect(routerGetStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceSubmit)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceDeleteFile)).to.equal(true);
     });
   });
 
@@ -101,16 +109,16 @@ describe('Question-page controller', () => {
       req.params.id = '1';
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('upload-evidence/supporting-evidence-upload-page.njk');
+      expect(renderStub.calledWith('upload-evidence/supporting-evidence-upload-page.njk')).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       req.params.id = '1';
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.called.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -119,7 +127,7 @@ describe('Question-page controller', () => {
       req.params.id = '1';
       await postSupportingEvidenceUpload(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('upload-evidence/supporting-evidence-upload-page.njk');
+      expect(renderStub.calledWith('upload-evidence/supporting-evidence-upload-page.njk')).to.equal(true);
     });
 
     it('should save for later with  file', async () => {
@@ -132,14 +140,14 @@ describe('Question-page controller', () => {
       req.body.saveForLater = 'saveForLater';
       const documentMap: DocumentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
-      req.session.appeal.documentMap = [ { ...documentMap } ];
+      req.session.appeal.documentMap = [{ ...documentMap }];
       const appeal: Appeal = {
         ...req.session.appeal
       };
       await postSupportingEvidenceUpload(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submitRefactoredStub.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should upload file', async () => {
@@ -151,21 +159,21 @@ describe('Question-page controller', () => {
       };
       const documentMap: DocumentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
-      req.session.appeal.documentMap = [ { ...documentMap } ];
+      req.session.appeal.documentMap = [{ ...documentMap }];
       const appeal: Appeal = { ...req.session.appeal };
       await postSupportingEvidenceUpload(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), req.params.id));
+      expect(submitRefactoredStub.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), req.params.id))).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       req.params.id = '1';
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postSupportingEvidenceUpload(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.called.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -176,16 +184,16 @@ describe('Question-page controller', () => {
         name: 'theFileName'
       };
       const documentMap: DocumentMap = { id: 'fileId', url: 'docStoreURLToFile' };
-      req.session.appeal.draftClarifyingQuestionsAnswers[0].value.supportingEvidence = [ { ...supportingEvidence } ];
-      req.session.appeal.documentMap = [ { ...documentMap } ];
+      req.session.appeal.draftClarifyingQuestionsAnswers[0].value.supportingEvidence = [{ ...supportingEvidence }];
+      req.session.appeal.documentMap = [{ ...documentMap }];
       req.params.id = '1';
       req.query.id = 'fileId';
       const appeal: Appeal = { ...req.session.appeal };
       await getSupportingEvidenceDelete(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, documentMap.id);
-      expect(updateAppealService.submitEventRefactored).to.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), req.params.id));
+      expect(deleteStub.calledWith(req, documentMap.id)).to.equal(true);
+      expect(submitRefactoredStub.called).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), req.params.id))).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
@@ -194,29 +202,29 @@ describe('Question-page controller', () => {
         name: 'theFileName'
       };
       const documentMap: DocumentMap = { id: 'fileId', url: 'docStoreURLToFile' };
-      req.session.appeal.draftClarifyingQuestionsAnswers[0].value.supportingEvidence = [ { ...supportingEvidence } ];
-      req.session.appeal.documentMap = [ { ...documentMap } ];
+      req.session.appeal.draftClarifyingQuestionsAnswers[0].value.supportingEvidence = [{ ...supportingEvidence }];
+      req.session.appeal.documentMap = [{ ...documentMap }];
       req.params.id = '1';
       req.query.id = 'fileId';
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
 
       await getSupportingEvidenceDelete(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
   describe('postSupportingEvidenceSubmit', () => {
     it('should call redirect', () => {
       postSupportingEvidenceSubmit(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList);
+      expect(redirectStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList)).to.equal(true);
     });
 
     it('should call redirect', () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       postSupportingEvidenceSubmit(req as Request, res as Response, next);
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 });

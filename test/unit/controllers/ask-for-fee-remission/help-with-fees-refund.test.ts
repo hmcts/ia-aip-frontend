@@ -22,7 +22,8 @@ describe('Help with fees refund Controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -47,10 +48,13 @@ describe('Help with fees refund Controller', () => {
       } as any
     } as Partial<Request>;
 
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -77,8 +81,8 @@ describe('Help with fees refund Controller', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
       setupHelpWithFeesRefundController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealSubmitted.helpWithFeesRefund);
-      expect(routerPostStub).to.have.been.calledWith(paths.appealSubmitted.helpWithFeesRefund);
+      expect(routerGetStub.calledWith(paths.appealSubmitted.helpWithFeesRefund)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.appealSubmitted.helpWithFeesRefund)).to.equal(true);
     });
 
     it('should return the question', () => {
@@ -102,7 +106,7 @@ describe('Help with fees refund Controller', () => {
       req.session.appeal.application.appealType = 'protection';
       const question = getApplyOption(req.session.appeal);
 
-      expect(question).to.be.eql(expectedQuestion);
+      expect(question).to.deep.equal(expectedQuestion);
     });
 
     it('should return the question with option checked', () => {
@@ -127,13 +131,13 @@ describe('Help with fees refund Controller', () => {
       req.session.appeal.application.lateHelpWithFeesOption = 'wantToApply';
       const question = getApplyOption(req.session.appeal);
 
-      expect(question).to.be.eql(expectedQuestion);
+      expect(question).to.deep.equal(expectedQuestion);
     });
 
     it('should render help-with-fees.njk template', async () => {
       await getHelpWithFees(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/help-with-fees.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/help-with-fees.njk', {
         previousPage: paths.appealSubmitted.feeSupportRefund,
         formAction: paths.appealSubmitted.helpWithFeesRefund,
         question: sinon.match.any,
@@ -147,23 +151,23 @@ describe('Help with fees refund Controller', () => {
       req.body['answer'] = 'wantToApply';
       req.session.appeal.application.appealType = 'protection';
       await postHelpWithFees()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund);
+      expect(redirectStub.calledOnceWith(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect asylum-support-refund.njk and reset isEdit flag', async () => {
       req.body['answer'] = 'wantToApply';
       req.query = { 'edit': '' };
       await postHelpWithFees()(req as Request, res as Response, next);
-      expect(req.session.appeal.application.lateHelpWithFeesOption).to.be.eql('wantToApply');
-      expect(res.redirect).to.have.been.calledWithMatch(new RegExp(`${paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.lateHelpWithFeesOption).to.deep.equal('wantToApply');
+      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund}(?!.*\\bedit\\b)`));
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
     it('when called with edit param should render help-with-fees.njk and update session', async () => {
       req.query = { 'edit': '' };
       await getHelpWithFees(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/help-with-fees.njk');
+      expect(renderStub.calledOnceWith('appeal-application/fee-support/help-with-fees.njk')).to.equal(true);
     });
 
     it('should redirect to correct path according to the help with fees selected value', async () => {
@@ -196,7 +200,7 @@ describe('Help with fees refund Controller', () => {
       };
 
       await postHelpWithFees()(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith(
+      expect(renderStub).to.be.calledOnceWith(
         'appeal-application/fee-support/help-with-fees.njk',
         {
           errors: {
@@ -225,12 +229,12 @@ describe('Help with fees refund Controller', () => {
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await postHelpWithFees()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await getHelpWithFees(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
   });
 
@@ -239,7 +243,7 @@ describe('Help with fees refund Controller', () => {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
       await getHelpWithFees(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

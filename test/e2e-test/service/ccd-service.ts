@@ -23,9 +23,9 @@ const events = require('./case-events/index.js');
 let serviceToken = null;
 
 function generateSupplementaryId(): Record<string, Record<string, string>> {
-  const serviceId: Record<string, string> = {};
+  let serviceId: Record<string, string> = {};
   serviceId['HMCTSServiceId'] = 'BFA1';
-  const request: Record<string, Record<string, string>> = {};
+  let request: Record<string, Record<string, string>> = {};
   request['$set'] = serviceId;
   return request;
 }

@@ -1,9 +1,9 @@
 import { paths } from '../../../../app/paths';
 import { axeTest } from '../../axeHelper';
 
-const testUrl = require('config').get('testUrl');
 const { fillInDate } = require('../helper-functions');
 
+const testUrl = require('config').get('testUrl');
 
 const PATHS = {
   'reasons for appeal': paths.awaitingReasonsForAppeal.decision,

@@ -4,7 +4,7 @@ import { expect, sinon } from '../../utils/testUtils';
 
 let sandbox: sinon.SinonSandbox;
 let req: Partial<Request>;
-const evidence = { fileId: 'id', name: 'name' };
+let evidence = { fileId: 'id', name: 'name' };
 
 beforeEach(() => {
   sandbox = sinon.createSandbox();

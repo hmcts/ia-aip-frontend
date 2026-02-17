@@ -84,7 +84,7 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
       const ukAddress = _.has(appeal.application, 'personalDetails.address.line1') ? paths.appealStarted.enterAddress : paths.appealStarted.enterPostcode;
       const redirectedPagePath = await isOutOfCountryAppeal(req) ? paths.appealStarted.oocAddress : ukAddress;
 
-      const redirectPage = getRedirectPage(
+      let redirectPage = getRedirectPage(
           editingMode,
           paths.appealStarted.checkAndSend,
           req.body.saveForLater,
@@ -98,8 +98,8 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
 }
 
 async function isOutOfCountryAppeal(req: Request) {
-  const appealOutOfCountry = req.session.appeal.appealOutOfCountry;
-  const outOfCountryFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.OUT_OF_COUNTRY, false);
+  let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+  let outOfCountryFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.OUT_OF_COUNTRY, false);
   return (outOfCountryFeatureEnabled && appealOutOfCountry && appealOutOfCountry === 'Yes');
 }
 
@@ -153,14 +153,14 @@ function postEnterAddressForOutOfCountryAppeal(updateAppealService: UpdateAppeal
           ...req.session.appeal.application
         }
       };
-      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      let editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
       };
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.hasSponsor);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.hasSponsor);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
@@ -327,13 +327,14 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
           }
         }
       };
-      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      let editingMode: boolean;
+      editingMode = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
       };
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.hasSponsor);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.hasSponsor);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
@@ -401,7 +402,7 @@ function postHasSponsor(updateAppealService: UpdateAppealService) {
 
       if (['No'].includes(appeal.application.hasSponsor)) return res.redirect(paths.appealStarted.taskList);
 
-      const redirectPage = paths.appealStarted.sponsorName;
+      let redirectPage = paths.appealStarted.sponsorName;
 
       return res.redirect(redirectPage);
     } catch (error) {
@@ -458,7 +459,7 @@ function postSponsorName(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.sponsorAddress);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.sponsorAddress);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
@@ -515,13 +516,14 @@ function postSponsorAddress(updateAppealService: UpdateAppealService) {
           }
         }
       };
-      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      let editingMode: boolean;
+      editingMode = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
       };
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.sponsorContactDetails);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.sponsorContactDetails);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
@@ -584,7 +586,7 @@ function postSponsorContactDetails(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.sponsorAuthorisation);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.sponsorAuthorisation);
       return res.redirect(redirectPage);
     } catch (error) {
       next(error);
@@ -643,7 +645,7 @@ function postSponsorAuthorisation(updateAppealService: UpdateAppealService) {
         ...appealUpdated
       };
 
-      const redirectPage = paths.appealStarted.taskList;
+      let redirectPage = paths.appealStarted.taskList;
 
       return res.redirect(redirectPage);
     } catch (error) {

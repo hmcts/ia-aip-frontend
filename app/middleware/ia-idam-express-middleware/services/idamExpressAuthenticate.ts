@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
+import UUID from 'uuid/v4';
 import Logger, { getLogLabel } from '../../../utils/logger';
 import config from '../config';
 import cookies from '../utilities/cookies';
@@ -19,7 +19,7 @@ const idamExpressAuthenticate = (args: IdamConfig) => {
       cookies.remove(res, stateCookieName);
     }
 
-    const getState = args.state || uuidv4;
+    const getState = args.state || UUID;
 
     const redirectUser = () => {
       const state = getState();

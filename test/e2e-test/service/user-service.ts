@@ -1,7 +1,6 @@
 import { isJWTExpired } from '../../../app/utils/jwt-utils';
 import Logger, { getLogLabel } from '../../../app/utils/logger';
 
-const workerThreads = require('node:worker_threads');
 const axios = require('axios');
 const config = require('config');
 
@@ -14,6 +13,7 @@ const testUrl = config.get('testUrl');
 
 const redirectUrl = `${testUrl}/redirectUrl`;
 
+const workerThreads = require('node:worker_threads');
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 

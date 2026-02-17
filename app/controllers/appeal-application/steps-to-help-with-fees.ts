@@ -38,7 +38,7 @@ function postStepsToHelpWithFees(updateAppealService: UpdateAppealService) {
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
       await persistAppeal(req.session.appeal, dlrmFeeRemissionFlag);
       const defaultRedirect = paths.appealStarted.helpWithFeesReferenceNumber;
-      const redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
+      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
     } catch (error) {
       next(error);

@@ -9,7 +9,7 @@ export enum Delimiter {
 
 export function addSummaryRow(key?: string, values?: (number | string | string[] | any)[], href?: string, delimiter?: Delimiter, text?: string) {
   const separator = delimiter || '';
-  const row: SummaryRow = {
+  let row: SummaryRow = {
     key: {
       text: key
     },

@@ -56,7 +56,7 @@ describe('system-authentication-service', () => {
   });
 
   it('when requesting UUID fails, returns undefined', async () => {
-    axiosStub = sandbox.stub(axios, 'get').returns(Promise.reject(new Error()));
+    axiosStub = sandbox.stub(axios, 'get').returns(Promise.reject());
 
     const uuid1 = await authenticationService.getCaseworkSystemUUID(token);
 

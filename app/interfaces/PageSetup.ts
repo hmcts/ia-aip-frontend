@@ -6,7 +6,6 @@ interface PageSetup {
   initialise(middleware: Middleware[], updateAppealService: UpdateAppealService, documentManagementService?: DocumentManagementService): Router;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace PageSetup {
   type Constructor<T> = {
     new (...args: any[]): T;

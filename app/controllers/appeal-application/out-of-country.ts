@@ -62,7 +62,7 @@ function postAppellantInUk(updateAppealService: UpdateAppealService) {
         ...appealUpdated
       };
 
-      const redirectPage = paths.appealStarted.typeOfAppeal;
+      let redirectPage = paths.appealStarted.typeOfAppeal;
 
       return res.redirect(redirectPage);
     } catch (postAppellantInUkError) {
@@ -121,7 +121,7 @@ function postOocHrInside(updateAppealService: UpdateAppealService) {
         ...appealUpdated
       };
 
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
       return res.redirect(redirectPage);
     } catch (postOocHrInsideError) {
       next(postOocHrInsideError);
@@ -173,7 +173,7 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.name);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.name);
       return res.redirect(redirectPage);
     } catch (postGwfReferenceError) {
       next(postGwfReferenceError);
@@ -229,7 +229,7 @@ function postOocHrEea(updateAppealService: UpdateAppealService) {
 
       const refusalOfHumanRights: boolean = (req.session.appeal.application.appealType === 'refusalOfHumanRights');
       const outsideUkWhenApplicationMade: boolean = (req.body['answer'] === 'Yes') || false;
-      const redirectPage = (!outsideUkWhenApplicationMade && refusalOfHumanRights) ? paths.appealStarted.oocHrInside : paths.appealStarted.taskList;
+      let redirectPage = (!outsideUkWhenApplicationMade && refusalOfHumanRights) ? paths.appealStarted.oocHrInside : paths.appealStarted.taskList;
       return res.redirect(redirectPage);
     } catch (postOocHrEeaError) {
       next(postOocHrEeaError);
@@ -288,7 +288,7 @@ function postOocProtectionDepartureDate(updateAppealService: UpdateAppealService
         ...appealUpdated
       };
 
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
       return res.redirect(redirectPage);
     } catch (postOocProtectionDepartureDateError) {
       next(postOocProtectionDepartureDateError);

@@ -7,7 +7,7 @@ import { shouldValidateWhenSaveForLater } from '../../../utils/save-for-later-ut
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { getHearingRequirementsReasonHandler, handleHearingRequirementsSaveForLater } from '../common';
 
-const pageContent = {
+let pageContent = {
   previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
   formAction: paths.submitHearingRequirements.otherNeedsAllFemaleHearing,
   pageTitle: i18n.pages.hearingRequirements.otherNeedsSection.singleSexHearingAllFemale.title,

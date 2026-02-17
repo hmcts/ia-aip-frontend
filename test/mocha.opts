@@ -1,4 +1,4 @@
 --require ts-node/register/transpile-only
---require global-jsdom/register
+--require jsdom-global/register
 --require source-map-support/register
 --timeout=20000

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
+import { INTERNAL_SERVER_ERROR, NOT_FOUND } from 'http-status-codes';
 import { pageNotFoundHandler, serverErrorHandler } from '../../../app/handlers/error-handler';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -33,7 +33,7 @@ describe('Error Handler', () => {
     it('gives 404 page in HTML', () => {
       pageNotFoundHandler(req as Request, res as Response, next);
 
-      expect(res.status).to.have.been.calledOnce.calledWith(StatusCodes.NOT_FOUND);
+      expect(res.status).to.have.been.calledOnce.calledWith(NOT_FOUND);
       expect(res.render).to.have.been.calledOnce.calledWith('errors/404.njk');
     });
   });
@@ -43,7 +43,7 @@ describe('Error Handler', () => {
       req.headers = { accept: 'text/html' };
       const err = new Error('Service is unavailable');
       serverErrorHandler(err, req as Request, res as Response, next);
-      expect(res.status).to.have.been.calledOnce.calledWith(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(res.status).to.have.been.calledOnce.calledWith(INTERNAL_SERVER_ERROR);
       expect(res.render).to.have.been.calledOnce.calledWith('errors/500.njk');
     });
   });

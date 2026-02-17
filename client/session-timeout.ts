@@ -41,11 +41,11 @@ export default class SessionTimeout {
 
   addListeners = () => {
     if (this.extendSessionElement) this.extendSessionElement.addEventListener('click', this.extendSession);
-  };
+  }
 
   removeListeners = () => {
     if (this.extendSessionElement) this.extendSessionElement.removeEventListener('click', this.extendSession);
-  };
+  }
 
   startCounter = () => {
     const sessionExpirationTimeMoment = moment(this.sessionExpirationTime);
@@ -57,23 +57,23 @@ export default class SessionTimeout {
       this.openModal();
       this.startModalCountdown();
     }, this.sessionTimeoutCountdown - (this.bufferSessionExtension + 1));
-  };
+  }
 
   stopCounters = () => {
     clearTimeout(this.sessionTimeout);
     clearTimeout(this.modalTimeout);
     clearInterval(this.modalCountdown);
-  };
+  }
 
   resetModalMessage = () => {
     this.modalCountdownElement.innerHTML = i18n.components.timeoutModal.initialDescription;
-  };
+  }
 
   restartCounters = () => {
     this.stopCounters();
     this.startCounter();
     this.resetModalMessage();
-  };
+  }
 
   startModalCountdown = () => {
     let count = 0;
@@ -85,7 +85,7 @@ export default class SessionTimeout {
       this.modalCountdownElement.innerHTML = `${i18n.components.timeoutModal.description[0]} ${minutes}:${seconds} ${i18n.components.timeoutModal.description[1]}`;
       count += 1000;
     }, 1000);
-  };
+  }
 
   openModal = () => {
     this.modalElement.removeAttribute('aria-hidden');
@@ -94,7 +94,7 @@ export default class SessionTimeout {
     this.firstFocusableElement.focus();
     this.disableScroll();
     this.body.addEventListener('keydown', this.keyDownEventListener);
-  };
+  }
 
   disableScroll = () => {
     this.scrollPosition = window.pageYOffset;
@@ -102,14 +102,14 @@ export default class SessionTimeout {
     this.body.style.position = 'fixed';
     this.body.style.width = '100%';
     this.body.style.top = `-${this.scrollPosition}px`;
-  };
+  }
 
   enableScroll = () => {
     this.body.style.removeProperty('overflow');
     this.body.style.removeProperty('position');
     this.body.style.removeProperty('width');
     window.scrollTo(0, this.scrollPosition);
-  };
+  }
 
   closeModal = () => {
     this.modalElement.setAttribute('aria-hidden', 'true');
@@ -118,7 +118,7 @@ export default class SessionTimeout {
     document.querySelector('body').removeEventListener('keydown', this.keyDownEventListener);
     if (this.previousFocusedElement) this.previousFocusedElement.focus();
     this.enableScroll();
-  };
+  }
 
   signOut() {
     window.location.assign(paths.common.sessionExpired);
@@ -133,7 +133,7 @@ export default class SessionTimeout {
       this.removeListeners();
       this.stopCounters();
     });
-  };
+  }
 
   keyDownEventListener = (event) => {
     if (event.key === 'Tab') {
@@ -152,5 +152,5 @@ export default class SessionTimeout {
         }
       }
     }
-  };
+  }
 }

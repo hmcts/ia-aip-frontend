@@ -9,8 +9,8 @@ module.exports = {
 
     Then('I see Are there any dates between today\'s date and 6 weeks time that you or any witnesses cannot go to the hearing?', async () => {
       await I.waitInUrl('/hearing-dates-avoid',10);
-      const today = moment().format(dayMonthYearFormat);
-      const finalDate = moment().add(42,'days').format(dayMonthYearFormat);
+      let today = moment().format(dayMonthYearFormat);
+      let finalDate = moment().add(42,'days').format(dayMonthYearFormat);
       await I.see('Are there any dates between ' + today + ' and ' + finalDate + ' that you or any witnesses cannot go to the hearing?','h1');
     });
   }

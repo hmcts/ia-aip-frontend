@@ -40,7 +40,7 @@ function postFeeWaiver(updateAppealService: UpdateAppealService) {
       req.session.appeal.application.feeSupportPersisted = true;
       await persistAppeal(req.session.appeal, dlrmFeeRemissionFlag);
       const defaultRedirect = paths.appealStarted.taskList;
-      const redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
+      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
     } catch (error) {
       next(error);

@@ -8,7 +8,7 @@ exports.config = {
       url: config.get('testUrl'),
       show: config.get('showTests'),
       chrome: {
-        acceptInsecureCerts: true
+        ignoreHTTPSErrors: true
       }
     },
     customHelper: {

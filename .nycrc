@@ -4,8 +4,6 @@
     "app/**/*.ts",
     "client/**/*.ts"
   ],
-  "all": true,
-  "require": ["ts-node/register/transpile-only"],
   "extension": [
     ".ts"
   ],

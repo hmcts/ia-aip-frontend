@@ -16,10 +16,10 @@ describe('Out of Country Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
+  sinon.useFakeTimers(new Date('2025-06-15'));
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    sandbox.useFakeTimers(new Date('2025-06-15'));
     req = {
       body: {},
       session: {
@@ -398,7 +398,7 @@ describe('Out of Country Controller', function () {
     it('should fail validation and render ooc-protection-departure-date.njk with a validation error with day in future', async () => {
       const currentDate = new Date();
 
-      const tomorrowDate = new Date();
+      let tomorrowDate = new Date();
       tomorrowDate.setDate(currentDate.getDate() + 1);
 
       req.body['day'] = tomorrowDate.getDate();
@@ -427,7 +427,7 @@ describe('Out of Country Controller', function () {
     it('should fail validation and render ooc-protection-departure-date.njk with a validation error with invalid date', async () => {
       const currentDate = new Date();
 
-      const tomorrowDate = new Date();
+      let tomorrowDate = new Date();
       tomorrowDate.setDate(currentDate.getDate() + 1);
 
       req.body['day'] = 31;

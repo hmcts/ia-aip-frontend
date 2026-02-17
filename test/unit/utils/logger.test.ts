@@ -1,5 +1,4 @@
 import * as applicationInsights from 'applicationinsights';
-import { describe } from 'mocha';
 import { SinonSpy, SinonStub } from 'sinon';
 import Logger, { getLogLabel } from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';

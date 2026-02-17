@@ -7,9 +7,9 @@ const config = require('config');
 
 const testUrl = config.get('testUrl');
 
-const NotifyClient = require('notifications-node-client').NotifyClient;
+let NotifyClient = require('notifications-node-client').NotifyClient;
 const govNotifyApiKey = config.get('govNotify.accessKey');
-const notifyClient = new NotifyClient(govNotifyApiKey);
+let notifyClient = new NotifyClient(govNotifyApiKey);
 let caseReferenceNumber: string;
 let appealRef: string;
 let accessCode: string;
@@ -64,12 +64,12 @@ module.exports = {
     });
 
     When('I get the NoC required data from the sent notification', async () => {
-      const emailBody = await waitForNocEmailSent(getCitizenUserFromThread());
-      const rows: string[] = emailBody.split('\n');
+      let emailBody = await waitForNocEmailSent(getCitizenUserFromThread());
+      let rows: string[] = emailBody.split('\n');
       setAppealRef(findAndRemoveFromRow(rows, 'HMCTS reference:'));
       setCaseReferenceNumber(findAndRemoveFromRow(rows, '*Enter your online case reference number:'));
       setAccessCode(findAndRemoveFromRow(rows, '*Enter this security code:'));
-      const name = findAndRemoveFromRow(rows, 'Appellant name:').split(' ');
+      let name = findAndRemoveFromRow(rows, 'Appellant name:').split(' ');
       setFirstName(name[0]);
       setLastName(name[1]);
     });
@@ -125,10 +125,10 @@ module.exports = {
     });
 
     When('I grab the appeal reference from ExUi', async () => {
-      const locator = 'ccd-markdown > div > markdown > h1';
+      let locator = 'ccd-markdown > div > markdown > h1';
       await I.waitForElement(locator);
-      const caseRecordText: string = await I.grabTextFrom(locator);
-      const appealReference: string = caseRecordText.split('record for ')[1].trim();
+      let caseRecordText: string = await I.grabTextFrom(locator);
+      let appealReference: string = caseRecordText.split('record for ')[1].trim();
       setAppealRef(appealReference);
     });
   }
@@ -144,7 +144,7 @@ async function waitForNocEmailSent(user: UserInfo): Promise<string> {
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     logger.trace(`Checking for notification email, attempt ${attempt}`, logLabel);
-    const response = await notifyClient.getNotifications('email', '', '', '');
+    let response = await notifyClient.getNotifications('email', '', '', '');
     const filteredResponse = response.data.notifications
       .filter((item: any) => item.template.id === 'c79d396a-7551-4f2c-854c-b84677fbc19e'
         && item.reference.includes(user.caseId));

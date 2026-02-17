@@ -9,7 +9,7 @@ import { getHearingRequirementsReasonHandler, handleHearingRequirementsSaveForLa
 const formAction = paths.submitHearingRequirements.hearingDateToAvoidReasons;
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
-const pageContent = {
+let pageContent = {
   formAction,
   pageTitle: i18n.pages.hearingRequirements.datesToAvoidSection.reason.title,
   previousPage: previousPage,
@@ -64,7 +64,7 @@ function postDatesToAvoidReasonWithId(updateAppealService: UpdateAppealService) 
       const onSuccess = async () => {
 
         const { datesToAvoid } = req.session.appeal.hearingRequirements;
-        const dateToAvoid: CmaDateToAvoid = datesToAvoid.dates[dateId];
+        let dateToAvoid: CmaDateToAvoid = datesToAvoid.dates[dateId];
         dateToAvoid.reason = req.body['reason'];
 
         await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
@@ -90,7 +90,7 @@ function postDatesToAvoidReason(updateAppealService: UpdateAppealService) {
 
       const onSuccess = async () => {
         const { datesToAvoid } = req.session.appeal.hearingRequirements;
-        const dateToEdit: CmaDateToAvoid = datesToAvoid.dates[datesToAvoid.dates.length - 1];
+        let dateToEdit: CmaDateToAvoid = datesToAvoid.dates[datesToAvoid.dates.length - 1];
         dateToEdit.reason = req.body['reason'];
 
         await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);

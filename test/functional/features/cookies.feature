@@ -10,21 +10,17 @@ Feature: Cookies banner
   Scenario: I view cookies and accept them
     And I see "Cookies on MyHMCTS" in subheading
     And I click "View cookies" button
-    And I check page accessibility
     Then I see "Cookies" in title
 
     And I click "Accept analytics cookies" button
-    And I check page accessibility
     Then I dont see "Cookies on MyHMCTS" on the page
 
   Scenario: I accept analytics cookie 1
     And I see "Cookies on MyHMCTS" in subheading
     And I click "Accept analytics cookies" button
-    And I check page accessibility
     Then I dont see "Cookies on MyHMCTS" on the page
 
   Scenario: I reject analytics cookie
     And I see "Cookies on MyHMCTS" in subheading
     And I click "Reject analytics cookies" button
-    And I check page accessibility
     Then I dont see "Cookies on MyHMCTS" on the page

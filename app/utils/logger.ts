@@ -56,14 +56,14 @@ export default class Logger implements ILogger {
     const log: string = `[${label}]: ${message}`;
     const worker: string = workerId === null ? '' : `[0${workerId}] `;
     switch (severity) {
-      case SEVERITY.REQUEST.valueOf():
-        // eslint-disable-next-line no-console
+      case SEVERITY.REQUEST:
+        // tslint:disable:no-console
         console.log(chalk.white(`${worker}Request: ${log}`));
         break;
-      case SEVERITY.TRACE.valueOf():
+      case SEVERITY.TRACE:
         console.warn(chalk.green(`${worker}Info: ${log} `));
         break;
-      case SEVERITY.EXCEPTION.valueOf():
+      case SEVERITY.EXCEPTION:
         console.error(chalk.red(`${worker}Exception: ${log}`));
         break;
       default:
@@ -72,6 +72,7 @@ export default class Logger implements ILogger {
   }
 }
 export function getLogLabel(path: string) {
-  const paths = path.split('\\').pop().split('/');
+  let paths: string[];
+  paths = path.split('\\').pop().split('/');
   return paths[paths.length - 2] + '/' + paths[paths.length - 1 ];
 }

@@ -64,7 +64,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
         ...appealUpdated
       };
 
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.name);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.name);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
@@ -96,7 +96,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
       const validation = appellantNamesValidation(req.body);
       if (validation) {
         const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
-        const previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
+        let previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
         return res.render('appeal-application/personal-details/name.njk', {
           personalDetails: {
             familyName: req.body.familyName,
@@ -126,7 +126,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.dob);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.dob);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
@@ -185,7 +185,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.nationality);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.nationality);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
@@ -247,7 +247,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
       };
 
       if (['Yes'].includes(appeal.application.appellantInUk)) return res.redirect(paths.appealStarted.letterSent);
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.letterReceived);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.letterReceived);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
@@ -287,8 +287,8 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         });
       }
 
-      const appealOutOfCountry = req.session.appeal.appealOutOfCountry;
-      const noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : 14;
+      let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+      let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : 14;
       const { day, month, year } = req.body;
       const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
@@ -309,7 +309,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      const defaultRedirect = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.homeOfficeDecisionLetter);
+      let defaultRedirect = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.homeOfficeDecisionLetter);
       return res.redirect(defaultRedirect);
     } catch (e) {
       next(e);
@@ -347,8 +347,8 @@ function postDateLetterReceived(updateAppealService: UpdateAppealService) {
         });
       }
 
-      const appealOutOfCountry = req.session.appeal.appealOutOfCountry;
-      const noOfDays = (appealOutOfCountry && appealOutOfCountry === 'No') ? 14 : 28;
+      let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+      let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'No') ? 14 : 28;
       const { day, month, year } = req.body;
       const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
@@ -369,7 +369,7 @@ function postDateLetterReceived(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.homeOfficeDecisionLetter);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.homeOfficeDecisionLetter);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);

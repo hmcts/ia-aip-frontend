@@ -20,13 +20,13 @@ function getSupportingEvidenceQuestionPage(req: Request, res: Response, next: Ne
       }
     ];
     res.render('upload-evidence/supporting-evidence-question-page.njk', {
-      formAction: paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id),
+      formAction: paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(`:id`), req.params.id),
       question: {
         name: 'answer',
         options
       },
       askForMoreTimeFeatureEnabled: true,
-      previousPage: paths.awaitingClarifyingQuestionsAnswers.question.replace(new RegExp(':id'), `${req.params.id}`)
+      previousPage: paths.awaitingClarifyingQuestionsAnswers.question.replace(new RegExp(`:id`), `${req.params.id}`)
     });
   } catch (error) {
     next(error);
@@ -59,13 +59,13 @@ function postSupportingEvidenceQuestionPage(updateAppealService: UpdateAppealSer
             options
           },
           askForMoreTimeFeatureEnabled: true,
-          previousPage: paths.awaitingClarifyingQuestionsAnswers.question.replace(new RegExp(':id'), `${req.params.id}`),
+          previousPage: paths.awaitingClarifyingQuestionsAnswers.question.replace(new RegExp(`:id`), `${req.params.id}`),
           errorList: Object.values(validations),
           error: validations
         });
       }
       if (req.body.answer === 'true') {
-        const redirectUri = paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), parseInt(req.params.id, 10).toString());
+        let redirectUri = paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), parseInt(req.params.id, 10).toString());
         return res.redirect(redirectUri);
       } else {
         const questionOrderNo = parseInt(req.params.id, 10) - 1;

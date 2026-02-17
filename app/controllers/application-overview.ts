@@ -34,7 +34,7 @@ function getAppellantName(req: Request) {
 }
 
 function getHearingDetails(req: Request): Hearing {
-  const hearingDetails: Hearing = {
+  let hearingDetails: Hearing = {
     hearingCentre: '', time: '', date: ''
   };
   if (_.has(req.session.appeal, 'hearing')) {
@@ -65,7 +65,7 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
     States.CMA_LISTED.id,
     States.ADJOURNED.id
   ];
-  const preAddendumEvidenceUploadState = isAddendumEvidenceUploadState(appealStatus);
+  let preAddendumEvidenceUploadState = isAddendumEvidenceUploadState(appealStatus);
   if (!preAddendumEvidenceUploadState) {
     return provideMoreEvidenceStates.includes(appealStatus);
   }

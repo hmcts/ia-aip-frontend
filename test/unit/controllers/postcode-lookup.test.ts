@@ -75,10 +75,7 @@ describe('Personal Details Controller', function () {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
-      setupContactDetailsController(middleware, {
-        updateAppealService,
-        osPlacesClient
-      } as ContactDetailsControllerDependencies);
+      setupContactDetailsController(middleware, { updateAppealService, osPlacesClient } as ContactDetailsControllerDependencies);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.postcodeLookup, middleware);
       expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.postcodeLookup, middleware);
     });
@@ -130,7 +127,7 @@ describe('Personal Details Controller', function () {
   });
 
   describe('postPostcodeLookupPage', () => {
-    const addresses = [new Address('buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn')];
+    const addresses = [ new Address('buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn') ];
 
     it('should fail validation and render postcode-lookup.njk', function () {
       req.session.appeal.application = {
@@ -149,7 +146,7 @@ describe('Personal Details Controller', function () {
         {
           addresses: [{ text: '1 address found', value: '' }, { text: 'formattedAddress', value: 'udprn' }],
           error: { address: error },
-          errorList: [error],
+          errorList: [ error ],
           previousPage: paths.appealStarted.enterPostcode
         }
       );

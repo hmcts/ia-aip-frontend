@@ -171,7 +171,7 @@ describe('Help with fees reference number refund Controller', function () {
         'helpWithFeesRefNumber': 'HWF-1324'
       };
 
-      const application = req.session.appeal.application;
+      let application = req.session.appeal.application;
       application.lateAsylumSupportRefNumber = 'test value';
       application.lateLocalAuthorityLetters = [];
 

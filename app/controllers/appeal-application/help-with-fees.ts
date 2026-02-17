@@ -13,7 +13,7 @@ import { helpWithFeesValidation } from '../../utils/validations/fields-validatio
 
 function getApplyOption(appeal: Appeal) {
 
-  const selectedOption = appeal.application.helpWithFeesOption || null;
+  let selectedOption = appeal.application.helpWithFeesOption || null;
   return {
     title: i18n.pages.helpWithFees.radioButtonsTitle,
     options: [
@@ -98,7 +98,7 @@ function postHelpWithFees(updateAppealService: UpdateAppealService) {
         appeal.application.feeSupportPersisted = true;
       }
       await persistAppeal(appeal, dlrmFeeRemissionFlag);
-      const redirectPage = getRedirectPage(isEdit, defaultRedirect, req.body.saveForLater, defaultRedirect);
+      let redirectPage = getRedirectPage(isEdit, defaultRedirect, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
     } catch (error) {
       next(error);

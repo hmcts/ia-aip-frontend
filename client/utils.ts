@@ -1,8 +1,8 @@
+const govUK = require('govuk-frontend');
 import { addAriaExpandedAttribute,addAriaExpandedEventListener } from './aria-utils';
 import CookiesBanner from './cookies-banner';
 import { addNationalityEventListener, addStatelessEventListener } from './nationality-utils';
 import SessionTimeout from './session-timeout';
-const govUK = require('govuk-frontend');
 
 const ready = (callback) => {
   if (document.readyState !== 'loading') callback();

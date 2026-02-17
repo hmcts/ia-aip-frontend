@@ -77,7 +77,7 @@ function getReasonForLateEvidence(req: Request, res: Response, next: NextFunctio
 
 function postReasonForLateEvidence(req: Request, res: Response, next: NextFunction) {
   try {
-    const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence || [])];
+    let addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence || [])];
 
     if (addendumEvidence.length === 0) {
       return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);

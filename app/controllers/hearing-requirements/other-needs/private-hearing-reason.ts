@@ -6,7 +6,7 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { getHearingRequirementsReasonHandler, handleHearingRequirementsSaveForLater } from '../common';
 
-let pageContent = {
+const pageContent = {
   previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
   formAction: paths.submitHearingRequirements.otherNeedsPrivateHearingReason,
   pageTitle: i18n.pages.hearingRequirements.otherNeedsSection.privateHearingReason.title,

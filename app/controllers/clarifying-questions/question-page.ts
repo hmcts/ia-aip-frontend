@@ -57,8 +57,7 @@ function postClarifyingQuestionPage(updateAppealService: UpdateAppealService) {
           }
         };
       });
-      let editingMode: boolean;
-      editingMode = req.session.appeal.application.isEdit || false;
+      const editingMode: boolean  = req.session.appeal.application.isEdit || false;
       const appeal: Appeal = {
         ...req.session.appeal,
         draftClarifyingQuestionsAnswers: updatedQuestions

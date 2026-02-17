@@ -51,8 +51,8 @@ describe('hearingRequirementsMiddleware', () => {
 
   it('should redirect to overview page if the hearing requirements is disabled', async () => {
     req.session.appeal.appealStatus = 'submitHearingRequirements';
-    let getVariationStub = sandbox.stub(LaunchDarklyService.prototype, 'getVariation');
-    for (let hearingRequirementEndPoint in paths.submitHearingRequirements) {
+    const getVariationStub = sandbox.stub(LaunchDarklyService.prototype, 'getVariation');
+    for (const hearingRequirementEndPoint in paths.submitHearingRequirements) {
       const reqWithPath: Partial<Request> = {
         ...req,
         path: hearingRequirementEndPoint
@@ -65,8 +65,8 @@ describe('hearingRequirementsMiddleware', () => {
 
   it('should redirect to respective hearing requirements page if the hearing requirements is enabled', async () => {
     req.session.appeal.appealStatus = 'submitHearingRequirements';
-    let getVariationStub = sandbox.stub(LaunchDarklyService.prototype, 'getVariation');
-    for (let hearingRequirementEndPoint in paths.submitHearingRequirements) {
+    const getVariationStub = sandbox.stub(LaunchDarklyService.prototype, 'getVariation');
+    for (const hearingRequirementEndPoint in paths.submitHearingRequirements) {
       const reqWithPath: Partial<Request> = {
         ...req,
         path: hearingRequirementEndPoint

@@ -10,105 +10,112 @@ const crypto = require("crypto");
 const crypto_orig_createHash = crypto.createHash;
 
 crypto.createHash = algorithm => {
-    return crypto_orig_createHash.call(crypto, algorithm === 'md4' ? 'sha256' : algorithm);
+  return crypto_orig_createHash.call(crypto, algorithm === 'md4' ? 'sha256' : algorithm);
 };
 
 const serverConfig = {
-        entry: [
-            './app/server.ts'
-        ],
-        target: 'node',
-        output: {
-            path: path.resolve(__dirname, '../build'),
-            filename: '[name].js'
-        },
-        resolve: {
-            extensions: ['.ts', '.js'],
-        },
-        externals: [nodeExternals()],
-        module: {
-            rules: [
-                {
-                    test: /\.ts$/,
-                    use: [
-                        {
-                            loader: 'ts-loader',
-                            options: {
-                                transpileOnly: true
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
+  entry: [
+    './app/server.ts'
+  ],
+  target: 'node',
+  output: {
+    path: path.resolve(__dirname, '../build'),
+    filename: '[name].js'
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
+  },
+  externals: [nodeExternals()],
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: true
+            }
+          }
+        ]
+      }
+    ]
+  },
 };
 
 const clientConfig = {
-        entry: [
-            './client/main.ts',
-            './app/assets/scss/application.scss'
-        ],
-        target: 'web',
-        output: {
-            path: path.resolve(__dirname, '../build'),
-            filename: 'all.js'
-        },
-        resolve: {
-            extensions: ['.ts', '.js'],
-            fallback: {
-                "https": require.resolve("https-browserify"),
-                "crypto": require.resolve("crypto-browserify"),
-                "http": require.resolve("stream-http"),
-                "url": require.resolve("url/")
+  entry: [
+    './client/main.ts',
+    './app/assets/scss/application.scss'
+  ],
+  target: 'web',
+  output: {
+    path: path.resolve(__dirname, '../build'),
+    filename: 'all.js'
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
+    fallback: {
+      "https": require.resolve("https-browserify"),
+      "crypto": require.resolve("crypto-browserify"),
+      "http": require.resolve("stream-http"),
+      "url": require.resolve("url/")
 
+    }
+  },
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env']
             }
-        },
-        module: {
-            rules: [
-                {
-                    test: /\.ts$/,
-                    exclude: /node_modules/,
-                    use: [
-                        {
-                            loader: 'babel-loader',
-                            options: {
-                                presets: ['@babel/preset-env']
-                            }
-                        },
-                        {
-                            loader: 'ts-loader',
-                            options: {
-                                transpileOnly: true
-                            }
-                        }
-                    ]
-                },
-                {
-                    test: /\.(sa|sc|c)ss$/,
-                    use: [MiniCSSExtractPlugin.loader, "css-loader", 'sass-loader'],
-                }
-            ]
-        },
-    plugins: [
-        new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: path.resolve('node_modules/govuk-frontend/dist/govuk/assets/'),
-                    to: 'assets'
-                },
-                {
-                    from: path.resolve('app/assets/images/'),
-                    to: 'assets/images'
-                }
-            ]
-        }),
-        new MiniCSSExtractPlugin({
-            filename: '[name].css',
-            //chunkFilename: '[id].css' // Optional: For chunked CSS files
-        })
+          },
+          {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: true
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          MiniCSSExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: { url: false }
+          },
+          'sass-loader'
+        ],
+      }
     ]
+  },
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve('node_modules/govuk-frontend/dist/govuk/assets/'),
+          to: 'assets'
+        },
+        {
+          from: path.resolve('app/assets/images/'),
+          to: 'assets/images'
+        }
+      ]
+    }),
+    new MiniCSSExtractPlugin({
+      filename: '[name].css',
+      //chunkFilename: '[id].css' // Optional: For chunked CSS files
+    })
+  ]
 };
 
 
-module.exports = {serverConfig, clientConfig}
+module.exports = { serverConfig, clientConfig }
 

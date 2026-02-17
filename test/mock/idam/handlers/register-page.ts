@@ -1,5 +1,5 @@
-import cache from 'memory-cache';
 import { Mockttp } from 'mockttp';
+import cache from '../../cache';
 
 const skipLogin = process.env.SKIP_LOGIN === 'true';
 
@@ -10,7 +10,7 @@ export async function setupRegisterPage(server: Mockttp) {
     const stateParam = url.searchParams.get('state') ?? '';
 
     if (skipLogin) {
-      cache.put('email', 'skipped_login@hmcts.net');
+      cache.set('email', 'skipped_login@hmcts.net');
       return {
         statusCode: 302,
         headers: {

@@ -155,7 +155,7 @@ describe('Question-page controller', () => {
       req.body.answer = 'true';
       await postSupportingEvidenceQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.called.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(`:id`), `${req.params.id}`));
+      expect(res.redirect).to.have.been.called.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), `${req.params.id}`));
     });
 
     it('should redirect to questions list page if no evidences to upload', async () => {

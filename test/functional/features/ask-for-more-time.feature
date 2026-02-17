@@ -8,127 +8,175 @@ Feature: Ask for more time page
     Given I have logged in as an appellant in state "awaitingReasonsForAppeal"
     When I visit the overview page
     Then I click Ask for more time
+    And I check page accessibility
     Then I should see the ask-for-more-time page
     When I click continue
+    And I check page accessibility
     Then I should see error summary
     When I enter a time extensions reason
     And I click continue
+    And I check page accessibility
     Then I should see do you want to upload evidence page
     When I select Yes and click continue
+    And I check page accessibility
     Then I am on the evidence upload page
     When I click "Upload file" button
+    And I check page accessibility
     Then I should see error summary
     When I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
+    And I check page accessibility
     Then I should see error summary
     When I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
+    And I check page accessibility
     Then I should see error summary
     When I choose a file that is "VALID" and click the "Upload file" button
+    And I check page accessibility
     And I click continue
+    And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
+    And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
+    And I check page accessibility
     Then I am on the overview page
 
   Scenario: AFMT - Reasons For Appeal without evidence
     Given I have logged in as an appellant in state "awaitingReasonsForAppeal"
     When I visit the overview page
     Then I click Ask for more time
+    And I check page accessibility
     Then I should see the ask-for-more-time page
     When I enter a time extensions reason
     And I click continue
+    And I check page accessibility
     Then I should see do you want to upload evidence page
     When I select No and click continue
+    And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
+    And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
+    And I check page accessibility
     Then I am on the overview page
 
   Scenario: AFMT - Awaiting Clarifying questions without evidence
     Given I have logged in as an appellant in state "awaitingClarifyingQuestionsAnswers"
     When I visit the overview page
     Then I click Ask for more time
+    And I check page accessibility
     Then I should see the ask-for-more-time page
     When I enter a time extensions reason
     And I click continue
+    And I check page accessibility
     Then I should see do you want to upload evidence page
     When I select No and click continue
+    And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
+    And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
+    And I check page accessibility
     Then I am on the overview page
 
   Scenario: AFMT - Awaiting Clarifying questions with evidence
     Given I have logged in as an appellant in state "awaitingClarifyingQuestionsAnswers"
     When I visit the overview page
     Then I click Ask for more time
+    And I check page accessibility
     Then I should see the ask-for-more-time page
     When I click continue
+    And I check page accessibility
     Then I should see error summary
     When I enter a time extensions reason
     And I click continue
+    And I check page accessibility
     Then I should see do you want to upload evidence page
     When I select Yes and click continue
+    And I check page accessibility
     Then I am on the evidence upload page
     When I click "Upload file" button
+    And I check page accessibility
     Then I should see error summary
     When I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
+    And I check page accessibility
     Then I should see error summary
     When I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
+    And I check page accessibility
     Then I should see error summary
     When I choose a file that is "VALID" and click the "Upload file" button
+    And I check page accessibility
     And I click continue
+    And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
+    And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
+    And I check page accessibility
     Then I am on the overview page
 
   Scenario: AFMT - Awaiting Cma requirements without evidence @trythis
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
     When I visit the overview page
     Then I click Ask for more time
+    And I check page accessibility
     Then I should see the ask-for-more-time page
     When I enter a time extensions reason
     And I click continue
+    And I check page accessibility
     Then I should see do you want to upload evidence page
     When I select No and click continue
+    And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
+    And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
+    And I check page accessibility
     Then I am on the overview page
 
   Scenario: AFMT - Awaiting Cma requirements with evidence
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
     When I visit the overview page
     Then I click Ask for more time
+    And I check page accessibility
     Then I should see the ask-for-more-time page
     When I click continue
+    And I check page accessibility
     Then I should see error summary
     When I enter a time extensions reason
     And I click continue
+    And I check page accessibility
     Then I should see do you want to upload evidence page
     When I select Yes and click continue
+    And I check page accessibility
     Then I am on the evidence upload page
     When I click "Upload file" button
+    And I check page accessibility
     Then I should see error summary
     When I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
+    And I check page accessibility
     Then I should see error summary
     When I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
+    And I check page accessibility
     Then I should see error summary
     When I choose a file that is "VALID" and click the "Upload file" button
+    And I check page accessibility
     And I click continue
+    And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
+    And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
+    And I check page accessibility
     Then I am on the overview page

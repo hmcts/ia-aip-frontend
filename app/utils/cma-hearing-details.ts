@@ -4,19 +4,13 @@ import moment from 'moment';
 import { dayMonthYearFormat, timeFormat } from './date-utils';
 
 function getHearingDate(req: Request): string {
-  let formattedDeadline;
-
   const dueDate = req.session.appeal.hearing.date;
-  formattedDeadline = moment(dueDate).format(dayMonthYearFormat);
-  return formattedDeadline;
+  return moment(dueDate).format(dayMonthYearFormat);
 }
 
 function getHearingTime(req: Request): string {
-  let hearingTime;
-
   const dueDate = req.session.appeal.hearing.date;
-  hearingTime = moment(dueDate).format(timeFormat);
-  return hearingTime;
+  return moment(dueDate).format(timeFormat);
 }
 
 function getHearingCentre(req: Request): string {

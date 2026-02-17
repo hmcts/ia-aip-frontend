@@ -1,4 +1,3 @@
-// tslint:disable:no-console
 import helper from '@codeceptjs/helper';
 
 const workerThreads = require('node:worker_threads');

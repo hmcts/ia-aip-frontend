@@ -1,5 +1,5 @@
-const config = require('config');
 import { bootstrap as ourBootStrap, failureCheck as ourTeardown, teardownAll as ourTeardownAll } from './test/functional/bootstrap';
+const config = require('config');
 
 exports.config = {
   name: 'codecept',
@@ -18,7 +18,7 @@ exports.config = {
       url: config.get('testUrl'),
       show: config.get('showTests'),
       chrome: {
-        ignoreHTTPSErrors: true
+        acceptInsecureCerts: true
       }
     },
     FailedTest: {
@@ -42,6 +42,10 @@ exports.config = {
     },
     retryTo: {
       enabled: true
+    },
+    allure: {
+      enabled: true,
+      require: 'allure-codeceptjs'
     }
   },
   'mocha': {

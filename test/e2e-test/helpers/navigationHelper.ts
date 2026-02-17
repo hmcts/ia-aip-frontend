@@ -12,7 +12,7 @@ class NavigationHelper extends HelperClass {
       await helper.wait(timeout);
       assert.ok(helper.page.url().includes('appeal-overview'));
       await helper.see('Sign out');
-      await helper.seeInTitle(`Your appeal overview`);
+      await helper.seeInTitle('Your appeal overview');
       return true;
     } catch (err) {
       return false;
@@ -30,9 +30,9 @@ class NavigationHelper extends HelperClass {
       await helper.waitForInvisible('div.spinner', 60);
       return true;
     } catch (err) {
-      // tslint:disable:no-console
+      // eslint-disable-next-line no-console
       console.log('login unsuccessful');
-      // tslint:disable:no-console
+      // eslint-disable-next-line no-console
       console.log(err);
       return false;
     }

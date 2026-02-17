@@ -14,7 +14,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
-  let summaryList = [{ summaryRows: [{ key: { text: 'GivenName1 GivenName2 FamilyName' }, value: { html : '' }, actions: { items: [ { href: '/hearing-witness-names/remove?name=GivenName1%20GivenName2%20FamilyName' , text : 'Remove', visuallyHiddenText: 'GivenName1 GivenName2 FamilyName' }] } } ], title: 'Added witnesses' } ];
+  const summaryList = [{ summaryRows: [{ key: { text: 'GivenName1 GivenName2 FamilyName' }, value: { html : '' }, actions: { items: [ { href: '/hearing-witness-names/remove?name=GivenName1%20GivenName2%20FamilyName' , text : 'Remove', visuallyHiddenText: 'GivenName1 GivenName2 FamilyName' }] } } ], title: 'Added witnesses' } ];
   const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
   beforeEach(() => {
@@ -86,8 +86,8 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
 
     it('should not show the add button if the witnesses size is equal to 10', async () => {
 
-      let witnessNames: WitnessName[] = [];
-      let summaryList: SummaryList[] = [{
+      const witnessNames: WitnessName[] = [];
+      const summaryList: SummaryList[] = [{
         title: 'Added witnesses',
         summaryRows: null
       }];

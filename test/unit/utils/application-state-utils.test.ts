@@ -336,7 +336,7 @@ describe('application-state-utils', () => {
     it('when application status is listing and appellant just took over the case should get correct \'Do This next section\'', async () => {
       req.session.appeal.appealStatus = 'listing';
       req.session.appeal.history = req.session.appeal.history.filter(event => event.id !== 'draftHearingRequirements');
-      let event = {
+      const event = {
         'id': 'draftHearingRequirements',
         'createdDate': '2022-01-11T16:00:00.000',
         'state': {
@@ -1142,7 +1142,7 @@ describe('application-state-utils', () => {
   it('when application status is finalBundling and appellant just took over case should get correct Do this next section.', async () => {
     req.session.appeal.appealStatus = 'finalBundling';
     req.session.appeal.history = req.session.appeal.history.filter(event => event.id !== 'createCaseSummary');
-    let event = {
+    const event = {
       'id': 'createCaseSummary',
       'createdDate': '2022-01-11T16:00:00.000',
       'state': {
@@ -1271,7 +1271,7 @@ describe('application-state-utils', () => {
     const expected = {
       'descriptionParagraphs': [
         'A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>',
-        `<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.updatedDecisionAndReasonsViewer }}>Read the Decision and Reasons document</a>`
+        '<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.updatedDecisionAndReasonsViewer }}>Read the Decision and Reasons document</a>'
       ]
     };
     const result = await getAppealApplicationNextStep(req as Request);
@@ -1360,7 +1360,7 @@ describe('application-state-utils', () => {
 
     const expected = {
       'deadline': 'TBC',
-      'descriptionParagraphs': [`The Home Office has applied for permission to appeal to the Upper Tribunal. The Tribunal will contact you when the judge has decided the application.`]
+      'descriptionParagraphs': ['The Home Office has applied for permission to appeal to the Upper Tribunal. The Tribunal will contact you when the judge has decided the application.']
     };
 
     expect(result).to.eql(expected);

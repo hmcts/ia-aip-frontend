@@ -10,6 +10,7 @@ const authToken = 'token';
 const logoutUrl = `${idamApiUrl}/session/${authToken}`;
 const serviceAuth = 'base64String';
 const options = {
+  uri: logoutUrl,
   headers: {
     Authorization: `Basic ${serviceAuth}`,
     'Content-Type': 'application/x-www-form-urlencoded'
@@ -72,8 +73,8 @@ describe('idamExpressLogout', () => {
       setImmediate(() => {
         expect(idamWrapper.setup).to.have.been.calledOnce;
         expect(cookies.get).to.have.been.calledOnce;
-        expect(requestDeleteStub).to.have.been.calledOnce;
-        expect(requestDeleteStub).to.have.been.calledWith(logoutUrl, options);
+        expect(axios.delete).to.have.been.calledOnce;
+        expect(axios.delete).to.have.been.calledWith(options);
         expect(cookies.remove).to.have.been.calledOnce;
       });
     });
@@ -87,8 +88,8 @@ describe('idamExpressLogout', () => {
       setImmediate(() => {
         expect(idamWrapper.setup).to.have.been.calledOnce;
         expect(cookies.get).to.have.been.calledOnce;
-        expect(requestDeleteStub).to.have.been.calledOnce;
-        expect(requestDeleteStub).to.have.been.calledWith(logoutUrl, options);
+        expect(axios.delete).to.have.been.calledOnce;
+        expect(axios.delete).to.have.been.calledWith(options);
       });
     });
   });

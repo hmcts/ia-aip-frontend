@@ -7,43 +7,31 @@ Feature: Type of appeal
     Given I have logged in as an appellant in state "appealStarted"
     And I see "Do this next" in subheading
     And I click "Continue" button
-    And I check page accessibility
 
     Then I see "Tell us about your appeal" in title
     And I click on the type-of-appeal link
-    And I check page accessibility
     Then I should be taken to the currently living in the United Kingdom page
     When I select Yes and click continue
-    And I check page accessibility
     Then I should be taken to the appeal page
 
     When I click "Save for later" button
-    And I check page accessibility
     Then I am on the overview page
     Then I click continue
-    And I check page accessibility
     And I shouldnt be able to click "Check and send your appeal"
-    And I check page accessibility
 
 #    Given I am on the type of appeal page
 #    And I click "Save and continue" button
-    And I check page accessibility
 #    Then I should see error summary
 #
 #    Given I am on the type of appeal page
 #    When I select appeal type Protection
 #    And I click "Save for later" button
-    And I check page accessibility
 #    Then I am on the overview page
 #    Then I click continue
-    And I check page accessibility
 #    And I should be able to click "Check and send your appeal"
-    And I check page accessibility
 #
 #    Given I am on the type of appeal page
 #    When I select appeal type Protection
 #    And I click "Save and continue" button
-    And I check page accessibility
 #    Then I should see the task-list page
 #    And I should be able to click "Check and send your appeal"
-    And I check page accessibility

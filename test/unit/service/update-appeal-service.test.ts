@@ -1912,8 +1912,8 @@ describe('update-appeal-service', () => {
     });
 
     describe('map appellant or witness details from caseData for interpreter information', () => {
-      const witness1: WitnessDetails = { witnessPartyId: '1', witnessName: 'witness', witnessFamilyName: '1' };
-      const witness2: WitnessDetails = { witnessPartyId: '2', witnessName: 'witness', witnessFamilyName: '2' };
+      let witness1: WitnessDetails = { witnessPartyId: '1', witnessName: 'witness', witnessFamilyName: '1' };
+      let witness2: WitnessDetails = { witnessPartyId: '2', witnessName: 'witness', witnessFamilyName: '2' };
 
       function getMappedAppeal(caseData: Partial<CaseData>): any {
         const appeal: Partial<CcdCaseDetails> = {
@@ -2044,6 +2044,7 @@ describe('update-appeal-service', () => {
         { id: '2', url: 'http://example.com/doc2' }
       ];
 
+      // @ts-ignore
       const expected: Collection<Document>[] = [
         {
           id: '1',
@@ -2608,7 +2609,7 @@ describe('update-appeal-service', () => {
         }
 
       } as HearingRequirements;
-      const caseData = updateAppealServiceBis.convertToCcdCaseData(req.session.appeal);
+      let caseData = updateAppealServiceBis.convertToCcdCaseData(req.session.appeal);
       expect(caseData.inCameraCourt).to.be.equals('Yes');
       expect(caseData.multimediaEvidence).to.be.equals('Yes');
       expect(caseData.pastExperiences).to.be.equals('Yes');
@@ -2825,7 +2826,7 @@ describe('update-appeal-service', () => {
     });
 
     describe('isDecisionAllowed', () => {
-      it('isDecisionAllowed value should be mapped', () => {
+      it(`isDecisionAllowed value should be mapped`, () => {
         const caseData: Partial<CaseData> = {
           'isDecisionAllowed': 'Allowed'
         };

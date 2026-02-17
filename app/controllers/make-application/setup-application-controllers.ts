@@ -11,7 +11,7 @@ function validate(pathPrefix: string) {
   return (_req: Request, res: Response, next: NextFunction) => {
     try {
       if (res.locals.errorCode) {
-        const redirectUrl = getPath(pathPrefix, _req.session.appeal.makeAnApplicationTypes.value.code);
+        let redirectUrl = getPath(pathPrefix, _req.session.appeal.makeAnApplicationTypes.value.code);
         return res.redirect(`${redirectUrl}?error=${res.locals.errorCode}`);
       }
       next();

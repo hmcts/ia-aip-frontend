@@ -9,7 +9,7 @@ import { getCmaRequirementsReasonHandler, handleCmaRequirementsSaveForLater } fr
 const formAction = paths.awaitingCmaRequirements.datesToAvoidReason;
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
-const pageContent = {
+let pageContent = {
   previousPage: previousPage,
   formAction,
   pageTitle: i18n.pages.cmaRequirements.datesToAvoidSection.reason.title,
@@ -64,7 +64,7 @@ function postDatesToAvoidReasonWithId(updateAppealService: UpdateAppealService) 
       const onSuccess = async () => {
 
         const { datesToAvoid } = req.session.appeal.cmaRequirements;
-        const dateToAvoid: CmaDateToAvoid = datesToAvoid.dates[dateId];
+        let dateToAvoid: CmaDateToAvoid = datesToAvoid.dates[dateId];
         dateToAvoid.reason = req.body['reason'];
 
         await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
@@ -90,7 +90,7 @@ function postDatesToAvoidReason(updateAppealService: UpdateAppealService) {
 
       const onSuccess = async () => {
         const { datesToAvoid } = req.session.appeal.cmaRequirements;
-        const dateToEdit: CmaDateToAvoid = datesToAvoid.dates[datesToAvoid.dates.length - 1];
+        let dateToEdit: CmaDateToAvoid = datesToAvoid.dates[datesToAvoid.dates.length - 1];
         dateToEdit.reason = req.body['reason'];
 
         await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);

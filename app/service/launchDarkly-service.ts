@@ -5,7 +5,7 @@ import Logger from '../utils/logger';
 
 const logger: Logger = new Logger();
 const launchDarklyLabel: string = 'LaunchDarkly service';
-const LaunchDarkly = require('@launchdarkly/node-server-sdk');
+const LaunchDarkly = require('launchdarkly-node-server-sdk');
 const config = setupSecrets();
 const ldKey: string = config.get('launchDarkly.sdkKey');
 const ldClient = LaunchDarkly.init(ldKey);
@@ -41,7 +41,7 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
       return this.getTestFlagValue(flag);
     }
     const username = _.get(req, 'idam.userDetails.sub', 'user-is-not-logged-in');
-    return ldClient.variation(flag, {  kind: 'user', key: username }, defaultReturn);
+    return ldClient.variation(flag, { key: username }, defaultReturn);
   }
 
   public static close() {
@@ -63,8 +63,8 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
       case 'dlrm-setaside-feature-flag':
       case 'dlrm-refund-feature-flag':
       case 'dlrm-internal-feature-flag':
-      case 'use-ccd-document-am':
         return true;
+      case 'use-ccd-document-am':
       default:
         return false;
     }

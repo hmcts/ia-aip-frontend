@@ -2,7 +2,7 @@ import { SinonStub } from 'sinon';
 import config from '../../../../../app/middleware/ia-idam-express-middleware/config';
 import middleware from '../../../../../app/middleware/ia-idam-express-middleware/services/idamExpressLanding';
 import idamWrapper from '../../../../../app/middleware/ia-idam-express-middleware/wrapper';
-import Logger, * as LoggerModule from '../../../../../app/utils/logger';
+import Logger from '../../../../../app/utils/logger';
 import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('idamExpressLanding', () => {
@@ -11,7 +11,6 @@ describe('idamExpressLanding', () => {
   let next: SinonStub;
   let sandbox: sinon.SinonSandbox;
   let loggerStub: sinon.SinonStubbedInstance<Logger>;
-  let loggerExceptionStub: sinon.SinonStub;
   const idamArgs = { indexUrl: '/' };
   const userDetails = {
     id: 'idam.user.id',
@@ -50,15 +49,7 @@ describe('idamExpressLanding', () => {
       idamFunctionsStub.getIdamLoginUrl.returns('http://login.url');
 
       sandbox.stub(idamWrapper, 'setup').returns(idamFunctionsStub);
-      loggerExceptionStub = sandbox.stub();
-      loggerStub = sandbox.createStubInstance(Logger, {
-        // @ts-expect-error in order for test
-        exception: loggerExceptionStub
-      });
-      sandbox.stub(LoggerModule, 'default').callsFake(function FakeLogger() {
-        return loggerStub;
-      } as any);
-
+      loggerStub = sandbox.createStubInstance(Logger);
       handler = middleware(idamArgs);
     });
 
@@ -80,7 +71,7 @@ describe('idamExpressLanding', () => {
         expect(idamFunctionsStub.getUserDetails).to.have.been.calledOnce;
         expect(res.cookie).to.have.been.calledOnce;
         expect(next).to.have.been.calledOnce;
-        expect(loggerExceptionStub).to.not.have.been.called;
+        expect(loggerStub.exception).to.not.have.been.called;
       });
     });
 
@@ -100,7 +91,7 @@ describe('idamExpressLanding', () => {
         expect(req.cookies['__auth-token']).to.eql(response.access_token);
         expect(next).to.have.been.calledOnce;
         expect(req.idam.userDetails).to.equal(userDetails);
-        expect(loggerExceptionStub).to.not.have.been.called;
+        expect(loggerStub.exception).to.not.have.been.called;
       });
     });
 
@@ -116,7 +107,7 @@ describe('idamExpressLanding', () => {
         expect(res.redirect).to.have.been.calledOnce;
         expect(res.redirect).to.have.been.calledWith('/');
         expect(next).to.not.have.been.called;
-        expect(loggerExceptionStub).to.have.been.calledOnce;
+        expect(loggerStub.exception).to.have.been.calledOnce;
       });
     });
 
@@ -137,7 +128,7 @@ describe('idamExpressLanding', () => {
           expect(res.cookie).to.have.been.calledOnce;
           expect(next).to.have.been.calledOnce;
           expect(req.cookies[config.tokenCookieName]).to.equal(testToken);
-          expect(loggerExceptionStub).to.not.have.been.called;
+          expect(loggerStub.exception).to.not.have.been.called;
         });
       });
 
@@ -148,7 +139,7 @@ describe('idamExpressLanding', () => {
 
         expect(res.redirect).to.not.have.been.called;
         expect(next).to.have.been.calledOnce;
-        expect(loggerExceptionStub).to.not.have.been.called;
+        expect(loggerStub.exception).to.not.have.been.called;
       });
 
       it('should redirect if authToken is unauthorised', () => {
@@ -160,7 +151,7 @@ describe('idamExpressLanding', () => {
           expect(res.redirect).to.have.been.calledOnce;
           expect(res.redirect.calledWith('/')).to.equal(true);
           expect(next).to.not.have.been.called;
-          expect(loggerExceptionStub).to.have.been.calledOnce;
+          expect(loggerStub.exception).to.have.been.calledOnce;
         });
       });
     });
@@ -175,7 +166,7 @@ describe('idamExpressLanding', () => {
 
       setImmediate(() => {
         expect(res.redirect).to.have.been.calledOnce;
-        expect(loggerExceptionStub).to.have.been.calledOnce;
+        expect(loggerStub.exception).to.have.been.calledOnce;
       });
     });
 
@@ -185,7 +176,7 @@ describe('idamExpressLanding', () => {
       handler(req, res, next);
 
       expect(res.redirect).to.have.been.calledOnce;
-      expect(loggerExceptionStub).to.have.been.calledOnce;
+      expect(loggerStub.exception).to.not.have.been.called;
     });
 
     it('removes old state cookie', () => {
@@ -199,7 +190,7 @@ describe('idamExpressLanding', () => {
 
       setImmediate(() => {
         expect(res.clearCookie).to.have.been.calledOnce;
-        expect(loggerExceptionStub).to.have.been.calledOnce;
+        expect(loggerStub.exception).to.have.been.calledOnce;
       });
     });
   });

@@ -23,7 +23,7 @@ function getHomeOfficeDecisionLetter(req: Request, res: Response, next: NextFunc
     }
     const homeOfficeLetterEvidences = req.session.appeal.application.homeOfficeLetter || [];
     const appellantInUk: boolean = (req.session.appeal.application.appellantInUk === 'Yes') || false;
-    const previousPage = (appellantInUk) ? paths.appealStarted.letterSent : paths.appealStarted.letterReceived;
+    let previousPage = (appellantInUk) ? paths.appealStarted.letterSent : paths.appealStarted.letterReceived;
 
     res.render('templates/multiple-evidence-upload-page.njk', {
       title: i18n.pages.homeOfficeLetterUpload.title,
@@ -85,7 +85,7 @@ function uploadHomeOfficeDecisionLetter(updateAppealService: UpdateAppealService
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
-        const homeOfficeLetterEvidences: Evidence[] = req.session.appeal.application.homeOfficeLetter || [];
+        let homeOfficeLetterEvidences: Evidence[] = req.session.appeal.application.homeOfficeLetter || [];
         const homeOfficeLetter: Evidence = await documentManagementService.uploadFile(req);
         homeOfficeLetterEvidences.push(homeOfficeLetter);
 

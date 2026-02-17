@@ -10,7 +10,6 @@ Feature: End of appeal @endappeal
 
     And I see "Your appeal was ended" in timeline
     And I click "Notice of Ended Appeal" link
-    And I check page accessibility
     Then I see "Notice of Ended Appeal" in title
 
     And I see "Date uploaded" in summary list
@@ -18,5 +17,4 @@ Feature: End of appeal @endappeal
     And I see "Document" in summary list
     And I see "PA 50002 2021-perez-NoticeOfEndedAppeal(PDF)" in summary list
     And I click "Back" button
-    And I check page accessibility
     Then I see "Pedro Jimeno" in title

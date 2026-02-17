@@ -2,7 +2,7 @@ const config = require('config');
 const sauceConnectLauncher = require('sauce-connect-launcher');
 let sauceConnectProcess;
 
-// eslint-disable no-console
+// tslint:disable no-console
 async function sauceConnect() {
   return new Promise(function (resolve, reject) {
     sauceConnectLauncher({
@@ -20,7 +20,6 @@ async function sauceConnect() {
     }, function (err, sauceConnectProcess) {
       if (err) {
         console.error(err);
-        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return reject(err);
       }
       console.info('Sauce connect ready');

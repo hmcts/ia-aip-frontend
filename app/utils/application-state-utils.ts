@@ -675,7 +675,7 @@ async function getAppealApplicationNextStep(req: Request) {
       doThisNextSection = {
         descriptionParagraphs: (ftpaEnabled)
           ? i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description[ftpaApplicantType]
-          : ['Nothing to do next']
+          : [`Nothing to do next`]
       };
       break;
     case 'ftpaDecided':
@@ -700,7 +700,7 @@ async function getAppealApplicationNextStep(req: Request) {
         }
       } else {
         doThisNextSection = {
-          descriptionParagraphs: ['Nothing to do next']
+          descriptionParagraphs: [`Nothing to do next`]
         };
       }
       break;
@@ -715,7 +715,7 @@ async function getAppealApplicationNextStep(req: Request) {
       // default message to avoid app crashing on events that are to be implemented.
       doThisNextSection = {
         descriptionParagraphs: [
-          'Nothing to do next'
+          `Nothing to do next`
         ]
       };
       break;
@@ -793,7 +793,8 @@ function getRemissionDecisionParagraphs(req: Request) {
 }
 
 function getFeeRemissionParagraph(deadLineDate: string) {
-  const doThisNextSection: DoThisNextSection = {
+  let doThisNextSection: DoThisNextSection;
+  doThisNextSection = {
     descriptionParagraphs: [
       i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
       i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.feeDetails,

@@ -111,7 +111,7 @@ describe('Clarifying Questions Check and Send controller', () => {
       expect(addSummaryRowStub.thirdCall).to.have.been.calledWith(
         i18n.common.cya.supportingEvidenceRowTitle,
         evidenceList,
-        paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(':id', '1') + editParam,
+        paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(':id', `1`) + editParam,
         '<br>'
       );
       expect(addSummaryRowStub.getCall(4)).to.have.been.calledWith(

@@ -1,0 +1,17 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint-config-standard",
+    "tslint-no-unused-expression-chai"
+  ],
+  "jsRules": {},
+  "rules": {
+    "quotemark": [true, "single", "avoid-escape"],
+    "semicolon": [true, "always"],
+    "space-before-function-paren": false,
+    "strict-type-predicates": false,
+    "no-console": true,
+    "ordered-imports": true,
+    "deprecation": false
+  }
+}

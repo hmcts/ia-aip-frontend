@@ -156,6 +156,7 @@ describe('OSPlacesClient', () => {
   });
 
   it('mapResultToAddress handles missing fields', () => {
+    // @ts-ignore
     const address = (client as any).mapResultToAddress({});
     expect(address).to.be.instanceOf(Address);
   });

@@ -6,9 +6,9 @@ let appealReference;
 
 const testUrl = config.get('testUrl');
 const date = new Date();
-const day = date.getDate();
-const month = date.getMonth() + 1;
-const year = date.getFullYear();
+let day = date.getDate();
+let month = date.getMonth() + 1;
+let year = date.getFullYear();
 
 if (testUrl.includes('localhost')) {
   exuiBaseUrl = 'http://localhost:3002/';

@@ -4,7 +4,7 @@ import { hasPendingTimeExtension } from '../utils/utils';
 
 const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const currentPath: string = req.path;
-  const appealStatusPathsCopy = { ...paths[req.session.appeal.appealStatus] };
+  const appealStatusPathsCopy = { ...paths[req.session.appeal.appealStatus] } || {};
   const appealStatusPaths = Object.values(appealStatusPathsCopy).map((path: string) => {
     if (Object.keys(req.params).length === 0) return path;
     const matches = path.match(/\/:([^\/]+)\/?$/);

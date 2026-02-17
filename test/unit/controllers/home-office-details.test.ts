@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import moment from 'moment';
 import {
@@ -24,6 +24,7 @@ describe('Home Office Details Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
+  sinon.useFakeTimers(new Date('2025-06-15'));
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -556,7 +557,7 @@ describe('Home Office Details Controller', function () {
     it('should fail validation and render a validation error with day in future', async () => {
       const currentDate = new Date();
 
-      const tomorrowDate = new Date();
+      let tomorrowDate = new Date();
       tomorrowDate.setDate(currentDate.getDate() + 1);
 
       req.body['day'] = tomorrowDate.getDate();
@@ -589,7 +590,7 @@ describe('Home Office Details Controller', function () {
     it('should fail validation and render a validation error with invalid date', async () => {
       const currentDate = new Date();
 
-      const tomorrowDate = new Date();
+      let tomorrowDate = new Date();
       tomorrowDate.setDate(currentDate.getDate() + 1);
 
       req.body['day'] = 31;

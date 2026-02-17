@@ -86,16 +86,16 @@ function postPayNow(updateAppealService: UpdateAppealService) {
         paAppealTypeAipPaymentOption: request.body['answer']
       };
       const editingMode: boolean = request.session.appeal.application.isEdit || false;
-      const defaultRedirect = paths.appealStarted.taskList;
-      const editingModeRedirect = paths.appealStarted.checkAndSend;
+      let defaultRedirect = paths.appealStarted.taskList;
+      let editingModeRedirect = paths.appealStarted.checkAndSend;
 
       await persistAppeal(appeal, paymentsFlag);
-      const redirectPage = getRedirectPage(editingMode, editingModeRedirect, request.body.saveForLater, defaultRedirect);
+      let redirectPage = getRedirectPage(editingMode, editingModeRedirect, request.body.saveForLater, defaultRedirect);
       if (['protection'].includes(appeal.application.appealType) && !appeal.pcqId) {
         const pcqFlag = await LaunchDarklyService.getInstance().getVariation(request, FEATURE_FLAGS.PCQ, false);
         if (!pcqFlag) return res.redirect(redirectPage);
         const pcqService = new PcqService();
-        const isPcqUp: boolean = await pcqService.checkPcqHealth();
+        let isPcqUp: boolean = await pcqService.checkPcqHealth();
         if (isPcqUp) {
           appeal.pcqId = pcqService.getPcqId();
           await persistAppeal(appeal, paymentsFlag);

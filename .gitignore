@@ -13,6 +13,8 @@ allure-report
 .env
 output
 _output
+.stryker-tmp
+stryker.log
 .vscode/
 ia-aip-frontend.iml
 .pnp.*
@@ -28,7 +30,3 @@ ia-aip-frontend.iml
 keys/
 keys/server.key
 keys/server.cert
-/functional.env
-/createCase.env
-/aat.env
-/.mirrord/mirrord.json

@@ -3,7 +3,7 @@ import i18n from '../../../locale/en.json';
 import { expect } from '../../utils/testUtils';
 
 describe('progress-bar utils', () => {
-  const defaultStages = [
+  let defaultStages = [
     {
       title: i18n.components.progressBar.yourAppealDetails.title,
       ariaLabel: i18n.components.progressBar.yourAppealDetails.ariaLabel,
@@ -34,14 +34,14 @@ describe('progress-bar utils', () => {
 
     it('appealStarted', () => {
       const stages = buildProgressBarStages('appealStarted');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = true;
       expect(expectedStages).to.deep.equal(stages);
     });
 
     it('appealSubmitted', () => {
       const stages = buildProgressBarStages('appealSubmitted');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = true;
       expectedStages[0].completed = false;
       expect(expectedStages).to.deep.equal(stages);
@@ -49,7 +49,7 @@ describe('progress-bar utils', () => {
 
     it('appealSubmitted and not Paid', () => {
       const stages = buildProgressBarStages('appealSubmitted', 'Payment pending');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = true;
       expectedStages[0].completed = false;
       expect(expectedStages).to.deep.equal(stages);
@@ -57,7 +57,7 @@ describe('progress-bar utils', () => {
 
     it('appealSubmitted and Paid', () => {
       const stages = buildProgressBarStages('appealSubmitted', 'Paid');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
       expect(expectedStages).to.deep.equal(stages);
@@ -65,7 +65,7 @@ describe('progress-bar utils', () => {
 
     it('awaitingRespondentEvidence', () => {
       const stages = buildProgressBarStages('awaitingRespondentEvidence');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = true;
       expectedStages[0].completed = false;
       expect(expectedStages).to.deep.equal(stages);
@@ -73,7 +73,7 @@ describe('progress-bar utils', () => {
 
     it('awaitingReasonsForAppeal', () => {
       const stages = buildProgressBarStages('awaitingReasonsForAppeal');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
       expectedStages[1].active = true;
@@ -83,7 +83,7 @@ describe('progress-bar utils', () => {
 
     it('reasonsForAppealSubmitted', () => {
       const stages = buildProgressBarStages('reasonsForAppealSubmitted');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
       expectedStages[1].active = true;
@@ -93,7 +93,7 @@ describe('progress-bar utils', () => {
 
     it('caseUnderReview', () => {
       const stages = buildProgressBarStages('caseUnderReview');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
       expectedStages[1].active = true;
@@ -103,7 +103,7 @@ describe('progress-bar utils', () => {
 
     it('awaitingClarifyingQuestionsAnswers', () => {
       const stages = buildProgressBarStages('awaitingClarifyingQuestionsAnswers');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
       expectedStages[1].active = true;
@@ -113,7 +113,7 @@ describe('progress-bar utils', () => {
 
     it('clarifyingQuestionsAnswersSubmitted', () => {
       const stages = buildProgressBarStages('clarifyingQuestionsAnswersSubmitted');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
       expectedStages[1].active = true;
@@ -123,7 +123,7 @@ describe('progress-bar utils', () => {
 
     it('awaitingCmaRequirements', () => {
       const stages = buildProgressBarStages('awaitingCmaRequirements');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
       expectedStages[1].active = true;
@@ -133,7 +133,7 @@ describe('progress-bar utils', () => {
 
     it('cmaRequirementsSubmitted', () => {
       const stages = buildProgressBarStages('awaitingCmaRequirements');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
       expectedStages[1].active = true;
@@ -143,7 +143,7 @@ describe('progress-bar utils', () => {
 
     it('caseListedByAdminOfficer', () => {
       const stages = buildProgressBarStages('prepareForHearing');
-      const expectedStages = defaultStages;
+      let expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
       expectedStages[1].active = false;

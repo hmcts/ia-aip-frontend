@@ -1,8 +1,8 @@
+const govUK = require('govuk-frontend');
 import CookieBanner from '../../../client/cookies-banner';
 import SessionTimeout from '../../../client/session-timeout';
 import { initialize, ready } from '../../../client/utils';
 import { expect, sinon } from '../../utils/testUtils';
-const govUK = require('govuk-frontend');
 
 describe('Client Utils', () => {
   let sandbox: sinon.SinonSandbox;

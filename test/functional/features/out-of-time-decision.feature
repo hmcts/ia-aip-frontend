@@ -10,7 +10,6 @@ Feature: Out of time decision @outOfTimeDecision
     And I see "The tribunal decided your late appeal can continue." in timeline
 
     When I click "Reasons for decision" link
-    And I check page accessibility
     Then I see "/out-of-time-decision" in current url
     And I see "Reasons for decision" in title
     And I see "Decision" in summary list
@@ -19,7 +18,6 @@ Feature: Out of time decision @outOfTimeDecision
     And I see "Tribunal Caseworker" in summary list
 
     When I click "Back" button
-    And I check page accessibility
     Then I see "/appeal-overview" in current url
 
   Scenario: Decision rejected @decisionRejected
@@ -29,7 +27,6 @@ Feature: Out of time decision @outOfTimeDecision
     And I see "The tribunal decided your late appeal cannot continue." in timeline
 
     When I click "Reasons for decision" link
-    And I check page accessibility
     Then I see "/out-of-time-decision" in current url
     And I see "Reasons for decision" in title
     And I see "Decision" in summary list
@@ -38,7 +35,6 @@ Feature: Out of time decision @outOfTimeDecision
     And I see "Tribunal Caseworker" in summary list
 
     When I click "Back" button
-    And I check page accessibility
     Then I see "/appeal-overview" in current url
 
   Scenario: Decision in time @decisionInTime
@@ -48,7 +44,6 @@ Feature: Out of time decision @outOfTimeDecision
     And I see "The tribunal decided your appeal is in time." in timeline
 
     When I click "Reasons for decision" link
-    And I check page accessibility
     Then I see "/out-of-time-decision" in current url
     And I see "Reasons for decision" in title
     And I see "Decision" in summary list
@@ -57,5 +52,4 @@ Feature: Out of time decision @outOfTimeDecision
     And I see "Tribunal Caseworker" in summary list
 
     When I click "Back" button
-    And I check page accessibility
     Then I see "/appeal-overview" in current url

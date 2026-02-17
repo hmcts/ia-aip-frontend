@@ -66,7 +66,7 @@ describe('Hearing Requirements - Add Another Date Question controller', () => {
         formAction: '/hearing-dates-avoid-new',
         question: {
           name: 'answer',
-          title: 'Is there another date between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?',
+          title: `Is there another date between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?`,
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }]
         },
         availableHearingDates: { from: availableHearingDates.from, to: availableHearingDates.to },

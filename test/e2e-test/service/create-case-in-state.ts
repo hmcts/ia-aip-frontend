@@ -1,3 +1,4 @@
+// tslint:disable:no-console
 import { createCaseInState, State } from './case-progression-service';
 import { createCase } from './ccd-service';
 import { createUser, setTestingSupportToken, UserInfo } from './user-service';
@@ -30,11 +31,8 @@ async function main() {
     await createCase(testUser);
     await createCaseInState(testUser, validState, appealType, decisionType);
 
-    // eslint-disable-next-line no-console
     console.log(`Case created in state: ${validState}`);
-    // eslint-disable-next-line no-console
     console.log(`CaseID: ${testUser.caseId}`);
-    // eslint-disable-next-line no-console
     console.log(`User credentials: \nEmail: ${testUser.email}\nPassword: ${testUser.password}`);
   } catch (error) {
     console.error('An error occurred:', error);

@@ -6,7 +6,7 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { getCmaRequirementsReasonHandler, handleCmaRequirementsSaveForLater } from '../common';
 
-const pageContent = {
+let pageContent = {
   previousPage: paths.awaitingCmaRequirements.otherNeedsPrivateAppointment,
   formAction: paths.awaitingCmaRequirements.otherNeedsPrivateAppointmentReason,
   pageTitle: i18n.pages.cmaRequirements.otherNeedsSection.privateAppointmentReason.title,

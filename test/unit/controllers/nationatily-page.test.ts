@@ -1,3 +1,4 @@
+const express = require('express');
 import { NextFunction, Request, Response } from 'express';
 import {
   getNationalityPage,
@@ -12,7 +13,6 @@ import Logger from '../../../app/utils/logger';
 import { getNationalitiesOptions } from '../../../app/utils/nationalities';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
-const express = require('express');
 
 describe('Nationality details Controller', function () {
   let sandbox: sinon.SinonSandbox;

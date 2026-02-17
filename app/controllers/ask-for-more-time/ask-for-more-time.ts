@@ -98,7 +98,7 @@ function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
         },
         makeAnApplicationDetails: req.body.askForMoreTime
       };
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.common.askForMoreTimeSupportingEvidence);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.common.askForMoreTimeSupportingEvidence);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);

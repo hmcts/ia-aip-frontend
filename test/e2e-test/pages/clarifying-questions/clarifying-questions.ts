@@ -5,7 +5,7 @@ module.exports = {
     });
 
     Then(/^I see anything else clarifying question saved$/, async (selector: string) => {
-      await I.see('SAVED','//ol/li[2]/ul/li/strong');
+      await I.see('SAVED',`//ol/li[2]/ul/li/strong`);
     });
   }
 };

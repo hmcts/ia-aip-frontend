@@ -103,7 +103,7 @@ function postDecisionType(updateAppealService: UpdateAppealService) {
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
       await persistAppeal(appeal, paymentsFlag);
       const defaultRedirect = req.session.appeal.application.appealType === 'protection' ? paths.appealStarted.payNow : paths.appealStarted.taskList;
-      const redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
+      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
       if (['protection'].includes(appeal.application.appealType) || appeal.pcqId) return res.redirect(redirectPage);
       const pcqFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.PCQ, false);
       if (!pcqFlag) return res.redirect(redirectPage);

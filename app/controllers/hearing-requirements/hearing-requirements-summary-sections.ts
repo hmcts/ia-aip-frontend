@@ -182,9 +182,9 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
     if (hearingRequirements.isAnyWitnessInterpreterRequired) {
 
       let needInterpreterWitnessnesSummaryString = '';
-      const needInterpreterWitnessnesComponent: WitnessComponent[] = [];
+      let needInterpreterWitnessnesComponent: WitnessComponent[] = [];
       for (let index = 0; index < 10; index++) {
-        const witnessListElement: DynamicMultiSelectList = hearingRequirements['witnessListElement' + (index + 1)];
+        let witnessListElement: DynamicMultiSelectList = hearingRequirements['witnessListElement' + (index + 1)];
 
         if (witnessListElement && witnessListElement.value && witnessListElement.value.length > 0) {
           needInterpreterWitnessnesSummaryString += (witnessListElement.value[0].label + Delimiter.BREAK_LINE);
@@ -348,7 +348,7 @@ function buildOtherNeedsSummaryList(otherNeeds: HearingOtherNeeds, visibleChange
         [otherNeeds.singleSexTypeAppointment],
         paths.submitHearingRequirements.otherNeedsSingleSexTypeHearing + editParameter)
     );
-    const title: string = otherNeeds.singleSexTypeAppointment === 'All female' ?
+    let title: string = otherNeeds.singleSexTypeAppointment === 'All female' ?
       i18n.pages.hearingRequirements.otherNeedsSection.singleSexHearingAllFemale.title :
       i18n.pages.hearingRequirements.otherNeedsSection.singleSexHearingAllMale.title;
 
@@ -359,7 +359,7 @@ function buildOtherNeedsSummaryList(otherNeeds: HearingOtherNeeds, visibleChange
       )
     );
 
-    const pathSingleSexReason: string = otherNeeds.singleSexTypeAppointment === 'All female' ?
+    let pathSingleSexReason: string = otherNeeds.singleSexTypeAppointment === 'All female' ?
       paths.submitHearingRequirements.otherNeedsAllFemaleHearing + editParameter :
       paths.submitHearingRequirements.otherNeedsAllMaleHearing + editParameter;
     singleSexAppointmentRows.push(
@@ -571,7 +571,7 @@ export function buildHearingRequirementsSummarySections(hearingRequirements: Hea
   const title = ((typeof hearingRequirements.isAppellantGivingOralEvidence !== 'undefined') || (typeof hearingRequirements.isAppellantAttendingTheHearing !== 'undefined')) ?
       `${i18n.pages.hearingRequirements.taskList.sections.attendance}` : `${i18n.pages.hearingRequirements.taskList.sections.witnesses}`;
   hearingRequirementsSummarySections.push({
-    title: '1. ' + title,
+    title: `1. ` + title,
     summaryLists: witnessesSectionList
   });
 
@@ -626,8 +626,8 @@ function buildAppellantInterpretersummaryList(interpreterRows: SummaryRow[], vis
     )
   );
 
-  const appellantInterpreterLanguageCategoryList = hearingRequirements.appellantInterpreterLanguageCategory || [];
-  const appellantInterpreterLanguageCategory = buildLanguageCategorySummaryString(appellantInterpreterLanguageCategoryList);
+  let appellantInterpreterLanguageCategoryList = hearingRequirements.appellantInterpreterLanguageCategory || [];
+  let appellantInterpreterLanguageCategory = buildLanguageCategorySummaryString(appellantInterpreterLanguageCategoryList);
 
   interpreterRows.push(
     getSummaryRow(visibleChangeLink,
@@ -684,7 +684,7 @@ function buildWitnessesInterpretersummaryList(interpreterRows: SummaryRow[], vis
     )
   );
 
-  const witnessInterpreterLanguageCategory = buildLanguageCategorySummaryString(witnessComponent.witnessInterpreterLanguageCategory);
+  let witnessInterpreterLanguageCategory = buildLanguageCategorySummaryString(witnessComponent.witnessInterpreterLanguageCategory);
 
   interpreterRows.push(
     getSummaryRow(visibleChangeLink,

@@ -26,7 +26,7 @@ module.exports = {
     When(/^I grab the Online Case Reference$/, async () => {
       await I.click('I am no longer representing myself');
       await I.waitForText('Online case reference number:', 45);
-      const ref = await I.grabTextFrom('//li');
+      let ref = await I.grabTextFrom('//li');
       onlineCaseReference = ref.split('Online case reference number: ')[1];
       caseUrl = exUiUrl + 'cases/case-details/' + onlineCaseReference.split('-').join('');
     });
@@ -184,7 +184,7 @@ module.exports = {
       await I.waitForText('Current progress of the case', 45);
       await I.selectOption('#next-step', 'Create case summary');
       await I.handleNextStep('Create a case summary and upload it below', 'createCaseSummary', onlineCaseReference);
-      await I.attachFile("input[type='file']", '/test/files/valid-image-file.png');
+      await I.attachFile("input[type='file']", `/test/files/valid-image-file.png`);
       await I.fillField('#caseSummaryDescription', 'case summary document');
       await I.wait(5);
       await I.click('Continue');
@@ -264,7 +264,7 @@ module.exports = {
       await I.checkOption('#isDecisionAllowed-allowed');
       await I.click('Continue');
       await I.waitForText('Upload your decision and reasons', 45);
-      await I.attachFile("input[type='file']", '/test/files/valid-pdf-file.pdf');
+      await I.attachFile("input[type='file']", `/test/files/valid-pdf-file.pdf`);
       await I.wait(5);
       await I.checkOption('#isDocumentSignedToday_values-isDocumentSignedToday');
       await I.checkOption('#isFeeConsistentWithDecision_values-isFeeConsistentWithDecision');

@@ -1,7 +1,7 @@
 {
 	"require" : [
 		"ts-node/register/transpile-only",
-		"global-jsdom/register",
+		"jsdom-global/register",
 		"source-map-support/register"
 	],
 	"timeout":20000

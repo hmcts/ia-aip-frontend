@@ -2411,7 +2411,7 @@ describe('DetailViewController', () => {
   });
 
   describe('getHearingBundle', () => {
-    const hearingBundle = {
+    let hearingBundle = {
       fileId: 'uuid',
       name: 'filename',
       description: 'description here',
@@ -2420,7 +2420,7 @@ describe('DetailViewController', () => {
       id: '2',
       tag: 'hearingBundle'
     };
-    const updatedBundle1 = {
+    let updatedBundle1 = {
       fileId: 'uuid',
       name: 'filename',
       description: 'description here',
@@ -2429,7 +2429,7 @@ describe('DetailViewController', () => {
       id: '3',
       tag: 'updatedHearingBundle'
     };
-    const updatedBundle2 = {
+    let updatedBundle2 = {
       fileId: 'uuid',
       name: 'filename',
       description: 'description here',
@@ -2438,7 +2438,7 @@ describe('DetailViewController', () => {
       id: '4',
       tag: 'updatedHearingBundle'
     };
-    const updatedReheardBundle1 = {
+    let updatedReheardBundle1 = {
       fileId: 'uuid',
       name: 'filename',
       description: 'description here',
@@ -2447,7 +2447,7 @@ describe('DetailViewController', () => {
       id: '5',
       tag: 'updatedHearingBundle'
     };
-    const updatedReheardBundle2 = {
+    let updatedReheardBundle2 = {
       fileId: 'uuid',
       name: 'filename',
       description: 'description here',
@@ -2456,32 +2456,32 @@ describe('DetailViewController', () => {
       id: '4',
       tag: 'updatedHearingBundle'
     };
-    const reheardHearingDocCollection1 = {
+    let reheardHearingDocCollection1 = {
       id: '1',
       value: {
         reheardHearingDocs: [hearingBundle]
       }
     };
-    const reheardHearingDocCollection2 = {
+    let reheardHearingDocCollection2 = {
       id: '2',
       value: {
         reheardHearingDocs: [hearingBundle, updatedReheardBundle1]
       }
     };
-    const reheardHearingDocCollection3 = {
+    let reheardHearingDocCollection3 = {
       id: '3',
       value: {
         reheardHearingDocs: [hearingBundle, updatedReheardBundle1, updatedReheardBundle2]
       }
     };
-    const reheardHearingDocCollection4 = {
+    let reheardHearingDocCollection4 = {
       id: '4',
       value: {
         reheardHearingDocs: [updatedReheardBundle1]
       }
     };
 
-    const tests = [
+    let tests = [
       { hearingDocs: [hearingBundle], reheardHearingDocs: null, title: 'hearing bundle' },
       { hearingDocs: [hearingBundle, updatedBundle1], reheardHearingDocs: null, title: 'hearing and updated bundle' },
       { hearingDocs: [updatedBundle1], reheardHearingDocs: null, title: 'updated bundle' },
@@ -2523,12 +2523,12 @@ describe('DetailViewController', () => {
         title: 'multiple rehearings and one bundle for each'
       }
     ];
-    const title = i18n.pages.detailViewers.hearingBundle.title;
-    const titlePlural = i18n.pages.detailViewers.hearingBundle.titlePlural;
-    const subtitle = i18n.pages.detailViewers.hearingBundle.subtitle;
-    const previousSubtitle = i18n.pages.detailViewers.hearingBundle.previousSubtitle;
-    const previousSubtitlePlural = i18n.pages.detailViewers.hearingBundle.previousSubtitlePlural;
-    const expectedOutput = [
+    let title = i18n.pages.detailViewers.hearingBundle.title;
+    let titlePlural = i18n.pages.detailViewers.hearingBundle.titlePlural;
+    let subtitle = i18n.pages.detailViewers.hearingBundle.subtitle;
+    let previousSubtitle = i18n.pages.detailViewers.hearingBundle.previousSubtitle;
+    let previousSubtitlePlural = i18n.pages.detailViewers.hearingBundle.previousSubtitlePlural;
+    let expectedOutput = [
       { title: title, subtitle1: null, data1: 2, subtitle2: null, data2: null },
       { title: titlePlural, subtitle1: subtitle, data1: 2, subtitle2: previousSubtitle, data2: 2 },
       { title: title, subtitle1: null, data1: 2, subtitle2: null, data2: null },
@@ -2756,7 +2756,7 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
@@ -2777,7 +2777,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.common.document },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec7\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec7'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
           }];
 
         getHearingNoticeViewer(req as Request, res as Response, next);
@@ -2809,7 +2809,7 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
@@ -2832,7 +2832,7 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
@@ -3027,7 +3027,7 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
@@ -3048,7 +3048,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.common.document },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec7\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec7'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
           }];
 
         getHearingNoticeViewer(req as Request, res as Response, next);
@@ -3080,7 +3080,7 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
@@ -3103,7 +3103,7 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
@@ -3260,7 +3260,7 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>' }
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>` }
         },
         {
           key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -3268,7 +3268,7 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>' }
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>` }
         }
       ];
 
@@ -3302,7 +3302,7 @@ describe('DetailViewController', () => {
       const expectedSummaryRows = [
         {
           key: { text: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.documentText },
-          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/f2194fde-001a-4640-8b7e-b90a7189e6ba\'>rule32(PDF)</a>' }
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f2194fde-001a-4640-8b7e-b90a7189e6ba'>rule32(PDF)</a>` }
         }
       ];
 
@@ -4212,7 +4212,7 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
         },
         {
           key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4224,7 +4224,7 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
         }
       ];
 
@@ -4284,11 +4284,11 @@ describe('DetailViewController', () => {
         application: [
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.groundsDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4300,7 +4300,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           }
         ],
         decision: [
@@ -4310,7 +4310,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4347,11 +4347,11 @@ describe('DetailViewController', () => {
         application: [
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.groundsDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4363,7 +4363,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           }
         ],
         decision: [
@@ -4373,7 +4373,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4421,7 +4421,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4465,7 +4465,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4509,7 +4509,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4553,7 +4553,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4565,7 +4565,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           }
         ],
         decision: [
@@ -4575,7 +4575,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4619,7 +4619,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4631,7 +4631,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           }
         ],
         decision: [
@@ -4641,7 +4641,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4686,7 +4686,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4698,7 +4698,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           }
         ],
         decision: [
@@ -4708,7 +4708,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Reheard_Rule_35_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Reheard_Rule_35_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4755,7 +4755,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Reheard_Rule_35_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Reheard_Rule_35_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4891,7 +4891,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4903,7 +4903,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           }
         ],
         decision: [
@@ -4957,7 +4957,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4969,7 +4969,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           }
         ],
         decision: [
@@ -5025,7 +5025,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -5037,7 +5037,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           }
         ],
         decision: [
@@ -5047,7 +5047,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Granted_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Granted_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5093,7 +5093,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -5105,7 +5105,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
           }
         ],
         decision: [
@@ -5115,7 +5115,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Granted_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Granted_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5163,7 +5163,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Refused_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Refused_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5211,7 +5211,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Not_Admitted_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Not_Admitted_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5253,11 +5253,11 @@ describe('DetailViewController', () => {
         application: [
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.groundsDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -5269,7 +5269,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           }
         ],
         decision: [
@@ -5279,7 +5279,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Granted_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Granted_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5321,11 +5321,11 @@ describe('DetailViewController', () => {
         application: [
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.groundsDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -5337,7 +5337,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
           }
         ],
         decision: [
@@ -5347,7 +5347,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Partially_Granted_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Partially_Granted_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5395,7 +5395,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Refused_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Refused_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5443,7 +5443,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Not_Admitted_Doc.PDF</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Not_Admitted_Doc.PDF</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5657,7 +5657,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.common.document },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -5665,7 +5665,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.common.document },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>` }
           }
         ]
       };
@@ -5679,7 +5679,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.common.document },
-              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>' }
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
             },
             {
               key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -5687,7 +5687,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.common.document },
-              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf</a>' }
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf</a>` }
             },
             {
               key: { text: i18n.pages.detailViewers.decisionsAndReasons.summariseChanges },
@@ -5704,7 +5704,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.common.document },
-              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>' }
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
             }
           ],
           title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + '2'
@@ -5787,7 +5787,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.common.document },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>` }
           },
           {
             key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -5795,7 +5795,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.common.document },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>' }
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>` }
           }
         ]
       };
@@ -5809,7 +5809,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.common.document },
-              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>' }
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
             },
             {
               key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -5817,7 +5817,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.common.document },
-              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf</a>' }
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf</a>` }
             },
             {
               key: { text: i18n.pages.detailViewers.decisionsAndReasons.summariseChanges },
@@ -5834,7 +5834,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.common.document },
-              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>' }
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
             }
           ],
           title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + '2'
@@ -5911,7 +5911,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
-              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/6fc7d1fd-f9c3-418f-a767-ba5c00c0863f\'>CA-2023-000001-Decision-to-remit.pdf</a>' }
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/6fc7d1fd-f9c3-418f-a767-ba5c00c0863f'>CA-2023-000001-Decision-to-remit.pdf</a>` }
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel },
@@ -5919,7 +5919,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
-              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/7a1e760b-670f-4029-bcb3-17c640971a1f\'>upload-test-other-remittal-doc.pdf</a>' }
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/7a1e760b-670f-4029-bcb3-17c640971a1f'>upload-test-other-remittal-doc.pdf</a>` }
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.documentDescriptionLabel },
@@ -5936,7 +5936,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
-              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/6fc7d1fd-f9c3-418f-a767-ba5c00c08635\'>CA-2023-000002-Decision-to-remit.pdf</a>' }
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/6fc7d1fd-f9c3-418f-a767-ba5c00c08635'>CA-2023-000002-Decision-to-remit.pdf</a>` }
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel },
@@ -5944,7 +5944,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
-              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/7a1e760b-670f-4029-bcb3-17c640971a15\'>upload-test-other-remittal-doc.pdf</a>' }
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/7a1e760b-670f-4029-bcb3-17c640971a15'>upload-test-other-remittal-doc.pdf</a>` }
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.documentDescriptionLabel },

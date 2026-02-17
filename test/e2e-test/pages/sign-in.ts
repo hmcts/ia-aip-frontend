@@ -7,9 +7,9 @@ import {
 } from '../service/user-service';
 import { currentUserDetails, signInForUserFromThread } from './helper-functions';
 
+const { signInForUser } = require('./helper-functions');
 const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
-const { signInForUser } = require('./helper-functions');
 
 module.exports = {
   signIn(I) {

@@ -117,8 +117,8 @@ describe('Cookies Banner', () => {
       cookiesBanner.addCookie('apm_consent', 'yes');
 
       cookiesBanner.setAnalyticsAndApmSelectionsFromCookies();
-      const analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
-      const apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
+      let analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
+      let apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
       expect(analyticsSelectionOn.checked).to.equal(false);
       expect(apmSelectionOn.checked).to.equal(false);
     });
@@ -128,8 +128,8 @@ describe('Cookies Banner', () => {
       cookiesBanner.addCookie('apm_consent', 'no');
 
       cookiesBanner.setAnalyticsAndApmSelectionsFromCookies();
-      const analyticsSelectionOff: HTMLInputElement = document.querySelector('#radio-analytics-off');
-      const apmSelectionOff: HTMLInputElement = document.querySelector('#radio-apm-off');
+      let analyticsSelectionOff: HTMLInputElement = document.querySelector('#radio-analytics-off');
+      let apmSelectionOff: HTMLInputElement = document.querySelector('#radio-apm-off');
       expect(analyticsSelectionOff.checked).to.equal(false);
       expect(apmSelectionOff.checked).to.equal(false);
     });
@@ -139,16 +139,16 @@ describe('Cookies Banner', () => {
     it('should set the consent radio buttons checked when accepted', () => {
       cookiesBanner.setAnalyticsAndApmSelectionsForAccepted();
 
-      const analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
-      const apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
+      let analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
+      let apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
       expect(analyticsSelectionOn.checked).to.equal(false);
       expect(apmSelectionOn.checked).to.equal(false);
     });
 
     it('should set the consent to no when rejected', () => {
       cookiesBanner.setAnalyticsAndApmSelectionsForRejected();
-      const analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
-      const apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
+      let analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
+      let apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
       expect(analyticsSelectionOn.checked).to.equal(false);
       expect(apmSelectionOn.checked).to.equal(false);
     });

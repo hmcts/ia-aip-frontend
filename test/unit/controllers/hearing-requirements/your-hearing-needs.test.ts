@@ -15,7 +15,8 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
-  const hearingRequirements: HearingRequirements = {
+  let hearingRequirements: HearingRequirements;
+  hearingRequirements = {
     'datesToAvoid': {
       'isDateCannotAttend': true,
       'dates': [{

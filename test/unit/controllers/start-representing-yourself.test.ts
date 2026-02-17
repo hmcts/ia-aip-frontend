@@ -168,7 +168,7 @@ describe('start-representing-yourself', () => {
   });
 
   it('postValidateAccess is successful, redirects to confirm details', async() => {
-    const ccdSystemServiceStub = {
+    let ccdSystemServiceStub = {
       pipValidation: sandbox.stub().resolves(Promise.resolve({
         accessValidated: true,
         caseSummary: {
@@ -187,7 +187,7 @@ describe('start-representing-yourself', () => {
   });
 
   it('postValidateAccess with invalid security code, redirects to enter security code with error message', async() => {
-    const ccdSystemServiceStub = {
+    let ccdSystemServiceStub = {
       pipValidation: sandbox.spy()
     };
 
@@ -200,7 +200,7 @@ describe('start-representing-yourself', () => {
   });
 
   it('postValidateAccess with incorrect security code, redirects to enter enter case number with error message', async() => {
-    const ccdSystemServiceStub = {
+    let ccdSystemServiceStub = {
       pipValidation: sandbox.stub().resolves(Promise.resolve({
         accessValidated: false
       }))

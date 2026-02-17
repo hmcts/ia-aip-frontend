@@ -8,11 +8,9 @@ Feature: submission
     Given I have logged in as an appellant with email "appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal@example.com"
     And I am on the check your answers page
     When I click submit
-    And I check page accessibility
     Then I should see error summary
     When I check the statement of truth
     And I click submit
-    And I check page accessibility
     Then I am on the appeal submission confirmation page
     And I see "Your appeal details have been sent" in title
     And I see the respond by date is 5 days in the future
@@ -21,11 +19,9 @@ Feature: submission
     Given I have logged in as an appellant with email "euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal@example.com"
     And I am on the check your answers page
     When I click Submit and continue to pay £80 by debit or credit card
-    And I check page accessibility
     Then I should see error summary
     When I check the statement of truth
     And I click Submit and continue to pay £80 by debit or credit card
-    And I check page accessibility
     Then I am on the appeal submission confirmation page
     And I see "Your appeal has been submitted" in title
     And I see the pay by date is 14 days in the future

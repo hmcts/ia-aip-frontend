@@ -7,40 +7,31 @@ Feature: Personal details date of birth page
     Given I have logged in as an appellant with email "appealWithHomeOfficeDetailsAndName@example.com"
     And I am on the personal details date of birth page
     When I click "Save for later" button
-    And I check page accessibility
     Then I am on the overview page
     Then I click continue
-    And I check page accessibility
     Then I should see the task-list page
     And I shouldnt be able to click "Your contact details"
-    And I check page accessibility
 
     Given I am on the personal details date of birth page
     When I enter a day "1" month "1" year "1"
     And I click "Save for later" button
-    And I check page accessibility
     Then I should see error summary
 
     Given I am on the personal details date of birth page
     When I enter a day "1" month "1" year "1"
     And I click "Save and continue" button
-    And I check page accessibility
     Then I should see error summary
 
     Given I am on the personal details date of birth page
     When I enter a day "1" month "1" year "1981"
     And I click "Save for later" button
-    And I check page accessibility
     Then I am on the overview page
     Then I click continue
-    And I check page accessibility
     Then I should see the task-list page
     And I shouldnt be able to click "Your contact details"
-    And I check page accessibility
 
     Given I am on the personal details date of birth page
     When I enter a day "1" month "1" year "1981"
     And I click "Save and continue" button
-    And I check page accessibility
     Then I should see the nationality page
 

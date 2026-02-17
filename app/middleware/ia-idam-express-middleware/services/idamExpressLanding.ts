@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { jwtDecode } from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 import Logger, { getLogLabel } from '../../../utils/logger';
 import config from '../config';
 import cookies from '../utilities/cookies';
@@ -14,7 +14,7 @@ const idamExpressLanding = (args: IdamConfig) => {
   const stateCookieName = args.stateCookieName || config.stateCookieName;
 
   return (req: Request, res: Response, next: NextFunction) => {
-    const authToken: string = req.query[tokenCookieName] as string;
+    const authToken = req.query[tokenCookieName];
     const code = req.query.code;
 
     // If no code then landing page was not reached through IDAM

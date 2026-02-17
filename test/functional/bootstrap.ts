@@ -1,10 +1,9 @@
 // Add this at the top of test/functional/bootstrap.ts
-import crypto from 'crypto';
+import https from 'https';
+import * as process from 'process';
 import express from 'express';
 import fs from 'graceful-fs';
-import https from 'https';
 import { getLocal, Mockttp } from 'mockttp';
-import * as process from 'process';
 import { createApp } from '../../app/app';
 import Logger, { getLogLabel } from '../../app/utils/logger';
 import * as testStateHelper from '../e2e-test/testStateHelper';
@@ -14,7 +13,6 @@ import idamHandlers from '../mock/idam/handlers';
 import { setupPcqHealth } from '../mock/pcq/handlers/health';
 import { setupPostcodeLookup } from '../mock/postcode-lookup/handlers/postcodeLookup';
 import { setupLease } from '../mock/s2s/handlers/lease';
-(global as any).crypto = crypto;
 
 // Your main app
 const port: number | string = process.env.PORT || 3000;
@@ -45,7 +43,7 @@ export async function bootstrap() {
   await startMockServer(20003, dmHandlers);
   await startMockServer(20004, [ setupLease ]);
   await startMockServer(20005, [ setupPcqHealth ]);
-  logger.trace(`servers set up`, logLabel);
+  logger.trace('servers set up', logLabel);
 
   // Start main app
   const app: express.Application = createApp();
@@ -53,7 +51,7 @@ export async function bootstrap() {
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
   }, app).listen(port, () => {
-    logger.trace(`Main server listening`, logLabel);
+    logger.trace('Main server listening', logLabel);
   });
 }
 
@@ -77,16 +75,20 @@ export async function teardownAll() {
 
 export function failureCheck() {
   const testState = testStateHelper.readTestState();
-  // tslint:disable:no-console
+  // eslint-disable-next-line no-console
   console.log('---------------------');
   const uniqueTitles = Array.from(new Set(testState.testsRun));
+  // eslint-disable-next-line no-console
   console.log('Total scenarios run: ' + uniqueTitles.length);
+  // eslint-disable-next-line no-console
   console.log('Scenarios passed: ' + testState.testsPassed.length);
+  // eslint-disable-next-line no-console
   console.log('---------------------');
-  if (testState.testsPassed.length === uniqueTitles.length) {
+  if (uniqueTitles.length > 0 && testState.testsPassed.length === uniqueTitles.length) {
     process.exit(0);
   } else {
     const failedTests = uniqueTitles.filter(title => !testState.testsPassed.includes(title));
+    // eslint-disable-next-line no-console
     console.log('Scenarios failed: ', failedTests);
     process.exit(1);
   }

@@ -1,11 +1,12 @@
-import AxePuppeteer from '@axe-core/puppeteer';
-import { expect } from 'chai';
 import fs from 'fs';
 import * as path from 'path';
+import AxePuppeteer from '@axe-core/puppeteer';
+import { expect } from 'chai';
 import Logger, { getLogLabel } from '../../app/utils/logger';
 
 const container = require('codeceptjs').container;
 const accessibilityIssuesPath = path.resolve(__dirname, '../../accessibility-issues.json');
+const accessibilityUrlsPath = path.resolve(__dirname, '../../accessibility-urls.json');
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
@@ -22,6 +23,11 @@ type ReadableAxeResult = {
 
 export async function axeTest() {
   const page = container.helpers('Puppeteer').page;
+  const url = page.url();
+  if (hasUrlBeenScanned(url)) {
+    logger.trace('url already scanned for accessibility', logLabel);
+    return;
+  }
   let accessibilityScanResults = null;
   const retries = 5;
   for (let i = 1; i <= retries; i++) {
@@ -45,9 +51,10 @@ export async function axeTest() {
       logger.exception(`Accessibility scan attempt ${i} failed: ${error}`, logLabel);
     }
   }
+  addScannedUrl(url);
   if (accessibilityScanResults && accessibilityScanResults.violations.length > 0) {
     accessibilityScanResults.violations.forEach((violationType) => {
-      let instances: ReadableAxeResult[] = violationType.nodes.map(
+      const instances: ReadableAxeResult[] = violationType.nodes.map(
         (violationInstance) => {
           return {
             issue: violationType.help,
@@ -65,9 +72,9 @@ export async function axeTest() {
 }
 
 function generateViolationLogs(violations: ReadableAxeResult[]) {
-  let logs: string[] = [];
+  const logs: string[] = [];
   violations.forEach((violation: ReadableAxeResult) => {
-    let log = `Issue: ${violation.issue}\nImpact: ${violation.impact}\nFailure Summary: `
+    const log = `Issue: ${violation.issue}\nImpact: ${violation.impact}\nFailure Summary: `
       + `${violation.failureSummary}\nTarget HTML Object: ${violation.targetHtmlObject}\nFull HTML: `
       + `${violation.fullHtml}\nPage URL: ${violation.pageUrl}`;
     logs.push(log);
@@ -124,4 +131,28 @@ function addViolations(violations: ReadableAxeResult[]) {
   // Add unique violations to the existing list
   issues.violations.push(...uniqueViolations);
   writeIssues(issues);
+}
+
+type AccessibilityUrls = {
+  scannedUrls: string[];
+};
+
+function readAccessibilityUrls(): AccessibilityUrls {
+  const data = fs.readFileSync(accessibilityUrlsPath, 'utf8');
+  return JSON.parse(data);
+}
+
+function writeAccessibilityUrls(updatedUrls: AccessibilityUrls) {
+  fs.writeFileSync(accessibilityUrlsPath, JSON.stringify(updatedUrls, null, 2), 'utf8');
+}
+
+function hasUrlBeenScanned(url: string): boolean {
+  const urls: AccessibilityUrls = readAccessibilityUrls();
+  return urls.scannedUrls.includes(url);
+}
+
+function addScannedUrl(url: string) {
+  const urls: AccessibilityUrls = readAccessibilityUrls();
+  urls.scannedUrls.push(url);
+  writeAccessibilityUrls(urls);
 }

@@ -6,24 +6,32 @@ Feature: Eligibility
   Scenario: Citizen was once a british citizen and is eligible to use the service
     Given I am on home page
     When I click start now
+    And I check page accessibility
   # TODO: Remove "Are you currently living in the United Kingdom" step when "Feature flag for Out of Country feature" flag is switched on
   #  Then I should see the "Are you currently living in the United Kingdom" eligibility page
   #  When I select Yes and click continue
+    And I check page accessibility
   #  Then I should see the "Are you currently in detention" eligibility page
   #  When I select No and click continue
+    And I check page accessibility
   #  Then I should see the "Are you appealing an EU Settlement Scheme decision?" eligibility page
   #  When I select No and click continue
+    And I check page accessibility
   #  Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision" eligibility page
   #  When I select Yes and click continue
+    And I check page accessibility
   #  Then I should see the eligible page
   #  When I click "Back" button
+    And I check page accessibility
   #  Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision" eligibility page
 #
   #Scenario: Citizen is ineligible to use the service
   #  Given I am on home page
   #  When I click start now
+    And I check page accessibility
   #  Then I should see the "Are you currently living in the United Kingdom" eligibility page
   #  When I select No and click continue
+    And I check page accessibility
   #  Then I should see the ineligible page
 #
   #Scenario: Citizen tries to enter eligibility questions part way through and is taken to the first question
@@ -35,28 +43,38 @@ Feature: Eligibility
   #  Then I should see the "Are you currently living in the United Kingdom" eligibility page
 #
   #Scenario: Citizen can click back to change answer to previous question
+    And I check page accessibility
   #  Given I am on home page
   #  When I click start now
+    And I check page accessibility
   #  Then I should see the "Are you currently living in the United Kingdom" eligibility page
   #  When I select Yes and click continue
+    And I check page accessibility
   #  Then I should see the "Are you currently in detention" eligibility page
   #  When I click "Back" button
+    And I check page accessibility
   #  Then I should see the "Are you currently living in the United Kingdom" eligibility page
 #
   #Scenario: Citizen can click back on in ineligible page to change answer to previous question
+    And I check page accessibility
   #  Given I am on home page
   #  When I click start now
+    And I check page accessibility
   #  Then I should see the "Are you currently living in the United Kingdom" eligibility page
   #  When I select Yes and click continue
+    And I check page accessibility
   #  Then I should see the "Are you currently in detention" eligibility page
   #  When I select Yes and click continue
+    And I check page accessibility
   #  Then I should see the ineligible page
   #  When I click "Back" button
+    And I check page accessibility
   #  Then I should see the "Are you currently in detention" eligibility page
 #
 #
   #Scenario: Citizen can continue already started appeal
   #  Given I am on home page
   #  When I click "Sign in to continue with your appeal" button
+    And I check page accessibility
   #  Then I should see the sign in page
 #

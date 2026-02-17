@@ -1,5 +1,5 @@
-import cache from 'memory-cache';
 import { Mockttp } from 'mockttp';
+import cache from '../../cache';
 
 const defaultUserId = '1';
 const emailToUserId: Record<string, string> = {

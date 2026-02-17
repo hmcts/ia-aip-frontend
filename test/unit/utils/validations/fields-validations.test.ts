@@ -3,7 +3,8 @@ import {
   askForMoreTimeValidation,
   asylumSupportValidation,
   contactDetailsValidation,
-  dateValidation, deportationOrderOptionsValidation,
+  dateValidation,
+  deportationOrderOptionsValidation,
   DOBValidation,
   emailValidation,
   helpWithFeesRefNumberValidation,
@@ -68,6 +69,15 @@ describe('fields-validations', () => {
   });
 
   describe('dateValidation', () => {
+    let sandbox: sinon.SinonSandbox;
+    beforeEach(() => {
+      sandbox = sinon.createSandbox();
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
     const errors = { ...i18n.validationErrors.dateLetterSent };
 
     it('should validate', () => {
@@ -131,10 +141,10 @@ describe('fields-validations', () => {
     });
 
     it('fields must be valid and be in past', () => {
-      sinon.useFakeTimers(new Date('2025-06-15'));
+      sandbox.useFakeTimers(new Date('2025-06-15'));
       const currentDate = new Date('2025-06-15');
 
-      let tomorrowDate = new Date('2025-06-15');
+      const tomorrowDate = new Date('2025-06-15');
       tomorrowDate.setDate(currentDate.getDate() + 1);
 
       const notValidYear1 = { day: '1', month: '1', year: '5000' };
@@ -146,7 +156,11 @@ describe('fields-validations', () => {
           year: createError('year', errors.inPast)
         });
 
-      const notValidYear2 = { day: currentDate.getDate(), month: currentDate.getMonth() + 1, year: currentDate.getFullYear() + 1 };
+      const notValidYear2 = {
+        day: currentDate.getDate(),
+        month: currentDate.getMonth() + 1,
+        year: currentDate.getFullYear() + 1
+      };
 
       const yearValidations2 = dateValidation(notValidYear2, errors);
 
@@ -155,7 +169,11 @@ describe('fields-validations', () => {
           year: createError('year', errors.inPast)
         });
 
-      const notValidMonth = { day: '1', month: (currentDate.getMonth() + 1) < 12 ? (currentDate.getMonth() + 2) : '1', year: (currentDate.getMonth() + 1) < 12 ? currentDate.getFullYear() : currentDate.getFullYear() + 1 };
+      const notValidMonth = {
+        day: '1',
+        month: (currentDate.getMonth() + 1) < 12 ? (currentDate.getMonth() + 2) : '1',
+        year: (currentDate.getMonth() + 1) < 12 ? currentDate.getFullYear() : currentDate.getFullYear() + 1
+      };
 
       const monthValidations = dateValidation(notValidMonth, errors);
 
@@ -171,7 +189,11 @@ describe('fields-validations', () => {
           });
       }
 
-      const notValidDay1 = { day: tomorrowDate.getDate(), month: tomorrowDate.getMonth() + 1, year: tomorrowDate.getFullYear() };
+      const notValidDay1 = {
+        day: tomorrowDate.getDate(),
+        month: tomorrowDate.getMonth() + 1,
+        year: tomorrowDate.getFullYear()
+      };
 
       const dayValidations1 = dateValidation(notValidDay1, errors);
 
@@ -351,7 +373,10 @@ describe('fields-validations', () => {
 
     it('should fail validation if no email entered', () => {
       testContactDetailsValidation({ contactDetails: 'email' }, 'email-value', 'Enter an email address');
-      testContactDetailsValidation({ contactDetails: 'email', 'email-value': '' }, 'email-value', 'Enter an email address');
+      testContactDetailsValidation({
+        contactDetails: 'email',
+        'email-value': ''
+      }, 'email-value', 'Enter an email address');
     });
 
     it('should fail validation if email not in correct format', () => {
@@ -425,7 +450,7 @@ describe('fields-validations', () => {
         '+54 911 1234 5678',
         '+54 911-1234-5678'];
       phoneNumbers.forEach((phoneNumber: string) => {
-        let validationResult = contactDetailsValidation({
+        const validationResult = contactDetailsValidation({
           contactDetails: 'text-message',
           'text-message-value': phoneNumber
         });
@@ -567,19 +592,25 @@ describe('fields-validations', () => {
 
     it('should fail validation if no email entered', () => {
       testSponsorContactDetailsValidation({ sponsorContactDetails: 'email' }, 'email-value', 'Enter an email address');
-      testSponsorContactDetailsValidation({ sponsorContactDetails: 'email', 'email-value': '' }, 'email-value', 'Enter an email address');
+      testSponsorContactDetailsValidation({
+        sponsorContactDetails: 'email',
+        'email-value': ''
+      }, 'email-value', 'Enter an email address');
     });
 
     it('should fail validation if email not in correct format', () => {
       testSponsorContactDetailsValidation(
-          { sponsorContactDetails: 'email', 'email-value': 'not an email' },
-          'email-value',
-          'Enter an email address in the correct format, like name@example.com'
+        { sponsorContactDetails: 'email', 'email-value': 'not an email' },
+        'email-value',
+        'Enter an email address in the correct format, like name@example.com'
       );
     });
 
     it('should pass validation when an email is entered', () => {
-      const validationResult = sponsorContactDetailsValidation({ sponsorContactDetails: 'email', 'email-value': 'foo@bar.com' });
+      const validationResult = sponsorContactDetailsValidation({
+        sponsorContactDetails: 'email',
+        'email-value': 'foo@bar.com'
+      });
       expect(validationResult).to.equal(null);
     });
 
@@ -932,7 +963,7 @@ describe('fields-validations', () => {
     });
 
     it('should fail validation and return "string.empty if remission option is not selected" ', () => {
-      const object = { };
+      const object = {};
       const validationResult = remissionOptionsValidation(object);
       const expectedResponse = {
         answer: {
@@ -971,7 +1002,7 @@ describe('fields-validations', () => {
     });
 
     it('should fail validation and return "string.empty if fees option is not selected" ', () => {
-      const object = { };
+      const object = {};
       const validationResult = helpWithFeesValidation(object);
       const expectedResponse = {
         answer: {
@@ -1095,7 +1126,11 @@ describe('fields-validations', () => {
 
   describe('interpreterLanguageSelectionValidation', () => {
     it('should fail validate when interpreter language Selection are blank', () => {
-      const validationResult = interpreterLanguageSelectionValidation({ languageManualEntry: '', languageManualEntryDescription: '', languageRefData: '' });
+      const validationResult = interpreterLanguageSelectionValidation({
+        languageManualEntry: '',
+        languageManualEntryDescription: '',
+        languageRefData: ''
+      });
       expect(validationResult).to.deep.equal({
         'languageRefData-languageManualEntry': {
           key: 'languageRefData-languageManualEntry',
@@ -1106,7 +1141,11 @@ describe('fields-validations', () => {
     });
 
     it('should fail validate when user selected manually input with empty language detail', () => {
-      const validationResult = interpreterLanguageSelectionValidation({ languageManualEntry: 'Yes', languageManualEntryDescription: '', languageRefData: '' });
+      const validationResult = interpreterLanguageSelectionValidation({
+        languageManualEntry: 'Yes',
+        languageManualEntryDescription: '',
+        languageRefData: ''
+      });
       expect(validationResult).to.deep.equal({
         languageManualEntryDescription: {
           key: 'languageManualEntryDescription',
@@ -1117,7 +1156,11 @@ describe('fields-validations', () => {
     });
 
     it('should fail validate when user selected both option', () => {
-      const validationResult = interpreterLanguageSelectionValidation({ languageManualEntry: 'Yes', languageManualEntryDescription: 'language', languageRefData: 'language' });
+      const validationResult = interpreterLanguageSelectionValidation({
+        languageManualEntry: 'Yes',
+        languageManualEntryDescription: 'language',
+        languageRefData: 'language'
+      });
       expect(validationResult).to.deep.equal({
         'languageRefData-languageManualEntry': {
           key: 'languageRefData-languageManualEntry',
@@ -1128,13 +1171,17 @@ describe('fields-validations', () => {
     });
 
     it('should validate interpreter support selection', () => {
-      const validationResult = interpreterLanguageSelectionValidation({ languageManualEntry: 'Yes', languageManualEntryDescription: 'language', languageRefData: '' });
+      const validationResult = interpreterLanguageSelectionValidation({
+        languageManualEntry: 'Yes',
+        languageManualEntryDescription: 'language',
+        languageRefData: ''
+      });
       expect(validationResult).to.equal(null);
     });
   });
 
   it('should fail validation and return "string.empty if deportation option is not selected" ', () => {
-    const object = { };
+    const object = {};
     const validationResult = deportationOrderOptionsValidation(object);
     const expectedResponse = {
       answer: {

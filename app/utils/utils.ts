@@ -1,7 +1,7 @@
+import * as path from 'path';
 import { Request } from 'express';
 import moment from 'moment';
 import nl2br from 'nl2br';
-import * as path from 'path';
 import { applicationTypes } from '../data/application-types';
 import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
@@ -183,20 +183,20 @@ export function getWitnessComponent(hearingRequirements: HearingRequirements, wi
   let WitnessComponent: WitnessComponent = null;
 
   if (hearingRequirements && witnessIndex) {
-    let witnessString = 'witness' + (parseInt(witnessIndex, 10) + 1);
-    let witness: WitnessDetails = hearingRequirements[witnessString] || null;
+    const witnessString = 'witness' + (parseInt(witnessIndex, 10) + 1);
+    const witness: WitnessDetails = hearingRequirements[witnessString] || null;
 
-    let witnessListElementString = 'witnessListElement' + (parseInt(witnessIndex, 10) + 1);
-    let witnessListElement: DynamicMultiSelectList = hearingRequirements[witnessListElementString] || null;
+    const witnessListElementString = 'witnessListElement' + (parseInt(witnessIndex, 10) + 1);
+    const witnessListElement: DynamicMultiSelectList = hearingRequirements[witnessListElementString] || null;
 
-    let witnessInterpreterLanguageCategoryString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterLanguageCategory';
-    let witnessInterpreterLanguageCategory = hearingRequirements[witnessInterpreterLanguageCategoryString] || null;
+    const witnessInterpreterLanguageCategoryString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterLanguageCategory';
+    const witnessInterpreterLanguageCategory = hearingRequirements[witnessInterpreterLanguageCategoryString] || null;
 
-    let witnessInterpreterSpokenLanguageString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterSpokenLanguage';
-    let witnessInterpreterSpokenLanguage = hearingRequirements[witnessInterpreterSpokenLanguageString] || null;
+    const witnessInterpreterSpokenLanguageString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterSpokenLanguage';
+    const witnessInterpreterSpokenLanguage = hearingRequirements[witnessInterpreterSpokenLanguageString] || null;
 
-    let witnessInterpreterSignLanguageString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterSignLanguage';
-    let witnessInterpreterSignLanguage = hearingRequirements[witnessInterpreterSignLanguageString] || null;
+    const witnessInterpreterSignLanguageString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterSignLanguage';
+    const witnessInterpreterSignLanguage = hearingRequirements[witnessInterpreterSignLanguageString] || null;
 
     WitnessComponent = {
       witnessFullName: (witnessListElement && witnessListElement.list_items && witnessListElement.list_items.length > 0) ? witnessListElement.list_items[0].label : '',
@@ -218,12 +218,12 @@ export function getWitnessComponent(hearingRequirements: HearingRequirements, wi
 
 export function clearWitnessCachedData(hearingRequirements: HearingRequirements) {
   for (let index = 0; index < 10; index++) {
-    let witnessListElementFieldString = 'witnessListElement' + (index + 1);
-    let witnessInterpreterLanguageCategoryFieldString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
-    let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
-    let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
+    const witnessListElementFieldString = 'witnessListElement' + (index + 1);
+    const witnessInterpreterLanguageCategoryFieldString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
+    const witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
+    const witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
 
-    let witnessListElementObj: DynamicMultiSelectList = hearingRequirements[witnessListElementFieldString];
+    const witnessListElementObj: DynamicMultiSelectList = hearingRequirements[witnessListElementFieldString];
 
     if (hearingRequirements.isAnyWitnessInterpreterRequired !== undefined && !hearingRequirements.isAnyWitnessInterpreterRequired) {
       hearingRequirements[witnessListElementFieldString] = null;

@@ -38,9 +38,9 @@ function extractHistoryDetails(historyEvents: any[]): HistoryEvent[] {
 }
 
 function generateSupplementaryId(): Record<string, Record<string, string>> {
-  let serviceId: Record<string, string> = {};
+  const serviceId: Record<string, string> = {};
   serviceId['HMCTSServiceId'] = 'BFA1';
-  let request: Record<string, Record<string, string>> = {};
+  const request: Record<string, Record<string, string>> = {};
   request['$set'] = serviceId;
   return request;
 }

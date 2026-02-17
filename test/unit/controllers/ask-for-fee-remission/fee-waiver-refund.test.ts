@@ -105,7 +105,7 @@ describe('Fee waiver Refund Controller', function () {
     });
 
     it('should reset values from other journeys if it present', async () => {
-      let application = req.session.appeal.application;
+      const application = req.session.appeal.application;
       application.lateRemissionOption = 'test value';
       application.lateAsylumSupportRefNumber = 'test value';
       application.lateHelpWithFeesOption = 'test value';

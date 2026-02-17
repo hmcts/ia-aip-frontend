@@ -70,7 +70,7 @@ function postHelpWithFeesRefNumber(updateAppealService: UpdateAppealService) {
       resetJourneyValues(appeal.application);
       await persistAppeal(appeal, dlrmFeeRemissionFlag);
       const defaultRedirect = paths.appealStarted.taskList;
-      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
+      const redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
     } catch (error) {
       next(error);

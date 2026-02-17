@@ -28,9 +28,10 @@ export default class PcqService {
     const uri = `${config.get('pcq.url')}${config.get('pcq.health')}`;
     try {
       const response = await axios.get(uri);
-      // tslint:disable:no-console
-      console.log('PCQ Health Response:' + response);
+      // eslint-disable-next-line no-console
+      console.log('PCQ Health Response:' + response.toString());
       const healthResponse = response.data;
+      // eslint-disable-next-line no-console
       console.log('PCQ Health Response Data:' + response.data);
       return healthResponse.status && healthResponse.status === 'UP';
     } catch (error) {

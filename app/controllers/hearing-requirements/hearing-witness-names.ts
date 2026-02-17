@@ -15,7 +15,7 @@ import {
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 function getWitnessNamesPage(req: Request, res: Response, next: NextFunction) {
   try {
-    let witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
+    const witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
     const summaryList = buildWitnessNamesList(witnessNames);
     const isShowingAddButton = checkWitnessLength(witnessNames);
 
@@ -33,7 +33,7 @@ function getWitnessNamesPage(req: Request, res: Response, next: NextFunction) {
 function postWitnessNamesPage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      let witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
+      const witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
       const validation = witnessesValidation(witnessNames);
       if (validation) {
         return renderPage(res, validation, witnessNames);
@@ -70,7 +70,7 @@ function addMoreWitnessPostAction() {
       if (!shouldValidateWhenSaveForLater(req.body, ['witnessName', 'witnessFamilyName'])) {
         return getConditionalRedirectUrl(req, res, paths.submitHearingRequirements.taskList + '?saved');
       }
-      let witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
+      const witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
       const validation = witnessNameValidation(req.body);
       if (validation) {
         return renderPage(res, validation, witnessNames);
@@ -92,14 +92,14 @@ function addMoreWitnessPostAction() {
 function removeWitnessPostAction() {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      let witnessNames: WitnessName[] = req.session.appeal.hearingRequirements.witnessNames || [];
+      const witnessNames: WitnessName[] = req.session.appeal.hearingRequirements.witnessNames || [];
       const nameToRemove: string = req.query.name as string;
 
       req.session.appeal.hearingRequirements.witnessNames = witnessNames.filter(name => formatWitnessName(name) !== nameToRemove);
 
       // remove the witness data
       for (let index = 0; index < 10; index++) {
-        let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, index.toString());
+        const witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, index.toString());
 
         if (witnessComponent && witnessComponent.witnessFullName && witnessComponent.witnessFullName === nameToRemove) {
           req.session.appeal.hearingRequirements[witnessComponent.witnessFieldString] = null;
@@ -112,10 +112,10 @@ function removeWitnessPostAction() {
 
       // relocate the witness data because of index change
       for (let index = 0; index < 10; index++) {
-        let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, index.toString());
+        const witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, index.toString());
 
         req.session.appeal.hearingRequirements.witnessNames.forEach((witnessObj, i) => {
-          let hearingRequirements = req.session.appeal.hearingRequirements;
+          const hearingRequirements = req.session.appeal.hearingRequirements;
           if (witnessComponent && witnessComponent.witnessFullName && witnessComponent.witnessFullName === formatWitnessName(witnessObj)) {
 
             hearingRequirements[('witness' + (i + 1))] = witnessComponent.witness;

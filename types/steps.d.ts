@@ -222,7 +222,7 @@ declare class Locator {
 declare function actor(customSteps?: {
   [action: string]: (this: CodeceptJS.I, ...args: any[]) => void
 }): CodeceptJS.I;
-// tslint:disable-next-line:unified-signatures
+// eslint-disable-next-line:unified-signatures
 declare function actor(customSteps?: any): CodeceptJS.I;
 declare function Feature(title: string, opts?: {}): FeatureConfig;
 declare const Scenario: {

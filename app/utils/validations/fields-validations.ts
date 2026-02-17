@@ -84,7 +84,7 @@ function homeOfficeNumberValidation(obj: object) {
    * A (CID) number with less than 9 digit will be padded with preceding zeros ( eg 123456 becomes 000123456).
    */
 
-  let homeOfficeNumber = String(obj['homeOfficeRefNumber']);
+  const homeOfficeNumber = String(obj['homeOfficeRefNumber']);
   if (homeOfficeNumber.length > 0 && homeOfficeNumber.length < 9 && parseInt(homeOfficeNumber, 10)) {
     obj['homeOfficeRefNumber'] = homeOfficeNumber.padStart(9, '0'); // pad number with leading zeros
   }

@@ -36,7 +36,7 @@ describe('Cases List Controller', () => {
     res = {
       render: sandbox.stub(),
       redirect: sandbox.stub()
-    } as Partial<Response>;
+    } as unknown as Partial<Response>;
 
     next = sandbox.stub() as any;
   });

@@ -123,7 +123,27 @@ withPipeline("nodejs", product, component) {
   }
 
   afterAlways('functionalTest:preview') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'accessibility-issues.json'
+    stage('Accessibility Check') {
+      try {
+        yarnBuilder.yarn('test:check-accessibility')
+      } catch (Error) {
+        unstable(message: "${STAGE_NAME} is unstable: " + Error.toString());
+      } finally {
+        yarnBuilder.yarn('generate-report')
+        publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "allure-report",
+                reportFiles          : 'index.html',
+                reportName           : 'Functional E2E Tests'
+        ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-report/**/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-results/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
+      }
+    }
   }
 }
 

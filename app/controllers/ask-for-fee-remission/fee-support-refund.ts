@@ -8,7 +8,7 @@ import { payLaterForApplicationNeeded } from '../../utils/payments-utils';
 import { remissionOptionsValidation } from '../../utils/validations/fields-validations';
 
 function getOptionsQuestion(appeal: Appeal) {
-  let remissionOption = appeal.application.lateRemissionOption || null;
+  const remissionOption = appeal.application.lateRemissionOption || null;
 
   return {
     title: i18n.pages.remissionOptionPage.refundTitle,

@@ -42,7 +42,7 @@ exports.config = {
       url: config.get('testUrl'),
       show: config.get('showTests'),
       chrome: {
-        ignoreHTTPSErrors: true
+        acceptInsecureCerts: true
       },
       host: 'ondemand.eu-central-1.saucelabs.com',
       port: 80,

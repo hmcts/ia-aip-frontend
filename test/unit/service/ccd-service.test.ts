@@ -10,60 +10,6 @@ describe('idam-service', () => {
   const headers = {} as SecurityHeaders;
   const userId = 'userId';
   const caseId = 'caseId';
-  const expectedCase = { caseId: 1 };
-  const elasticSearchResponse = {
-    length: 1,
-    cases: [ expectedCase ],
-    total: 1
-  };
-  let loadedCase;
-  let loadCaseStub;
-  let createCaseStub;
-
-  describe('loadOrCreateCase loads a case', () => {
-    const ccdService = new CcdService();
-
-    before(async () => {
-      loadCaseStub = sinon.stub(ccdService, 'loadCasesForUser');
-      loadCaseStub.withArgs(userId, headers).returns(new Promise((resolve) => {
-        resolve(elasticSearchResponse);
-      }));
-
-      createCaseStub = sinon.mock(ccdService).expects('createCase').never();
-
-      loadedCase = await ccdService.loadOrCreateCase(userId, headers);
-    });
-
-    it('loads the first case', () => {
-      expect(loadedCase).eq(expectedCase);
-    });
-
-    it('does not create a new case', () => {
-      createCaseStub.verify();
-    });
-  });
-
-  describe('loadOrCreateCase creates a case', () => {
-    const ccdService = new CcdService();
-
-    before(async () => {
-      loadCaseStub = sinon.stub(ccdService, 'loadCasesForUser');
-      loadCaseStub.withArgs(userId, headers).returns(new Promise((resolve) => {
-        resolve(elasticSearchResponse);
-      }));
-      createCaseStub = sinon.stub(ccdService, 'createCase');
-      createCaseStub.withArgs(userId, headers).returns(new Promise((resolve) => {
-        resolve(expectedCase);
-      }));
-
-      loadedCase = await ccdService.loadOrCreateCase(userId, headers);
-    });
-
-    it('creates a case', () => {
-      expect(loadedCase).eq(expectedCase);
-    });
-  });
-
   describe('createCase', () => {
     const ccdService = new CcdService();
 
@@ -193,8 +139,8 @@ describe('idam-service', () => {
       expect(postRequest).to.have.been.called;
     });
 
-    it('loadCasesForUser', async () => {
-      await ccdService.loadCasesForUser(userId, headers);
+    it('loadCasesListForUser', async () => {
+      await ccdService.loadCasesListForUser(userId, headers);
 
       expect(postRequest).to.have.been.called;
     });
@@ -213,6 +159,12 @@ describe('idam-service', () => {
 
     it('retrieveCaseHistoryV2', async () => {
       await ccdService.retrieveCaseHistoryV2(userId, caseId, headers);
+
+      expect(getRequest).to.have.been.called;
+    });
+
+    it('loadCaseById', async () => {
+      await ccdService.loadCaseById(userId, caseId, headers);
 
       expect(getRequest).to.have.been.called;
     });

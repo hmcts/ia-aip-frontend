@@ -111,6 +111,7 @@ describe('Confirmation Page Controller', () => {
         }
       } as Partial<Appeal>,
       cookies: {},
+      query: {},
       idam: {
         userDetails: {} as Partial<IdamDetails>
       },
@@ -1160,5 +1161,46 @@ describe('Confirmation Page Controller', () => {
         expect(stubRender.getCall(0).args[1].showPayLaterLink).to.equal(expected);
       });
     });
+  });
+
+  it('getApplicationOverview with caseId query param should call loadAppealByCaseId and render', async () => {
+    req.query = { caseId: '123' };
+    req.idam = {
+      userDetails: {
+        uid: 'anId',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer',
+        sub: 'email@test.com'
+      }
+    };
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.appealReferenceNumber = 'DRAFT';
+
+    const loadAppealByCaseIdStub = sandbox.stub().resolves();
+    updateAppealService.loadAppealByCaseId = loadAppealByCaseIdStub;
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    expect(loadAppealByCaseIdStub).to.have.been.calledWith('123', req);
+    expect(res.render).to.have.been.calledOnce;
+  });
+
+  it('getApplicationOverview without caseId and no appeal in session should redirect to cases list', async () => {
+    req.query = {};
+    req.session.appeal = {} as any;
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    expect(res.redirect).to.have.been.calledWith(paths.common.casesList);
+  });
+
+  it('getApplicationOverview without caseId and no appeal at all should redirect to cases list', async () => {
+    req.query = {};
+    req.session.appeal = undefined;
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    expect(res.redirect).to.have.been.calledWith(paths.common.casesList);
   });
 });

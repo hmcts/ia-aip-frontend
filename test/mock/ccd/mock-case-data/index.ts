@@ -40,6 +40,8 @@ import euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressA
 import euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES from './data/euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal-es';
 import ftpaOutOfTimeApplicationStarted from './data/ftpa-out-of-time-application-started';
 import ftpaOutOfTimeApplicationStartedES from './data/ftpa-out-of-time-application-started-es';
+import { multipleAppealCase1001, multipleAppealCase1002, multipleAppealCase1003 } from './data/multiple-appeals';
+import multipleAppealsES from './data/multiple-appeals-es';
 import outOfTimeDecisionGranted from './data/out-of-time-decision-granted';
 import outOfTimeDecisionGrantedES from './data/out-of-time-decision-granted-es';
 import outOfTimeDecisionInTime from './data/out-of-time-decision-in-time';
@@ -117,5 +119,9 @@ export default {
   appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES,
   appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppealES,
   euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES,
-  appealUpToFeeChoiceES
+  appealUpToFeeChoiceES,
+  multipleAppealsES,
+  multipleAppealCase1001,
+  multipleAppealCase1002,
+  multipleAppealCase1003
 };

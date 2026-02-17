@@ -34,7 +34,8 @@ const usersToCaseData: Record<string, any> = {
   '33': mockData.outOfTimeDecisionGrantedES,
   '34': mockData.outOfTimeDecisionRejectedES,
   '35': mockData.outOfTimeDecisionInTimeES,
-  '36': mockData.appealUpToFeeChoiceES
+  '36': mockData.appealUpToFeeChoiceES,
+  '100': mockData.multipleAppealsES
 };
 
 export async function setupLoadCasesES(server: Mockttp) {

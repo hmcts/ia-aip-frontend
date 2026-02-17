@@ -10,6 +10,7 @@ import {
   getFtpaApplicantType,
   getLatestUpdateRemissionDecionsEventHistory,
   getLatestUpdateTribunalDecisionHistory,
+  getStateName,
   hasPendingTimeExtension,
   isRemissionDecisionDecided,
   isUpdateTribunalDecide,
@@ -484,6 +485,19 @@ describe('utils', () => {
       const witnessNameFormatted: String = formatWitnessName(witnessName);
       const expected = 'GivenName1 GivenName2';
       expect(witnessNameFormatted).to.equals(expected);
+    });
+  });
+
+  describe('getStateName', () => {
+    it('should return the state name for a valid state id', () => {
+      expect(getStateName('appealStarted')).to.equal('Appeal started');
+      expect(getStateName('appealSubmitted')).to.equal('Appeal submitted');
+      expect(getStateName('awaitingReasonsForAppeal')).to.equal('Awaiting reasons for appeal');
+      expect(getStateName('decided')).to.equal('Decided');
+    });
+
+    it('should return the state id when state is not found', () => {
+      expect(getStateName('unknownState')).to.equal('unknownState');
     });
   });
 

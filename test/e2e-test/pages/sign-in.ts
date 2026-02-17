@@ -11,6 +11,17 @@ const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
 const { signInForUser } = require('./helper-functions');
 
+async function navigateFromCasesListToOverview(I) {
+  await I.waitInUrl(paths.common.casesList, 30);
+  const hasCases = await I.grabNumberOfVisibleElements('.govuk-table__body');
+  if (hasCases > 0) {
+    await I.click('View', '.govuk-table__body');
+  } else {
+    await I.click(i18n.pages.casesList.createNewAppeal);
+  }
+  await I.waitInUrl(paths.common.overview, 30);
+}
+
 module.exports = {
   signIn(I) {
     Given('I am on home page', () => {
@@ -39,13 +50,14 @@ module.exports = {
 
     When('I click Sign in to continue with your appeal after answering PCQ questions', async () => {
       await I.click('Sign in to continue with your appeal');
-      await I.waitInUrl('/appeal-overview', 30);
+      await navigateFromCasesListToOverview(I);
     });
 
     Given('I log in as an appellant ready to submit appeal', async () => {
       await I.fillField('#username', 'readyToSubmitAppealDONOTSUBMIT@mailnesia.com');
       await I.fillField('#password', 'Apassword123');
       await I.click('Sign in');
+      await navigateFromCasesListToOverview(I);
       await I.waitForText('Do this next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
@@ -54,6 +66,7 @@ module.exports = {
       await I.fillField('#username', currentUserDetails.email);
       await I.fillField('#password', currentUserDetails.password);
       await I.click('Sign in');
+      await navigateFromCasesListToOverview(I);
       await I.waitForText('Do this next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
@@ -62,6 +75,7 @@ module.exports = {
       await I.fillField('#username', 'ia_citizen8943692@hmcts.net');
       await I.fillField('#password', 'Apassword123');
       await I.click('Sign in');
+      await navigateFromCasesListToOverview(I);
       await I.waitForText('Nothing to do next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
@@ -69,12 +83,14 @@ module.exports = {
     Given('I have logged in', async () => {
       I.amOnPage(testUrl + paths.common.login);
       signInForUser('setupcase@example.com');
+      await navigateFromCasesListToOverview(I);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given(/^I have logged in as an appellant with email "([^"]*)"$/, async (email) => {
       I.amOnPage(testUrl + paths.common.login);
       signInForUser(email);
+      await navigateFromCasesListToOverview(I);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
@@ -146,6 +162,7 @@ module.exports = {
           break;
       }
 
+      await navigateFromCasesListToOverview(I);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
@@ -158,12 +175,14 @@ module.exports = {
       I.amOnPage(testUrl + paths.common.login);
       await createCitizenUser();
       await signInForUserFromThread();
+      await navigateFromCasesListToOverview(I);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given('I have logged back in for the e2e', async () => {
       I.amOnPage(testUrl + paths.common.login);
       await signInForUserFromThread();
+      await navigateFromCasesListToOverview(I);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
@@ -178,6 +197,7 @@ module.exports = {
         await progression.createCaseInStateFromThread(progression.State[appealState], appealType);
       }
       await signInForUserFromThread();
+      await navigateFromCasesListToOverview(I);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
   }

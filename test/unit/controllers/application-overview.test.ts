@@ -32,6 +32,7 @@ describe('Confirmation Page Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let resRenderStub: SinonStub;
   let next: sinon.SinonStub;
   const headers = {};
   let mockAuthenticationService: Partial<AuthenticationService>;
@@ -90,6 +91,7 @@ describe('Confirmation Page Controller', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    resRenderStub = sandbox.stub();
     mockAuthenticationService = {
       getSecurityHeaders: sandbox.stub().returns(headers)
     } as Partial<AuthenticationService>;
@@ -122,7 +124,7 @@ describe('Confirmation Page Controller', () => {
     } as Partial<Request>;
 
     res = {
-      render: sandbox.stub(),
+      render: resRenderStub,
       send: sandbox.stub(),
       redirect: sinon.spy()
     } as Partial<Response>;
@@ -143,7 +145,7 @@ describe('Confirmation Page Controller', () => {
   it('should setup the routes', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
     setupApplicationOverviewController(updateAppealService as UpdateAppealService);
-    expect(routerGetStub).to.have.been.calledWith(paths.common.overview);
+    expect(routerGetStub.calledWith(paths.common.overview)).to.equal(true);
   });
 
   it('getApplicationOverview should render application-overview.njk with options and IDAM name#2', async () => {
@@ -183,7 +185,7 @@ describe('Confirmation Page Controller', () => {
       completed: false
     }];
 
-    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: null,
       applicationNextStep: expectedNextStep,
@@ -273,7 +275,7 @@ describe('Confirmation Page Controller', () => {
       deadline: '13 March 2024'
     };
 
-    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'PA/12345/2025',
       applicationNextStep: appNextStep,
@@ -365,7 +367,7 @@ describe('Confirmation Page Controller', () => {
       deadline: '13 March 2024'
     };
 
-    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'PA/12345/2025',
       applicationNextStep: appNextStep,
@@ -429,7 +431,7 @@ describe('Confirmation Page Controller', () => {
       completed: false
     }];
 
-    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'appealNumber',
       applicationNextStep: expectedNextStep,
@@ -493,7 +495,7 @@ describe('Confirmation Page Controller', () => {
       completed: false
     }];
 
-    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'appealNumber',
       applicationNextStep: expectedNextStep,
@@ -570,7 +572,7 @@ describe('Confirmation Page Controller', () => {
       completed: false
     }];
 
-    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,
@@ -614,8 +616,8 @@ describe('Confirmation Page Controller', () => {
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-    expect(res.render).to.have.been.calledOnce;
-    expect(res.render).to.have.been.calledWith('application-overview.njk', sinon.match.has('showAskForFeeRemission', true));
+    expect(resRenderStub.callCount).to.equal(1);
+    expect(resRenderStub.calledWith('application-overview.njk', sinon.match.has('showAskForFeeRemission', true))).to.equal(true);
   });
 
   it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and entered name', async () => {
@@ -669,7 +671,7 @@ describe('Confirmation Page Controller', () => {
       completed: false
     }];
 
-    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
       name: 'Appellant Name',
       appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,
@@ -719,8 +721,8 @@ describe('Confirmation Page Controller', () => {
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-    expect(res.render).to.have.been.calledOnce;
-    expect(res.render).to.have.been.calledWith('application-overview.njk', sinon.match.has('showAskForSomethingInEndedState', true));
+    expect(resRenderStub.callCount).to.equal(1);
+    expect(resRenderStub.calledWith('application-overview.njk', sinon.match.has('showAskForSomethingInEndedState', true))).to.equal(true);
   });
 
   it('getApplicationOverview should catch an exception and call next()', async () => {
@@ -731,7 +733,7 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.appealReferenceNumber = 'appealNumber';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-    expect(next).to.have.been.calledOnce.calledWith(error);
+    expect(next.calledOnceWith(error)).to.equal(true);
   });
 
   it('getAppealRefNumber with appeal ref number', () => {
@@ -942,7 +944,7 @@ describe('Confirmation Page Controller', () => {
 
   it('getAppealRefNumber should return null for DRAFT reference', () => {
     const result = getAppealRefNumber('DRAFT');
-    expect(result).to.be.null;
+    expect(result).to.equal(null);
   });
 
   it('getAppealRefNumber should return the appeal reference number', () => {
@@ -952,12 +954,12 @@ describe('Confirmation Page Controller', () => {
 
   it('checkAppealEnded should return true for ENDED status', () => {
     const result = checkAppealEnded('ENDED');
-    expect(result).to.be.true;
+    expect(result).to.equal(true);
   });
 
   it('checkAppealEnded should return false for non-ENDED status', () => {
     const result = checkAppealEnded('SUBMITTED');
-    expect(result).to.be.false;
+    expect(result).to.equal(false);
   });
 
   it('getAppellantName should return name from session appeal details', () => {
@@ -975,7 +977,7 @@ describe('Confirmation Page Controller', () => {
 
   it('getHearingDetails should return null if no hearing details', () => {
     const result = getHearingDetails(req as Request);
-    expect(result).to.be.null;
+    expect(result).to.equal(null);
   });
 
   it('getHearingDetails should return hearing details if present', () => {
@@ -990,52 +992,52 @@ describe('Confirmation Page Controller', () => {
 
   it('checkEnableProvideMoreEvidenceSection should return true if state is pre-addendum and feature is enabled', () => {
     const result = checkEnableProvideMoreEvidenceSection(States.RESPONDENT_REVIEW.id, true);
-    expect(result).to.be.true;
+    expect(result).to.equal(true);
   });
 
   it('checkEnableProvideMoreEvidenceSection should return false if state is not in list and feature is not enabled', () => {
     const result = checkEnableProvideMoreEvidenceSection(States.AWAITING_RESPONDENT_EVIDENCE.id, false);
-    expect(result).to.be.false;
+    expect(result).to.equal(false);
   });
 
   it('showAppealRequestSection should return true if feature enabled and state is in list', () => {
     const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, true);
-    expect(result).to.be.true;
+    expect(result).to.equal(true);
   });
 
   it('showAppealRequestSection should return false if feature not enabled', () => {
     const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, false);
-    expect(result).to.be.false;
+    expect(result).to.equal(false);
   });
 
   it('showAppealRequestSectionInAppealEndedStatus should return true if feature enabled and appeal ended', () => {
     const result = showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, true);
-    expect(result).to.be.true;
+    expect(result).to.equal(true);
   });
 
   it('showAppealRequestSectionInAppealEndedStatus should return false if feature not enabled', () => {
     const result = showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, false);
-    expect(result).to.be.false;
+    expect(result).to.equal(false);
   });
 
   it('showHearingRequestSection should return true if feature enabled and state is in list', () => {
     const result = showHearingRequestSection(States.PREPARE_FOR_HEARING.id, true);
-    expect(result).to.be.true;
+    expect(result).to.equal(true);
   });
 
   it('showHearingRequestSection should return false if feature not enabled', () => {
     const result = showHearingRequestSection(States.PREPARE_FOR_HEARING.id, false);
-    expect(result).to.be.false;
+    expect(result).to.equal(false);
   });
 
   it('isAppealInProgress should return true if appeal is in progress', () => {
     const result = isAppealInProgress(States.APPEAL_SUBMITTED.id);
-    expect(result).to.be.true;
+    expect(result).to.equal(true);
   });
 
   it('isAppealInProgress should return false if appeal is not in progress', () => {
     const result = isAppealInProgress(States.APPEAL_STARTED.id);
-    expect(result).to.be.false;
+    expect(result).to.equal(false);
   });
 
   it('showFtpaApplicationLink should return false when appellant ftpa appeal is submitted', () => {

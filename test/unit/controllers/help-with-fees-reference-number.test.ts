@@ -21,7 +21,10 @@ describe('Help with fees reference number Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-
+  let submitStub: sinon.SinonStub;
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -48,17 +51,22 @@ describe('Help with fees reference number Controller', function () {
       } as any
     } as Partial<Request>;
 
+    submitStub = sandbox.stub();
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sandbox.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
 
     updateAppealService = {
-      submitEvent: sandbox.stub(),
-      submitEventRefactored: sandbox.stub().returns({
+      submitEvent: submitStub,
+      submitEventRefactored: submitRefactoredStub.returns({
         case_data: {
           helpWithFeesRefNumber: 'HWF12345'
         }
@@ -77,8 +85,8 @@ describe('Help with fees reference number Controller', function () {
       const middleware = [];
 
       setupHelpWithFeesReferenceNumberController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.helpWithFeesReferenceNumber);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.helpWithFeesReferenceNumber);
+      expect(routerGetStub.calledWith(paths.appealStarted.helpWithFeesReferenceNumber)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.helpWithFeesReferenceNumber)).to.equal(true);
     });
   });
 
@@ -86,7 +94,7 @@ describe('Help with fees reference number Controller', function () {
     it('should render appeal-application/fee-support/help-with-fees-reference-number.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await getHelpWithFeesRefNumber(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/help-with-fees-reference-number.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/help-with-fees-reference-number.njk', {
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         formAction: paths.appealStarted.helpWithFeesReferenceNumber,
         helpWithFeesReferenceNumber: null,
@@ -98,13 +106,13 @@ describe('Help with fees reference number Controller', function () {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
       await getHelpWithFeesRefNumber(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
       await getHelpWithFeesRefNumber(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
   });
 
@@ -123,7 +131,7 @@ describe('Help with fees reference number Controller', function () {
           localAuthorityLetters: null
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         application: {
           helpWithFeesRefNumber: 'HWF12345'
         }
@@ -131,9 +139,9 @@ describe('Help with fees reference number Controller', function () {
       req.body['helpWithFeesRefNumber'] = 'HWF12345';
       await postHelpWithFeesRefNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.application.helpWithFeesRefNumber).to.be.eql('HWF12345');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.helpWithFeesRefNumber).to.deep.equal('HWF12345');
+      expect(redirectStub.calledWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
     it('when save for later should validate and redirect task-list.njk', async () => {
@@ -150,7 +158,7 @@ describe('Help with fees reference number Controller', function () {
           localAuthorityLetters: null
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         application: {
           helpWithFeesRefNumber: 'HWF12345'
         }
@@ -159,9 +167,9 @@ describe('Help with fees reference number Controller', function () {
       req.body['saveForLater'] = 'saveForLater';
       await postHelpWithFeesRefNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.application.helpWithFeesRefNumber).to.be.eql('HWF12345');
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.helpWithFeesRefNumber).to.deep.equal('HWF12345');
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
@@ -178,7 +186,7 @@ describe('Help with fees reference number Controller', function () {
           localAuthorityLetters: null
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         application: {
           helpWithFeesRefNumber: 'HWF12345'
         }
@@ -187,10 +195,10 @@ describe('Help with fees reference number Controller', function () {
       req.body['helpWithFeesRefNumber'] = 'HWF12345';
       await postHelpWithFeesRefNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.application.helpWithFeesRefNumber).to.be.eql('HWF12345');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.helpWithFeesRefNumber).to.deep.equal('HWF12345');
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
     it('should fail validation if value is empty and render appeal-application/fee-support/help-with-fees-reference-number.njk with error', async () => {
@@ -204,8 +212,8 @@ describe('Help with fees reference number Controller', function () {
         text: 'Enter your Help with Fees reference number',
         href: '#helpWithFeesRefNumber'
       };
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledWith(
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
         'appeal-application/fee-support/help-with-fees-reference-number.njk',
         {
           errors: {
@@ -230,8 +238,8 @@ describe('Help with fees reference number Controller', function () {
         text: 'Your Help with Fees reference number must start with HWF, like HWF-A1B-23C',
         href: '#helpWithFeesRefNumber'
       };
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledWith(
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
         'appeal-application/fee-support/help-with-fees-reference-number.njk',
         {
           errors: {
@@ -255,23 +263,23 @@ describe('Help with fees reference number Controller', function () {
 
       await postHelpWithFeesRefNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should catch exception and call next with the error', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postHelpWithFeesRefNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
       await postHelpWithFeesRefNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should reset values from other journeys if it present', async () => {
@@ -293,14 +301,14 @@ describe('Help with fees reference number Controller', function () {
           localAuthorityLetters: null
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         application: {
           helpWithFeesRefNumber: 'HWF12345'
         }
       } as Appeal);
       req.body['helpWithFeesRefNumber'] = 'HWF12345';
       await postHelpWithFeesRefNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
     });
   });
 });

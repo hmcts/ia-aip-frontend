@@ -22,7 +22,8 @@ describe('Supporting Evidence Upload Controller', () => {
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
   const logger: Logger = new Logger();
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -46,10 +47,13 @@ describe('Supporting Evidence Upload Controller', () => {
     updateAppealService = { submitEvent: sandbox.stub() };
     documentManagementService = { uploadFile: sandbox.stub(), deleteFile: sandbox.stub() };
 
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      send: sandbox.stub(),
-      redirect: sinon.spy()
+      render: renderStub,
+      redirect: redirectStub,
+      send: sandbox.stub()
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -70,15 +74,15 @@ describe('Supporting Evidence Upload Controller', () => {
       };
       const middleware = [];
       setupReasonsForAppealController(middleware, deps);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.supportingEvidence, middleware);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.supportingEvidence, middleware);
+      expect(routerGetStub.calledWith(paths.awaitingReasonsForAppeal.supportingEvidence, middleware)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.awaitingReasonsForAppeal.supportingEvidence, middleware)).to.equal(true);
     });
   });
 
   describe('getAdditionalSupportingEvidenceQuestionPage', () => {
     it('should render reasons-for-appeal/supporting-evidence-page.njk', () => {
       getAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-page.njk', {
         previousPage: paths.awaitingReasonsForAppeal.decision,
         askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime'))
 
@@ -87,9 +91,9 @@ describe('Supporting Evidence Upload Controller', () => {
 
     it('getAdditionalSupportingEvidenceQuestionPage should catch exception and call next with the error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -103,7 +107,7 @@ describe('Supporting Evidence Upload Controller', () => {
       };
 
       postAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-page.njk', {
         error: { answer: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
@@ -115,22 +119,22 @@ describe('Supporting Evidence Upload Controller', () => {
       req.body = { 'answer': 'no' };
 
       postAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.awaitingReasonsForAppeal.checkAndSend);
+      expect(redirectStub.calledOnceWith(paths.awaitingReasonsForAppeal.checkAndSend)).to.equal(true);
     });
 
     it('when yes is selected should validate and redirect to the supporting-evidence-upload page', async () => {
       req.body = { 'answer': 'yes' };
 
       postAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceUpload);
+      expect(redirectStub.calledOnceWith(paths.awaitingReasonsForAppeal.supportingEvidenceUpload)).to.equal(true);
     });
 
     it('postAdditionalSupportingEvidenceQuestionPage should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'answer': 'yes' };
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       postAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

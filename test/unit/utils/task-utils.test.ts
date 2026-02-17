@@ -328,12 +328,12 @@ describe('getStatus', () => {
 
     appealApplicationStatus(appeal, true);
 
-    expect(appeal.application.remissionOption).to.be.null;
-    expect(appeal.application.asylumSupportRefNumber).to.be.null;
-    expect(appeal.application.helpWithFeesOption).to.be.null;
-    expect(appeal.application.helpWithFeesRefNumber).to.be.null;
-    expect(appeal.application.localAuthorityLetters).to.be.null;
-    expect(appeal.application.feeSupportPersisted).to.be.false;
+    expect(appeal.application.remissionOption).to.equal(null);
+    expect(appeal.application.asylumSupportRefNumber).to.equal(null);
+    expect(appeal.application.helpWithFeesOption).to.equal(null);
+    expect(appeal.application.helpWithFeesRefNumber).to.equal(null);
+    expect(appeal.application.localAuthorityLetters).to.equal(null);
+    expect(appeal.application.feeSupportPersisted).to.equal(false);
   });
 
 });

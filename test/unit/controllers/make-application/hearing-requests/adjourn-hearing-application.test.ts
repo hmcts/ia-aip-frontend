@@ -48,7 +48,7 @@ describe('Hearing application controllers setup', () => {
 
       getAdjournHearingApplication(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -59,7 +59,7 @@ describe('Hearing application controllers setup', () => {
 
       postAdjournHearingApplication(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 });

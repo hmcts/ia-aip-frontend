@@ -18,6 +18,9 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonSpy;
+  let submit: sinon.SinonStub;
   const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
     {
       id: 'id1',
@@ -38,9 +41,10 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
       }
     }
   ];
-
+  let deleteFile: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    deleteFile = sandbox.stub();
     req = {
       body: {},
       cookies: {
@@ -62,13 +66,17 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
         } as Partial<Appeal>
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.spy();
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
-    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
-    documentManagementService = { deleteFile: sandbox.stub() } as Partial<DocumentManagementService>;
+    submit = sandbox.stub();
+    updateAppealService = { submitEventRefactored: submit } as Partial<UpdateAppealService>;
+    documentManagementService = { deleteFile: deleteFile } as Partial<DocumentManagementService>;
   });
 
   afterEach(() => {
@@ -82,8 +90,8 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
       const middleware: Middleware[] = [];
 
       setupCQAnythingElseQuestionController(middleware, updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService);
-      expect(routerGetStub).to.have.been.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.anythingElseQuestionPage}`);
-      expect(routerPostStub).to.have.been.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.anythingElseQuestionPage}`);
+      expect(routerGetStub.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.anythingElseQuestionPage}`)).to.equal(true);
+      expect(routerPostStub.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.anythingElseQuestionPage}`)).to.equal(true);
     });
   });
 
@@ -102,7 +110,7 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
       ];
       getAnythingElseQuestionPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
+      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
         {
           previousPage: paths.awaitingClarifyingQuestionsAnswers.questionsList,
           pageTitle: anythingElseQuestion.value.question,
@@ -118,9 +126,9 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getAnythingElseQuestionPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -128,14 +136,14 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
     it('should fail validation and render template with errors', async () => {
       await postAnythingElseQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk');
+      expect(renderStub.calledWith('templates/radio-question-page.njk')).to.equal(true);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'true';
       await postAnythingElseQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage);
+      expect(redirectStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage)).to.equal(true);
     });
 
     it('should validate, delete evidene, and redirect to questions list page', async () => {
@@ -160,9 +168,9 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
       req.body['answer'] = 'false';
       await postAnythingElseQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(documentManagementService.deleteFile).to.not.have.been.called;
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList);
+      expect(deleteFile.called).to.equal(false);
+      expect(submit.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList)).to.equal(true);
     });
 
     it('should validate, delete evidence, and redirect to questions list page', async () => {
@@ -187,17 +195,17 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
       req.body['answer'] = 'false';
       await postAnythingElseQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(documentManagementService.deleteFile).to.have.been.calledOnce;
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList);
+      expect(deleteFile.callCount).to.equal(1);
+      expect(submit.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postAnythingElseQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

@@ -26,6 +26,11 @@ describe('Out of time controller', () => {
     fileId: 'someUUID',
     name: 'filename'
   };
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let uploadStub: sinon.SinonStub;
+  let deleteStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -53,16 +58,24 @@ describe('Out of time controller', () => {
       } as any
     } as Partial<Request>;
 
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      locals: sandbox.spy(),
-      render: sandbox.stub(),
+      locals: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sandbox.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
+    updateAppealService = {
+      submitEventRefactored: submitRefactoredStub
+    } as Partial<UpdateAppealService>;
+    uploadStub = sandbox.stub();
+    deleteStub = sandbox.stub();
     next = sandbox.stub();
-    updateAppealService = { submitEventRefactored: sandbox.stub() };
-    documentManagementService = { uploadFile: sandbox.stub(), deleteFile: sandbox.stub() };
+    documentManagementService = { uploadFile: uploadStub, deleteFile: deleteStub };
   });
 
   afterEach(() => {
@@ -80,22 +93,22 @@ describe('Out of time controller', () => {
         updateAppealService: updateAppealServiceDependency,
         documentManagementService: documentManagementServiceDependency
       });
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.appealLate, middleware);
-      expect(routerPostStub).to.have.been.calledWith(paths.appealStarted.appealLate, middleware);
+      expect(routerGetStub.calledWith(paths.appealStarted.appealLate, middleware)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.appealStarted.appealLate, middleware)).to.equal(true);
     });
   });
 
   describe('getAppealLate', () => {
     it('should render home-office-letter-sent.njk', () => {
       getAppealLate(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk');
+      expect(renderStub.calledWith('appeal-application/home-office/appeal-late.njk')).to.equal(true);
     });
 
     it('should catch exception and call next with the error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getAppealLate(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -118,7 +131,7 @@ describe('Out of time controller', () => {
       };
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
+      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
     });
 
     it('should validate and upload a file and redirect to check and send page', async () => {
@@ -140,19 +153,19 @@ describe('Out of time controller', () => {
           lateAppeal
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         application: {
           lateAppeal
         }
       } as Appeal);
 
-      documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
+      documentManagementService.uploadFile = uploadStub.returns(documentUploadResponse);
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
-      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(evidence);
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.lateAppeal.reason).to.equal(whyAmLate);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.deep.equal(evidence);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
     it('should validate, delete previous evidence, upload new evidence and redirect to check and send page', async () => {
@@ -176,20 +189,20 @@ describe('Out of time controller', () => {
           lateAppeal
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         application: {
           lateAppeal
         }
       } as Appeal);
-      documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
+      documentManagementService.uploadFile = uploadStub.returns(documentUploadResponse);
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, evidenceExample.fileId);
-      expect(documentManagementService.uploadFile).to.have.been.calledWith(req);
-      expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
-      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(evidence);
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(deleteStub.calledWith(req, evidenceExample.fileId)).to.equal(true);
+      expect(uploadStub.calledWith(req)).to.equal(true);
+      expect(req.session.appeal.application.lateAppeal.reason).to.equal(whyAmLate);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.deep.equal(evidence);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect to CYA and reset isEdit flag', async () => {
@@ -211,17 +224,17 @@ describe('Out of time controller', () => {
           lateAppeal
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         application: {
           lateAppeal
         }
       } as Appeal);
-      documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
+      documentManagementService.uploadFile = uploadStub.returns(documentUploadResponse);
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
     it('Should display validation error LIMIT_FILE_SIZE and render appeal-application/home-office/appeal-late.njk', async () => {
       // Because the file size is being overriden on the development config for testing purposes
@@ -237,7 +250,7 @@ describe('Out of time controller', () => {
       req.session.appeal.appealOutOfCountry = 'Yes';
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/appeal-late.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/appeal-late.njk', {
         appealLateReason: 'My explanation why am late',
         evidence: evidenceExample,
         error: { uploadFile: expectedError },
@@ -258,7 +271,7 @@ describe('Out of time controller', () => {
       req.session.appeal.appealOutOfCountry = 'Yes';
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/appeal-late.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/appeal-late.njk', {
         appealLateReason: 'My explanation why am late',
         evidence: null,
         error: { uploadFile: expectedError },
@@ -270,9 +283,9 @@ describe('Out of time controller', () => {
 
     it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -291,9 +304,9 @@ describe('Out of time controller', () => {
       req.session.appeal.documentMap = [ documentMap ];
 
       await postAppealLateDeleteFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, evidenceExample.fileId);
-      expect(req.session.appeal.application.lateAppeal.evidence).to.be.undefined;
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk', {
+      expect(deleteStub.calledWith(req, evidenceExample.fileId)).to.equal(true);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.equal(undefined);
+      expect(renderStub).to.be.calledWith('appeal-application/home-office/appeal-late.njk', {
         appealLateReason: undefined,
         error: { 'appeal-late': expectedError },
         errorList: [ expectedError ],
@@ -325,10 +338,10 @@ describe('Out of time controller', () => {
       } as Appeal);
       await postAppealLateDeleteFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, evidenceExample.fileId);
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.application.lateAppeal.evidence).to.be.undefined;
-      expect(res.redirect).to.have.been.called;
+      expect(deleteStub.calledWith(req, evidenceExample.fileId)).to.equal(true);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.equal(undefined);
+      expect(redirectStub.called).to.equal(true);
     });
 
     it('postAppealLateDeleteFile should catch exception and call next with the error', async () => {
@@ -338,9 +351,9 @@ describe('Out of time controller', () => {
       req.session.appeal.documentMap = [ documentMap ];
 
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postAppealLateDeleteFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

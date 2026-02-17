@@ -36,7 +36,8 @@ describe('Provide more evidence controller', () => {
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   const file = {
     originalname: 'file.png',
     mimetype: 'type'
@@ -63,10 +64,13 @@ describe('Provide more evidence controller', () => {
         }
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy(),
-      locals: {}
+      render: renderStub,
+      locals: {},
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
     updateAppealService = {
@@ -88,14 +92,14 @@ describe('Provide more evidence controller', () => {
       const middleware: Middleware[] = [];
 
       setupProvideMoreEvidenceController(middleware, updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.provideMoreEvidenceForm);
-      expect(routerPostStub).to.have.been.calledWith(paths.common.provideMoreEvidenceUploadFile);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.provideMoreEvidenceDeleteFile);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.provideMoreEvidenceCheck);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.provideMoreEvidenceConfirmation);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.yourEvidence);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.whyEvidenceLate);
-      expect(routerPostStub).to.have.been.calledWith(paths.common.whyEvidenceLate);
+      expect(routerGetStub.calledWith(paths.common.provideMoreEvidenceForm)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.common.provideMoreEvidenceUploadFile)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.provideMoreEvidenceDeleteFile)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.provideMoreEvidenceCheck)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.provideMoreEvidenceConfirmation)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.yourEvidence)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.whyEvidenceLate)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.common.whyEvidenceLate)).to.equal(true);
     });
   });
 
@@ -105,16 +109,16 @@ describe('Provide more evidence controller', () => {
       req.params.id = '1';
       getProvideMoreEvidence(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/multiple-evidence-upload-page.njk');
+      expect(renderStub.calledWith('templates/multiple-evidence-upload-page.njk')).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       req.params.id = '1';
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getProvideMoreEvidence(req as Request, res as Response, next);
 
-      expect(next).to.have.been.called.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -125,7 +129,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.appealStatus = States.DECIDED.id;
       getReasonForLateEvidence(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
+      expect(redirectStub.calledWith(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`)).to.equal(true);
     });
 
     it('should render for addendum evidence', () => {
@@ -134,7 +138,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.addendumEvidence = [{ fileId: '1', name: 'name' } as AdditionalEvidenceDocument];
       getReasonForLateEvidence(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('upload-evidence/reason-for-late-evidence-page.njk');
+      expect(renderStub.calledWith('upload-evidence/reason-for-late-evidence-page.njk')).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
@@ -142,10 +146,10 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.appealStatus = States.DECISION.id;
       req.session.appeal.addendumEvidence = [{ fileId: '1', name: 'name' } as AdditionalEvidenceDocument];
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getReasonForLateEvidence(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -155,7 +159,7 @@ describe('Provide more evidence controller', () => {
       res.locals.errorCode = 'anError';
       postReasonForLateEvidence(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
+      expect(redirectStub.calledWith(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`)).to.equal(true);
     });
 
     it('should redirect to \'/why-evidence-late\' with error code, if no reason for late evidence is provided', () => {
@@ -163,7 +167,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.addendumEvidence = [{ fileId: '1', name: 'name' } as AdditionalEvidenceDocument];
       postReasonForLateEvidence(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.common.whyEvidenceLate}?error=reasonForLateEvidence`);
+      expect(redirectStub.calledWith(`${paths.common.whyEvidenceLate}?error=reasonForLateEvidence`)).to.equal(true);
     });
 
     it('should redirect to \'/provide-more-evidence-check\'', () => {
@@ -171,7 +175,7 @@ describe('Provide more evidence controller', () => {
       req.body.whyEvidenceLate = 'Reason for late evidence';
       postReasonForLateEvidence(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.common.provideMoreEvidenceCheck);
+      expect(redirectStub.calledWith(paths.common.provideMoreEvidenceCheck)).to.equal(true);
     });
 
     it('should set addendum evidence description with reason for late evidence', () => {
@@ -185,10 +189,10 @@ describe('Provide more evidence controller', () => {
     it('should catch error and call next with error', () => {
       req.params.id = '1';
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       postReasonForLateEvidence(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -196,7 +200,7 @@ describe('Provide more evidence controller', () => {
 
     it('should catch an error and redirect with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       const file = {
         originalname: 'file.png',
         mimetype: 'type'
@@ -204,7 +208,7 @@ describe('Provide more evidence controller', () => {
       req.file = file as Express.Multer.File;
       postProvideMoreEvidence(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -212,7 +216,7 @@ describe('Provide more evidence controller', () => {
 
     it('should catch an error and redirect with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       const documentUploadResponse: DocumentUploadResponse = {
         fileId: 'someUUID',
         name: 'file.png'
@@ -226,7 +230,7 @@ describe('Provide more evidence controller', () => {
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
       await uploadProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
 
     it('should upload file when additional evidence', async () => {
@@ -251,8 +255,8 @@ describe('Provide more evidence controller', () => {
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
 
       await uploadProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect((req.session.appeal.additionalEvidence || [])[0].fileId === documentUploadResponse.fileId);
-      expect((req.session.appeal.additionalEvidence || [])[0].name === documentUploadResponse.name);
+      expect(req.session.appeal.additionalEvidence[0].fileId).to.equal(documentUploadResponse.fileId);
+      expect(req.session.appeal.additionalEvidence[0].name).to.equal(documentUploadResponse.name);
     });
 
     it('should upload file when addendum evidence and feature flag enabled', async () => {
@@ -278,8 +282,8 @@ describe('Provide more evidence controller', () => {
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
 
       await uploadProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect((req.session.appeal.addendumEvidence || [])[0].fileId === documentUploadResponse.fileId);
-      expect((req.session.appeal.addendumEvidence || [])[0].name === documentUploadResponse.name);
+      expect(req.session.appeal.addendumEvidence[0].fileId).to.equal(documentUploadResponse.fileId);
+      expect(req.session.appeal.addendumEvidence[0].name).to.equal(documentUploadResponse.name);
     });
 
     it('should redirect to appeal overview page when addendum evidence and feature flag disabled', async () => {
@@ -295,7 +299,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.appealStatus = States.PRE_HEARING.id;
 
       await uploadProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
+      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
     });
 
   });
@@ -311,7 +315,7 @@ describe('Provide more evidence controller', () => {
 
       await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.common.provideMoreEvidenceConfirmation);
+      expect(redirectStub.calledWith(paths.common.provideMoreEvidenceConfirmation)).to.equal(true);
     });
 
     it('should redirect to provide-more-evidence confirmation page when addendum evidence and feature flag enabled', async () => {
@@ -325,7 +329,7 @@ describe('Provide more evidence controller', () => {
 
       await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.common.provideMoreEvidenceConfirmation);
+      expect(redirectStub.calledWith(paths.common.provideMoreEvidenceConfirmation)).to.equal(true);
     });
 
     it('should redirect to appeal overview page when addendum evidence and feature flag disabled', async () => {
@@ -339,12 +343,12 @@ describe('Provide more evidence controller', () => {
 
       await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
+      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
     });
 
     it('should catch an error and redirect with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       const file = {
         originalname: 'file.png',
         mimetype: 'type'
@@ -353,7 +357,7 @@ describe('Provide more evidence controller', () => {
 
       await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -407,7 +411,7 @@ describe('Provide more evidence controller', () => {
 
       expect(req.session.appeal.additionalEvidence.length).to.eq(1);
       expect(req.session.appeal.documentMap.length).to.eq(1);
-      expect(res.redirect).to.have.been.calledWith(paths.common.provideMoreEvidenceForm);
+      expect(redirectStub.calledWith(paths.common.provideMoreEvidenceForm)).to.equal(true);
     });
   });
 
@@ -415,14 +419,14 @@ describe('Provide more evidence controller', () => {
     it('should render', () => {
       getConfirmation(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/confirmation-page.njk');
+      expect(renderStub.calledWith('templates/confirmation-page.njk')).to.equal(true);
     });
 
     it('should render for updload addendum evidence', () => {
       req.session.appeal.appealStatus = States.PRE_HEARING.id;
       getConfirmation(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/confirmation-page.njk');
+      expect(renderStub.calledWith('templates/confirmation-page.njk')).to.equal(true);
     });
   });
 
@@ -432,7 +436,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.additionalEvidenceDocuments = [];
       getAdditionalEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', {
+      expect(renderStub).to.be.calledWith('templates/check-and-send.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
         previousPage: paths.common.overview,
         summaryLists: summaryList
@@ -446,7 +450,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.additionalEvidenceDocuments = [];
       getLrAdditionalEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+      expect(renderStub).to.be.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
         description: i18n.pages.provideMoreEvidence.yourEvidence.description,
         previousPage: paths.common.overview,
@@ -461,7 +465,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.addendumEvidenceDocuments = [];
       getAddendumEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+      expect(renderStub).to.be.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.newEvidence.title,
         description: i18n.pages.provideMoreEvidence.newEvidence.description,
         previousPage: paths.common.overview,
@@ -476,7 +480,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.addendumEvidenceDocuments = [];
       getAppellantAddendumEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+      expect(renderStub).to.be.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.yourAddendumEvidence.title,
         description: i18n.pages.provideMoreEvidence.yourAddendumEvidence.description,
         previousPage: paths.common.overview,
@@ -539,7 +543,7 @@ describe('Provide more evidence controller', () => {
       ];
       const docs: Evidence[] = getUploadedAddendumEvidenceDocuments(req as Request, 'uploadedBy');
 
-      expect(docs).to.be.empty;
+      expect(docs).to.have.lengthOf(0);;
     });
   });
 
@@ -549,7 +553,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.addendumEvidenceDocuments = [];
       getHomeOfficeEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+      expect(renderStub).to.be.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.homeOfficeEvidence.title,
         description: i18n.pages.provideMoreEvidence.homeOfficeEvidence.description,
         previousPage: paths.common.overview,
@@ -615,7 +619,7 @@ describe('Provide more evidence controller', () => {
 
       const result = buildAdditionalEvidenceDocumentsSummaryList(mockEvidenceDocuments);
 
-      expect(result[0].summaryRows).to.be.empty;
+      expect(result[0].summaryRows).to.have.lengthOf(0);;
     });
   });
 
@@ -706,7 +710,7 @@ describe('Provide more evidence controller', () => {
 
       const result = buildAddendumEvidenceDocumentsSummaryList(mockEvidenceDocuments);
 
-      expect(result).to.be.empty;
+      expect(result).to.have.lengthOf(0);;
     });
   });
 
@@ -880,31 +884,31 @@ describe('Provide more evidence controller', () => {
     it('should call next if no multer errors', () => {
       validate(paths.common.provideMoreEvidenceForm)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.called;
+      expect(next.called).to.equal(true);
     });
 
     it('should redirect to \'/provide-more-evidence\' with error code', async () => {
       res.locals.errorCode = 'anError';
       validate(paths.common.provideMoreEvidenceForm)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.called;
+      expect(redirectStub.called).to.equal(true);
     });
 
     it('should redirect to \'/why-evidence-late\' with error code', async () => {
       res.locals.errorCode = 'anError';
       validate(paths.common.whyEvidenceLate)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.called;
+      expect(redirectStub.called).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       res.locals.errorCode = 'anError';
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
 
       validate(paths.common.provideMoreEvidenceForm)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 });

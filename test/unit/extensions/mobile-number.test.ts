@@ -51,10 +51,10 @@ describe('Joi MobilePhoneNumber Extension', () => {
       });
 
       validationResults.forEach(result => {
-        expect(result).to.be.undefined;
+        expect(result).to.equal(undefined);
       });
 
-      expect(schema.validate(undefined).error).to.be.undefined;
+      expect(schema.validate(undefined).error).to.equal(undefined);
 
     });
   });
@@ -64,7 +64,7 @@ describe('Joi MobilePhoneNumber Extension', () => {
 
     it('string.empty - when string provided was empty', () => {
       const schema = joi.mobilePhoneNumber();
-      expect(schema.validate('').error.details[0].type).to.be.eq('string.empty');
+      expect(schema.validate('').error.details[0].type).to.equal('string.empty');
     });
 
     it('string.mobilePhoneNumber.invalid.string - when string provided was not a valid phone', () => {
@@ -85,7 +85,7 @@ describe('Joi MobilePhoneNumber Extension', () => {
       });
 
       validationResults.forEach(result => {
-        expect(result.details[0].type).to.be.eq('string.mobilePhoneNumber.invalid.string');
+        expect(result.details[0].type).to.equal('string.mobilePhoneNumber.invalid.string');
       });
     });
 
@@ -106,7 +106,7 @@ describe('Joi MobilePhoneNumber Extension', () => {
       });
 
       validationResults.forEach(result => {
-        expect(result.details[0].type).to.be.eq('string.mobilePhoneNumber.invalid.mobile');
+        expect(result.details[0].type).to.equal('string.mobilePhoneNumber.invalid.mobile');
       });
     });
   });
@@ -117,19 +117,19 @@ describe('Joi MobilePhoneNumber Extension', () => {
 
     it('formats by default', () => {
       schema = joi.mobilePhoneNumber();
-      expect(schema.validate('07123456789').value).to.be.eq('+447123456789');
+      expect(schema.validate('07123456789').value).to.equal('+447123456789');
     });
 
     describe('e164', () => {
 
       it('formats when format is specified', () => {
         schema = joi.mobilePhoneNumber().format('e164');
-        expect(schema.validate('07123456789').value).to.be.eq('+447123456789');
+        expect(schema.validate('07123456789').value).to.equal('+447123456789');
       });
 
       it('formats when format is specified and country', () => {
         schema = joi.mobilePhoneNumber().format('e164').defaultCountry('BE');
-        expect(schema.validate('494322456').value).to.be.eq('+32494322456');
+        expect(schema.validate('494322456').value).to.equal('+32494322456');
       });
     });
 
@@ -137,24 +137,24 @@ describe('Joi MobilePhoneNumber Extension', () => {
 
       it('formats when format is specified', () => {
         schema = joi.mobilePhoneNumber().format('international');
-        expect(schema.validate('07123456789').value).to.be.eq('+44 7123 456789');
+        expect(schema.validate('07123456789').value).to.equal('+44 7123 456789');
       });
 
       it('formats when format is specified and country', () => {
         schema = joi.mobilePhoneNumber().format('international').defaultCountry('BE');
-        expect(schema.validate('494322456').value).to.be.eq('+32 494 32 24 56');
+        expect(schema.validate('494322456').value).to.equal('+32 494 32 24 56');
       });
     });
 
     describe('national', () => {
       it('formats when format is specified', () => {
         schema = joi.mobilePhoneNumber().format('national');
-        expect(schema.validate('07123456789').value).to.be.eq('07123 456789');
+        expect(schema.validate('07123456789').value).to.equal('07123 456789');
       });
 
       it('formats when format is specified and country', () => {
         schema = joi.mobilePhoneNumber().format('national').defaultCountry('BE');
-        expect(schema.validate('494322456').value).to.be.eq('0494 32 24 56');
+        expect(schema.validate('494322456').value).to.equal('0494 32 24 56');
       });
     });
 
@@ -162,12 +162,12 @@ describe('Joi MobilePhoneNumber Extension', () => {
 
       it('formats when format is specified', () => {
         schema = joi.mobilePhoneNumber().format('rfc3966');
-        expect(schema.validate('07123456789').value).to.be.eq('tel:+44-7123-456789');
+        expect(schema.validate('07123456789').value).to.equal('tel:+44-7123-456789');
       });
 
       it('formats when format is specified and country', () => {
         schema = joi.mobilePhoneNumber().format('rfc3966').defaultCountry('BE');
-        expect(schema.validate('494322456').value).to.be.eq('tel:+32-494-32-24-56');
+        expect(schema.validate('494322456').value).to.equal('tel:+32-494-32-24-56');
       });
 
     });

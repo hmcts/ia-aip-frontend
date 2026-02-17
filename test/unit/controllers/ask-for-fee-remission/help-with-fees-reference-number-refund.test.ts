@@ -18,7 +18,8 @@ describe('Help with fees reference number refund Controller', function () {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -45,10 +46,13 @@ describe('Help with fees reference number refund Controller', function () {
       } as any
     } as Partial<Request>;
 
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sandbox.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -74,14 +78,14 @@ describe('Help with fees reference number refund Controller', function () {
       const middleware = [];
 
       setupHelpWithFeesReferenceNumberRefundController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealSubmitted.helpWithFeesReferenceNumberRefund);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealSubmitted.helpWithFeesReferenceNumberRefund);
+      expect(routerGetStub.calledWith(paths.appealSubmitted.helpWithFeesReferenceNumberRefund)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealSubmitted.helpWithFeesReferenceNumberRefund)).to.equal(true);
     });
 
     it('should render appeal-application/fee-support/help-with-fees-reference-number.njk', async () => {
       await getHelpWithFeesRefNumber(req as Request, res as Response, next);
       const helpWithFeesReferenceNumber = null;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/help-with-fees-reference-number.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/help-with-fees-reference-number.njk', {
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         formAction: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
         helpWithFeesReferenceNumber,
@@ -93,24 +97,24 @@ describe('Help with fees reference number refund Controller', function () {
     it('should validate and redirect to CYA page', async () => {
       req.body['helpWithFeesRefNumber'] = 'HWF-111';
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
-      expect(req.session.appeal.application.lateHelpWithFeesRefNumber).to.be.eql('HWF-111');
-      expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.checkYourAnswersRefund);
+      expect(req.session.appeal.application.lateHelpWithFeesRefNumber).to.deep.equal('HWF-111');
+      expect(redirectStub.calledWith(paths.appealSubmitted.checkYourAnswersRefund)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
       req.body['helpWithFeesRefNumber'] = 'HWF-111';
       req.query = { 'edit': '' };
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
-      expect(req.session.appeal.application.lateHelpWithFeesRefNumber).to.be.eql('HWF-111');
-      expect(res.redirect).to.have.been.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.lateHelpWithFeesRefNumber).to.deep.equal('HWF-111');
+      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {
       req.query = { 'edit': '' };
       await getHelpWithFeesRefNumber(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/help-with-fees-reference-number.njk');
+      expect(renderStub.calledOnceWith('appeal-application/fee-support/help-with-fees-reference-number.njk')).to.equal(true);
     });
 
     it('should fail validation if value is empty and render appeal-application/fee-support/help-with-fees-reference-number.njk with error', async () => {
@@ -122,7 +126,7 @@ describe('Help with fees reference number refund Controller', function () {
         href: '#helpWithFeesRefNumber'
       };
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith(
+      expect(renderStub).to.be.calledWith(
         'appeal-application/fee-support/help-with-fees-reference-number.njk',
         {
           errors: {
@@ -145,7 +149,7 @@ describe('Help with fees reference number refund Controller', function () {
         href: '#helpWithFeesRefNumber'
       };
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith(
+      expect(renderStub).to.be.calledWith(
         'appeal-application/fee-support/help-with-fees-reference-number.njk',
         {
           errors: {
@@ -161,9 +165,9 @@ describe('Help with fees reference number refund Controller', function () {
 
     it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should reset values from other journeys if it present', async () => {
@@ -176,8 +180,8 @@ describe('Help with fees reference number refund Controller', function () {
       application.lateLocalAuthorityLetters = [];
 
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
-      expect(application.lateAsylumSupportRefNumber).to.be.null;
-      expect(application.lateLocalAuthorityLetters).to.be.null;
+      expect(application.lateAsylumSupportRefNumber).to.equal(null);
+      expect(application.lateLocalAuthorityLetters).to.equal(null);
     });
   });
 
@@ -193,12 +197,12 @@ describe('Help with fees reference number refund Controller', function () {
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await getHelpWithFeesRefNumber(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
   });
 
@@ -207,7 +211,7 @@ describe('Help with fees reference number refund Controller', function () {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
       await getHelpWithFeesRefNumber(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

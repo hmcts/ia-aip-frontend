@@ -16,7 +16,7 @@ describe('launchDarkly-service', () => {
     const firstInstance = LaunchDarklyService.getInstance();
     const secondInstance = LaunchDarklyService.getInstance();
 
-    expect(firstInstance).eq(secondInstance);
+    expect(firstInstance).to.equal(secondInstance);
     LaunchDarklyService.close();
   });
 
@@ -28,13 +28,13 @@ describe('launchDarkly-service', () => {
       'dlrm-setaside-feature-flag', 'dlrm-refund-feature-flag', 'dlrm-internal-feature-flag', 'use-ccd-document-am'];
     for (const flag of trueFlags) {
       const result = instance.getTestFlagValue(flag);
-      expect(result).eq(true);
+      expect(result).to.equal(true);
     }
   });
 
   it('checks that getTestFlagValue returns false for unknown flags', () => {
     const instance = LaunchDarklyService.getInstance();
     const result = instance.getTestFlagValue('some-flag');
-    expect(result).eq(false);
+    expect(result).to.equal(false);
   });
 });

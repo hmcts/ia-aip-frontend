@@ -16,11 +16,15 @@ describe('session-middleware', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let clearCookieStub: sinon.SinonStub;
+  let redirectSpy: sinon.SinonSpy;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    clearCookieStub = sandbox.stub();
+    redirectSpy = sandbox.spy();
     req = {
       session: {
         appeal: {
@@ -40,8 +44,8 @@ describe('session-middleware', () => {
 
     res = {
       render: sandbox.stub(),
-      redirect: sandbox.spy(),
-      clearCookie: sandbox.stub(),
+      redirect: redirectSpy,
+      clearCookie: clearCookieStub,
       send: sandbox.stub(),
       next: sandbox.stub()
     } as Partial<Response>;
@@ -57,23 +61,23 @@ describe('session-middleware', () => {
     const loggerRequestStub = sandbox.stub(logger, 'request');
     logSession(req as Request, res as Response, next);
 
-    expect(loggerRequestStub).to.have.been.called;
-    expect(next).to.be.called;
+    expect(loggerRequestStub.called).to.equal(true);
+    expect(next.called).to.equal(true);
   });
 
   it('initSession', async () => {
     const loadAppealStub = sandbox.stub(UpdateAppealService.prototype, 'loadAppeal');
     await initSession(req as Request, res as Response, next);
 
-    expect(loadAppealStub).to.have.been.calledOnce;
-    expect(next).to.have.been.calledOnce;
+    expect(loadAppealStub.callCount).to.equal(1);
+    expect(next.callCount).to.equal(1);
   });
 
   it('checkSession has auth token and application', () => {
     req.cookies['__auth-token'] = 'authTokenValue';
     checkSession({})(req as Request, res as Response, next);
 
-    expect(next).to.have.been.calledOnce;
+    expect(next.callCount).to.equal(1);
   });
 
   it('checkSession has auth token and no application', () => {
@@ -81,29 +85,29 @@ describe('session-middleware', () => {
     req.session.appeal = {} as any;
     checkSession({})(req as Request, res as Response, next);
 
-    expect(res.redirect).to.have.been.calledWith(paths.common.login);
-    expect(res.clearCookie).to.have.been.called;
+    expect(redirectSpy.calledWith(paths.common.login)).to.equal(true);
+    expect(clearCookieStub.called).to.equal(true);
   });
 
   it('checkSession has no auth token', () => {
     req.session.appeal = {} as any;
     checkSession({})(req as Request, res as Response, next);
 
-    expect(next).to.have.been.calledOnce;
+    expect(next.callCount).to.equal(1);
   });
 
   it('startRepresentingYourself calls next if no start-representing-yourself flow in progress', async () => {
     req.session = {} as any;
     await startRepresentingYourself(req as Request, res as Response, next);
 
-    expect(next).to.have.been.calledOnce;
+    expect(next.callCount).to.equal(1);
   });
 
   it('startRepresentingYourself redirects to start if start-representing-yourself flow in incomplete', async () => {
     req.session.startRepresentingYourself = { id: '1234123412341234' } as any;
     await startRepresentingYourself(req as Request, res as Response, next);
 
-    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.start);
+    expect(redirectSpy.calledWith(paths.startRepresentingYourself.start)).to.equal(true);
   });
 
   it('startRepresentingYourself redirects to confirmDetails if not confirmed', async () => {
@@ -113,7 +117,7 @@ describe('session-middleware', () => {
     } as any;
     await startRepresentingYourself(req as Request, res as Response, next);
 
-    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.confirmDetails);
+    expect(redirectSpy.calledWith(paths.startRepresentingYourself.confirmDetails)).to.equal(true);
   });
 
   it('startRepresentingYourself call next with error if givenAppellantAccess fails', async () => {
@@ -126,8 +130,8 @@ describe('session-middleware', () => {
     const givenAppellantAccessStub = sandbox.stub(CcdSystemService.prototype, 'givenAppellantAccess').throws(error);
     await startRepresentingYourself(req as Request, res as Response, next);
 
-    expect(givenAppellantAccessStub).to.have.been.calledOnce;
-    expect(next).to.have.been.calledWith(error);
+    expect(givenAppellantAccessStub.callCount).to.equal(1);
+    expect(next.calledWith(error)).to.equal(true);
   });
 
   it('startRepresentingYourself loads case', async () => {
@@ -143,12 +147,12 @@ describe('session-middleware', () => {
     const submitSimpleEventStub = sandbox.stub(UpdateAppealService.prototype, 'submitSimpleEvent').resolves(appeal as Appeal);
     await startRepresentingYourself(req as Request, res as Response, next);
 
-    expect(givenAppellantAccessStub).to.have.been.calledOnce;
-    expect(submitSimpleEventStub).to.have.been.calledOnce;
+    expect(givenAppellantAccessStub.callCount).to.equal(1);
+    expect(submitSimpleEventStub.callCount).to.equal(1);
     expect(next).to.have.been.callCount(0);
-    expect(req.session.startRepresentingYourself).to.be.undefined;
-    expect(req.session.ccdCaseId).to.be.eql('1234123412341234');
-    expect(req.session.appeal).to.be.eq(appeal);
-    expect(res.redirect).to.have.been.calledWith(paths.common.overview);
+    expect(req.session.startRepresentingYourself).to.equal(undefined);
+    expect(req.session.ccdCaseId).to.deep.equal('1234123412341234');
+    expect(req.session.appeal).to.equal(appeal);
+    expect(redirectSpy.calledWith(paths.common.overview)).to.equal(true);
   });
 });

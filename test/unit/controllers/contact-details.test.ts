@@ -40,7 +40,9 @@ describe('Contact details Controller', () => {
     county: '',
     postcode: 'postcode'
   };
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submit: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -66,15 +68,16 @@ describe('Contact details Controller', () => {
       } as any,
       body: {}
     } as Partial<Request>;
-
+    submit = sandbox.stub();
     updateAppealService = {
-      submitEventRefactored: sandbox.stub()
+      submitEventRefactored: submit
     };
-
+    redirectStub = sandbox.stub();
+    renderStub = sandbox.stub();
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -94,29 +97,29 @@ describe('Contact details Controller', () => {
       };
       const middleware = [];
       setupContactDetailsController(middleware, deps);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.contactDetails);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.contactDetails);
+      expect(routerGetStub.calledWith(paths.appealStarted.contactDetails)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.contactDetails)).to.equal(true);
     });
   });
 
   describe('getContactDetails', () => {
     it('getContactDetails should render type-of-appeal.njk', () => {
       getContactDetails(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/contact-details.njk');
+      expect(renderStub.calledOnceWith('appeal-application/contact-details.njk')).to.equal(true);
     });
 
     it('when called with edit param getContactDetail should render type-of-appeal.njk and update session', () => {
       req.query = { 'edit': '' };
       getContactDetails(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/contact-details.njk');
+      expect(renderStub.calledOnceWith('appeal-application/contact-details.njk')).to.equal(true);
     });
 
     it('getContactDetails should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getContactDetails(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -147,8 +150,8 @@ describe('Contact details Controller', () => {
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+        expect(submit.called).to.equal(false);
+        expect(renderStub.calledWith('appeal-application/contact-details.njk', expectedData)).to.equal(true);
       });
 
       it('should show 2 validation error both options are selected but left blank', async () => {
@@ -185,8 +188,8 @@ describe('Contact details Controller', () => {
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+        expect(submit.called).to.equal(false);
+        expect(renderStub.calledWith('appeal-application/contact-details.njk', expectedData)).to.equal(true);
       });
 
       it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -198,8 +201,8 @@ describe('Contact details Controller', () => {
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+        expect(submit.called).to.equal(false);
+        expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
       });
 
     });
@@ -233,8 +236,8 @@ describe('Contact details Controller', () => {
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+        expect(submit.called).to.equal(false);
+        expect(renderStub.calledWith('appeal-application/contact-details.njk', expectedData)).to.equal(true);
       });
 
       it('should show email format validation error if email is selected but not a valid email', async () => {
@@ -265,8 +268,8 @@ describe('Contact details Controller', () => {
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+        expect(submit.called).to.equal(false);
+        expect(renderStub.calledWith('appeal-application/contact-details.njk', expectedData)).to.equal(true);
       });
 
       describe('should validate', () => {
@@ -287,7 +290,7 @@ describe('Contact details Controller', () => {
             }
           };
 
-          updateAppealService.submitEventRefactored = sandbox.stub().returns({
+          updateAppealService.submitEventRefactored = submit.returns({
             application: {
               contactDetails
             }
@@ -305,9 +308,9 @@ describe('Contact details Controller', () => {
           };
           await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-          expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+          expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
-          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
+          expect(redirectStub.calledWith(paths.appealStarted.enterPostcode)).to.equal(true);
         });
 
         it('when in edit mode should validate email and redirect to check-and-send.njk and reset isEdit flag', async () => {
@@ -319,10 +322,10 @@ describe('Contact details Controller', () => {
           };
           await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-          expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+          expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
-          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-          expect(req.session.appeal.application.isEdit).to.be.undefined;
+          expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+          expect(req.session.appeal.application.isEdit).to.equal(undefined);
         });
       });
     });
@@ -356,8 +359,8 @@ describe('Contact details Controller', () => {
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+        expect(submit.called).to.equal(false);
+        expect(renderStub.calledWith('appeal-application/contact-details.njk', expectedData)).to.equal(true);
       });
 
       it('should show phone format validation error if text-message is selected but not a valid phone number', async () => {
@@ -388,8 +391,8 @@ describe('Contact details Controller', () => {
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+        expect(submit.called).to.equal(false);
+        expect(renderStub.calledWith('appeal-application/contact-details.njk', expectedData)).to.equal(true);
       });
 
       describe('Should Validate', () => {
@@ -413,7 +416,7 @@ describe('Contact details Controller', () => {
               contactDetails
             }
           };
-          updateAppealService.submitEventRefactored = sandbox.stub().returns({
+          updateAppealService.submitEventRefactored = submit.returns({
             application: {
               contactDetails
             }
@@ -427,9 +430,9 @@ describe('Contact details Controller', () => {
         it('should validate phone number and redirect to postcode page', async () => {
           await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-          expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+          expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
-          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
+          expect(redirectStub.calledWith(paths.appealStarted.enterPostcode)).to.equal(true);
         });
 
         it('should validate phone number and redirect to check-and-send.njk and reset isEdit', async () => {
@@ -437,10 +440,10 @@ describe('Contact details Controller', () => {
           appeal.application.isEdit = true;
           await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-          expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+          expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
-          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-          expect(req.session.appeal.application.isEdit).to.be.undefined;
+          expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+          expect(req.session.appeal.application.isEdit).to.equal(undefined);
         });
       });
     });
@@ -453,7 +456,7 @@ describe('Contact details Controller', () => {
         };
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
+        expect(redirectStub.calledWith(paths.appealStarted.enterPostcode)).to.equal(true);
       });
 
       it('should redirect to enter address page if address has been set', async () => {
@@ -464,7 +467,7 @@ describe('Contact details Controller', () => {
         };
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterAddress);
+        expect(redirectStub.calledWith(paths.appealStarted.enterAddress)).to.equal(true);
       });
 
       it('should redirect out of country address page when ooc feature is enabled', async () => {
@@ -479,7 +482,7 @@ describe('Contact details Controller', () => {
         };
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.oocAddress);
+        expect(redirectStub.calledWith(paths.appealStarted.oocAddress)).to.equal(true);
       });
     });
   });
@@ -492,19 +495,19 @@ describe('Contact details Controller', () => {
 
     it('should render sponsor-details/has-sponsor.njk', async () => {
       await getHasSponsor(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/has-sponsor.njk');
+      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk')).to.equal(true);
     });
 
     it('when called with edit should render sponsor-details/has-sponsor.njk and update session', async () => {
       req.query = { 'edit': '' };
       await getHasSponsor(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/has-sponsor.njk');
+      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk')).to.equal(true);
     });
 
     it('should render sponsor-details/has-sponsor.njk', async () => {
       await getHasSponsor(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/has-sponsor.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk', {
         question: 'Do you have a sponsor?',
         description: undefined,
         modal: undefined,
@@ -519,7 +522,7 @@ describe('Contact details Controller', () => {
     it('should render sponsor-details/has-sponsor.njk with previous page pointing to manual-address endpoint', async () => {
       _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
       await getHasSponsor(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/has-sponsor.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk', {
         question: 'Do you have a sponsor?',
         description: undefined,
         modal: undefined,
@@ -538,7 +541,7 @@ describe('Contact details Controller', () => {
       // appeal is out of country
       req.session.appeal.appealOutOfCountry = 'Yes';
       await getHasSponsor(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/has-sponsor.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk', {
         question: 'Do you have a sponsor?',
         description: undefined,
         modal: undefined,
@@ -562,7 +565,7 @@ describe('Contact details Controller', () => {
         }
       };
 
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submit.returns({
         application: {
           hasSponsor: 'Yes'
         }
@@ -573,8 +576,8 @@ describe('Contact details Controller', () => {
       req.body['answer'] = 'Yes';
       await postHasSponsor(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.sponsorName);
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.sponsorName)).to.equal(true);
     });
 
     it('should fail validation and sponsor-details/has-sponsor.njk with a validation error', async () => {
@@ -587,8 +590,8 @@ describe('Contact details Controller', () => {
 
       await postHasSponsor(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/has-sponsor.njk', {
+      expect(submit.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk', {
         question: 'Do you have a sponsor?',
         description: undefined,
         modal: undefined,
@@ -603,30 +606,30 @@ describe('Contact details Controller', () => {
     it('postHasSponsor should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'hasSponsor': undefined };
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postHasSponsor(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getSponsorNamePage', () => {
     it('should render sponsor-details/sponsor-name.njk', function () {
       getSponsorName(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/sponsor-name.njk');
+      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/sponsor-name.njk')).to.equal(true);
     });
 
     it('when called with edit should render sponsor-details/sponsor-name.njk and update session', function () {
       req.query = { 'edit': '' };
       getSponsorName(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/sponsor-name.njk');
+      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/sponsor-name.njk')).to.equal(true);
     });
 
     it('gets sponsor name from session', function () {
       req.session.appeal.application.sponsorGivenNames = 'sponsorGivenNames';
       req.session.appeal.application.sponsorFamilyName = 'sponsorFamilyName';
       getSponsorName(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/sponsor-name.njk',
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/sponsor-name.njk',
         {
           sponsorGivenNames: 'sponsorGivenNames',
           sponsorFamilyName: 'sponsorFamilyName',
@@ -650,7 +653,7 @@ describe('Contact details Controller', () => {
           sponsorGivenNames: req.body.sponsorGivenNames
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submit.returns({
         application: {
           sponsorFamilyName: req.body.sponsorFamilyName,
           sponsorGivenNames: req.body.sponsorGivenNames
@@ -660,8 +663,8 @@ describe('Contact details Controller', () => {
     it('should validate and redirect to next page sponsor-details/sponsor-address', async () => {
       await postSponsorName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.sponsorAddress);
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.sponsorAddress)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
@@ -669,9 +672,9 @@ describe('Contact details Controller', () => {
       appeal.application.isEdit = true;
       await postSponsorName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
     it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -680,8 +683,8 @@ describe('Contact details Controller', () => {
       };
       await postSponsorName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submit.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
@@ -691,25 +694,25 @@ describe('Contact details Controller', () => {
       };
       await postSponsorName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(submit.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
     it('should redirect to CYA page and validate when save for later clicked', async () => {
       req.body.saveForLater = 'saveForLater';
       await postSponsorName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
   });
 
   describe('Should catch an error.', () => {
     it('getSponsorName should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getSponsorName(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -719,7 +722,7 @@ describe('Contact details Controller', () => {
         ...address
       };
       getSponsorAddress(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/sponsor-address.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/sponsor-address.njk', {
         address,
         previousPage: paths.appealStarted.sponsorName
       });
@@ -747,7 +750,7 @@ describe('Contact details Controller', () => {
           }
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submit.returns({
         application: {
           sponsorAddress: {
             line1: req.body['address-line-1'],
@@ -764,22 +767,22 @@ describe('Contact details Controller', () => {
       req.body['address-postcode'] = 'W';
       await postSponsorAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).not.to.have.been.called;
-      expect(res.render).to.have.been.calledWith('appeal-application/sponsor-details/sponsor-address.njk');
+      expect(submit.called).to.equal(false);
+      expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-address.njk')).to.equal(true);
     });
 
     it('should validate and redirect to task list page', async () => {
       await postSponsorAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.sponsorContactDetails);
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.sponsorContactDetails)).to.equal(true);
     });
 
     it('should catch an exception and call next()', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       await postSponsorAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset the isEdit flag', async () => {
@@ -787,9 +790,9 @@ describe('Contact details Controller', () => {
       appeal.application.isEdit = true;
       await postSponsorAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
     it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -798,8 +801,8 @@ describe('Contact details Controller', () => {
       };
       await postSponsorAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submit.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
@@ -810,36 +813,36 @@ describe('Contact details Controller', () => {
       };
       await postSponsorAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(submit.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
     it('should catch an exception and call next()', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       await postSponsorAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getSponsorContactDetails', () => {
     it('getSponsorContactDetails should render sponsor-contact-details.njk', () => {
       getSponsorContactDetails(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk');
+      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/sponsor-contact-details.njk')).to.equal(true);
     });
 
     it('when called with edit param getSponsorContactDetails should render sponsor-contact-details.njk and update session', () => {
       req.query = { 'edit': '' };
       getSponsorContactDetails(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk');
+      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/sponsor-contact-details.njk')).to.equal(true);
     });
 
     it('getSponsorContactDetails should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getSponsorContactDetails(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -870,8 +873,8 @@ describe('Contact details Controller', () => {
 
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.render).to.have.been.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData);
+        expect(submit.called).to.equal(false);
+        expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData)).to.equal(true);
       });
 
       it('should show 2 validation error both options are selected but left blank', async () => {
@@ -908,8 +911,8 @@ describe('Contact details Controller', () => {
 
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.render).to.have.been.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData);
+        expect(submit.called).to.equal(false);
+        expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData)).to.equal(true);
       });
 
       it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -921,8 +924,8 @@ describe('Contact details Controller', () => {
 
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+        expect(submit.called).to.equal(false);
+        expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
       });
     });
 
@@ -955,8 +958,8 @@ describe('Contact details Controller', () => {
 
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.render).to.have.been.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData);
+        expect(submit.called).to.equal(false);
+        expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData)).to.equal(true);
       });
 
       it('should show email format validation error if email is selected but not a valid email', async () => {
@@ -987,8 +990,8 @@ describe('Contact details Controller', () => {
 
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.render).to.have.been.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData);
+        expect(submit.called).to.equal(false);
+        expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData)).to.equal(true);
       });
 
       describe('should validate', () => {
@@ -1009,7 +1012,7 @@ describe('Contact details Controller', () => {
             }
           };
 
-          updateAppealService.submitEventRefactored = sandbox.stub().returns({
+          updateAppealService.submitEventRefactored = submit.returns({
             application: {
               sponsorContactDetails
             }
@@ -1027,9 +1030,9 @@ describe('Contact details Controller', () => {
           };
           await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-          expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+          expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
           expect(req.session.appeal.application.sponsorContactDetails).to.deep.equal(sponsorContactDetails);
-          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.sponsorAuthorisation);
+          expect(redirectStub.calledWith(paths.appealStarted.sponsorAuthorisation)).to.equal(true);
         });
 
         it('when in edit mode should validate email and redirect to check-and-send.njk and reset isEdit flag', async () => {
@@ -1041,10 +1044,10 @@ describe('Contact details Controller', () => {
           };
           await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-          expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+          expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
           expect(req.session.appeal.application.sponsorContactDetails).to.deep.equal(sponsorContactDetails);
-          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-          expect(req.session.appeal.application.isEdit).to.be.undefined;
+          expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+          expect(req.session.appeal.application.isEdit).to.equal(undefined);
         });
       });
     });
@@ -1078,8 +1081,8 @@ describe('Contact details Controller', () => {
 
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.render).to.have.been.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData);
+        expect(submit.called).to.equal(false);
+        expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData)).to.equal(true);
       });
 
       it('should show phone format validation error if text-message is selected but not a valid phone number', async () => {
@@ -1110,8 +1113,8 @@ describe('Contact details Controller', () => {
 
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-        expect(res.render).to.have.been.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData);
+        expect(submit.called).to.equal(false);
+        expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData)).to.equal(true);
       });
 
       describe('Should Validate', () => {
@@ -1135,7 +1138,7 @@ describe('Contact details Controller', () => {
               sponsorContactDetails
             }
           };
-          updateAppealService.submitEventRefactored = sandbox.stub().returns({
+          updateAppealService.submitEventRefactored = submit.returns({
             application: {
               sponsorContactDetails
             }
@@ -1149,9 +1152,9 @@ describe('Contact details Controller', () => {
         it('should validate phone number and redirect to sponsor-authorisation.njk', async () => {
           await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-          expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+          expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
           expect(req.session.appeal.application.sponsorContactDetails).to.deep.equal(sponsorContactDetails);
-          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.sponsorAuthorisation);
+          expect(redirectStub.calledWith(paths.appealStarted.sponsorAuthorisation)).to.equal(true);
         });
 
         it('should validate phone number and redirect to check-and-send.njk and reset isEdit', async () => {
@@ -1159,10 +1162,10 @@ describe('Contact details Controller', () => {
           appeal.application.isEdit = true;
           await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-          expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+          expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
           expect(req.session.appeal.application.sponsorContactDetails).to.deep.equal(sponsorContactDetails);
-          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-          expect(req.session.appeal.application.isEdit).to.be.undefined;
+          expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+          expect(req.session.appeal.application.isEdit).to.equal(undefined);
         });
       });
     });
@@ -1171,19 +1174,19 @@ describe('Contact details Controller', () => {
   describe('getSponsorAuthorisation', () => {
     it('should render sponsor-details/sponsor-authorisation.njk', async () => {
       await getSponsorAuthorisation(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/sponsor-authorisation.njk');
+      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/sponsor-authorisation.njk')).to.equal(true);
     });
 
     it('when called with edit should render sponsor-details/sponsor-authorisation.njk and update session', async () => {
       req.query = { 'edit': '' };
       await getSponsorAuthorisation(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/sponsor-authorisation.njk');
+      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/sponsor-authorisation.njk')).to.equal(true);
     });
 
     it('should render sponsor-details/sponsor-authorisation.njk', async () => {
       await getSponsorAuthorisation(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/sponsor-authorisation.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/sponsor-authorisation.njk', {
         question: 'Do you agree to let your sponsor have access to information about your appeal?',
         description: undefined,
         modal: undefined,
@@ -1207,7 +1210,7 @@ describe('Contact details Controller', () => {
         }
       };
 
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submit.returns({
         application: {
           sponsorAuthorisation: 'Yes'
         }
@@ -1218,8 +1221,8 @@ describe('Contact details Controller', () => {
       req.body['answer'] = 'Yes';
       await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
     it('should fail validation and sponsor-details/sponsor-authorisation.njk with a validation error', async () => {
@@ -1232,8 +1235,8 @@ describe('Contact details Controller', () => {
 
       await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/sponsor-details/sponsor-authorisation.njk', {
+      expect(submit.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/sponsor-authorisation.njk', {
         question: 'Do you agree to let your sponsor have access to information about your appeal?',
         description: undefined,
         modal: undefined,
@@ -1248,9 +1251,9 @@ describe('Contact details Controller', () => {
     it('postSponsorAuthorisation should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'sponsorAuthorisation': undefined };
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

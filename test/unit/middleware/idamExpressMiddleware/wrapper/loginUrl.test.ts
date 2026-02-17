@@ -24,7 +24,7 @@ describe('loginUrl', () => {
     // Act.
     const output = loginUrl(options, args);
     // Assert.
-    expect(url.format).to.have.been.called.calledOnce;
+    expect(urlFormatSpy.callCount).to.equal(1);
     const formatArgs = urlFormatSpy.getCall(0).args.pop();
     expect(formatArgs).to.have.property('query');
     expect(output).to.contain(Object.keys(options).pop());

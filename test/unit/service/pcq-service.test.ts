@@ -10,9 +10,10 @@ describe('PCQ service', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   const logger: Logger = new Logger();
-
+  let redirectStub: sinon.SinonSpy;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    redirectStub = sandbox.spy();
     req = {
       body: {},
       session: {
@@ -38,7 +39,7 @@ describe('PCQ service', () => {
     res = {
       render: sandbox.stub(),
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: redirectStub
     } as Partial<Response>;
   });
 
@@ -57,7 +58,7 @@ describe('PCQ service', () => {
       sandbox.stub(axios, 'get').resolves(JSON.parse('{"data": {"status":"UP"}}'));
       const pcqService = new PcqService();
       const healthCheck = await pcqService.checkPcqHealth();
-      expect(healthCheck).to.be.equal(true);
+      expect(healthCheck).to.equal(true);
     });
   });
 
@@ -66,7 +67,7 @@ describe('PCQ service', () => {
       sandbox.stub(axios, 'get').resolves(JSON.parse('{"status":"DOWN"}'));
       const pcqService = new PcqService();
       const healthCheck = await pcqService.checkPcqHealth();
-      expect(healthCheck).to.be.equal(false);
+      expect(healthCheck).to.equal(false);
     });
   });
 
@@ -76,7 +77,7 @@ describe('PCQ service', () => {
       sandbox.stub(axios, 'get').resolves(error);
       const pcqService = new PcqService();
       const healthCheck = await pcqService.checkPcqHealth();
-      expect(healthCheck).to.be.equal(false);
+      expect(healthCheck).to.equal(false);
     });
   });
 
@@ -90,7 +91,7 @@ describe('PCQ service', () => {
     it('should return invoked when I invoke', async () => {
       const pcqService = new PcqService();
       pcqService.invokePcq(res as Response, appeal);
-      expect(res.redirect).to.have.been.calledOnce.calledWith();
+      expect(redirectStub.callCount).to.equal(1);
     });
   });
 
@@ -98,7 +99,9 @@ describe('PCQ service', () => {
     it('should return pcqId', async () => {
       const pcqService = new PcqService();
       const pcqId = pcqService.getPcqId();
-      expect(pcqId).not.to.be.empty;
+      expect(pcqId).to.not.equal(null);
+      expect(pcqId).to.not.equal(undefined);
+      expect(pcqId).to.not.equal('');
     });
   });
 });

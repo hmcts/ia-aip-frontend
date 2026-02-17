@@ -12,6 +12,8 @@ describe('CMA Requirements - Add Another Date Question controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonSpy;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -24,9 +26,11 @@ describe('CMA Requirements - Add Another Date Question controller', () => {
         } as Partial<Appeal>
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.spy();
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
   });
@@ -42,8 +46,8 @@ describe('CMA Requirements - Add Another Date Question controller', () => {
       const middleware: Middleware[] = [];
 
       setupDatesToAvoidAddAnotherDateController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidAddAnotherDate);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidAddAnotherDate);
+      expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidAddAnotherDate)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidAddAnotherDate)).to.equal(true);
     });
   });
 
@@ -62,17 +66,17 @@ describe('CMA Requirements - Add Another Date Question controller', () => {
         },
         saveAndContinueOnly: true
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
+      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
         expectedArgs
       );
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getAddAnotherDateQuestionPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -80,29 +84,29 @@ describe('CMA Requirements - Add Another Date Question controller', () => {
     it('should fail validation and render template with errors', async () => {
       await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk');
+      expect(renderStub.calledWith('templates/radio-question-page.njk')).to.equal(true);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
       await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidEnterDate);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidEnterDate)).to.equal(true);
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
       await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.taskList)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

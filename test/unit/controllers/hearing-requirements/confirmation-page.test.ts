@@ -10,7 +10,7 @@ describe('Hearing Requirements Confirmation Controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: sinon.SinonStub;
-
+  let renderStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -20,8 +20,9 @@ describe('Hearing Requirements Confirmation Controller', () => {
         appeal: {}
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       redirect: sandbox.spy()
     } as Partial<Response>;
     next = sandbox.stub();
@@ -37,7 +38,7 @@ describe('Hearing Requirements Confirmation Controller', () => {
       const middleware: Middleware[] = [];
 
       setupHearingRequirementsConfirmationPage(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.confirmation);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.confirmation)).to.equal(true);
     });
   });
 
@@ -56,15 +57,15 @@ describe('Hearing Requirements Confirmation Controller', () => {
         }
       };
       getConfirmationPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/confirmation-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/confirmation-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getConfirmationPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

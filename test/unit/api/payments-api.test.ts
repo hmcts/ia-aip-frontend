@@ -25,12 +25,12 @@ describe('payments-api', () => {
   it('should call create card payment endpoint', async () => {
     await paymentsApi.createCardPayment(headers, {}, 'http://aReturnUrl');
 
-    expect(rpPostStub).to.have.been.called;
+    expect(rpPostStub.called).to.equal(true);
   });
 
   it('should call paymentsDetails endpoint', async () => {
     await paymentsApi.paymentDetails(headers, 'paymentRef');
 
-    expect(rpGetStub).to.have.been.called;
+    expect(rpGetStub.called).to.equal(true);
   });
 });

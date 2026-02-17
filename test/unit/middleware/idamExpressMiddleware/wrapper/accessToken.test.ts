@@ -25,7 +25,7 @@ describe('accessToken', () => {
     // Act.
     await accessToken(args, options);
     // Assert.
-    expect(postStub).to.be.calledOnce;
+    expect(postStub.callCount).to.equal(1);
     const [uri, body, requestOptions] = postStub.getCall(0).args;
     expect(uri).to.equal(`${args.idamApiUrl}/oauth2/token`);
     expect(body).to.include('field=value');
@@ -46,7 +46,7 @@ describe('accessToken', () => {
     postStub.resolves({ data: {} });
     await accessToken(args, options);
     // Assert.
-    expect(postStub).to.be.calledOnce;
+    expect(postStub.callCount).to.equal(1);
     const [uri, body, requestOptions] = postStub.getCall(0).args;
     expect(uri).to.equal(`${args.idamApiUrl}/o/token`);
     expect(body).to.include('field=value');

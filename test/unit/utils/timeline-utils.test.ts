@@ -680,7 +680,7 @@ describe('timeline-utils', () => {
     it('should get Submit CQ events', () => {
       const events = getSubmitClarifyingQuestionsEvents(history as HistoryEvent[], directions as Direction[]);
 
-      expect(events.length).to.be.eql(1);
+      expect(events.length).to.deep.equal(1);
       expect(events[0]).to.contain.keys('date', 'dateObject', 'text', 'links');
     });
 
@@ -694,14 +694,14 @@ describe('timeline-utils', () => {
       });
       const events = getSubmitClarifyingQuestionsEvents(history as HistoryEvent[], directions as Direction[]);
 
-      expect(events.length).to.be.eql(1);
+      expect(events.length).to.deep.equal(1);
       expect(events[0]).to.contain.keys('date', 'dateObject', 'text', 'links');
     });
 
     it('should return empty events array', () => {
       const events = getSubmitClarifyingQuestionsEvents([], []);
 
-      expect(events.length).to.be.eql(0);
+      expect(events.length).to.deep.equal(0);
     });
   });
 
@@ -741,7 +741,7 @@ describe('timeline-utils', () => {
       ];
       const directionsHistory = getDirectionHistory(req as Request);
 
-      expect(directionsHistory.length).to.be.eql(4);
+      expect(directionsHistory.length).to.deep.equal(4);
       directionsHistory.forEach(direction => {
         expect(direction).to.contain.keys('date', 'dateObject', 'text', 'links');
       });
@@ -801,7 +801,7 @@ describe('timeline-utils', () => {
         }
       ];
       const directionsHistory = getDirectionHistory(req as Request);
-      expect(directionsHistory.length).to.be.eql(5);
+      expect(directionsHistory.length).to.deep.equal(5);
       directionsHistory.forEach(direction => {
         expect(direction).to.contain.keys('date', 'dateObject', 'text', 'links');
       });
@@ -810,7 +810,7 @@ describe('timeline-utils', () => {
     it('should return empty direction history', () => {
       req.session.appeal.directions = [];
       const directionsHistory = getDirectionHistory(req as Request);
-      expect(directionsHistory.length).to.be.eql(0);
+      expect(directionsHistory.length).to.deep.equal(0);
     });
   });
 
@@ -837,7 +837,7 @@ describe('timeline-utils', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.be.eql(1);
+      expect(updatedTribunalDecisionHistory.length).to.deep.equal(1);
       updatedTribunalDecisionHistory.forEach(history => {
         expect(history).to.contain.keys('date', 'dateObject', 'text');
       });
@@ -860,7 +860,7 @@ describe('timeline-utils', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.be.eql(1);
+      expect(updatedTribunalDecisionHistory.length).to.deep.equal(1);
       updatedTribunalDecisionHistory.forEach(history => {
         expect(history).to.contain.keys('date', 'dateObject', 'text');
       });
@@ -881,7 +881,7 @@ describe('timeline-utils', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.be.eql(0);
+      expect(updatedTribunalDecisionHistory.length).to.deep.equal(0);
     });
 
     it('should show the updated tribunal decision history with rule 32', () => {
@@ -890,7 +890,7 @@ describe('timeline-utils', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.be.eql(1);
+      expect(updatedTribunalDecisionHistory.length).to.deep.equal(1);
       updatedTribunalDecisionHistory.forEach(history => {
         expect(history).to.contain.keys('date', 'dateObject', 'text', 'links');
       });
@@ -916,14 +916,14 @@ describe('timeline-utils', () => {
       req.session.appeal.history = null;
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.be.eql(0);
+      expect(updatedTribunalDecisionHistory.length).to.deep.equal(0);
     });
 
     it('no updated tribunal decision history will be shown if DLRM set aside flag is off', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, false);
 
-      expect(updatedTribunalDecisionHistory.length).to.be.eql(0);
+      expect(updatedTribunalDecisionHistory.length).to.deep.equal(0);
     });
   });
 
@@ -946,7 +946,7 @@ describe('timeline-utils', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionDocumentHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.be.eql(1);
+      expect(updatedTribunalDecisionHistory.length).to.deep.equal(1);
       updatedTribunalDecisionHistory.forEach(history => {
         expect(history).to.contain.keys('date', 'dateObject', 'text', 'links');
       });
@@ -972,14 +972,14 @@ describe('timeline-utils', () => {
       req.session.appeal.updateTribunalDecisionAndReasonsFinalCheck = null;
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionDocumentHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.be.eql(0);
+      expect(updatedTribunalDecisionHistory.length).to.deep.equal(0);
     });
 
     it('should not show the document history of updated tribunal decision if DLRM set aside flag is off', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionDocumentHistory(req as Request, false);
 
-      expect(updatedTribunalDecisionHistory.length).to.be.eql(0);
+      expect(updatedTribunalDecisionHistory.length).to.deep.equal(0);
     });
   });
 
@@ -1003,32 +1003,32 @@ describe('timeline-utils', () => {
 
     it('should return relevant events when hearingBundle feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, true, false, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(5);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.deep.equal(5);
     });
 
     it('should return relevant events when hearingBundle and uploadAddendumEvidence features enabled', () => {
       const eventsAndStates = getEventsAndStates(true, true, false, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(6);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.deep.equal(6);
     });
 
     it('should return relevant events when hearingBundle feature disabled', () => {
       const eventsAndStates = getEventsAndStates(true, false, false, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(4);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.deep.equal(4);
     });
 
     it('should return relevant events when ftpa feature disabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, false, false);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(2);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.deep.equal(2);
     });
 
     it('should return relevant events when ftpa feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, true, false);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(6);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.deep.equal(6);
     });
 
     it('should return relevant events when ftpa set aside feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, false, true);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(3);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.deep.equal(3);
     });
   });
 

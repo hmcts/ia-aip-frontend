@@ -14,7 +14,8 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -36,9 +37,12 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
         } as Partial<Appeal>
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
 
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
@@ -57,8 +61,8 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
       const middleware: Middleware[] = [];
 
       setupWitnessesOnHearingQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.witnesses);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.witnesses);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.witnesses)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.submitHearingRequirements.witnesses)).to.equal(true);
     });
   });
 
@@ -84,17 +88,17 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
         saveAndContinue: true
 
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
+      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
         expectedArgs
       );
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getWitnessesOnHearingQuestion(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -129,29 +133,29 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
         saveAndContinue: true
 
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should validate and redirect to witness names page if answer yes', async () => {
       req.body['answer'] = 'yes';
       await postWitnessesOnHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.hearingWitnessNames)).to.equal(true);
     });
 
     it('should validate if appellant answers no and redirect to witness outside UK page', async () => {
       req.body['answer'] = 'no';
       await postWitnessesOnHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.witnessOutsideUK);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.witnessOutsideUK)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postWitnessesOnHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

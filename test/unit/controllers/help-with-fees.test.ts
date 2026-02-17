@@ -27,7 +27,9 @@ describe('Help with fees Controller', () => {
   let pcqService: Partial<PcqService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -52,14 +54,21 @@ describe('Help with fees Controller', () => {
       } as any
     } as Partial<Request>;
 
-    updateAppealService = { submitEventRefactored: sandbox.stub() };
     pcqService = { checkPcqHealth: sandbox.stub(), getPcqId: sandbox.stub() };
 
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: redirectStub
     } as Partial<Response>;
+
+    updateAppealService = {
+      submitEventRefactored: submitRefactoredStub
+    } as Partial<UpdateAppealService>;
 
     next = sandbox.stub();
   });
@@ -74,8 +83,8 @@ describe('Help with fees Controller', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
       setupHelpWithFeesController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.helpWithFees);
-      expect(routerPostStub).to.have.been.calledWith(paths.appealStarted.helpWithFees);
+      expect(routerGetStub.calledWith(paths.appealStarted.helpWithFees)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.appealStarted.helpWithFees)).to.equal(true);
     });
   });
 
@@ -105,7 +114,7 @@ describe('Help with fees Controller', () => {
       };
       const question = getApplyOption(req.session.appeal);
 
-      expect(question).to.be.eql(expectedQuestion);
+      expect(question).to.deep.equal(expectedQuestion);
     });
 
     it('should return the question with option checked', () => {
@@ -135,7 +144,7 @@ describe('Help with fees Controller', () => {
 
       req.session.appeal.application.helpWithFeesOption = 'wantToApply';
       const question = getApplyOption(req.session.appeal);
-      expect(question).to.be.eql(expectedQuestion);
+      expect(question).to.deep.equal(expectedQuestion);
     });
   });
 
@@ -144,20 +153,20 @@ describe('Help with fees Controller', () => {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
       await getHelpWithFees(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
       await getHelpWithFees(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should render fee-support.njk template with feature flag ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await getHelpWithFees(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/help-with-fees.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/help-with-fees.njk', {
         previousPage: paths.appealStarted.feeSupport,
         formAction: paths.appealStarted.helpWithFees,
         question: sinon.match.any,
@@ -199,7 +208,7 @@ describe('Help with fees Controller', () => {
         .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       req.body['answer'] = 'wantToApply';
       await postHelpWithFees(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.stepsToApplyForHelpWithFees);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.stepsToApplyForHelpWithFees)).to.equal(true);
     });
 
     it('should fail validation and render appeal-application/fee-support/help-with-fees.njk', async () => {
@@ -214,8 +223,8 @@ describe('Help with fees Controller', () => {
 
       await postHelpWithFees(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith(
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith(
         'appeal-application/fee-support/help-with-fees.njk',
         {
           errors: {
@@ -239,23 +248,23 @@ describe('Help with fees Controller', () => {
 
       await postHelpWithFees(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should catch exception and call next with the error', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postHelpWithFees(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
       await postHelpWithFees(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should reset values from other journeys if it present', async () => {
@@ -277,7 +286,7 @@ describe('Help with fees Controller', () => {
 
       await postHelpWithFees(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
     });
   });
 });

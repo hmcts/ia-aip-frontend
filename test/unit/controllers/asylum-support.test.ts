@@ -19,11 +19,21 @@ describe('Asylum support Controller', function () {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
+  let redirectStub: sinon.SinonSpy;
+  let renderStub: sinon.SinonStub;
+  let submit: sinon.SinonStub;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    redirectStub = sandbox.spy();
+    renderStub = sandbox.stub();
+    submit = sandbox.stub().returns({
+      case_data: {
+        asylumSupportRefNumber: 'A1234567'
+      }
+    });
     req = {
       body: {},
       session: {
@@ -49,20 +59,16 @@ describe('Asylum support Controller', function () {
     } as Partial<Request>;
 
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sandbox.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
 
     updateAppealService = {
       submitEvent: sandbox.stub(),
-      submitEventRefactored: sandbox.stub().returns({
-        case_data: {
-          asylumSupportRefNumber: 'A1234567'
-        }
-      })
+      submitEventRefactored: submit
     };
   });
 
@@ -77,8 +83,8 @@ describe('Asylum support Controller', function () {
       const middleware = [];
 
       setupAsylumSupportController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.asylumSupport);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.asylumSupport);
+      expect(routerGetStub.calledWith(paths.appealStarted.asylumSupport)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.asylumSupport)).to.equal(true);
     });
   });
 
@@ -87,7 +93,7 @@ describe('Asylum support Controller', function () {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await getAsylumSupport(req as Request, res as Response, next);
       const asylumSupportRefNumber = null;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/asylum-support.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/asylum-support.njk', {
         previousPage: paths.appealStarted.feeSupport,
         formAction: paths.appealStarted.asylumSupport,
         asylumSupportRefNumber,
@@ -99,13 +105,13 @@ describe('Asylum support Controller', function () {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
       await getAsylumSupport(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
       await getAsylumSupport(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
   });
 
@@ -125,7 +131,7 @@ describe('Asylum support Controller', function () {
           localAuthorityLetters: null
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submit.returns({
         application: {
           asylumSupportRefNumber: '12345'
         }
@@ -133,9 +139,9 @@ describe('Asylum support Controller', function () {
       req.body['asylumSupportRefNumber'] = '12345';
       await postAsylumSupport(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.application.asylumSupportRefNumber).to.be.eql('12345');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.asylumSupportRefNumber).to.deep.equal('12345');
+      expect(redirectStub.calledWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
     it('when save for later should validate and redirect task-list.njk', async () => {
@@ -153,7 +159,7 @@ describe('Asylum support Controller', function () {
           localAuthorityLetters: null
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submit.returns({
         application: {
           asylumSupportRefNumber: 'A1234567'
         }
@@ -162,9 +168,9 @@ describe('Asylum support Controller', function () {
       req.body['saveForLater'] = 'saveForLater';
       await postAsylumSupport(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.application.asylumSupportRefNumber).to.be.eql('A1234567');
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.asylumSupportRefNumber).to.deep.equal('A1234567');
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
@@ -183,7 +189,7 @@ describe('Asylum support Controller', function () {
           localAuthorityLetters: null
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submit.returns({
         application: {
           asylumSupportRefNumber: '1212-0099-0089-1080'
         }
@@ -192,10 +198,10 @@ describe('Asylum support Controller', function () {
       req.body['asylumSupportRefNumber'] = '1212-0099-0089-1080';
       await postAsylumSupport(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.application.asylumSupportRefNumber).to.be.eql('1212-0099-0089-1080');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.asylumSupportRefNumber).to.deep.equal('1212-0099-0089-1080');
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
     it('should fail validation and render appeal-application/fee-support/asylum-support.njk with error', async () => {
@@ -209,8 +215,8 @@ describe('Asylum support Controller', function () {
         text: 'Enter your asylum support reference number',
         href: '#asylumSupportRefNumber'
       };
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledWith(
+      expect(submit.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
         'appeal-application/fee-support/asylum-support.njk',
         {
           errors: {
@@ -234,8 +240,8 @@ describe('Asylum support Controller', function () {
 
       await postAsylumSupport(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submit.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should catch exception and call next with the error', async () => {
@@ -244,13 +250,13 @@ describe('Asylum support Controller', function () {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       await postAsylumSupport(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
       await postAsylumSupport(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should reset values from other journeys if it present', async () => {
@@ -276,7 +282,7 @@ describe('Asylum support Controller', function () {
         }
       };
 
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submit.returns({
         application: {
           asylumSupportRefNumber: '12345'
         }
@@ -284,7 +290,7 @@ describe('Asylum support Controller', function () {
       req.body['asylumSupportRefNumber'] = '12345';
       await postAsylumSupport(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
     });
   });
 });

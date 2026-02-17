@@ -14,7 +14,8 @@ describe('CMA Requirements - Question controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -26,9 +27,13 @@ describe('CMA Requirements - Question controller', () => {
         } as Partial<Appeal>
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
     updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
@@ -46,8 +51,8 @@ describe('CMA Requirements - Question controller', () => {
       const middleware: Middleware[] = [];
 
       setupDatesToAvoidQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidQuestion);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidQuestion);
+      expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidQuestion)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidQuestion)).to.equal(true);
     });
   });
 
@@ -67,17 +72,17 @@ describe('CMA Requirements - Question controller', () => {
         },
         saveAndContinue: true
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
+      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
         expectedArgs
       );
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getDatesToAvoidQuestion(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -107,29 +112,29 @@ describe('CMA Requirements - Question controller', () => {
         saveAndContinue: true
 
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
       await postDatesToAvoidQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(req.session.appeal.cmaRequirements.datesToAvoid.isDateCannotAttend).to.be.true;
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidEnterDate);
+      expect(req.session.appeal.cmaRequirements.datesToAvoid.isDateCannotAttend).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidEnterDate)).to.equal(true);
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
       await postDatesToAvoidQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(req.session.appeal.cmaRequirements.datesToAvoid.isDateCannotAttend).to.be.false;
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
+      expect(req.session.appeal.cmaRequirements.datesToAvoid.isDateCannotAttend).to.equal(false);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.taskList)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postDatesToAvoidQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

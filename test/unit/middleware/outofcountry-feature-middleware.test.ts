@@ -12,6 +12,7 @@ describe('hearingRequirementsMiddleware', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -32,10 +33,11 @@ describe('hearingRequirementsMiddleware', () => {
         }
       } as any
     } as Partial<Request>;
+    redirectStub = sandbox.stub();
 
     res = {
       render: sandbox.stub(),
-      redirect: sandbox.spy(),
+      redirect: redirectStub,
       clearCookie: sandbox.stub(),
       send: sandbox.stub()
     } as Partial<Response>;
@@ -56,7 +58,7 @@ describe('hearingRequirementsMiddleware', () => {
     };
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(reqWithPath as Request, 'aip-ooc-feature', false).resolves(true);
     await outOfCountryFeatureMiddleware(reqWithPath as Request, res as Response, next);
-    expect(next).to.have.been.called;
+    expect(next.called).to.equal(true);
   });
 
   it('should redirect to respective hearings page if the out of county feature  is enabled disabled', async () => {
@@ -66,6 +68,6 @@ describe('hearingRequirementsMiddleware', () => {
     };
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(reqWithPath as Request, 'aip-ooc-feature', false).resolves(false);
     await outOfCountryFeatureMiddleware(reqWithPath as Request, res as Response, next);
-    expect(res.redirect).to.have.been.called.calledWith(paths.common.overview);
+    expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
   });
 });

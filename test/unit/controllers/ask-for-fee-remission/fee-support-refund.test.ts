@@ -23,6 +23,9 @@ describe('Fee support refund Controller', () => {
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
 
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -47,10 +50,13 @@ describe('Fee support refund Controller', () => {
       } as any
     } as Partial<Request>;
 
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -75,8 +81,8 @@ describe('Fee support refund Controller', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
       setupFeeSupportRefundController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealSubmitted.feeSupportRefund);
-      expect(routerPostStub).to.have.been.calledWith(paths.appealSubmitted.feeSupportRefund);
+      expect(routerGetStub.calledWith(paths.appealSubmitted.feeSupportRefund)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.appealSubmitted.feeSupportRefund)).to.equal(true);
     });
 
     it('should return the question', () => {
@@ -115,7 +121,7 @@ describe('Fee support refund Controller', () => {
       req.session.appeal.application.appealType = 'protection';
       const question = getOptionsQuestion(req.session.appeal);
 
-      expect(question).to.be.eql(expectedQuestion);
+      expect(question).to.deep.equal(expectedQuestion);
     });
 
     it('should return the question with option checked', () => {
@@ -154,13 +160,13 @@ describe('Fee support refund Controller', () => {
       req.session.appeal.application.lateRemissionOption = 'asylumSupportFromHo';
       const question = getOptionsQuestion(req.session.appeal);
 
-      expect(question).to.be.eql(expectedQuestion);
+      expect(question).to.deep.equal(expectedQuestion);
     });
 
     it('should render fee-support.njk template', async () => {
       await getFeeSupport(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledOnce.calledWith('ask-for-fee-remission/fee-support-refund.njk', {
+      expect(renderStub).to.be.calledOnceWith('ask-for-fee-remission/fee-support-refund.njk', {
         previousPage: paths.common.overview,
         pageTitle: i18n.pages.remissionOptionPage.refundTitle,
         formAction: paths.appealSubmitted.feeSupportRefund,
@@ -173,23 +179,23 @@ describe('Fee support refund Controller', () => {
       req.body['answer'] = 'asylumSupportFromHo';
       req.session.appeal.application.appealType = 'protection';
       await postFeeSupport()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealSubmitted.asylumSupportRefund);
+      expect(redirectStub.calledOnceWith(paths.appealSubmitted.asylumSupportRefund)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect asylum-support-refund.njk and reset isEdit flag', async () => {
       req.body['answer'] = 'asylumSupportFromHo';
       req.query = { 'edit': '' };
       await postFeeSupport()(req as Request, res as Response, next);
-      expect(req.session.appeal.application.lateRemissionOption).to.be.eql('asylumSupportFromHo');
-      expect(res.redirect).to.have.been.calledWithMatch(new RegExp(`${paths.appealSubmitted.asylumSupportRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.lateRemissionOption).to.deep.equal('asylumSupportFromHo');
+      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.asylumSupportRefund}(?!.*\\bedit\\b)`));
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
     it('when called with edit param should render fee-support-refund.njk and update session', async () => {
       req.query = { 'edit': '' };
       await getFeeSupport(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('ask-for-fee-remission/fee-support-refund.njk');
+      expect(renderStub.calledOnceWith('ask-for-fee-remission/fee-support-refund.njk')).to.equal(true);
     });
 
     it('should redirect to correct path according to the fee support selected value', async () => {
@@ -237,7 +243,7 @@ describe('Fee support refund Controller', () => {
       };
 
       await postFeeSupport()(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith(
+      expect(renderStub).to.be.calledOnceWith(
         'ask-for-fee-remission/fee-support-refund.njk',
         {
           errors: {
@@ -265,12 +271,12 @@ describe('Fee support refund Controller', () => {
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await postFeeSupport()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await getFeeSupport(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
   });
 
@@ -279,7 +285,7 @@ describe('Fee support refund Controller', () => {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
       await getFeeSupport(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

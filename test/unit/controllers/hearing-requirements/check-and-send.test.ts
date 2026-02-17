@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getCheckAndSendPage,
   postCheckAndSendPage,
@@ -17,6 +17,10 @@ describe('Hearing Requirements Check and Send controller', () => {
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   const logger: Logger = new Logger();
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
+  let submitRefactoredStub: sinon.SinonStub;
   const hearingRequirements: HearingRequirements = {
     'datesToAvoid': {
       'isDateCannotAttend': true,
@@ -96,14 +100,19 @@ describe('Hearing Requirements Check and Send controller', () => {
         }
       } as any
     } as Partial<Request>;
+    submitStub = sandbox.stub();
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
-    updateAppealService = { submitEvent: sandbox.stub().returns({ state: 'hearingRequirementsSubmitted' }) } as Partial<UpdateAppealService>;
-
-    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = {
+      submitEventRefactored: submitRefactoredStub,
+      submitEvent: submitStub.returns({ state: 'hearingRequirementsSubmitted' })
+    } as Partial<UpdateAppealService>;
 
     next = sandbox.stub();
   });
@@ -119,15 +128,15 @@ describe('Hearing Requirements Check and Send controller', () => {
       const middleware: Middleware[] = [];
 
       setupHearingRequirementsCYAController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.checkAndSend);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.checkAndSend);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.checkAndSend)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.submitHearingRequirements.checkAndSend)).to.equal(true);
     });
   });
 
   describe('getCheckAndSendPage', () => {
     it('should render CYA template page', () => {
       getCheckAndSendPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk');
+      expect(renderStub.calledWith('templates/check-and-send.njk')).to.equal(true);
     });
 
     it('should render CYA template page with requirements', () => {
@@ -870,21 +879,61 @@ describe('Hearing Requirements Check and Send controller', () => {
       };
 
       req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
-      req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
-      req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
+      req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage = {
+        languageRefData: {
+          value: {
+            label: 'Maghreb',
+            code: 'ara-mag'
+          }
+        }
+      };
+      req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = {
+        languageManualEntry: ['Yes'],
+        languageManualEntryDescription: 'input sign language manually'
+      };
 
-      req.session.appeal.hearingRequirements.witnessListElement2 = { 'value': [{ 'code': 'John Smith', 'label': 'John Smith' }], 'list_items': [{ 'code': 'John Smith', 'label': 'John Smith' }] };
+      req.session.appeal.hearingRequirements.witnessListElement2 = {
+        'value': [{
+          'code': 'John Smith',
+          'label': 'John Smith'
+        }], 'list_items': [{ 'code': 'John Smith', 'label': 'John Smith' }]
+      };
       req.session.appeal.hearingRequirements.witness2InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
-      req.session.appeal.hearingRequirements.witness2InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Japanese', code: 'jpn' } } };
-      req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
+      req.session.appeal.hearingRequirements.witness2InterpreterSpokenLanguage = {
+        languageRefData: {
+          value: {
+            label: 'Japanese',
+            code: 'jpn'
+          }
+        }
+      };
+      req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = {
+        languageManualEntry: ['Yes'],
+        languageManualEntryDescription: 'John Smith input sign language manually'
+      };
 
-      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'sabah u din irfan', 'label': 'sabah u din irfan' }], 'list_items': [{ 'code': 'sabah u din irfan', 'label': 'sabah u din irfan' }] };
+      req.session.appeal.hearingRequirements.witnessListElement1 = {
+        'value': [{
+          'code': 'sabah u din irfan',
+          'label': 'sabah u din irfan'
+        }], 'list_items': [{ 'code': 'sabah u din irfan', 'label': 'sabah u din irfan' }]
+      };
       req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
-      req.session.appeal.hearingRequirements.witness1InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Japanese', code: 'jpn' } } };
-      req.session.appeal.hearingRequirements.witness1InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'sabah u din irfan input sign language manually' };
+      req.session.appeal.hearingRequirements.witness1InterpreterSpokenLanguage = {
+        languageRefData: {
+          value: {
+            label: 'Japanese',
+            code: 'jpn'
+          }
+        }
+      };
+      req.session.appeal.hearingRequirements.witness1InterpreterSignLanguage = {
+        languageManualEntry: ['Yes'],
+        languageManualEntryDescription: 'sabah u din irfan input sign language manually'
+      };
       getCheckAndSendPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
     });
 
     it('should render CYA template page with requirements when there is no witnesses with spoken and sign language interpreter', () => {
@@ -1432,19 +1481,29 @@ describe('Hearing Requirements Check and Send controller', () => {
 
       req.session.appeal.hearingRequirements.witnessesOnHearing = false;
       req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
-      req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
-      req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
+      req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage = {
+        languageRefData: {
+          value: {
+            label: 'Maghreb',
+            code: 'ara-mag'
+          }
+        }
+      };
+      req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = {
+        languageManualEntry: ['Yes'],
+        languageManualEntryDescription: 'input sign language manually'
+      };
       getCheckAndSendPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getCheckAndSendPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -1452,18 +1511,18 @@ describe('Hearing Requirements Check and Send controller', () => {
     it('should submit and redirect to confirmation page', async () => {
       await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      // expect(req.session.appeal.hearingRequirements).to.eql(hearingRequirements);
-      // expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.SUBMIT_HEARING_REQUIREMENTS, req);
-      // expect(req.session.appeal.appealStatus).to.be.equal('hearingRequirementsSubmitted');
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.confirmation);
+      // expect(req.session.appeal.hearingRequirements).to.deep.equal(hearingRequirements);
+      // expect(submitStub.calledWith(Events.SUBMIT_HEARING_REQUIREMENTS, req)).to.equal(true);
+      // expect(req.session.appeal.appealStatus).to.equal('hearingRequirementsSubmitted');
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.confirmation)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
 
       await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

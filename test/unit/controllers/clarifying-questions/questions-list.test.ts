@@ -31,7 +31,7 @@ describe('Questions-list controller', () => {
       }
     }
   ];
-
+  let renderStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -41,8 +41,9 @@ describe('Questions-list controller', () => {
         }
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       redirect: sandbox.spy()
     } as Partial<Response>;
     next = sandbox.stub();
@@ -58,7 +59,7 @@ describe('Questions-list controller', () => {
       const middleware: Middleware[] = [];
 
       setupClarifyingQuestionsListController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList);
+      expect(routerGetStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList)).to.equal(true);
     });
   });
 
@@ -66,7 +67,7 @@ describe('Questions-list controller', () => {
     it('should render questions-list.njk page', () => {
       getQuestionsList(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.called.calledWith(
+      expect(renderStub).to.be.calledWith(
         'clarifying-questions/questions-list.njk',
         {
           previousPage: paths.common.overview,
@@ -91,7 +92,7 @@ describe('Questions-list controller', () => {
       req.session.appeal.draftClarifyingQuestionsAnswers = [ ...questionsAnswered ];
       getQuestionsList(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.called.calledWith(
+      expect(renderStub).to.be.calledWith(
         'clarifying-questions/questions-list.njk',
         {
           previousPage: paths.common.overview,

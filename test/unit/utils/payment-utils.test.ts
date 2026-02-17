@@ -42,7 +42,7 @@ describe('payment-utils', () => {
     it('should return correct appeal fee information', () => {
       const result = getFee(req.session.appeal);
 
-      expect(result).to.eql(
+      expect(result).to.deep.equal(
         {
           calculated_amount: '140',
           code: 'FEE0238',
@@ -69,13 +69,13 @@ describe('payment-utils', () => {
     it('should return payNow = true for protection appeal when paAppealTypeAipPaymentOption is payNow', () => {
       const payNow = payNowForApplicationNeeded(req as Request);
 
-      expect(payNow).to.eql(true);
+      expect(payNow).to.deep.equal(true);
     });
     it('should return payNow = false for protection appeal when paAppealTypeAipPaymentOption is not payNow', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       const payNow = payNowForApplicationNeeded(req as Request);
 
-      expect(payNow).to.eql(false);
+      expect(payNow).to.deep.equal(false);
     });
     it('should return payNow = true for refusalOfHumanRights or refusalOfEu or euSettlementScheme appeals', () => {
       let payNow = true;
@@ -84,7 +84,7 @@ describe('payment-utils', () => {
         payNow = payNow && payNowForApplicationNeeded(req as Request);
       });
 
-      expect(payNow).to.eql(true);
+      expect(payNow).to.deep.equal(true);
     });
   });
 
@@ -93,12 +93,12 @@ describe('payment-utils', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       const payLater = payLaterForApplicationNeeded(req as Request);
 
-      expect(payLater).to.eql(true);
+      expect(payLater).to.deep.equal(true);
     });
     it('should return payLater = false for protection appeal when paAppealTypeAipPaymentOption is payNow', () => {
       const payLater = payLaterForApplicationNeeded(req as Request);
 
-      expect(payLater).to.eql(false);
+      expect(payLater).to.deep.equal(false);
     });
     it('should return payLater = false for refusalOfHumanRights or refusalOfEu or euSettlementScheme appeals when appeal status is paymentPending', () => {
       req.session.appeal.appealStatus = 'pendingPayment';
@@ -108,7 +108,7 @@ describe('payment-utils', () => {
         payLater = payLaterForApplicationNeeded(req as Request);
       });
 
-      expect(payLater).to.eql(false);
+      expect(payLater).to.deep.equal(false);
     });
     it('should return payLater = false for refusalOfHumanRights or refusalOfEu or euSettlementScheme appeals when appeal status is not paymentPending', () => {
       let payLater = true;
@@ -117,13 +117,13 @@ describe('payment-utils', () => {
         payLater = payLater && payLaterForApplicationNeeded(req as Request);
       });
 
-      expect(payLater).to.eql(false);
+      expect(payLater).to.deep.equal(false);
     });
   });
 
   describe('convertToAmountOfMoneyDividedBy100', () => {
     it('should return correct converted amount of money', () => {
-      expect(convertToAmountOfMoneyDividedBy100('4000')).to.eql('40');
+      expect(convertToAmountOfMoneyDividedBy100('4000')).to.deep.equal('40');
     });
 
     it('should throw an error for invalid input', () => {

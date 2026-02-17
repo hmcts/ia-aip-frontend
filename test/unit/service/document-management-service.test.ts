@@ -53,8 +53,8 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.uploadFile(req as Request);
 
-      expect(dmStub).to.not.have.been.called;
-      expect(cdamStub).to.have.been.calledWith(req);
+      expect(dmStub.called).to.equal(false);
+      expect(cdamStub.calledWith(req)).to.equal(true);
     });
 
     it('should call DM when feature flag is off', async () => {
@@ -66,8 +66,8 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.uploadFile(req as Request);
 
-      expect(cdamStub).to.not.have.been.called;
-      expect(dmStub).to.have.been.calledWith(req);
+      expect(cdamStub.called).to.equal(false);
+      expect(dmStub.calledWith(req)).to.equal(true);
     });
   });
 
@@ -81,8 +81,8 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.deleteFile(req as Request, 'file.id');
 
-      expect(dmStub).to.not.have.been.called;
-      expect(cdamStub).to.have.been.calledWith(req, 'file.id');
+      expect(dmStub.called).to.equal(false);
+      expect(cdamStub.calledWith(req, 'file.id')).to.equal(true);
     });
 
     it('should call DM when feature flag is off', async () => {
@@ -94,8 +94,8 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.deleteFile(req as Request, 'file.id');
 
-      expect(cdamStub).to.not.have.been.called;
-      expect(dmStub).to.have.been.calledWith(req, 'file.id');
+      expect(cdamStub.called).to.equal(false);
+      expect(dmStub.calledWith(req, 'file.id')).to.equal(true);
     });
   });
 
@@ -109,8 +109,8 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'file.location');
 
-      expect(dmStub).to.not.have.been.called;
-      expect(cdamStub).to.have.been.calledWith(req, 'file.location');
+      expect(dmStub.called).to.equal(false);
+      expect(cdamStub.calledWith(req, 'file.location')).to.equal(true);
     });
 
     it('should call DM when feature flag is off', async () => {
@@ -122,8 +122,8 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'file.location');
 
-      expect(cdamStub).to.not.have.been.called;
-      expect(dmStub).to.have.been.calledWith(req, 'file.location');
+      expect(cdamStub.called).to.equal(false);
+      expect(dmStub.calledWith(req, 'file.location')).to.equal(true);
     });
   });
 });

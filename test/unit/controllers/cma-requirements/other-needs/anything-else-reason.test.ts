@@ -15,7 +15,9 @@ describe('CMA Requirements - Other Needs Section: Anything Else Reason controlle
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonSpy;
+  let submit: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -29,12 +31,15 @@ describe('CMA Requirements - Other Needs Section: Anything Else Reason controlle
         }
       }
     } as Partial<Request>;
+    submit = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.spy();
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEvent: submit } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -48,8 +53,8 @@ describe('CMA Requirements - Other Needs Section: Anything Else Reason controlle
       const middleware: Middleware[] = [];
 
       setupAnythingElseReasonController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElseReasons);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElseReasons);
+      expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElseReasons)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElseReasons)).to.equal(true);
     });
   });
 
@@ -70,7 +75,7 @@ describe('CMA Requirements - Other Needs Section: Anything Else Reason controlle
       };
 
       getAnythingElseReason(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should render template with saved answer', () => {
@@ -91,15 +96,15 @@ describe('CMA Requirements - Other Needs Section: Anything Else Reason controlle
       };
 
       getAnythingElseReason(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getAnythingElseReason(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -129,23 +134,23 @@ describe('CMA Requirements - Other Needs Section: Anything Else Reason controlle
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
 
     });
 
     it('should validate and redirect to next page', async () => {
       req.body['reason'] = 'the answer here';
       await postAnythingElseReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
+      expect(submit.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.taskList)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postAnythingElseReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

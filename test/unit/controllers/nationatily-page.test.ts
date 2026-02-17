@@ -21,7 +21,9 @@ describe('Nationality details Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -48,15 +50,22 @@ describe('Nationality details Controller', function () {
       }
     } as Partial<Request>;
 
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy(),
-      send: sandbox.stub()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
 
-    next = sandbox.stub();
+    updateAppealService = {
+      submitEventRefactored: submitRefactoredStub
+    } as Partial<UpdateAppealService>;
 
-    updateAppealService = { submitEventRefactored: sandbox.stub() };
+
+    next = sandbox.stub();
   });
 
   afterEach(() => {
@@ -70,29 +79,29 @@ describe('Nationality details Controller', function () {
       const middleware = [];
 
       setupHomeOfficeDetailsController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.nationality, middleware);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.nationality, middleware);
+      expect(routerGetStub.calledWith(paths.appealStarted.nationality, middleware)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.nationality, middleware)).to.equal(true);
     });
   });
 
   describe('getNationalityPage', () => {
     it('should render personal-details/nationality.njk', function () {
       getNationalityPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/nationality.njk');
+      expect(renderStub.calledOnceWith('appeal-application/personal-details/nationality.njk')).to.equal(true);
     });
 
     it('when called with edit param  should render personal-details/nationality.njk and update session', function () {
       req.query = { 'edit': '' };
       getNationalityPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/nationality.njk');
+      expect(renderStub.calledOnceWith('appeal-application/personal-details/nationality.njk')).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
     });
 
     it('should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getNationalityPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -112,7 +121,7 @@ describe('Nationality details Controller', function () {
           }
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         application: {
           personalDetails: {
             nationality: 'AQ',
@@ -126,8 +135,8 @@ describe('Nationality details Controller', function () {
     it('should validate and redirect letter received page', async () => {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.letterReceived);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.letterReceived)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
@@ -135,9 +144,9 @@ describe('Nationality details Controller', function () {
       appeal.application.isEdit = true;
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
 
     });
 
@@ -153,8 +162,8 @@ describe('Nationality details Controller', function () {
         text: i18n.validationErrors.nationality.selectNationality
       };
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith('appeal-application/personal-details/nationality.njk',
         {
           errorList: [ error ],
           errors: { nationality: error },
@@ -169,8 +178,8 @@ describe('Nationality details Controller', function () {
       };
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
@@ -181,26 +190,26 @@ describe('Nationality details Controller', function () {
       };
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
     it('should catch an exception and call next() with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should redirect to letter received page when user selected No for appellantInUk', async () => {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.letterReceived);
+      expect(redirectStub.calledWith(paths.appealStarted.letterReceived)).to.equal(true);
     });
 
     it('should redirect to letter sent page when user selected Yes for appellantInUk', async () => {
       req.session.appeal.application.appellantInUk = 'Yes';
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.letterSent);
+      expect(redirectStub.calledWith(paths.appealStarted.letterSent)).to.equal(true);
     });
   });
 });

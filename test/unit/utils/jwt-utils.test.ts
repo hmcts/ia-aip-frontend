@@ -31,8 +31,8 @@ describe('JWT Utils', () => {
     });
 
     const result = isJWTExpired(token);
-    expect(stub).has.been.calledOnce;
-    expect(result).eq(true);
+    expect(stub.callCount).to.equal(1);
+    expect(result).to.equal(true);
   });
 
   it('checks that a token is expired taking into account the 5 minute offset', () => {
@@ -48,8 +48,8 @@ describe('JWT Utils', () => {
     });
 
     const result = isJWTExpired(token);
-    expect(stub).has.been.calledOnce;
-    expect(result).eq(true);
+    expect(stub.callCount).to.equal(1);
+    expect(result).to.equal(true);
   });
 
   it('checks that a token is valid taking into account the 5 minute offset', () => {
@@ -66,8 +66,8 @@ describe('JWT Utils', () => {
     });
 
     const result = isJWTExpired(token);
-    expect(stub).has.been.calledOnce;
-    expect(result).eq(false);
+    expect(stub.callCount).to.equal(1);
+    expect(result).to.equal(false);
   });
 
   it('throws an exception if the token is not valid', () => {

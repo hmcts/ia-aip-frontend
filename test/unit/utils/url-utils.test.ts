@@ -10,7 +10,7 @@ describe('creates url', () => {
 
     const redirectUrl = getIdamRedirectUrl(req as Request);
 
-    expect(redirectUrl).eq('https://example.com/redirectUrl');
+    expect(redirectUrl).to.equal('https://example.com/redirectUrl');
   });
 
   it('for localhost', () => {
@@ -20,7 +20,7 @@ describe('creates url', () => {
 
     const redirectUrl = getIdamRedirectUrl(req as Request);
 
-    expect(redirectUrl).eq('https://localhost:3000/redirectUrl');
+    expect(redirectUrl).to.equal('https://localhost:3000/redirectUrl');
   });
 
   it('getIdamLoginUrl for login', () => {

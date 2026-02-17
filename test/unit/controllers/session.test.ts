@@ -15,6 +15,7 @@ describe('session controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -33,8 +34,9 @@ describe('session controller', () => {
         locals: {}
       } as any
     } as Partial<Request>;
+    renderStub = sandbox.stub();
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
       redirect: sinon.spy(),
       locals: {}
@@ -51,8 +53,8 @@ describe('session controller', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       setupSessionController();
-      expect(routerGetStub).to.have.been.calledWith(paths.common.extendSession);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.sessionExpired);
+      expect(routerGetStub.calledWith(paths.common.extendSession)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.sessionExpired)).to.equal(true);
     });
   });
 
@@ -60,7 +62,7 @@ describe('session controller', () => {
     it('should send a new timeout', () => {
       getExtendSession(req as Request, res as Response, next);
 
-      expect(res.send).to.have.been.calledWith({
+      expect(res.send).to.be.calledWith({
         timeout: sinon.match.typeOf('object')
       });
     });
@@ -70,7 +72,7 @@ describe('session controller', () => {
     it('should render session-ended.njk page', () => {
       getSessionEnded(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('session/session-ended.njk');
+      expect(renderStub.calledWith('session/session-ended.njk')).to.equal(true);
     });
   });
 });

@@ -19,6 +19,9 @@ describe('CMA Requirements - Enter A date controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -35,12 +38,18 @@ describe('CMA Requirements - Enter A date controller', () => {
         }
       }
     } as Partial<Request>;
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
+
+    updateAppealService = { submitEvent: submitStub } as Partial<UpdateAppealService>;
     next = sandbox.stub();
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -54,23 +63,23 @@ describe('CMA Requirements - Enter A date controller', () => {
       const middleware: Middleware[] = [];
 
       setupDatesToAvoidEnterADateController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidEnterDate);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidEnterDate);
+      expect(routerGetStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidEnterDate)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidEnterDate)).to.equal(true);
     });
   });
 
   describe('getEnterADatePage', () => {
     it('should render template', () => {
       getEnterADatePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk');
+      expect(renderStub.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk')).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getEnterADatePage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -103,7 +112,7 @@ describe('CMA Requirements - Enter A date controller', () => {
       };
 
       getEnterADatePageWithId(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs);
+      expect(renderStub.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs)).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
@@ -116,10 +125,10 @@ describe('CMA Requirements - Enter A date controller', () => {
         }
       } ];
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getEnterADatePageWithId(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -157,7 +166,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk',
+      expect(renderStub).to.be.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk',
         expectedArgs);
     });
 
@@ -170,16 +179,16 @@ describe('CMA Requirements - Enter A date controller', () => {
       req.body['year'] = validDate.year();
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidReason);
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidReason)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -217,7 +226,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk',
+      expect(renderStub).to.be.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk',
         expectedArgs);
     });
 
@@ -231,18 +240,18 @@ describe('CMA Requirements - Enter A date controller', () => {
       req.body['year'] = validDate.year();
 
       await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith('/appointment-dates-avoid-reasons/0');
+      expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(redirectStub.calledWith('/appointment-dates-avoid-reasons/0')).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       req.params.id = '0';
 
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

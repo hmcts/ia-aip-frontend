@@ -39,18 +39,18 @@ describe('Logger Middleware', () => {
   });
 
   it('logRequestMiddleware should call logger.request', function() {
-    logRequestStub = sinon.stub(logger, 'request');
+    logRequestStub = sandbox.stub(logger, 'request');
     logRequestMiddleware(req as Request, res as Response, next);
 
-    expect(logRequestStub).to.have.been.called;
-    expect(next).to.have.been.calledOnce;
+    expect(logRequestStub.called).to.equal(true);
+    expect(next.callCount).to.equal(1);
   });
 
   it('logErrorMiddleware should call logger.exception', function() {
-    logExceptionStub = sinon.stub(logger, 'exception');
+    logExceptionStub = sandbox.stub(logger, 'exception');
     logErrorMiddleware(error, req as Request, res as Response, next);
 
-    expect(logExceptionStub).to.have.been.called;
-    expect(next).to.have.been.calledOnce.calledWith(error);
+    expect(logExceptionStub.called).to.equal(true);
+    expect(next.calledOnceWith(error)).to.equal(true);
   });
 });

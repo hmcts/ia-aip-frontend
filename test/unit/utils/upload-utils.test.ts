@@ -20,7 +20,7 @@ describe('getFileUploadError', () => {
 
     const result = getFileUploadError(errorCode);
     expect(result).to.equal('File size exceeds 10 MB.');
-    expect(configStub.calledOnceWith('evidenceUpload.maxFileSizeInMb')).to.be.true;
+    expect(configStub.calledOnceWith('evidenceUpload.maxFileSizeInMb')).to.equal(true);
   });
 
   it('should return the error message with supported formats replaced', () => {
@@ -33,7 +33,7 @@ describe('getFileUploadError', () => {
 
     const result = getFileUploadError(errorCode);
     expect(result).to.equal('Supported formats are jpg, png, pdf.');
-    expect(configStub.calledOnceWith('evidenceUpload.supportedFormats')).to.be.true;
+    expect(configStub.calledOnceWith('evidenceUpload.supportedFormats')).to.equal(true);
   });
 
   it('should return the error message as is if no placeholders are present', () => {

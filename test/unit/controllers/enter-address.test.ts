@@ -21,7 +21,6 @@ describe('Personal Details Controller', function () {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
-
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
   const osPlacesClient = new OSPlacesClient('someToken');
@@ -33,6 +32,9 @@ describe('Personal Details Controller', function () {
     county: '',
     postcode: 'postcode'
   };
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -60,14 +62,19 @@ describe('Personal Details Controller', function () {
       } as any
     } as Partial<Request>;
 
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
+    updateAppealService = { submitEventRefactored: submitStub } as Partial<UpdateAppealService>;
+
     next = sandbox.stub();
-    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -80,8 +87,8 @@ describe('Personal Details Controller', function () {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
       setupContactDetailsController(middleware, { updateAppealService, osPlacesClient } as any);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.enterAddress, middleware);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.enterAddress, middleware);
+      expect(routerGetStub.calledWith(paths.appealStarted.enterAddress, middleware)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.enterAddress, middleware)).to.equal(true);
     });
   });
 
@@ -91,7 +98,7 @@ describe('Personal Details Controller', function () {
         ...address
       };
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/enter-address.njk', {
         address,
         previousPage: paths.appealStarted.contactDetails
       });
@@ -103,7 +110,7 @@ describe('Personal Details Controller', function () {
       };
       req.session.previousPage = '/lastpage';
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/enter-address.njk', {
         address,
         previousPage: '/lastpage'
       });
@@ -115,7 +122,7 @@ describe('Personal Details Controller', function () {
         ...address
       };
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/enter-address.njk', {
         address,
         previousPage: paths.appealStarted.contactDetails
       });
@@ -127,7 +134,7 @@ describe('Personal Details Controller', function () {
       req.session.appeal.application.addressLookup = {};
       _.set(req.session.appeal.application, 'personalDetails.address', { ...address });
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/enter-address.njk', {
         address,
         previousPage: paths.appealStarted.contactDetails
       });
@@ -142,9 +149,9 @@ describe('Personal Details Controller', function () {
         }
       };
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -172,7 +179,7 @@ describe('Personal Details Controller', function () {
           }
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitStub.returns({
         application: {
           personalDetails: {
             address: {
@@ -190,22 +197,22 @@ describe('Personal Details Controller', function () {
       req.body['address-postcode'] = 'W';
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).not.to.have.been.called;
-      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/enter-address.njk');
+      expect(submitStub.called).to.equal(false);
+      expect(renderStub.calledWith('appeal-application/personal-details/enter-address.njk')).to.equal(true);
     });
 
     it('should validate and redirect to has sponsor page', async () => {
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.hasSponsor);
+      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.hasSponsor)).to.equal(true);
     });
 
     it('should catch an exception and call next()', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset the isEdit flag', async () => {
@@ -213,9 +220,9 @@ describe('Personal Details Controller', function () {
       appeal.application.isEdit = true;
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
     it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -224,8 +231,8 @@ describe('Personal Details Controller', function () {
       };
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submitStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
@@ -236,15 +243,15 @@ describe('Personal Details Controller', function () {
       };
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(submitStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
     it('should catch an exception and call next()', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

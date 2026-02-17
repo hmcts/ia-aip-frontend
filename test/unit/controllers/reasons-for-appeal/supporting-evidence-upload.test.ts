@@ -23,6 +23,8 @@ describe('Supporting Evidence Upload Controller', () => {
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
   const logger: Logger = new Logger();
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   const someEvidences: Evidence[] = [
     {
       fileId: 'someUUID',
@@ -56,11 +58,14 @@ describe('Supporting Evidence Upload Controller', () => {
     updateAppealService = { submitEvent: sandbox.stub() };
     documentManagementService = { uploadFile: sandbox.stub(), deleteFile: sandbox.stub() };
 
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      locals: sandbox.spy(),
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      locals: sandbox.spy(),
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -81,9 +86,9 @@ describe('Supporting Evidence Upload Controller', () => {
       };
       const middleware = [];
       setupReasonsForAppealController(middleware, deps);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceUpload, middleware);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceUploadFile, middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile, middleware);
+      expect(routerGetStub.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceUpload, middleware)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceUploadFile, middleware)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile, middleware)).to.equal(true);
     });
   });
 
@@ -94,7 +99,7 @@ describe('Supporting Evidence Upload Controller', () => {
 
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: Object.values(evidences),
         evidenceCTA: paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile,
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
@@ -106,7 +111,7 @@ describe('Supporting Evidence Upload Controller', () => {
       req.session.appeal.reasonsForAppeal.evidences = someEvidences;
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: someEvidences,
         evidenceCTA: paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile,
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
@@ -116,9 +121,9 @@ describe('Supporting Evidence Upload Controller', () => {
 
     it('getSupportingEvidenceUploadPage should catch exception and call next with the error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -132,7 +137,7 @@ describe('Supporting Evidence Upload Controller', () => {
       };
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidences: [],
@@ -151,7 +156,7 @@ describe('Supporting Evidence Upload Controller', () => {
       res.locals.errorCode = 'incorrectFormat';
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidences: [],
@@ -172,7 +177,7 @@ describe('Supporting Evidence Upload Controller', () => {
       res.locals.errorCode = 'fileTooLarge';
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidences: [],
@@ -203,7 +208,7 @@ describe('Supporting Evidence Upload Controller', () => {
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceUpload);
+      expect(redirectStub.calledOnceWith(paths.awaitingReasonsForAppeal.supportingEvidenceUpload)).to.equal(true);
     });
 
     it('getSupportingEvidenceDeleteFile should catch exception and call next with the error', async () => {
@@ -215,9 +220,9 @@ describe('Supporting Evidence Upload Controller', () => {
       req.query['id'] = 'someUUID';
 
       const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       await getSupportingEvidenceDeleteFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -232,7 +237,7 @@ describe('Supporting Evidence Upload Controller', () => {
       req.query['id'] = 'someUUID';
       await getSupportingEvidenceDeleteFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
       expect(req.session.appeal.reasonsForAppeal.evidences).to.not.haveOwnProperty('someUUID');
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceUpload);
+      expect(redirectStub.calledOnceWith(paths.awaitingReasonsForAppeal.supportingEvidenceUpload)).to.equal(true);
     });
 
     it('getSupportingEvidenceDeleteFile should catch exception and call next with the error', async () => {
@@ -244,9 +249,9 @@ describe('Supporting Evidence Upload Controller', () => {
       req.query['id'] = 'someUUID';
 
       const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       await getSupportingEvidenceDeleteFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 })

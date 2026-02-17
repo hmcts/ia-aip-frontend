@@ -24,25 +24,25 @@ describe('Save for later utils', () => {
     it('shouldValidateWhenSaveForLater is true when save for later not clicked', function () {
       const shouldValidate = shouldValidateWhenSaveForLater({ }, 'anyField');
 
-      expect(shouldValidate).to.be.true;
+      expect(shouldValidate).to.equal(true);
     });
 
     it('shouldValidateWhenSaveForLater is true when save for later clicked and some data entered', function () {
       const shouldValidate = shouldValidateWhenSaveForLater({ saveForLater: 'saveForLater', field1: 'someValue' }, 'field1', 'field2');
 
-      expect(shouldValidate).to.be.true;
+      expect(shouldValidate).to.equal(true);
     });
 
     it('shouldValidateWhenSaveForLater is false when save for later clicked and no data entered', function () {
       const shouldValidate = shouldValidateWhenSaveForLater({ saveForLater: 'saveForLater' }, 'field1', 'field2');
 
-      expect(shouldValidate).to.be.false;
+      expect(shouldValidate).to.equal(false);
     });
 
     it('shouldValidateWhenSaveForLater is false when save for later clicked and data entered is blank', function () {
       const shouldValidate = shouldValidateWhenSaveForLater({ saveForLater: 'saveForLater', field1: '', field2: '' }, 'field1', 'field2');
 
-      expect(shouldValidate).to.be.false;
+      expect(shouldValidate).to.equal(false);
     });
   });
 });

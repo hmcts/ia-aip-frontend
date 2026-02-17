@@ -14,7 +14,9 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Reason contr
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonSpy;
+  let submit: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -36,12 +38,15 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Reason contr
         '__auth-token': 'atoken'
       }
     } as Partial<Request>;
+    submit = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.spy();
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
-    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEventRefactored: submit } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -55,8 +60,8 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Reason contr
       const middleware: Middleware[] = [];
 
       setupHearingAnythingElseReasonController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsAnythingElseReasons);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsAnythingElseReasons);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.otherNeedsAnythingElseReasons)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.submitHearingRequirements.otherNeedsAnythingElseReasons)).to.equal(true);
     });
   });
 
@@ -77,7 +82,7 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Reason contr
       };
 
       getHearingAnythingElseReason(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should render template with saved answer', () => {
@@ -98,15 +103,15 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Reason contr
       };
 
       getHearingAnythingElseReason(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getHearingAnythingElseReason(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -136,23 +141,23 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Reason contr
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
 
     });
 
     it('should validate and redirect to next page', async () => {
       req.body['reason'] = 'the answer here';
       await postHearingAnythingElseReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
+      expect(submit.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.taskList)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postHearingAnythingElseReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

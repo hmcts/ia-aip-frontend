@@ -16,11 +16,19 @@ function setupSession() {
     logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
     const RedisStore = require('connect-redis')(session);
     const redisOpts = {
+      legacyMode: true,
       url: config.get('session.redis.url'),
       ttl: config.get('session.redis.ttlInSeconds')
     };
 
     const client = redis.createClient(redisOpts);
+    client.connect()
+      .then(() => logger.trace(`Connected to Redis at [${config.get('session.redis.url')}]`, logLabel))
+      .catch(err => {
+        logger.exception(`Redis connection error: ${err}`, logLabel);
+        throw err;
+      });
+
     return session({
       cookie: {
         httpOnly: true,

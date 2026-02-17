@@ -322,7 +322,7 @@ describe('Make application controllers helper', () => {
         adviceHeader: i18n.pages.makeApplication.provideSupportingEvidence.adviceHeader,
         advice: i18n.pages.makeApplication.provideSupportingEvidence.advice,
         evidenceUploadAction: config.evidenceUploadAction,
-        evidences: req.session.appeal.makeAnApplicationEvidence || [],
+        evidences: [],
         evidenceCTA: config.evidenceCTA,
         previousPage: config.previousPage,
         formSubmitAction: config.pathToProvideSupportingEvidence
@@ -356,7 +356,7 @@ describe('Make application controllers helper', () => {
         adviceHeader: i18n.pages.makeApplication.provideSupportingEvidence.adviceHeader,
         advice: i18n.pages.makeApplication.provideSupportingEvidence.advice,
         evidenceUploadAction: config.evidenceUploadAction,
-        evidences: req.session.appeal.makeAnApplicationEvidence || [],
+        evidences: [],
         evidenceCTA: config.evidenceCTA,
         previousPage: config.previousPage,
         errorList,
@@ -506,8 +506,8 @@ describe('Make application controllers helper', () => {
 
       await makeApplicationControllersHelper.uploadSupportingEvidence(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect((req.session.appeal.makeAnApplicationEvidence || [])[0].fileId === documentUploadResponse.fileId);
-      expect((req.session.appeal.makeAnApplicationEvidence || [])[0].name === documentUploadResponse.name);
+      expect(req.session.appeal.makeAnApplicationEvidence[0].fileId).to.equal(documentUploadResponse.fileId);
+      expect(req.session.appeal.makeAnApplicationEvidence[0].name).to.equal(documentUploadResponse.name);
       expect(redirectStub.calledWith(redirectTo)).to.equal(true);
     });
 
@@ -653,14 +653,14 @@ describe('Make application controllers helper', () => {
       const expectedPath = '/check-answer-hearing-sooner';
       const actualPath = makeApplicationControllersHelper.getPath('checkAnswer', 'expedite');
 
-      expect(actualPath === expectedPath);
+      expect(actualPath).to.equal(expectedPath);
     });
 
     it('should return valid path when pathPrefix is empty', async () => {
       const expectedPath = '/ask-hearing-sooner';
       const actualPath = makeApplicationControllersHelper.getPath('', 'expedite');
 
-      expect(actualPath === expectedPath);
+      expect(actualPath).to.equal(expectedPath);
     });
   });
 });

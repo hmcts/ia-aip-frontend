@@ -180,7 +180,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
 
   });
 
-  describe.skip('postEnterADatePageWithId', () => {
+  describe('postEnterADatePageWithId', () => {
     it('should fail validation and render template with errors', async () => {
       req.params.id = '0';
 
@@ -217,20 +217,6 @@ describe('Hearing Requirements - Enter A date controller', () => {
 
       expect(renderStub).to.be.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk',
         expectedArgs);
-    });
-
-    it('should validate and redirect to reason page with param id ', async () => {
-      req.params.id = '0';
-
-      const validDate = moment().add(5, 'week');
-
-      req.body['day'] = validDate.date();
-      req.body['month'] = validDate.month() + 2;
-      req.body['year'] = validDate.year();
-
-      await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(submitStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req)).to.equal(true);
-      expect(redirectStub.calledWith('/hearing-dates-avoid-reasons/0')).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {

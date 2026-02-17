@@ -142,7 +142,7 @@ describe('Hearing applications types controller', () => {
       req.body[i18n.pages.makeApplication.askChangeHearing.question.name] = 'expedite';
       postHearingApplicationType(req as Request, res as Response, next);
 
-      expect(req.session.appeal.makeAnApplicationTypes.value.code === 'expedite');
+      expect(req.session.appeal.makeAnApplicationTypes.value.code).to.equal('expedite');
       expect(redirectStub.calledWith(paths.makeApplication.expedite)).to.equal(true);
     });
 

@@ -255,8 +255,8 @@ describe('Provide more evidence controller', () => {
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
 
       await uploadProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect((req.session.appeal.additionalEvidence || [])[0].fileId === documentUploadResponse.fileId);
-      expect((req.session.appeal.additionalEvidence || [])[0].name === documentUploadResponse.name);
+      expect(req.session.appeal.additionalEvidence[0].fileId).to.equal(documentUploadResponse.fileId);
+      expect(req.session.appeal.additionalEvidence[0].name).to.equal(documentUploadResponse.name);
     });
 
     it('should upload file when addendum evidence and feature flag enabled', async () => {
@@ -282,8 +282,8 @@ describe('Provide more evidence controller', () => {
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
 
       await uploadProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect((req.session.appeal.addendumEvidence || [])[0].fileId === documentUploadResponse.fileId);
-      expect((req.session.appeal.addendumEvidence || [])[0].name === documentUploadResponse.name);
+      expect(req.session.appeal.addendumEvidence[0].fileId).to.equal(documentUploadResponse.fileId);
+      expect(req.session.appeal.addendumEvidence[0].name).to.equal(documentUploadResponse.name);
     });
 
     it('should redirect to appeal overview page when addendum evidence and feature flag disabled', async () => {

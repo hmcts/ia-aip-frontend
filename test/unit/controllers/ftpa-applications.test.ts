@@ -648,7 +648,7 @@ describe('Ftpa application controllers setup', () => {
         adviceHeader: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaEvidence.adviceHeader,
         adviceList: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaEvidence.advice,
         evidenceUploadAction: paths.ftpa.ftpaOutOfTimeEvidenceUploadFile,
-        evidences: req.session.appeal.ftpaAppellantOutOfTimeDocuments || [],
+        evidences: [],
         evidenceCTA: paths.ftpa.ftpaOutOfTimeEvidenceDeleteFile,
         previousPage: paths.ftpa.ftpaOutOfTimeEvidenceQuestion,
         formSubmitAction: paths.ftpa.ftpaOutOfTimeEvidence
@@ -775,8 +775,8 @@ describe('Ftpa application controllers setup', () => {
         'ftpaEvidence',
         'ftpaAppellantEvidenceDocuments')(req as Request, res as Response, next);
 
-      expect((req.session.appeal.ftpaAppellantEvidenceDocuments || [])[0].fileId === documentUploadResponse.fileId);
-      expect((req.session.appeal.ftpaAppellantEvidenceDocuments || [])[0].name === documentUploadResponse.name);
+      expect(req.session.appeal.ftpaAppellantEvidenceDocuments[0].fileId).to.equal(documentUploadResponse.fileId);
+      expect(req.session.appeal.ftpaAppellantEvidenceDocuments[0].name).to.equal(documentUploadResponse.name);
       expect(redirectStub.calledWith(paths.ftpa.ftpaEvidence)).to.equal(true);
     });
 

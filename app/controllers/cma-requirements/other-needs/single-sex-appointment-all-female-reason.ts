@@ -7,7 +7,7 @@ import { shouldValidateWhenSaveForLater } from '../../../utils/save-for-later-ut
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { getCmaRequirementsReasonHandler, handleCmaRequirementsSaveForLater } from '../common';
 
-let pageContent = {
+const pageContent = {
   previousPage: paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment,
   formAction: paths.awaitingCmaRequirements.otherNeedsAllFemaleAppointment,
   pageTitle: i18n.pages.cmaRequirements.otherNeedsSection.singleSexAppointmentAllFemale.title,

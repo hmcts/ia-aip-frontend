@@ -177,7 +177,7 @@ function buildOtherNeedsSummaryList(otherNeeds: OtherNeeds) {
       paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment + editParameter)
   );
 
-    if (otherNeeds.singleSexTypeAppointment === SexType.ALL_MALE) {
+    if (otherNeeds.singleSexTypeAppointment === SexType.ALL_MALE.valueOf()) {
       singleSexAppointmentRows.push(
         addSummaryRow(
           i18n.common.cya.questionRowTitle,
@@ -190,7 +190,7 @@ function buildOtherNeedsSummaryList(otherNeeds: OtherNeeds) {
           [ `<pre>${otherNeeds.singleSexAppointmentReason}</pre>` ],
           paths.awaitingCmaRequirements.otherNeedsAllMaleAppointment + editParameter)
       );
-    } else if (otherNeeds.singleSexTypeAppointment === SexType.ALL_FEMALE) {
+    } else if (otherNeeds.singleSexTypeAppointment === SexType.ALL_FEMALE.valueOf()) {
       singleSexAppointmentRows.push(
         addSummaryRow(
           i18n.common.cya.questionRowTitle,

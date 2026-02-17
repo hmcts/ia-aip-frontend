@@ -15,7 +15,7 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
     const { application } = req.session.appeal;
     const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
     const evidence: Evidence = application.lateAppeal && application.lateAppeal.evidence || null;
-    let appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
+    const appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
     res.render('appeal-application/home-office/appeal-late.njk', {
       appealLateReason,
       evidence: evidence,
@@ -37,7 +37,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
 
       const { application } = req.session.appeal;
       let validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
-      let appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
+      const appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
 
       if (res.locals && res.locals.errorCode) {
         validationError = {
@@ -91,7 +91,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
         ...req.session.appeal,
         ...appealUpdated
       };
-      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.checkAndSend);
+      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.checkAndSend);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
@@ -106,7 +106,7 @@ function postAppealLateDeleteFile(documentManagementService: DocumentManagementS
       await documentManagementService.deleteFile(req, evidence.fileId);
       delete req.session.appeal.application.lateAppeal.evidence;
       const validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
-      let appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
+      const appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
 
       if (validationError) {
         return res.render('appeal-application/home-office/appeal-late.njk', {
@@ -133,7 +133,7 @@ function postAppealLateDeleteFile(documentManagementService: DocumentManagementS
         ...req.session.appeal,
         ...appealUpdated
       };
-      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.appealLate);
+      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.appealLate);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);

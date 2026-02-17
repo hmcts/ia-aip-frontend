@@ -20,8 +20,8 @@
                     <ul class="govuk-list govuk-list--bullet">
                         {% for text in i18n.pages.onlineSupportPages.guidancePage.bullets %}
                             <li class="govuk-body">{{ text.title }}</li>
-                            <p class="govuk-body">{{ text.text }}</p>
-                            <p>{{ text.pdf  | safe }}</p>
+                            <li class="govuk-body no-bullet">{{ text.text }}</p>
+                            <li class="no-bullet">{{ text.pdf  | safe }}</p>
                         {% endfor %}
                     </ul>
                     {{  backForward(paths.common.offlineProcesses,paths.common.howToHelp) }}

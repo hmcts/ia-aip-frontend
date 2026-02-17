@@ -1,8 +1,8 @@
+import path from 'path';
 import config from 'config';
 import express from 'express';
 import * as _ from 'lodash';
 import * as nunjucks from 'nunjucks';
-import path from 'path';
 import { setupIdamConfig } from './config/idam-config';
 import { paths } from './paths';
 import S2SService from './service/s2s-service';
@@ -10,8 +10,7 @@ import Logger from './utils/logger';
 
 function configureLogger(app: express.Application) {
   const iKey: string = config.get('appInsights.instrumentationKey');
-  const logger: Logger = new Logger(iKey);
-  app.locals.logger = logger;
+  app.locals.logger = new Logger(iKey);
 }
 
 function configureNunjucks(app: express.Application) {

@@ -1,6 +1,5 @@
-/* tslint:disable:no-console */
-import config from 'config';
 import * as http from 'http';
+import config from 'config';
 import puppeteer, { Browser, LaunchOptions, Page } from 'puppeteer';
 import { createApp } from '../../app/app';
 import Logger from '../../app/utils/logger';
@@ -16,10 +15,12 @@ let page: Page;
 
 export async function tearDown() {
   if (browser) {
+    // eslint-disable-next-line no-console
     console.log('Killing browser');
     await browser.close();
   }
   if (server) {
+    // eslint-disable-next-line no-console
     console.log('Killing server');
     server.close();
   }

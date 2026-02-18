@@ -337,6 +337,15 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const ccdService = updateAppealService.getCcdService();
   req.session.appeal.history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
 
+  // Debug logging for history events
+  logger.trace(`[getAppealApplicationHistory] All events in history: ${JSON.stringify(req.session.appeal.history.map(e => ({ id: e.id, stateId: e.state?.id })))}`, logLabel);
+  const hoEvent = req.session.appeal.history.find(e => e.id === Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id);
+  if (hoEvent) {
+    logger.trace(`[getAppealApplicationHistory] Found uploadAdditionalEvidenceHomeOffice in history with state.id: ${hoEvent.state?.id}`, logLabel);
+  } else {
+    logger.trace('[getAppealApplicationHistory] uploadAdditionalEvidenceHomeOffice NOT found in history', logLabel);
+  }
+
   const uploadAddendumEvidenceFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
   const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
   const ftpaFeatureEnabled: boolean = await isFtpaFeatureEnabled(req);

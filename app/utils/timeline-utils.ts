@@ -8,11 +8,8 @@ import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { appealHasRemissionOption, paymentForAppealHasBeenMade } from './remission-utils';
 import Logger, { getLogLabel } from './logger';
-
-const logger: Logger = new Logger();
-const logLabel: string = getLogLabel(__filename);
+import { appealHasRemissionOption, paymentForAppealHasBeenMade } from './remission-utils';
 import {
   getAppellantApplications,
   getApplicant,
@@ -25,6 +22,9 @@ import {
   isUpdateTribunalDecideWithRule31,
   isUpdateTribunalDecideWithRule32
 } from './utils';
+
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
@@ -95,7 +95,7 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
 
   const hoEventInFiltered = filteredEvents.find(e => e.id === Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id);
   if (hoUploadEvent && !hoEventInFiltered) {
-    logger.trace(`[constructSection] uploadAdditionalEvidenceHomeOffice was FILTERED OUT`, logLabel);
+    logger.trace('[constructSection] uploadAdditionalEvidenceHomeOffice was FILTERED OUT', logLabel);
   }
 
   return filteredEvents

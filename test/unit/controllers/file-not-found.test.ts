@@ -44,7 +44,7 @@ describe('File not found Controller', function() {
   describe('getFileNotFound', () => {
     it('getFileNotFound should render to file not found page', function() {
       getFileNotFoundPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('./errors/file-not-found.njk',{
+      expect(res.render).to.be.calledWith('./errors/file-not-found.njk',{
         previousPage: {
           attributes: { onclick: 'history.go(-1); return false;' }
         }
@@ -55,7 +55,7 @@ describe('File not found Controller', function() {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       getFileNotFoundPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -64,7 +64,7 @@ describe('File not found Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
       setupNotFoundController();
-      expect(routerGetStub).to.have.been.calledWith(paths.common.fileNotFound);
+      expect(routerGetStub.calledWith(paths.common.fileNotFound)).to.equal(true);
     });
   });
 });

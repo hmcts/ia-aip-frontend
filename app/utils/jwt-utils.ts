@@ -21,7 +21,7 @@ export function decodeJWTToken(jwtToken: string) {
  * @param jwtToken the jwt token to be verified
  */
 export function isJWTExpired(jwtToken: string) {
-  let offset = 5 * 60; // 5 minutes
+  const offset = 5 * 60; // 5 minutes
   let isExpiredToken = false;
 
   const decoded = decodeJWTToken(jwtToken);

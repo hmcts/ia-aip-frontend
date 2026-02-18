@@ -48,8 +48,8 @@ describe('Cookies Banner', () => {
 
       cookiesBanner.init();
 
-      expect(addEventListenerStub).to.have.been.calledOnce;
-      expect(initAnalyticsCookieStub).to.have.been.calledOnce;
+      expect(addEventListenerStub.callCount).to.equal(1);
+      expect(initAnalyticsCookieStub.callCount).to.equal(1);
     });
   });
 
@@ -61,9 +61,9 @@ describe('Cookies Banner', () => {
 
       cookiesBanner.addEventListeners();
 
-      expect(addAcceptCookieEventListenerStub).to.have.been.calledWith('click');
-      expect(addRejectCookieEventListenerStub).to.have.been.calledWith('click');
-      expect(addSaveCookieEventListenerStub).to.have.been.calledWith('click');
+      expect(addAcceptCookieEventListenerStub.calledWith('click')).to.equal(true);
+      expect(addRejectCookieEventListenerStub.calledWith('click')).to.equal(true);
+      expect(addSaveCookieEventListenerStub.calledWith('click')).to.equal(true);
     });
   });
 
@@ -71,7 +71,7 @@ describe('Cookies Banner', () => {
     it('should show banner and deny cookies if cookie not present', () => {
       cookiesBanner.initAnalyticsCookie();
 
-      expect(showCookieBannerSpy).to.have.been.called;
+      expect(showCookieBannerSpy.called).to.equal(true);
     });
 
     it('should hide banner and grant cookies if cookie is present', () => {
@@ -79,8 +79,8 @@ describe('Cookies Banner', () => {
       cookiesBanner.addCookie('apm_consent', 'yes');
       cookiesBanner.initAnalyticsCookie();
 
-      expect(hideCookieBannerSpy).to.have.been.called;
-      expect(window.gtag).to.have.been.calledWith('consent', 'update', {
+      expect(hideCookieBannerSpy.called).to.equal(true);
+      expect(window.gtag).to.be.calledWith('consent', 'update', {
         'analytics_storage': 'granted',
         'apm_storage': 'granted'
       });
@@ -91,8 +91,8 @@ describe('Cookies Banner', () => {
       cookiesBanner.addCookie('apm_consent', 'no');
       cookiesBanner.initAnalyticsCookie();
 
-      expect(hideCookieBannerSpy).to.have.been.called;
-      expect(window.gtag).to.have.been.calledWith('consent', 'update', {
+      expect(hideCookieBannerSpy.called).to.equal(true);
+      expect(window.gtag).to.be.calledWith('consent', 'update', {
         'analytics_storage': 'denied',
         'apm_storage': 'denied'
       });
@@ -117,8 +117,8 @@ describe('Cookies Banner', () => {
       cookiesBanner.addCookie('apm_consent', 'yes');
 
       cookiesBanner.setAnalyticsAndApmSelectionsFromCookies();
-      let analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
-      let apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
+      const analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
+      const apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
       expect(analyticsSelectionOn.checked).to.equal(false);
       expect(apmSelectionOn.checked).to.equal(false);
     });
@@ -128,8 +128,8 @@ describe('Cookies Banner', () => {
       cookiesBanner.addCookie('apm_consent', 'no');
 
       cookiesBanner.setAnalyticsAndApmSelectionsFromCookies();
-      let analyticsSelectionOff: HTMLInputElement = document.querySelector('#radio-analytics-off');
-      let apmSelectionOff: HTMLInputElement = document.querySelector('#radio-apm-off');
+      const analyticsSelectionOff: HTMLInputElement = document.querySelector('#radio-analytics-off');
+      const apmSelectionOff: HTMLInputElement = document.querySelector('#radio-apm-off');
       expect(analyticsSelectionOff.checked).to.equal(false);
       expect(apmSelectionOff.checked).to.equal(false);
     });
@@ -139,16 +139,16 @@ describe('Cookies Banner', () => {
     it('should set the consent radio buttons checked when accepted', () => {
       cookiesBanner.setAnalyticsAndApmSelectionsForAccepted();
 
-      let analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
-      let apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
+      const analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
+      const apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
       expect(analyticsSelectionOn.checked).to.equal(false);
       expect(apmSelectionOn.checked).to.equal(false);
     });
 
     it('should set the consent to no when rejected', () => {
       cookiesBanner.setAnalyticsAndApmSelectionsForRejected();
-      let analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
-      let apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
+      const analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
+      const apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
       expect(analyticsSelectionOn.checked).to.equal(false);
       expect(apmSelectionOn.checked).to.equal(false);
     });

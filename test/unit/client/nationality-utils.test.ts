@@ -1,5 +1,5 @@
-import { expect, sinon } from '../../test/utils/testUtils';
-import { addNationalityEventListener, addStatelessEventListener } from '../nationality-utils';
+import { addNationalityEventListener, addStatelessEventListener } from '../../../client/nationality-utils';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('nationality utils', () => {
   let sandbox: sinon.SinonSandbox;
@@ -24,7 +24,7 @@ describe('nationality utils', () => {
       const addEventListenerStub: sinon.SinonStub = sandbox.stub(document.querySelector('#nationality'), 'addEventListener');
       addNationalityEventListener();
 
-      expect(addEventListenerStub).to.have.been.calledWith('change');
+      expect(addEventListenerStub.calledWith('change')).to.equal(true);
     });
   });
 
@@ -33,7 +33,7 @@ describe('nationality utils', () => {
       const addEventListenerStub: sinon.SinonStub = sandbox.stub(document.querySelector('#stateless'), 'addEventListener');
       addStatelessEventListener();
 
-      expect(addEventListenerStub).to.have.been.calledWith('change');
+      expect(addEventListenerStub.calledWith('change')).to.equal(true);
     });
   });
 });

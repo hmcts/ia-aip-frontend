@@ -193,11 +193,11 @@ describe('update-appeal-service', () => {
   });
 
   it('should return the CcdService instance', () => {
-    expect(updateAppealService.getCcdService()).eq(ccdService);
+    expect(updateAppealService.getCcdService()).to.equal(ccdService);
   });
 
   it('should return the AuthenticationService instance', () => {
-    expect(updateAppealService.getAuthenticationService()).eq(authenticationService);
+    expect(updateAppealService.getAuthenticationService()).to.equal(authenticationService);
   });
 
   describe('loadAppeal', () => {
@@ -210,51 +210,53 @@ describe('update-appeal-service', () => {
           case_data: expectedCaseData
         });
       await updateAppealService.loadAppeal(req as Request);
-      expect(req.session.appeal.ccdCaseId).eq(caseId);
-      expect(req.session.appeal.appealReferenceNumber).eq(appealReferenceNumber);
-      expect(req.session.appeal.ccdReferenceNumber).eq(ccdReferenceNumberForDisplay);
-      expect(req.session.appeal.application.appealType).eq('protection');
-      expect(req.session.appeal.application.homeOfficeRefNumber).eq('A1234567');
-      expect(req.session.appeal.application.personalDetails.familyName).eq('Pedro');
-      expect(req.session.appeal.application.personalDetails.givenNames).eq('Jimenez');
-      expect(req.session.appeal.application.dateLetterSent.year).eq('2019');
-      expect(req.session.appeal.application.dateLetterSent.month).eq('1');
-      expect(req.session.appeal.application.dateLetterSent.day).eq('2');
-      expect(req.session.appeal.application.personalDetails.dob.year).eq('1990');
-      expect(req.session.appeal.application.personalDetails.dob.month).eq('3');
-      expect(req.session.appeal.application.personalDetails.dob.day).eq('21');
-      expect(req.session.appeal.application.personalDetails.nationality).eq('AF');
-      expect(req.session.appeal.application.personalDetails.address.line1).eq('123 An Address');
-      expect(req.session.appeal.application.personalDetails.address.city).eq('LONDON');
-      expect(req.session.appeal.application.personalDetails.address.postcode).eq('W1W 7RT');
-      expect(req.session.appeal.application.isAppealLate).eq(true);
-      expect(req.session.appeal.application.lateAppeal.evidence.name).eq('1580296112615-evidence-file.jpeg');
+      expect(req.session.appeal.ccdCaseId).to.equal(caseId);
+      expect(req.session.appeal.appealReferenceNumber).to.equal(appealReferenceNumber);
+      expect(req.session.appeal.ccdReferenceNumber).to.equal(ccdReferenceNumberForDisplay);
+      expect(req.session.appeal.application.appealType).to.equal('protection');
+      expect(req.session.appeal.application.homeOfficeRefNumber).to.equal('A1234567');
+      expect(req.session.appeal.application.personalDetails.familyName).to.equal('Pedro');
+      expect(req.session.appeal.application.personalDetails.givenNames).to.equal('Jimenez');
+      expect(req.session.appeal.application.dateLetterSent.year).to.equal('2019');
+      expect(req.session.appeal.application.dateLetterSent.month).to.equal('1');
+      expect(req.session.appeal.application.dateLetterSent.day).to.equal('2');
+      expect(req.session.appeal.application.personalDetails.dob.year).to.equal('1990');
+      expect(req.session.appeal.application.personalDetails.dob.month).to.equal('3');
+      expect(req.session.appeal.application.personalDetails.dob.day).to.equal('21');
+      expect(req.session.appeal.application.personalDetails.nationality).to.equal('AF');
+      expect(req.session.appeal.application.personalDetails.address.line1).to.equal('123 An Address');
+      expect(req.session.appeal.application.personalDetails.address.city).to.equal('LONDON');
+      expect(req.session.appeal.application.personalDetails.address.postcode).to.equal('W1W 7RT');
+      expect(req.session.appeal.application.isAppealLate).to.equal(true);
+      expect(req.session.appeal.application.lateAppeal.evidence.name).to.equal('1580296112615-evidence-file.jpeg');
       validateUuid(req.session.appeal.application.lateAppeal.evidence.fileId);
-      expect(req.session.appeal.application.contactDetails.email).eq('email@example.net');
-      expect(req.session.appeal.application.contactDetails.phone).eq('07123456789');
-      expect(req.session.appeal.application.contactDetails.wantsEmail).eq(true);
-      expect(req.session.appeal.application.contactDetails.wantsSms).eq(true);
-      expect(req.session.appeal.reasonsForAppeal.applicationReason).eq('I\'ve decided to appeal because ...');
-      expect(req.session.appeal.reasonsForAppeal.uploadDate).eq('2020-01-02');
-      expect(req.session.appeal.reasonsForAppeal.evidences).to.exist;
-      expect(req.session.appeal.documentMap).to.exist;
+      expect(req.session.appeal.application.contactDetails.email).to.equal('email@example.net');
+      expect(req.session.appeal.application.contactDetails.phone).to.equal('07123456789');
+      expect(req.session.appeal.application.contactDetails.wantsEmail).to.equal(true);
+      expect(req.session.appeal.application.contactDetails.wantsSms).to.equal(true);
+      expect(req.session.appeal.reasonsForAppeal.applicationReason).to.equal('I\'ve decided to appeal because ...');
+      expect(req.session.appeal.reasonsForAppeal.uploadDate).to.equal('2020-01-02');
+      expect(req.session.appeal.reasonsForAppeal.evidences).to.not.equal(null);
+      expect(req.session.appeal.reasonsForAppeal.evidences).to.not.equal(undefined);
+      expect(req.session.appeal.documentMap).to.not.equal(null);
+      expect(req.session.appeal.documentMap).to.not.equal(undefined);
       expect(req.session.appeal.askForMoreTime).to.deep.eq({ inFlight: false });
       expect(req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded).to.eq(false);
       expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(false);
       expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded).to.eq(false);
-      expect(req.session.appeal.hearingCentre).eq('birmingham');
-      expect(req.session.appeal.application.hasSponsor).eq('No');
-      expect(req.session.appeal.application.sponsorGivenNames).eq('ABC XYZ');
-      expect(req.session.appeal.application.sponsorFamilyName).eq('ABC XYZ');
-      expect(req.session.appeal.application.sponsorNameForDisplay).eq('ABC XYZ');
-      expect(req.session.appeal.application.sponsorAuthorisation).eq('ABC XYZ');
-      expect(req.session.appeal.application.feeUpdateTribunalAction).eq('refund');
-      expect(req.session.appeal.application.feeUpdateReason).eq('feeRemissionChanged');
-      expect(req.session.appeal.application.manageFeeRefundedAmount).eq('1000');
-      expect(req.session.appeal.application.manageFeeRequestedAmount).eq('1500');
-      expect(req.session.appeal.application.paidAmount).eq('2000');
-      expect(req.session.appeal.newFeeAmount).eq('2000');
-      expect(req.session.appeal.previousFeeAmountGbp).eq('2000');
+      expect(req.session.appeal.hearingCentre).to.equal('birmingham');
+      expect(req.session.appeal.application.hasSponsor).to.equal('No');
+      expect(req.session.appeal.application.sponsorGivenNames).to.equal('ABC XYZ');
+      expect(req.session.appeal.application.sponsorFamilyName).to.equal('ABC XYZ');
+      expect(req.session.appeal.application.sponsorNameForDisplay).to.equal('ABC XYZ');
+      expect(req.session.appeal.application.sponsorAuthorisation).to.equal('ABC XYZ');
+      expect(req.session.appeal.application.feeUpdateTribunalAction).to.equal('refund');
+      expect(req.session.appeal.application.feeUpdateReason).to.equal('feeRemissionChanged');
+      expect(req.session.appeal.application.manageFeeRefundedAmount).to.equal('1000');
+      expect(req.session.appeal.application.manageFeeRequestedAmount).to.equal('1500');
+      expect(req.session.appeal.application.paidAmount).to.equal('2000');
+      expect(req.session.appeal.newFeeAmount).to.equal('2000');
+      expect(req.session.appeal.previousFeeAmountGbp).to.equal('2000');
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -269,7 +271,7 @@ describe('update-appeal-service', () => {
         });
       await updateAppealService.loadAppeal(req as Request);
 
-      expect(req.session.appeal.askForMoreTime).to.be.eql(
+      expect(req.session.appeal.askForMoreTime).to.deep.equal(
         { inFlight: false });
     });
 
@@ -549,7 +551,7 @@ describe('update-appeal-service', () => {
           ]
         }
       };
-      expect(req.session.appeal.cmaRequirements).to.be.eql(expectedCmaRequirements);
+      expect(req.session.appeal.cmaRequirements).to.deep.equal(expectedCmaRequirements);
     });
 
   });
@@ -739,7 +741,7 @@ describe('update-appeal-service', () => {
         emptyApplication.application.contactDetails.phone = '07123456789';
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
 
-        expect(caseData).eql(
+        expect(caseData).deep.equal(
           {
             appellantEmailAddress: 'abc@example.net',
             appellantPhoneNumber: '07123456789',
@@ -797,7 +799,7 @@ describe('update-appeal-service', () => {
         emptyApplication.application.contactDetails.email = 'abc@example.net';
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
 
-        expect(caseData).eql(
+        expect(caseData).deep.equal(
           {
             journeyType: 'aip',
             appellantInUk: 'undefined',
@@ -854,7 +856,7 @@ describe('update-appeal-service', () => {
         emptyApplication.application.contactDetails.phone = '07123456789';
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication, true, true);
 
-        expect(caseData).eql(
+        expect(caseData).deep.equal(
           {
             journeyType: 'aip',
             appellantInUk: 'undefined',
@@ -1290,7 +1292,7 @@ describe('update-appeal-service', () => {
       };
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData.isInterpreterServicesNeeded).to.be.equals('Yes');
+      expect(caseData.isInterpreterServicesNeeded).to.equal('Yes');
       expect(caseData.appellantInterpreterLanguageCategory).to.deep.eq(emptyApplication.hearingRequirements.appellantInterpreterLanguageCategory);
       expect(caseData.appellantInterpreterSpokenLanguage).to.deep.eq(emptyApplication.hearingRequirements.appellantInterpreterSpokenLanguage);
       expect(caseData.appellantInterpreterSignLanguage).to.deep.eq(emptyApplication.hearingRequirements.appellantInterpreterSignLanguage);
@@ -1320,8 +1322,8 @@ describe('update-appeal-service', () => {
       };
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData.isInterpreterServicesNeeded).to.be.equals('Yes');
-      expect(caseData.isAnyWitnessInterpreterRequired).to.be.equals('Yes');
+      expect(caseData.isInterpreterServicesNeeded).to.equal('Yes');
+      expect(caseData.isAnyWitnessInterpreterRequired).to.equal('Yes');
       expect(caseData.witness1.witnessPartyId).to.deep.eq(emptyApplication.hearingRequirements.witnessNames[0].witnessPartyId);
       expect(caseData.witness2.witnessPartyId).to.deep.eq(emptyApplication.hearingRequirements.witnessNames[1].witnessPartyId);
       expect(caseData.witnessListElement2).to.deep.eq(emptyApplication.hearingRequirements.witnessListElement2);
@@ -1548,9 +1550,9 @@ describe('update-appeal-service', () => {
 
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
-        expect(mappedAppeal.hearingRequirements.otherNeeds.multimediaEvidence).eq(true);
-        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment).eq(false);
-        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).eq('description');
+        expect(mappedAppeal.hearingRequirements.otherNeeds.multimediaEvidence).to.equal(true);
+        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment).to.equal(false);
+        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).to.equal('description');
       });
 
       it('when taken case over from legalrep, bringing own equipment', () => {
@@ -1564,9 +1566,9 @@ describe('update-appeal-service', () => {
 
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
-        expect(mappedAppeal.hearingRequirements.otherNeeds.multimediaEvidence).eq(true);
-        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.eq(true);
-        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).is.undefined;
+        expect(mappedAppeal.hearingRequirements.otherNeeds.multimediaEvidence).to.equal(true);
+        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment).to.equal(true);
+        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).to.equal(undefined);
       });
     });
 
@@ -1586,7 +1588,7 @@ describe('update-appeal-service', () => {
       it('should map reheard rule 35 decision document', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
-        expect(mappedAppeal.ftpaR35AppellantDocument.name).eq('FTPA_R35_DOCUMENT.PDF');
+        expect(mappedAppeal.ftpaR35AppellantDocument.name).to.equal('FTPA_R35_DOCUMENT.PDF');
       });
     });
 
@@ -1615,10 +1617,10 @@ describe('update-appeal-service', () => {
             case_data: caseData as CaseData
           };
           const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
-          expect(mappedAppeal.hearingRequirements.witnessesOnHearing).to.be.eq(expectation);
-          expect(mappedAppeal.hearingRequirements.isAppellantAttendingTheHearing).to.be.eq(expectation);
-          expect(mappedAppeal.hearingRequirements.isAppellantGivingOralEvidence).to.be.eq(expectation);
-          expect(mappedAppeal.hearingRequirements.witnessesOutsideUK).to.be.eq(expectation);
+          expect(mappedAppeal.hearingRequirements.witnessesOnHearing).to.equal(expectation);
+          expect(mappedAppeal.hearingRequirements.isAppellantAttendingTheHearing).to.equal(expectation);
+          expect(mappedAppeal.hearingRequirements.isAppellantGivingOralEvidence).to.equal(expectation);
+          expect(mappedAppeal.hearingRequirements.witnessesOutsideUK).to.equal(expectation);
         });
       });
     });
@@ -1639,7 +1641,7 @@ describe('update-appeal-service', () => {
       it('should map reheard rule 35 decision document (respondent)', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
-        expect(mappedAppeal.ftpaR35RespondentDocument.name).eq('FTPA_R35_DOCUMENT.PDF');
+        expect(mappedAppeal.ftpaR35RespondentDocument.name).to.equal('FTPA_R35_DOCUMENT.PDF');
       });
     });
 
@@ -1659,7 +1661,7 @@ describe('update-appeal-service', () => {
       it('should map Decide FTPA decision document (appellant)', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
-        expect(mappedAppeal.ftpaApplicationAppellantDocument.name).eq('FTPA_APPELLANT_DECISION_DOCUMENT.PDF');
+        expect(mappedAppeal.ftpaApplicationAppellantDocument.name).to.equal('FTPA_APPELLANT_DECISION_DOCUMENT.PDF');
       });
     });
 
@@ -1679,7 +1681,7 @@ describe('update-appeal-service', () => {
       it('should map rule 32 notice document', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
-        expect(mappedAppeal.rule32NoticeDocs.name).eq('rule32.pdf');
+        expect(mappedAppeal.rule32NoticeDocs.name).to.equal('rule32.pdf');
       });
     });
 
@@ -1753,26 +1755,26 @@ describe('update-appeal-service', () => {
       };
       it('should map previousRemissionDetails', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
-        expect(mappedAppeal.application.previousRemissionDetails[0].id).to.be.equals('1');
-        expect(mappedAppeal.application.previousRemissionDetails[0].feeAmount).to.be.equals('2000');
-        expect(mappedAppeal.application.previousRemissionDetails[0].amountRemitted).to.be.equals('1000');
-        expect(mappedAppeal.application.previousRemissionDetails[0].amountLeftToPay).to.be.equals('1000');
-        expect(mappedAppeal.application.previousRemissionDetails[0].feeRemissionType).to.be.equals('type1');
-        expect(mappedAppeal.application.previousRemissionDetails[0].remissionDecision).to.be.equals('decission1');
-        expect(mappedAppeal.application.previousRemissionDetails[0].asylumSupportReference).to.be.equals('refNumber1');
-        expect(mappedAppeal.application.previousRemissionDetails[0].remissionDecisionReason).to.be.equals('decission');
-        expect(mappedAppeal.application.previousRemissionDetails[0].helpWithFeesReferenceNumber).to.be.equals('refNumber2');
-        expect(mappedAppeal.application.previousRemissionDetails[0].helpWithFeesOption).to.be.equals('helpOption');
-        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].id).to.be.equals('fa35dcae-ae4c-462d-9cce-6878326875b0');
-        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].name).to.be.equals('1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf');
-        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].tag).to.be.equals('additionalEvidence');
-        expect(mappedAppeal.application.previousRemissionDetails[0].legalAidAccountNumber).to.be.equals('someLegalAidAccountNumber');
-        expect(mappedAppeal.application.previousRemissionDetails[0].exceptionalCircumstances).to.be.equals('someExceptionalCircumstances');
-        expect(mappedAppeal.application.previousRemissionDetails[0].asylumSupportDocument.name).to.be.equals('someAsylumSupportDoc.pdf');
-        expect(mappedAppeal.application.previousRemissionDetails[0].section20Document.name).to.be.equals('someSection20Doc.pdf');
-        expect(mappedAppeal.application.previousRemissionDetails[0].section17Document.name).to.be.equals('someSection17Doc.pdf');
-        expect(mappedAppeal.application.previousRemissionDetails[0].homeOfficeWaiverDocument.name).to.be.equals('someHomeOfficeWaiverDoc.pdf');
-        expect(mappedAppeal.application.previousRemissionDetails[0].remissionEcEvidenceDocuments[0].name).to.be.equals('someRemissionEcEvidenceDocument1.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].id).to.equal('1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].feeAmount).to.equal('2000');
+        expect(mappedAppeal.application.previousRemissionDetails[0].amountRemitted).to.equal('1000');
+        expect(mappedAppeal.application.previousRemissionDetails[0].amountLeftToPay).to.equal('1000');
+        expect(mappedAppeal.application.previousRemissionDetails[0].feeRemissionType).to.equal('type1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].remissionDecision).to.equal('decission1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].asylumSupportReference).to.equal('refNumber1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].remissionDecisionReason).to.equal('decission');
+        expect(mappedAppeal.application.previousRemissionDetails[0].helpWithFeesReferenceNumber).to.equal('refNumber2');
+        expect(mappedAppeal.application.previousRemissionDetails[0].helpWithFeesOption).to.equal('helpOption');
+        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].id).to.equal('fa35dcae-ae4c-462d-9cce-6878326875b0');
+        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].name).to.equal('1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].tag).to.equal('additionalEvidence');
+        expect(mappedAppeal.application.previousRemissionDetails[0].legalAidAccountNumber).to.equal('someLegalAidAccountNumber');
+        expect(mappedAppeal.application.previousRemissionDetails[0].exceptionalCircumstances).to.equal('someExceptionalCircumstances');
+        expect(mappedAppeal.application.previousRemissionDetails[0].asylumSupportDocument.name).to.equal('someAsylumSupportDoc.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].section20Document.name).to.equal('someSection20Doc.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].section17Document.name).to.equal('someSection17Doc.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].homeOfficeWaiverDocument.name).to.equal('someHomeOfficeWaiverDoc.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].remissionEcEvidenceDocuments[0].name).to.equal('someRemissionEcEvidenceDocument1.pdf');
       });
     });
 
@@ -1792,7 +1794,7 @@ describe('update-appeal-service', () => {
       it('should map Decide FTPA decision document (respondent)', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
-        expect(mappedAppeal.ftpaApplicationRespondentDocument.name).eq('FTPA_RESPONDENT_DECISION_DOCUMENT.PDF');
+        expect(mappedAppeal.ftpaApplicationRespondentDocument.name).to.equal('FTPA_RESPONDENT_DECISION_DOCUMENT.PDF');
       });
     });
 
@@ -1912,8 +1914,8 @@ describe('update-appeal-service', () => {
     });
 
     describe('map appellant or witness details from caseData for interpreter information', () => {
-      let witness1: WitnessDetails = { witnessPartyId: '1', witnessName: 'witness', witnessFamilyName: '1' };
-      let witness2: WitnessDetails = { witnessPartyId: '2', witnessName: 'witness', witnessFamilyName: '2' };
+      const witness1: WitnessDetails = { witnessPartyId: '1', witnessName: 'witness', witnessFamilyName: '1' };
+      const witness2: WitnessDetails = { witnessPartyId: '2', witnessName: 'witness', witnessFamilyName: '2' };
 
       function getMappedAppeal(caseData: Partial<CaseData>): any {
         const appeal: Partial<CcdCaseDetails> = {
@@ -2009,7 +2011,7 @@ describe('update-appeal-service', () => {
           case_data: caseData as CaseData
         };
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
-        expect(mappedAppeal.application.refundConfirmationApplied).to.be.eq(expectation);
+        expect(mappedAppeal.application.refundConfirmationApplied).to.equal(expectation);
       });
     });
   });
@@ -2027,8 +2029,8 @@ describe('update-appeal-service', () => {
     it('should map remissionRejectedDatePlus14days and amountLeftToPay', () => {
       const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
-      expect(mappedAppeal.application.amountLeftToPay).eq('4000');
-      expect(mappedAppeal.application.remissionRejectedDatePlus14days).eq('2022-01-26');
+      expect(mappedAppeal.application.amountLeftToPay).to.equal('4000');
+      expect(mappedAppeal.application.remissionRejectedDatePlus14days).to.equal('2022-01-26');
     });
   });
 
@@ -2044,7 +2046,6 @@ describe('update-appeal-service', () => {
         { id: '2', url: 'http://example.com/doc2' }
       ];
 
-      // @ts-ignore
       const expected: Collection<Document>[] = [
         {
           id: '1',
@@ -2356,7 +2357,7 @@ describe('update-appeal-service', () => {
 
     it('updates case with ccd', async () => {
       await updateAppealServiceBis.submitEvent(Events.EDIT_APPEAL, req as Request);
-      expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
+      expect(ccdService2.updateAppeal).to.be.calledWith(
         Events.EDIT_APPEAL,
         userId,
         {
@@ -2369,7 +2370,7 @@ describe('update-appeal-service', () => {
 
     it('submits case with ccd', async () => {
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_APPEAL, req as Request);
-      expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
+      expect(ccdService2.updateAppeal).to.be.calledWith(
         Events.SUBMIT_APPEAL,
         userId,
         {
@@ -2382,7 +2383,7 @@ describe('update-appeal-service', () => {
 
     it('submits ReasonsForAppeal with ccd', async () => {
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req as Request);
-      expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
+      expect(ccdService2.updateAppeal).to.be.calledWith(
         Events.SUBMIT_REASONS_FOR_APPEAL,
         userId,
         {
@@ -2476,7 +2477,7 @@ describe('update-appeal-service', () => {
         additionalRequests: 'Yes',
         additionalRequestsDescription: 'Anything else description'
       };
-      expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
+      expect(ccdService2.updateAppeal).to.be.calledWith(
         Events.SUBMIT_CMA_REQUIREMENTS,
         userId,
         {
@@ -2581,7 +2582,7 @@ describe('update-appeal-service', () => {
           'remoteVideoCallDescription': 'Join Hearing by video call'
         }
       };
-      expect(req.session.appeal.hearingRequirements).to.be.eql(expectedHearingRequirements);
+      expect(req.session.appeal.hearingRequirements).to.deep.equal(expectedHearingRequirements);
     });
 
     it('submits hearingRequirements with otherNeeds', async () => {
@@ -2609,14 +2610,14 @@ describe('update-appeal-service', () => {
         }
 
       } as HearingRequirements;
-      let caseData = updateAppealServiceBis.convertToCcdCaseData(req.session.appeal);
-      expect(caseData.inCameraCourt).to.be.equals('Yes');
-      expect(caseData.multimediaEvidence).to.be.equals('Yes');
-      expect(caseData.pastExperiences).to.be.equals('Yes');
-      expect(caseData.physicalOrMentalHealthIssues).to.be.equals('Yes');
-      expect(caseData.singleSexCourt).to.be.equals('Yes');
-      expect(caseData.additionalRequests).to.be.equals('Yes');
-      expect(caseData.remoteVideoCall).to.be.equals('Yes');
+      const caseData = updateAppealServiceBis.convertToCcdCaseData(req.session.appeal);
+      expect(caseData.inCameraCourt).to.equal('Yes');
+      expect(caseData.multimediaEvidence).to.equal('Yes');
+      expect(caseData.pastExperiences).to.equal('Yes');
+      expect(caseData.physicalOrMentalHealthIssues).to.equal('Yes');
+      expect(caseData.singleSexCourt).to.equal('Yes');
+      expect(caseData.additionalRequests).to.equal('Yes');
+      expect(caseData.remoteVideoCall).to.equal('Yes');
     });
 
     describe('finalDecisionAndReasonsDocuments @legal', () => {
@@ -2793,7 +2794,7 @@ describe('update-appeal-service', () => {
             case_data: caseData as CaseData
           };
           const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
-          expect(mappedAppeal.hearingRequirements.isHearingRoomNeeded).to.be.eq(expectation);
+          expect(mappedAppeal.hearingRequirements.isHearingRoomNeeded).to.equal(expectation);
         });
       });
     });
@@ -2820,13 +2821,13 @@ describe('update-appeal-service', () => {
             case_data: caseData as CaseData
           };
           const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
-          expect(mappedAppeal.hearingRequirements.isHearingLoopNeeded).to.be.eq(expectation);
+          expect(mappedAppeal.hearingRequirements.isHearingLoopNeeded).to.equal(expectation);
         });
       });
     });
 
     describe('isDecisionAllowed', () => {
-      it(`isDecisionAllowed value should be mapped`, () => {
+      it('isDecisionAllowed value should be mapped', () => {
         const caseData: Partial<CaseData> = {
           'isDecisionAllowed': 'Allowed'
         };
@@ -2835,7 +2836,7 @@ describe('update-appeal-service', () => {
           case_data: caseData as CaseData
         };
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
-        expect(mappedAppeal.isDecisionAllowed).to.be.eq('Allowed');
+        expect(mappedAppeal.isDecisionAllowed).to.equal('Allowed');
       });
 
     });
@@ -2863,8 +2864,8 @@ describe('update-appeal-service', () => {
       it('should map dates to avoid correctly when dates are provided', () => {
         updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
-        expect(caseData.datesToAvoidYesNo).eq('Yes');
-        expect(caseData.datesToAvoid).to.be.eql([
+        expect(caseData.datesToAvoidYesNo).to.equal('Yes');
+        expect(caseData.datesToAvoid).to.deep.equal([
           {
             value: {
               dateToAvoid: '2024-10-30',

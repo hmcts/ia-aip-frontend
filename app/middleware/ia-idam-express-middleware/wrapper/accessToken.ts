@@ -17,7 +17,7 @@ const accessToken = async (args: IdamConfig, options = {}) => {
     const uri = `${args.idamApiUrl}/o/token`;
     const form = { ...formDefaults, ...options, ...clientFormData };
     const body = new URLSearchParams(form as Record<string, string>).toString();
-    let res = await axios.post(uri, body, requestDefaults);
+    const res = await axios.post(uri, body, requestDefaults);
     return res.data;
   } else {
     const uri = `${args.idamApiUrl}/oauth2/token`;
@@ -27,7 +27,7 @@ const accessToken = async (args: IdamConfig, options = {}) => {
       username: args.idamClientID,
       password: args.idamSecret
     };
-    let res1 = await axios.post(uri, body, { ...requestDefaults, auth });
+    const res1 = await axios.post(uri, body, { ...requestDefaults, auth });
     return res1.data;
   }
 };

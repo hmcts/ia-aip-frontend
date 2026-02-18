@@ -14,6 +14,8 @@ describe('Make application controllers helper', () => {
   let config;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -36,10 +38,13 @@ describe('Make application controllers helper', () => {
         }
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy(),
-      locals: {}
+      render: renderStub,
+      locals: {},
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
     config = {};
@@ -91,7 +96,7 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req as Request, res as Response, next, config);
 
-      expect(res.render).to.have.been.calledWith('make-application/details-question-page.njk', {
+      expect(renderStub).to.be.calledWith('make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -143,7 +148,7 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req as Request, res as Response, next, config);
 
-      expect(res.render).to.have.been.calledWith('make-application/details-question-page.njk', {
+      expect(renderStub).to.be.calledWith('make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -151,7 +156,7 @@ describe('Make application controllers helper', () => {
     it('should redirect to ask-change-hearing page', () => {
       makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req as Request, res as Response, next, config);
 
-      expect(res.redirect).to.have.been.calledWith(paths.makeApplication.askChangeHearing);
+      expect(redirectStub.calledWith(paths.makeApplication.askChangeHearing)).to.equal(true);
     });
   });
 
@@ -162,7 +167,7 @@ describe('Make application controllers helper', () => {
       const redirectToErrorPath = `${paths.makeApplication.expedite}?error=askHearingSooner`;
       makeApplicationControllersHelper.postProvideMakeAnApplicationDetails(req as Request, res as Response, next, redirectToSuccessPath, redirectToErrorPath);
 
-      expect(res.redirect).to.have.been.calledWith(redirectToSuccessPath);
+      expect(redirectStub.calledWith(redirectToSuccessPath)).to.equal(true);
     });
 
     it('should redirect with error', () => {
@@ -170,7 +175,7 @@ describe('Make application controllers helper', () => {
       const redirectToErrorPath = `${paths.makeApplication.expedite}?error=askHearingSooner`;
       makeApplicationControllersHelper.postProvideMakeAnApplicationDetails(req as Request, res as Response, next, redirectToSuccessPath, redirectToErrorPath);
 
-      expect(res.redirect).to.have.been.calledWith(redirectToErrorPath);
+      expect(redirectStub.calledWith(redirectToErrorPath)).to.equal(true);
     });
   });
 
@@ -206,7 +211,7 @@ describe('Make application controllers helper', () => {
         saveAndContinue: false
       };
       makeApplicationControllersHelper.getProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, previousPage, formAction);
-      expect(res.render).to.have.been.calledWith('make-application/radio-button-question-page.njk', {
+      expect(renderStub).to.be.calledWith('make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -260,7 +265,7 @@ describe('Make application controllers helper', () => {
         saveAndContinue: false
       };
       makeApplicationControllersHelper.getProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, previousPage, formAction);
-      expect(res.render).to.have.been.calledWith('make-application/radio-button-question-page.njk', {
+      expect(renderStub).to.be.calledWith('make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -276,7 +281,7 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, config);
 
-      expect(res.redirect).to.have.been.calledWith(config.pathToProvideSupportingEvidence);
+      expect(redirectStub.calledWith(config.pathToProvideSupportingEvidence)).to.equal(true);
     });
 
     it('should redirect to check answer page', () => {
@@ -288,7 +293,7 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, config);
 
-      expect(res.redirect).to.have.been.calledWith(config.pathToCheckAnswer);
+      expect(redirectStub.calledWith(config.pathToCheckAnswer)).to.equal(true);
     });
 
     it('should redirect with error', () => {
@@ -299,7 +304,7 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, config);
 
-      expect(res.redirect).to.have.been.calledWith(`${config.pathToSupportingEvidence}?error=supportingEvidenceRequired`);
+      expect(redirectStub.calledWith(`${config.pathToSupportingEvidence}?error=supportingEvidenceRequired`)).to.equal(true);
     });
   });
 
@@ -317,13 +322,13 @@ describe('Make application controllers helper', () => {
         adviceHeader: i18n.pages.makeApplication.provideSupportingEvidence.adviceHeader,
         advice: i18n.pages.makeApplication.provideSupportingEvidence.advice,
         evidenceUploadAction: config.evidenceUploadAction,
-        evidences: req.session.appeal.makeAnApplicationEvidence || [],
+        evidences: [],
         evidenceCTA: config.evidenceCTA,
         previousPage: config.previousPage,
         formSubmitAction: config.pathToProvideSupportingEvidence
       };
       makeApplicationControllersHelper.getProvideSupportingEvidence(req as Request, res as Response, next, config);
-      expect(res.render).to.have.been.calledWith('make-application/supporting-evidence-upload-page.njk', {
+      expect(renderStub).to.be.calledWith('make-application/supporting-evidence-upload-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -351,7 +356,7 @@ describe('Make application controllers helper', () => {
         adviceHeader: i18n.pages.makeApplication.provideSupportingEvidence.adviceHeader,
         advice: i18n.pages.makeApplication.provideSupportingEvidence.advice,
         evidenceUploadAction: config.evidenceUploadAction,
-        evidences: req.session.appeal.makeAnApplicationEvidence || [],
+        evidences: [],
         evidenceCTA: config.evidenceCTA,
         previousPage: config.previousPage,
         errorList,
@@ -359,7 +364,7 @@ describe('Make application controllers helper', () => {
         formSubmitAction: config.pathToProvideSupportingEvidence
       };
       makeApplicationControllersHelper.getProvideSupportingEvidence(req as Request, res as Response, next, config);
-      expect(res.render).to.have.been.calledWith('make-application/supporting-evidence-upload-page.njk', {
+      expect(renderStub).to.be.calledWith('make-application/supporting-evidence-upload-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -377,7 +382,7 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.postProvideSupportingEvidence(req as Request, res as Response, next, config);
 
-      expect(res.redirect).to.have.been.calledWith(config.pathToCheckYourAnswer);
+      expect(redirectStub.calledWith(config.pathToCheckYourAnswer)).to.equal(true);
     });
 
     it('should redirect with error', () => {
@@ -387,7 +392,7 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.postProvideSupportingEvidence(req as Request, res as Response, next, config);
 
-      expect(res.redirect).to.have.been.calledWith(`${config.pathToProvideSupportingEvidence}?error=noFileSelected`);
+      expect(redirectStub.calledWith(`${config.pathToProvideSupportingEvidence}?error=noFileSelected`)).to.equal(true);
     });
   });
 
@@ -412,7 +417,7 @@ describe('Make application controllers helper', () => {
         summaryLists
       };
       makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', {
+      expect(renderStub).to.be.calledWith('templates/check-and-send.njk', {
         ...expectedRenderPayload
       });
     });
@@ -436,7 +441,7 @@ describe('Make application controllers helper', () => {
         summaryLists
       };
       makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', {
+      expect(renderStub).to.be.calledWith('templates/check-and-send.njk', {
         ...expectedRenderPayload
       });
     });
@@ -455,7 +460,7 @@ describe('Make application controllers helper', () => {
       };
       await makeApplicationControllersHelper.postProvideSupportingEvidenceCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.makeApplication.requestSent);
+      expect(redirectStub.calledWith(paths.makeApplication.requestSent)).to.equal(true);
       expect(req.session.appeal.makeAnApplicationEvidence.length).to.eq(0);
       expect(req.session.appeal.makeAnApplicationDetails).to.eq(undefined);
       expect(req.session.appeal.makeAnApplicationTypes).to.eq(undefined);
@@ -467,7 +472,7 @@ describe('Make application controllers helper', () => {
     it('should render', async () => {
       makeApplicationControllersHelper.getRequestSent(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/confirmation-page.njk', {
+      expect(renderStub).to.be.calledWith('templates/confirmation-page.njk', {
         title: i18n.pages.makeApplication.requestSent.title,
         whatNextContent: i18n.pages.makeApplication.requestSent.whatNextContent
       });
@@ -501,9 +506,9 @@ describe('Make application controllers helper', () => {
 
       await makeApplicationControllersHelper.uploadSupportingEvidence(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect((req.session.appeal.makeAnApplicationEvidence || [])[0].fileId === documentUploadResponse.fileId);
-      expect((req.session.appeal.makeAnApplicationEvidence || [])[0].name === documentUploadResponse.name);
-      expect(res.redirect).to.have.been.calledWith(redirectTo);
+      expect(req.session.appeal.makeAnApplicationEvidence[0].fileId).to.equal(documentUploadResponse.fileId);
+      expect(req.session.appeal.makeAnApplicationEvidence[0].name).to.equal(documentUploadResponse.name);
+      expect(redirectStub.calledWith(redirectTo)).to.equal(true);
     });
 
     it('should redirect with error', async () => {
@@ -518,7 +523,7 @@ describe('Make application controllers helper', () => {
 
       await makeApplicationControllersHelper.uploadSupportingEvidence(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${redirectTo}?error=noFileSelected`);
+      expect(redirectStub.calledWith(`${redirectTo}?error=noFileSelected`)).to.equal(true);
     });
   });
 
@@ -546,7 +551,7 @@ describe('Make application controllers helper', () => {
 
       expect(req.session.appeal.makeAnApplicationEvidence.length).to.eq(0);
       expect(req.session.appeal.documentMap.length).to.eq(0);
-      expect(res.redirect).to.have.been.calledWith(redirectTo);
+      expect(redirectStub.calledWith(redirectTo)).to.equal(true);
     });
   });
 
@@ -648,14 +653,14 @@ describe('Make application controllers helper', () => {
       const expectedPath = '/check-answer-hearing-sooner';
       const actualPath = makeApplicationControllersHelper.getPath('checkAnswer', 'expedite');
 
-      expect(actualPath === expectedPath);
+      expect(actualPath).to.equal(expectedPath);
     });
 
     it('should return valid path when pathPrefix is empty', async () => {
       const expectedPath = '/ask-hearing-sooner';
       const actualPath = makeApplicationControllersHelper.getPath('', 'expedite');
 
-      expect(actualPath === expectedPath);
+      expect(actualPath).to.equal(expectedPath);
     });
   });
 });

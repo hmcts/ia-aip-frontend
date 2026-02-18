@@ -1,4 +1,3 @@
-const express = require('express');
 import { NextFunction, Request, Response } from 'express';
 import {
   getDateOfBirthPage,
@@ -11,6 +10,7 @@ import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
+const express = require('express');
 
 describe('Personal Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
@@ -19,6 +19,10 @@ describe('Personal Details Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
+
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -46,17 +50,19 @@ describe('Personal Details Controller', function () {
       } as any
     } as unknown as Partial<Request>;
 
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
-    next = sandbox.stub();
+    updateAppealService = { submitEventRefactored: submitStub } as Partial<UpdateAppealService>;
 
-    updateAppealService = {
-      submitEventRefactored: sandbox.stub()
-    } as Partial<UpdateAppealService>;
+    next = sandbox.stub();
   });
 
   afterEach(() => {
@@ -70,15 +76,15 @@ describe('Personal Details Controller', function () {
       const middleware = [];
 
       setupHomeOfficeDetailsController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.dob, middleware);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.dob, middleware);
+      expect(routerGetStub.calledWith(paths.appealStarted.dob, middleware)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.dob, middleware)).to.equal(true);
     });
   });
 
   describe('getDateOfBirthPage', () => {
     it('should render appeal-application/personal-details/date-of-birth.njk', () => {
       getDateOfBirthPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/date-of-birth.njk');
+      expect(renderStub.calledOnceWith('appeal-application/personal-details/date-of-birth.njk')).to.equal(true);
     });
 
     it('when called with edit param should render appeal-application/personal-details/date-of-birth.njk and update session', () => {
@@ -87,7 +93,7 @@ describe('Personal Details Controller', function () {
       getDateOfBirthPage(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/date-of-birth.njk');
+      expect(renderStub.calledOnceWith('appeal-application/personal-details/date-of-birth.njk')).to.equal(true);
     });
   });
 
@@ -112,7 +118,7 @@ describe('Personal Details Controller', function () {
           }
         }
       };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitStub.returns({
         application: {
           personalDetails: {
             dob: {
@@ -127,8 +133,8 @@ describe('Personal Details Controller', function () {
     it('should validate and redirect to next page personal-details/nationality', async () => {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.nationality);
+      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.nationality)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
@@ -136,9 +142,9 @@ describe('Personal Details Controller', function () {
       appeal.application.isEdit = true;
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
     it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -148,8 +154,8 @@ describe('Personal Details Controller', function () {
 
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submitStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
@@ -160,8 +166,8 @@ describe('Personal Details Controller', function () {
 
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(submitStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
   });
 
@@ -176,9 +182,9 @@ describe('Personal Details Controller', function () {
 
     it('getDateOfBirthPage should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getDateOfBirthPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should early fail validation and render appeal-application/personal-details/date-of-birth.njk with error', async () => {
@@ -187,8 +193,8 @@ describe('Personal Details Controller', function () {
 
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledWith(
+      expect(submitStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
         'appeal-application/personal-details/date-of-birth.njk',
         {
           dob: { day: 0 },
@@ -207,8 +213,8 @@ describe('Personal Details Controller', function () {
       const errorMonth = createError('month', i18n.validationErrors.dateOfBirth.incorrectFormat);
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledWith(
+      expect(submitStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
         'appeal-application/personal-details/date-of-birth.njk',
         {
           dob: { ...req.body },
@@ -228,8 +234,8 @@ describe('Personal Details Controller', function () {
       const errorYear = createError('year', i18n.validationErrors.dateOfBirth.incorrectFormat);
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledWith(
+      expect(submitStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
         'appeal-application/personal-details/date-of-birth.njk',
         {
           dob: { ...req.body },
@@ -249,8 +255,8 @@ describe('Personal Details Controller', function () {
       const errorDate = createError('year', i18n.validationErrors.dateOfBirth.inPast);
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledWith(
+      expect(submitStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
         'appeal-application/personal-details/date-of-birth.njk',
         {
           dob: { ...req.body },

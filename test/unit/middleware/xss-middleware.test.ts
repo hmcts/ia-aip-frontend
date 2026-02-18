@@ -27,8 +27,8 @@ describe('session-middleware', () => {
     } as Request;
     filterRequest(req, res, next);
 
-    expect(req.body.test).to.eql('test');
-    expect(next).to.be.called;
+    expect(req.body.test).to.deep.equal('test');
+    expect(next.called).to.equal(true);
   });
 
   it('removes html tags', () => {
@@ -39,8 +39,8 @@ describe('session-middleware', () => {
     } as Request;
     filterRequest(req, res, next);
 
-    expect(req.body.test).to.eql('test');
-    expect(next).to.be.called;
+    expect(req.body.test).to.deep.equal('test');
+    expect(next.called).to.equal(true);
   });
 
   it('handles multiple fields', () => {
@@ -52,9 +52,9 @@ describe('session-middleware', () => {
     } as Request;
     filterRequest(req, res, next);
 
-    expect(req.body.test).to.eql('test 1');
-    expect(req.body.test2).to.eql('test 2');
-    expect(next).to.be.called;
+    expect(req.body.test).to.deep.equal('test 1');
+    expect(req.body.test2).to.deep.equal('test 2');
+    expect(next.called).to.equal(true);
   });
 
   it('trims form field', () => {
@@ -65,7 +65,7 @@ describe('session-middleware', () => {
     } as Request;
     filterRequest(req, res, next);
 
-    expect(req.body.test).to.eql('test');
-    expect(next).to.be.called;
+    expect(req.body.test).to.deep.equal('test');
+    expect(next.called).to.equal(true);
   });
 });

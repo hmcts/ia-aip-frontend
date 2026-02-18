@@ -1,15 +1,26 @@
 {
-  "ts-node":{
-     "files":true
+  "ts-node": {
+    "files": true
   },
   "compilerOptions": {
+    "target": "ES2022",
+
+    "module": "commonjs",
+    "moduleResolution": "node",
+
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
+
     "experimentalDecorators": true,
     "sourceMap": true,
     "esModuleInterop": true,
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "target": "esnext",
+
+    "types": ["node", "express", "multer"],
+
     "typeRoots": [
       "./types",
       "./node_modules/@types"

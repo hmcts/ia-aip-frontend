@@ -33,16 +33,16 @@ describe('footer controller', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
     setupFooterController();
-    expect(routerGetStub).to.have.been.calledWith(paths.common.cookies);
-    expect(routerGetStub).to.have.been.calledWith(paths.common.privacyPolicy);
-    expect(routerGetStub).to.have.been.calledWith(paths.common.termsAndConditions);
-    expect(routerGetStub).to.have.been.calledWith(paths.common.accessibility);
+    expect(routerGetStub.calledWith(paths.common.cookies)).to.equal(true);
+    expect(routerGetStub.calledWith(paths.common.privacyPolicy)).to.equal(true);
+    expect(routerGetStub.calledWith(paths.common.termsAndConditions)).to.equal(true);
+    expect(routerGetStub.calledWith(paths.common.accessibility)).to.equal(true);
   });
 
   it('should render cookies page', () => {
     getCookiesPage(req as Request, res as Response, next);
 
-    expect(res.render).to.have.been.calledWith('footer/cookies.njk', {
+    expect(res.render).to.be.calledWith('footer/cookies.njk', {
       previousPage: {
         attributes: { onclick: 'history.go(-1); return false;' }
       }
@@ -52,7 +52,7 @@ describe('footer controller', () => {
   it('should render privacy policy', () => {
     getPrivacyPolicyPage(req as Request, res as Response, next);
 
-    expect(res.render).to.have.been.calledWith('footer/privacy-policy.njk', {
+    expect(res.render).to.be.calledWith('footer/privacy-policy.njk', {
       previousPage: {
         attributes: { onclick: 'history.go(-1); return false;' }
       }
@@ -62,7 +62,7 @@ describe('footer controller', () => {
   it('should render terms and conditions page', () => {
     getTermsAndConditionsPage(req as Request, res as Response, next);
 
-    expect(res.render).to.have.been.calledWith('footer/terms-and-conditions.njk', {
+    expect(res.render).to.be.calledWith('footer/terms-and-conditions.njk', {
       previousPage: {
         attributes: { onclick: 'history.go(-1); return false;' }
       }
@@ -72,7 +72,7 @@ describe('footer controller', () => {
   it('should render accessibility page', () => {
     getAccessibilityPage(req as Request, res as Response, next);
 
-    expect(res.render).to.have.been.calledWith('footer/accessibility-statement.njk', {
+    expect(res.render).to.be.calledWith('footer/accessibility-statement.njk', {
       previousPage: {
         attributes: { onclick: 'history.go(-1); return false;' }
       }

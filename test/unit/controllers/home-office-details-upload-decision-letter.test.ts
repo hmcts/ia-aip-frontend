@@ -27,8 +27,12 @@ describe('Home office decision letter', function () {
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
-
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   let next: sinon.SinonStub;
+  let uploadStub: sinon.SinonStub;
+  let deleteStub: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -58,16 +62,25 @@ describe('Home office decision letter', function () {
       } as any
     } as Partial<Request>;
 
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy(),
+      redirect: redirectStub,
       locals: {}
     } as Partial<Response>;
 
+    updateAppealService = {
+      submitEventRefactored: submitRefactoredStub
+    } as Partial<UpdateAppealService>;
+
     next = sandbox.stub();
-    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
-    documentManagementService = { uploadFile: sandbox.stub(), deleteFile: sandbox.stub() } as Partial<DocumentManagementService>;
+    uploadStub = sandbox.stub();
+    deleteStub = sandbox.stub();
+    documentManagementService = { uploadFile: uploadStub, deleteFile: deleteStub } as Partial<DocumentManagementService>;
   });
 
   afterEach(() => {
@@ -80,23 +93,23 @@ describe('Home office decision letter', function () {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
       new SetupHomeOfficeDecisionLetterController().initialise(middleware, updateAppealService, documentManagementService as DocumentManagementService);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.homeOfficeDecisionLetter);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.homeOfficeDecisionLetterDelete);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.homeOfficeDecisionLetter);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.homeOfficeDecisionLetterUpload);
+      expect(routerGetStub.calledWith(paths.appealStarted.homeOfficeDecisionLetter)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.homeOfficeDecisionLetterDelete)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.homeOfficeDecisionLetter)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.homeOfficeDecisionLetterUpload)).to.equal(true);
     });
   });
 
   describe('getHomeOfficeDecisionLetter', () => {
     it('should render template', function () {
       getHomeOfficeDecisionLetter(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('templates/multiple-evidence-upload-page.njk');
+      expect(renderStub.calledOnceWith('templates/multiple-evidence-upload-page.njk')).to.equal(true);
     });
 
     it('should render template and update edit flag in session', function () {
       req.query = { 'edit': '' };
       getHomeOfficeDecisionLetter(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('templates/multiple-evidence-upload-page.njk');
+      expect(renderStub.calledOnceWith('templates/multiple-evidence-upload-page.njk')).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
     });
 
@@ -104,7 +117,7 @@ describe('Home office decision letter', function () {
       req.query = { error: 'error' };
       const validationErrors = { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${req.query.error}`]) };
       getHomeOfficeDecisionLetter(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('templates/multiple-evidence-upload-page.njk', {
+      expect(renderStub).to.be.calledOnceWith('templates/multiple-evidence-upload-page.njk', {
         title: i18n.pages.homeOfficeLetterUpload.title,
         content: i18n.pages.homeOfficeLetterUpload.content,
         formSubmitAction: paths.appealStarted.homeOfficeDecisionLetter,
@@ -122,14 +135,14 @@ describe('Home office decision letter', function () {
       req.session.appeal.application.addressLookup = {
         result: {
           addresses: [
-            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', 'udprn')
+            new Address('buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'formattedAddress', 'udprn')
           ]
         }
       };
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getHomeOfficeDecisionLetter(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -137,7 +150,7 @@ describe('Home office decision letter', function () {
     it('should redirect to \'/home-office-upload-decision-letter\' if no home office letter upload', async () => {
       await postHomeOfficeDecisionLetter(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.appealStarted.homeOfficeDecisionLetter}?error=noFileSelected`);
+      expect(redirectStub.calledWith(`${paths.appealStarted.homeOfficeDecisionLetter}?error=noFileSelected`)).to.equal(true);
     });
 
     it('should redirect to \'/deportation-order\' if home office letter upload present and not in editing mode', async () => {
@@ -146,7 +159,7 @@ describe('Home office decision letter', function () {
       req.session.appeal.application.homeOfficeLetter = [{ fileId: 'id', name: 'name' } as Evidence];
       await postHomeOfficeDecisionLetter(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.deportationOrder);
+      expect(redirectStub.calledWith(paths.appealStarted.deportationOrder)).to.equal(true);
     });
 
     it('should redirect to \'/about-appeal\' if dlrm-internal flag is switched off', async () => {
@@ -155,7 +168,7 @@ describe('Home office decision letter', function () {
       req.session.appeal.application.homeOfficeLetter = [{ fileId: 'id', name: 'name' } as Evidence];
       await postHomeOfficeDecisionLetter(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+      expect(redirectStub.calledWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
     it('should redirect to \'/check-answers\' if home office letter upload present and in editing mode', async () => {
@@ -163,17 +176,17 @@ describe('Home office decision letter', function () {
       req.session.appeal.application.homeOfficeLetter = [{ fileId: 'id', name: 'name' } as Evidence];
       await postHomeOfficeDecisionLetter(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       req.session.appeal.application.isEdit = true;
       req.session.appeal.application.homeOfficeLetter = [{ fileId: 'id', name: 'name' } as Evidence];
       await postHomeOfficeDecisionLetter(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -181,24 +194,24 @@ describe('Home office decision letter', function () {
     it('should call next if no multer errors', () => {
       validate(req as Request, res as Response, next);
 
-      expect(next).to.have.been.called;
+      expect(next.called).to.equal(true);
     });
 
     it('should redirect to \'/home-office-upload-decision-letter\' with error code', async () => {
       res.locals.errorCode = 'anError';
       validate(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.called;
+      expect(redirectStub.called).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       res.locals.errorCode = 'anError';
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
 
       validate(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -211,20 +224,20 @@ describe('Home office decision letter', function () {
       req.file = file as Express.Multer.File;
       await uploadHomeOfficeDecisionLetter(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(documentManagementService.uploadFile).to.have.been.called;
-      expect(updateAppealService.submitEventRefactored).to.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.homeOfficeDecisionLetter);
+      expect(uploadStub.called).to.equal(true);
+      expect(submitRefactoredStub.called).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.homeOfficeDecisionLetter)).to.equal(true);
     });
 
     it('should redirect to \'/home-office-upload-decision-letter\' with no file selected error', async () => {
       await uploadHomeOfficeDecisionLetter(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.appealStarted.homeOfficeDecisionLetter}?error=noFileSelected`);
+      expect(redirectStub.calledWith(`${paths.appealStarted.homeOfficeDecisionLetter}?error=noFileSelected`)).to.equal(true);
     });
 
     it('should catch an error and redirect with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       const file = {
         originalname: 'file.png',
         mimetype: 'type'
@@ -232,7 +245,7 @@ describe('Home office decision letter', function () {
       req.file = file as Express.Multer.File;
       await uploadHomeOfficeDecisionLetter(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -243,20 +256,20 @@ describe('Home office decision letter', function () {
       req.query.id = 'anId';
       await deleteHomeOfficeDecisionLetter(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(documentManagementService.deleteFile).to.have.been.called;
-      expect(updateAppealService.submitEventRefactored).to.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.homeOfficeDecisionLetter);
+      expect(deleteStub.called).to.equal(true);
+      expect(submitRefactoredStub.called).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.homeOfficeDecisionLetter)).to.equal(true);
     });
 
     it('should catch an error and call next with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       req.session.appeal.application.homeOfficeLetter = [{ fileId: 'anId', name: 'name' } as Evidence];
       req.session.appeal.documentMap = [{ id: 'anId', url: 'documentStoreUrl' }];
       req.query.id = 'anId';
       await deleteHomeOfficeDecisionLetter(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 });

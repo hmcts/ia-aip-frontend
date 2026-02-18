@@ -1,4 +1,3 @@
-const express = require('express');
 import { Request, Response } from 'express';
 import {
   getAskForMoreTimeEvidence,
@@ -19,6 +18,7 @@ import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { formatTextForCYA } from '../../../app/utils/utils';
 import { expect, sinon } from '../../utils/testUtils';
+const express = require('express');
 
 describe('Ask for more time Controller', function () {
   let sandbox: sinon.SinonSandbox;
@@ -27,7 +27,9 @@ describe('Ask for more time Controller', function () {
   let updateAppealService: Partial<UpdateAppealService>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitRefactoredStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -57,16 +59,19 @@ describe('Ask for more time Controller', function () {
       } as any
     } as Partial<Request>;
 
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+    submitRefactoredStub = sandbox.stub();
     res = {
-      redirect: sandbox.spy(),
-      render: sandbox.stub(),
+      redirect: redirectStub,
+      render: renderStub,
       send: sandbox.stub()
     } as Partial<Response>;
 
     next = sandbox.stub();
 
     updateAppealService = {
-      submitEventRefactored: sandbox.stub()
+      submitEventRefactored: submitRefactoredStub
     } as Partial<UpdateAppealService>;
   });
 
@@ -80,8 +85,8 @@ describe('Ask for more time Controller', function () {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = sandbox.stub();
       setupAskForMoreTimeController([middleware], { updateAppealService });
-      expect(routerPOSTStub).to.have.been.calledWith(paths.common.askForMoreTimeReason);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.askForMoreTimeReason);
+      expect(routerPOSTStub.calledWith(paths.common.askForMoreTimeReason)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.askForMoreTimeReason)).to.equal(true);
     });
   });
 
@@ -90,7 +95,7 @@ describe('Ask for more time Controller', function () {
       const getEvidenceYesNoStub = sandbox.stub(uploadEvidenceController, 'getEvidenceYesNo');
       getAskForMoreTimeEvidence(req as Request, res as Response, next);
 
-      expect(getEvidenceYesNoStub).to.have.been.called;
+      expect(getEvidenceYesNoStub.called).to.equal(true);
     });
   });
 
@@ -99,7 +104,7 @@ describe('Ask for more time Controller', function () {
       const postEvidenceYesNoStub = sandbox.stub(uploadEvidenceController, 'postEvidenceYesNo');
       postAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
 
-      expect(postEvidenceYesNoStub).to.have.been.called;
+      expect(postEvidenceYesNoStub.called).to.equal(true);
     });
   });
 
@@ -108,23 +113,23 @@ describe('Ask for more time Controller', function () {
       const getUploadPageStub = sandbox.stub(uploadEvidenceController, 'getUploadPage');
       getUploadEvidence(req as Request, res as Response, next);
 
-      expect(getUploadPageStub).to.have.been.called;
+      expect(getUploadPageStub.called).to.equal(true);
     });
   });
 
   describe('getAskForMoreTimePage', () => {
     it('getAskForMoreTimePage should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getAskForMoreTimePage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('getAskForMoreTimePage should be called with render', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getAskForMoreTimePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('./ask-for-more-time/ask-for-more-time.njk', {
+      expect(renderStub).to.be.calledWith('./ask-for-more-time/ask-for-more-time.njk', {
         previousPage: paths.common.overview,
         askForMoreTime: undefined
       });
@@ -132,10 +137,10 @@ describe('Ask for more time Controller', function () {
 
     it('getAskForMoreTimePage should be called with reason', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       req.session.appeal.makeAnApplicationDetails = 'ask for more time';
       getAskForMoreTimePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('./ask-for-more-time/ask-for-more-time.njk', {
+      expect(renderStub).to.be.calledWith('./ask-for-more-time/ask-for-more-time.njk', {
         previousPage: paths.common.overview,
         askForMoreTime: 'ask for more time'
       });
@@ -150,18 +155,18 @@ describe('Ask for more time Controller', function () {
       };
       getCancelAskForMoreTime(req as Request, res as Response);
 
-      expect(res.redirect).to.have.been.calledWith(
+      expect(redirectStub).to.be.calledWith(
         paths.common.overview
       );
 
-      expect(req.session.appeal.askForMoreTime).to.be.eql({});
+      expect(req.session.appeal.askForMoreTime).to.deep.equal({});
     });
   });
 
   describe('postAskForMoreTimePage', function () {
-    let askForMoreReason = 'The reason';
+    const askForMoreReason = 'The reason';
     beforeEach(() => {
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         askForMoreTime: {
           reason: askForMoreReason
         }
@@ -173,7 +178,7 @@ describe('Ask for more time Controller', function () {
     it('should fail validation and render reasons-for-appeal/reason-for-appeal-page.njk with error', async () => {
       req.body.askForMoreTime = '';
       await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('./ask-for-more-time/ask-for-more-time.njk', {
+      expect(renderStub).to.be.calledWith('./ask-for-more-time/ask-for-more-time.njk', {
         askForMoreTime: '',
         errorList: [{
           'key': 'askForMoreTime',
@@ -194,16 +199,16 @@ describe('Ask for more time Controller', function () {
     it('should pass validation and render reasons-for-appeal/reason-for-appeal-page.njk without error', async () => {
       req.body.askForMoreTime = askForMoreReason;
       await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTimeSupportingEvidence);
+      expect(redirectStub.calledWith(paths.common.askForMoreTimeSupportingEvidence)).to.equal(true);
     });
 
     it('should pass validation and render reasons-for-appeal/reason-for-appeal-page.njk without error', async () => {
       const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       req.body.askForMoreTime = askForMoreReason;
       await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
 
     // TODO: remove ask for more time if not needed
@@ -211,7 +216,7 @@ describe('Ask for more time Controller', function () {
     //   req.session.appeal.appealStatus = 'current State';
     //   req.body.askForMoreTime = askForMoreReason;
     //   await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-    //   expect(req.session.appeal.askForMoreTime).to.be.eql({
+    //   expect(req.session.appeal.askForMoreTime).to.deep.equal({
     //     reason: askForMoreReason
     //   });
     // });
@@ -222,7 +227,7 @@ describe('Ask for more time Controller', function () {
       req.session.appeal.makeAnApplicationDetails = 'some reasons';
       getCheckAndSend(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('./ask-for-more-time/check-and-send.njk', {
+      expect(renderStub).to.be.calledWith('./ask-for-more-time/check-and-send.njk', {
         previousPage: paths.common.askForMoreTimeSupportingEvidence,
         summaryRows: [{
           key: { text: 'Question' },
@@ -245,7 +250,7 @@ describe('Ask for more time Controller', function () {
       ];
       getCheckAndSend(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('./ask-for-more-time/check-and-send.njk', {
+      expect(renderStub).to.be.calledWith('./ask-for-more-time/check-and-send.njk', {
         previousPage: paths.common.askForMoreTimeSupportingEvidence,
         summaryRows: [{
           key: { text: 'Question' },
@@ -264,12 +269,12 @@ describe('Ask for more time Controller', function () {
 
     it('should call next with error', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       req.session.appeal.makeAnApplicationDetails = 'some reasons';
 
       getCheckAndSend(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -277,7 +282,7 @@ describe('Ask for more time Controller', function () {
     let appeal: Appeal;
     beforeEach(() => {
       appeal = { ...req.session.appeal };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
         askForMoreTime: {
           inFlight: true
         },
@@ -289,29 +294,29 @@ describe('Ask for more time Controller', function () {
     });
     it('redirects user to confirmation page', async () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTimeConfirmation);
+      expect(redirectStub.calledWith(paths.common.askForMoreTimeConfirmation)).to.equal(true);
     });
 
     it('submits ask for more time', async () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.MAKE_AN_APPLICATION, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.askForMoreTime.inFlight).to.be.true;
+      expect(submitRefactoredStub.calledWith(Events.MAKE_AN_APPLICATION, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.askForMoreTime.inFlight).to.equal(true);
     });
 
     it('should call next with error', async () => {
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getConfirmation', () => {
     it('renders page with afmt query', () => {
       getConfirmation(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('./ask-for-more-time/confirmation.njk', {
+      expect(renderStub).to.be.calledWith('./ask-for-more-time/confirmation.njk', {
         saveAndAskForMoreTime: '?ask-for-more-time'
       });
     });
@@ -319,17 +324,17 @@ describe('Ask for more time Controller', function () {
     it('renders page with save and afmt query', () => {
       req.session.appeal.application.saveAndAskForTime = true;
       getConfirmation(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('./ask-for-more-time/confirmation.njk', {
+      expect(renderStub).to.be.calledWith('./ask-for-more-time/confirmation.njk', {
         saveAndAskForMoreTime: '?save-and-ask-for-more-time'
       });
     });
 
     it('should call next with error', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getConfirmation(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

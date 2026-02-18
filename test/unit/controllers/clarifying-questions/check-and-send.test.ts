@@ -21,6 +21,9 @@ describe('Clarifying Questions Check and Send controller', () => {
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let addSummaryRowStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
   const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
     {
       id: 'id1',
@@ -65,9 +68,13 @@ describe('Clarifying Questions Check and Send controller', () => {
         }
       }
     } as Partial<Request>;
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
     addSummaryRowStub = sandbox.stub(summaryListUtils, 'addSummaryRow');
@@ -84,15 +91,15 @@ describe('Clarifying Questions Check and Send controller', () => {
       const middleware: Middleware[] = [];
 
       setupClarifyingQuestionsCheckSendController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.checkAndSend}`);
-      expect(routerPostStub).to.have.been.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.checkAndSend}`);
+      expect(routerGetStub.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.checkAndSend}`)).to.equal(true);
+      expect(routerPostStub.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.checkAndSend}`)).to.equal(true);
     });
   });
 
   describe('getCheckAndSendPage', () => {
     it('should render CYA template page', () => {
       getCheckAndSendPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk');
+      expect(renderStub.calledWith('templates/check-and-send.njk')).to.equal(true);
     });
 
     it('should render CYA template page with evidences', () => {
@@ -108,27 +115,27 @@ describe('Clarifying Questions Check and Send controller', () => {
       const evidenceList = buildEvidencesList(evidences);
       getCheckAndSendPage(req as Request, res as Response, next);
 
-      expect(addSummaryRowStub.thirdCall).to.have.been.calledWith(
+      expect(addSummaryRowStub.thirdCall).to.be.calledWith(
         i18n.common.cya.supportingEvidenceRowTitle,
         evidenceList,
-        paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(':id', `1`) + editParam,
+        paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(':id', '1') + editParam,
         '<br>'
       );
-      expect(addSummaryRowStub.getCall(4)).to.have.been.calledWith(
+      expect(addSummaryRowStub.getCall(4)).to.be.calledWith(
         i18n.common.cya.supportingEvidenceRowTitle,
         evidenceList,
         '',
         '<br>'
       );
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk');
+      expect(renderStub.calledWith('templates/check-and-send.njk')).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getCheckAndSendPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -139,7 +146,7 @@ describe('Clarifying Questions Check and Send controller', () => {
         clarifyingQuestionsAnswers: clarifyingQuestions
       };
       updateAppealService = {
-        submitEventRefactored: sandbox.stub().returns({
+        submitEventRefactored: submitStub.returns({
           clarifyingQuestionsAnswers: clarifyingQuestions,
           appealStatus: 'newState'
         } as Appeal)
@@ -152,11 +159,11 @@ describe('Clarifying Questions Check and Send controller', () => {
       await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       appeal.draftClarifyingQuestionsAnswers = [];
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.clarifyingQuestionsAnswers).to.eql(clarifyingQuestions);
-      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.be.undefined;
-      expect(req.session.appeal.appealStatus).to.be.equal('newState');
-      expect(res.redirect).to.have.been.calledWith(paths.common.clarifyingQuestionsAnswersSentConfirmation);
+      expect(submitStub.calledWith(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.clarifyingQuestionsAnswers).to.deep.equal(clarifyingQuestions);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.equal(undefined);
+      expect(req.session.appeal.appealStatus).to.equal('newState');
+      expect(redirectStub.calledWith(paths.common.clarifyingQuestionsAnswersSentConfirmation)).to.equal(true);
     });
 
     it('should validate and redirect to saveforLater', async () => {
@@ -164,15 +171,15 @@ describe('Clarifying Questions Check and Send controller', () => {
       clarifyingQuestions[0].value.dateResponded = nowIsoDate();
       clarifyingQuestions[1].value.dateResponded = nowIsoDate();
       await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
 
       await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -184,7 +191,7 @@ describe('Clarifying Questions Check and Send controller', () => {
     });
     it('should render CYA template page @thisONe', () => {
       getYourAnswersPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk');
+      expect(renderStub.calledWith('templates/check-and-send.njk')).to.equal(true);
     });
 
     it('should render CYA template page with evidences', () => {
@@ -199,27 +206,27 @@ describe('Clarifying Questions Check and Send controller', () => {
       const evidenceList = buildEvidencesList(evidences);
       getYourAnswersPage(req as Request, res as Response, next);
 
-      expect(addSummaryRowStub.thirdCall).to.have.been.calledWith(
+      expect(addSummaryRowStub.thirdCall).to.be.calledWith(
         i18n.common.cya.supportingEvidenceRowTitle,
         evidenceList,
         null,
         '<br>'
       );
-      expect(addSummaryRowStub.getCall(4)).to.have.been.calledWith(
+      expect(addSummaryRowStub.getCall(4)).to.be.calledWith(
         i18n.common.cya.supportingEvidenceRowTitle,
         evidenceList,
         '',
         '<br>'
       );
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk');
+      expect(renderStub.calledWith('templates/check-and-send.njk')).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getYourAnswersPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

@@ -19,7 +19,7 @@ describe('idamExpressAuthenticate', () => {
     id: 'idam.user.id',
     email: 'email@email.com'
   };
-
+  let redirectStub: sinon.SinonStub;
   it('should return a idamExpressAuthenticate handler', () => {
     const handler = middleware(idamArgs);
     expect(handler).to.be.a('function');
@@ -31,8 +31,9 @@ describe('idamExpressAuthenticate', () => {
     beforeEach(() => {
       sandbox = sinon.createSandbox();
       req = { cookies: {} };
+      redirectStub = sandbox.stub();
       res = {
-        redirect: sandbox.stub(),
+        redirect: redirectStub,
         cookie: sandbox.stub(),
         clearCookie: sandbox.stub()
       };
@@ -58,7 +59,7 @@ describe('idamExpressAuthenticate', () => {
     describe('with custom state', () => {
       it('should pass the state as redirection', () => {
         handler(req, res, next);
-        expect(idamFunctionsStub.getIdamLoginUrl).to.have.been.calledWith({ state: '__state__' });
+        expect(idamFunctionsStub.getIdamLoginUrl.calledWith({ state: '__state__' })).to.equal(true);
       });
     });
 
@@ -66,8 +67,8 @@ describe('idamExpressAuthenticate', () => {
       it('should call getIdamLoginUrl', () => {
         handler(req, res, next);
 
-        expect(idamFunctionsStub.getIdamLoginUrl).to.have.been.calledOnce;
-        expect(res.cookie).to.have.been.calledOnce;
+        expect(idamFunctionsStub.getIdamLoginUrl.callCount).to.equal(1);
+        expect(res.cookie.callCount).to.equal(1);
       });
     });
 
@@ -82,8 +83,8 @@ describe('idamExpressAuthenticate', () => {
         handler(req, res, next);
 
         setImmediate(() => {
-          expect(idamFunctionsStub.getUserDetails).to.have.been.calledOnce;
-          expect(next).to.have.been.calledOnce;
+          expect(idamFunctionsStub.getUserDetails.callCount).to.equal(1);
+          expect(next.callCount).to.equal(1);
         });
       });
 
@@ -91,9 +92,9 @@ describe('idamExpressAuthenticate', () => {
         idamFunctionsStub.getUserDetails.resolves(userDetails);
         handler(req, res, next);
         setImmediate(() => {
-          expect(idamFunctionsStub.getUserDetails).to.have.been.calledOnce;
+          expect(idamFunctionsStub.getUserDetails.callCount).to.equal(1);
           expect(req.idam.userDetails).to.equal(userDetails);
-          expect(next).to.have.been.calledOnce;
+          expect(next.callCount).to.equal(1);
         });
       });
 
@@ -102,10 +103,10 @@ describe('idamExpressAuthenticate', () => {
         handler(req, res, next);
 
         setImmediate(() => {
-          expect(idamFunctionsStub.getUserDetails).to.have.been.calledOnce;
-          expect(idamFunctionsStub.getIdamLoginUrl).to.have.been.calledOnce;
-          expect(res.redirect).to.have.been.calledOnce;
-          expect(next).to.not.have.been.called;
+          expect(idamFunctionsStub.getUserDetails.callCount).to.equal(1);
+          expect(idamFunctionsStub.getIdamLoginUrl.callCount).to.equal(1);
+          expect(redirectStub.callCount).to.equal(1);
+          expect(next.called).to.equal(false);
         });
       });
     });
@@ -116,7 +117,7 @@ describe('idamExpressAuthenticate', () => {
         const handler = middleware(idamArgs);
         handler(req, res, next);
 
-        expect(res.clearCookie).to.have.been.calledOnce;
+        expect(res.clearCookie.callCount).to.equal(1);
       });
     });
   });

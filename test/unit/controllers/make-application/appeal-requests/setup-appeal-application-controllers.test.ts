@@ -63,74 +63,74 @@ describe('Hearing application controllers setup', () => {
       setupAppealRequestControllers(middleware, updateAppealService as UpdateAppealService);
 
       /* Withdraw */
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.withdraw);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceWithdraw);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceWithdraw);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerWithdraw);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.withdraw);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceWithdraw);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceWithdraw);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerWithdraw);
+      expect(routerGetStub.calledWith(paths.makeApplication.withdraw)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.supportingEvidenceWithdraw)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.provideSupportingEvidenceWithdraw)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.checkAnswerWithdraw)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.withdraw)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.provideSupportingEvidenceWithdraw)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.supportingEvidenceWithdraw)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.checkAnswerWithdraw)).to.equal(true);
 
       /* Update Details */
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.updateAppealDetails);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceUpdateAppealDetails);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceUpdateAppealDetails);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerUpdateAppealDetails);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.updateAppealDetails);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceUpdateAppealDetails);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceUpdateAppealDetails);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerUpdateAppealDetails);
+      expect(routerGetStub.calledWith(paths.makeApplication.updateAppealDetails)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.supportingEvidenceUpdateAppealDetails)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.provideSupportingEvidenceUpdateAppealDetails)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.checkAnswerUpdateAppealDetails)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.updateAppealDetails)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.provideSupportingEvidenceUpdateAppealDetails)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.supportingEvidenceUpdateAppealDetails)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.checkAnswerUpdateAppealDetails)).to.equal(true);
 
       /* Link or Unlink */
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.linkOrUnlink);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceLinkOrUnlink);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceLinkOrUnlink);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerLinkOrUnlink);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.linkOrUnlink);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceLinkOrUnlink);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceLinkOrUnlink);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerLinkOrUnlink);
+      expect(routerGetStub.calledWith(paths.makeApplication.linkOrUnlink)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.supportingEvidenceLinkOrUnlink)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.provideSupportingEvidenceLinkOrUnlink)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.checkAnswerLinkOrUnlink)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.linkOrUnlink)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.provideSupportingEvidenceLinkOrUnlink)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.supportingEvidenceLinkOrUnlink)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.checkAnswerLinkOrUnlink)).to.equal(true);
 
       /* Judge's Review */
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.judgesReview);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceJudgesReview);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceJudgesReview);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerJudgesReview);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.judgesReview);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceJudgesReview);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceJudgesReview);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerJudgesReview);
+      expect(routerGetStub.calledWith(paths.makeApplication.judgesReview)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.supportingEvidenceJudgesReview)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.provideSupportingEvidenceJudgesReview)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.checkAnswerJudgesReview)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.judgesReview)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.provideSupportingEvidenceJudgesReview)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.supportingEvidenceJudgesReview)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.checkAnswerJudgesReview)).to.equal(true);
 
       /* Something Else */
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.other);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceOther);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceOther);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerOther);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.other);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceOther);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceOther);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerOther);
+      expect(routerGetStub.calledWith(paths.makeApplication.other)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.supportingEvidenceOther)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.provideSupportingEvidenceOther)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.checkAnswerOther)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.other)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.provideSupportingEvidenceOther)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.supportingEvidenceOther)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.checkAnswerOther)).to.equal(true);
 
       /* Reinstate */
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.reinstate);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceReinstate);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceReinstate);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerReinstate);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.reinstate);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceReinstate);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceReinstate);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerReinstate);
+      expect(routerGetStub.calledWith(paths.makeApplication.reinstate)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.supportingEvidenceReinstate)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.provideSupportingEvidenceReinstate)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.checkAnswerReinstate)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.reinstate)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.provideSupportingEvidenceReinstate)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.supportingEvidenceReinstate)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.checkAnswerReinstate)).to.equal(true);
 
       /* Change Hearing Type */
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.changeHearingType);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceChangeHearingType);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceChangeHearingType);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerChangeHearingType);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.changeHearingType);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceChangeHearingType);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceChangeHearingType);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerChangeHearingType);
+      expect(routerGetStub.calledWith(paths.makeApplication.changeHearingType)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.supportingEvidenceChangeHearingType)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.provideSupportingEvidenceChangeHearingType)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.makeApplication.checkAnswerChangeHearingType)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.changeHearingType)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.provideSupportingEvidenceChangeHearingType)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.supportingEvidenceChangeHearingType)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.makeApplication.checkAnswerChangeHearingType)).to.equal(true);
     });
   });
 });

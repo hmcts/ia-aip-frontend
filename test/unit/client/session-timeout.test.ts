@@ -61,15 +61,15 @@ describe('Session Timeout', () => {
       addListenersStub = sandbox.stub(sessionTimeout, 'addListeners');
       extendSessionStub = sandbox.stub(sessionTimeout, 'extendSession');
       sessionTimeout.init();
-      expect(addListenersStub).to.have.been.called.calledOnce;
-      expect(extendSessionStub).to.have.been.called;
+      expect(addListenersStub.callCount).to.equal(1);
+      expect(extendSessionStub.called).to.equal(true);
     });
   });
 
   describe('addListeners', () => {
     it('should add click listener and call extendSession when click on button', () => {
       extendSessionStub = sandbox.stub(sessionTimeout, 'extendSession');
-      let extendButton = document.querySelector('#extend-session');
+      const extendButton = document.querySelector('#extend-session');
       sessionTimeout.addListeners();
       const evt = new MouseEvent('click', {
         view: window,
@@ -78,14 +78,14 @@ describe('Session Timeout', () => {
         clientX: 20
       });
       extendButton.dispatchEvent(evt);
-      expect(extendSessionStub).to.have.been.called.calledOnce;
+      expect(extendSessionStub.callCount).to.equal(1);
     });
   });
 
   describe('removeListeners', () => {
     it('should remove click listener and dont call extendSession when click on button', () => {
       extendSessionStub = sandbox.stub(sessionTimeout, 'extendSession');
-      let extendButton = document.querySelector('#extend-session');
+      const extendButton = document.querySelector('#extend-session');
       sessionTimeout.removeListeners();
       const evt = new MouseEvent('click', {
         view: window,
@@ -94,18 +94,18 @@ describe('Session Timeout', () => {
         clientX: 20
       });
       extendButton.dispatchEvent(evt);
-      expect(extendSessionStub).not.to.have.been.called.calledOnce;
+      expect(extendSessionStub.called).to.equal(false);
     });
   });
 
   describe('stop/start/restartCounters', () => {
     it('should stop counters', () => {
-      sinon.spy(clock, 'clearTimeout');
-      sinon.spy(clock, 'clearInterval');
+      const clearTimout = sinon.spy(clock, 'clearTimeout');
+      const clearInterval = sinon.spy(clock, 'clearInterval');
       sessionTimeout.stopCounters();
 
-      expect(clock.clearTimeout).to.have.been.calledTwice;
-      expect(clock.clearInterval).to.have.been.calledOnce;
+      expect(clearTimout.callCount).to.equal(2);
+      expect(clearInterval.callCount).to.equal(1);
     });
 
     it('should restart counters', () => {
@@ -114,9 +114,9 @@ describe('Session Timeout', () => {
       resetModalMessageStub = sandbox.stub(sessionTimeout, 'resetModalMessage');
       sessionTimeout.restartCounters();
 
-      expect(stopCountersStub).to.have.been.calledOnce;
-      expect(startCounterStub).to.have.been.calledOnce;
-      expect(resetModalMessageStub).to.have.been.calledOnce;
+      expect(stopCountersStub.callCount).to.equal(1);
+      expect(startCounterStub.callCount).to.equal(1);
+      expect(resetModalMessageStub.callCount).to.equal(1);
     });
 
     it('should startCounter countdown and call relevant functions', () => {
@@ -126,11 +126,11 @@ describe('Session Timeout', () => {
       startModalCountdownStub = sandbox.stub(sessionTimeout, 'startModalCountdown');
       sessionTimeout.startCounter();
       clock.tick((sessionTimeout.sessionTimeoutCountdown - sessionTimeout.bufferSessionExtension) + 1);
-      expect(openModalStub).to.have.been.calledOnce;
-      expect(startModalCountdownStub).to.have.been.calledOnce;
+      expect(openModalStub.callCount).to.equal(1);
+      expect(startModalCountdownStub.callCount).to.equal(1);
 
       clock.tick(sessionTimeout.sessionTimeoutCountdown + 1);
-      expect(signOutStub).to.have.been.calledOnce;
+      expect(signOutStub.callCount).to.equal(1);
     });
   });
 
@@ -138,7 +138,7 @@ describe('Session Timeout', () => {
     it('should restart modal content to the initial description', () => {
       sessionTimeout.resetModalMessage();
 
-      expect(modalCountdownElement.innerHTML).to.be.equal(i18n.components.timeoutModal.initialDescription);
+      expect(modalCountdownElement.innerHTML).to.equal(i18n.components.timeoutModal.initialDescription);
     });
   });
 
@@ -147,7 +147,7 @@ describe('Session Timeout', () => {
       sessionTimeout.startModalCountdown();
       clock.tick(2001);
 
-      expect(modalCountdownElement.innerHTML).to.be.equal(`${i18n.components.timeoutModal.description[0]} 1:59 ${i18n.components.timeoutModal.description[1]}`);
+      expect(modalCountdownElement.innerHTML).to.equal(`${i18n.components.timeoutModal.description[0]} 1:59 ${i18n.components.timeoutModal.description[1]}`);
     });
   });
 
@@ -162,9 +162,9 @@ describe('Session Timeout', () => {
 
       expect(modalAriaHiddenAttr).to.equal(null);
       expect(overlayAriaHiddenAttr).to.equal(null);
-      expect(focusStub).to.have.been.calledOnce;
-      expect(disableScrollStub).to.have.been.calledOnce;
-      expect(bodyEventListenerStub).to.have.been.calledOnce;
+      expect(focusStub.callCount).to.equal(1);
+      expect(disableScrollStub.callCount).to.equal(1);
+      expect(bodyEventListenerStub.callCount).to.equal(1);
     });
 
     it('should close modal', () => {
@@ -176,8 +176,8 @@ describe('Session Timeout', () => {
 
       expect(ariaHiddenAttr).to.equal('true');
       expect(overlayAriaHiddenAttr).to.equal('true');
-      expect(removeEventListenerStub).to.have.been.called;
-      expect(enableScrollStub).to.have.been.calledOnce;
+      expect(removeEventListenerStub.called).to.equal(true);
+      expect(enableScrollStub.callCount).to.equal(1);
     });
   });
 
@@ -192,13 +192,13 @@ describe('Session Timeout', () => {
       stopCountersStub = sandbox.stub(sessionTimeout, 'stopCounters');
 
       sessionTimeout.extendSession().then(() => {
-        expect(sessionTimeout.sessionExpirationTime).to.be.equal(1000);
-        expect(restartCountersStub).to.have.been.calledOnce;
+        expect(sessionTimeout.sessionExpirationTime).to.equal(1000);
+        expect(restartCountersStub.callCount).to.equal(1);
       }).then(done, done);
     });
 
     it('should not extend session and call removeListeners and stopCounters', (done) => {
-      const rejected = new Promise((_, r) => r());
+      const rejected = Promise.reject(new Error(''));
       axiosStub = sandbox.stub(axios, 'get').withArgs(paths.common.extendSession).returns(rejected);
 
       restartCountersStub = sandbox.stub(sessionTimeout, 'restartCounters');
@@ -207,8 +207,8 @@ describe('Session Timeout', () => {
       stopCountersStub = sandbox.stub(sessionTimeout, 'stopCounters');
 
       sessionTimeout.extendSession().catch(() => {
-        expect(removeListenersStub).to.have.been.calledOnce;
-        expect(stopCountersStub).to.have.been.calledOnce;
+        expect(removeListenersStub.callCount).to.equal(1);
+        expect(stopCountersStub.callCount).to.equal(1);
       }).then(done, done);
     });
   });
@@ -221,8 +221,8 @@ describe('Session Timeout', () => {
       const preventDefaultStub = sandbox.stub(event, 'preventDefault');
       const focusStub = sandbox.stub(firstFocusableElement, 'focus');
       sessionTimeout.keyDownEventListener(event);
-      expect(preventDefaultStub).to.have.been.calledOnce;
-      expect(focusStub).to.have.been.calledOnce;
+      expect(preventDefaultStub.callCount).to.equal(1);
+      expect(focusStub.callCount).to.equal(1);
     });
 
     it('should focus on firstFocusableElement if there is only 1 focusable element on modal', () => {
@@ -233,8 +233,8 @@ describe('Session Timeout', () => {
       const preventDefaultStub = sandbox.stub(event, 'preventDefault');
       const focusStub = sandbox.stub(firstFocusableElement, 'focus');
       sessionTimeout.keyDownEventListener(event);
-      expect(preventDefaultStub).to.have.been.calledOnce;
-      expect(focusStub).to.have.been.calledOnce;
+      expect(preventDefaultStub.callCount).to.equal(1);
+      expect(focusStub.callCount).to.equal(1);
     });
 
     it('should focus on firstFocusableElement if Tabbing while focus in lastFocusableElement', () => {
@@ -248,8 +248,8 @@ describe('Session Timeout', () => {
       const preventDefaultStub = sandbox.stub(event, 'preventDefault');
       const firstFocusableElementFocusStub = sandbox.stub(firstFocusableElement, 'focus');
       sessionTimeout.keyDownEventListener(event);
-      expect(preventDefaultStub).to.have.been.calledOnce;
-      expect(firstFocusableElementFocusStub).to.have.been.calledOnce;
+      expect(preventDefaultStub.callCount).to.equal(1);
+      expect(firstFocusableElementFocusStub.callCount).to.equal(1);
     });
 
     it('should focus on lastFocusableElement if Shift+Tabbing while focus in firstFocusableElement', () => {
@@ -264,27 +264,27 @@ describe('Session Timeout', () => {
       const preventDefaultStub = sandbox.stub(event, 'preventDefault');
       const lastFocusableElementFocusStub = sandbox.stub(lastFocusableElement, 'focus');
       sessionTimeout.keyDownEventListener(event);
-      expect(preventDefaultStub).to.have.been.calledOnce;
-      expect(lastFocusableElementFocusStub).to.have.been.calledOnce;
+      expect(preventDefaultStub.callCount).to.equal(1);
+      expect(lastFocusableElementFocusStub.callCount).to.equal(1);
     });
   });
 
   describe('Enable/Disable body scroll', () => {
     it('should disable scroll', () => {
       sessionTimeout.disableScroll();
-      expect(bodyElement.style.getPropertyValue('overflow')).to.be.equal('hidden');
-      expect(bodyElement.style.getPropertyValue('position')).to.be.equal('fixed');
-      expect(bodyElement.style.getPropertyValue('width')).to.be.equal('100%');
+      expect(bodyElement.style.getPropertyValue('overflow')).to.equal('hidden');
+      expect(bodyElement.style.getPropertyValue('position')).to.equal('fixed');
+      expect(bodyElement.style.getPropertyValue('width')).to.equal('100%');
     });
 
     it('should enable scroll', () => {
       const windowScrollToStub = sandbox.stub(window, 'scrollTo');
       sessionTimeout.enableScroll();
-      expect(bodyElement.style.getPropertyValue('overflow')).to.be.equal('');
-      expect(bodyElement.style.getPropertyValue('position')).to.be.equal('');
-      expect(bodyElement.style.getPropertyValue('width')).to.be.equal('');
+      expect(bodyElement.style.getPropertyValue('overflow')).to.equal('');
+      expect(bodyElement.style.getPropertyValue('position')).to.equal('');
+      expect(bodyElement.style.getPropertyValue('width')).to.equal('');
 
-      expect(windowScrollToStub).to.have.been.calledOnce;
+      expect(windowScrollToStub.callCount).to.equal(1);
     });
   });
 });

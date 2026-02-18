@@ -14,7 +14,8 @@ describe('Hearing Requirements - Add Another Date Question controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: SinonStub;
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonSpy;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -27,9 +28,11 @@ describe('Hearing Requirements - Add Another Date Question controller', () => {
         } as Partial<Appeal>
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.spy();
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
   });
@@ -45,8 +48,8 @@ describe('Hearing Requirements - Add Another Date Question controller', () => {
       const middleware: Middleware[] = [];
 
       setupHearingDatesToAvoidAddAnotherDateController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingDateToAvoidNew);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingDateToAvoidNew);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.hearingDateToAvoidNew)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.submitHearingRequirements.hearingDateToAvoidNew)).to.equal(true);
     });
   });
 
@@ -66,23 +69,23 @@ describe('Hearing Requirements - Add Another Date Question controller', () => {
         formAction: '/hearing-dates-avoid-new',
         question: {
           name: 'answer',
-          title: `Is there another date between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?`,
+          title: 'Is there another date between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }]
         },
         availableHearingDates: { from: availableHearingDates.from, to: availableHearingDates.to },
         saveAndContinueOnly: true
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
+      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
         expectedArgs
       );
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getAddAnotherDateQuestionPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -90,29 +93,29 @@ describe('Hearing Requirements - Add Another Date Question controller', () => {
     it('should fail validation and render template with errors', async () => {
       postAddAnotherDateQuestionPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk');
+      expect(renderStub.calledWith('templates/radio-question-page.njk')).to.equal(true);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
       postAddAnotherDateQuestionPage(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingDatesToAvoidEnterDate);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.hearingDatesToAvoidEnterDate)).to.equal(true);
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
       postAddAnotherDateQuestionPage(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.taskList)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       postAddAnotherDateQuestionPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

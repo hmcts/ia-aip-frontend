@@ -8,7 +8,7 @@ import { getFee, payLaterForApplicationNeeded } from '../../utils/payments-utils
 import { helpWithFeesValidation } from '../../utils/validations/fields-validations';
 
 function getApplyOption(appeal: Appeal) {
-  let selectedOption = appeal.application.lateHelpWithFeesOption || null;
+  const selectedOption = appeal.application.lateHelpWithFeesOption || null;
   const fee = getFee(appeal).calculated_amount;
   return {
     title: i18n.pages.helpWithFees.radioButtonsTitle,

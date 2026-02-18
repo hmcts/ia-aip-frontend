@@ -1,4 +1,3 @@
-const express = require('express');
 import { Request, Response } from 'express';
 import session from 'express-session';
 import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
@@ -12,6 +11,7 @@ import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
+const express = require('express');
 
 describe('Personal Details Controller', function() {
   let sandbox: sinon.SinonSandbox;
@@ -21,6 +21,9 @@ describe('Personal Details Controller', function() {
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
   const osPlacesClient = new OSPlacesClient('someToken');
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  let submitStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -45,15 +48,19 @@ describe('Personal Details Controller', function() {
       } as any
     } as Partial<Request>;
 
+    submitStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      redirect: sandbox.spy(),
-      render: sandbox.stub(),
-      send: sandbox.stub()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
 
-    next = sandbox.stub();
+    updateAppealService = { submitEvent: submitStub } as Partial<UpdateAppealService>;
 
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
+    next = sandbox.stub();
   });
 
   afterEach(() => {
@@ -66,20 +73,20 @@ describe('Personal Details Controller', function() {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
       setupContactDetailsController(middleware, { updateAppealService, osPlacesClient } as ContactDetailsControllerDependencies);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.enterPostcode, middleware);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.enterPostcode, middleware);
+      expect(routerGetStub.calledWith(paths.appealStarted.enterPostcode, middleware)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.enterPostcode, middleware)).to.equal(true);
     });
   });
 
   describe('getEnterPostcodePage', () => {
     it('should render appeal-application/personal-details/enter-postcode.njk', function () {
       getEnterPostcodePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-postcode.njk');
+      expect(renderStub.calledOnceWith('appeal-application/personal-details/enter-postcode.njk')).to.equal(true);
     });
 
     it('should reset postcode lookup', function () {
       getEnterPostcodePage(req as Request, res as Response, next);
-      expect(req.session.appeal.application.addressLookup).to.eql({});
+      expect(req.session.appeal.application.addressLookup).to.deep.equal({});
     });
   });
 
@@ -88,16 +95,16 @@ describe('Personal Details Controller', function() {
       req.body.postcode = 'W1W 7RT';
       postEnterPostcodePage(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.called;
+      expect(redirectStub.called).to.equal(true);
     });
   });
 
   describe('Should catch an error.', function () {
     it('getEnterPostcodePage should catch an exception and call next()', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getEnterPostcodePage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should fail validation and render appeal-application/personal-details/enter-postcode.njk with error', () => {
@@ -108,7 +115,7 @@ describe('Personal Details Controller', function() {
         href: '#postcode'
       };
       postEnterPostcodePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith(
+      expect(renderStub).to.be.calledWith(
         'appeal-application/personal-details/enter-postcode.njk',
         {
           error: { postcode: error },
@@ -130,7 +137,7 @@ describe('Personal Details Controller', function() {
       ];
 
       postEnterPostcodePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith(
+      expect(renderStub).to.be.calledWith(
         'appeal-application/personal-details/enter-postcode.njk',
         {
           error: { postcode },

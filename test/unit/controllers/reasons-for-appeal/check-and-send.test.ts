@@ -21,8 +21,10 @@ describe('Reasons For Appeal - Check and send Controller', () => {
   let next: sinon.SinonStub;
   let routerGetStub: sinon.SinonStub;
   let routerPostStub: sinon.SinonStub;
-
+  let submitEventRefactoredStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   const editParameter = '?edit';
+  let renderStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -46,17 +48,19 @@ describe('Reasons For Appeal - Check and send Controller', () => {
         } as Partial<Appeal>
       } as Partial<session.Session>
     } as Partial<Request>;
-
+    redirectStub = sandbox.stub();
+    renderStub = sandbox.stub();
     res = {
-      redirect: sandbox.spy(),
-      render: sandbox.stub(),
+      redirect: redirectStub,
+      render: renderStub,
       send: sandbox.stub()
     } as Partial<Response>;
 
     routerGetStub = sandbox.stub(express.Router as never, 'get');
     routerPostStub = sandbox.stub(express.Router as never, 'post');
     next = sandbox.stub();
-    updateAppealService = { submitEventRefactored: sandbox.stub().returns({ state: 'reasonsForAppealSubmitted' }) } as Partial<UpdateAppealService>;
+    submitEventRefactoredStub = sandbox.stub().returns({ state: 'reasonsForAppealSubmitted' });
+    updateAppealService = { submitEventRefactored: submitEventRefactoredStub } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -67,8 +71,8 @@ describe('Reasons For Appeal - Check and send Controller', () => {
     it('should setup the routes', () => {
       const middleware = [];
       setupCheckAndSendController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.checkAndSend);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.checkAndSend);
+      expect(routerGetStub.calledWith(paths.awaitingReasonsForAppeal.checkAndSend)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.awaitingReasonsForAppeal.checkAndSend)).to.equal(true);
     });
   });
 
@@ -93,7 +97,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       ];
 
       getCheckAndSend(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('reasons-for-appeal/check-and-send-page.njk', {
+      expect(renderStub).to.be.calledWith('reasons-for-appeal/check-and-send-page.njk', {
         summaryRows,
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidenceUpload
       });
@@ -106,7 +110,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       ];
 
       getCheckAndSend(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('reasons-for-appeal/check-and-send-page.njk', {
+      expect(renderStub).to.be.calledWith('reasons-for-appeal/check-and-send-page.njk', {
         summaryRows,
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence
       });
@@ -116,7 +120,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
       getCheckAndSend(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -126,23 +130,23 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       const appeal: Appeal = { ...req.session.appeal };
       appeal.reasonsForAppeal.uploadDate = nowIsoDate();
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledOnceWith(Events.SUBMIT_REASONS_FOR_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppealSubmitted.confirmation);
+      expect(submitEventRefactoredStub.calledOnceWith(Events.SUBMIT_REASONS_FOR_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledWith(paths.reasonsForAppealSubmitted.confirmation)).to.equal(true);
     });
 
     it('should redirect to timeline page when click save for later', async () => {
       req.body = { saveForLater: 'saveForLater' };
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(submitEventRefactoredStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
     it('should call next with error render if something happens', async () => {
       req.body = {};
       const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

@@ -57,8 +57,8 @@ describe('idamExpressProtect', () => {
       handler(req, res, next);
 
       setImmediate(() => {
-        expect(idamFunctionsStub.getUserDetails).to.have.been.calledOnce;
-        expect(next).to.have.been.calledOnce;
+        expect(idamFunctionsStub.getUserDetails.callCount).to.equal(1);
+        expect(next.callCount).to.equal(1);
       });
     });
 
@@ -68,8 +68,8 @@ describe('idamExpressProtect', () => {
       handler(req, res, next);
 
       setImmediate(() => {
-        expect(idamFunctionsStub.getUserDetails).to.have.been.calledOnce;
-        expect(next).to.have.been.calledOnce;
+        expect(idamFunctionsStub.getUserDetails.callCount).to.equal(1);
+        expect(next.callCount).to.equal(1);
         expect(req.idam.userDetails).to.equal(userDetails);
       });
     });
@@ -81,7 +81,7 @@ describe('idamExpressProtect', () => {
       handler(req, res, next);
 
       setImmediate(() => {
-        expect(res.redirect).to.have.been.calledOnce;
+        expect(res.redirect.callCount).to.equal(1);
       });
     });
 
@@ -92,7 +92,7 @@ describe('idamExpressProtect', () => {
       handler(req, res, next);
 
       setImmediate(() => {
-        expect(res.clearCookie).to.have.been.calledOnce;
+        expect(res.clearCookie.callCount).to.equal(1);
       });
     });
 
@@ -100,7 +100,7 @@ describe('idamExpressProtect', () => {
       const handler = middleware(idamArgs);
       handler(req, res, next);
 
-      expect(res.redirect).to.have.been.calledOnce;
+      expect(res.redirect.callCount).to.equal(1);
     });
   });
 });

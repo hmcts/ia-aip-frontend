@@ -16,7 +16,8 @@ describe('Hearing Requirements - Question controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
-
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -29,9 +30,13 @@ describe('Hearing Requirements - Question controller', () => {
         } as Partial<Appeal>
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
     updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
@@ -49,8 +54,8 @@ describe('Hearing Requirements - Question controller', () => {
       const middleware: Middleware[] = [];
 
       setupHearingDatesToAvoidQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.datesToAvoidQuestion);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.datesToAvoidQuestion);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.datesToAvoidQuestion)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.submitHearingRequirements.datesToAvoidQuestion)).to.equal(true);
     });
   });
 
@@ -77,17 +82,17 @@ describe('Hearing Requirements - Question controller', () => {
         availableHearingDates,
         saveAndContinue: true
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
+      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
         expectedArgs
       );
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getDatesToAvoidQuestion(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -124,29 +129,29 @@ describe('Hearing Requirements - Question controller', () => {
         errorList: Object.values(expectedError)
 
       };
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
       await postDatesToAvoidQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(req.session.appeal.hearingRequirements.datesToAvoid.isDateCannotAttend).to.be.true;
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingDatesToAvoidEnterDate);
+      expect(req.session.appeal.hearingRequirements.datesToAvoid.isDateCannotAttend).to.equal(true);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.hearingDatesToAvoidEnterDate)).to.equal(true);
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
       await postDatesToAvoidQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(req.session.appeal.hearingRequirements.datesToAvoid.isDateCannotAttend).to.be.false;
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
+      expect(req.session.appeal.hearingRequirements.datesToAvoid.isDateCannotAttend).to.equal(false);
+      expect(redirectStub.calledWith(paths.submitHearingRequirements.taskList)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await postDatesToAvoidQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

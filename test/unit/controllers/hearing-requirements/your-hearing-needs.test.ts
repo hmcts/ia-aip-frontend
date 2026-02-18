@@ -15,8 +15,9 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
-  let hearingRequirements: HearingRequirements;
-  hearingRequirements = {
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
+  const hearingRequirements: HearingRequirements = {
     'datesToAvoid': {
       'isDateCannotAttend': true,
       'dates': [{
@@ -92,9 +93,13 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
         }
       }
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
 
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
@@ -113,15 +118,15 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       const middleware: Middleware[] = [];
 
       setupYourHearingNeedsController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.yourHearingNeeds);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.yourHearingNeeds);
+      expect(routerGetStub.calledWith(paths.submitHearingRequirements.yourHearingNeeds)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.submitHearingRequirements.yourHearingNeeds)).to.equal(true);
     });
   });
 
   describe('getYourHearingNeedsPage', () => {
     it('should render getYourHearingNeedsPage', () => {
       getYourHearingNeedsPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk');
+      expect(renderStub.calledWith('templates/check-and-send.njk')).to.equal(true);
     });
 
     it('should render getYourHearingNeedsPage with requirements', () => {
@@ -641,7 +646,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
     });
 
     it('should render getYourHearingNeedsPage with requirements - attendance', () => {
@@ -1163,7 +1168,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       getYourHearingNeedsPage(req as Request, res as Response, next);
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
     });
 
     it('should render getYourHearingNeedsPage with requirements - no attendance', () => {
@@ -1652,7 +1657,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
     });
 
     it('should render getYourHearingNeedsPage with requirements if user selected no witnesses with spoken and sign language interpreter', () => {
@@ -2070,15 +2075,15 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);
+      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
     });
 
     it('should call next with error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getYourHearingNeedsPage(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -2086,15 +2091,15 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
     it('should submit and redirect to your hearing page', async () => {
       await postYourHearingNeedsPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
+      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
 
       await postYourHearingNeedsPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

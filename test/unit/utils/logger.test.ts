@@ -1,4 +1,5 @@
 import * as applicationInsights from 'applicationinsights';
+import { describe } from 'mocha';
 import { SinonSpy, SinonStub } from 'sinon';
 import Logger, { getLogLabel } from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -34,73 +35,73 @@ describe('Utils logger', () => {
 
   it('creates a logger instance without an appInsights key', () => {
     const logger: Logger = new Logger();
-    expect(applicationInsightsStartSpy).to.not.have.been.calledOnce;
+    expect(applicationInsightsStartSpy.called).to.equal(false);
   });
 
   it('creates a logger instance WITH an appInsight key', () => {
     const logger: Logger = new Logger('lakey');
-    expect(applicationInsightsSetupSpy).to.have.been.calledOnce;
+    expect(applicationInsightsSetupSpy.callCount).to.equal(1);
   });
 
   it('tracks a trace only on console', () => {
     const logger: Logger = new Logger();
     logger.trace(message, label);
 
-    expect(applicationInsightsStartSpy).to.not.have.been.calledOnce;
-    expect(applicationInsightsTraceSpy).to.not.have.been.calledOnce;
-    expect(consoleWarnStub).to.have.been.calledOnce;
+    expect(applicationInsightsStartSpy.called).to.equal(false);
+    expect(applicationInsightsTraceSpy.called).to.equal(false);
+    expect(consoleWarnStub.callCount).to.equal(1);
   });
 
   it('tracks a traceWorker only on console', () => {
     const logger: Logger = new Logger();
     logger.traceWorker(message, label);
 
-    expect(applicationInsightsStartSpy).to.not.have.been.calledOnce;
-    expect(applicationInsightsTraceSpy).to.not.have.been.calledOnce;
-    expect(consoleWarnStub).to.have.been.calledOnce;
+    expect(applicationInsightsStartSpy.called).to.equal(false);
+    expect(applicationInsightsTraceSpy.called).to.equal(false);
+    expect(consoleWarnStub.callCount).to.equal(1);
   });
 
   it('tracks a trace both on console and appInights', () => {
     const logger: Logger = new Logger('lakey');
-    expect(applicationInsightsSetupSpy).to.have.been.calledOnce;
+    expect(applicationInsightsSetupSpy.callCount).to.equal(1);
 
     logger.trace(message, label);
-    expect(applicationInsightsTraceSpy).to.have.been.calledOnce;
-    expect(consoleWarnStub).to.have.been.calledOnce;
+    expect(applicationInsightsTraceSpy.callCount).to.equal(1);
+    expect(consoleWarnStub.callCount).to.equal(1);
   });
 
   it('tracks a request only on console', () => {
     const logger: Logger = new Logger();
     logger.request(message, label);
 
-    expect(applicationInsightsStartSpy).to.not.have.been.calledOnce;
-    expect(consoleLogStub).to.have.been.calledOnce;
+    expect(applicationInsightsStartSpy.called).to.equal(false);
+    expect(consoleLogStub.callCount).to.equal(1);
   });
 
   it('tracks a request only on console', () => {
     const logger: Logger = new Logger('key');
-    expect(applicationInsightsSetupSpy).to.have.been.calledOnce;
+    expect(applicationInsightsSetupSpy.callCount).to.equal(1);
 
     logger.request(message, label);
-    expect(applicationInsightsTraceSpy).to.have.been.calledOnce;
-    expect(consoleLogStub).to.have.been.calledOnce;
+    expect(applicationInsightsTraceSpy.callCount).to.equal(1);
+    expect(consoleLogStub.callCount).to.equal(1);
   });
 
   it('tracks a exception only on console', () => {
     const logger: Logger = new Logger();
     logger.exception(message, label);
 
-    expect(applicationInsightsStartSpy).to.not.have.been.calledOnce;
-    expect(consoleErrorStub).to.have.been.calledOnce;
+    expect(applicationInsightsStartSpy.called).to.equal(false);
+    expect(consoleErrorStub.callCount).to.equal(1);
   });
 
   it('tracks a request only on console', () => {
     const logger: Logger = new Logger('key');
-    expect(applicationInsightsSetupSpy).to.have.been.calledOnce;
+    expect(applicationInsightsSetupSpy.callCount).to.equal(1);
 
     logger.exception(message, label);
-    expect(applicationInsightsExceptionSpy).to.have.been.calledOnce;
-    expect(consoleErrorStub).to.have.been.calledOnce;
+    expect(applicationInsightsExceptionSpy.callCount).to.equal(1);
+    expect(consoleErrorStub.callCount).to.equal(1);
   });
 
   it('correctly gets path', () => {

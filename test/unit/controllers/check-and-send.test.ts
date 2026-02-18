@@ -1,5 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
+import { SinonSpy, SinonStub } from 'sinon';
 import {
   createSummaryRowsFrom,
   getCheckAndSend,
@@ -14,7 +15,7 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import PaymentService from '../../../app/service/payments-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
-import { addSummaryRow, Delimiter } from '../../../app/utils/summary-list';
+import { addSummaryRow } from '../../../app/utils/summary-list';
 import { formatTextForCYA } from '../../../app/utils/utils';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
@@ -23,10 +24,243 @@ import { createDummyAppealApplication } from '../mockData/mock-appeal';
 const express = require('express');
 
 function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
-  return [{ key: { text: 'In the UK' }, value: { html: 'No' }, actions: { items: [{ href: '/in-the-uk?edit', text: 'Change', visuallyHiddenText: 'In the UK' }] } }, { key: { text: 'Appeal type' }, value: { html: 'Protection' }, actions: { items: [{ href: '/appeal-type?edit', text: 'Change', visuallyHiddenText: 'Appeal type' }] } }, { key: { text: 'What date did you leave the UK after your Protection claim was refused?' }, value: { html: '19 February 2022' }, actions: { items: [{ href: '/ooc-protection-departure-date?edit', text: 'Change', visuallyHiddenText: 'What date did you leave the UK after your Protection claim was refused?' }] } }, { key: { text: 'Outside UK when application was made' }, value: { html: 'No' }, actions: { items: [{ href: '/ooc-hr-eea?edit', text: 'Change', visuallyHiddenText: 'Outside UK when application was made' }] } }, { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' }, actions: { items: [{ href: '/home-office-reference-number?edit', text: 'Change', visuallyHiddenText: 'Home Office reference number' }] } },{ key: { text: 'Name' }, value: { html: 'Pedro Jimenez' }, actions: { items: [{ href: '/name?edit', text: 'Change', visuallyHiddenText: 'Name' }] } }, { key: { text: 'Date of birth' }, value: { html: '10 October 1980' }, actions: { items: [{ href: '/date-birth?edit', text: 'Change', visuallyHiddenText: 'Date of birth' }] } }, { key: { text: 'Nationality' }, value: { html: 'Austria' }, actions: { items: [{ href: '/nationality?edit', text: 'Change', visuallyHiddenText: 'Nationality' }] } }, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' }, actions: { items: [{ href: '/date-letter-received?edit', text: 'Change', visuallyHiddenText: 'Date letter received' }] } }, { key: { text: 'Address' }, value: { html: '28 The Street, Ukraine, 2378' }, actions: { items: [{ href: '/out-of-country-address?edit', text: 'Change', visuallyHiddenText: 'Address' }] } }, { key: { text: 'Contact details' }, value: { html: 'pedro.jimenez@example.net<br>07123456789' }, actions: { items: [{ href: '/contact-preferences?edit', text: 'Change', visuallyHiddenText: 'Contact details' }] } }, { key: { text: 'Sponsor' }, value: { html: 'Yes' }, actions: { items: [{ href: '/has-sponsor?edit', text: 'Change', visuallyHiddenText: 'Sponsor' }] } }, { key: { text: 'Sponsor\'s name' }, value: { html: 'Frank Smith' }, actions: { items: [{ href: '/sponsor-name?edit', text: 'Change', visuallyHiddenText: 'Sponsor\'s name' }] } }, { key: { text: 'Sponsor\'s address' }, value: { html: '39 The Street,<br>Ashtead<br>United Kingdom<br>KT21 1AA' }, actions: { items: [{ href: '/sponsor-address?edit', text: 'Change', visuallyHiddenText: 'Sponsor\'s address' }] } }, { key: { text: 'Sponsor\'s contact details' }, value: { html: 'frank.smith@example.net<br>07177777777' }, actions: { items: [{ href: '/sponsor-contact-preferences?edit', text: 'Change', visuallyHiddenText: 'Sponsor\'s contact details' }] } }, { key: { text: 'Sponsor has access to information' }, value: { html: 'Yes' }, actions: { items: [{ href: '/sponsor-authorisation?edit', text: 'Change', visuallyHiddenText: 'Sponsor has access to information' }] } }, { key: { text: 'Appeal type' }, value: { html: i18n.appealTypes[appealType].name }, actions: { items: [{ href: '/appeal-type?edit', text: 'Change', visuallyHiddenText: 'Appeal type' }] } }, { key: { text: 'Home Office decision letter' }, value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/anId\'>name</a>' }, actions: { items: [{ href: '/home-office-upload-decision-letter?edit', text: 'Change', visuallyHiddenText: 'Home Office decision letter' }] } }];
+  return [{
+    key: { text: 'In the UK' },
+    value: { html: 'No' },
+    actions: { items: [{ href: '/in-the-uk?edit', text: 'Change', visuallyHiddenText: 'In the UK' }] }
+  }, {
+    key: { text: 'Appeal type' },
+    value: { html: 'Protection' },
+    actions: { items: [{ href: '/appeal-type?edit', text: 'Change', visuallyHiddenText: 'Appeal type' }] }
+  }, {
+    key: { text: 'What date did you leave the UK after your Protection claim was refused?' },
+    value: { html: '19 February 2022' },
+    actions: {
+      items: [{
+        href: '/ooc-protection-departure-date?edit',
+        text: 'Change',
+        visuallyHiddenText: 'What date did you leave the UK after your Protection claim was refused?'
+      }]
+    }
+  }, {
+    key: { text: 'Outside UK when application was made' },
+    value: { html: 'No' },
+    actions: {
+      items: [{
+        href: '/ooc-hr-eea?edit',
+        text: 'Change',
+        visuallyHiddenText: 'Outside UK when application was made'
+      }]
+    }
+  }, {
+    key: { text: 'Home Office reference number' },
+    value: { html: 'A1234567' },
+    actions: {
+      items: [{
+        href: '/home-office-reference-number?edit',
+        text: 'Change',
+        visuallyHiddenText: 'Home Office reference number'
+      }]
+    }
+  }, {
+    key: { text: 'Name' },
+    value: { html: 'Pedro Jimenez' },
+    actions: { items: [{ href: '/name?edit', text: 'Change', visuallyHiddenText: 'Name' }] }
+  }, {
+    key: { text: 'Date of birth' },
+    value: { html: '10 October 1980' },
+    actions: { items: [{ href: '/date-birth?edit', text: 'Change', visuallyHiddenText: 'Date of birth' }] }
+  }, {
+    key: { text: 'Nationality' },
+    value: { html: 'Austria' },
+    actions: { items: [{ href: '/nationality?edit', text: 'Change', visuallyHiddenText: 'Nationality' }] }
+  }, {
+    key: { text: 'Date letter received' },
+    value: { html: '16 February 2020' },
+    actions: {
+      items: [{
+        href: '/date-letter-received?edit',
+        text: 'Change',
+        visuallyHiddenText: 'Date letter received'
+      }]
+    }
+  }, {
+    key: { text: 'Address' },
+    value: { html: '28 The Street, Ukraine, 2378' },
+    actions: { items: [{ href: '/out-of-country-address?edit', text: 'Change', visuallyHiddenText: 'Address' }] }
+  }, {
+    key: { text: 'Contact details' },
+    value: { html: 'pedro.jimenez@example.net<br>07123456789' },
+    actions: { items: [{ href: '/contact-preferences?edit', text: 'Change', visuallyHiddenText: 'Contact details' }] }
+  }, {
+    key: { text: 'Sponsor' },
+    value: { html: 'Yes' },
+    actions: { items: [{ href: '/has-sponsor?edit', text: 'Change', visuallyHiddenText: 'Sponsor' }] }
+  }, {
+    key: { text: 'Sponsor\'s name' },
+    value: { html: 'Frank Smith' },
+    actions: { items: [{ href: '/sponsor-name?edit', text: 'Change', visuallyHiddenText: 'Sponsor\'s name' }] }
+  }, {
+    key: { text: 'Sponsor\'s address' },
+    value: { html: '39 The Street,<br>Ashtead<br>United Kingdom<br>KT21 1AA' },
+    actions: { items: [{ href: '/sponsor-address?edit', text: 'Change', visuallyHiddenText: 'Sponsor\'s address' }] }
+  }, {
+    key: { text: 'Sponsor\'s contact details' },
+    value: { html: 'frank.smith@example.net<br>07177777777' },
+    actions: {
+      items: [{
+        href: '/sponsor-contact-preferences?edit',
+        text: 'Change',
+        visuallyHiddenText: 'Sponsor\'s contact details'
+      }]
+    }
+  }, {
+    key: { text: 'Sponsor has access to information' },
+    value: { html: 'Yes' },
+    actions: {
+      items: [{
+        href: '/sponsor-authorisation?edit',
+        text: 'Change',
+        visuallyHiddenText: 'Sponsor has access to information'
+      }]
+    }
+  }, {
+    key: { text: 'Appeal type' },
+    value: { html: i18n.appealTypes[appealType].name },
+    actions: { items: [{ href: '/appeal-type?edit', text: 'Change', visuallyHiddenText: 'Appeal type' }] }
+  }, {
+    key: { text: 'Home Office decision letter' },
+    value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/anId\'>name</a>' },
+    actions: {
+      items: [{
+        href: '/home-office-upload-decision-letter?edit',
+        text: 'Change',
+        visuallyHiddenText: 'Home Office decision letter'
+      }]
+    }
+  }];
 }
+
 function getMockedSummaryRowsPayment(appealType = 'protection'): SummaryRow[] {
-  return [{ key: { text: 'In the UK' }, value: { html: 'No' }, actions: { items: [{ href: '/in-the-uk?edit', text: 'Change', visuallyHiddenText: 'In the UK' }] } }, { key: { text: 'Appeal type' }, value: { html: i18n.appealTypes[appealType].name }, actions: { items: [{ href: '/appeal-type?edit', text: 'Change', visuallyHiddenText: 'Appeal type' }] } }, { key: { text: 'Outside UK when application was made' }, value: { html: 'No' }, actions: { items: [{ href: '/ooc-hr-eea?edit', text: 'Change', visuallyHiddenText: 'Outside UK when application was made' }] } }, { key: { text: 'What date did you leave the UK after your application to stay in the country was refused?' }, value: { html: '19 February 2022' }, actions: { items: [{ href: '/ooc-hr-inside?edit', text: 'Change', visuallyHiddenText: 'What date did you leave the UK after your application to stay in the country was refused?' }] } }, { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' }, actions: { items: [{ href: '/home-office-reference-number?edit', text: 'Change', visuallyHiddenText: 'Home Office reference number' }] } }, { key: { text: 'Name' }, value: { html: 'Pedro Jimenez' }, actions: { items: [{ href: '/name?edit', text: 'Change', visuallyHiddenText: 'Name' }] } }, { key: { text: 'Date of birth' }, value: { html: '10 October 1980' }, actions: { items: [{ href: '/date-birth?edit', text: 'Change', visuallyHiddenText: 'Date of birth' }] } }, { key: { text: 'Nationality' }, value: { html: 'Austria' }, actions: { items: [{ href: '/nationality?edit', text: 'Change', visuallyHiddenText: 'Nationality' }] } }, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' }, actions: { items: [{ href: '/date-letter-received?edit', text: 'Change', visuallyHiddenText: 'Date letter received' }] } }, { key: { text: 'Address' }, value: { html: '28 The Street, Ukraine, 2378' }, actions: { items: [{ href: '/out-of-country-address?edit', text: 'Change', visuallyHiddenText: 'Address' }] } }, { key: { text: 'Contact details' }, value: { html: 'pedro.jimenez@example.net<br>07123456789' }, actions: { items: [{ href: '/contact-preferences?edit', text: 'Change', visuallyHiddenText: 'Contact details' }] } }, { key: { text: 'Sponsor' }, value: { html: 'Yes' }, actions: { items: [{ href: '/has-sponsor?edit', text: 'Change', visuallyHiddenText: 'Sponsor' }] } }, { key: { text: 'Sponsor\'s name' }, value: { html: 'Frank Smith' }, actions: { items: [{ href: '/sponsor-name?edit', text: 'Change', visuallyHiddenText: 'Sponsor\'s name' }] } }, { key: { text: 'Sponsor\'s address' }, value: { html: '39 The Street,<br>Ashtead<br>United Kingdom<br>KT21 1AA' }, actions: { items: [{ href: '/sponsor-address?edit', text: 'Change', visuallyHiddenText: 'Sponsor\'s address' }] } }, { key: { text: 'Sponsor\'s contact details' }, value: { html: 'frank.smith@example.net<br>07177777777' }, actions: { items: [{ href: '/sponsor-contact-preferences?edit', text: 'Change', visuallyHiddenText: 'Sponsor\'s contact details' }] } }, { key: { text: 'Sponsor has access to information' }, value: { html: 'Yes' }, actions: { items: [{ href: '/sponsor-authorisation?edit', text: 'Change', visuallyHiddenText: 'Sponsor has access to information' }] } }, { key: { text: 'Appeal type' }, value: { html: 'Deprivation of Citizenship' }, actions: { items: [{ href: '/appeal-type?edit', text: 'Change', visuallyHiddenText: 'Appeal type' }] } }, { key: { text: 'Home Office decision letter' }, value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/anId\'>name</a>' }, actions: { items: [{ href: '/home-office-upload-decision-letter?edit', text: 'Change', visuallyHiddenText: 'Home Office decision letter' }] } }, { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' }, actions: { items: [{ href: '/decision-type', text: 'Change', visuallyHiddenText: 'Decision Type' }] } }];
+  return [{
+    key: { text: 'In the UK' },
+    value: { html: 'No' },
+    actions: { items: [{ href: '/in-the-uk?edit', text: 'Change', visuallyHiddenText: 'In the UK' }] }
+  }, {
+    key: { text: 'Appeal type' },
+    value: { html: i18n.appealTypes[appealType].name },
+    actions: { items: [{ href: '/appeal-type?edit', text: 'Change', visuallyHiddenText: 'Appeal type' }] }
+  }, {
+    key: { text: 'Outside UK when application was made' },
+    value: { html: 'No' },
+    actions: {
+      items: [{
+        href: '/ooc-hr-eea?edit',
+        text: 'Change',
+        visuallyHiddenText: 'Outside UK when application was made'
+      }]
+    }
+  }, {
+    key: { text: 'What date did you leave the UK after your application to stay in the country was refused?' },
+    value: { html: '19 February 2022' },
+    actions: {
+      items: [{
+        href: '/ooc-hr-inside?edit',
+        text: 'Change',
+        visuallyHiddenText: 'What date did you leave the UK after your application to stay in the country was refused?'
+      }]
+    }
+  }, {
+    key: { text: 'Home Office reference number' },
+    value: { html: 'A1234567' },
+    actions: {
+      items: [{
+        href: '/home-office-reference-number?edit',
+        text: 'Change',
+        visuallyHiddenText: 'Home Office reference number'
+      }]
+    }
+  }, {
+    key: { text: 'Name' },
+    value: { html: 'Pedro Jimenez' },
+    actions: { items: [{ href: '/name?edit', text: 'Change', visuallyHiddenText: 'Name' }] }
+  }, {
+    key: { text: 'Date of birth' },
+    value: { html: '10 October 1980' },
+    actions: { items: [{ href: '/date-birth?edit', text: 'Change', visuallyHiddenText: 'Date of birth' }] }
+  }, {
+    key: { text: 'Nationality' },
+    value: { html: 'Austria' },
+    actions: { items: [{ href: '/nationality?edit', text: 'Change', visuallyHiddenText: 'Nationality' }] }
+  }, {
+    key: { text: 'Date letter received' },
+    value: { html: '16 February 2020' },
+    actions: {
+      items: [{
+        href: '/date-letter-received?edit',
+        text: 'Change',
+        visuallyHiddenText: 'Date letter received'
+      }]
+    }
+  }, {
+    key: { text: 'Address' },
+    value: { html: '28 The Street, Ukraine, 2378' },
+    actions: { items: [{ href: '/out-of-country-address?edit', text: 'Change', visuallyHiddenText: 'Address' }] }
+  }, {
+    key: { text: 'Contact details' },
+    value: { html: 'pedro.jimenez@example.net<br>07123456789' },
+    actions: { items: [{ href: '/contact-preferences?edit', text: 'Change', visuallyHiddenText: 'Contact details' }] }
+  }, {
+    key: { text: 'Sponsor' },
+    value: { html: 'Yes' },
+    actions: { items: [{ href: '/has-sponsor?edit', text: 'Change', visuallyHiddenText: 'Sponsor' }] }
+  }, {
+    key: { text: 'Sponsor\'s name' },
+    value: { html: 'Frank Smith' },
+    actions: { items: [{ href: '/sponsor-name?edit', text: 'Change', visuallyHiddenText: 'Sponsor\'s name' }] }
+  }, {
+    key: { text: 'Sponsor\'s address' },
+    value: { html: '39 The Street,<br>Ashtead<br>United Kingdom<br>KT21 1AA' },
+    actions: { items: [{ href: '/sponsor-address?edit', text: 'Change', visuallyHiddenText: 'Sponsor\'s address' }] }
+  }, {
+    key: { text: 'Sponsor\'s contact details' },
+    value: { html: 'frank.smith@example.net<br>07177777777' },
+    actions: {
+      items: [{
+        href: '/sponsor-contact-preferences?edit',
+        text: 'Change',
+        visuallyHiddenText: 'Sponsor\'s contact details'
+      }]
+    }
+  }, {
+    key: { text: 'Sponsor has access to information' },
+    value: { html: 'Yes' },
+    actions: {
+      items: [{
+        href: '/sponsor-authorisation?edit',
+        text: 'Change',
+        visuallyHiddenText: 'Sponsor has access to information'
+      }]
+    }
+  }, {
+    key: { text: 'Appeal type' },
+    value: { html: 'Deprivation of Citizenship' },
+    actions: { items: [{ href: '/appeal-type?edit', text: 'Change', visuallyHiddenText: 'Appeal type' }] }
+  }, {
+    key: { text: 'Home Office decision letter' },
+    value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/anId\'>name</a>' },
+    actions: {
+      items: [{
+        href: '/home-office-upload-decision-letter?edit',
+        text: 'Change',
+        visuallyHiddenText: 'Home Office decision letter'
+      }]
+    }
+  }, {
+    key: { text: 'Decision Type' },
+    value: { html: 'Decision with a hearing' },
+    actions: { items: [{ href: '/decision-type', text: 'Change', visuallyHiddenText: 'Decision Type' }] }
+  }];
 }
 
 describe('createSummaryRowsFrom', () => {
@@ -56,7 +290,7 @@ describe('createSummaryRowsFrom', () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     const rows: any[] = await createSummaryRowsFrom(req as Request);
 
-    expect(rows).to.be.deep.equal(getMockedSummaryRows());
+    expect(rows).to.deep.equal(getMockedSummaryRows());
   });
 
   it('should create rows when appeal is late', async () => {
@@ -70,7 +304,7 @@ describe('createSummaryRowsFrom', () => {
     const appealLateRow = addSummaryRow('Reason for late appeal', [formatTextForCYA(req.session.appeal.application.lateAppeal.reason)], paths.appealStarted.appealLate);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(appealLateRow);
-    expect(rows).to.be.deep.equal(mockedRows);
+    expect(rows).to.deep.equal(mockedRows);
   });
 
   it('should create rows when appeal is late with evidence', async () => {
@@ -85,10 +319,10 @@ describe('createSummaryRowsFrom', () => {
     };
 
     const rows: any[] = await createSummaryRowsFrom(req as Request);
-    const appealLateRow = addSummaryRow('Reason for late appeal', [formatTextForCYA(req.session.appeal.application.lateAppeal.reason), `<p class=\"govuk-!-font-weight-bold\">Supporting evidence</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/fileId'>filename</a>`], paths.appealStarted.appealLate);
+    const appealLateRow = addSummaryRow('Reason for late appeal', [formatTextForCYA(req.session.appeal.application.lateAppeal.reason), '<p class=\"govuk-!-font-weight-bold\">Supporting evidence</p><a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/fileId\'>filename</a>'], paths.appealStarted.appealLate);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(appealLateRow);
-    expect(rows).to.be.deep.equal(mockedRows);
+    expect(rows).to.deep.equal(mockedRows);
   });
 
   it('should create rows when appeal type is deprivation payments flag is ON', async () => {
@@ -99,7 +333,7 @@ describe('createSummaryRowsFrom', () => {
     const rows: any[] = await createSummaryRowsFrom(req as Request);
     const mockedRows: SummaryRow[] = getMockedSummaryRowsPayment('deprivation');
 
-    expect(rows).to.be.deep.equal(mockedRows);
+    expect(rows).to.deep.equal(mockedRows);
   });
 
   it('should create rows when payments flag is ON', async () => {
@@ -110,7 +344,7 @@ describe('createSummaryRowsFrom', () => {
     const decisionType = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [i18n.pages.checkYourAnswers['decisionWithHearing']], paths.appealStarted.decisionType);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(decisionType);
-    expect(rows).to.be.deep.equal(mockedRows);
+    expect(rows).to.deep.equal(mockedRows);
   });
 
   it('should create rows when paynow and payments flag is ON', async () => {
@@ -124,7 +358,7 @@ describe('createSummaryRowsFrom', () => {
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(decisionType);
     mockedRows.push(paymentType);
-    expect(rows).to.be.deep.equal(mockedRows);
+    expect(rows).to.deep.equal(mockedRows);
   });
 
   it('should create fee rows when fee support values are present and dlrm set aside enabled', async () => {
@@ -171,7 +405,7 @@ describe('createSummaryRowsFrom', () => {
         req.session.appeal.application.helpWithFeesOption = input;
         const helpWithFeesRow = addSummaryRow('Help with fees', [expectedResponse], paths.appealStarted.helpWithFees + editParameter);
         mockedRows.push(helpWithFeesRow);
-        expect(rows).to.be.deep.equal(mockedRows);
+        expect(rows).to.deep.equal(mockedRows);
         mockedRows.pop();
       });
     });
@@ -182,9 +416,13 @@ describe('createSummaryRowsFrom', () => {
     const editParameter = '?edit';
     const rows: any[] = await createSummaryRowsFrom(req as Request);
 
-    const deportationOrderRow = { key: { text: 'Deportation order' }, value: { html: 'Deportation order has not been made' }, actions: { items: [{ href: '/deportation-order?edit', text: 'Change' }] } };
+    const deportationOrderRow = {
+      key: { text: 'Deportation order' },
+      value: { html: 'Deportation order has not been made' },
+      actions: { items: [{ href: '/deportation-order?edit', text: 'Change' }] }
+    };
 
-    let mockedRows: SummaryRow[] = getMockedSummaryRows().splice(14,0, deportationOrderRow);
+    const mockedRows: SummaryRow[] = getMockedSummaryRows().splice(14, 0, deportationOrderRow);
     mockedRows.splice(1, 0, deportationOrderRow);
 
     const testData = [
@@ -205,7 +443,7 @@ describe('createSummaryRowsFrom', () => {
         req.session.appeal.application.deportationOrderOptions = input;
         const deportationRow = addSummaryRow('Deportation order', [expectedResponse], paths.appealStarted.deportationOrder + editParameter);
         mockedRows.push(deportationRow);
-        expect(rows).to.be.deep.equal(mockedRows);
+        expect(rows).to.deep.equal(mockedRows);
         mockedRows.pop();
       });
     });
@@ -216,6 +454,10 @@ describe('Check and Send Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let resRedirectSpy: SinonSpy;
+  let renderStub: sinon.SinonStub;
+  let submitStub: SinonStub;
+  let initiatePaymentStub: SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let paymentService: Partial<PaymentService>;
   let next: sinon.SinonStub;
@@ -223,6 +465,12 @@ describe('Check and Send Controller', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    resRedirectSpy = sandbox.spy();
+    submitStub = sandbox.stub().returns({
+      state: 'appealSubmitted',
+      case_data: { appealReferenceNumber: 'PA/1234567' }
+    });
+    initiatePaymentStub = sandbox.stub().resolves();
     req = {
       session: {
         appeal: {
@@ -242,10 +490,7 @@ describe('Check and Send Controller', () => {
     } as Partial<Request>;
 
     updateAppealService = {
-      submitEventRefactored: sandbox.stub().returns({
-        state: 'appealSubmitted',
-        case_data: { appealReferenceNumber: 'PA/1234567' }
-      })
+      submitEventRefactored: submitStub
     };
     const statusHistories = [{
       status: 'Success',
@@ -253,14 +498,18 @@ describe('Check and Send Controller', () => {
     }];
     paymentService = {
       createPayment: sandbox.stub(),
-      initiatePayment: sandbox.stub().resolves(),
-      getPaymentDetails: sandbox.stub().resolves(JSON.stringify({ status: 'Success', status_histories: statusHistories }))
+      initiatePayment: initiatePaymentStub,
+      getPaymentDetails: sandbox.stub().resolves(JSON.stringify({
+        status: 'Success',
+        status_histories: statusHistories
+      }))
     } as Partial<PaymentService>;
+    renderStub = sandbox.stub();
 
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: resRedirectSpy
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -276,10 +525,10 @@ describe('Check and Send Controller', () => {
     const middleware = [];
 
     setupCheckAndSendController(middleware, updateAppealService as UpdateAppealService, paymentService as PaymentService);
-    expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.checkAndSend, middleware);
-    expect(routerGetStub).to.have.been.calledWith(paths.common.finishPayment, middleware);
-    expect(routerGetStub).to.have.been.calledWith(paths.common.payLater, middleware);
-    expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.checkAndSend, middleware);
+    expect(routerGetStub.calledWith(paths.appealStarted.checkAndSend, middleware)).to.equal(true);
+    expect(routerGetStub.calledWith(paths.common.finishPayment, middleware)).to.equal(true);
+    expect(routerGetStub.calledWith(paths.common.payLater, middleware)).to.equal(true);
+    expect(routerPOSTStub.calledWith(paths.appealStarted.checkAndSend, middleware)).to.equal(true);
   });
 
   describe('getCheckAndSend', () => {
@@ -292,7 +541,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeWithHearing = '80';
       req.session.appeal.feeWithoutHearing = '140';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList
       });
@@ -306,7 +555,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeWithHearing = '80';
       req.session.appeal.feeWithoutHearing = '140';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         fee: '80',
@@ -324,7 +573,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeWithoutHearing = '140';
 
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         fee: '140',
@@ -340,7 +589,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeWithHearing = '80';
       req.session.appeal.feeWithoutHearing = '140';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         fee: '140',
@@ -354,7 +603,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         dlrmFeeRemissionFlag: true,
@@ -366,7 +615,7 @@ describe('Check and Send Controller', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         dlrmFeeRemissionFlag: true
@@ -378,7 +627,7 @@ describe('Check and Send Controller', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -399,7 +648,7 @@ describe('Check and Send Controller', () => {
       };
 
       const summaryRows = getMockedSummaryRows();
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
         error: expectedError,
         errorList: Object.values(expectedError),
         summaryRows: summaryRows,
@@ -418,7 +667,7 @@ describe('Check and Send Controller', () => {
 
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         error: sinon.match.any,
         errorList: sinon.match.any,
@@ -431,15 +680,15 @@ describe('Check and Send Controller', () => {
     it('should submit application and redirect when accepted statement and clicked send', async () => {
       req.session.appeal = createDummyAppealApplication();
       req.body = { statement: 'acceptance' };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = submitStub.returns({
         appealStatus: 'appealSubmitted',
         appealReferenceNumber: 'PA/1234567'
       } as Appeal);
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.appealStatus).to.be.equal('appealSubmitted');
-      expect(req.session.appeal.appealReferenceNumber).to.be.equal('PA/1234567');
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealSubmitted.confirmation);
+      expect(req.session.appeal.appealStatus).to.equal('appealSubmitted');
+      expect(req.session.appeal.appealReferenceNumber).to.equal('PA/1234567');
+      expect(resRedirectSpy.calledOnceWith(paths.appealSubmitted.confirmation)).to.equal(true);
     });
 
     it('should submit application and redirect if no payment needed', async () => {
@@ -449,8 +698,8 @@ describe('Check and Send Controller', () => {
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.called;
-      expect(res.redirect).to.have.been.called;
+      expect(submitStub.called).to.equal(true);
+      expect(resRedirectSpy.called).to.equal(true);
     });
 
     it('should not initiate payment for "protection" appeal type and payNow', async () => {
@@ -462,7 +711,7 @@ describe('Check and Send Controller', () => {
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(paymentService.initiatePayment).not.to.have.been.called;
+      expect(initiatePaymentStub.called).to.equal(false);
     });
 
     it('should submit appeal for "protection" appeal type and payLater', async () => {
@@ -472,8 +721,8 @@ describe('Check and Send Controller', () => {
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.called;
-      expect(res.redirect).to.have.been.called;
+      expect(submitStub.called).to.equal(true);
+      expect(resRedirectSpy.called).to.equal(true);
     });
 
     it('should submit appeal for "protection" appeal type and payNow', async () => {
@@ -483,8 +732,8 @@ describe('Check and Send Controller', () => {
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.called;
-      expect(res.redirect).to.have.been.called;
+      expect(submitStub.called).to.equal(true);
+      expect(resRedirectSpy.called).to.equal(true);
     });
 
     it('should first submit appeal for "protection" appeal type and payNow before initiating payment', async () => {
@@ -494,7 +743,7 @@ describe('Check and Send Controller', () => {
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.called;
+      expect(submitStub.called).to.equal(true);
     });
 
     it('should submit appeal for "euSettlementScheme"', async () => {
@@ -504,8 +753,8 @@ describe('Check and Send Controller', () => {
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.called;
-      expect(res.redirect).to.have.been.called;
+      expect(submitStub.called).to.equal(true);
+      expect(resRedirectSpy.called).to.equal(true);
     });
 
     it('should submit appeal for "refusalOfHumanRights"', async () => {
@@ -515,8 +764,8 @@ describe('Check and Send Controller', () => {
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.called;
-      expect(res.redirect).to.have.been.called;
+      expect(submitStub.called).to.equal(true);
+      expect(resRedirectSpy.called).to.equal(true);
     });
 
     it('should submit appeal for "refusalOfEu"', async () => {
@@ -526,8 +775,8 @@ describe('Check and Send Controller', () => {
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.called;
-      expect(res.redirect).to.have.been.called;
+      expect(submitStub.called).to.equal(true);
+      expect(resRedirectSpy.called).to.equal(true);
     });
 
     it('should catch exception and call next with the error', async () => {
@@ -540,7 +789,7 @@ describe('Check and Send Controller', () => {
         appealReferenceNumber: 'PA/1234567'
       } as Appeal);
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -551,7 +800,7 @@ describe('Check and Send Controller', () => {
 
     it('should finish a payment and redirect to confirmation', async () => {
       req.session.appeal.paymentReference = 'aReference';
-      updateAppealService.submitEventRefactored = sandbox.stub().resolves({
+      updateAppealService.submitEventRefactored = submitStub.resolves({
         paymentStatus: 'Paid',
         paymentDate: 'aDate',
         isFeePaymentEnabled: 'Yes',
@@ -562,17 +811,17 @@ describe('Check and Send Controller', () => {
 
       await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
-      expect(req.session.appeal.paymentDate).to.be.eql('aDate');
-      expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
-      expect(req.session.appeal.application.refundConfirmationApplied).to.be.eql(false);
-      expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.confirmation);
+      expect(req.session.appeal.paymentStatus).to.deep.equal('Paid');
+      expect(req.session.appeal.paymentDate).to.deep.equal('aDate');
+      expect(req.session.appeal.isFeePaymentEnabled).to.deep.equal('Yes');
+      expect(req.session.appeal.application.refundConfirmationApplied).to.deep.equal(false);
+      expect(resRedirectSpy.calledWith(paths.appealSubmitted.confirmation)).to.equal(true);
     });
 
     it('should finish a payment and redirect to confirmation pay later', async () => {
       req.session.appeal.paymentReference = 'aReference';
       req.session.appeal.appealStatus = 'appealSubmitted';
-      updateAppealService.submitEventRefactored = sandbox.stub().resolves({
+      updateAppealService.submitEventRefactored = submitStub.resolves({
         paymentStatus: 'Paid',
         paymentDate: 'aDate',
         isFeePaymentEnabled: 'Yes',
@@ -583,17 +832,17 @@ describe('Check and Send Controller', () => {
 
       await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
-      expect(req.session.appeal.paymentDate).to.be.eql('aDate');
-      expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
-      expect(req.session.appeal.application.refundConfirmationApplied).to.be.eql(false);
-      expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayment);
+      expect(req.session.appeal.paymentStatus).to.deep.equal('Paid');
+      expect(req.session.appeal.paymentDate).to.deep.equal('aDate');
+      expect(req.session.appeal.isFeePaymentEnabled).to.deep.equal('Yes');
+      expect(req.session.appeal.application.refundConfirmationApplied).to.deep.equal(false);
+      expect(resRedirectSpy.calledWith(paths.common.confirmationPayment)).to.equal(true);
     });
 
     it('should finish a payment and redirect to confirmation pay later', async () => {
       req.session.appeal.paymentReference = 'aReference';
       req.session.appeal.appealStatus = 'appealSubmitted';
-      updateAppealService.submitEventRefactored = sandbox.stub().resolves({
+      updateAppealService.submitEventRefactored = submitStub.resolves({
         paymentStatus: 'Paid',
         paymentDate: 'aDate',
         isFeePaymentEnabled: 'Yes',
@@ -604,11 +853,11 @@ describe('Check and Send Controller', () => {
 
       await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
-      expect(req.session.appeal.paymentDate).to.be.eql('aDate');
-      expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
-      expect(req.session.appeal.application.refundConfirmationApplied).to.be.eql(false);
-      expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayment);
+      expect(req.session.appeal.paymentStatus).to.deep.equal('Paid');
+      expect(req.session.appeal.paymentDate).to.deep.equal('aDate');
+      expect(req.session.appeal.isFeePaymentEnabled).to.deep.equal('Yes');
+      expect(req.session.appeal.application.refundConfirmationApplied).to.deep.equal(false);
+      expect(resRedirectSpy.calledWith(paths.common.confirmationPayment)).to.equal(true);
     });
 
     it('should redirect to check your answers page if payment has failed @finish', async () => {
@@ -617,17 +866,17 @@ describe('Check and Send Controller', () => {
 
       await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+      expect(resRedirectSpy.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
     it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.session.appeal.paymentReference = 'aReference';
-      updateAppealService.submitEventRefactored = sandbox.stub().throws(error);
+      updateAppealService.submitEventRefactored = submitStub.throws(error);
 
       await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -642,19 +891,19 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeCode = 'aCode';
       await getPayLater(paymentService as PaymentService, false)(req as Request, res as Response, next);
 
-      expect(paymentService.initiatePayment).to.have.been.called;
+      expect(initiatePaymentStub.called).to.equal(true);
     });
 
     it('should atch exception and call next with the error', async () => {
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       req.session.appeal.feeWithHearing = '140';
       const error = new Error('an error');
-      paymentService.initiatePayment = sandbox.stub().throws(error);
-      updateAppealService.submitEventRefactored = sandbox.stub().throws(error);
+      paymentService.initiatePayment = initiatePaymentStub.throws(error);
+      updateAppealService.submitEventRefactored = submitStub.throws(error);
 
       await getPayLater(paymentService as PaymentService, false)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

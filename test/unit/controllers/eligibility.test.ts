@@ -14,6 +14,8 @@ describe('Type of appeal Controller', () => {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -21,10 +23,13 @@ describe('Type of appeal Controller', () => {
       session: {} as any
     };
 
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sinon.spy()
-    };
+      render: renderStub,
+      redirect: redirectStub
+    } as Partial<Response>;
 
     next = sandbox.stub();
   });
@@ -40,10 +45,10 @@ describe('Type of appeal Controller', () => {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
       setupEligibilityController();
-      expect(routerGetStub).to.have.been.calledWith(paths.common.questions);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.common.questions);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.eligible);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.ineligible);
+      expect(routerGetStub.calledWith(paths.common.questions)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.common.questions)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.eligible)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.ineligible)).to.equal(true);
     });
   });
 
@@ -53,7 +58,7 @@ describe('Type of appeal Controller', () => {
       req.session.eligibility = {};
       await eligibilityQuestionGet(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
+      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[0].question,
         description: i18n.eligibility[0].description,
         modal: i18n.eligibility[0].modal,
@@ -71,7 +76,7 @@ describe('Type of appeal Controller', () => {
       req.session.eligibility = {};
       await eligibilityQuestionGet(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
+      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibilityOOCFlag[0].question,
         description: i18n.eligibilityOOCFlag[0].description,
         modal: i18n.eligibilityOOCFlag[0].modal,
@@ -90,7 +95,7 @@ describe('Type of appeal Controller', () => {
 
       await eligibilityQuestionGet(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
+      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[2].question,
         description: i18n.eligibility[2].description,
         modal: i18n.eligibility[2].modal,
@@ -113,7 +118,7 @@ describe('Type of appeal Controller', () => {
 
       await eligibilityQuestionGet(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
+      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[1].question,
         description: i18n.eligibility[1].description,
         modal: i18n.eligibility[1].modal,
@@ -131,7 +136,7 @@ describe('Type of appeal Controller', () => {
 
       await eligibilityQuestionGet(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
+      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[0].question,
         description: i18n.eligibility[0].description,
         modal: i18n.eligibility[0].modal,
@@ -155,7 +160,7 @@ describe('Type of appeal Controller', () => {
 
       await eligibilityQuestionPost(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.common.questions}?id=1`);
+      expect(redirectStub.calledWith(`${paths.common.questions}?id=1`)).to.equal(true);
     });
 
     it('redirects to ineligible page if answer ineligible', async () => {
@@ -168,7 +173,7 @@ describe('Type of appeal Controller', () => {
 
       await eligibilityQuestionPost(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.common.ineligible}?id=0`);
+      expect(redirectStub.calledWith(`${paths.common.ineligible}?id=0`)).to.equal(true);
     });
 
     it('redirects to eligible page if all answers eligible', async () => {
@@ -182,7 +187,7 @@ describe('Type of appeal Controller', () => {
 
       await eligibilityQuestionPost(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.common.eligible}?id=${finalQuestionId}`);
+      expect(redirectStub.calledWith(`${paths.common.eligible}?id=${finalQuestionId}`)).to.equal(true);
     });
 
     it('redirects to eligible page if all answers eligible OOC', async () => {
@@ -196,7 +201,7 @@ describe('Type of appeal Controller', () => {
 
       await eligibilityQuestionPost(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.common.eligible}?id=${finalQuestionId}`);
+      expect(redirectStub.calledWith(`${paths.common.eligible}?id=${finalQuestionId}`)).to.equal(true);
     });
 
     it('stores answer in session', async () => {
@@ -208,7 +213,7 @@ describe('Type of appeal Controller', () => {
 
       await eligibilityQuestionPost(req as Request, res as Response, next);
 
-      expect(req.session.eligibility['0']).to.eql({ answer: 'yes' });
+      expect(req.session.eligibility['0']).to.deep.equal({ answer: 'yes' });
     });
 
     it('reload page if no option selected', async () => {
@@ -221,7 +226,7 @@ describe('Type of appeal Controller', () => {
       await eligibilityQuestionPost(req as Request, res as Response, next);
 
       const error = { href: '#answer', key: 'answer', text: i18n.eligibility[2].errorMessage };
-      expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
+      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
         answer: undefined,
         errorList: [error],
         errors: { answer: error },
@@ -240,7 +245,7 @@ describe('Type of appeal Controller', () => {
       req.session.eligibility = {};
 
       getEligible(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('eligibility/eligible-page.njk',
+      expect(renderStub).to.be.calledWith('eligibility/eligible-page.njk',
         {
           previousPage: `${paths.common.questions}?id=123`
         }
@@ -254,12 +259,12 @@ describe('Type of appeal Controller', () => {
       const expectedErr = sinon.match.instanceOf(TypeError)
         .and(sinon.match.has('message', 'Cannot read properties of undefined (reading \'id\')'));
       getEligible(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
+      expect(next).to.be.calledWithMatch(sinon.match(expectedErr));
     });
 
     it('should redirect to first question if the users has gone directly to the eligible page', () => {
       getEligible(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.common.questions);
+      expect(redirectStub.calledWith(paths.common.questions)).to.equal(true);
     });
   });
 
@@ -269,7 +274,7 @@ describe('Type of appeal Controller', () => {
       req.query = { id: '0' };
       const questionId: string = req.query.id as string;
       await getIneligible(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('eligibility/ineligible-page.njk',
+      expect(renderStub).to.be.calledWith('eligibility/ineligible-page.njk',
         {
           title: i18n.ineligible[questionId].title,
           description: i18n.ineligible[questionId].description,
@@ -284,7 +289,7 @@ describe('Type of appeal Controller', () => {
       req.query = { id: '0' };
       const questionId: string = req.query.id as string;
       await getIneligible(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('eligibility/ineligible-page.njk',
+      expect(renderStub).to.be.calledWith('eligibility/ineligible-page.njk',
         {
           title: i18n.ineligible[questionId].title,
           description: i18n.ineligible[questionId].description,
@@ -300,7 +305,7 @@ describe('Type of appeal Controller', () => {
       const expectedErr = sinon.match.instanceOf(TypeError)
         .and(sinon.match.has('message', 'Cannot read properties of undefined (reading \'id\')'));
       await getIneligible(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
+      expect(next).to.be.calledWithMatch(sinon.match(expectedErr));
     });
   });
 });

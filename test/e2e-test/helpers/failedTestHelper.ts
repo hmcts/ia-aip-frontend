@@ -1,4 +1,3 @@
-// tslint:disable:no-console
 import helper from '@codeceptjs/helper';
 
 import Logger, { getLogLabel } from '../../../app/utils/logger';

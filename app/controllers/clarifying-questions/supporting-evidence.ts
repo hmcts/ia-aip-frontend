@@ -96,7 +96,7 @@ function getSupportingEvidenceDelete(documentManagementService: DocumentManageme
           ...req.session.appeal,
           ...appealUpdated
         };
-        let redirectUri = paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), parseInt(req.params.id, 10).toString());
+        const redirectUri = paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), parseInt(req.params.id, 10).toString());
         res.redirect(redirectUri);
       }
     } catch (e) {

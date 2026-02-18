@@ -13,7 +13,7 @@ import { deportationOrderOptionsValidation } from '../../utils/validations/field
 
 function getDeportationOrderOptionsQuestion(appeal: Appeal) {
 
-  let deportationOrderOption = appeal.application.deportationOrderOptions;
+  const deportationOrderOption = appeal.application.deportationOrderOptions;
   return {
     options: [
       {
@@ -89,7 +89,7 @@ function postDeportationOrder(updateAppealService: UpdateAppealService) {
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
       await persistAppeal(appeal);
       const defaultRedirect = paths.appealStarted.taskList;
-      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
+      const redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
     } catch (error) {
       next(error);

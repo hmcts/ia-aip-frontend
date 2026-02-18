@@ -17,9 +17,13 @@ describe('Asylum support refund Controller', function () {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonSpy;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.spy();
     req = {
       body: {},
       session: {
@@ -45,9 +49,9 @@ describe('Asylum support refund Controller', function () {
     } as Partial<Request>;
 
     res = {
-      render: sandbox.stub(),
+      render: renderStub,
       send: sandbox.stub(),
-      redirect: sandbox.spy()
+      redirect: redirectStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -73,14 +77,14 @@ describe('Asylum support refund Controller', function () {
       const middleware = [];
 
       setupAsylumSupportRefundController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealSubmitted.asylumSupportRefund);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealSubmitted.asylumSupportRefund);
+      expect(routerGetStub.calledWith(paths.appealSubmitted.asylumSupportRefund)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealSubmitted.asylumSupportRefund)).to.equal(true);
     });
 
     it('should render appeal-application/fee-support/asylum-support.njk', async () => {
       await getAsylumSupport(req as Request, res as Response, next);
       const asylumSupportRefNumber = null;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/asylum-support.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/asylum-support.njk', {
         previousPage: paths.appealSubmitted.feeSupportRefund,
         formAction: paths.appealSubmitted.asylumSupportRefund,
         asylumSupportRefNumber,
@@ -91,24 +95,24 @@ describe('Asylum support refund Controller', function () {
     it('should validate and redirect CYA page', async () => {
       req.body['asylumSupportRefNumber'] = '12345';
       await postAsylumSupport()(req as Request, res as Response, next);
-      expect(req.session.appeal.application.lateAsylumSupportRefNumber).to.be.eql('12345');
-      expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.checkYourAnswersRefund);
+      expect(req.session.appeal.application.lateAsylumSupportRefNumber).to.deep.equal('12345');
+      expect(redirectStub.calledWith(paths.appealSubmitted.checkYourAnswersRefund)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
       req.body['asylumSupportRefNumber'] = '12345';
       req.query = { 'edit': '' };
       await postAsylumSupport()(req as Request, res as Response, next);
-      expect(req.session.appeal.application.lateAsylumSupportRefNumber).to.be.eql('12345');
-      expect(res.redirect).to.have.been.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.lateAsylumSupportRefNumber).to.deep.equal('12345');
+      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {
       req.query = { 'edit': '' };
       await getAsylumSupport(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/asylum-support.njk');
+      expect(renderStub.calledOnceWith('appeal-application/fee-support/asylum-support.njk')).to.equal(true);
     });
 
     it('should fail validation and render appeal-application/fee-support/asylum-support.njk with error', async () => {
@@ -120,7 +124,7 @@ describe('Asylum support refund Controller', function () {
         href: '#asylumSupportRefNumber'
       };
       await postAsylumSupport()(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith(
+      expect(renderStub).to.be.calledWith(
         'appeal-application/fee-support/asylum-support.njk',
         {
           errors: {
@@ -136,9 +140,9 @@ describe('Asylum support refund Controller', function () {
 
     it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await postAsylumSupport()(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     it('should reset values from other journeys if it present', async () => {
@@ -146,15 +150,15 @@ describe('Asylum support refund Controller', function () {
         'asylumSupportRefNumber': '1324'
       };
 
-      let application = req.session.appeal.application;
+      const application = req.session.appeal.application;
       application.lateHelpWithFeesOption = 'test value';
       application.lateHelpWithFeesRefNumber = 'test value';
       application.lateLocalAuthorityLetters = [];
 
       await postAsylumSupport()(req as Request, res as Response, next);
-      expect(application.lateHelpWithFeesOption).to.be.null;
-      expect(application.lateHelpWithFeesRefNumber).to.be.null;
-      expect(application.lateLocalAuthorityLetters).to.be.null;
+      expect(application.lateHelpWithFeesOption).to.equal(null);
+      expect(application.lateHelpWithFeesRefNumber).to.equal(null);
+      expect(application.lateLocalAuthorityLetters).to.equal(null);
     });
   });
 
@@ -170,12 +174,12 @@ describe('Asylum support refund Controller', function () {
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await getAsylumSupport(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
       await postAsylumSupport()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+      expect(redirectStub.calledOnceWith(paths.common.overview)).to.equal(true);
     });
   });
 
@@ -184,7 +188,7 @@ describe('Asylum support refund Controller', function () {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
       await getAsylumSupport(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 

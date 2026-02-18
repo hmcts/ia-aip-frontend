@@ -65,7 +65,7 @@ describe('ccd-system-service', () => {
         appellantFamilyName: 'Bond'
       };
       const response = getPipValidationSuccess(caseId, caseDetails as CaseData);
-      expect(response).to.eql({
+      expect(response).to.deep.equal({
         accessValidated: true,
         caseSummary: {
           name: 'James Bond',
@@ -132,23 +132,23 @@ describe('ccd-system-service', () => {
 
       it('should return validation failed response', async () => {
         const response = await new CcdSystemService(authenticationServiceStub as SystemAuthenticationService, s2sServiceStub as S2SService).pipValidation(caseId, invalidCode);
-        expect(response).to.eql(failedResponse);
+        expect(response).to.deep.equal(failedResponse);
       });
 
       it('should return case summary', async () => {
         const response = await new CcdSystemService(authenticationServiceStub as SystemAuthenticationService, s2sServiceStub as S2SService).pipValidation(caseId, accessCode);
-        expect(response).to.eql(successResponse);
+        expect(response).to.deep.equal(successResponse);
       });
     });
 
     describe('pipValidation in time', () => {
       beforeEach(() => {
-        axiosStub = sandbox.stub(axios, 'get').returns(Promise.reject({}));
+        axiosStub = sandbox.stub(axios, 'get').returns(Promise.reject(new Error('Error')));
       });
 
       it('should return validation failed response when retrieving case details fails', async () => {
         const response = await new CcdSystemService(authenticationServiceStub as SystemAuthenticationService, s2sServiceStub as S2SService).pipValidation(caseId, invalidCode);
-        expect(response).to.eql(failedResponse);
+        expect(response).to.deep.equal(failedResponse);
       });
     });
 
@@ -166,7 +166,7 @@ describe('ccd-system-service', () => {
           }
         }));
         const response = await new CcdSystemService(authenticationServiceStub as SystemAuthenticationService, s2sServiceStub as S2SService).pipValidation(caseId, invalidCode);
-        expect(response).to.eql(failedResponse);
+        expect(response).to.deep.equal(failedResponse);
       });
     });
 

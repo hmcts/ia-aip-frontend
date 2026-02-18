@@ -15,6 +15,8 @@ describe('start-representing-yourself', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -24,10 +26,13 @@ describe('start-representing-yourself', () => {
       params: {},
       session: {}
     } as Partial<Request>;
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy(),
-      locals: {}
+      render: renderStub,
+      locals: {},
+      redirect: redirectStub
     } as Partial<Response>;
     next = sandbox.stub();
   });
@@ -43,26 +48,26 @@ describe('start-representing-yourself', () => {
 
     setupStartRepresentingMyselfControllers(ccdSystemService);
 
-    expect(routerGetStub).to.have.been.calledWith(paths.startRepresentingYourself.start);
-    expect(routerGetStub).to.have.been.calledWith(paths.startRepresentingYourself.enterCaseNumber);
-    expect(routerPostStub).to.have.been.calledWith(paths.startRepresentingYourself.enterCaseNumber);
-    expect(routerGetStub).to.have.been.calledWith(paths.startRepresentingYourself.enterSecurityCode);
-    expect(routerPostStub).to.have.been.calledWith(paths.startRepresentingYourself.enterSecurityCode);
-    expect(routerGetStub).to.have.been.calledWith(paths.startRepresentingYourself.confirmDetails);
-    expect(routerPostStub).to.have.been.calledWith(paths.startRepresentingYourself.confirmDetails);
+    expect(routerGetStub.calledWith(paths.startRepresentingYourself.start)).to.equal(true);
+    expect(routerGetStub.calledWith(paths.startRepresentingYourself.enterCaseNumber)).to.equal(true);
+    expect(routerPostStub.calledWith(paths.startRepresentingYourself.enterCaseNumber)).to.equal(true);
+    expect(routerGetStub.calledWith(paths.startRepresentingYourself.enterSecurityCode)).to.equal(true);
+    expect(routerPostStub.calledWith(paths.startRepresentingYourself.enterSecurityCode)).to.equal(true);
+    expect(routerGetStub.calledWith(paths.startRepresentingYourself.confirmDetails)).to.equal(true);
+    expect(routerPostStub.calledWith(paths.startRepresentingYourself.confirmDetails)).to.equal(true);
   });
 
   it('getStartRepresentingYourself', () => {
     getStartRepresentingYourself(req as Request, res as Response, next);
 
-    expect(res.render).to.have.been.calledWith('start-representing-yourself/start-representing-yourself.njk', {
+    expect(renderStub).to.be.calledWith('start-representing-yourself/start-representing-yourself.njk', {
       nextPage: paths.startRepresentingYourself.enterCaseNumber
     });
   });
 
   it('getEnterCaseReference', () => {
     getEnterCaseReference(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', {
+    expect(renderStub).to.be.calledWith('start-representing-yourself/enter-case-reference.njk', {
       previousPage: paths.startRepresentingYourself.start,
       caseReferenceNumber: ''
     });
@@ -74,7 +79,7 @@ describe('start-representing-yourself', () => {
       caseReferenceNumber: caseReferenceNumber
     };
     getEnterCaseReference(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', {
+    expect(renderStub).to.be.calledWith('start-representing-yourself/enter-case-reference.njk', {
       previousPage: paths.startRepresentingYourself.start,
       caseReferenceNumber: caseReferenceNumber
     });
@@ -83,7 +88,7 @@ describe('start-representing-yourself', () => {
   it('getEnterCaseReference with error error caseReferenceNumber', () => {
     req.query.error = 'caseReferenceNumber';
     getEnterCaseReference(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', {
+    expect(renderStub).to.be.calledWith('start-representing-yourself/enter-case-reference.njk', {
       previousPage: paths.startRepresentingYourself.start,
       caseReferenceNumber: '',
       error: {
@@ -106,7 +111,7 @@ describe('start-representing-yourself', () => {
   it('getEnterCaseReference with error pipValidationFailed', () => {
     req.query.error = 'pipValidationFailed';
     getEnterCaseReference(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', {
+    expect(renderStub).to.be.calledWith('start-representing-yourself/enter-case-reference.njk', {
       previousPage: paths.startRepresentingYourself.start,
       caseReferenceNumber: '',
       error: {
@@ -129,18 +134,18 @@ describe('start-representing-yourself', () => {
   it('postEnterCaseReference with valid reference, redirects to enter security code', () => {
     req.body.caseReferenceNumber = '1234-1234-1234-1234';
     postEnterCaseReference(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.enterSecurityCode);
+    expect(redirectStub.calledWith(paths.startRepresentingYourself.enterSecurityCode)).to.equal(true);
   });
 
   it('postEnterCaseReference with invalid reference, redirects to enter case reference with error message', () => {
     req.body.caseReferenceNumber = 'INVALID';
     postEnterCaseReference(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
+    expect(redirectStub.calledWith(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber')).to.equal(true);
   });
 
   it('getEnterSecurityCode', () => {
     getEnterSecurityCode(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-security-code.njk', {
+    expect(renderStub).to.be.calledWith('start-representing-yourself/enter-security-code.njk', {
       previousPage: paths.startRepresentingYourself.enterCaseNumber
     });
   });
@@ -148,7 +153,7 @@ describe('start-representing-yourself', () => {
   it('getEnterSecurityCode with error message', () => {
     req.query.error = 'accessCode';
     getEnterSecurityCode(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-security-code.njk', {
+    expect(renderStub).to.be.calledWith('start-representing-yourself/enter-security-code.njk', {
       previousPage: paths.startRepresentingYourself.enterCaseNumber,
       error: {
         accessCode: {
@@ -168,7 +173,7 @@ describe('start-representing-yourself', () => {
   });
 
   it('postValidateAccess is successful, redirects to confirm details', async() => {
-    let ccdSystemServiceStub = {
+    const ccdSystemServiceStub = {
       pipValidation: sandbox.stub().resolves(Promise.resolve({
         accessValidated: true,
         caseSummary: {
@@ -183,11 +188,11 @@ describe('start-representing-yourself', () => {
     req.body.accessCode = 'ABCD1234EFGH';
 
     await postValidateAccess(ccdSystemServiceStub as unknown as CcdSystemService)(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.confirmDetails);
+    expect(redirectStub.calledWith(paths.startRepresentingYourself.confirmDetails)).to.equal(true);
   });
 
   it('postValidateAccess with invalid security code, redirects to enter security code with error message', async() => {
-    let ccdSystemServiceStub = {
+    const ccdSystemServiceStub = {
       pipValidation: sandbox.spy()
     };
 
@@ -196,11 +201,11 @@ describe('start-representing-yourself', () => {
 
     await postValidateAccess(ccdSystemServiceStub as unknown as CcdSystemService)(req as Request, res as Response, next);
     expect(ccdSystemServiceStub.pipValidation).to.have.been.callCount(0);
-    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.enterSecurityCode + '?error=accessCode');
+    expect(redirectStub.calledWith(paths.startRepresentingYourself.enterSecurityCode + '?error=accessCode')).to.equal(true);
   });
 
   it('postValidateAccess with incorrect security code, redirects to enter enter case number with error message', async() => {
-    let ccdSystemServiceStub = {
+    const ccdSystemServiceStub = {
       pipValidation: sandbox.stub().resolves(Promise.resolve({
         accessValidated: false
       }))
@@ -210,7 +215,7 @@ describe('start-representing-yourself', () => {
     req.body.accessCode = 'ABCD1234EFGH';
 
     await postValidateAccess(ccdSystemServiceStub as unknown as CcdSystemService)(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.enterCaseNumber + '?error=pipValidationFailed');
+    expect(redirectStub.calledWith(paths.startRepresentingYourself.enterCaseNumber + '?error=pipValidationFailed')).to.equal(true);
   });
 
   it('getConfirmCaseDetails', () => {
@@ -223,7 +228,7 @@ describe('start-representing-yourself', () => {
 
     getConfirmCaseDetails(req as Request, res as Response, next);
 
-    expect(res.render).to.have.been.calledWith('start-representing-yourself/confirm-case-details.njk', {
+    expect(renderStub).to.be.calledWith('start-representing-yourself/confirm-case-details.njk', {
       previousPage: paths.startRepresentingYourself.enterSecurityCode,
       caseDetails: [
         { key: { text: i18n.pages.startRepresentingYourself.confirmDetails.fieldName }, value: { html: 'James Bond' } },
@@ -238,6 +243,6 @@ describe('start-representing-yourself', () => {
       accessValidated: true
     };
     postConfirmCaseDetails(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledWith(paths.common.login + '?register=true');
+    expect(redirectStub.calledWith(paths.common.login + '?register=true')).to.equal(true);
   });
 });

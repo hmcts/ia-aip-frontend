@@ -18,6 +18,10 @@ describe('Question-page controller', () => {
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
+  let submitStub: sinon.SinonStub;
+  let submitRefactoredStub: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let redirectStub: sinon.SinonStub;
   const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
     {
       id: 'id1',
@@ -89,12 +93,23 @@ describe('Question-page controller', () => {
         }
       }
     } as Partial<Request>;
+    submitStub = sandbox.stub();
+    submitRefactoredStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    redirectStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      redirect: sandbox.spy()
+      render: renderStub,
+      send: sandbox.stub(),
+      redirect: redirectStub
     } as Partial<Response>;
+
+    updateAppealService = {
+      submitEventRefactored: submitRefactoredStub,
+      submitEvent: submitStub
+    } as Partial<UpdateAppealService>;
+
     next = sandbox.stub();
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
     documentManagementService = { deleteFile: sandbox.stub() };
   });
 
@@ -109,8 +124,8 @@ describe('Question-page controller', () => {
       const middleware: Middleware[] = [];
 
       setupSupportingEvidenceQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion}`);
-      expect(routerPostStub).to.have.been.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion}`);
+      expect(routerGetStub.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion}`)).to.equal(true);
+      expect(routerPostStub.calledWith(`${paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion}`)).to.equal(true);
     });
   });
 
@@ -118,15 +133,15 @@ describe('Question-page controller', () => {
     it('should get Evidence Question Page', () => {
       getSupportingEvidenceQuestionPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('upload-evidence/supporting-evidence-question-page.njk');
+      expect(renderStub.calledWith('upload-evidence/supporting-evidence-question-page.njk')).to.equal(true);
     });
 
     it('should catch error and call next with error', () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getSupportingEvidenceQuestionPage(req as Request, res as Response, next);
 
-      expect(next).to.have.been.called.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -139,7 +154,7 @@ describe('Question-page controller', () => {
         documentMap: [ documentMap ]
       };
       appeal.draftClarifyingQuestionsAnswers[0].value.supportingEvidence = [];
-      updateAppealService = { submitEventRefactored: sandbox.stub().returns({ appeal }) } as Partial<UpdateAppealService>;
+      updateAppealService = { submitEventRefactored: submitRefactoredStub.returns({ appeal }) } as Partial<UpdateAppealService>;
     });
     afterEach(() => {
       sandbox.restore();
@@ -147,7 +162,7 @@ describe('Question-page controller', () => {
     it('should fail validation and show errors', async () => {
       await postSupportingEvidenceQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.called.calledWith('upload-evidence/supporting-evidence-question-page.njk');
+      expect(renderStub.calledWith('upload-evidence/supporting-evidence-question-page.njk')).to.equal(true);
     });
 
     it('should redirect to upload page', async () => {
@@ -155,7 +170,7 @@ describe('Question-page controller', () => {
       req.body.answer = 'true';
       await postSupportingEvidenceQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.called.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(`:id`), `${req.params.id}`));
+      expect(redirectStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), `${req.params.id}`))).to.equal(true);
     });
 
     it('should redirect to questions list page if no evidences to upload', async () => {
@@ -163,8 +178,8 @@ describe('Question-page controller', () => {
       req.body.answer = 'false';
       await postSupportingEvidenceQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).not.to.have.been.called;
-      expect(res.redirect).to.have.been.called.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList);
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList)).to.equal(true);
     });
 
     it('should delete evidences if there was any and appellant select No to upload evidences', async () => {
@@ -174,9 +189,9 @@ describe('Question-page controller', () => {
       req.body.answer = 'false';
       await postSupportingEvidenceQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.draftClarifyingQuestionsAnswers[0].value.supportingEvidence).to.be.empty;
-      expect(res.redirect).to.have.been.called.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList);
+      expect(submitRefactoredStub.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers[0].value.supportingEvidence).to.have.lengthOf(0);
+      expect(redirectStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList)).to.equal(true);
     });
   });
 

@@ -11,6 +11,7 @@ describe('Index Controller', function() {
   let res: Partial<Response>;
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
+  let redirectStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -26,10 +27,11 @@ describe('Index Controller', function() {
         }
       } as any
     } as Partial<Request>;
+    redirectStub = sandbox.stub();
 
     res = {
       render: sandbox.stub(),
-      redirect: sandbox.spy(),
+      redirect: redirectStub,
       send: sandbox.stub(),
       next: sandbox.stub()
     } as Partial<Response>;
@@ -44,14 +46,14 @@ describe('Index Controller', function() {
   describe('getIndex', () => {
     it('get Index should redirect to start page', function() {
       getIndex(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.common.start);
+      expect(redirectStub.calledWith(paths.common.start)).to.equal(true);
     });
 
     it('should catch exception and call next with the error', function () {
       const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
+      res.redirect = redirectStub.throws(error);
       getIndex(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -60,7 +62,7 @@ describe('Index Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
       setupIndexController();
-      expect(routerGetStub).to.have.been.calledWith(paths.common.index);
+      expect(routerGetStub.calledWith(paths.common.index)).to.equal(true);
     });
   });
 });

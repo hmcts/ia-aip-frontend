@@ -26,9 +26,9 @@ describe('system-authentication-service', () => {
     const token1 = await authenticationService.getCaseworkSystemToken();
     const token2 = await authenticationService.getCaseworkSystemToken();
 
-    expect(token1).to.be.eq(token);
-    expect(token2).to.be.eq(token);
-    expect(axiosStub).to.have.been.calledOnce;
+    expect(token1).to.equal(token);
+    expect(token2).to.equal(token);
+    expect(axiosStub.callCount).to.equal(1);
   });
 
   it('requests new user token when cached token expires', async () => {
@@ -38,10 +38,10 @@ describe('system-authentication-service', () => {
     const token1 = await authenticationService.getCaseworkSystemToken();
     const token2 = await authenticationService.getCaseworkSystemToken();
 
-    expect(token1).to.be.eq(token);
-    expect(token2).to.be.eq(token);
-    expect(isJWTExpiredStub).to.have.been.calledOnce;
-    expect(axiosStub).to.have.been.calledTwice;
+    expect(token1).to.equal(token);
+    expect(token2).to.equal(token);
+    expect(isJWTExpiredStub.callCount).to.equal(1);
+    expect(axiosStub.callCount).to.equal(2);
   });
 
   it('returns user uuid and caches', async () => {
@@ -50,16 +50,16 @@ describe('system-authentication-service', () => {
     const uuid1 = await authenticationService.getCaseworkSystemUUID(token);
     const uuid2 = await authenticationService.getCaseworkSystemUUID(token);
 
-    expect(uuid1).to.be.eq(uuid);
-    expect(uuid2).to.be.eq(uuid);
-    expect(axiosStub).to.have.been.calledOnce;
+    expect(uuid1).to.equal(uuid);
+    expect(uuid2).to.equal(uuid);
+    expect(axiosStub.callCount).to.equal(1);
   });
 
   it('when requesting UUID fails, returns undefined', async () => {
-    axiosStub = sandbox.stub(axios, 'get').returns(Promise.reject());
+    axiosStub = sandbox.stub(axios, 'get').returns(Promise.reject(new Error()));
 
     const uuid1 = await authenticationService.getCaseworkSystemUUID(token);
 
-    expect(uuid1).to.be.eq(undefined);
+    expect(uuid1).to.equal(undefined);
   });
 });

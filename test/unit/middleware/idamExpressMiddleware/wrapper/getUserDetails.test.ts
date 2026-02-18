@@ -22,7 +22,7 @@ describe('getUserDetails', () => {
     getStub.resolves({ data: {} });
     await getUserDetails(token, args);
 
-    expect(axios.get).to.be.calledOnce;
+    expect(getStub.callCount).to.equal(1);
     const [url, requestOptions] = getStub.getCall(0).args;
     expect(url).to.equal(`${args.idamApiUrl}/details`);
     expect(requestOptions.headers.Authorization).to.contain(token);
@@ -36,7 +36,7 @@ describe('getUserDetails', () => {
     getStub.resolves({ data: {} });
     await getUserDetails(token, args);
 
-    expect(axios.get).to.be.calledOnce;
+    expect(getStub.callCount).to.equal(1);
     const [url, requestOptions] = getStub.getCall(0).args;
     expect(url).to.equal(`${args.idamApiUrl}/o/userinfo`);
     expect(requestOptions.headers.Authorization).to.contain(token);

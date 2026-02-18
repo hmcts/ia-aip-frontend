@@ -50,6 +50,9 @@ describe('DetailViewController', () => {
   let res: Partial<Response>;
   let documentManagementService: Partial<DocumentManagementService>;
   let next: sinon.SinonStub;
+  let renderStub: sinon.SinonStub;
+  let sendStub: sinon.SinonStub;
+  let headerStub: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -79,10 +82,14 @@ describe('DetailViewController', () => {
 
     documentManagementService = { fetchFile: sandbox.stub() };
 
+    renderStub = sandbox.stub();
+    sendStub = sandbox.stub();
+    headerStub = sandbox.stub();
+
     res = {
-      render: sandbox.stub(),
-      send: sandbox.stub(),
-      setHeader: sandbox.spy()
+      render: renderStub,
+      send: sendStub,
+      setHeader: headerStub
     } as Partial<Response>;
 
     next = sandbox.stub();
@@ -97,14 +104,14 @@ describe('DetailViewController', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
       setupDetailViewersController(documentManagementService as DocumentManagementService);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.documentViewer + '/:documentId');
-      expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeWithdrawLetter);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.appealDetailsViewer);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.reasonsForAppealViewer);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.makeAnApplicationViewer + '/:id');
-      expect(routerGetStub).to.have.been.calledWith(paths.common.cmaRequirementsAnswerViewer);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeWithdrawLetter);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.lrReasonsForAppealViewer);
+      expect(routerGetStub.calledWith(paths.common.documentViewer + '/:documentId')).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.homeOfficeWithdrawLetter)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.appealDetailsViewer)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.reasonsForAppealViewer)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.makeAnApplicationViewer + '/:id')).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.cmaRequirementsAnswerViewer)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.homeOfficeWithdrawLetter)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.lrReasonsForAppealViewer)).to.equal(true);
     });
   });
 
@@ -112,7 +119,7 @@ describe('DetailViewController', () => {
     it('should render detail-viewers/view-ho-details.njk with no documents', () => {
 
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('detail-viewers/view-ho-details.njk', {
+      expect(renderStub).to.be.calledOnceWith('detail-viewers/view-ho-details.njk', {
         documents: [],
         previousPage: paths.common.overview
       });
@@ -129,7 +136,7 @@ describe('DetailViewController', () => {
       ];
 
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('detail-viewers/view-ho-details.njk', {
+      expect(renderStub).to.be.calledOnceWith('detail-viewers/view-ho-details.njk', {
         documents: [{
           dateUploaded: '21 February 2020',
           url: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/someUUID'>evidence_file(PNG)</a>"
@@ -140,9 +147,9 @@ describe('DetailViewController', () => {
 
     it('getHoEvidenceDetailsViewer should catch exception and call next with the error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -161,7 +168,7 @@ describe('DetailViewController', () => {
     });
     it('should render details-viewer template', () => {
       getHomeOfficeWithdrawLetter(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeWithdrawLetter.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -178,7 +185,7 @@ describe('DetailViewController', () => {
         tag: 'appealResponse'
       });
       getHomeOfficeWithdrawLetter(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeWithdrawLetter.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -187,9 +194,9 @@ describe('DetailViewController', () => {
 
     it('getHoEvidenceDetailsViewer should catch exception and call next with the error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getHomeOfficeWithdrawLetter(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -208,7 +215,7 @@ describe('DetailViewController', () => {
     });
     it('should render details-viewer template', () => {
       getHomeOfficeResponse(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeResponse.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -225,7 +232,7 @@ describe('DetailViewController', () => {
         tag: 'appealResponse'
       });
       getHomeOfficeResponse(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeResponse.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -234,9 +241,9 @@ describe('DetailViewController', () => {
 
     it('getHoEvidenceDetailsViewer should catch exception and call next with the error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getHomeOfficeResponse(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -254,8 +261,8 @@ describe('DetailViewController', () => {
       documentManagementService.fetchFile = sandbox.stub().returns(fetchResponse);
       const expectedBuffer = Buffer.from(fetchResponse.data, 'binary');
       await getDocumentViewer(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(res.setHeader).to.have.been.calledOnceWith('content-type', 'image/png');
-      expect(res.send).to.have.been.calledOnceWith(expectedBuffer);
+      expect(headerStub.calledOnceWith('content-type', 'image/png')).to.equal(true);
+      expect(sendStub.calledOnceWith(expectedBuffer)).to.equal(true);
     });
 
     it('getDocumentViewer should catch exception and call next with the error', async () => {
@@ -264,7 +271,7 @@ describe('DetailViewController', () => {
       const error = new Error('an error');
       documentManagementService.fetchFile = sandbox.stub().throws(error);
       await getDocumentViewer(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -299,7 +306,7 @@ describe('DetailViewController', () => {
         'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>test.txt</a>" }
       }];
       getReasonsForAppealViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
         previousPage: paths.common.overview,
         data: expectedSummaryRows
       });
@@ -327,9 +334,9 @@ describe('DetailViewController', () => {
       }];
 
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getReasonsForAppealViewer(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -381,7 +388,7 @@ describe('DetailViewController', () => {
       }];
 
       getLrReasonsForAppealViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
         hint: i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.hint,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -418,9 +425,9 @@ describe('DetailViewController', () => {
       }];
 
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getLrReasonsForAppealViewer(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -621,7 +628,7 @@ describe('DetailViewController', () => {
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -640,7 +647,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -659,7 +666,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -715,7 +722,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -739,7 +746,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -765,7 +772,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -799,7 +806,7 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -831,7 +838,7 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -862,7 +869,7 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -891,7 +898,7 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -920,7 +927,7 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -949,7 +956,7 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -978,7 +985,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1004,7 +1011,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1030,7 +1037,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.helpWithFeesReferenceNumber = 'helpWithFeesRefNumberValue';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1053,7 +1060,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1082,7 +1089,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1121,7 +1128,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1147,7 +1154,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.helpWithFeesRefNumber = 'helpWithFeesRefNumberValue';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1172,7 +1179,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1197,7 +1204,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1210,9 +1217,9 @@ describe('DetailViewController', () => {
     it('should catch exception and call next with the error', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
 
     describe('Remission decision', async () => {
@@ -1378,7 +1385,7 @@ describe('DetailViewController', () => {
         req.session.appeal.history = [historyEvent, historyEvent, historyEvent];
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1410,7 +1417,7 @@ describe('DetailViewController', () => {
           'feeDetailsRows': feeDetails
         };
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1455,7 +1462,7 @@ describe('DetailViewController', () => {
         req.session.appeal.history = [historyEventDayBefore, historyEvent, historyEvent, historyEvent];
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1492,7 +1499,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1529,7 +1536,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1565,7 +1572,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1602,7 +1609,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1636,7 +1643,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1672,7 +1679,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1702,7 +1709,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1873,7 +1880,7 @@ describe('DetailViewController', () => {
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -1892,7 +1899,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -1911,7 +1918,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -1927,7 +1934,7 @@ describe('DetailViewController', () => {
     //   req.session.appeal.application.appealType = 'deprivation';
     //   req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
     //   await getAppealDetailsViewer(req as Request, res as Response, next);
-    //   expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+    //   expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
     //     title: i18n.pages.detailViewers.appealDetails.title,
     //     previousPage: paths.common.overview,
     //     data: expectedSummaryRows
@@ -1937,9 +1944,9 @@ describe('DetailViewController', () => {
     it('should catch exception and call next with the error', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -2078,7 +2085,7 @@ describe('DetailViewController', () => {
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -2097,7 +2104,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -2116,7 +2123,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -2132,7 +2139,7 @@ describe('DetailViewController', () => {
     //   req.session.appeal.application.appealType = 'deprivation';
     //   req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
     //   await getAppealDetailsViewer(req as Request, res as Response, next);
-    //   expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+    //   expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
     //     title: i18n.pages.detailViewers.appealDetails.title,
     //     previousPage: paths.common.overview,
     //     data: expectedSummaryRows
@@ -2142,9 +2149,9 @@ describe('DetailViewController', () => {
     it('should catch exception and call next with the error', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
@@ -2181,7 +2188,7 @@ describe('DetailViewController', () => {
         dateUploaded: 'test-date'
       }];
       getMakeAnApplicationViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
         title: i18n.pages.detailViewers.makeAnApplication.appellant.title,
         whatNextTitle: i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.title,
@@ -2232,7 +2239,7 @@ describe('DetailViewController', () => {
         dateUploaded: 'test-date'
       }];
       getMakeAnApplicationViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
         title: i18n.pages.detailViewers.makeAnApplication.appellant.title,
         whatNextTitle: i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.title,
@@ -2315,7 +2322,7 @@ describe('DetailViewController', () => {
         dateUploaded: 'test-date'
       }];
       getMakeAnApplicationViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
         title: i18n.pages.detailViewers.makeAnApplication.respondent.request.title,
         description: i18n.pages.detailViewers.makeAnApplication.respondent.request.description,
@@ -2381,7 +2388,7 @@ describe('DetailViewController', () => {
         dateUploaded: 'test-date'
       }];
       getMakeAnApplicationViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
         title: i18n.pages.detailViewers.makeAnApplication.respondent.request.title,
         description: i18n.pages.detailViewers.makeAnApplication.respondent.request.description,
@@ -2411,7 +2418,7 @@ describe('DetailViewController', () => {
   });
 
   describe('getHearingBundle', () => {
-    let hearingBundle = {
+    const hearingBundle = {
       fileId: 'uuid',
       name: 'filename',
       description: 'description here',
@@ -2420,7 +2427,7 @@ describe('DetailViewController', () => {
       id: '2',
       tag: 'hearingBundle'
     };
-    let updatedBundle1 = {
+    const updatedBundle1 = {
       fileId: 'uuid',
       name: 'filename',
       description: 'description here',
@@ -2429,7 +2436,7 @@ describe('DetailViewController', () => {
       id: '3',
       tag: 'updatedHearingBundle'
     };
-    let updatedBundle2 = {
+    const updatedBundle2 = {
       fileId: 'uuid',
       name: 'filename',
       description: 'description here',
@@ -2438,7 +2445,7 @@ describe('DetailViewController', () => {
       id: '4',
       tag: 'updatedHearingBundle'
     };
-    let updatedReheardBundle1 = {
+    const updatedReheardBundle1 = {
       fileId: 'uuid',
       name: 'filename',
       description: 'description here',
@@ -2447,7 +2454,7 @@ describe('DetailViewController', () => {
       id: '5',
       tag: 'updatedHearingBundle'
     };
-    let updatedReheardBundle2 = {
+    const updatedReheardBundle2 = {
       fileId: 'uuid',
       name: 'filename',
       description: 'description here',
@@ -2456,32 +2463,32 @@ describe('DetailViewController', () => {
       id: '4',
       tag: 'updatedHearingBundle'
     };
-    let reheardHearingDocCollection1 = {
+    const reheardHearingDocCollection1 = {
       id: '1',
       value: {
         reheardHearingDocs: [hearingBundle]
       }
     };
-    let reheardHearingDocCollection2 = {
+    const reheardHearingDocCollection2 = {
       id: '2',
       value: {
         reheardHearingDocs: [hearingBundle, updatedReheardBundle1]
       }
     };
-    let reheardHearingDocCollection3 = {
+    const reheardHearingDocCollection3 = {
       id: '3',
       value: {
         reheardHearingDocs: [hearingBundle, updatedReheardBundle1, updatedReheardBundle2]
       }
     };
-    let reheardHearingDocCollection4 = {
+    const reheardHearingDocCollection4 = {
       id: '4',
       value: {
         reheardHearingDocs: [updatedReheardBundle1]
       }
     };
 
-    let tests = [
+    const tests = [
       { hearingDocs: [hearingBundle], reheardHearingDocs: null, title: 'hearing bundle' },
       { hearingDocs: [hearingBundle, updatedBundle1], reheardHearingDocs: null, title: 'hearing and updated bundle' },
       { hearingDocs: [updatedBundle1], reheardHearingDocs: null, title: 'updated bundle' },
@@ -2523,12 +2530,12 @@ describe('DetailViewController', () => {
         title: 'multiple rehearings and one bundle for each'
       }
     ];
-    let title = i18n.pages.detailViewers.hearingBundle.title;
-    let titlePlural = i18n.pages.detailViewers.hearingBundle.titlePlural;
-    let subtitle = i18n.pages.detailViewers.hearingBundle.subtitle;
-    let previousSubtitle = i18n.pages.detailViewers.hearingBundle.previousSubtitle;
-    let previousSubtitlePlural = i18n.pages.detailViewers.hearingBundle.previousSubtitlePlural;
-    let expectedOutput = [
+    const title = i18n.pages.detailViewers.hearingBundle.title;
+    const titlePlural = i18n.pages.detailViewers.hearingBundle.titlePlural;
+    const subtitle = i18n.pages.detailViewers.hearingBundle.subtitle;
+    const previousSubtitle = i18n.pages.detailViewers.hearingBundle.previousSubtitle;
+    const previousSubtitlePlural = i18n.pages.detailViewers.hearingBundle.previousSubtitlePlural;
+    const expectedOutput = [
       { title: title, subtitle1: null, data1: 2, subtitle2: null, data2: null },
       { title: titlePlural, subtitle1: subtitle, data1: 2, subtitle2: previousSubtitle, data2: 2 },
       { title: title, subtitle1: null, data1: 2, subtitle2: null, data2: null },
@@ -2556,7 +2563,7 @@ describe('DetailViewController', () => {
 
         it('should render details-viewer template', function () {
           getHearingBundle(req as Request, res as Response, next);
-          expect(res.render).to.have.been.calledWith('templates/details-viewer-hearing-bundles.njk', {
+          expect(renderStub).to.be.calledWith('templates/details-viewer-hearing-bundles.njk', {
             title: expectedOutput[index].title,
             subtitle1: expectedOutput[index].subtitle1,
             data1: sinonArrayMatcher(expectedOutput[index].data1),
@@ -2568,9 +2575,9 @@ describe('DetailViewController', () => {
 
         it('should catch exception and call next with the error', function () {
           const error = new Error('an error');
-          res.render = sandbox.stub().throws(error);
+          res.render = renderStub.throws(error);
           getHearingBundle(req as Request, res as Response, next);
-          expect(next).to.have.been.calledOnce.calledWith(error);
+          expect(next.calledOnceWith(error)).to.equal(true);
         });
       });
     });
@@ -2597,7 +2604,7 @@ describe('DetailViewController', () => {
         }];
 
       getNoticeEndedAppeal(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.endedAppeal.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2607,10 +2614,10 @@ describe('DetailViewController', () => {
     it('should catch error and call next with it', () => {
       req.session.appeal.tribunalDocuments = [document];
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getNoticeEndedAppeal(req as Request, res as Response, next);
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -2636,7 +2643,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2645,10 +2652,10 @@ describe('DetailViewController', () => {
       it('should catch error and call next with it', () => {
         req.session.appeal.hearingDocuments = [document];
         const error = new Error('an error');
-        res.render = sandbox.stub().throws(error);
+        res.render = renderStub.throws(error);
 
         getHearingNoticeViewer(req as Request, res as Response, next);
-        expect(next).to.have.been.calledWith(error);
+        expect(next.calledWith(error)).to.equal(true);
       });
     });
   });
@@ -2690,7 +2697,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2699,10 +2706,10 @@ describe('DetailViewController', () => {
       it('should catch error and call next with it', () => {
         req.session.appeal.hearingDocuments = [document];
         const error = new Error('an error');
-        res.render = sandbox.stub().throws(error);
+        res.render = renderStub.throws(error);
 
         getHearingNoticeViewer(req as Request, res as Response, next);
-        expect(next).to.have.been.calledWith(error);
+        expect(next.calledWith(error)).to.equal(true);
       });
     });
   });
@@ -2756,11 +2763,11 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2777,11 +2784,11 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.common.document },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec7'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec7\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
           }];
 
         getHearingNoticeViewer(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
           title: i18n.pages.detailViewers.hearingNotice.title,
           data: expectedSummaryRows,
           previousPage: paths.common.overview
@@ -2790,10 +2797,10 @@ describe('DetailViewController', () => {
         it('should catch error and call next with it', () => {
           req.session.appeal.hearingDocuments = [document];
           const error = new Error('an error');
-          res.render = sandbox.stub().throws(error);
+          res.render = renderStub.throws(error);
 
           getHearingNoticeViewer(req as Request, res as Response, next);
-          expect(next).to.have.been.calledWith(error);
+          expect(next.calledWith(error)).to.equal(true);
         });
       });
     });
@@ -2809,11 +2816,11 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2832,11 +2839,11 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2858,7 +2865,7 @@ describe('DetailViewController', () => {
         { value: { reheardHearingDocs: [{ fileId: '123' }] } }
       ];
       const result = findDocumentInReheardHearingDocCollection(collections, '456');
-      expect(result).to.be.undefined;
+      expect(result).to.equal(undefined);
     });
 
     it('should handle collections with undefined values', () => {
@@ -2873,7 +2880,7 @@ describe('DetailViewController', () => {
     it('should handle empty collections', () => {
       const collections: any[] = [];
       const result = findDocumentInReheardHearingDocCollection(collections, '123');
-      expect(result).to.be.undefined;
+      expect(result).to.equal(undefined);
     });
   });
 
@@ -2961,7 +2968,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2970,10 +2977,10 @@ describe('DetailViewController', () => {
       it('should catch error and call next with it', () => {
         req.session.appeal.hearingDocuments = [document];
         const error = new Error('an error');
-        res.render = sandbox.stub().throws(error);
+        res.render = renderStub.throws(error);
 
         getHearingNoticeViewer(req as Request, res as Response, next);
-        expect(next).to.have.been.calledWith(error);
+        expect(next.calledWith(error)).to.equal(true);
       });
     });
   });
@@ -3027,11 +3034,11 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3048,11 +3055,11 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.common.document },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec7'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec7\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
           }];
 
         getHearingNoticeViewer(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
           title: i18n.pages.detailViewers.hearingNotice.title,
           data: expectedSummaryRows,
           previousPage: paths.common.overview
@@ -3061,10 +3068,10 @@ describe('DetailViewController', () => {
         it('should catch error and call next with it', () => {
           req.session.appeal.hearingDocuments = [document];
           const error = new Error('an error');
-          res.render = sandbox.stub().throws(error);
+          res.render = renderStub.throws(error);
 
           getHearingNoticeViewer(req as Request, res as Response, next);
-          expect(next).to.have.been.calledWith(error);
+          expect(next.calledWith(error)).to.equal(true);
         });
       });
     });
@@ -3080,11 +3087,11 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3103,11 +3110,11 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/a3d396eb-277d-4b66-81c8-627f57212ec8\'>PA 50002 2021-perez-hearing-notice(PDF)</a>' }
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3129,7 +3136,7 @@ describe('DetailViewController', () => {
         { value: { reheardHearingDocs: [{ fileId: '123' }] } }
       ];
       const result = findDocumentInReheardHearingDocCollection(collections, '456');
-      expect(result).to.be.undefined;
+      expect(result).to.equal(undefined);
     });
 
     it('should handle collections with undefined values', () => {
@@ -3144,7 +3151,7 @@ describe('DetailViewController', () => {
     it('should handle empty collections', () => {
       const collections: any[] = [];
       const result = findDocumentInReheardHearingDocCollection(collections, '123');
-      expect(result).to.be.undefined;
+      expect(result).to.equal(undefined);
     });
   });
 
@@ -3217,7 +3224,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingAdjournmentNoticeViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingAdjournmentNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3226,10 +3233,10 @@ describe('DetailViewController', () => {
       it('should catch error and call next with it', () => {
         req.session.appeal.hearingDocuments = [document];
         const error = new Error('an error');
-        res.render = sandbox.stub().throws(error);
+        res.render = renderStub.throws(error);
 
         getHearingAdjournmentNoticeViewer(req as Request, res as Response, next);
-        expect(next).to.have.been.calledWith(error);
+        expect(next.calledWith(error)).to.equal(true);
       });
     });
   });
@@ -3260,7 +3267,7 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>` }
+          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>' }
         },
         {
           key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -3268,12 +3275,12 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>` }
+          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>' }
         }
       ];
 
       getDecisionAndReasonsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.decisionsAndReasons.title,
         description: i18n.pages.detailViewers.decisionsAndReasons.description,
         data: expectedSummaryRows,
@@ -3283,10 +3290,10 @@ describe('DetailViewController', () => {
       it('should catch error and call next with it', () => {
         req.session.appeal.finalDecisionAndReasonsDocuments = documents;
         const error = new Error('an error');
-        res.render = sandbox.stub().throws(error);
+        res.render = renderStub.throws(error);
 
         getDecisionAndReasonsViewer(req as Request, res as Response, next);
-        expect(next).to.have.been.calledWith(error);
+        expect(next.calledWith(error)).to.equal(true);
       });
     });
   });
@@ -3302,13 +3309,13 @@ describe('DetailViewController', () => {
       const expectedSummaryRows = [
         {
           key: { text: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.documentText },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f2194fde-001a-4640-8b7e-b90a7189e6ba'>rule32(PDF)</a>` }
+          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/f2194fde-001a-4640-8b7e-b90a7189e6ba\'>rule32(PDF)</a>' }
         }
       ];
 
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getUpdatedTribunalDecisionWithRule32Viewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3317,22 +3324,22 @@ describe('DetailViewController', () => {
       it('getUpdatedTribunalDecisionWithRule32Viewer should catch error and call next with it', async () => {
         req.session.appeal.rule32NoticeDocs = documents;
         const error = new Error('an error');
-        res.render = sandbox.stub().throws(error);
+        res.render = renderStub.throws(error);
 
         await getUpdatedTribunalDecisionWithRule32Viewer(req as Request, res as Response, next);
-        expect(next).to.have.been.calledWith(error);
+        expect(next.calledWith(error)).to.equal(true);
       });
     });
   });
 
   describe('getApplicationTitle', () => {
     it('return title based on application type', () => {
-      expect(getApplicationTitle('Time extension')).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime);
-      expect(getApplicationTitle('Link/unlink appeals')).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askLinkUnlink);
+      expect(getApplicationTitle('Time extension')).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime);
+      expect(getApplicationTitle('Link/unlink appeals')).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askLinkUnlink);
     });
 
     it('return undefined for invalid application types', () => {
-      expect(getApplicationTitle('INVALID')).to.be.eq(undefined);
+      expect(getApplicationTitle('INVALID')).to.equal(undefined);
     });
   });
 
@@ -3357,7 +3364,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askReinstate.refused);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askReinstate.refused);
     });
 
     it('refused appellant application should show correct what next message (default message).', () => {
@@ -3380,7 +3387,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.default.refused);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.default.refused);
     });
 
     it('granted appellant application should show correct what next message.', () => {
@@ -3403,7 +3410,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askChangeHearing.granted);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askChangeHearing.granted);
     });
 
     it('refused respondent application should show correct what next message (Reinstate an ended appeal).', () => {
@@ -3426,7 +3433,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
 
     it('granted respondent application should show correct what next message (Reinstate an ended appeal).', () => {
@@ -3449,7 +3456,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askReinstate.granted);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askReinstate.granted);
     });
 
     it('Granted respondent application should show correct what next message (Judge\'s review of application decision).', () => {
@@ -3472,7 +3479,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askJudgeReview.granted);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askJudgeReview.granted);
     });
 
     it('Refused respondent application should show correct what next message (Judge\'s review of application decision).', () => {
@@ -3495,7 +3502,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
 
     it('granted respondent application should show correct what next message (Transfer).', () => {
@@ -3518,7 +3525,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askChangeHearing.granted);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askChangeHearing.granted);
     });
 
     it('Refused respondent application should show correct what next message (Transfer).', () => {
@@ -3541,7 +3548,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
 
     it('Refused respondent application should show correct what next message (Link/unlink appeals).', () => {
@@ -3564,7 +3571,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
 
     it('Granted respondent application should show correct what next message (Link/unlink appeals).', () => {
@@ -3587,7 +3594,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askLinkUnlink.granted);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askLinkUnlink.granted);
     });
 
     it('Granted respondent application should show correct what next message (Other).', () => {
@@ -3610,7 +3617,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.granted);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.granted);
     });
 
     it('Refused respondent application should show correct what next message (Other).', () => {
@@ -3633,7 +3640,7 @@ describe('DetailViewController', () => {
 
       const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
+      expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
 
   });
@@ -3665,9 +3672,9 @@ describe('DetailViewController', () => {
 
       getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
       expect(addSummaryRowStub).to.have.been.callCount(4);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.date, ['15 July 2021']);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.date, ['15 July 2021'])).to.equal(true);
     });
 
     it('should get rows with decision', () => {
@@ -3699,13 +3706,13 @@ describe('DetailViewController', () => {
 
       getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
       expect(addSummaryRowStub).to.have.been.callCount(8);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.date, ['14 July 2021']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.decision, [i18n.pages.detailViewers.makeAnApplication.appellant.response.Refused]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.reason, ['Reason not enough']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.date, ['14 July 2021']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.maker, ['Tribunal Caseworker']);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.date, ['14 July 2021'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.decision, [i18n.pages.detailViewers.makeAnApplication.appellant.response.Refused])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.reason, ['Reason not enough'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.date, ['14 July 2021'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.maker, ['Tribunal Caseworker'])).to.equal(true);
     });
   });
 
@@ -3736,9 +3743,9 @@ describe('DetailViewController', () => {
 
       getRespondentApplicationSummaryRows(application);
       expect(addSummaryRowStub).to.have.been.callCount(4);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.date, ['15 July 2021']);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.date, ['15 July 2021'])).to.equal(true);
     });
 
     it('should get rows for respondent after decision', () => {
@@ -3770,13 +3777,13 @@ describe('DetailViewController', () => {
 
       getRespondentApplicationSummaryRows(application);
       expect(addSummaryRowStub).to.have.been.callCount(8);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.date, ['15 July 2021']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.decision, ['Granted']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.reason, ['Reason not enough']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.date, ['14 July 2021']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.maker, ['Tribunal Caseworker']);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.date, ['15 July 2021'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.decision, ['Granted'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.reason, ['Reason not enough'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.date, ['14 July 2021'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.maker, ['Tribunal Caseworker'])).to.equal(true);
     });
   });
 
@@ -3792,16 +3799,16 @@ describe('DetailViewController', () => {
       req.session.appeal.tribunalDocuments = [document];
       getOutOfTimeDecisionViewer(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.called;
+      expect(renderStub.called).to.equal(true);
     });
 
     it('should catch error', () => {
       req.session.appeal.tribunalDocuments = [document];
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
       getOutOfTimeDecisionViewer(req as Request, res as Response, next);
 
-      expect(next).to.have.been.called;
+      expect(next.called).to.equal(true);
     });
 
   });
@@ -3811,7 +3818,7 @@ describe('DetailViewController', () => {
       req.session.appeal.history = expectedEventsWithCmaRequirements;
 
       getCmaRequirementsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('detail-viewers/cma-requirements-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('detail-viewers/cma-requirements-details-viewer.njk', {
         anythingElse: [{
           key: { text: 'Question' },
           value: { html: 'Will you need anything else at the appointment?' }
@@ -4212,7 +4219,7 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
         },
         {
           key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4224,13 +4231,13 @@ describe('DetailViewController', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
         }
       ];
 
       getFtpaAppellantApplication(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -4246,10 +4253,10 @@ describe('DetailViewController', () => {
         ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
         ftpaAppellantOutOfTimeDocuments: [...documents]
       };
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getFtpaAppellantApplication(req as Request, res as Response, next);
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -4284,11 +4291,11 @@ describe('DetailViewController', () => {
         application: [
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.groundsDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4300,7 +4307,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           }
         ],
         decision: [
@@ -4310,7 +4317,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4321,7 +4328,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4347,11 +4354,11 @@ describe('DetailViewController', () => {
         application: [
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.groundsDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4363,7 +4370,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           }
         ],
         decision: [
@@ -4373,7 +4380,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4385,7 +4392,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4421,7 +4428,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4433,7 +4440,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4465,7 +4472,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4477,7 +4484,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4509,7 +4516,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4521,7 +4528,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4553,7 +4560,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4565,7 +4572,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           }
         ],
         decision: [
@@ -4575,7 +4582,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4587,7 +4594,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4619,7 +4626,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4631,7 +4638,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           }
         ],
         decision: [
@@ -4641,7 +4648,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4653,7 +4660,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4686,7 +4693,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4698,7 +4705,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           }
         ],
         decision: [
@@ -4708,7 +4715,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Reheard_Rule_35_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Reheard_Rule_35_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4720,7 +4727,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4755,7 +4762,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Reheard_Rule_35_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Reheard_Rule_35_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -4767,7 +4774,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4813,7 +4820,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4859,7 +4866,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4891,7 +4898,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4903,7 +4910,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           }
         ],
         decision: [
@@ -4925,7 +4932,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4957,7 +4964,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -4969,7 +4976,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           }
         ],
         decision: [
@@ -4991,7 +4998,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5025,7 +5032,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -5037,7 +5044,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           }
         ],
         decision: [
@@ -5047,7 +5054,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Granted_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Granted_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5059,7 +5066,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5093,7 +5100,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -5105,7 +5112,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Appellant_Doc.PDF</a>' }
           }
         ],
         decision: [
@@ -5115,7 +5122,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Granted_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Granted_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5127,7 +5134,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5163,7 +5170,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Refused_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Refused_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5175,7 +5182,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5211,7 +5218,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Not_Admitted_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Not_Admitted_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5223,7 +5230,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5253,11 +5260,11 @@ describe('DetailViewController', () => {
         application: [
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.groundsDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -5269,7 +5276,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           }
         ],
         decision: [
@@ -5279,7 +5286,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Granted_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Granted_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5291,7 +5298,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5321,11 +5328,11 @@ describe('DetailViewController', () => {
         application: [
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.groundsDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
@@ -5337,7 +5344,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Respondent_Doc.PDF</a>' }
           }
         ],
         decision: [
@@ -5347,7 +5354,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Partially_Granted_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Partially_Granted_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5359,7 +5366,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5395,7 +5402,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Refused_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Refused_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5407,7 +5414,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5443,7 +5450,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Not_Admitted_Doc.PDF</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>FTPA_Not_Admitted_Doc.PDF</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaDecision.date },
@@ -5455,7 +5462,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5478,10 +5485,10 @@ describe('DetailViewController', () => {
         ftpaRespondentDecisionOutcomeType: 'refused',
         ftpaApplicationRespondentDocument: document
       };
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       await getFtpaDecisionDetails(req as Request, res as Response, next);
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 
@@ -5530,7 +5537,7 @@ describe('DetailViewController', () => {
 
       getDirectionHistory(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('detail-viewers/direction-history-viewer.njk', {
+      expect(renderStub).to.be.calledWith('detail-viewers/direction-history-viewer.njk', {
         title: i18n.pages.detailViewers.directionHistory.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -5558,7 +5565,7 @@ describe('DetailViewController', () => {
 
       getDirectionHistory(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('detail-viewers/direction-history-viewer.njk', {
+      expect(renderStub).to.be.calledWith('detail-viewers/direction-history-viewer.njk', {
         title: i18n.pages.detailViewers.directionHistory.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -5571,7 +5578,7 @@ describe('DetailViewController', () => {
 
       getDirectionHistory(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('detail-viewers/direction-history-viewer.njk', sinon.match({
+      expect(renderStub).to.be.calledWith('detail-viewers/direction-history-viewer.njk', sinon.match({
         title: i18n.pages.detailViewers.directionHistory.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -5584,7 +5591,7 @@ describe('DetailViewController', () => {
 
       getDirectionHistory(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('detail-viewers/direction-history-viewer.njk', sinon.match({
+      expect(renderStub).to.be.calledWith('detail-viewers/direction-history-viewer.njk', sinon.match({
         title: i18n.pages.detailViewers.directionHistory.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -5595,10 +5602,10 @@ describe('DetailViewController', () => {
       req.session.appeal.directions = directions;
       req.params.id = '123456789';
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.render = renderStub.throws(error);
 
       getDirectionHistory(req as Request, res as Response, next);
-      expect(next).to.have.been.calledWith(error);
+      expect(next.calledWith(error)).to.equal(true);
     });
 
   });
@@ -5657,7 +5664,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.common.document },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -5665,7 +5672,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.common.document },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>' }
           }
         ]
       };
@@ -5679,7 +5686,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.common.document },
-              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
+              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>' }
             },
             {
               key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -5687,7 +5694,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.common.document },
-              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf</a>` }
+              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf</a>' }
             },
             {
               key: { text: i18n.pages.detailViewers.decisionsAndReasons.summariseChanges },
@@ -5704,7 +5711,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.common.document },
-              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
+              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>' }
             }
           ],
           title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + '2'
@@ -5713,7 +5720,7 @@ describe('DetailViewController', () => {
 
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/updated-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/updated-details-viewer.njk', {
         title: i18n.pages.detailViewers.decisionsAndReasons.title,
         originalSubTitle: i18n.pages.detailViewers.decisionsAndReasons.originalSubTitle,
         description: i18n.pages.detailViewers.decisionsAndReasons.description,
@@ -5725,10 +5732,10 @@ describe('DetailViewController', () => {
       it('should catch error and call next with it', async () => {
         req.session.appeal.finalDecisionAndReasonsDocuments = documents;
         const error = new Error('an error');
-        res.render = sandbox.stub().throws(error);
+        res.render = renderStub.throws(error);
 
         await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
-        expect(next).to.have.been.calledWith(error);
+        expect(next.calledWith(error)).to.equal(true);
       });
     });
   });
@@ -5787,7 +5794,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.common.document },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>' }
           },
           {
             key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -5795,7 +5802,7 @@ describe('DetailViewController', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.common.document },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>` }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>' }
           }
         ]
       };
@@ -5809,7 +5816,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.common.document },
-              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
+              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>' }
             },
             {
               key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -5817,7 +5824,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.common.document },
-              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf</a>` }
+              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8\'>PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf</a>' }
             },
             {
               key: { text: i18n.pages.detailViewers.decisionsAndReasons.summariseChanges },
@@ -5834,7 +5841,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.common.document },
-              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
+              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db\'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>' }
             }
           ],
           title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + '2'
@@ -5843,7 +5850,7 @@ describe('DetailViewController', () => {
 
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/updated-details-viewer.njk', {
+      expect(renderStub).to.be.calledWith('templates/updated-details-viewer.njk', {
         title: i18n.pages.detailViewers.decisionsAndReasons.title,
         originalSubTitle: i18n.pages.detailViewers.decisionsAndReasons.originalSubTitle,
         description: i18n.pages.detailViewers.decisionsAndReasons.description,
@@ -5855,10 +5862,10 @@ describe('DetailViewController', () => {
       it('should catch error and call next with it', async () => {
         req.session.appeal.finalDecisionAndReasonsDocuments = documents;
         const error = new Error('an error');
-        res.render = sandbox.stub().throws(error);
+        res.render = renderStub.throws(error);
 
         await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
-        expect(next).to.have.been.calledWith(error);
+        expect(next.calledWith(error)).to.equal(true);
       });
     });
   });
@@ -5911,7 +5918,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
-              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/6fc7d1fd-f9c3-418f-a767-ba5c00c0863f'>CA-2023-000001-Decision-to-remit.pdf</a>` }
+              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/6fc7d1fd-f9c3-418f-a767-ba5c00c0863f\'>CA-2023-000001-Decision-to-remit.pdf</a>' }
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel },
@@ -5919,7 +5926,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
-              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/7a1e760b-670f-4029-bcb3-17c640971a1f'>upload-test-other-remittal-doc.pdf</a>` }
+              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/7a1e760b-670f-4029-bcb3-17c640971a1f\'>upload-test-other-remittal-doc.pdf</a>' }
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.documentDescriptionLabel },
@@ -5936,7 +5943,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
-              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/6fc7d1fd-f9c3-418f-a767-ba5c00c08635'>CA-2023-000002-Decision-to-remit.pdf</a>` }
+              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/6fc7d1fd-f9c3-418f-a767-ba5c00c08635\'>CA-2023-000002-Decision-to-remit.pdf</a>' }
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel },
@@ -5944,7 +5951,7 @@ describe('DetailViewController', () => {
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
-              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/7a1e760b-670f-4029-bcb3-17c640971a15'>upload-test-other-remittal-doc.pdf</a>` }
+              value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/7a1e760b-670f-4029-bcb3-17c640971a15\'>upload-test-other-remittal-doc.pdf</a>' }
             },
             {
               key: { text: i18n.pages.detailViewers.remittalDocuments.documentDescriptionLabel },
@@ -5956,7 +5963,7 @@ describe('DetailViewController', () => {
       ];
 
       await getRemittalDocumentsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-viewer-remittal.njk', {
+      expect(renderStub).to.be.calledWith('templates/details-viewer-remittal.njk', {
         title: i18n.pages.detailViewers.remittalDocuments.title,
         remittalDocs: expectedSummaryList,
         previousPage: paths.common.overview
@@ -5965,10 +5972,10 @@ describe('DetailViewController', () => {
       it('should catch error and call next with it', async () => {
         req.session.appeal.remittalDocuments = remittalDocuments;
         const error = new Error('an error');
-        res.render = sandbox.stub().throws(error);
+        res.render = renderStub.throws(error);
 
         await getRemittalDocumentsViewer(req as Request, res as Response, next);
-        expect(next).to.have.been.calledWith(error);
+        expect(next.calledWith(error)).to.equal(true);
       });
     });
   });

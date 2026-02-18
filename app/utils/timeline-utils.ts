@@ -99,8 +99,7 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
   }
 
   return filteredEvents
-        .map(event => constructEventObject(event, req))
-        .filter(event => event !== null);
+        .map(event => constructEventObject(event, req));
 }
 
 function getApplicationEvents(req: Request): any[] {
@@ -510,7 +509,6 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
     States.APPEAL_SUBMITTED.id,
     States.CLARIFYING_QUESTIONS_SUBMITTED.id,
     States.REASONS_FOR_APPEAL_SUBMITTED.id,
-    States.CASE_BUILDING.id,
     States.CASE_UNDER_REVIEW.id,
     States.AWAITING_REASONS_FOR_APPEAL.id,
     States.RESPONDENT_REVIEW.id,
@@ -518,9 +516,6 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
     States.CMA_REQUIREMENTS_SUBMITTED.id,
     States.CMA_LISTED.id,
     States.SUBMIT_HEARING_REQUIREMENTS.id,
-    States.LISTING.id,
-    States.PREPARE_FOR_HEARING.id,
-    States.REMITTED.id,
     States.ENDED.id
   ];
 

@@ -987,13 +987,13 @@ describe('timeline-utils', () => {
     it('should return relevant events and states when uploadAddendumEvidence feature enabled', () => {
       const eventsAndStates = getEventsAndStates(true, true, false, false);
       expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(18);
-      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(14);
+      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(18);
     });
 
     it('should return relevant events and states when uploadAddendumEvidence feature disabled', () => {
       const eventsAndStates = getEventsAndStates(false, true, false, false);
       expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(14);
-      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(11);
+      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(15);
     });
 
     it('should include uploadAdditionalEvidenceHomeOffice event in appealArgumentSectionEvents', () => {

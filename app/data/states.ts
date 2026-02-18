@@ -31,6 +31,10 @@ export const States = {
     id: 'clarifyingQuestionsAnswersSubmitted',
     name: 'Clarifying Questions submitted'
   },
+  CASE_BUILDING: {
+    id: 'caseBuilding',
+    name: 'Case building'
+  },
   CASE_UNDER_REVIEW: {
     id: 'caseUnderReview',
     name: 'Case under review'
@@ -114,6 +118,10 @@ export const States = {
   ADJOURNED: {
     id: 'adjourned',
     name: 'Adjourned'
+  },
+  REMITTED: {
+    id: 'remitted',
+    name: 'Remitted'
   },
   ENDED: {
     id: 'ended',

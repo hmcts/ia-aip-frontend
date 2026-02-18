@@ -9,6 +9,10 @@ import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { appealHasRemissionOption, paymentForAppealHasBeenMade } from './remission-utils';
+import Logger, { getLogLabel } from './logger';
+
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 import {
   getAppellantApplications,
   getApplicant,
@@ -77,12 +81,26 @@ function constructEventObject(event: HistoryEvent, req: Request) {
  * @param req the request containing the session to update the timeExtensionsMap
  */
 function constructSection(eventsToLookFor: string[], events: HistoryEvent[], states: string[] | null, req: Request) {
+  const hoUploadEvent = events.find(e => e.id === Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id);
+  if (hoUploadEvent) {
+    logger.trace(`[constructSection] Found uploadAdditionalEvidenceHomeOffice event with state.id: ${hoUploadEvent.state?.id}`, logLabel);
+    logger.trace(`[constructSection] States to filter: ${JSON.stringify(states)}`, logLabel);
+    logger.trace(`[constructSection] Event in eventsToLookFor: ${eventsToLookFor.includes(hoUploadEvent.id)}`, logLabel);
+    logger.trace(`[constructSection] State in states: ${states ? states.includes(hoUploadEvent.state?.id) : 'no states filter'}`, logLabel);
+  }
+
   const filteredEvents = states
         ? events.filter(event => eventsToLookFor.includes(event.id) && states.includes(event.state.id))
         : events.filter(event => eventsToLookFor.includes(event.id));
 
+  const hoEventInFiltered = filteredEvents.find(e => e.id === Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id);
+  if (hoUploadEvent && !hoEventInFiltered) {
+    logger.trace(`[constructSection] uploadAdditionalEvidenceHomeOffice was FILTERED OUT`, logLabel);
+  }
+
   return filteredEvents
-        .map(event => constructEventObject(event, req));
+        .map(event => constructEventObject(event, req))
+        .filter(event => event !== null);
 }
 
 function getApplicationEvents(req: Request): any[] {

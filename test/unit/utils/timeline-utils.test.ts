@@ -407,17 +407,21 @@ describe('timeline-utils', () => {
     it('Should construct the timeline section for uploadAdditionalEvidenceHomeOffice event', () => {
       req.session.appeal.timeExtensionEventsMap = [];
       const appealArgumentSectionEvents = [Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id];
+      const appealArgumentSectionStates = [States.SUBMIT_HEARING_REQUIREMENTS.id];
       const history = [
         {
           'id': 'uploadAdditionalEvidenceHomeOffice',
           'createdDate': '2020-04-14T14:53:26.099',
+          'state': {
+            'id': 'submitHearingRequirements'
+          },
           'user': {
             'id': 'home-office'
           }
         }
       ] as HistoryEvent[];
       req.session.appeal.history = history;
-      const result = constructSection(appealArgumentSectionEvents, req.session.appeal.history, null, req as Request);
+      const result = constructSection(appealArgumentSectionEvents, req.session.appeal.history, appealArgumentSectionStates, req as Request);
       expect(result).to.deep.eq(
         [{
           'date': '14 April 2020',

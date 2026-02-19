@@ -8,7 +8,6 @@ import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import Logger, { getLogLabel } from './logger';
 import { appealHasRemissionOption, paymentForAppealHasBeenMade } from './remission-utils';
 import {
   getAppellantApplications,
@@ -22,9 +21,6 @@ import {
   isUpdateTribunalDecideWithRule31,
   isUpdateTribunalDecideWithRule32
 } from './utils';
-
-const logger: Logger = new Logger();
-const logLabel: string = getLogLabel(__filename);
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
@@ -81,22 +77,9 @@ function constructEventObject(event: HistoryEvent, req: Request) {
  * @param req the request containing the session to update the timeExtensionsMap
  */
 function constructSection(eventsToLookFor: string[], events: HistoryEvent[], states: string[] | null, req: Request) {
-  const hoUploadEvent = events.find(e => e.id === Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id);
-  if (hoUploadEvent) {
-    logger.trace(`[constructSection] Found uploadAdditionalEvidenceHomeOffice event with state.id: ${hoUploadEvent.state?.id}`, logLabel);
-    logger.trace(`[constructSection] States to filter: ${JSON.stringify(states)}`, logLabel);
-    logger.trace(`[constructSection] Event in eventsToLookFor: ${eventsToLookFor.includes(hoUploadEvent.id)}`, logLabel);
-    logger.trace(`[constructSection] State in states: ${states ? states.includes(hoUploadEvent.state?.id) : 'no states filter'}`, logLabel);
-  }
-
   const filteredEvents = states
         ? events.filter(event => eventsToLookFor.includes(event.id) && states.includes(event.state.id))
         : events.filter(event => eventsToLookFor.includes(event.id));
-
-  const hoEventInFiltered = filteredEvents.find(e => e.id === Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id);
-  if (hoUploadEvent && !hoEventInFiltered) {
-    logger.trace('[constructSection] uploadAdditionalEvidenceHomeOffice was FILTERED OUT', logLabel);
-  }
 
   return filteredEvents
         .map(event => constructEventObject(event, req));
@@ -335,15 +318,6 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const { application } = req.session.appeal;
   const ccdService = updateAppealService.getCcdService();
   req.session.appeal.history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
-
-  // Debug logging for history events
-  logger.trace(`[getAppealApplicationHistory] All events in history: ${JSON.stringify(req.session.appeal.history.map(e => ({ id: e.id, stateId: e.state?.id })))}`, logLabel);
-  const hoEvent = req.session.appeal.history.find(e => e.id === Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id);
-  if (hoEvent) {
-    logger.trace(`[getAppealApplicationHistory] Found uploadAdditionalEvidenceHomeOffice in history with state.id: ${hoEvent.state?.id}`, logLabel);
-  } else {
-    logger.trace('[getAppealApplicationHistory] uploadAdditionalEvidenceHomeOffice NOT found in history', logLabel);
-  }
 
   const uploadAddendumEvidenceFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
   const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);

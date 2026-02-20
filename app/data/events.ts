@@ -244,6 +244,11 @@ export const Events = {
     summary: 'Mark appeal as remitted',
     description: 'Mark appeal as remitted'
   },
+  SEND_INVITE_TO_NON_LEGAL_REP: {
+    id: 'sendInviteToNonLegalRep',
+    summary: 'Send invite to non legal rep',
+    description: 'Send invite to non legal rep'
+  },
   MARK_APPEAL_PAID: {
     id: 'markAppealPaid',
     summary: 'Mark appeal as paid',

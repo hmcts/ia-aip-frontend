@@ -310,6 +310,12 @@ const paths = {
     privacyPolicy: '/privacy-policy',
     accessibility: '/accessibility-statement'
   },
+  nonLegalRep: {
+    // Non Legal Rep endpoints
+    addNonLegalRep: '/add-non-legal-rep',
+    inviteToCreateAccount: '/add-non-legal-rep/provide-email-create-account',
+    inviteToJoinAppeal: '/add-non-legal-rep/provide-email-join-appeal'
+  },
   makeApplication: {
     // Hearing requests
     askChangeHearing: '/ask-change-hearing',

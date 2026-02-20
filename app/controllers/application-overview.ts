@@ -168,6 +168,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
       const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;
 
+      const showNonLegalRep =  isAppealInProgress(appealStatus);
+
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
         appealRefNumber: appealRefNumber,
@@ -190,6 +192,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showChangeRepresentation,
         showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, ftpaFeatureEnabled),
         showAskForFeeRemission,
+        showNonLegalRep,
         showAskForSomethingInEndedState,
         isPostDecisionState: isPostDecisionState(appealStatus, ftpaFeatureEnabled)
       });

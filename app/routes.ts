@@ -180,6 +180,9 @@ import { setupSubmitHearingRequirementsTaskListController } from './controllers/
 import { setupYourHearingNeedsController } from './controllers/hearing-requirements/your-hearing-needs';
 import { setupIdamController } from './controllers/idam';
 import { setupMakeApplicationControllers } from './controllers/make-application/setup-application-controllers';
+import {
+  setupNonLegalRepresentativeControllers
+} from './controllers/non-legal-representative/add-non-legal-representative';
 import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-country/ooc-feature-toggle';
 import {
   setupCheckAndSendController as setupReasonsForAppealCheckAndSendController
@@ -343,6 +346,7 @@ const hearingRequirementConfirmationController = setupHearingRequirementsConfirm
 const outOfCountryController = setupOutOfCountryController(middleware, updateAppealService);
 const makeApplicationControllers = setupMakeApplicationControllers(middleware, updateAppealService, documentManagementService);
 const changeRepresentationControllers = setupChangeRepresentationControllers(middleware);
+const nonLegalRepresentativeControllers = setupNonLegalRepresentativeControllers(middleware, updateAppealService);
 const ftpaApplicationControlers = setupFtpaApplicationController(middleware, updateAppealService, documentManagementService);
 
 const hearingBundleFeatureToggleController = setupHearingBundleFeatureToggleController(middleware);
@@ -469,6 +473,7 @@ router.use(provideMoreEvidence);
 router.use(outOfCountryController);
 router.use(makeApplicationControllers);
 router.use(changeRepresentationControllers);
+router.use(nonLegalRepresentativeControllers);
 router.use(ftpaApplicationControlers);
 
 router.use(hearingBundleFeatureToggleController);

@@ -210,6 +210,7 @@ declare global {
     updatedDecisionAndReasons?: DecisionAndReasons[];
     sourceOfRemittal?: string;
     remittalDocuments?: RemittalDetails[];
+    nlrEmail?: string;
   }
 
   interface Hearing {

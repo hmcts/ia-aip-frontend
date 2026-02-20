@@ -191,6 +191,7 @@ function DOBValidation(obj: any, errors): boolean | ValidationErrors {
 
   return validate(toValidate, schema, true);
 }
+
 function appellantNamesValidation(obj: object) {
   const schema = Joi.object({
     givenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.givenNames }),
@@ -258,10 +259,10 @@ function interpreterLanguageSelectionValidation(obj: object) {
     languageManualEntry: Joi.string().empty(''),
     'languageManualEntryDescription': Joi.alternatives().conditional(
       'languageManualEntry', {
-      is: 'Yes',
-      then: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.hearingRequirements.interpreterLanguageSelection.enterLanguageManually }),
-      otherwise: Joi.any()
-    })
+        is: 'Yes',
+        then: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.hearingRequirements.interpreterLanguageSelection.enterLanguageManually }),
+        otherwise: Joi.any()
+      })
   }).xor('languageRefData', 'languageManualEntry').messages({
     'object.missing': i18n.validationErrors.hearingRequirements.interpreterLanguageSelection.selectLanguage,
     'object.xor': i18n.validationErrors.hearingRequirements.interpreterLanguageSelection.selectOneOptionOnly
@@ -275,25 +276,25 @@ function contactDetailsValidation(obj: object) {
     contactDetails: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.contactDetails.selectOneOption }),
     'email-value': Joi.alternatives().conditional(
       'contactDetails', {
-      is: Joi.string().regex(/email/),
-      then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
-        .email({ minDomainSegments: 2, allowUnicode: false }).messages({
-          'string.empty': i18n.validationErrors.emailEmpty,
-          'string.email': i18n.validationErrors.emailFormat
-        }),
-      otherwise: Joi.any()
-    }),
+        is: Joi.string().regex(/email/),
+        then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
+          .email({ minDomainSegments: 2, allowUnicode: false }).messages({
+            'string.empty': i18n.validationErrors.emailEmpty,
+            'string.email': i18n.validationErrors.emailFormat
+          }),
+        otherwise: Joi.any()
+      }),
     'text-message-value': Joi.alternatives().conditional(
       'contactDetails', {
-      is: Joi.string().regex(/text-message/),
-      then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
-        .messages({
-          'string.empty': i18n.validationErrors.phoneEmpty,
-          'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
-          'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
-        }),
-      otherwise: Joi.any()
-    })
+        is: Joi.string().regex(/text-message/),
+        then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
+          .messages({
+            'string.empty': i18n.validationErrors.phoneEmpty,
+            'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
+            'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
+          }),
+        otherwise: Joi.any()
+      })
   }).unknown();
   return validate(obj, schema);
 }
@@ -501,8 +502,8 @@ function sponsorAddressValidation(obj: object): null | ValidationErrors {
     ['address-county']: Joi.string().optional().empty(''),
     ['address-line-2']: Joi.string().optional().empty(''),
     ['address-postcode']: Joi.string().optional().regex(postcodeRegex).messages({
-          'string.pattern.base': i18n.validationErrors.postcode.invalid,
-          'string.empty': i18n.validationErrors.sponsorAddress.postcodeRequired
+      'string.pattern.base': i18n.validationErrors.postcode.invalid,
+      'string.empty': i18n.validationErrors.sponsorAddress.postcodeRequired
     })
   }).unknown();
   return validate(obj, schema);
@@ -512,26 +513,26 @@ function sponsorContactDetailsValidation(obj: object) {
   const schema = Joi.object({
     sponsorContactDetails: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorContactDetails.selectOneOption }),
     'email-value': Joi.alternatives().conditional(
-        'sponsorContactDetails', {
-          is: Joi.string().regex(/email/),
-          then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
-              .email({ minDomainSegments: 2, allowUnicode: false }).messages({
-                'string.empty': i18n.validationErrors.emailEmpty,
-                'string.email': i18n.validationErrors.emailFormat
-              }),
-          otherwise: Joi.any()
-        }),
+      'sponsorContactDetails', {
+        is: Joi.string().regex(/email/),
+        then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
+          .email({ minDomainSegments: 2, allowUnicode: false }).messages({
+            'string.empty': i18n.validationErrors.emailEmpty,
+            'string.email': i18n.validationErrors.emailFormat
+          }),
+        otherwise: Joi.any()
+      }),
     'text-message-value': Joi.alternatives().conditional(
-        'sponsorContactDetails', {
-          is: Joi.string().regex(/text-message/),
-          then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164').defaultCountry('GB')
-              .messages({
-                'string.empty': i18n.validationErrors.phoneEmpty,
-                'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.ukPhoneFormat,
-                'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.ukPhoneFormat
-              }),
-          otherwise: Joi.any()
-        })
+      'sponsorContactDetails', {
+        is: Joi.string().regex(/text-message/),
+        then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164').defaultCountry('GB')
+          .messages({
+            'string.empty': i18n.validationErrors.phoneEmpty,
+            'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.ukPhoneFormat,
+            'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.ukPhoneFormat
+          }),
+        otherwise: Joi.any()
+      })
   }).unknown();
 
   return validate(obj, schema);
@@ -547,7 +548,7 @@ function sponsorAuthorisationValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
-function isDateInRange(dateFrom: string, dateTo: string, obj,dateMissingErrMsg: string): boolean | ValidationErrors {
+function isDateInRange(dateFrom: string, dateTo: string, obj, dateMissingErrMsg: string): boolean | ValidationErrors {
   const errorMessage = `Enter a date between ${dateFrom} and ${dateTo}`;
   const { year, month, day } = obj;
   const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
@@ -637,6 +638,17 @@ function deportationOrderOptionsValidation(obj: object): null | ValidationErrors
   return validate(obj, schema);
 }
 
+function emailAddressValidation(obj: object) {
+  const schema = Joi.object({
+    emailAddress: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
+      .email({ minDomainSegments: 2, allowUnicode: false }).messages({
+        'string.empty': i18n.validationErrors.emailEmpty,
+        'string.email': i18n.validationErrors.emailFormat
+      }),
+  }).unknown();
+  return validate(obj, schema);
+}
+
 export {
   createStructuredError,
   contactDetailsValidation,
@@ -683,5 +695,6 @@ export {
   asylumSupportValidation,
   helpWithFeesValidation,
   helpWithFeesRefNumberValidation,
+  emailAddressValidation,
   deportationOrderOptionsValidation
 };

@@ -135,7 +135,7 @@
               <p><a class='govuk-link' href='{{ paths.ftpa.ftpaApplication }}'>{{ i18n.pages.overviewPage.applyForFtpa }}</a></p>
             </div>
           {% endif %}
-          {% if showPayLaterLink or provideMoreEvidenceSection or showAppealRequests %}
+          {% if showPayLaterLink or provideMoreEvidenceSection or showAppealRequests or showNonLegalRep %}
             <div class="side-menu__section">
               <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.iWantTo }}</h2>
               {% if showPayLaterLink %}
@@ -148,7 +148,10 @@
                 <p><a class="govuk-link" href='{{ paths.makeApplication.withdraw }}'>{{ i18n.pages.overviewPage.withdrawAppeal }}</a></p>
               {% endif %}
               {% if showAskForFeeRemission %}
-                    <p><a class="govuk-link" href='{{ paths.appealSubmitted.feeSupportRefund }}'>{{ i18n.pages.overviewPage.askForFeeRemission }}</a></p>
+                <p><a class="govuk-link" href='{{ paths.appealSubmitted.feeSupportRefund }}'>{{ i18n.pages.overviewPage.askForFeeRemission }}</a></p>
+              {% endif %}
+              {% if showNonLegalRep %}
+                <p><a class="govuk-link" href='{{ paths.nonLegalRep.addNonLegalRep }}'>{{ i18n.pages.overviewPage.addNlr }}</a></p>
               {% endif %}
             </div>
           {% endif %}

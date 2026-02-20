@@ -804,6 +804,7 @@ export default class UpdateAppealService {
       ...appeal.paymentReference && { paymentReference: appeal.paymentReference },
       ...appeal.paymentStatus && { paymentStatus: appeal.paymentStatus },
       ...appeal.paymentDate && { paymentDate: appeal.paymentDate },
+      ...appeal.nlrEmail && { nlrEmail: appeal.nlrEmail },
       ...appeal.isFeePaymentEnabled && { isFeePaymentEnabled: appeal.isFeePaymentEnabled },
       ...paymentsFlag && { paAppealTypeAipPaymentOption: appeal.paAppealTypeAipPaymentOption || null },
       ...paymentsFlag && { pcqId: appeal.pcqId || null },

@@ -283,6 +283,7 @@ interface CaseData {
   sourceOfRemittal?: string;
   remittalDocuments: Collection<CcdRemittalDetails>[];
   refundConfirmationApplied?: string;
+  nlrEmail?: string;
   deportationOrderOptions?: string;
 }
 

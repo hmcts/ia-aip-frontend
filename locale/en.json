@@ -555,6 +555,19 @@
       "downloadInstructions": "Click the download button to save a document that you can email or post to your legal representative. The document includes all the information your legal representative will need to access your case.",
       "downloadButton": "Document download"
     },
+    "addNonLegalRepresentative": {
+      "title": "Add a non legal representative",
+      "stepOne": "Step 1: Provide the email address of your non legal representative",
+      "instructionsPartOne": "If you want to add a non legal representative to be able to view and track your appeal, you will need to provide their email address so they can be invited to create an account.",
+      "linkPartOne": "Invite to create an account",
+      "stepTwo": "Step 2: Provide the email address of your non legal representative",
+      "instructionsPartTwo": "Once your non legal representative has created an account, you will need re-enter their email address so we can verify their account has been created and send them instructions to access your case.",
+      "linkPartTwo": "Invite to join the appeal"
+    },
+    "inviteNlrToCreateAccount": {
+      "title": "Invite a non legal representative to create an account",
+      "enterEmail": "Enter the email address of your non legal representative"
+    },
     "startRepresentingYourself": {
       "title": "Start representing yourself",
       "instructions": "You no longer have a legal representative for this appeal. To start representing yourself, you must enter the online case reference number and security code from the email, text message or letter we sent you.",
@@ -892,6 +905,7 @@
       "iWantTo": "I want to...",
       "withdrawAppeal": "Withdraw my appeal",
       "askForFeeRemission": "Ask for a fee remission",
+      "addNlr": "Add a non legal representative",
       "appealRequests": {
         "sectionHeading": "Appeal requests",
         "askToChangeDetails": "Ask to change some of your details",

@@ -1,0 +1,41 @@
+{% set pageTitleName = i18n.pages.contactDetails.header %}
+{% extends "layout.njk" %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% import "helpers/text-helpers.njk" as text %}
+
+{% block content %}
+
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+
+  <form action="{{ paths.nonLegalRep.inviteToCreateAccount }}" method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukInput({
+      id: "emailAddress",
+      name: "emailAddress",
+      type: "email",
+      value: nlrEmail,
+      classes: "govuk-!-width-one-third",
+      label: {
+        text: i18n.pages.inviteNlrToCreateAccount.enterEmail
+      },
+      attributes: {
+        spellcheck: "false"
+      },
+      errorMessage: {
+        text: errors['emailAddress'].text
+      } if errors['emailAddress']
+    }) }}
+    {{ saveButton({name: 'send', text: 'Send Invite'}) }}
+  </form>
+
+  {{ contactUs() }}
+
+{% endblock %}

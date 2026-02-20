@@ -12,16 +12,16 @@
   "regexManagers": [
     {
       "fileMatch": [
-        "^Dockerfile$"
+        "(^|/)Dockerfile$"
       ],
       "matchStrings": [
-        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sARG .*?_VERSION=(?<currentValue>.*)\\s"
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?\\s+ARG \\w+_VERSION=(?<currentValue>[^\\s]+)"
       ]
     }
   ],
   "packageRules": [
     {
-      "matchPackagePatterns": [
+      "matchPackageNames": [
         "*"
       ],
       "matchUpdateTypes": [
@@ -30,11 +30,17 @@
       ],
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch",
-      "automerge": true
+      "automerge": "pr"
+    },
+    {
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
     }
   ],
   "timezone": "Europe/London",
   "schedule": [
-    "before 3am every weekday"
-    ]
+    "before 3am on every weekday"
+  ]
 }

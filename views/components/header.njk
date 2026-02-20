@@ -1,21 +1,28 @@
+{% from "govuk/components/header/macro.njk" import govukHeader %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+
+{% set serviceName %}{{ i18n.serviceName }}{% endset %}
+{% set serviceUrl %}{{ paths.common.start }}{% endset %}
+{% set navigationEndHtml %}
+  {% if authenticated %}
+  <li class="govuk-service-navigation__item govuk-service-navigation__navigation-end"><a class="govuk-service-navigation__link" href="/logout">{{ i18n.components.header.signOut }}</a></li>
+  {% endif %}
+{% endset %}
+
 {% macro header() %}
-  <header class="govuk-header " role="banner" data-module="govuk-header">
-    <div class="govuk-header__container govuk-width-container">
-      <div class="govuk-header__logo">
-        <span class="govuk-header__logotype">
-          <img src="/assets/images/hmcts-logo-compress.svg" alt="{{ i18n.providerLongName }}" >
-        </span>
-      </div>
-      <div class="govuk-header__content govuk-header__content--flex">
-        <a href={{ paths.common.start }} class="govuk-header__link govuk-header__link--service-name">
-          {{ i18n.serviceName }}
-        </a>
-        {% if authenticated %}
-          <a href="/logout" class="govuk-header__link govuk-header__link--service-name govuk-header__link--signout">
-            {{ i18n.components.header.signOut }}
-          </a>
-        {% endif %}
-      </div>
-    </div>
-  </header>
+{{ govukHeader({
+  homepageUrl: "https://www.gov.uk/",
+  classes: "govuk-header--full-width-border",
+  rebrand: true
+}) }}
+{{ govukServiceNavigation({
+  serviceName: serviceName,
+  serviceUrl: serviceUrl,
+  slots: {
+    navigationEnd: navigationEndHtml
+  },
+  rebrand: true
+}) }}
 {% endmacro %}
+
+

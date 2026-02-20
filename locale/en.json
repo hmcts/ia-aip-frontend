@@ -1408,6 +1408,16 @@
             }
           ]
         },
+        "uploadAdditionalEvidenceHomeOffice": {
+          "text": "The Home Office uploaded additional evidence.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "Home Office documents",
+              "href": "{{ paths.common.homeOfficeDocumentsViewer }}"
+            }
+          ]
+        },
         "submitAppeal": {
           "text": "You sent your appeal details to the Tribunal.",
           "links": [

@@ -447,6 +447,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
   ];
   const appealArgumentSectionEvents = [
     Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+    Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id,
     Events.SUBMIT_REASONS_FOR_APPEAL.id,
     Events.BUILD_CASE.id,
     Events.REQUEST_RESPONDENT_REVIEW.id,

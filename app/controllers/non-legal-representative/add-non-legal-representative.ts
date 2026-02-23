@@ -1,28 +1,21 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import _ from 'lodash';
-import { OSPlacesClient } from '../../clients/OSPlacesClient';
+import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { DocmosisService } from '../../service/docmosis-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
-import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { getRedirectPage } from '../../utils/utils';
-import { emailAddressValidation, sponsorContactDetailsValidation } from '../../utils/validations/fields-validations';
-import { ContactDetailsControllerDependencies } from '../appeal-application/contact-details';
+import { emailAddressValidation } from '../../utils/validations/fields-validations';
 
 const docmosis: DocmosisService = new DocmosisService();
 
-function getAddNonLegalRepresentative() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      return res.render('non-legal-rep/add-non-legal-representative.njk', {
-        previousPage: paths.common.overview
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
+function getAddNonLegalRepresentative(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('non-legal-rep/add-non-legal-representative.njk', {
+      previousPage: paths.common.overview
+    });
+  } catch (error) {
+    next(error);
+  }
 }
 
 function getInviteToCreateAccount(req: Request, res: Response, next: NextFunction) {
@@ -57,18 +50,31 @@ function postInviteToCreateAccount(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      return res.redirect(paths.appealStarted.sponsorAuthorisation);
+      return res.redirect(paths.nonLegalRep.inviteToCreateAccountConfirmation);
     } catch (error) {
       next(error);
     }
   };
 }
 
+function getInviteToCreateAccountConfirmationPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.render('templates/confirmation-page.njk', {
+      title: i18n.pages.inviteNlrToCreateAccount.confirmation.title,
+      whatNextListItems: i18n.pages.inviteNlrToCreateAccount.confirmation.whatNextListItems,
+      nlrEmail: req.session.appeal?.nlrEmail
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
 function setupNonLegalRepresentativeControllers(middleware: Middleware[], updateAppealService: UpdateAppealService,): Router {
   const router = Router();
-  router.get(paths.nonLegalRep.addNonLegalRep, middleware, getAddNonLegalRepresentative());
+  router.get(paths.nonLegalRep.addNonLegalRep, middleware, getAddNonLegalRepresentative);
   router.get(paths.nonLegalRep.inviteToCreateAccount, middleware, getInviteToCreateAccount);
   router.post(paths.nonLegalRep.inviteToCreateAccount, middleware, postInviteToCreateAccount(updateAppealService));
+  router.post(paths.nonLegalRep.inviteToCreateAccountConfirmation, middleware, getInviteToCreateAccountConfirmationPage);
   return router;
 }
 

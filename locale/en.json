@@ -566,7 +566,15 @@
     },
     "inviteNlrToCreateAccount": {
       "title": "Invite a non legal representative to create an account",
-      "enterEmail": "Enter the email address of your non legal representative"
+      "enterEmail": "Enter the email address of your non legal representative",
+      "confirmation": {
+        "title": "You have invited a non legal representative to create an account",
+        "whatNextListItems": [
+          "Your non legal representative will receive an email invitation to create an account",
+          "This has been sent to the email address you provided - {{ nlrEmail }}",
+          "Once your non legal representative has created an account, you will need to re-enter their email address so we can verify their account has been created and send them instructions to access your case"
+        ]
+      }
     },
     "startRepresentingYourself": {
       "title": "Start representing yourself",

@@ -284,6 +284,7 @@ interface CaseData {
   remittalDocuments: Collection<CcdRemittalDetails>[];
   refundConfirmationApplied?: string;
   nlrEmail?: string;
+  sentFromFrontend?: 'Yes' | 'No';
   deportationOrderOptions?: string;
 }
 
@@ -471,4 +472,18 @@ interface InterpreterLanguageRefData {
 interface Value {
   code?: string;
   label?: string;
+}
+
+interface MidEventDetails {
+  case_reference: string;
+  data: any;
+  event: CcdEvent,
+  event_data: any,
+  ignore_warning: boolean;
+}
+
+interface MidEventResponse {
+  status?: number,
+  callbackErrors?: string[]
+  data?: any
 }

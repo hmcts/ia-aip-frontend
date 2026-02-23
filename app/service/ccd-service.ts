@@ -48,6 +48,7 @@ function generateSupplementaryId(): Record<string, Record<string, string>> {
 class CcdService {
   private createOptions(userId: string, headers: SecurityHeaders) {
     return {
+      validateStatus: () => true,
       headers: {
         Authorization: headers.userToken,
         ServiceAuthorization: headers.serviceToken,
@@ -164,6 +165,17 @@ class CcdService {
       ignore_warning: true,
       supplementary_data_request: supplementaryDataRequest
     });
+  }
+
+  async validateMidEvent(midEventDetails: MidEventDetails, pageId: string, userId: string, headers: SecurityHeaders): Promise<MidEventResponse> {
+    const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/validate?pageId=${pageId}`;
+    const options: any = this.createOptions(
+      userId,
+      headers
+    );
+
+    const response = await axios.post(url, midEventDetails, options);
+    return response.data;
   }
 
   async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {

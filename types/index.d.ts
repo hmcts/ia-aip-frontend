@@ -211,6 +211,7 @@ declare global {
     sourceOfRemittal?: string;
     remittalDocuments?: RemittalDetails[];
     nlrEmail?: string;
+    sentFromFrontend?: 'Yes' | 'No';
   }
 
   interface Hearing {

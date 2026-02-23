@@ -571,8 +571,23 @@
         "title": "You have invited a non legal representative to create an account",
         "whatNextListItems": [
           "Your non legal representative will receive an email invitation to create an account.",
-          "This has been sent to the email address you provided - <b>{{ nlrEmail }}</b>.",
+          "This will be sent to the email address you provided - <b>{{ nlrEmail }}</b>.",
           "Once your non legal representative has created an account, you will need to re-enter their email address so we can verify their account has been created and send them instructions to access your case."
+        ]
+      }
+    },
+    "inviteNlrToJoinAppeal": {
+      "title": "Invite a non legal representative to join your appeal",
+      "enterEmail": "Enter the email address of your non legal representative",
+      "userNotExistsError": "The email address that you have entered has not signed up to HMCTS services.",
+      "advice": "If you want to add a non legal representative to be able to view and track your appeal, you will need invite them to create an account by providing their email address",
+      "adviceLink": "<a class=\"govuk-link\" href=\"{{ paths.nonLegalRep.inviteToCreateAccount }}\">here</a>",
+      "confirmation": {
+        "title": "You have invited a non legal representative to join your appeal",
+        "whatNextListItems": [
+          "Your non legal representative will receive an email containing a code and instructions on how to join your appeal.",
+          "This will be sent to the email address you provided - <b>{{ nlrEmail }}</b>.",
+          "Once your non legal representative has successfully joined your appeal, you will both receive a notification and they will be able to view and track your appeal."
         ]
       }
     },

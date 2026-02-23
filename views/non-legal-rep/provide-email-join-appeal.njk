@@ -1,0 +1,45 @@
+{% set pageTitleName = i18n.pages.contactDetails.header %}
+{% extends "layout.njk" %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% import "helpers/text-helpers.njk" as text %}
+
+{% block content %}
+
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  {% if shouldAdviceShow %}
+    <div class="govuk-inset-text">
+      <p>{{ i18n.pages.inviteNlrToJoinAppeal.advice }} <a class="govuk-link" href="{{ paths.nonLegalRep.inviteToCreateAccount }}">here</a>.</p>
+    </div>
+  {% endif %}
+  <form action="{{ paths.nonLegalRep.inviteToJoinAppeal }}" method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukInput({
+      id: "emailAddress",
+      name: "emailAddress",
+      type: "email",
+      value: nlrEmail,
+      classes: "govuk-!-width-one-third",
+      label: {
+        text: i18n.pages.inviteNlrToJoinAppeal.enterEmail
+      },
+      attributes: {
+        spellcheck: "false"
+      },
+      errorMessage: {
+        text: errors['emailAddress'].text
+      } if errors['emailAddress']
+    }) }}
+    {{ saveButton({name: 'send', text: 'Send Code'}) }}
+  </form>
+
+  {{ contactUs() }}
+
+{% endblock %}

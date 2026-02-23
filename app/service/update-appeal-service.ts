@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
+import { Events } from '../data/events';
 import { formatDate } from '../utils/date-utils';
 import { boolToYesNo, documentIdToDocStoreUrl, extendedBoolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
@@ -108,6 +109,44 @@ export default class UpdateAppealService {
       userToken: `Bearer ${userToken}`,
       serviceToken: await this._s2sService.getServiceToken()
     };
+    const caseData: CaseData = this.convertToCcdCaseData(appeal, paymentsFlag, refundFlag);
+    const updatedCcdCase: CcdCaseDetails = {
+      id: appeal.ccdCaseId,
+      state: appeal.appealStatus,
+      case_data: caseData
+    };
+    const ccdCase: CcdCaseDetails = await this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders);
+    return this.mapCcdCaseToAppeal(ccdCase);
+  }
+
+  async validateMidEvent(event, pageIds: string[], appeal: Appeal, midEventData: any, uid: string, userToken: string): Promise<string[]> {
+    const securityHeaders: SecurityHeaders = {
+      userToken: `Bearer ${userToken}`,
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+    const midEventDetails: MidEventDetails = {
+      case_reference: appeal.ccdCaseId,
+      data: midEventData,
+      event_data: midEventData,
+      event: event,
+      ignore_warning: false
+    };
+    const errors: string[] = [];
+    for (const pageId of pageIds) {
+      const response: MidEventResponse = await this._ccdService.validateMidEvent(midEventDetails, pageId, uid, securityHeaders);
+      if (response.status === 422 && response?.callbackErrors.length > 0) {
+        errors.push(...response.callbackErrors);
+      }
+    }
+    return errors;
+  }
+
+  async submitEventWithMidEvents(event, appeal: Appeal, uid: string, userToken: string, paymentsFlag = false, refundFlag = false): Promise<Appeal> {
+    const securityHeaders: SecurityHeaders = {
+      userToken: `Bearer ${userToken}`,
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+
     const caseData: CaseData = this.convertToCcdCaseData(appeal, paymentsFlag, refundFlag);
     const updatedCcdCase: CcdCaseDetails = {
       id: appeal.ccdCaseId,
@@ -805,6 +844,7 @@ export default class UpdateAppealService {
       ...appeal.paymentStatus && { paymentStatus: appeal.paymentStatus },
       ...appeal.paymentDate && { paymentDate: appeal.paymentDate },
       ...appeal.nlrEmail && { nlrEmail: appeal.nlrEmail },
+      ...appeal.sentFromFrontend && { sentFromFrontend: appeal.sentFromFrontend },
       ...appeal.isFeePaymentEnabled && { isFeePaymentEnabled: appeal.isFeePaymentEnabled },
       ...paymentsFlag && { paAppealTypeAipPaymentOption: appeal.paAppealTypeAipPaymentOption || null },
       ...paymentsFlag && { pcqId: appeal.pcqId || null },

@@ -45,6 +45,7 @@ function postInviteToCreateAccount(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         nlrEmail: req.body['emailAddress']
       };
+      req.session.appeal.nlrEmail = appeal.nlrEmail;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SEND_INVITE_TO_NON_LEGAL_REP, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
@@ -74,7 +75,7 @@ function setupNonLegalRepresentativeControllers(middleware: Middleware[], update
   router.get(paths.nonLegalRep.addNonLegalRep, middleware, getAddNonLegalRepresentative);
   router.get(paths.nonLegalRep.inviteToCreateAccount, middleware, getInviteToCreateAccount);
   router.post(paths.nonLegalRep.inviteToCreateAccount, middleware, postInviteToCreateAccount(updateAppealService));
-  router.post(paths.nonLegalRep.inviteToCreateAccountConfirmation, middleware, getInviteToCreateAccountConfirmationPage);
+  router.get(paths.nonLegalRep.inviteToCreateAccountConfirmation, middleware, getInviteToCreateAccountConfirmationPage);
   return router;
 }
 

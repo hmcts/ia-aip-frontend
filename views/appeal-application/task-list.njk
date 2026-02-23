@@ -32,13 +32,13 @@
                      href='{{ i18n.pages.taskList[task.id].path | path }}'
                      title='{{ i18n.pages.taskList[task.id].title }}'>
                         {{ govukTag({
-                          text: "TO DO",
+                          text: "To do",
                           classes: "govuk-tag--blue"
                         }) }}
                      </a>
                 {% else %}
                     {{ govukTag({
-                      text: "CANNOT START YET",
+                      text: "Cannot start yet",
                       classes: "govuk-tag--grey"
                     }) }}
                 {% endif %}

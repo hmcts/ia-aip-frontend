@@ -490,7 +490,11 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
     States.CMA_REQUIREMENTS_SUBMITTED.id,
     States.CMA_LISTED.id,
     States.SUBMIT_HEARING_REQUIREMENTS.id,
-    States.ENDED.id
+    States.ENDED.id,
+    States.CASE_BUILDING.id,
+    States.LISTING.id,
+    States.PREPARE_FOR_HEARING.id,
+    States.REMITTED.id
   ];
 
   if (hearingBundleFeatureEnabled) {

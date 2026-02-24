@@ -649,6 +649,14 @@ function emailAddressValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function joinAppealValidation(obj: object) {
+  const schema = Joi.object({
+    caseReference: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.caseReference }),
+    joinAppealAccessCode: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.joinAppealAccessCode })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 function test(errorList: string[]) {
   errorList.map(error => createStructuredError('', error));
   for (const error of errorList) {
@@ -703,5 +711,6 @@ export {
   helpWithFeesValidation,
   helpWithFeesRefNumberValidation,
   emailAddressValidation,
+  joinAppealValidation,
   deportationOrderOptionsValidation
 };

@@ -3,7 +3,6 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
-import { Events } from '../data/events';
 import { formatDate } from '../utils/date-utils';
 import { boolToYesNo, documentIdToDocStoreUrl, extendedBoolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
@@ -11,6 +10,7 @@ import { CcdService } from './ccd-service';
 import { DocumentManagementService } from './document-management-service';
 import LaunchDarklyService from './launchDarkly-service';
 import S2SService from './s2s-service';
+import { SystemAuthenticationService } from './system-authentication-service';
 
 enum Subscriber {
   APPELLANT = 'appellant',
@@ -29,12 +29,14 @@ function isEmpty(text: string) {
 export default class UpdateAppealService {
   private readonly _ccdService: CcdService;
   private readonly _authenticationService: AuthenticationService;
+  private readonly _systemAuthenticationService: SystemAuthenticationService;
   private readonly _s2sService: S2SService;
   private readonly _documentManagementService: DocumentManagementService;
 
-  constructor(ccdService: CcdService, authenticationService: AuthenticationService, s2sService: S2SService = null, documentManagementService: DocumentManagementService) {
+  constructor(ccdService: CcdService, authenticationService: AuthenticationService, systemAuthenticationService: SystemAuthenticationService, s2sService: S2SService = null, documentManagementService: DocumentManagementService) {
     this._ccdService = ccdService;
     this._authenticationService = authenticationService;
+    this._systemAuthenticationService = systemAuthenticationService;
     this._s2sService = s2sService;
     this._documentManagementService = documentManagementService;
   }
@@ -117,6 +119,16 @@ export default class UpdateAppealService {
     };
     const ccdCase: CcdCaseDetails = await this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders);
     return this.mapCcdCaseToAppeal(ccdCase);
+  }
+
+  async submitEventByCaseDetails(event, updatedCcdCase: CcdCaseDetails): Promise<CcdCaseDetails> {
+    const userToken = await this._systemAuthenticationService.getCaseworkSystemToken();
+    const uid = await this._systemAuthenticationService.getCaseworkSystemUUID(userToken);
+    const securityHeaders: SecurityHeaders = {
+      userToken: `Bearer ${userToken}`,
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+    return this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders, true);
   }
 
   async validateMidEvent(event, pageIds: string[], appeal: Appeal, midEventData: any, uid: string, userToken: string): Promise<string[]> {
@@ -424,11 +436,11 @@ export default class UpdateAppealService {
       if (caseData.datesToAvoid.length) {
         isDateCannotAttend = true;
         dates = caseData.datesToAvoid.map((d) => {
-          return {
-            date: this.getDate(d.value.dateToAvoid),
-            reason: d.value.dateToAvoidReason
-          };
-        }
+            return {
+              date: this.getDate(d.value.dateToAvoid),
+              reason: d.value.dateToAvoidReason
+            };
+          }
         );
 
       }
@@ -446,11 +458,11 @@ export default class UpdateAppealService {
       if (caseData.datesToAvoid.length) {
         isDateCannotAttend = true;
         dates = caseData.datesToAvoid.map((d) => {
-          return {
-            date: this.getDate(d.value.dateToAvoid),
-            reason: d.value.dateToAvoidReason
-          };
-        }
+            return {
+              date: this.getDate(d.value.dateToAvoid),
+              reason: d.value.dateToAvoidReason
+            };
+          }
         );
 
       }
@@ -844,7 +856,7 @@ export default class UpdateAppealService {
       ...appeal.paymentStatus && { paymentStatus: appeal.paymentStatus },
       ...appeal.paymentDate && { paymentDate: appeal.paymentDate },
       ...appeal.nlrEmail && { nlrEmail: appeal.nlrEmail },
-      ...appeal.sentFromFrontend && { sentFromFrontend: appeal.sentFromFrontend },
+      ...appeal.nlrDetails && { nlrDetails: appeal.nlrDetails },
       ...appeal.isFeePaymentEnabled && { isFeePaymentEnabled: appeal.isFeePaymentEnabled },
       ...paymentsFlag && { paAppealTypeAipPaymentOption: appeal.paAppealTypeAipPaymentOption || null },
       ...paymentsFlag && { pcqId: appeal.pcqId || null },

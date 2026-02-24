@@ -1,0 +1,31 @@
+{% set pageTitleName = pageTitle %}
+{% extends "layout.njk" %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.joinAppeal.confirmDetails.title }}</h1>
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <p>{{ i18n.pages.joinAppeal.confirmDetails.instructions }}</p>
+
+  {{ govukSummaryList({
+    rows: caseDetails
+  }) }}
+
+  <h2 class="govuk-heading-s">{{ i18n.pages.joinAppeal.confirmDetails.nextStepTitle }}</h3>
+  <p>{{ i18n.pages.joinAppeal.confirmDetails.nextStepInstructions }}</p>
+
+  <form action="{{ paths.nonLegalRep.joinAppealConfirmDetails }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukButton({
+        text: i18n.pages.joinAppeal.confirmDetails.confirmButton,
+        id: i18n.pages.joinAppeal.confirmDetails.confirmButtonId
+    }) }}
+  </form>
+
+{% endblock %}

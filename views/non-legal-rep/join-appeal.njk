@@ -1,0 +1,66 @@
+{% set pageTitleName = i18n.pages.joinAppeal.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% import "helpers/text-helpers.njk" as text %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.joinAppeal.title }}</h1>
+
+  <p>{{ i18n.pages.joinAppeal.instructions }}</p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>{{ i18n.pages.joinAppeal.partOne }}</li>
+    <li>{{ i18n.pages.joinAppeal.partTwo }}</li>
+    <li>{{ i18n.pages.joinAppeal.partThree }}</li>
+   </ul>
+  <p><strong>{{ i18n.pages.joinAppeal.instructionsPartTwo }}</strong></p>
+
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+
+  <form action="{{ paths.nonLegalRep.joinAppeal }}" method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukInput({
+      hint: {
+        text: i18n.pages.joinAppeal.enterCaseReference.hintText
+      },
+      id: "caseReference",
+      name: "caseReference",
+      type: "text",
+      value: caseReference,
+      inputmode: "numeric",
+      classes: "govuk-input--width-10",
+      spellcheck: false,
+      label: {
+        text: i18n.pages.joinAppeal.enterCaseReference.label
+      },
+      errorMessage: {
+        text: errors['caseReference'].text
+      } if errors['caseReference']
+    }) }}
+    {{ govukInput({
+      id: "joinAppealAccessCode",
+      name: "joinAppealAccessCode",
+      type: "text",
+      value: joinAppealAccessCode,
+      classes: "govuk-input--width-10",
+      spellcheck: false,
+      label: {
+        text: i18n.pages.joinAppeal.enterAccessCode.label
+      },
+      errorMessage: {
+        text: errors['joinAppealAccessCode'].text
+      } if errors['joinAppealAccessCode']
+    }) }}
+    {{ saveButton({name: 'send', text: 'Send Code'}) }}
+  </form>
+
+  {{ contactUs() }}
+
+{% endblock %}

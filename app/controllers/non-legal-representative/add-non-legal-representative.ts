@@ -45,7 +45,7 @@ function postInviteToCreateAccount(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         nlrEmail: req.body['emailAddress']
       };
-      req.session.appeal.nlrEmail = appeal.nlrEmail;
+      Object.assign(req.session.appeal, { nlrEmail: appeal.nlrEmail });
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SEND_INVITE_TO_NON_LEGAL_REP, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
@@ -149,6 +149,5 @@ function setupNonLegalRepresentativeControllers(middleware: Middleware[], update
 }
 
 export {
-  getAddNonLegalRepresentative,
   setupNonLegalRepresentativeControllers
 };

@@ -25,10 +25,14 @@ interface CcdCaseDetails {
   case_data: CaseData;
   created_date?: string;
   last_modified?: string;
+  error?: string;
+  message?: string;
 }
 
 interface PinInPost {
   pinUsed: 'Yes' | 'No';
+  expiryDate: Date;
+  accessCode: string;
 }
 
 interface CaseData {
@@ -211,6 +215,7 @@ interface CaseData {
   sponsorMobileNumber?: string;
   sponsorAuthorisation?: string;
   appellantPinInPost?: PinInPost;
+  joinAppealPin?: PinInPost;
   isAppellantAttendingTheHearing?: 'Yes' | 'No';
   isAppellantGivingOralEvidence?: 'Yes' | 'No';
   ftpaApplicantType?: string;
@@ -284,8 +289,15 @@ interface CaseData {
   remittalDocuments: Collection<CcdRemittalDetails>[];
   refundConfirmationApplied?: string;
   nlrEmail?: string;
-  sentFromFrontend?: 'Yes' | 'No';
+  nlrDetails?: NlrDetails;
   deportationOrderOptions?: string;
+}
+
+interface NlrDetails {
+  emailAddress?: string;
+  givenNames?: string;
+  familyName?: string;
+  idamId?: string
 }
 
 interface Application<T> {

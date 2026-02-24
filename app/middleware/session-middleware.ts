@@ -15,8 +15,9 @@ import Logger from '../utils/logger';
 const idamService = new IdamService();
 const authenticationService: AuthenticationService = new AuthenticationService(idamService, S2SService.getInstance());
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
-const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance(), documentManagementService);
-const ccdSystemService: CcdSystemService = new CcdSystemService(new SystemAuthenticationService(), S2SService.getInstance());
+const systemAuthenticationService: SystemAuthenticationService = new SystemAuthenticationService();
+const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, systemAuthenticationService, S2SService.getInstance(), documentManagementService);
+const ccdSystemService: CcdSystemService = new CcdSystemService(systemAuthenticationService, S2SService.getInstance());
 
 const PIN_USED_UPDATE = {
   appellantPinInPost: {

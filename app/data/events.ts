@@ -254,6 +254,11 @@ export const Events = {
     summary: 'Send PIP to non legal rep',
     description: 'Send PIP to non legal rep'
   },
+  JOIN_APPEAL_CONFIRMATION: {
+    id: 'joinAppealConfirmation',
+    summary: 'NLR Joined appeal',
+    description: 'Non Legal Rep joined appeal via PIP'
+  },
   MARK_APPEAL_PAID: {
     id: 'markAppealPaid',
     summary: 'Mark appeal as paid',

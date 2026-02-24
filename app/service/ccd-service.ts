@@ -79,8 +79,8 @@ class CcdService {
     return response.data;
   }
 
-  async startUpdateAppeal(userId: string, caseId: string, eventId: string, headers: SecurityHeaders): Promise<StartEventResponse> {
-    const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${eventId}/token`;
+  async startUpdateAppeal(userId: string, caseId: string, eventId: string, headers: SecurityHeaders, isCaseworker: boolean = false): Promise<StartEventResponse> {
+    const url = `${ccdBaseUrl}/${isCaseworker ? 'caseworkers' : 'citizens'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${eventId}/token`;
     const options = this.createOptions(
       userId,
       headers
@@ -89,8 +89,8 @@ class CcdService {
     return response.data;
   }
 
-  async submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData): Promise<CcdCaseDetails> {
-    const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`;
+  async submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData, isCaseworker: boolean = false): Promise<CcdCaseDetails> {
+    const url = `${ccdBaseUrl}/${isCaseworker ? 'caseworkers' : 'citizens'}/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`;
     const options: any = this.createOptions(
       userId,
       headers
@@ -148,9 +148,9 @@ class CcdService {
     });
   }
 
-  async updateAppeal(event, userId: string, updatedCase: CcdCaseDetails, headers: SecurityHeaders): Promise<CcdCaseDetails> {
+  async updateAppeal(event, userId: string, updatedCase: CcdCaseDetails, headers: SecurityHeaders, isCaseworker: boolean = false): Promise<CcdCaseDetails> {
     logger.trace(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${updatedCase.id}' `, logLabel);
-    const updateEventResponse = await this.startUpdateAppeal(userId, updatedCase.id, event.id, headers);
+    const updateEventResponse = await this.startUpdateAppeal(userId, updatedCase.id, event.id, headers, isCaseworker);
     logger.trace(`Submitting update appeal case with event '${event.id}'`, logLabel);
     const supplementaryDataRequest = generateSupplementaryId();
 
@@ -164,7 +164,7 @@ class CcdService {
       event_token: updateEventResponse.token,
       ignore_warning: true,
       supplementary_data_request: supplementaryDataRequest
-    });
+    }, isCaseworker);
   }
 
   async validateMidEvent(midEventDetails: MidEventDetails, pageId: string, userId: string, headers: SecurityHeaders): Promise<MidEventResponse> {

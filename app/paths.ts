@@ -316,7 +316,10 @@ const paths = {
     inviteToCreateAccount: '/add-non-legal-rep/provide-email-create-account',
     inviteToCreateAccountConfirmation: '/add-non-legal-rep/provide-email-create-account/confirmation',
     inviteToJoinAppeal: '/add-non-legal-rep/provide-email-join-appeal',
-    inviteToJoinAppealConfirmation: '/add-non-legal-rep/provide-email-join-appeal/confirm'
+    inviteToJoinAppealConfirmation: '/add-non-legal-rep/provide-email-join-appeal/confirm',
+    joinAppeal: '/join-appeal',
+    joinAppealConfirmDetails: '/join-appeal/confirm-details',
+    joinAppealConfirmation: '/join-appeal/confirmation',
   },
   makeApplication: {
     // Hearing requests

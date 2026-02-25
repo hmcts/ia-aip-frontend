@@ -131,6 +131,7 @@ async function getAppealApplicationNextStep(req: Request) {
 
   let descriptionParagraphs;
   let respondBy;
+  const doThisNext = is24Weeks ? i18n.pages.overviewPage.doThisNext.stf24w : i18n.pages.overviewPage.doThisNext;
   switch (currentAppealStatus) {
     case 'appealStarted':
       doThisNextSection = {
@@ -164,7 +165,6 @@ async function getAppealApplicationNextStep(req: Request) {
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
         doThisNextSection = getFeeRemissionParagraph(deadLineDate, is24Weeks);
       } else {
-        const doThisNext = is24Weeks ? i18n.pages.overviewPage.doThisNext.stf24w : i18n.pages.overviewPage.doThisNext;
         doThisNextSection = {
           descriptionParagraphs: [
             doThisNext.appealSubmitted.detailsSent,
@@ -180,16 +180,21 @@ async function getAppealApplicationNextStep(req: Request) {
       }
       break;
     case 'listing':
-      const paragraphs = eventByLegalRep(req, Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, 'listing')
-        ? [
-          i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction1,
-          i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction2,
-          i18n.pages.overviewPage.doThisNext.listing.dueDate
-        ]
-        : [
-          i18n.pages.overviewPage.doThisNext.listing.detailsSent,
-          i18n.pages.overviewPage.doThisNext.listing.dueDate
-        ];
+      let paragraphs: string[];
+      if (is24Weeks) {
+        paragraphs = [i18n.pages.overviewPage.doThisNext.stf24w.listing.detailsSent];
+      } else {
+        paragraphs = eventByLegalRep(req, Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, 'listing')
+            ? [
+              i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction1,
+              i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction2,
+              i18n.pages.overviewPage.doThisNext.listing.dueDate
+            ]
+            : [
+              i18n.pages.overviewPage.doThisNext.listing.detailsSent,
+              i18n.pages.overviewPage.doThisNext.listing.dueDate
+            ];
+      }
       doThisNextSection = {
         descriptionParagraphs: paragraphs,
         info: {
@@ -218,12 +223,12 @@ async function getAppealApplicationNextStep(req: Request) {
       } else {
         doThisNextSection = {
           descriptionParagraphs: [
-            i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.detailsSent,
-            i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.dueDate
+            doThisNext.lateAppealSubmitted.detailsSent,
+            doThisNext.lateAppealSubmitted.dueDate
           ],
           info: {
-            title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
-            url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
+            title: doThisNext.appealSubmitted.info.title,
+            url: doThisNext.appealSubmitted.info.url
           },
           cta: null,
           allowedAskForMoreTime: false
@@ -233,12 +238,12 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'awaitingRespondentEvidence':
       doThisNextSection = {
         descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
-          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
+          doThisNext.awaitingRespondentEvidence.detailsSent,
+          doThisNext.awaitingRespondentEvidence.dueDate
         ],
         info: {
-          title: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.title,
-          url: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.url
+          title: doThisNext.awaitingRespondentEvidence.info.title,
+          url: doThisNext.awaitingRespondentEvidence.info.url
         },
         cta: null,
         allowedAskForMoreTime: false
@@ -258,11 +263,12 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'awaitingReasonsForAppeal':
+      const allowedAskForMoreTime = !is24Weeks;
       descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description];
       respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       if (pendingTimeExtension) {
         descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime];
-        respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
+        respondBy = is24Weeks ? null : i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
         respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
       } else if (decisionRefused) {
@@ -282,7 +288,7 @@ async function getAppealApplicationNextStep(req: Request) {
           url: paths.awaitingReasonsForAppeal.decision,
           respondBy
         },
-        allowedAskForMoreTime: true
+        allowedAskForMoreTime
       };
       break;
     case 'awaitingReasonsForAppealPartial':

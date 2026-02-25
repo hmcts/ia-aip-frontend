@@ -8,6 +8,7 @@ import { DocumentManagementService } from '../../../app/service/document-managem
 import IdamService from '../../../app/service/idam-service';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import S2SService from '../../../app/service/s2s-service';
+import { SystemAuthenticationService } from '../../../app/service/system-authentication-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { expect, sinon, validateUuid } from '../../utils/testUtils';
 
@@ -19,6 +20,7 @@ describe('update-appeal-service', () => {
   let idamService: Partial<IdamService>;
   let s2sService: Partial<S2SService>;
   let authenticationService: AuthenticationService;
+  let systemAuthenticationService: SystemAuthenticationService;
   let updateAppealService: UpdateAppealService;
   let expectedCaseData: Partial<CaseData>;
   let documentManagementService: DocumentManagementService;
@@ -52,8 +54,9 @@ describe('update-appeal-service', () => {
       .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(false)
       .withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(false);
     documentManagementService = new DocumentManagementService(authenticationService);
+    systemAuthenticationService = new SystemAuthenticationService();
 
-    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, null, documentManagementService);
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
     req = {
       idam: {
         userDetails: {
@@ -2236,7 +2239,7 @@ describe('update-appeal-service', () => {
         getServiceToken: sandbox.stub().resolves(serviceToken)
       };
       documentManagementService = new DocumentManagementService(authenticationService);
-      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, null, documentManagementService);
+      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
       expectedCaseData = {
         'asylumSupportReference': null,
         'helpWithFeesReferenceNumber': null,

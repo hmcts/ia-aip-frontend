@@ -1,11 +1,9 @@
-import config from 'config';
-import { getFileUploadError } from '../../../app/utils/upload-utils';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('getFileUploadError', () => {
-  let configStub: sinon.SinonStub;
+const proxyquire = require('proxyquire').noCallThru();
 
+describe('getFileUploadError', () => {
   afterEach(() => {
     sinon.restore();
   });
@@ -16,27 +14,41 @@ describe('getFileUploadError', () => {
     const errorMessageTemplate = 'File size exceeds {{maxFileSizeInMb}} MB.';
     i18n.validationErrors.fileUpload[errorCode] = errorMessageTemplate;
 
-    configStub = sinon.stub(config, 'get').withArgs('evidenceUpload.maxFileSizeInMb').returns(maxFileSizeInMb);
-
+    const configStub = {
+      get: sinon.stub()
+        .withArgs('evidenceUpload.maxFileSizeInMb')
+        .returns(maxFileSizeInMb)
+    };
+    const { getFileUploadError } = proxyquire('../../../app/utils/upload-utils', { config: configStub });
     const result = getFileUploadError(errorCode);
     expect(result).to.equal('File size exceeds 10 MB.');
-    expect(configStub.calledOnceWith('evidenceUpload.maxFileSizeInMb')).to.equal(true);
+    expect(configStub.get.calledOnceWith('evidenceUpload.maxFileSizeInMb')).to.equal(true);
   });
 
   it('should return the error message with supported formats replaced', () => {
     const errorCode = 'unsupportedFormat';
     const supportedFormats = ['jpg', 'png', 'pdf'];
-    const errorMessageTemplate = 'Supported formats are {{ supportedFormats | join(\', \') }}.';
+    const errorMessageTemplate =
+      'Supported formats are {{ supportedFormats | join(\', \') }}.';
+
     i18n.validationErrors.fileUpload[errorCode] = errorMessageTemplate;
 
-    configStub = sinon.stub(config, 'get').withArgs('evidenceUpload.supportedFormats').returns(supportedFormats);
+    const configStub = {
+      get: sinon.stub()
+        .withArgs('evidenceUpload.supportedFormats')
+        .returns(supportedFormats)
+    };
+
+    const { getFileUploadError } = proxyquire('../../../app/utils/upload-utils', { config: configStub });
 
     const result = getFileUploadError(errorCode);
+
     expect(result).to.equal('Supported formats are jpg, png, pdf.');
-    expect(configStub.calledOnceWith('evidenceUpload.supportedFormats')).to.equal(true);
+    expect(configStub.get.calledOnceWith('evidenceUpload.supportedFormats')).to.equal(true);
   });
 
   it('should return the error message as is if no placeholders are present', () => {
+    const { getFileUploadError } = require('../../../app/utils/upload-utils');
     const errorCode = 'genericError';
     const errorMessage = 'An error occurred during file upload.';
     i18n.validationErrors.fileUpload[errorCode] = errorMessage;
@@ -46,6 +58,7 @@ describe('getFileUploadError', () => {
   });
 
   it('should return default noFileSelected if the error code does not exist in i18n', () => {
+    const { getFileUploadError } = require('../../../app/utils/upload-utils');
     const errorCode = 'nonExistentError';
     const errorMessage = 'someError message';
     i18n.validationErrors.fileUpload.noFileSelected = errorMessage;

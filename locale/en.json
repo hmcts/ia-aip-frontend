@@ -1306,6 +1306,24 @@
             "decisionPartiallyApprovedPaymentStatus": "Not paid",
             "decisionRejectedPaymentStatus": "Not paid"
           }
+        },
+        "stf24w": {
+          "appealSubmitted": {
+            "detailsSent": "Your appeal details have been sent to the Tribunal.",
+            "dueDate": "A Legal Officer will contact you to tell you what happens next.",
+            "info": {
+              "title": "Helpful Information",
+              "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Legal Officer?</a>"
+            }
+          },
+          "remissionDecided": {
+            "approved": {
+              "detailsSent": "Your appeal details have been sent to the Tribunal.",
+              "legalOfficerCheck": "A Legal Officer will contact you to tell you what happens next.",
+              "helpFulInfo": "<b>Helpful information</b>",
+              "href": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Legal Officer?</a>"
+            }
+          }
         }
       },
       "timeline": {

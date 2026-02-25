@@ -1,8 +1,9 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { SinonStub } from 'sinon';
 import {
   checkAppealEnded,
   checkEnableProvideMoreEvidenceSection,
+  endedStates,
   getAppealRefNumber,
   getAppellantName,
   getApplicationOverview,
@@ -38,7 +39,9 @@ describe('Confirmation Page Controller', () => {
   let mockAuthenticationService: Partial<AuthenticationService>;
   let mockCcdService: Partial<CcdService>;
   let updateAppealService: Partial<UpdateAppealService>;
-
+  const nonEndedStates: string[] = Object.values(States)
+    .filter(s => !endedStates.includes(s.id))
+    .map(s => s.id);
   const logger: Logger = new Logger();
   const expectedNextStep = {
     descriptionParagraphs: [
@@ -208,6 +211,7 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
+      showNonLegalRep: false,
       isPostDecisionState: false
     });
   });
@@ -456,6 +460,7 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
+      showNonLegalRep: false,
       isPostDecisionState: false
     });
   });
@@ -520,6 +525,7 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
+      showNonLegalRep: false,
       isPostDecisionState: false
     });
   });
@@ -597,11 +603,12 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
+      showNonLegalRep: false,
       isPostDecisionState: false
     });
   });
 
-  it('should render with only showAskForFeeRemission property', async function() {
+  it('should render with only showAskForFeeRemission property', async function () {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -696,8 +703,25 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
+      showNonLegalRep: false,
       isPostDecisionState: false
     });
+  });
+
+  it('should render showNonLegalRep when the state is in progress', async () => {
+    for (const state of nonEndedStates) {
+      req.session.appeal.appealStatus = state;
+      await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(resRenderStub).to.be.calledWithMatch('application-overview.njk', { showNonLegalRep: true });
+    }
+  });
+
+  it('should not render showNonLegalRep when the state is not in progress', async () => {
+    for (const state of endedStates) {
+      req.session.appeal.appealStatus = state;
+      await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(resRenderStub).to.be.calledWithMatch('application-overview.njk', { showNonLegalRep: false });
+    }
   });
 
   it('should render showAskForSomethingInEndedState property when the state in ended', async () => {
@@ -1033,13 +1057,17 @@ describe('Confirmation Page Controller', () => {
   });
 
   it('isAppealInProgress should return true if appeal is in progress', () => {
-    const result = isAppealInProgress(States.APPEAL_SUBMITTED.id);
-    expect(result).to.equal(true);
+    for (const state of nonEndedStates) {
+      const result = isAppealInProgress(state);
+      expect(result).to.equal(true);
+    }
   });
 
   it('isAppealInProgress should return false if appeal is not in progress', () => {
-    const result = isAppealInProgress(States.APPEAL_STARTED.id);
-    expect(result).to.equal(false);
+    for (const state of endedStates) {
+      const result = isAppealInProgress(state);
+      expect(result).to.equal(false);
+    }
   });
 
   it('showFtpaApplicationLink should return false when appellant ftpa appeal is submitted', () => {

@@ -1,4 +1,4 @@
-import { application, NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
 import { FEATURE_FLAGS } from '../data/constants';
@@ -6,7 +6,11 @@ import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getAppealApplicationNextStep, isAddendumEvidenceUploadState, transferredToUpperTribunal } from '../utils/application-state-utils';
+import {
+  getAppealApplicationNextStep,
+  isAddendumEvidenceUploadState,
+  transferredToUpperTribunal
+} from '../utils/application-state-utils';
 import { getHearingCentre } from '../utils/cma-hearing-details';
 import { formatDate, timeFormat } from '../utils/date-utils';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
@@ -117,8 +121,10 @@ function showHearingRequestSection(appealStatus: string, featureEnabled: boolean
   return featureEnabled ? showHearingRequestsStates.includes(appealStatus) : featureEnabled;
 }
 
+export const endedStates = [States.APPEAL_STARTED.id, States.PENDING_PAYMENT.id, States.ENDED.id];
+
 function isAppealInProgress(appealStatus: string) {
-  return appealStatus !== States.APPEAL_STARTED.id && appealStatus !== States.PENDING_PAYMENT.id && appealStatus !== States.ENDED.id;
+  return !endedStates.includes(appealStatus);
 }
 
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
@@ -158,7 +164,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
       const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
       const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
-          && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
+        && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
 
       const application = req.session.appeal.application;
 
@@ -168,7 +174,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
       const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;
 
-      const showNonLegalRep =  isAppealInProgress(appealStatus);
+      const showNonLegalRep = isAppealInProgress(appealStatus);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -203,16 +209,16 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 }
 
 function isPostDecisionState(appealStatus: string, ftpaEnabled: boolean) {
-  const postDecisionStates = [ States.DECIDED.id, States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id ];
+  const postDecisionStates = [States.DECIDED.id, States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id];
 
   return postDecisionStates.includes(appealStatus) && ftpaEnabled;
 }
 
 function showFtpaApplicationLink(appeal: Appeal, ftpaEnabled: boolean) {
   return ftpaEnabled
-      && [ States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id ].includes(appeal.appealStatus)
-      && hasRespondentFtpaApplication(appeal)
-      && !hasAppellantFtpaApplication(appeal);
+    && [States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id].includes(appeal.appealStatus)
+    && hasRespondentFtpaApplication(appeal)
+    && !hasAppellantFtpaApplication(appeal);
 }
 
 function hasAppellantFtpaApplication(appeal: Appeal): boolean {

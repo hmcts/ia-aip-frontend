@@ -31,4 +31,5 @@ keys/server.cert
 /functional.env
 /createCase.env
 /aat.env
+/preview.env
 /.mirrord/mirrord.json

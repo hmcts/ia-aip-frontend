@@ -638,17 +638,6 @@ function deportationOrderOptionsValidation(obj: object): null | ValidationErrors
   return validate(obj, schema);
 }
 
-function emailAddressValidation(obj: object) {
-  const schema = Joi.object({
-    emailAddress: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
-      .email({ minDomainSegments: 2, allowUnicode: false }).messages({
-        'string.empty': i18n.validationErrors.emailEmpty,
-        'string.email': i18n.validationErrors.emailFormat
-      }),
-  }).unknown();
-  return validate(obj, schema);
-}
-
 function joinAppealValidation(obj: object) {
   const schema = Joi.object({
     caseReference: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.caseReference }),
@@ -703,7 +692,6 @@ export {
   asylumSupportValidation,
   helpWithFeesValidation,
   helpWithFeesRefNumberValidation,
-  emailAddressValidation,
   joinAppealValidation,
   deportationOrderOptionsValidation
 };

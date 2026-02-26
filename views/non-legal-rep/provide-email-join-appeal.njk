@@ -22,8 +22,8 @@
   <form action="{{ paths.nonLegalRep.inviteToJoinAppeal }}" method="post" novalidate>
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukInput({
-      id: "emailAddress",
-      name: "emailAddress",
+      id: "email-value",
+      name: "email-value",
       type: "email",
       value: nlrEmail,
       classes: "govuk-!-width-one-third",
@@ -34,8 +34,8 @@
         spellcheck: "false"
       },
       errorMessage: {
-        text: errors['emailAddress'].text
-      } if errors['emailAddress']
+        text: errors['email-value'].text
+      } if errors['email-value']
     }) }}
     {{ saveButton({name: 'send', text: 'Send Code'}) }}
   </form>

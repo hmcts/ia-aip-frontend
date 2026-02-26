@@ -4,7 +4,7 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { DocmosisService } from '../../service/docmosis-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { createStructuredError, emailAddressValidation } from '../../utils/validations/fields-validations';
+import { createStructuredError, emailValidation } from '../../utils/validations/fields-validations';
 
 const docmosis: DocmosisService = new DocmosisService();
 
@@ -31,10 +31,10 @@ function getInviteToCreateAccount(req: Request, res: Response, next: NextFunctio
 function postInviteToCreateAccount(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = emailAddressValidation(req.body);
+      const validation = emailValidation(req.body);
       if (validation) {
         return res.render('non-legal-rep/provide-email-create-account.njk', {
-          nlrEmail: req.body['emailAddress'],
+          nlrEmail: req.body['email-value'],
           errors: validation,
           errorList: Object.values(validation),
           previousPage: paths.nonLegalRep.addNonLegalRep
@@ -43,7 +43,7 @@ function postInviteToCreateAccount(updateAppealService: UpdateAppealService) {
 
       const appeal: Appeal = {
         ...req.session.appeal,
-        nlrEmail: req.body['emailAddress']
+        nlrEmail: req.body['email-value']
       };
       Object.assign(req.session.appeal, { nlrEmail: appeal.nlrEmail });
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SEND_INVITE_TO_NON_LEGAL_REP, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
@@ -83,10 +83,10 @@ function getInviteToJoinAppeal(req: Request, res: Response, next: NextFunction) 
 function postInviteToJoinAppeal(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = emailAddressValidation(req.body);
+      const validation = emailValidation(req.body);
       if (validation) {
         return res.render('non-legal-rep/provide-email-join-appeal.njk', {
-          nlrEmail: req.body['emailAddress'],
+          nlrEmail: req.body['email-value'],
           errors: validation,
           errorList: Object.values(validation),
           previousPage: paths.nonLegalRep.addNonLegalRep
@@ -95,19 +95,19 @@ function postInviteToJoinAppeal(updateAppealService: UpdateAppealService) {
 
       const appeal: Appeal = {
         ...req.session.appeal,
-        nlrEmail: req.body['emailAddress']
+        nlrEmail: req.body['email-value']
       };
       const pageIds: string[] = ['sendPipToNonLegalRepsendPipToNonLegalRep'];
       const midEventData = {
-        nlrEmail: req.body['emailAddress']
+        nlrEmail: req.body['email-value']
       };
       const midEventErrors = await updateAppealService.validateMidEvent(Events.SEND_PIP_TO_NON_LEGAL_REP, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
       if (midEventErrors?.length > 0) {
         const errorMsg = i18n.pages.inviteNlrToJoinAppeal.userNotExistsError;
         return res.render('non-legal-rep/provide-email-join-appeal.njk', {
-          nlrEmail: req.body['emailAddress'],
+          nlrEmail: req.body['email-value'],
           shouldAdviceShow: true,
-          errorList: [createStructuredError('emailAddress', errorMsg)],
+          errorList: [createStructuredError('email-value', errorMsg)],
           previousPage: paths.nonLegalRep.addNonLegalRep
         });
       }

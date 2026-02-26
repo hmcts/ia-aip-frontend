@@ -626,7 +626,7 @@
       "confirmation": {
         "title": "You have joined the appeal as a non legal representative",
         "whatNextContent": [
-          "You have successfully joined the appeal for {{ appellantGivenNames }} {{ appellantFamilyName }} as a non legal representative.",
+          "You have successfully joined the appeal for {{ appellantName }} as a non legal representative.",
           "You can now access the appeal and track its progress. You will also receive notifications when there are updates to the appeal."
         ]
       }

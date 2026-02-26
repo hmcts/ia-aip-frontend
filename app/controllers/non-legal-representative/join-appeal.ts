@@ -54,7 +54,7 @@ function postJoinAppeal(ccdSystemService: CcdSystemService) {
         caseReference: req.body['caseReference'],
         joinAppealAccessCode: req.body['joinAppealAccessCode'],
         errors: errors,
-        errorList: [pipError],
+        errorList: [errors],
         previousPage: paths.common.overview
       });
     } catch (error) {
@@ -89,7 +89,7 @@ function getPipError(pipValidation: PipValidation, caseReferenceGiven: string): 
 function getJoinAppealConfirmDetails(req: Request, res: Response, next: NextFunction) {
   try {
     const details: PipCaseSummary = req.session.joinAppealPipValidation.caseSummary;
-    res.render('non-legal-rep/join-appeal-confirm-details.njk', {
+    return res.render('non-legal-rep/join-appeal-confirm-details.njk', {
       previousPage: paths.nonLegalRep.joinAppeal,
       caseDetails: [
         addSummaryRow(
@@ -165,8 +165,7 @@ function getJoinAppealConfirmation(req: Request, res: Response, next: NextFuncti
     res.render('templates/confirmation-page.njk', {
       title: i18n.pages.joinAppeal.confirmation.title,
       whatNextContent: i18n.pages.joinAppeal.confirmation.whatNextContent,
-      appellantGivenName: req.session.appeal?.application?.personalDetails?.givenNames,
-      appellantFamilyName: req.session.appeal?.application?.personalDetails?.familyName,
+      appellantName: req.session?.joinAppealPipValidation?.caseSummary?.name
     });
   } catch (e) {
     next(e);
@@ -184,5 +183,10 @@ function setupJoinAppealControllers(middleware: Middleware[], updateAppealServic
 }
 
 export {
-  setupJoinAppealControllers
+  setupJoinAppealControllers,
+  getJoinAppeal,
+  postJoinAppeal,
+  getJoinAppealConfirmDetails,
+  postJoinAppealConfirmDetails,
+  getJoinAppealConfirmation
 };

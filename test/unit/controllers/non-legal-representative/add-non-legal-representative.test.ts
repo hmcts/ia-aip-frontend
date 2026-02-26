@@ -16,7 +16,7 @@ import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import i18n from '../../../../locale/en.json';
 import { expect, sinon } from '../../../utils/testUtils';
 
-describe('Appeal application controllers setup', () => {
+describe('Add non legal representative controllers setup', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;

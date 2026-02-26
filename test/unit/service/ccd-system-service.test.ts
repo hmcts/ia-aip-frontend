@@ -1,5 +1,13 @@
 import axios from 'axios';
-import CcdSystemService, { getPipValidationSuccess, validateAccessCode } from '../../../app/service/ccd-system-service';
+import CcdSystemService, {
+  getJoinAppealPipValidationSuccess,
+  getPipValidationSuccess, PipValidation,
+  validateAccessCode,
+  validateJoinAppealAccessCode,
+  validateJoinAppealAccessCodeExists,
+  validateJoinAppealAccessCodeExpiryDate,
+  validateJoinAppealAccessCodeUsed
+} from '../../../app/service/ccd-system-service';
 import S2SService from '../../../app/service/s2s-service';
 import { SystemAuthenticationService } from '../../../app/service/system-authentication-service';
 import { addDaysToDate } from '../../../app/utils/date-utils';
@@ -177,11 +185,195 @@ describe('ccd-system-service', () => {
         await new CcdSystemService(authenticationServiceStub as SystemAuthenticationService, s2sServiceStub as S2SService).givenAppellantAccess(caseId, appellantId);
         expect(axiosStub).to.be.calledWith(sinon.match(/.+\/caseworkers\/abc-123-efg\/jurisdictions\/IA\/case-types\/Asylum\/cases\/1234123412341234\/users/),
           { id: appellantId },
-          { headers: {
-            Authorization: 'Bearer user-token',
-            ServiceAuthorization: 'service-token',
-            'content-type': 'application/json'
-          }});
+          {
+            headers: {
+              Authorization: 'Bearer user-token',
+              ServiceAuthorization: 'service-token',
+              'content-type': 'application/json'
+            }
+          });
+      });
+    });
+  });
+
+  function alterDateByDays(date: Date, days: number): Date {
+    const alteredDate = new Date(date);
+    alteredDate.setDate(alteredDate.getDate() + days);
+    return alteredDate;
+  }
+
+  describe('joinAppealPip ', () => {
+    const todayDate = new Date();
+    let pinInPost: PinInPost;
+    let caseData: CaseData;
+    beforeEach(() => {
+      pinInPost = {
+        expiryDate: alterDateByDays(todayDate, 1),
+        accessCode: accessCode,
+        pinUsed: 'No'
+      };
+      caseData = {} as CaseData;
+    });
+
+    it('validateJoinAppealAccessCode functions should return true if has not expired, has not been used and is correct', async () => {
+      expect(validateJoinAppealAccessCodeExpiryDate(pinInPost)).to.equal(true);
+      expect(validateJoinAppealAccessCodeUsed(pinInPost)).to.equal(true);
+      expect(validateJoinAppealAccessCode(pinInPost, accessCode)).to.equal(true);
+    });
+
+    it('validateJoinAppealAccessCodeExpiryDate should return false if pin has expired', async () => {
+      pinInPost.expiryDate = alterDateByDays(todayDate, -1);
+      expect(validateJoinAppealAccessCodeExpiryDate(pinInPost)).to.equal(false);
+    });
+
+    it('validateJoinAppealAccessCodeUsed should return false if pin has been used', async () => {
+      pinInPost.pinUsed = 'Yes';
+      expect(validateJoinAppealAccessCodeUsed(pinInPost)).to.equal(false);
+    });
+
+    it('validateJoinAppealAccessCode should return false if pin is incorrect', async () => {
+      expect(validateJoinAppealAccessCode(pinInPost, invalidCode)).to.equal(false);
+    });
+
+    it('validateJoinAppealAccessCodeExists should return false if joinAppealPin is undefined, null or empty', async () => {
+      expect(validateJoinAppealAccessCodeExists(caseData)).to.equal(false);
+      caseData.joinAppealPin = undefined;
+      expect(validateJoinAppealAccessCodeExists(caseData)).to.equal(false);
+      caseData.joinAppealPin = null;
+      expect(validateJoinAppealAccessCodeExists(caseData)).to.equal(false);
+    });
+
+    it('validateJoinAppealAccessCodeExists should return true if pin exists', async () => {
+      caseData = { joinAppealPin: pinInPost } as CaseData;
+      expect(validateJoinAppealAccessCodeExists(caseData)).to.equal(true);
+    });
+
+    it('getJoinAppealPipValidationSuccess should return case summary with accessValidated set to true', async () => {
+      caseData = {
+        appellantGivenNames: 'James',
+        appellantFamilyName: 'Bond',
+        appealReferenceNumber: 'some-appeal'
+      } as CaseData;
+      const response = getJoinAppealPipValidationSuccess(caseId, caseData);
+      expect(response).to.deep.equal({
+        accessValidated: true,
+        caseSummary: {
+          name: 'James Bond',
+          appealReference: 'some-appeal',
+          referenceNumber: caseId
+        }
+      });
+    });
+
+    describe('joinAppealPipValidation', () => {
+      const serviceToken = 'service-token';
+      const systemCaseworkerToken = 'user-token';
+      const systemCaseworkerUUID = 'abc-123-efg';
+
+      const failedResponse = {
+        accessValidated: false
+      };
+
+      const successResponse = {
+        accessValidated: true,
+        caseSummary: {
+          name: 'James Bond',
+          referenceNumber: caseId
+        }
+      };
+
+      let sandbox: sinon.SinonSandbox;
+      let authenticationServiceStub;
+      let s2sServiceStub;
+      let getRequest: sinon.SinonStub;
+      let ccdSystemService: CcdSystemService;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+        authenticationServiceStub = {
+          getCaseworkSystemToken: sandbox.stub().resolves(systemCaseworkerToken),
+          getCaseworkSystemUUID: sandbox.stub().resolves(systemCaseworkerUUID)
+        };
+        s2sServiceStub = {
+          getServiceToken: sandbox.stub().resolves(serviceToken)
+        };
+        ccdSystemService = new CcdSystemService(authenticationServiceStub as SystemAuthenticationService, s2sServiceStub as S2SService);
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('getCaseById should call with expected URL', async () => {
+        getRequest = sandbox.stub(axios, 'get').resolves({});
+        await ccdSystemService.getCaseById(caseId);
+        const expectedUrl: string =
+          `CCD_API_URL/caseworkers/${systemCaseworkerUUID}/jurisdictions/IA/case-types/Asylum/cases/${caseId}`;
+        expect(getRequest.calledOnceWith(expectedUrl)).to.equal(true);
+      });
+
+      it('joinAppealPipValidation should return caseIdValid false if getCaseById fails', async () => {
+        getRequest = sandbox.stub(axios, 'get').throws();
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode);
+        expect(pipValidation.caseIdValid).to.equal(false);
+      });
+
+      it('joinAppealPipValidation should return doesPinExist false if getCaseById valid but no existing pin', async () => {
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode);
+        expect(pipValidation.caseIdValid).to.equal(true);
+        expect(pipValidation.doesPinExist).to.equal(false);
+      });
+
+      it('joinAppealPipValidation should return pinValid false if doesPinExist true but invalid pin', async () => {
+        pinInPost.accessCode = invalidCode;
+        caseData.joinAppealPin = pinInPost;
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode);
+        expect(pipValidation.caseIdValid).to.equal(true);
+        expect(pipValidation.doesPinExist).to.equal(true);
+        expect(pipValidation.pinValid).to.equal(false);
+      });
+
+      it('joinAppealPipValidation should return codeUnused false if pinValid true but pin used', async () => {
+        pinInPost.pinUsed = 'Yes';
+        caseData.joinAppealPin = pinInPost;
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode);
+        expect(pipValidation.caseIdValid).to.equal(true);
+        expect(pipValidation.doesPinExist).to.equal(true);
+        expect(pipValidation.pinValid).to.equal(true);
+        expect(pipValidation.codeUnused).to.equal(false);
+      });
+
+      it('joinAppealPipValidation should return codeNotExpired false if codeUnused true but pin expired', async () => {
+        pinInPost.expiryDate = alterDateByDays(todayDate, -1);
+        caseData.joinAppealPin = pinInPost;
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode);
+        expect(pipValidation.caseIdValid).to.equal(true);
+        expect(pipValidation.doesPinExist).to.equal(true);
+        expect(pipValidation.pinValid).to.equal(true);
+        expect(pipValidation.codeUnused).to.equal(true);
+        expect(pipValidation.codeNotExpired).to.equal(false);
+      });
+
+      it('joinAppealPipValidation should return success object if all validation passes', async () => {
+        caseData = {
+          appellantGivenNames: 'James',
+          appellantFamilyName: 'Bond',
+          appealReferenceNumber: 'some-appeal-ref',
+          joinAppealPin: pinInPost
+        } as CaseData;
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode);
+        expect(pipValidation).to.deep.equal({
+          accessValidated: true,
+          caseSummary: {
+            name: 'James Bond',
+            appealReference: 'some-appeal-ref',
+            referenceNumber: caseId
+          }
+        });
       });
     });
   });

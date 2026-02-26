@@ -3077,7 +3077,7 @@ describe('update-appeal-service', () => {
     ];
     const pageIds = pages.map(page => page.id);
     updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
-    const validateMidEventStub = sandbox.stub(ccdService, 'validateMidEvent')
+    const validateMidEventStub = sandbox.stub(ccdService, 'validateMidEvent');
     for (const page of pages) {
       validateMidEventStub
         .withArgs(

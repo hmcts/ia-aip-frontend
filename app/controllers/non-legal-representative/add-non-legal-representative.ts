@@ -2,11 +2,8 @@ import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
-import { DocmosisService } from '../../service/docmosis-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { createStructuredError, emailValidation } from '../../utils/validations/fields-validations';
-
-const docmosis: DocmosisService = new DocmosisService();
 
 function getAddNonLegalRepresentative(req: Request, res: Response, next: NextFunction) {
   try {
@@ -104,10 +101,12 @@ function postInviteToJoinAppeal(updateAppealService: UpdateAppealService) {
       const midEventErrors = await updateAppealService.validateMidEvent(Events.SEND_PIP_TO_NON_LEGAL_REP, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
       if (midEventErrors?.length > 0) {
         const errorMsg = i18n.pages.inviteNlrToJoinAppeal.userNotExistsError;
+        const structuredError: ValidationErrors = { 'email-value': createStructuredError('email-value', errorMsg) };
         return res.render('non-legal-rep/provide-email-join-appeal.njk', {
           nlrEmail: req.body['email-value'],
           shouldAdviceShow: true,
-          errorList: [createStructuredError('email-value', errorMsg)],
+          errors: structuredError,
+          errorList: Object.values(structuredError),
           previousPage: paths.nonLegalRep.addNonLegalRep
         });
       }
@@ -149,5 +148,12 @@ function setupNonLegalRepresentativeControllers(middleware: Middleware[], update
 }
 
 export {
-  setupNonLegalRepresentativeControllers
+  setupNonLegalRepresentativeControllers,
+  getAddNonLegalRepresentative,
+  getInviteToCreateAccount,
+  postInviteToCreateAccount,
+  getInviteToCreateAccountConfirmation,
+  getInviteToJoinAppeal,
+  postInviteToJoinAppeal,
+  getInviteToJoinAppealConfirmation
 };

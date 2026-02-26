@@ -833,7 +833,7 @@ export default class UpdateAppealService {
     }
     caseData = {
       ...caseData,
-      ...appeal.application.personalDetails.stateless && { appellantStateless: appeal.application.personalDetails.stateless },
+      ...appeal.application?.personalDetails?.stateless && { appellantStateless: appeal.application?.personalDetails?.stateless },
       ...paymentsFlag && { rpDcAppealHearingOption: appeal.application.rpDcAppealHearingOption || null },
       ...paymentsFlag && { decisionHearingFeeOption: appeal.application.decisionHearingFeeOption || null },
       ...appeal.paymentReference && { paymentReference: appeal.paymentReference },
@@ -853,8 +853,8 @@ export default class UpdateAppealService {
       ...appeal.reheardHearingDocumentsCollection && {
         reheardHearingDocumentsCollection: this.mapAppealReheardHearingDocsToCcd(appeal.reheardHearingDocumentsCollection, appeal.documentMap)
       },
-      ...appeal.application.homeOfficeLetter && {
-        uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
+      ...appeal.application?.homeOfficeLetter && {
+        uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application?.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
       },
       ...appeal.additionalEvidence && {
         additionalEvidence: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.additionalEvidence, appeal.documentMap)
@@ -874,8 +874,8 @@ export default class UpdateAppealService {
       ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },
       ...appeal.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: appeal.ftpaAppellantOutOfTimeExplanation },
       ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime },
-      ...appeal.application.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: appeal.application.remissionRejectedDatePlus14days },
-      ...appeal.application.amountLeftToPay && { amountLeftToPay: appeal.application.amountLeftToPay }
+      ...appeal.application?.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: appeal.application?.remissionRejectedDatePlus14days },
+      ...appeal.application?.amountLeftToPay && { amountLeftToPay: appeal.application?.amountLeftToPay }
     };
     return caseData;
   }

@@ -601,7 +601,7 @@
       "enterCaseReference": {
         "label": "Online case reference number",
         "hintText": "For example, 1234-1234-1234-1234",
-        "error": "The case reference number you have entered is not valid or does not exist. Please check the number and try again."
+        "error": "The Online case reference number you have entered is not valid or does not exist. Please check the number and try again."
       },
       "enterAccessCode": {
         "label": "Enter the access code you received in your email for the appeal you want to join",

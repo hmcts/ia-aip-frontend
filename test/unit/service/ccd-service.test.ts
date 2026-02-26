@@ -76,7 +76,7 @@ describe('idam-service', () => {
 
       const submitCreateCaseStub = sinon.stub(ccdService, 'submitCreateCase');
       const expectedResult = {} as any;
-      const serviceId = { $set: { HMCTSServiceId : 'BFA1' } };
+      const serviceId = { $set: { HMCTSServiceId: 'BFA1' } };
 
       submitCreateCaseStub.withArgs(userId, headers, {
         event: {
@@ -111,7 +111,7 @@ describe('idam-service', () => {
 
       const submitUpdateCaseStub = sinon.stub(ccdService, 'submitUpdateAppeal');
       const caseData = { journeyType: 'AIP' } as Partial<CaseData>;
-      const serviceId = { $set: { HMCTSServiceId : 'BFA1' } };
+      const serviceId = { $set: { HMCTSServiceId: 'BFA1' } };
       submitUpdateCaseStub.withArgs(userId, caseId, headers, {
         event: {
           id: 'eventId',
@@ -215,6 +215,22 @@ describe('idam-service', () => {
       await ccdService.retrieveCaseHistoryV2(userId, caseId, headers);
 
       expect(getRequest.called).to.equal(true);
+    });
+
+    it('validateMidEvent', async () => {
+      const caseData = { journeyType: 'AIP' } as Partial<CaseData>;
+      const midEventDetails: MidEventDetails = {
+        case_reference: caseId,
+        data: caseData,
+        event_data: caseData,
+        ignore_warning: true,
+        event: Events.EDIT_APPEAL
+      };
+      const pageId: string = 'somePageId';
+      await ccdService.validateMidEvent(midEventDetails, pageId, userId, headers);
+      const expectedUrl: string =
+        'CCD_API_URL/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
+      expect(postRequest.calledOnceWith(expectedUrl, midEventDetails)).to.equal(true);
     });
   });
 

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import config from 'config';
 import CcdSystemService, {
   getJoinAppealPipValidationSuccess,
   getPipValidationSuccess, PipValidation,
@@ -14,6 +15,7 @@ import { addDaysToDate } from '../../../app/utils/date-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('ccd-system-service', () => {
+  const ccdBaseUrl: string = config.get('ccd.apiUrl');
   const caseId = '1234123412341234';
   const accessCode = 'ABCD1234EFGH';
   const invalidCode = 'AAAABBBBCCCC';
@@ -307,8 +309,8 @@ describe('ccd-system-service', () => {
         getRequest = sandbox.stub(axios, 'get').resolves({});
         await ccdSystemService.getCaseById(caseId);
         const expectedUrl: string =
-          `CCD_API_URL/caseworkers/${systemCaseworkerUUID}/jurisdictions/IA/case-types/Asylum/cases/${caseId}`;
-        expect(getRequest.calledOnceWith(expectedUrl)).to.equal(true);
+          `/caseworkers/${systemCaseworkerUUID}/jurisdictions/IA/case-types/Asylum/cases/${caseId}`;
+        expect(getRequest.calledOnceWith(ccdBaseUrl + expectedUrl)).to.equal(true);
       });
 
       it('joinAppealPipValidation should return caseIdValid false if getCaseById fails', async () => {

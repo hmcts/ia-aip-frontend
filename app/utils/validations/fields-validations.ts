@@ -657,13 +657,6 @@ function joinAppealValidation(obj: object) {
   return validate(obj, schema);
 }
 
-function test(errorList: string[]) {
-  errorList.map(error => createStructuredError('', error));
-  for (const error of errorList) {
-    createStructuredError('', error);
-  }
-}
-
 export {
   createStructuredError,
   contactDetailsValidation,

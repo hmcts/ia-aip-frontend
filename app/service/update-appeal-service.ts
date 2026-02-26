@@ -33,7 +33,7 @@ export default class UpdateAppealService {
   private readonly _s2sService: S2SService;
   private readonly _documentManagementService: DocumentManagementService;
 
-  constructor(ccdService: CcdService, authenticationService: AuthenticationService, systemAuthenticationService: SystemAuthenticationService, s2sService: S2SService = null, documentManagementService: DocumentManagementService) {
+  constructor(ccdService: CcdService, authenticationService: AuthenticationService, systemAuthenticationService: SystemAuthenticationService, s2sService: S2SService, documentManagementService: DocumentManagementService) {
     this._ccdService = ccdService;
     this._authenticationService = authenticationService;
     this._systemAuthenticationService = systemAuthenticationService;
@@ -151,22 +151,6 @@ export default class UpdateAppealService {
       }
     }
     return errors;
-  }
-
-  async submitEventWithMidEvents(event, appeal: Appeal, uid: string, userToken: string, paymentsFlag = false, refundFlag = false): Promise<Appeal> {
-    const securityHeaders: SecurityHeaders = {
-      userToken: `Bearer ${userToken}`,
-      serviceToken: await this._s2sService.getServiceToken()
-    };
-
-    const caseData: CaseData = this.convertToCcdCaseData(appeal, paymentsFlag, refundFlag);
-    const updatedCcdCase: CcdCaseDetails = {
-      id: appeal.ccdCaseId,
-      state: appeal.appealStatus,
-      case_data: caseData
-    };
-    const ccdCase: CcdCaseDetails = await this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders);
-    return this.mapCcdCaseToAppeal(ccdCase);
   }
 
   mapCcdCaseToAppeal(ccdCase: CcdCaseDetails): Appeal {

@@ -111,7 +111,7 @@ function postInviteToJoinAppeal(updateAppealService: UpdateAppealService) {
           previousPage: paths.nonLegalRep.addNonLegalRep
         });
       }
-      const appealUpdated: Appeal = await updateAppealService.submitEventWithMidEvents(Events.SEND_PIP_TO_NON_LEGAL_REP, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SEND_PIP_TO_NON_LEGAL_REP, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated

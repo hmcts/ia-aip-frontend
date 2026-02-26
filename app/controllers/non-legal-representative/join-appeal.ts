@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios/index';
+import { AxiosResponse } from 'axios';
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
@@ -114,11 +114,6 @@ function getJoinAppealConfirmDetails(req: Request, res: Response, next: NextFunc
 function postJoinAppealConfirmDetails(updateAppealService: UpdateAppealService, ccdSystemService: CcdSystemService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // TODO run ccdSystem givenAppellantAccess using req.idam.userDetails.uid above as appellantId and use caseId from req.session.joinAppealPipValidation.caseSummary.referenceNumber
-      // TODO set NLR details from req.idam.userDetails using uid, given_name, family_name, sub and pass them through as case data for event below
-      // TODO run ccd submit case for joinAppealConfirmation
-      // TODO check case api to see if it picks up caseDetailsBefore correctly here or if i need to pass through the previous NLR details or something like that
-      // TODO could set pin used in frontend but dont think theres need as can do that in java handler anyway
       const caseId: string = req.session.joinAppealPipValidation.caseSummary.referenceNumber;
       const appellantId: string = req.idam.userDetails.uid;
       const nlrDetails: NlrDetails = {

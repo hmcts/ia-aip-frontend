@@ -16,6 +16,7 @@ import {
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
+import { yesNoToBool } from "../../../app/utils/utils";
 
 describe('application-state-utils', () => {
   let sandbox: sinon.SinonSandbox;
@@ -160,116 +161,6 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('when application status is appealSubmitted should get correct \'Do This next section\'', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
-      req.session.appeal.application.remissionOption = null;
-
-      req.session.appeal.appealStatus = 'appealSubmitted';
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      expect(result).to.deep.equal({
-        cta: null,
-        deadline: '13 February 2020',
-        descriptionParagraphs: [
-          'Your appeal details have been sent to the Tribunal.',
-          'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
-        ],
-        info: {
-          title: 'Helpful Information',
-          url: '<a class=\'govuk-link\' href=\'{{ paths.common.tribunalCaseworker }}\'>What is a Tribunal Caseworker?</a>'
-        },
-        allowedAskForMoreTime: false
-      });
-    });
-
-    it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
-      req.session.appeal.application.remissionOption = null;
-
-      req.session.appeal.appealStatus = 'lateAppealSubmitted';
-      req.session.appeal.application.isAppealLate = true;
-
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      expect(result).to.deep.equal({
-        allowedAskForMoreTime: false,
-        cta: null,
-        deadline: '13 February 2020',
-        descriptionParagraphs: [
-          'Your late appeal details have been sent to the Tribunal.',
-          'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
-        ],
-        'info': {
-          'title': 'Helpful Information',
-          'url': '<a class=\'govuk-link\' href=\'{{ paths.common.tribunalCaseworker }}\'>What is a Tribunal Caseworker?</a>'
-        }
-      });
-    });
-
-    it('when application status is appealSubmitted with fee and setAside is enabled should get correct \'Do This' +
-      ' next section\'', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-      const { appeal } = req.session;
-      appeal.appealStatus = 'appealSubmitted';
-      appeal.application.remissionOption = 'asylumSupportFromHo';
-      appeal.history = [
-        {
-          'id': 'requestFeeRemission',
-          'createdDate': '2020-02-22T15:36:26.099'
-        },
-        {
-          'id': 'submitAppeal',
-          'createdDate': '2020-02-22T15:36:26.099'
-        }
-      ] as HistoryEvent[];
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      expect(result).to.deep.equal({
-        cta: null,
-        deadline: '07 March 2020',
-        descriptionParagraphs: [
-          'Your appeal details have been sent to the Tribunal.',
-          'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
-          'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
-          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
-        ],
-        allowedAskForMoreTime: false
-      });
-    });
-
-    it('when application status is appealSubmitted with fee and flag is enabled should get correct \'Do This' +
-      ' next section\'', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-      const { appeal } = req.session;
-      appeal.appealStatus = 'appealSubmitted';
-      appeal.application.remissionOption = 'feeWaiverFromHo';
-      appeal.history = [
-        {
-          'id': 'requestFeeRemission',
-          'createdDate': '2020-02-22T15:36:26.099'
-        },
-        {
-          'id': 'submitAppeal',
-          'createdDate': '2020-02-22T15:36:26.099'
-        }
-      ] as HistoryEvent[];
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      expect(result).to.deep.equal({
-        cta: null,
-        deadline: '07 March 2020',
-        descriptionParagraphs: [
-          'Your appeal details have been sent to the Tribunal.',
-          'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
-          'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
-          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
-        ],
-        allowedAskForMoreTime: false
-      });
-    });
-
     it('get correct \'Do This next section\' when application status is pendingPayment', async () => {
       req.session.appeal.appealStatus = 'pendingPayment';
       const result = await getAppealApplicationNextStep(req as Request);
@@ -399,26 +290,6 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('when application status is awaitingRespondentEvidence should get correct \'Do This next section\'', async () => {
-      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-      req.session.appeal.appealStatus = 'awaitingRespondentEvidence';
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      expect(result).to.deep.equal({
-        'allowedAskForMoreTime': false,
-        'cta': null,
-        'deadline': dlrmFeeRemissionFlag ? '22 February 2020' : '13 February 2020',
-        'descriptionParagraphs': [
-          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
-          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
-        ],
-        'info': {
-          title: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.title,
-          url: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.url
-        }
-      });
-    });
-
     it('when application status is lateAppealRejected should get correct \'Do This next section\'', async () => {
       req.session.appeal.appealStatus = 'appealStarted';
       req.session.appeal.outOfTimeDecisionType = 'rejected';
@@ -438,159 +309,6 @@ describe('application-state-utils', () => {
           'If you do not contact the Tribunal within 14 days of the decision, a Tribunal Caseworker will end the appeal.'
         ]
       });
-    });
-
-    describe('awaitingReasonsForAppeal', () => {
-      beforeEach(() => {
-        req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
-        req.session.appeal.directions = [
-          {
-            'id': '2',
-            'tag': 'requestReasonsForAppeal',
-            'parties': 'appellant',
-            'dateDue': '2020-09-01',
-            'dateSent': '2020-04-21',
-            'explanation': 'direction explanation',
-            uniqueId: 'directionId'
-          },
-          {
-            'id': '1',
-            'tag': 'respondentEvidence',
-            'parties': 'respondent',
-            'dateDue': '2020-04-28',
-            'dateSent': '2020-04-14',
-            'explanation': 'direction explanation',
-            uniqueId: 'directionId'
-          }
-        ];
-      });
-
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and no pending time extension', async () => {
-        const result = await getAppealApplicationNextStep(req as Request);
-
-        expect(result).to.deep.equal(
-          {
-            allowedAskForMoreTime: true,
-            cta: {
-              respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
-              url: '/case-building/home-office-decision-wrong'
-            },
-            deadline: '01 September 2020',
-            descriptionParagraphs: [
-              'Tell us why you think the Home Office decision to refuse your claim is wrong.'
-            ],
-            info: {
-              title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
-              url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
-            },
-            usefulDocuments: {
-              title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
-              url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
-            }
-          }
-        );
-      });
-
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a pending time extension', async () => {
-        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
-          value: {
-            decision: 'Pending',
-            applicant: 'Appellant',
-            type: 'Time extension'
-          }
-        };
-        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
-        const result = await getAppealApplicationNextStep(req as Request);
-
-        expect(result).to.deep.equal(
-          {
-            allowedAskForMoreTime: true,
-            cta: {
-              respondBy: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime,
-              url: '/case-building/home-office-decision-wrong'
-            },
-            deadline: '01 September 2020',
-            descriptionParagraphs: [
-              i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime
-            ],
-            info: {
-              title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
-              url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
-            },
-            usefulDocuments: {
-              title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
-              url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
-            }
-          }
-        );
-      });
-
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a granted time extension', async () => {
-        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
-          value: {
-            decision: 'Granted',
-            applicant: 'Appellant'
-          }
-        };
-        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
-        const result = await getAppealApplicationNextStep(req as Request);
-
-        expect(result).to.deep.equal(
-          {
-            allowedAskForMoreTime: true,
-            cta: {
-              respondBy: i18n.pages.overviewPage.doThisNext.nowRespondBy,
-              url: '/case-building/home-office-decision-wrong'
-            },
-            deadline: '01 September 2020',
-            descriptionParagraphs: [
-              i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description
-            ],
-            info: {
-              title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
-              url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
-            },
-            usefulDocuments: {
-              title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
-              url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
-            }
-          }
-        );
-      });
-
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a refused time extension', async () => {
-        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
-          value: {
-            decision: 'Refused',
-            applicant: 'Appellant'
-          }
-        };
-        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
-        const result = await getAppealApplicationNextStep(req as Request);
-
-        expect(result).to.deep.equal(
-          {
-            allowedAskForMoreTime: true,
-            cta: {
-              respondBy: i18n.pages.overviewPage.doThisNext.stillRespondBy,
-              url: '/case-building/home-office-decision-wrong'
-            },
-            deadline: '01 September 2020',
-            descriptionParagraphs: [
-              i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description
-            ],
-            info: {
-              title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
-              url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
-            },
-            usefulDocuments: {
-              title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
-              url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
-            }
-          }
-        );
-      });
-
     });
 
     describe('awaitingReasonsForAppeal', () => {
@@ -1946,38 +1664,6 @@ describe('application-state-utils', () => {
     expect(requestFeeRemissionEventIsTheLatest(req as Request)).to.deep.equal(true);
   });
 
-  it('when application status is appealSubmitted with decision Approved for fee refund and flag is enabled should get correct \'Do This' +
-    ' next section\'', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-    const { appeal } = req.session;
-    appeal.appealStatus = 'appealSubmitted';
-    appeal.application.remissionDecision = 'approved';
-    appeal.history = [
-      {
-        'id': 'recordRemissionDecision',
-        'createdDate': '2020-02-22T15:36:26.099'
-      },
-      {
-        'id': 'submitAppeal',
-        'createdDate': '2020-02-22T15:36:26.099'
-      }
-    ] as HistoryEvent[];
-    const result = await getAppealApplicationNextStep(req as Request);
-
-    expect(result).to.deep.equal({
-      cta: null,
-      deadline: '07 March 2020',
-      descriptionParagraphs: [
-        'Your appeal details have been sent to the Tribunal.',
-        'A Legal Officer will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.',
-        '<b>Helpful information</b>',
-        '<a href={{ paths.common.tribunalCaseworker }}>What is a Tribunal Caseworker?</a>'
-      ],
-      allowedAskForMoreTime: false
-    });
-  });
-
   it('when application status is appealSubmitted with decision partially approved for fee refund and flag is enabled should get correct \'Do This' +
     ' next section\'', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
@@ -2085,6 +1771,310 @@ describe('application-state-utils', () => {
         '<a href={{ paths.common.payLater }}>Pay for the appeal</a>'
       ],
       allowedAskForMoreTime: false
+    });
+  });
+
+  const isSTF24W: ('Yes' | 'No')[] = ['Yes', 'No'];
+  isSTF24W.forEach((stf24w) => {
+    const is24Weeks = yesNoToBool(stf24w);
+    const doThisNext = is24Weeks ? i18n.pages.overviewPage.doThisNext.stf24w : i18n.pages.overviewPage.doThisNext;
+
+    it(`when application status is appealSubmitted and stf24w was set to ${stf24w} should get correct 'Do This next section'`, async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
+      req.session.appeal.application.remissionOption = null;
+
+      req.session.appeal.appealStatus = 'appealSubmitted';
+      req.session.appeal.stf24wPreviousStatusWasYesAutoGenerated = stf24w;
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.deep.equal({
+        cta: null,
+        deadline: '13 February 2020',
+        descriptionParagraphs: [
+          doThisNext.appealSubmitted.detailsSent,
+          doThisNext.appealSubmitted.dueDate
+        ],
+        info: {
+          title: doThisNext.appealSubmitted.info.title,
+          url: doThisNext.appealSubmitted.info.url
+        },
+        allowedAskForMoreTime: false
+      });
+    });
+
+    const testStates = ['appealSubmitted', 'lateAppealSubmitted'];
+    testStates.forEach(state => {
+      it(`when application status is ${state} with decision Approved for fee refund, flag is enabled and stf24w was set to ${stf24w} should get correct 'Do This next section'`, async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+            .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+        const { appeal } = req.session;
+        appeal.appealStatus = state;
+        appeal.application.remissionDecision = 'approved';
+        appeal.history = [
+          {
+            'id': 'recordRemissionDecision',
+            'createdDate': '2020-02-22T15:36:26.099'
+          },
+          {
+            'id': 'submitAppeal',
+            'createdDate': '2020-02-22T15:36:26.099'
+          }
+        ] as HistoryEvent[];
+        appeal.stf24wPreviousStatusWasYesAutoGenerated = stf24w;
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal({
+          cta: null,
+          deadline: '07 March 2020',
+          descriptionParagraphs: [
+            doThisNext.remissionDecided.approved.detailsSent,
+            doThisNext.remissionDecided.approved.legalOfficerCheck,
+            doThisNext.remissionDecided.approved.helpFulInfo,
+            doThisNext.remissionDecided.approved.href,
+          ],
+          allowedAskForMoreTime: false
+        });
+      });
+    });
+
+    const remissionOptions = ['asylumSupportFromHo', 'feeWaiverFromHo'];
+    remissionOptions.forEach(remissionOption => {
+      it(`when application status is appealSubmitted with fee and remission options set to ${remissionOptions} and stf24w was set to ${stf24w} should get correct 'Do This next section'`, async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+            .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+        const { appeal } = req.session;
+        appeal.appealStatus = 'appealSubmitted';
+        appeal.application.remissionOption = remissionOption;
+        appeal.history = [
+          {
+            'id': 'requestFeeRemission',
+            'createdDate': '2020-02-22T15:36:26.099'
+          },
+          {
+            'id': 'submitAppeal',
+            'createdDate': '2020-02-22T15:36:26.099'
+          }
+        ] as HistoryEvent[];
+        appeal.stf24wPreviousStatusWasYesAutoGenerated = stf24w;
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal({
+          cta: null,
+          deadline: '07 March 2020',
+          descriptionParagraphs: is24Weeks ? [
+                'Your appeal details have been sent to the Tribunal.',
+                'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+                'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
+              ] :
+              [
+                'Your appeal details have been sent to the Tribunal.',
+                'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+                'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
+                'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+              ],
+          allowedAskForMoreTime: false
+        });
+      });
+    });
+
+    it(`when application status is lateAppealSubmitted and stf24w was set to ${stf24w} should get correct 'Do This next section'`, async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
+      req.session.appeal.application.remissionOption = null;
+
+      req.session.appeal.appealStatus = 'lateAppealSubmitted';
+      req.session.appeal.application.isAppealLate = true;
+      req.session.appeal.stf24wPreviousStatusWasYesAutoGenerated = stf24w;
+
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.deep.equal({
+        allowedAskForMoreTime: false,
+        cta: null,
+        deadline: '13 February 2020',
+        descriptionParagraphs: [
+          doThisNext.lateAppealSubmitted.detailsSent,
+          doThisNext.lateAppealSubmitted.dueDate,
+        ],
+        'info': {
+          'title': doThisNext.lateAppealSubmitted.info.title,
+          'url': doThisNext.lateAppealSubmitted.info.url
+        }
+      });
+    });
+
+    it(`when application status is awaitingRespondentEvidence and stf24w was set to ${stf24w} should get correct 'Do This next section'`, async () => {
+      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+      req.session.appeal.appealStatus = 'awaitingRespondentEvidence';
+      req.session.appeal.stf24wPreviousStatusWasYesAutoGenerated = stf24w;
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.deep.equal({
+        'allowedAskForMoreTime': false,
+        'cta': null,
+        'deadline': dlrmFeeRemissionFlag ? '22 February 2020' : '13 February 2020',
+        'descriptionParagraphs': [
+          doThisNext.awaitingRespondentEvidence.detailsSent,
+          doThisNext.awaitingRespondentEvidence.dueDate
+        ],
+        'info': {
+          title: doThisNext.awaitingRespondentEvidence.info.title,
+          url: doThisNext.awaitingRespondentEvidence.info.url
+        }
+      });
+    });
+
+    describe('awaitingReasonsForAppeal', () => {
+      beforeEach(() => {
+        req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
+        req.session.appeal.stf24wPreviousStatusWasYesAutoGenerated = stf24w;
+        req.session.appeal.directions = [
+          {
+            'id': '2',
+            'tag': 'requestReasonsForAppeal',
+            'parties': 'appellant',
+            'dateDue': '2020-09-01',
+            'dateSent': '2020-04-21',
+            'explanation': 'direction explanation',
+            uniqueId: 'directionId'
+          },
+          {
+            'id': '1',
+            'tag': 'respondentEvidence',
+            'parties': 'respondent',
+            'dateDue': '2020-04-28',
+            'dateSent': '2020-04-14',
+            'explanation': 'direction explanation',
+            uniqueId: 'directionId'
+          }
+        ];
+      });
+
+      it(`should return 'Do This next section' when application status is awaitingReasonsForAppeal and no pending time extension and stf24w was set to ${stf24w}`, async () => {
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal(
+            {
+              allowedAskForMoreTime: !is24Weeks,
+              cta: {
+                respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
+                url: '/case-building/home-office-decision-wrong'
+              },
+              deadline: '01 September 2020',
+              descriptionParagraphs: [
+                'Tell us why you think the Home Office decision to refuse your claim is wrong.'
+              ],
+              info: {
+                title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
+                url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
+              },
+              usefulDocuments: {
+                title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
+                url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
+              }
+            }
+        );
+      });
+
+      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a pending time extension and stf24w was set to ${stf24w}', async () => {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          value: {
+            decision: 'Pending',
+            applicant: 'Appellant',
+            type: 'Time extension'
+          }
+        };
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal(
+            {
+              allowedAskForMoreTime: !is24Weeks,
+              cta: {
+                respondBy: is24Weeks ? undefined : i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime,
+                url: '/case-building/home-office-decision-wrong'
+              },
+              deadline: '01 September 2020',
+              descriptionParagraphs: [
+                i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime
+              ],
+              info: {
+                title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
+                url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
+              },
+              usefulDocuments: {
+                title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
+                url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
+              }
+            }
+        );
+      });
+
+      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a granted time extension and stf24w was set to ${stf24w}', async () => {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          value: {
+            decision: 'Granted',
+            applicant: 'Appellant'
+          }
+        };
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal(
+            {
+              allowedAskForMoreTime: !is24Weeks,
+              cta: {
+                respondBy: i18n.pages.overviewPage.doThisNext.nowRespondBy,
+                url: '/case-building/home-office-decision-wrong'
+              },
+              deadline: '01 September 2020',
+              descriptionParagraphs: [
+                i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description
+              ],
+              info: {
+                title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
+                url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
+              },
+              usefulDocuments: {
+                title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
+                url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
+              }
+            }
+        );
+      });
+
+      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a refused time extension and stf24w was set to ${stf24w}', async () => {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          value: {
+            decision: 'Refused',
+            applicant: 'Appellant'
+          }
+        };
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal(
+            {
+              allowedAskForMoreTime: !is24Weeks,
+              cta: {
+                respondBy: i18n.pages.overviewPage.doThisNext.stillRespondBy,
+                url: '/case-building/home-office-decision-wrong'
+              },
+              deadline: '01 September 2020',
+              descriptionParagraphs: [
+                i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description
+              ],
+              info: {
+                title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
+                url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
+              },
+              usefulDocuments: {
+                title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
+                url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
+              }
+            }
+        );
+      });
+
     });
   });
 

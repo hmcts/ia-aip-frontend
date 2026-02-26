@@ -265,14 +265,17 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'awaitingReasonsForAppeal':
       const allowedAskForMoreTime = !is24Weeks;
       descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description];
-      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       if (pendingTimeExtension) {
         descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime];
-        respondBy = is24Weeks ? null : i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
+        if (allowedAskForMoreTime) {
+          respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
+        }
       } else if (decisionGranted) {
         respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
       } else if (decisionRefused) {
         respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      } else {
+        respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       }
       doThisNextSection = {
         descriptionParagraphs,

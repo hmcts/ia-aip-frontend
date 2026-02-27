@@ -212,7 +212,7 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
-      isNonLegalRep: undefined,
+      isNonLegalRep: false,
       isPostDecisionState: false
     });
   });
@@ -303,7 +303,7 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showNonLegalRep: true,
-      isNonLegalRep: undefined,
+      isNonLegalRep: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: true
     });
@@ -395,7 +395,7 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: true,
       showNonLegalRep: true,
-      isNonLegalRep: undefined,
+      isNonLegalRep: false,
       showFtpaApplicationLink: false,
       showAskForFeeRemission: true,
       showAskForSomethingInEndedState: false,
@@ -452,8 +452,8 @@ describe('Confirmation Page Controller', () => {
       showPayLaterLink: false,
       ftpaFeatureEnabled: true,
       hearingDetails: null,
-      showChangeRepresentation: true,
-      showNonLegalRep: true,
+      showChangeRepresentation: false,
+      showNonLegalRep: false,
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
@@ -522,7 +522,7 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
-      isNonLegalRep: undefined,
+      isNonLegalRep: false,
       isPostDecisionState: false
     });
   });
@@ -588,7 +588,7 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
-      isNonLegalRep: undefined,
+      isNonLegalRep: false,
       isPostDecisionState: false
     });
   });
@@ -667,7 +667,7 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
-      isNonLegalRep: undefined,
+      isNonLegalRep: false,
       isPostDecisionState: false
     });
   });
@@ -768,7 +768,7 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
-      isNonLegalRep: undefined,
+      isNonLegalRep: false,
       isPostDecisionState: false
     });
   });

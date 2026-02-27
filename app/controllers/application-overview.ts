@@ -141,6 +141,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
       const ftpaFeatureEnabled = await isFtpaFeatureEnabled(req);
 
+      const isCitizen: boolean = !req.session.isNonLegalRep;
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
       const saveAndAskForMoreTime = _.has(req.query, 'save-and-ask-for-more-time');
@@ -152,18 +153,18 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);
       const hearingDetails = getHearingDetails(req);
-      let showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
+      let showPayLaterLink = isCitizen && (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
       if (refundFeatureEnabled) {
         showPayLaterLink = (req.session.appeal.application.refundConfirmationApplied || payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req))
           && !isPostDecisionState(appealStatus, ftpaFeatureEnabled)
           && !isRemissionApprovedOrPartiallyApproved(req.session.appeal);
       }
 
-      const showChangeRepresentation = isAppealInProgress(appealStatus);
-      const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled);
-      const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
-      const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
-      const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
+      const showChangeRepresentation = isCitizen && isAppealInProgress(appealStatus);
+      const provideMoreEvidenceSection = isCitizen && checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled);
+      const showAppealRequests = isCitizen && showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
+      const showAppealRequestsInAppealEndedStatus = isCitizen && showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
+      const showHearingRequests = isCitizen && showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
         && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
 
       const application = req.session.appeal.application;
@@ -174,10 +175,9 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
       const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;
 
-      const showNonLegalRep = isAppealInProgress(appealStatus);
-      const isNonLegalRep: boolean = req.session.isNonLegalRep;
+      const showNonLegalRep = isCitizen && isAppealInProgress(appealStatus);
       return res.render('application-overview.njk', {
-        isNonLegalRep: isNonLegalRep,
+        isNonLegalRep: !isCitizen,
         name: loggedInUserFullName,
         appealRefNumber: appealRefNumber,
         applicationNextStep: nextSteps,
@@ -197,7 +197,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         ftpaFeatureEnabled,
         hearingDetails,
         showChangeRepresentation,
-        showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, ftpaFeatureEnabled),
+        showFtpaApplicationLink: isCitizen && showFtpaApplicationLink(req.session.appeal, ftpaFeatureEnabled),
         showAskForFeeRemission,
         showNonLegalRep,
         showAskForSomethingInEndedState,

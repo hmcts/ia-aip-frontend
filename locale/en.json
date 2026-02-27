@@ -209,7 +209,7 @@
     },
     "decisionTypePage": {
       "title": "How do you want your appeal to be decided?",
-      "hint" : {
+      "hint": {
         "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
         "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80.</p><p>Select an option</p>"
       },
@@ -1373,6 +1373,408 @@
             "dueDate": "If you do not pay the fee by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.",
             "howToPay": "<b>How to pay the fee</b>",
             "bulletText": "1. Call the Tribunal on 0300 123 1711, then select option 4<br />2. Provide your 16-digit online case reference number: {{ applicationNextStep.ccdReferenceNumber }}<br />3. Make the payment with a debit or credit card"
+          },
+          "feeSupportRequested": "Fee support requested",
+          "feeSupportStatusApproved": "Fee support request approved",
+          "feeSupportStatusRefused": "Fee support request refused",
+          "feeSupportStatusPartiallyApproved": "Fee support partially approved",
+          "paymentPending": {
+            "decisionApprovedPaymentStatus": "No payment needed",
+            "decisionPartiallyApprovedPaymentStatus": "Not paid",
+            "decisionRejectedPaymentStatus": "Not paid"
+          }
+        }
+      },
+      "doThisNextNonLegalRep": {
+        "toDo": "The appellant needs to do this next",
+        "nothingToDo": "The appellant has nothing to do next",
+        "respondByText": "The appellant needs to respond by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
+        "nowRespondBy": "The appellant now needs to respond by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
+        "stillRespondBy": "The appellant still needs to respond by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
+        "appealStarted": {
+          "fewQuestions": "The appellant needs to answer a few questions about themself and their appeal to get started.",
+          "finishQuestions": "The appellant needs to finish telling us about their appeal.",
+          "needHomeOfficeDecision": "The appellant needs to have their Home Office decision letter with them to answer some questions."
+        },
+        "appealSubmitted": {
+          "detailsSent": "The appellant's appeal details have been sent to the Tribunal.",
+          "dueDate": "A Tribunal Caseworker will contact them to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+          }
+        },
+        "appealSubmittedDlrmFeeRemission": {
+          "detailsSent": "The appellant's appeal details have been sent to the Tribunal.",
+          "feeDetails": "There is a fee for this appeal. The appellant told the Tribunal that they believe they do not have to pay some or all of the fee.",
+          "tribunalCheck": "The Tribunal will check the information they sent and let them know if you need to pay a fee.",
+          "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
+        },
+        "pendingPayment": {
+          "payForYourAppeal": "Pay for their appeal",
+          "detailsSent": "The appellant's appeal details have been sent to the Tribunal.",
+          "detailsSentLate": "The appellant's late appeal details have been sent to the Tribunal.",
+          "dueDate": "The appellant must pay for their appeal by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
+          "dueDate1": "The Tribunal may end the their if they do not pay."
+        },
+        "appealTakenOffline": {
+          "description": "The appellant's appeal was removed from the online service on <date of removal>. The reason for this is:",
+          "reason": "",
+          "info": {
+            "title": "What happens next",
+            "description": "Their will continue offline. The Tribunal will contact them soon to tell you what will happen next."
+          }
+        },
+        "lateAppealSubmitted": {
+          "detailsSent": "The appellant's late appeal details have been sent to the Tribunal.",
+          "dueDate": "A Tribunal Caseworker will contact them to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+          }
+        },
+        "lateAppealSubmittedDlrmFeeRemission": {
+          "detailsSent": "The appellant's appeal details have been sent to the Tribunal.",
+          "feeDetails": "There is a fee for this appeal. They told the Tribunal that they believe they do not have to pay some or all of the fee.",
+          "tribunalCheck": "The Tribunal will check the information they sent and let them know if they need to pay a fee.",
+          "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
+        },
+        "lateAppealRejected": {
+          "description": "The appellant's appeal cannot continue. Read the <a href='{{ paths.common.outOfTimeDecisionViewer }}'>reasons for this decision</a>.",
+          "description2": "If they do not contact the Tribunal within 14 days of the decision, a Tribunal Caseworker will end the appeal."
+        },
+        "cmaRequirementsSubmitted": {
+          "description": "A Tribunal Caseworker is looking at the appellant's answers and will contact them with details of their case management appointment and tell them what to do next.",
+          "description2": "This should be by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> but may be longer than that.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+          }
+        },
+        "awaitingRespondentEvidence": {
+          "detailsSent": "The appellant's appeal details have been sent to the Tribunal.",
+          "dueDate": "A Tribunal Caseworker will contact them by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span> to tell them what to do next.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+          }
+        },
+        "respondentReview": {
+          "detailsSent": "The Tribunal has asked the Home Office to review the appellant's appeal. The Home Office will look at all the information they sent to the Tribunal and will either withdraw or maintain their decision to refuse the appellant's application to stay in or enter the UK. <ul class='govuk-list govuk-list--bullet'><li>If the Home Office withdraw their decision it means they will look again at their decision to refuse their application</li><li>If the Home Office maintain their decision it means they still think they were correct to refuse the appellant's application</li></ul>",
+          "dueDate": "A Tribunal Caseworker will contact them to tell you what to do next. This should be by<span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span> but it might be later than that.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link govuk-!-margin-bottom-2 --display-block' href='{{ paths.common.homeOfficeWithdrawDecision }}'>What happens if the Home Office withdraw their decision</a><a class='govuk-link' href='{{ paths.common.homeOfficeMaintainDecision }}'>What happens if the Home Office maintain their decision</a>"
+          }
+        },
+        "decisionWithdrawn": {
+          "detailsSent": "The Home Office has reviewed the appellant's appeal and decided to withdraw their decision to refuse the appellant's application to stay in or enter the UK. Read the <a class='govuk-link' href='{{ paths.common.homeOfficeWithdrawLetter }}'>Home Office Withdrawal Letter</a>.",
+          "dueDate": "The appellant's appeal may end. If they do not want the appeal to end, they must email <a class='govuk-link' href=\"mailto:{{ applicationNextStep.hearingCentreEmail }}\">{{ applicationNextStep.hearingCentreEmail }}</a> by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> to explain why.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link' href='{{ paths.common.homeOfficeWithdrawDecision }}'>What happens if the Home Office withdraw their decision</a>"
+          }
+        },
+        "decisionMaintained": {
+          "description": "The Home Office has reviewed the appellant's appeal and decided to maintain their decision to refuse the appellant's application to stay in or enter the UK. Read the <a class='govuk-link' href='{{ paths.common.homeOfficeResponse }}'>Home Office Response</a>.",
+          "description2": "If you want to respond, you can <a class='govuk-link' href='{{ paths.common.provideMoreEvidenceForm }}'>provide more evidence</a> at any time.",
+          "dueDate": "The appellant's appeal will be decided at a hearing. A Tribunal Caseworker will contact them by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> to ask if there is anything they will need at the hearing.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link govuk-!-margin-bottom-2 --display-block' href='{{ paths.common.homeOfficeMaintainDecision }}'>What happens if the Home Office maintain their decision</a><a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          }
+        },
+        "awaitingReasonsForAppeal": {
+          "new": {
+            "description": "The appellant needs to tell us why they think the Home Office decision to refuse their claim is wrong.",
+            "descriptionAskForMoreTime": "They might not get more time. They should still try to tell us why they think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if they can.",
+            "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if they can’t answer fully, they will be able to provide more information about their appeal later.",
+            "info": {
+              "title": "Helpful Information",
+              "url": "<a class='govuk-link' href='{{ paths.common.homeOfficeDocuments }}'>Understanding their Home Office documents</a>"
+            },
+            "usefulDocuments": {
+              "title": "Useful documents",
+              "url": "<a class='govuk-link' href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about their case</a>"
+            }
+          },
+          "partial": {
+            "description": "The appellant needs to finish telling us why they think the Home Office decision to refuse their claim is wrong.",
+            "descriptionAskForMoreTime": "They might not get more time. They need to finish telling us why they think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if they can.",
+            "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if they can’t answer fully, they will be able to provide more information about their appeal later.",
+            "info": {
+              "title": "Helpful Information",
+              "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding their Home Office documents</a>"
+            },
+            "usefulDocuments": {
+              "title": "Useful documents",
+              "url": "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about their case</a>"
+            }
+          }
+        },
+        "reasonsForAppealSubmitted": {
+          "detailsSent": "The appellant has told us why they think the Home Office decision is wrong.",
+          "dueDate": "A Tribunal Caseworker will contact them to tell them what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
+        },
+        "caseUnderReview": {
+          "detailsSent": "The reasons the appellant thinks the Home Office decision to refuse their claim is wrong were sent to the Tribunal.",
+          "dueDate": "A Tribunal Caseworker will contact them to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
+        },
+        "clarifyingQuestions": {
+          "description": "The appellant needs to answer some questions about their appeal.",
+          "descriptionAskForMoreTime": "They might not get more time. They need to finish answering the Tribunal’s questions by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if they can.",
+          "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if they can’t answer fully, they will be able to provide more information about their appeal later."
+        },
+        "awaitingCmaRequirements": {
+          "description": "The appellant need to attend a case management appointment.",
+          "description2": "First, they need to tell us if they will need anything at the appointment, like an interpreter or step-free access.",
+          "descriptionAskForMoreTime": "They might not get more time. They should still try and provide the requirements by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if they can.",
+          "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if they can’t answer fully, they will be able to provide more information about their appeal later.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+          }
+        },
+        "clarifyingQuestionsAnswersSubmitted": {
+          "description": "A Tribunal Caseworker is looking at the appellant's answers and will contact them to tell you what to do next.",
+          "dueDate": "This should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that."
+        },
+        "submitHearingRequirements": {
+          "description": "The appellant's appeal is going to hearing.",
+          "description2": "They need to tell us if there is anything they will need at the hearing, like an <p>interpreter or step-free access.",
+          "descriptionAskForMoreTime": "They need to respond by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span>.",
+          "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if they can’t answer fully, they will be able to provide more information about their appeal later.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          }
+        },
+        "ended": {
+          "description": "ended desc",
+          "dueDate": "ended  should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that.",
+          "ctaTitle": "The appellant's appeal has now ended",
+          "ctaInstruction": "Review their <a href=\"{{ paths.common.noticeEndedAppealViewer }}\">Notice of Ended Appeal</a>. This includes details of who ended the appeal and why.",
+          "ctaReview": "If a Tribunal Caseworker ended the appeal and the appellant disagrees with this decision, they have 14 days to ask for a judge to review the decision."
+        },
+        "decidedWithoutHearing": {
+          "description": [
+            "The appellant chose to have their appeal to be decided without a hearing.",
+            "A judge will decide their appeal based on the information and evidence provided by them and the Home Office.",
+            "The Tribunal will contact them when a decision has been made."
+          ]
+        },
+        "cmaListed": {
+          "description": "The Tribunal has set a date for the appellant's case management appointment. Here are the details:",
+          "date": "<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}",
+          "time": "<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}",
+          "hearingCentre": "<span class=\"govuk-!-font-weight-bold\">Hearing Centre:</span> {{ applicationNextStep.hearingCentre }}",
+          "respondByTextAskForMoreTime": "The appellant should read their Notice of Case Management Appointment carefully. It has important information about their appointment.",
+          "usefulDocuments": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+          },
+          "usefulDoc": {
+            "title": "Useful documents",
+            "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>Notice of Case Management Appointment.pdf</a>"
+          }
+        },
+        "listing": {
+          "providedByLr": {
+            "direction1": "The appellant's hearing needs were sent to the Tribunal.",
+            "direction2": "A Tribunal Caseworker is looking at the answers and will contact them with the details of their hearing and tell them what to do next."
+          },
+          "detailsSent": "A Tribunal Caseworker is looking at the appellant's answers and will contact them with the details of their hearing and to tell them what to do next.",
+          "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          }
+        },
+        "prepareForHearing": {
+          "providedByLr": {
+            "description": "The hearing bundle is ready to view. This is a record of all the information and evidence about this appeal. The appellant should read it carefully."
+          },
+          "description": "The Tribunal has set a date for the appellant's hearing. Here are the details:",
+          "date": "<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}",
+          "time": "<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}",
+          "hearingCentre": "<span class=\"govuk-!-font-weight-bold\">Location:</span> {{ applicationNextStep.hearingCentre }} ",
+          "hearingNotice": "The appellant can now access their <a href='{{ paths.common.latestHearingNoticeViewer }}'>Notice of Hearing</a>. It includes important<br>details about the hearing and they should read it carefully.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          }
+        },
+        "preHearing": {
+          "hearingBundle": "The hearing bundle is ready to view. This is a record of all the information and evidence about this appeal. The appellant should read it carefully.",
+          "hearingBundleLink": "<a class=\"govuk-link\" href=\"{{ paths.common.hearingBundleViewer }}\">View the hearing bundle</a>",
+          "hearingDetails": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">The appellant's hearing details</h3>",
+          "hearingDateTimeCentre": "<span class='govuk-body govuk-!-font-weight-bold'>Date:</span> {{ hearingDetails.date }}<br /><span class='govuk-body govuk-!-font-weight-bold'>Time:</span> {{ hearingDetails.time }}<br /><span class='govuk-body govuk-!-font-weight-bold'>Location:</span> {{ hearingDetails.hearingCentre }}",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link' href='{{ paths.common.understandingHearingBundle }}'>Understanding the hearing bundle</a><br /><a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          }
+        },
+        "decided": {
+          "decision": "A judge has <b> {{ applicationNextStep.decision }} </b> the appellant's appeal. <br>",
+          "description": "<p>The Decision and Reasons document includes the reasons the judge made this decision. The appellant should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> <br> <p> If they disagree with this decision, they have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to appeal to the Upper Tribunal. </p>",
+          "descriptionFtpaEnabled": "<p>The Decision and Reasons document includes the reasons the judge made this decision. The appellant should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
+          "updatedDescriptionFtpaEnabled": "<p>The Decision and Reasons document includes the reasons the judge made this decision. The appellant should read it carefully.</p><br> <a href={{ paths.common.updatedDecisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
+          "info": {
+            "title": "Helpful Information",
+            "titleFtpaEnabled": "Appeal Information",
+            "text": "If they disagree with this decision, they have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.",
+            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>",
+            "urlFtpaEnabled": ""
+          },
+          "underRule32": {
+            "description": "A judge has reviewed the appellant's appeal decision and decided that their appeal should be heard again. <br>",
+            "url": "<a href={{ paths.common.decisionAndReasonsViewerWithRule32 }}>Read the reasons for this decision</a> <br>",
+            "info": {
+              "title": "What happens next",
+              "text": "There will be a new hearing for this appeal. The Tribunal will contact the appellant soon to ask if there is anything they will need at the hearing."
+            }
+          }
+        },
+        "ftpaSubmitted": {
+          "description": {
+            "appellant": [
+              "A judge will decide the appellant's application for permission to appeal to the Upper Tribunal.",
+              "The Tribunal will contact them when the judge has made a decision."
+            ],
+            "respondent": [
+              "The Home Office has applied for permission to appeal to the Upper Tribunal. The Tribunal will contact the appellant when the judge has decided the application."
+            ]
+          }
+        },
+        "ftpaDecided": {
+          "respondent": {
+            "granted": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been granted.",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact the appellant to tell them what will happen next."
+            ],
+            "partiallyGranted": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been partially granted.",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact the appellant to tell them what will happen next."
+            ],
+            "notAdmitted": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been not admitted. This means the Tribunal did not consider the request because it was late or the Home Office did not have the right to appeal.",
+              "If the Home Office still thinks the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. The appellant will be notified if this happens."
+            ],
+            "refused": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been refused.",
+              "If the Home Office still thinks the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. The appellant will be notified if this happens."
+            ],
+            "reheardRule35": [
+              "A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided that this appeal should be heard again by the First-tier Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. The appellant should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the decision and reasons document</a>",
+              "<b>What happens next</b>",
+              "There will be a new hearing for this appeal. The Tribunal will contact the appellant soon to ask if there is anything them will need at the hearing."
+            ],
+            "remadeRule31": [
+              "A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided to review the appellant's appeal decision.<br>",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>",
+              "<b>What happens next</b>",
+              "The Tribunal will contact the appellant when the review of their appeal decision is complete."
+            ],
+            "remadeRule32": [
+              "A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided to review the appellant's appeal decision.<br>",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>",
+              "<b>What happens next</b>",
+              "The Tribunal will contact the appellant when the review of their appeal decision is complete."
+            ]
+          },
+          "appellant": {
+            "granted": [
+              "A judge has <b> granted </b> the appellant's application for permission to appeal to the Upper Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. The appellant should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact the appellant soon to tell them what will happen next."
+            ],
+            "partiallyGranted": [
+              "A judge has <b> partially granted </b> the appellant's application for permission to appeal to the Upper Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. The appellant should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact the appellant soon to tell them what will happen next.",
+              "If the appellant thinks their application should have been fully granted, they can send an application for permission to appeal directly to the Upper Tribunal.",
+              "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply</a>",
+              "They must send their application by {{ applicationNextStep.ftpaDeadline }}"
+            ],
+            "notAdmitted": [
+              "A judge has <b> not admitted </b> the appellant's application for permission to appeal to the Upper Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. The appellant should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "If the appellant still thinks the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal.",
+              "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>",
+              "They must send their application by {{ applicationNextStep.ftpaDeadline }}"
+            ],
+            "refused": [
+              "A judge has <b> refused </b> the appellant's application for permission to appeal to the Upper Tribunal.<br>",
+              "The Decision and Reasons document includes the reasons the judge made this decision. The appellant should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "If the appellant still thinks the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal.",
+              "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>",
+              "They must send their application by {{ applicationNextStep.ftpaDeadline }}"
+            ],
+            "reheardRule35": [
+              "A judge has reviewed the appellant's application for permission to appeal to the Upper Tribunal and decided that their appeal should be heard again by the First-tier Tribunal.<br>",
+              "The Decision and Reasons document includes the reasons the judge made this decision. The appellant should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "There will be a new hearing for this appeal. The Tribunal will contact the appellant soon to ask if there is anything they will need at the hearing."
+            ],
+            "remadeRule31": [
+              "A judge has reviewed the appellant's application for permission to appeal to the Upper Tribunal and decided to review their appeal decision.<br>",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>",
+              "<b>What happens next</b>",
+              "The Tribunal will contact the appellant when the review of their appeal decision is complete."
+            ],
+            "remadeRule32": [
+              "A judge has reviewed the appellant's application for permission to appeal to the Upper Tribunal and decided to review their appeal decision.<br>",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>",
+              "<b>What happens next</b>",
+              "The Tribunal will contact the appellant when the review of their appeal decision is complete."
+            ]
+          }
+        },
+        "transferredToUt": {
+          "description": "The appellant's appeal has been moved to the Upper Tribunal, which is a higher tribunal than the First-tier tribunal.",
+          "explanation": "This is because they also have an expedited section 82A appeal in the Upper Tribunal, with the following appeal reference:",
+          "utAppealReferenceNumber": "{{ applicationNextStep.utAppealReferenceNumber }}",
+          "utAction": "An Upper Tribunal judge will decide both appeals at the same time.",
+          "info": {
+            "title": "What happens next",
+            "description": "\nThe upper tribunal may contact the appellant about this appeal.<br /><br />If they still have to respond to a question about their appeal from the First-tier Tribunal, they should tell the Upper Tribunal. The Upper Tribunal will decide what will happen next."
+          },
+          "usefulDocuments": {
+            "title": "Helpful Information",
+            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/courts-tribunals/upper-tribunal-immigration-and-asylum-chamber\" target=\"_blank\">Find out more about the Upper Tribunal, including contact details</a>. (Opens in a new window)"
+          }
+        },
+        "remitted": {
+          "decision": "The {{ applicationNextStep.sourceOfRemittal }} has decided that this appeal will be heard again by the First-tier Tribunal. <br><br> <a href={{ paths.common.remittalDocumentsViewer }}>See the {{ applicationNextStep.sourceOfRemittal }} documents</a> <br><br> <b>What happens next</b> <br><br> There will be a new hearing for this appeal. The Tribunal will contact the appellant to let you know what to do next. <br><br> They can provide more evidence for this appeal to the Tribunal, if they have it."
+        },
+        "remissionDecided": {
+          "approved": {
+            "detailsSent": "The appellant's appeal details have been sent to the Tribunal.",
+            "legalOfficerCheck": "A Legal Officer will contact them to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
+            "helpFulInfo": "<b>Helpful information</b>",
+            "href": "<a href={{ paths.common.tribunalCaseworker }}>What is a Tribunal Caseworker?</a>"
+          },
+          "rejected": {
+            "feeForAppeal": "The fee for this appeal is £{{ applicationNextStep.feeForAppeal }}.",
+            "dueDate": "If the appellant does not pay the fee by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.",
+            "payForAppeal": ""
+          },
+          "partiallyApproved": {
+            "feeForAppeal": "The fee for this appeal is £{{ applicationNextStep.feeLeftToPay }}.",
+            "dueDate": "If the appellant does not pay the fee by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.",
+            "howToPay": "<b>How to pay the fee</b>",
+            "bulletText": "1. They should call the Tribunal on 0300 123 1711, then select option 4<br />2. Provide the 16-digit online case reference number: {{ applicationNextStep.ccdReferenceNumber }}<br />3. Make the payment with a debit or credit card"
           },
           "feeSupportRequested": "Fee support requested",
           "feeSupportStatusApproved": "Fee support request approved",

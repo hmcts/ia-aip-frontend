@@ -29,7 +29,11 @@
           {{ progressBar(stages) }}
         {% endif %}
         <h2 class="govuk-heading-m">
-          {{ i18n.pages.overviewPage.doThisNext.toDo if applicationNextStep.cta else i18n.pages.overviewPage.doThisNext.nothingToDo }}
+          {% if isNonLegalRep %}
+            {{ i18n.pages.overviewPage.doThisNextNonLegalRep.toDo if applicationNextStep.cta else i18n.pages.overviewPage.doThisNextNonLegalRep.nothingToDo }}
+          {% else %}
+            {{ i18n.pages.overviewPage.doThisNext.toDo if applicationNextStep.cta else i18n.pages.overviewPage.doThisNext.nothingToDo }}
+          {% endif %}
         </h2>
         {% if saved %}
           <div class="saved-banner">

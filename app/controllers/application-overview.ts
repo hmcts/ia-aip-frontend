@@ -175,8 +175,9 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;
 
       const showNonLegalRep = isAppealInProgress(appealStatus);
-
+      const isNonLegalRep: boolean = req.session.isNonLegalRep;
       return res.render('application-overview.njk', {
+        isNonLegalRep: isNonLegalRep,
         name: loggedInUserFullName,
         appealRefNumber: appealRefNumber,
         applicationNextStep: nextSteps,

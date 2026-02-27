@@ -868,6 +868,19 @@
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
       "questions": "If you have any questions about the appeal process, call the Tribunal on<span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span> or email<a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:contactia@justice.gov.uk\"> contactia@justice.gov.uk/a>"
     },
+    "casesList": {
+      "title": "Your appeals",
+      "columns": {
+        "appealRef": "Appeal reference",
+        "caseRef": "Case reference",
+        "appellant": "Appellant",
+        "status": "Status",
+        "options": "Options"
+      },
+      "viewLink": "View",
+      "noCases": "You do not have any appeals.",
+      "createNewAppeal": "Create a new appeal"
+    },
     "overviewPage": {
       "title": "Your appeal overview",
       "contactUs": "Contact us for help",

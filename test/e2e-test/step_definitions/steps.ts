@@ -1,6 +1,7 @@
 const { aipToLegalRepNoC } = require('../pages/aip-to-legal-rep-noc/aip-to-legal-rep-noc');
 const { appealSent } = require('../pages/appeal-sent/appeal-sent');
 const { askForMoreTime } = require('../pages/ask-for-more-time/ask-for-more-time');
+const { casesList } = require('../pages/cases-list/cases-list');
 const { changeRepresentation } = require('../pages/change-representation/change-representation');
 const { checkAndSend } = require('../pages/check-and-send/check-and-send');
 const { clarifyingQuestions } = require('../pages/clarifying-questions/clarifying-questions');
@@ -109,3 +110,4 @@ applyForFTPAAppellant(I);
 homeOfficeUpload(I);
 deportationOrder(I);
 feeSupport(I);
+casesList(I);

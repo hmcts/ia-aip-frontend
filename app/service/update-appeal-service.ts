@@ -46,11 +46,36 @@ export default class UpdateAppealService {
     return this._authenticationService;
   }
 
-  async loadAppeal(req: Request) {
+  async loadAppealsList(req: Request) {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
-    const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
+    const data = await this._ccdService.loadCasesListForUser(req.idam.userDetails.uid, securityHeaders);
+    if (data.total > 0) {
+      req.session.casesList = data.cases.map((c: CcdCaseDetails) => ({
+        id: c.id,
+        appealReferenceNumber: c.case_data.appealReferenceNumber || '',
+        state: c.state,
+        appellantGivenNames: c.case_data.appellantGivenNames || '',
+        appellantFamilyName: c.case_data.appellantFamilyName || ''
+      }));
+    } else {
+      req.session.casesList = [];
+    }
+  }
+
+  async createNewAppeal(req: Request): Promise<Appeal> {
+    const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
+    const ccdCase = await this._ccdService.createCase(req.idam.userDetails.uid, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
+    return req.session.appeal;
+  }
+
+  async loadAppealByCaseId(caseId: string, req: Request): Promise<Appeal> {
+    const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
+    const ccdCase = await this._ccdService.loadCaseById(req.idam.userDetails.uid, caseId, securityHeaders);
+    req.session.ccdCaseId = caseId;
+    req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
+    return req.session.appeal;
   }
 
   private getDate(ccdDate): AppealDate {

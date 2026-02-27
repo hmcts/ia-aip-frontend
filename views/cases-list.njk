@@ -1,0 +1,45 @@
+{% extends 'layout.njk' %}
+{% set pageTitleName = i18n.pages.casesList.title %}
+
+{% block content %}
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">{{ i18n.pages.casesList.title }}</h1>
+
+        {% if cases | length %}
+          <table class="govuk-table">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.appealRef }}</th>
+                <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.caseRef }}</th>
+                <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.appellant }}</th>
+                <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.status }}</th>
+                <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.options }}</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              {% for case in cases %}
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">{{ case.appealReferenceNumber }}</td>
+                  <td class="govuk-table__cell">{{ case.id }}</td>
+                  <td class="govuk-table__cell">{{ case.appellantGivenNames }} {{ case.appellantFamilyName }}</td>
+                  <td class="govuk-table__cell">{{ "DRAFT" if case.state == "appealStarted" else case.stateName }}</td>
+                  <td class="govuk-table__cell">
+                    <a class="govuk-link" href="{{ previousPage }}?caseId={{ case.id }}">{{ i18n.pages.casesList.viewLink }}</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="govuk-body">{{ i18n.pages.casesList.noCases }}</p>
+        {% endif %}
+
+        <p class="govuk-body">
+          <a class="govuk-link" href="{{ createNewAppealUrl }}">{{ i18n.pages.casesList.createNewAppeal }}</a>
+        </p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

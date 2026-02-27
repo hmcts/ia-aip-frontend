@@ -278,3 +278,13 @@ export function documentIdToDocStoreUrl(id: string, documentMap: DocumentMap[]):
   const target: DocumentMap = documentMap.find(e => e.id === id);
   return target ? target.url : null;
 }
+
+/**
+ * Gets the display name for a state ID
+ * @param stateId the state ID (e.g., 'appealStarted')
+ * @returns the state display name (e.g., 'Appeal started') or the stateId if not found
+ */
+export function getStateName(stateId: string): string {
+  const state = Object.values(States).find(s => s.id === stateId);
+  return state ? state.name : stateId;
+}

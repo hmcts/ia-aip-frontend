@@ -28,6 +28,7 @@ export default {
         'appellantGivenNames': 'Alex',
         'journeyType': 'aip',
         'appellantFamilyName': 'NotHere',
+        'appealReferenceNumber': 'PA/50002/2020',
         'appellantNationalities': [{ 'id': 'deb1b9fe-43f7-4a8b-89ef-951eeda7e11d', 'value': { 'code': 'AL' } }],
         'homeOfficeDecisionDate': '2020-02-01',
         'searchPostcode': 'W1W 7RT',

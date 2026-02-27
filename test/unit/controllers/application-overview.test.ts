@@ -430,7 +430,6 @@ describe('Confirmation Page Controller', () => {
     }];
 
     expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
-      isNonLegalRep: true,
       name: undefined,
       appealRefNumber: undefined,
       applicationNextStep: {
@@ -448,6 +447,7 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      isNonLegalRep: true,
       showHearingRequests: false,
       showPayLaterLink: false,
       ftpaFeatureEnabled: true,
@@ -890,7 +890,7 @@ describe('Confirmation Page Controller', () => {
     };
     const featureFlagEnabled = true;
     const { appealStatus } = req.session.appeal;
-    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
+    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled, true);
     expect(result).to.equal(true);
   });
 
@@ -904,7 +904,7 @@ describe('Confirmation Page Controller', () => {
     };
     const featureFlagEnabled = false;
     const { appealStatus } = req.session.appeal;
-    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
+    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled, true);
     expect(result).to.equal(false);
   });
 
@@ -918,7 +918,7 @@ describe('Confirmation Page Controller', () => {
     };
     const featureFlagEnabled = false;
     const { appealStatus } = req.session.appeal;
-    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
+    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled, true);
     expect(result).to.equal(true);
   });
 
@@ -935,17 +935,17 @@ describe('Confirmation Page Controller', () => {
   });
 
   it('showAppealRequests should return true when in appealSubmitted state', () => {
-    const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, true);
+    const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, true, true);
     expect(result).to.equal(true);
   });
 
   it('showAppealRequests should return true when in paymentPending state', () => {
-    const result = showAppealRequestSection(States.PENDING_PAYMENT.id, true);
+    const result = showAppealRequestSection(States.PENDING_PAYMENT.id, true, true);
     expect(result).to.equal(true);
   });
 
   it('showAppealRequests should return false when in ended state', () => {
-    const result = showAppealRequestSection(States.ENDED.id, true);
+    const result = showAppealRequestSection(States.ENDED.id, true, true);
     expect(result).to.equal(false);
   });
 
@@ -960,7 +960,7 @@ describe('Confirmation Page Controller', () => {
   });
 
   it('showAppealRequestsInAppealEndedStatus should return true when in ended state', () => {
-    const result = showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, true);
+    const result = showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, true, true);
     expect(result).to.equal(true);
   });
 
@@ -990,7 +990,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_SUBMITTED.id,
       ftpaAppellantApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal, true, true);
     expect(result).to.equal(false);
   });
 
@@ -1000,7 +1000,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_DECIDED.id,
       ftpaAppellantApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal, true, true);
     expect(result).to.equal(false);
   });
 
@@ -1010,7 +1010,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_SUBMITTED.id,
       ftpaRespondentApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal, true, true);
     expect(result).to.equal(true);
   });
 
@@ -1020,7 +1020,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_DECIDED.id,
       ftpaRespondentApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal, true, true);
     expect(result).to.equal(true);
   });
 
@@ -1029,7 +1029,7 @@ describe('Confirmation Page Controller', () => {
       ...req.session.appeal,
       appealStatus: States.DECIDED.id
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal, true, true);
     expect(result).to.equal(false);
   });
 
@@ -1082,32 +1082,32 @@ describe('Confirmation Page Controller', () => {
   });
 
   it('checkEnableProvideMoreEvidenceSection should return true if state is pre-addendum and feature is enabled', () => {
-    const result = checkEnableProvideMoreEvidenceSection(States.RESPONDENT_REVIEW.id, true);
+    const result = checkEnableProvideMoreEvidenceSection(States.RESPONDENT_REVIEW.id, true, true);
     expect(result).to.equal(true);
   });
 
   it('checkEnableProvideMoreEvidenceSection should return false if state is not in list and feature is not enabled', () => {
-    const result = checkEnableProvideMoreEvidenceSection(States.AWAITING_RESPONDENT_EVIDENCE.id, false);
+    const result = checkEnableProvideMoreEvidenceSection(States.AWAITING_RESPONDENT_EVIDENCE.id, false, true);
     expect(result).to.equal(false);
   });
 
   it('showAppealRequestSection should return true if feature enabled and state is in list', () => {
-    const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, true);
+    const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, true, true);
     expect(result).to.equal(true);
   });
 
   it('showAppealRequestSection should return false if feature not enabled', () => {
-    const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, false);
+    const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, false, true);
     expect(result).to.equal(false);
   });
 
   it('showAppealRequestSectionInAppealEndedStatus should return true if feature enabled and appeal ended', () => {
-    const result = showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, true);
+    const result = showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, true, true);
     expect(result).to.equal(true);
   });
 
   it('showAppealRequestSectionInAppealEndedStatus should return false if feature not enabled', () => {
-    const result = showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, false);
+    const result = showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, false, true);
     expect(result).to.equal(false);
   });
 
@@ -1123,14 +1123,14 @@ describe('Confirmation Page Controller', () => {
 
   it('isAppealInProgress should return true if appeal is in progress', () => {
     for (const state of nonEndedStates) {
-      const result = isAppealInProgress(state);
+      const result = isAppealInProgress(state, true);
       expect(result).to.equal(true);
     }
   });
 
   it('isAppealInProgress should return false if appeal is not in progress', () => {
     for (const state of endedStates) {
-      const result = isAppealInProgress(state);
+      const result = isAppealInProgress(state, true);
       expect(result).to.equal(false);
     }
   });
@@ -1141,7 +1141,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_SUBMITTED.id,
       ftpaAppellantApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal, true, true);
     expect(result).to.equal(false);
   });
 
@@ -1151,7 +1151,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_DECIDED.id,
       ftpaAppellantApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal, true, true);
     expect(result).to.equal(false);
   });
 
@@ -1161,7 +1161,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_SUBMITTED.id,
       ftpaRespondentApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal, true, true);
     expect(result).to.equal(true);
   });
 
@@ -1171,8 +1171,17 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_DECIDED.id,
       ftpaRespondentApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal, true, true);
     expect(result).to.equal(true);
+  });
+
+  it('should return false if not citizen', () => {
+    expect(checkEnableProvideMoreEvidenceSection(States.RESPONDENT_REVIEW.id, true, false)).to.equal(false);
+    expect(checkEnableProvideMoreEvidenceSection('preHearingOutOfCountryFeatureDisabled', true, false)).to.equal(false);
+    expect(showAppealRequestSection(States.APPEAL_SUBMITTED.id, true, false)).to.equal(false);
+    expect(showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, true, false)).to.equal(false);
+    expect(isAppealInProgress(States.APPEAL_SUBMITTED.id, false)).to.equal(false);
+    expect(showFtpaApplicationLink({ ...req.session.appeal, appealStatus: States.FTPA_SUBMITTED.id, ftpaAppellantApplicationDate: '2020-01-01' }, true, false)).to.equal(false);
   });
 
   describe('getApplicationOverview with DLRM refund enabled paymentLink', function () {

@@ -1337,10 +1337,10 @@
           },
           "awaitingRespondentEvidence": {
             "detailsSent": "Your appeal details have been sent to the Tribunal.",
-            "dueDate": "The Tribunal will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span> to tell you what to do next.",
+            "dueDate": "The Tribunal will contact you by <span class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span> to tell you what to do next.",
             "info": {
               "title": "Helpful Information",
-              "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+              "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Legal Officer?</a>"
             }
           }
         }

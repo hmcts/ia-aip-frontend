@@ -264,6 +264,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.paidAmount).to.equal('2000');
       expect(req.session.appeal.newFeeAmount).to.equal('2000');
       expect(req.session.appeal.previousFeeAmountGbp).to.equal('2000');
+      expect(req.session.isNonLegalRep).to.equal(false);
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -561,6 +562,29 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.cmaRequirements).to.deep.equal(expectedCmaRequirements);
     });
 
+    it('set nlr flag true if userId matches nlrIdamId', async () => {
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingReasonsForAppeal',
+          case_data: { ...expectedCaseData, nlrDetails: { idamId: userId } }
+        });
+      await updateAppealService.loadAppeal(req as Request);
+      expect(req.session.isNonLegalRep).to.equal(true);
+    });
+
+    it('set nlr flag false if userId matches nlrIdamId', async () => {
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingReasonsForAppeal',
+          case_data: { ...expectedCaseData, nlrDetails: { idamId: 'someOtherId' } }
+        });
+      await updateAppealService.loadAppeal(req as Request);
+      expect(req.session.isNonLegalRep).to.equal(false);
+    });
   });
 
   describe('convert to ccd case', () => {

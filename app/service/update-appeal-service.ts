@@ -54,6 +54,8 @@ export default class UpdateAppealService {
     const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
+    const nlrIdamId = ccdCase.case_data?.nlrDetails?.idamId;
+    req.session.isNonLegalRep = nlrIdamId === req.idam.userDetails.uid;
   }
 
   private getDate(ccdDate): AppealDate {

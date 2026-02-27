@@ -8,6 +8,7 @@ declare namespace Express {
 
   interface Partial<SessionData> {
     appeal?: Appeal;
+    isNonLegalRep?: boolean;
     [key: string]: any;
   }
 }

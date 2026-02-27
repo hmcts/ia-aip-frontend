@@ -984,10 +984,8 @@
       },
       "payForAppeal": "Pay for this appeal",
       "doThisNext": {
-        "toDo": "The appellant needs to do this next",
-        "toDoNonLegalRep": "Do this next",
+        "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
-        "nothingToDoNonLegalRep": "The appellant has nothing to do next",
         "respondByText": "You need to respond by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
         "nowRespondBy": "You now need to respond by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
         "stillRespondBy": "You still need to respond by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",

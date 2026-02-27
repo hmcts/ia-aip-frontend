@@ -1,19 +1,36 @@
-export function transformPerspective(data, isNonLegalRep: boolean) {
-  return isNonLegalRep ? deepTransform(data) : data;
+import i18nRaw from '../../locale/en.json';
+
+export let i18nTransformed = i18nRaw;
+
+export function transformI18n() {
+  i18nTransformed = transformPerspective(i18nRaw);
 }
 
-function deepTransform(value) {
+export function getI18n(isNonLegalRep: boolean) {
+  return isNonLegalRep ? i18nTransformed : i18nRaw;
+}
+
+export function transformPerspective(data) {
+  return deepTransform(data);
+}
+
+function deepTransform(value, isProgressBar = false) {
   if (typeof value === 'string') {
-    return transformString(value);
+    return transformString(value, isProgressBar);
   }
 
   if (Array.isArray(value)) {
-    return value.map(deepTransform);
+    return value.map(v => deepTransform(v, isProgressBar));
   }
 
   if (value && typeof value === 'object') {
+    if (value['yourAppealDetails'] && value['yourAppealArgument'] && value['yourHearingDetails'] && value['yourAppealDecision']) {
+      return Object.fromEntries(
+        Object.entries(value).map(([k, v]) => [k, deepTransform(v, true)])
+      );
+    }
     return Object.fromEntries(
-      Object.entries(value).map(([k, v]) => [k, deepTransform(v)])
+      Object.entries(value).map(([k, v]) => [k, deepTransform(v, isProgressBar)])
     );
   }
 
@@ -23,7 +40,7 @@ function deepTransform(value) {
 /**
  * Protect handlebars before processing
  */
-function transformString(str) {
+function transformString(str, isProgressBar: boolean) {
   if (!str) return str;
 
   // Removing links that contain paths to non-usable events but keeping the text if needed
@@ -62,16 +79,23 @@ function transformString(str) {
   return segments
     .map(seg =>
       seg.type === 'text'
-        ? grammarAwareTransform(seg.value)
+        ? grammarAwareTransform(seg.value, isProgressBar)
         : seg.value
     )
     .join('');
 }
 
-function grammarAwareTransform(text) {
+function grammarAwareTransform(text, isProgressBar: boolean) {
   let result = text;
 
+  if (isProgressBar) {
+    result = result.replace(/\bYour appeal\b/g, 'Appeal');
+    result = result.replace(/\bYour hearing\b/g, 'Hearing');
+    return result;
+  }
   // Replace structured phrases first
+  result = result.replace(/\bDo this next\b/g, 'The appellant must do this next');
+  result = result.replace(/\bNothing to do next\b/g, 'The appellant has nothing to do next');
   result = result.replace(/\bYou might not get more time. You\b/g, 'The appellant might not get more time. They');
   result = result.replace(/\bYou have\b/g, 'The appellant has');
   result = result.replace(/\bYou must\b/g, 'The appellant must');

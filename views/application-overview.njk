@@ -2,6 +2,7 @@
 {% from "components/progress-bar.njk" import progressBar with context %}
 {% from "components/overview-timeline.njk" import timeline with context %}
 {% set pageTitleName = i18n.pages.overviewPage.title %}
+{% set i18nToUse = i18nTransformed if isNonLegalRep else i18n %}
 
 {% block content %}
   <div class="govuk-width-container">
@@ -29,11 +30,7 @@
           {{ progressBar(stages) }}
         {% endif %}
         <h2 class="govuk-heading-m">
-          {% if isNonLegalRep %}
-            {{ i18n.pages.overviewPage.doThisNext.toDoNonLegalRep if applicationNextStep.cta else i18n.pages.overviewPage.doThisNext.nothingToDoNonLegalRep }}
-          {% else %}
-            {{ i18n.pages.overviewPage.doThisNext.toDo if applicationNextStep.cta else i18n.pages.overviewPage.doThisNext.nothingToDo }}
-          {% endif %}
+          {{ i18nToUse.pages.overviewPage.doThisNext.toDo if applicationNextStep.cta else i18nToUse.pages.overviewPage.doThisNext.nothingToDo }}
         </h2>
         {% if saved %}
           <div class="saved-banner">

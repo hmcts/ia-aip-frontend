@@ -148,7 +148,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const { appealReferenceNumber, appealStatus, paymentStatus, paAppealTypeAipPaymentOption } = req.session.appeal;
       const loggedInUserFullName: string = getAppellantName(req);
       const appealRefNumber = getAppealRefNumber(appealReferenceNumber);
-      const stagesStatus = buildProgressBarStages(appealStatus, paymentStatus);
+      const stagesStatus = buildProgressBarStages(appealStatus, req.session.isNonLegalRep, paymentStatus);
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);
@@ -177,7 +177,6 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
       const showNonLegalRep = isCitizen && isAppealInProgress(appealStatus);
       return res.render('application-overview.njk', {
-        isNonLegalRep: !isCitizen,
         name: loggedInUserFullName,
         appealRefNumber: appealRefNumber,
         applicationNextStep: nextSteps,
@@ -201,6 +200,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showAskForFeeRemission,
         showNonLegalRep,
         showAskForSomethingInEndedState,
+        isNonLegalRep: !isCitizen,
         isPostDecisionState: isPostDecisionState(appealStatus, ftpaFeatureEnabled)
       });
     } catch (e) {

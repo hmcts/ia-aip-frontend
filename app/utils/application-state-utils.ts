@@ -16,7 +16,7 @@ import {
 } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline, getDueDateForAppellantToRespondToFtpaDecision } from './event-deadline-date-finder';
-import { transformPerspectiveToThird } from './grammarPerspectiveTransformer';
+import { transformPerspective } from './grammarPerspectiveTransformer';
 import { convertToAmountOfMoneyDividedBy100, getFee } from './payments-utils';
 import { appealHasRemissionOption, hasFeeRemissionDecision } from './remission-utils';
 
@@ -129,9 +129,7 @@ async function getAppealApplicationNextStep(req: Request) {
   const isLateRemissionRequest = req.session.appeal.application.isLateRemissionRequest;
   const isNonLegalRep: boolean = req.session.isNonLegalRep;
   let doThisNextObject = i18n.pages.overviewPage.doThisNext;
-  if (isNonLegalRep) {
-    doThisNextObject = transformPerspectiveToThird(doThisNextObject);
-  }
+  doThisNextObject = transformPerspective(doThisNextObject, isNonLegalRep);
   let descriptionParagraphs;
   let respondBy;
   switch (currentAppealStatus) {
@@ -753,9 +751,7 @@ function getRemissionDecisionParagraphs(req: Request) {
   const remissionDecision = req.session.appeal.application.remissionDecision;
   const isNonLegalRep: boolean = req.session.isNonLegalRep;
   let doThisNextObject = i18n.pages.overviewPage.doThisNext;
-  if (isNonLegalRep) {
-    doThisNextObject = transformPerspectiveToThird(doThisNextObject);
-  }
+  doThisNextObject = transformPerspective(doThisNextObject, isNonLegalRep);
   switch (remissionDecision) {
     case 'approved':
       doThisNextSection = {
@@ -805,9 +801,7 @@ function getRemissionDecisionParagraphs(req: Request) {
 
 function getFeeRemissionParagraph(deadLineDate: string, isNonLegalRep: boolean) {
   let doThisNextObject = i18n.pages.overviewPage.doThisNext;
-  if (isNonLegalRep) {
-    doThisNextObject = transformPerspectiveToThird(doThisNextObject);
-  }
+  doThisNextObject = transformPerspective(doThisNextObject, isNonLegalRep);
   const doThisNextSection: DoThisNextSection = {
     descriptionParagraphs: [
       doThisNextObject.appealSubmittedDlrmFeeRemission.detailsSent,

@@ -9,6 +9,7 @@ import { DocumentManagementService } from '../service/document-management-servic
 import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dateTimeFormat, dayMonthYearFormat, formatDate } from '../utils/date-utils';
+import { transformPerspective } from '../utils/grammarPerspectiveTransformer';
 import { getFee } from '../utils/payments-utils';
 import {
   appealHasNoRemissionOption,
@@ -802,6 +803,7 @@ function setupCmaRequirementsViewer(req: Request) {
 
 async function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
+    i18n.pages.detailViewers = transformPerspective(i18n.pages.detailViewers, req.session.isNonLegalRep);
     const drlmFeeRemissionFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (drlmFeeRemissionFeatureFlag) {
       const data = await getAppealDlrmFeeRemissionDetails(req);
@@ -828,6 +830,7 @@ async function getAppealDetailsViewer(req: Request, res: Response, next: NextFun
 
 function getReasonsForAppealViewer(req: Request, res: Response, next: NextFunction) {
   try {
+    i18n.pages.detailViewers = transformPerspective(i18n.pages.detailViewers, req.session.isNonLegalRep);
     const previousPage: string = paths.common.overview;
     const data = setupAnswersReasonsForAppeal(req, false);
     return res.render('detail-viewers/reasons-for-appeal-details-viewer.njk', {
@@ -841,6 +844,7 @@ function getReasonsForAppealViewer(req: Request, res: Response, next: NextFuncti
 
 function getLrReasonsForAppealViewer(req: Request, res: Response, next: NextFunction) {
   try {
+    i18n.pages.detailViewers = transformPerspective(i18n.pages.detailViewers, req.session.isNonLegalRep);
     const previousPage: string = paths.common.overview;
     const data = setupAnswersReasonsForAppeal(req, true);
     return res.render('detail-viewers/reasons-for-appeal-details-viewer.njk', {
@@ -855,6 +859,7 @@ function getLrReasonsForAppealViewer(req: Request, res: Response, next: NextFunc
 
 function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
+    i18n.pages.detailViewers = transformPerspective(i18n.pages.detailViewers, req.session.isNonLegalRep);
     const previousPage: string = paths.common.overview;
     let documents = [];
 
@@ -902,6 +907,7 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
 
 function getMakeAnApplicationViewer(req: Request, res: Response, next: NextFunction) {
   try {
+    i18n.pages.detailViewers = transformPerspective(i18n.pages.detailViewers, req.session.isNonLegalRep);
     const applicationId = req.params.id;
     const application = req.session.appeal.makeAnApplications.find(application => application.id === applicationId);
     const previousPage: string = paths.common.overview;
@@ -982,6 +988,7 @@ function getMakeAnApplicationDecisionWhatNext(makeAnApplicationEvent: Collection
 
 function getCmaRequirementsViewer(req: Request, res: Response, next: NextFunction) {
   try {
+    i18n.pages.detailViewers = transformPerspective(i18n.pages.detailViewers, req.session.isNonLegalRep);
     const previousPage: string = paths.common.overview;
     const {
       interpreter,
@@ -1090,6 +1097,7 @@ function getHearingNoticeDocument(req: Request): Evidence {
 
 function getHearingNoticeViewer(req: Request, res: Response, next: NextFunction) {
   try {
+    i18n.pages.detailViewers = transformPerspective(i18n.pages.detailViewers, req.session.isNonLegalRep);
     const previousPage: string = paths.common.overview;
     const hearingNoticeDocument: Evidence = getHearingNoticeDocument(req);
     const data = [];
@@ -1109,6 +1117,7 @@ function getHearingNoticeViewer(req: Request, res: Response, next: NextFunction)
 
 function getHearingAdjournmentNoticeViewer(req: Request, res: Response, next: NextFunction) {
   try {
+    i18n.pages.detailViewers = transformPerspective(i18n.pages.detailViewers, req.session.isNonLegalRep);
     const previousPage: string = paths.common.overview;
     const hearingAdjournmentNoticeDocuments = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'noticeOfAdjournedHearing');
     const data = [];
@@ -1130,6 +1139,7 @@ function getHearingAdjournmentNoticeViewer(req: Request, res: Response, next: Ne
 
 function getDecisionAndReasonsViewer(req: Request, res: Response, next: NextFunction) {
   try {
+    i18n.pages.detailViewers = transformPerspective(i18n.pages.detailViewers, req.session.isNonLegalRep);
     const previousPage: string = paths.common.overview;
     const coverLetterDocument = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'decisionAndReasonsCoverLetter');
     const finalDecisionAndReasonsPdfDoc = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'finalDecisionAndReasonsPdf');
@@ -1179,6 +1189,7 @@ async function getUpdatedTribunalDecisionWithRule32Viewer(req: Request, res: Res
 
 function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunction) {
   try {
+    i18n.pages.detailViewers = transformPerspective(i18n.pages.detailViewers, req.session.isNonLegalRep);
     const previousPage: string = paths.common.overview;
     const recordOutOfTimeDecisionDoc = req.session.appeal.tribunalDocuments.find(doc => doc.tag === 'recordOutOfTimeDecisionDocument');
     const fileNameFormatted = fileNameFormatter(recordOutOfTimeDecisionDoc.name);
@@ -1563,6 +1574,7 @@ async function getUpdatedDecisionAndReasonsViewer(req: Request, res: Response, n
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
   if (ftpaSetAsideFeatureEnabled) {
     try {
+      i18n.pages.detailViewers = transformPerspective(i18n.pages.detailViewers, req.session.isNonLegalRep);
       const previousPage: string = paths.common.overview;
       const updatedDecisionAndReasons = req.session.appeal.updatedDecisionAndReasons;
       const coverLetterDocument = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'decisionAndReasonsCoverLetter');
@@ -1616,6 +1628,7 @@ async function getUpdatedDecisionAndReasonsViewer(req: Request, res: Response, n
 async function getRemittalDocumentsViewer(req: Request, res: Response, next: NextFunction) {
 
   try {
+    i18n.pages.detailViewers = transformPerspective(i18n.pages.detailViewers, req.session.isNonLegalRep);
     const previousPage: string = paths.common.overview;
     const remittalDocuments = req.session.appeal.remittalDocuments;
     const remittalDocs: SummaryList[] = [];

@@ -1,5 +1,5 @@
-export function transformPerspectiveToThird(data) {
-  return deepTransform(data);
+export function transformPerspective(data, isNonLegalRep: boolean) {
+  return isNonLegalRep ? deepTransform(data) : data;
 }
 
 function deepTransform(value) {
@@ -85,6 +85,8 @@ function grammarAwareTransform(text) {
   result = result.replace(/\bYou disagree\b/g, 'The appellant disagrees');
   result = result.replace(/\bTell us\b/g, 'The appellant needs to tell us');
   result = result.replace(/\b1. Call\b/g, '1. They should call');
+  result = result.replace(/\bWhy you need\b/g, 'Why the appellant needs');
+  result = result.replace(/\bWhy you think\b/g, 'Why the appellant thinks');
 
   // Replace common phrases
   result = result.replace(/\bYou must send your\b/g, 'They must send their');

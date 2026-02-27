@@ -212,6 +212,7 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
+      isNonLegalRep: undefined,
       isPostDecisionState: false
     });
   });
@@ -299,9 +300,10 @@ describe('Confirmation Page Controller', () => {
       ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: true,
-      showNonLegalRep: true,
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
+      showNonLegalRep: true,
+      isNonLegalRep: undefined,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: true
     });
@@ -393,10 +395,69 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: true,
       showNonLegalRep: true,
+      isNonLegalRep: undefined,
       showFtpaApplicationLink: false,
       showAskForFeeRemission: true,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: true
+    });
+  });
+
+  it('getApplicationOverview should pass isNonLegalRep if set in session', async () => {
+    req.session.isNonLegalRep = true;
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    const expectedStages = [{
+      title: 'Your appeal<br/> details',
+      ariaLabel: 'Your appeal details stage',
+      active: false,
+      completed: true
+    }, {
+      title: 'Your appeal<br/> argument',
+      ariaLabel: 'Your appeal argument stage',
+      active: false,
+      completed: true
+    }, {
+      title: 'Your hearing<br/> details',
+      ariaLabel: 'Your hearing details stage',
+      active: false,
+      completed: true
+    }, {
+      title: 'Your appeal<br/> decision',
+      ariaLabel: 'Your appeal decision stage',
+      active: false,
+      completed: true
+    }];
+
+    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
+      isNonLegalRep: true,
+      name: undefined,
+      appealRefNumber: undefined,
+      applicationNextStep: {
+        descriptionParagraphs: ['Nothing to do next'],
+        deadline: 'TBC'
+      },
+      history: expectedHistory,
+      stages: expectedStages,
+      saved: false,
+      ended: undefined,
+      transferredToUt: false,
+      askForMoreTimeInFlight: false,
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false,
+      showAppealRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
+      showHearingRequests: false,
+      showPayLaterLink: false,
+      ftpaFeatureEnabled: true,
+      hearingDetails: null,
+      showChangeRepresentation: true,
+      showNonLegalRep: true,
+      showFtpaApplicationLink: false,
+      showAskForFeeRemission: false,
+      showAskForSomethingInEndedState: false,
+      isPostDecisionState: false
     });
   });
 
@@ -461,6 +522,7 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
+      isNonLegalRep: undefined,
       isPostDecisionState: false
     });
   });
@@ -526,6 +588,7 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
+      isNonLegalRep: undefined,
       isPostDecisionState: false
     });
   });
@@ -604,6 +667,7 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
+      isNonLegalRep: undefined,
       isPostDecisionState: false
     });
   });
@@ -704,6 +768,7 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
+      isNonLegalRep: undefined,
       isPostDecisionState: false
     });
   });

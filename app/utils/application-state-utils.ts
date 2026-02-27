@@ -16,6 +16,7 @@ import {
 } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline, getDueDateForAppellantToRespondToFtpaDecision } from './event-deadline-date-finder';
+import { transformPerspectiveToThird } from './grammarPerspectiveTransformer';
 import { convertToAmountOfMoneyDividedBy100, getFee } from './payments-utils';
 import { appealHasRemissionOption, hasFeeRemissionDecision } from './remission-utils';
 
@@ -126,16 +127,19 @@ async function getAppealApplicationNextStep(req: Request) {
   const dlrmFeeRemissionFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
   const deadLineDate = getDeadline(currentAppealStatus, req, dlrmFeeRemissionFlag, ftpaSetAsideFeatureEnabled);
   const isLateRemissionRequest = req.session.appeal.application.isLateRemissionRequest;
-  const isNonLegalRep = req.session.isNonLegalRep;
-  const doThisNextSectionValues = i18n.pages.overviewPage[isNonLegalRep ? 'doThisNextNonLegalRep' : 'doThisNext'];
+  const isNonLegalRep: boolean = req.session.isNonLegalRep;
+  let doThisNextObject = i18n.pages.overviewPage.doThisNext;
+  if (isNonLegalRep) {
+    doThisNextObject = transformPerspectiveToThird(doThisNextObject);
+  }
   let descriptionParagraphs;
   let respondBy;
   switch (currentAppealStatus) {
     case 'appealStarted':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.appealStarted.fewQuestions,
-          doThisNextSectionValues.appealStarted.needHomeOfficeDecision
+          doThisNextObject.appealStarted.fewQuestions,
+          doThisNextObject.appealStarted.needHomeOfficeDecision
         ],
         info: null,
         cta: {
@@ -147,8 +151,8 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'appealStartedPartial':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.appealStarted.finishQuestions,
-          doThisNextSectionValues.appealStarted.needHomeOfficeDecision
+          doThisNextObject.appealStarted.finishQuestions,
+          doThisNextObject.appealStarted.needHomeOfficeDecision
         ],
         info: null,
         cta: {
@@ -165,12 +169,12 @@ async function getAppealApplicationNextStep(req: Request) {
       } else {
         doThisNextSection = {
           descriptionParagraphs: [
-            doThisNextSectionValues.appealSubmitted.detailsSent,
-            doThisNextSectionValues.appealSubmitted.dueDate
+            doThisNextObject.appealSubmitted.detailsSent,
+            doThisNextObject.appealSubmitted.dueDate
           ],
           info: {
-            title: doThisNextSectionValues.appealSubmitted.info.title,
-            url: doThisNextSectionValues.appealSubmitted.info.url
+            title: doThisNextObject.appealSubmitted.info.title,
+            url: doThisNextObject.appealSubmitted.info.url
           },
           cta: null,
           allowedAskForMoreTime: false
@@ -180,19 +184,19 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'listing':
       const paragraphs = eventByLegalRep(req, Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, 'listing')
         ? [
-          doThisNextSectionValues.listing.providedByLr.direction1,
-          doThisNextSectionValues.listing.providedByLr.direction2,
-          doThisNextSectionValues.listing.dueDate
+          doThisNextObject.listing.providedByLr.direction1,
+          doThisNextObject.listing.providedByLr.direction2,
+          doThisNextObject.listing.dueDate
         ]
         : [
-          doThisNextSectionValues.listing.detailsSent,
-          doThisNextSectionValues.listing.dueDate
+          doThisNextObject.listing.detailsSent,
+          doThisNextObject.listing.dueDate
         ];
       doThisNextSection = {
         descriptionParagraphs: paragraphs,
         info: {
-          title: doThisNextSectionValues.listing.info.title,
-          url: doThisNextSectionValues.listing.info.url
+          title: doThisNextObject.listing.info.title,
+          url: doThisNextObject.listing.info.url
         },
         cta: null,
         allowedAskForMoreTime: false
@@ -205,10 +209,10 @@ async function getAppealApplicationNextStep(req: Request) {
         requestFeeRemissionEventIsTheLatest(req)) {
         doThisNextSection = {
           descriptionParagraphs: [
-            doThisNextSectionValues.lateAppealSubmittedDlrmFeeRemission.detailsSent,
-            doThisNextSectionValues.lateAppealSubmittedDlrmFeeRemission.feeDetails,
-            doThisNextSectionValues.lateAppealSubmittedDlrmFeeRemission.tribunalCheck,
-            doThisNextSectionValues.lateAppealSubmittedDlrmFeeRemission.dueDate
+            doThisNextObject.lateAppealSubmittedDlrmFeeRemission.detailsSent,
+            doThisNextObject.lateAppealSubmittedDlrmFeeRemission.feeDetails,
+            doThisNextObject.lateAppealSubmittedDlrmFeeRemission.tribunalCheck,
+            doThisNextObject.lateAppealSubmittedDlrmFeeRemission.dueDate
           ],
           cta: null,
           allowedAskForMoreTime: false
@@ -216,12 +220,12 @@ async function getAppealApplicationNextStep(req: Request) {
       } else {
         doThisNextSection = {
           descriptionParagraphs: [
-            doThisNextSectionValues.lateAppealSubmitted.detailsSent,
-            doThisNextSectionValues.lateAppealSubmitted.dueDate
+            doThisNextObject.lateAppealSubmitted.detailsSent,
+            doThisNextObject.lateAppealSubmitted.dueDate
           ],
           info: {
-            title: doThisNextSectionValues.appealSubmitted.info.title,
-            url: doThisNextSectionValues.appealSubmitted.info.url
+            title: doThisNextObject.appealSubmitted.info.title,
+            url: doThisNextObject.appealSubmitted.info.url
           },
           cta: null,
           allowedAskForMoreTime: false
@@ -231,12 +235,12 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'awaitingRespondentEvidence':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.awaitingRespondentEvidence.detailsSent,
-          doThisNextSectionValues.awaitingRespondentEvidence.dueDate
+          doThisNextObject.awaitingRespondentEvidence.detailsSent,
+          doThisNextObject.awaitingRespondentEvidence.dueDate
         ],
         info: {
-          title: doThisNextSectionValues.awaitingRespondentEvidence.info.title,
-          url: doThisNextSectionValues.awaitingRespondentEvidence.info.url
+          title: doThisNextObject.awaitingRespondentEvidence.info.title,
+          url: doThisNextObject.awaitingRespondentEvidence.info.url
         },
         cta: null,
         allowedAskForMoreTime: false
@@ -245,8 +249,8 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'lateAppealRejected':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.lateAppealRejected.description,
-          doThisNextSectionValues.lateAppealRejected.description2
+          doThisNextObject.lateAppealRejected.description,
+          doThisNextObject.lateAppealRejected.description2
         ],
         cta: {
           url: null,
@@ -256,25 +260,25 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'awaitingReasonsForAppeal':
-      descriptionParagraphs = [doThisNextSectionValues.awaitingReasonsForAppeal.new.description];
-      respondBy = doThisNextSectionValues.respondByText;
+      descriptionParagraphs = [doThisNextObject.awaitingReasonsForAppeal.new.description];
+      respondBy = doThisNextObject.respondByText;
       if (pendingTimeExtension) {
-        descriptionParagraphs = [doThisNextSectionValues.awaitingReasonsForAppeal.new.descriptionAskForMoreTime];
-        respondBy = doThisNextSectionValues.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
+        descriptionParagraphs = [doThisNextObject.awaitingReasonsForAppeal.new.descriptionAskForMoreTime];
+        respondBy = doThisNextObject.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
-        respondBy = doThisNextSectionValues.nowRespondBy;
+        respondBy = doThisNextObject.nowRespondBy;
       } else if (decisionRefused) {
-        respondBy = doThisNextSectionValues.stillRespondBy;
+        respondBy = doThisNextObject.stillRespondBy;
       }
       doThisNextSection = {
         descriptionParagraphs,
         info: {
-          title: doThisNextSectionValues.awaitingReasonsForAppeal.new.info.title,
-          url: doThisNextSectionValues.awaitingReasonsForAppeal.new.info.url
+          title: doThisNextObject.awaitingReasonsForAppeal.new.info.title,
+          url: doThisNextObject.awaitingReasonsForAppeal.new.info.url
         },
         usefulDocuments: {
-          title: doThisNextSectionValues.awaitingReasonsForAppeal.new.usefulDocuments.title,
-          url: doThisNextSectionValues.awaitingReasonsForAppeal.new.usefulDocuments.url
+          title: doThisNextObject.awaitingReasonsForAppeal.new.usefulDocuments.title,
+          url: doThisNextObject.awaitingReasonsForAppeal.new.usefulDocuments.url
         },
         cta: {
           url: paths.awaitingReasonsForAppeal.decision,
@@ -284,25 +288,25 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'awaitingReasonsForAppealPartial':
-      descriptionParagraphs = [doThisNextSectionValues.awaitingReasonsForAppeal.partial.description];
-      respondBy = doThisNextSectionValues.respondByText;
+      descriptionParagraphs = [doThisNextObject.awaitingReasonsForAppeal.partial.description];
+      respondBy = doThisNextObject.respondByText;
       if (pendingTimeExtension) {
-        descriptionParagraphs = [doThisNextSectionValues.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime];
-        respondBy = doThisNextSectionValues.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime;
+        descriptionParagraphs = [doThisNextObject.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime];
+        respondBy = doThisNextObject.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
-        respondBy = doThisNextSectionValues.nowRespondBy;
+        respondBy = doThisNextObject.nowRespondBy;
       } else if (decisionRefused) {
-        respondBy = doThisNextSectionValues.stillRespondBy;
+        respondBy = doThisNextObject.stillRespondBy;
       }
       doThisNextSection = {
         descriptionParagraphs,
         info: {
-          title: doThisNextSectionValues.awaitingReasonsForAppeal.partial.info.title,
-          url: doThisNextSectionValues.awaitingReasonsForAppeal.partial.info.url
+          title: doThisNextObject.awaitingReasonsForAppeal.partial.info.title,
+          url: doThisNextObject.awaitingReasonsForAppeal.partial.info.url
         },
         usefulDocuments: {
-          title: doThisNextSectionValues.awaitingReasonsForAppeal.partial.usefulDocuments.title,
-          url: doThisNextSectionValues.awaitingReasonsForAppeal.partial.usefulDocuments.url
+          title: doThisNextObject.awaitingReasonsForAppeal.partial.usefulDocuments.title,
+          url: doThisNextObject.awaitingReasonsForAppeal.partial.usefulDocuments.url
         },
         cta: {
           url: paths.awaitingReasonsForAppeal.decision,
@@ -314,8 +318,8 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'reasonsForAppealSubmitted':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.reasonsForAppealSubmitted.detailsSent,
-          doThisNextSectionValues.reasonsForAppealSubmitted.dueDate
+          doThisNextObject.reasonsForAppealSubmitted.detailsSent,
+          doThisNextObject.reasonsForAppealSubmitted.dueDate
         ],
         cta: null,
         allowedAskForMoreTime: false
@@ -324,8 +328,8 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'caseUnderReview':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.caseUnderReview.detailsSent,
-          doThisNextSectionValues.caseUnderReview.dueDate
+          doThisNextObject.caseUnderReview.detailsSent,
+          doThisNextObject.caseUnderReview.dueDate
         ],
         cta: null,
         allowedAskForMoreTime: false
@@ -334,19 +338,19 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'respondentReview':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.respondentReview.detailsSent,
-          doThisNextSectionValues.respondentReview.dueDate
+          doThisNextObject.respondentReview.detailsSent,
+          doThisNextObject.respondentReview.dueDate
         ],
-        info: doThisNextSectionValues.respondentReview.info
+        info: doThisNextObject.respondentReview.info
       };
       break;
     case 'decisionWithdrawn':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.decisionWithdrawn.detailsSent,
-          doThisNextSectionValues.decisionWithdrawn.dueDate
+          doThisNextObject.decisionWithdrawn.detailsSent,
+          doThisNextObject.decisionWithdrawn.dueDate
         ],
-        info: doThisNextSectionValues.decisionWithdrawn.info,
+        info: doThisNextObject.decisionWithdrawn.info,
         cta: {},
         hearingCentreEmail: getHearingCentreEmail(req)
       };
@@ -354,26 +358,26 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'decisionMaintained':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.decisionMaintained.description,
-          doThisNextSectionValues.decisionMaintained.description2,
-          doThisNextSectionValues.decisionMaintained.dueDate
+          doThisNextObject.decisionMaintained.description,
+          doThisNextObject.decisionMaintained.description2,
+          doThisNextObject.decisionMaintained.dueDate
         ],
-        info: doThisNextSectionValues.decisionMaintained.info,
+        info: doThisNextObject.decisionMaintained.info,
         cta: {},
         hearingCentreEmail: getHearingCentreEmail(req)
       };
       break;
     case 'awaitingClarifyingQuestionsAnswersPartial':
     case 'awaitingClarifyingQuestionsAnswers':
-      descriptionParagraphs = [doThisNextSectionValues.clarifyingQuestions.description];
-      respondBy = doThisNextSectionValues.respondByText;
+      descriptionParagraphs = [doThisNextObject.clarifyingQuestions.description];
+      respondBy = doThisNextObject.respondByText;
       if (pendingTimeExtension) {
-        descriptionParagraphs = [doThisNextSectionValues.clarifyingQuestions.descriptionAskForMoreTime];
-        respondBy = doThisNextSectionValues.clarifyingQuestions.respondByTextAskForMoreTime;
+        descriptionParagraphs = [doThisNextObject.clarifyingQuestions.descriptionAskForMoreTime];
+        respondBy = doThisNextObject.clarifyingQuestions.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
-        respondBy = doThisNextSectionValues.nowRespondBy;
+        respondBy = doThisNextObject.nowRespondBy;
       } else if (decisionRefused) {
-        respondBy = doThisNextSectionValues.stillRespondBy;
+        respondBy = doThisNextObject.stillRespondBy;
       }
       doThisNextSection = {
         descriptionParagraphs,
@@ -387,23 +391,23 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'awaitingCmaRequirements':
       descriptionParagraphs = [
-        doThisNextSectionValues.awaitingCmaRequirements.description,
-        doThisNextSectionValues.awaitingCmaRequirements.description2
+        doThisNextObject.awaitingCmaRequirements.description,
+        doThisNextObject.awaitingCmaRequirements.description2
       ];
-      respondBy = doThisNextSectionValues.respondByText;
+      respondBy = doThisNextObject.respondByText;
       if (pendingTimeExtension) {
-        descriptionParagraphs = [doThisNextSectionValues.awaitingCmaRequirements.descriptionAskForMoreTime];
-        respondBy = doThisNextSectionValues.awaitingCmaRequirements.respondByTextAskForMoreTime;
+        descriptionParagraphs = [doThisNextObject.awaitingCmaRequirements.descriptionAskForMoreTime];
+        respondBy = doThisNextObject.awaitingCmaRequirements.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
-        respondBy = doThisNextSectionValues.nowRespondBy;
+        respondBy = doThisNextObject.nowRespondBy;
       } else if (decisionRefused) {
-        respondBy = doThisNextSectionValues.stillRespondBy;
+        respondBy = doThisNextObject.stillRespondBy;
       }
       doThisNextSection = {
         descriptionParagraphs,
         info: {
-          title: doThisNextSectionValues.awaitingCmaRequirements.info.title,
-          url: doThisNextSectionValues.awaitingCmaRequirements.info.url
+          title: doThisNextObject.awaitingCmaRequirements.info.title,
+          url: doThisNextObject.awaitingCmaRequirements.info.url
         },
         cta: {
           url: paths.awaitingCmaRequirements.taskList,
@@ -414,23 +418,23 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'submitHearingRequirements':
       descriptionParagraphs = [
-        doThisNextSectionValues.submitHearingRequirements.description,
-        doThisNextSectionValues.submitHearingRequirements.description2
+        doThisNextObject.submitHearingRequirements.description,
+        doThisNextObject.submitHearingRequirements.description2
       ];
-      respondBy = doThisNextSectionValues.respondByText;
+      respondBy = doThisNextObject.respondByText;
       if (pendingTimeExtension) {
-        descriptionParagraphs = [doThisNextSectionValues.submitHearingRequirements.descriptionAskForMoreTime];
-        respondBy = doThisNextSectionValues.submitHearingRequirements.respondByTextAskForMoreTime;
+        descriptionParagraphs = [doThisNextObject.submitHearingRequirements.descriptionAskForMoreTime];
+        respondBy = doThisNextObject.submitHearingRequirements.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
-        respondBy = doThisNextSectionValues.nowRespondBy;
+        respondBy = doThisNextObject.nowRespondBy;
       } else if (decisionRefused) {
-        respondBy = doThisNextSectionValues.stillRespondBy;
+        respondBy = doThisNextObject.stillRespondBy;
       }
       doThisNextSection = {
         descriptionParagraphs,
         info: {
-          title: doThisNextSectionValues.submitHearingRequirements.info.title,
-          url: doThisNextSectionValues.submitHearingRequirements.info.url
+          title: doThisNextObject.submitHearingRequirements.info.title,
+          url: doThisNextObject.submitHearingRequirements.info.url
         },
         cta: {
           url: paths.submitHearingRequirements.taskList,
@@ -442,8 +446,8 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'clarifyingQuestionsAnswersSubmitted':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.clarifyingQuestionsAnswersSubmitted.description,
-          doThisNextSectionValues.clarifyingQuestionsAnswersSubmitted.dueDate
+          doThisNextObject.clarifyingQuestionsAnswersSubmitted.description,
+          doThisNextObject.clarifyingQuestionsAnswersSubmitted.dueDate
         ],
         cta: null,
         allowedAskForMoreTime: false
@@ -453,12 +457,12 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'cmaRequirementsSubmitted':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.cmaRequirementsSubmitted.description,
-          doThisNextSectionValues.cmaRequirementsSubmitted.description2
+          doThisNextObject.cmaRequirementsSubmitted.description,
+          doThisNextObject.cmaRequirementsSubmitted.description2
         ],
         info: {
-          title: doThisNextSectionValues.cmaRequirementsSubmitted.info.title,
-          url: doThisNextSectionValues.cmaRequirementsSubmitted.info.url
+          title: doThisNextObject.cmaRequirementsSubmitted.info.title,
+          url: doThisNextObject.cmaRequirementsSubmitted.info.url
         },
         cta: null,
         allowedAskForMoreTime: false
@@ -467,19 +471,19 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'cmaListed':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.cmaListed.description,
-          doThisNextSectionValues.cmaListed.date,
-          doThisNextSectionValues.cmaListed.time,
-          doThisNextSectionValues.cmaListed.hearingCentre,
-          doThisNextSectionValues.cmaListed.respondByTextAskForMoreTime
+          doThisNextObject.cmaListed.description,
+          doThisNextObject.cmaListed.date,
+          doThisNextObject.cmaListed.time,
+          doThisNextObject.cmaListed.hearingCentre,
+          doThisNextObject.cmaListed.respondByTextAskForMoreTime
         ],
         usefulDocuments: {
-          title: doThisNextSectionValues.cmaListed.usefulDoc.title,
-          url: doThisNextSectionValues.cmaListed.usefulDoc.url
+          title: doThisNextObject.cmaListed.usefulDoc.title,
+          url: doThisNextObject.cmaListed.usefulDoc.url
         },
         info: {
-          title: doThisNextSectionValues.cmaListed.usefulDocuments.title,
-          url: doThisNextSectionValues.cmaListed.usefulDocuments.url
+          title: doThisNextObject.cmaListed.usefulDocuments.title,
+          url: doThisNextObject.cmaListed.usefulDocuments.url
         },
         cta: null,
         allowedAskForMoreTime: false,
@@ -494,25 +498,26 @@ async function getAppealApplicationNextStep(req: Request) {
       if (!hearingBundleFeatureEnabled) {
         return {
           descriptionParagraphs: [
-            doThisNextSectionValues.nothingToDo
+            isNonLegalRep ? doThisNextObject.nothingToDoNonLegalRep
+              : doThisNextObject.nothingToDo
           ]
         };
       }
       const description = eventByLegalRep(req, Events.CREATE_CASE_SUMMARY.id, 'finalBundling')
-        ? doThisNextSectionValues.prepareForHearing.providedByLr.description
-        : doThisNextSectionValues.prepareForHearing.description;
+        ? doThisNextObject.prepareForHearing.providedByLr.description
+        : doThisNextObject.prepareForHearing.description;
 
       doThisNextSection = {
         descriptionParagraphs: [
           description,
-          doThisNextSectionValues.prepareForHearing.date,
-          doThisNextSectionValues.prepareForHearing.time,
-          doThisNextSectionValues.prepareForHearing.hearingCentre,
-          doThisNextSectionValues.prepareForHearing.hearingNotice
+          doThisNextObject.prepareForHearing.date,
+          doThisNextObject.prepareForHearing.time,
+          doThisNextObject.prepareForHearing.hearingCentre,
+          doThisNextObject.prepareForHearing.hearingNotice
         ],
         info: {
-          title: doThisNextSectionValues.prepareForHearing.info.title,
-          url: doThisNextSectionValues.prepareForHearing.info.url
+          title: doThisNextObject.prepareForHearing.info.title,
+          url: doThisNextObject.prepareForHearing.info.url
         },
         cta: {},
         allowedAskForMoreTime: false,
@@ -523,37 +528,37 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'decidedWithoutHearing':
       doThisNextSection = {
-        descriptionParagraphs: doThisNextSectionValues.decidedWithoutHearing.description
+        descriptionParagraphs: doThisNextObject.decidedWithoutHearing.description
       };
       break;
     case 'ended':
       if (transferredToUpperTribunal(req)) {
         doThisNextSection = {
           descriptionParagraphs: [
-            doThisNextSectionValues.transferredToUt.description,
-            doThisNextSectionValues.transferredToUt.explanation,
-            doThisNextSectionValues.transferredToUt.utAppealReferenceNumber,
-            doThisNextSectionValues.transferredToUt.utAction
+            doThisNextObject.transferredToUt.description,
+            doThisNextObject.transferredToUt.explanation,
+            doThisNextObject.transferredToUt.utAppealReferenceNumber,
+            doThisNextObject.transferredToUt.utAction
           ],
           info: {
-            title: doThisNextSectionValues.transferredToUt.usefulDocuments.title,
-            url: doThisNextSectionValues.transferredToUt.usefulDocuments.url
+            title: doThisNextObject.transferredToUt.usefulDocuments.title,
+            url: doThisNextObject.transferredToUt.usefulDocuments.url
           },
           usefulDocuments: {
-            title: doThisNextSectionValues.transferredToUt.info.title,
-            url: doThisNextSectionValues.transferredToUt.info.description
+            title: doThisNextObject.transferredToUt.info.title,
+            url: doThisNextObject.transferredToUt.info.description
           },
           utAppealReferenceNumber: req.session.appeal.utAppealReferenceNumber
         };
       } else {
         doThisNextSection = {
           descriptionParagraphs: [
-            doThisNextSectionValues.ended.ctaInstruction,
-            doThisNextSectionValues.ended.ctaReview
+            doThisNextObject.ended.ctaInstruction,
+            doThisNextObject.ended.ctaReview
           ],
           cta: {
             url: null,
-            ctaTitle: doThisNextSectionValues.ended.ctaTitle
+            ctaTitle: doThisNextObject.ended.ctaTitle
           },
           allowedAskForMoreTime: false,
           hearingCentreEmail: getHearingCentreEmail(req)
@@ -564,8 +569,8 @@ async function getAppealApplicationNextStep(req: Request) {
       doThisNextSection = {
         descriptionParagraphs: [],
         info: {
-          title: doThisNextSectionValues.appealTakenOffline.info.title,
-          url: doThisNextSectionValues.appealTakenOffline.info.description
+          title: doThisNextObject.appealTakenOffline.info.title,
+          url: doThisNextObject.appealTakenOffline.info.description
         },
         removeAppealFromOnlineReason: getMoveAppealOfflineReason(req),
         removeAppealFromOnlineDate: getMoveAppealOfflineDate(req)
@@ -574,14 +579,14 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'preHearing':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.preHearing.hearingBundle,
-          doThisNextSectionValues.preHearing.hearingBundleLink,
-          doThisNextSectionValues.preHearing.hearingDetails,
-          doThisNextSectionValues.preHearing.hearingDateTimeCentre
+          doThisNextObject.preHearing.hearingBundle,
+          doThisNextObject.preHearing.hearingBundleLink,
+          doThisNextObject.preHearing.hearingDetails,
+          doThisNextObject.preHearing.hearingDateTimeCentre
         ],
         info: {
-          title: doThisNextSectionValues.preHearing.info.title,
-          url: doThisNextSectionValues.preHearing.info.url
+          title: doThisNextObject.preHearing.info.title,
+          url: doThisNextObject.preHearing.info.url
         }
       };
       break;
@@ -592,42 +597,42 @@ async function getAppealApplicationNextStep(req: Request) {
 
       if (ftpaEnabled) {
         decidedDescriptionParagraphs = [
-          doThisNextSectionValues.decided.decision,
-          doThisNextSectionValues.decided.descriptionFtpaEnabled
+          doThisNextObject.decided.decision,
+          doThisNextObject.decided.descriptionFtpaEnabled
         ];
 
         decidedInfo = {
-          title: doThisNextSectionValues.decided.info.titleFtpaEnabled,
-          text: doThisNextSectionValues.decided.info.text,
-          url: doThisNextSectionValues.decided.info.urlFtpaEnabled
+          title: doThisNextObject.decided.info.titleFtpaEnabled,
+          text: doThisNextObject.decided.info.text,
+          url: doThisNextObject.decided.info.urlFtpaEnabled
         };
 
       } else {
         decidedDescriptionParagraphs = [
-          doThisNextSectionValues.decided.decision,
-          doThisNextSectionValues.decided.description
+          doThisNextObject.decided.decision,
+          doThisNextObject.decided.description
         ];
 
         decidedInfo = {
-          title: doThisNextSectionValues.decided.info.title,
-          url: doThisNextSectionValues.decided.info.url
+          title: doThisNextObject.decided.info.title,
+          url: doThisNextObject.decided.info.url
         };
       }
 
       if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.updatedAppealDecision) {
         decision = req.session.appeal.updatedAppealDecision.toLowerCase();
         decidedDescriptionParagraphs = [
-          doThisNextSectionValues.decided.decision,
-          doThisNextSectionValues.decided.updatedDescriptionFtpaEnabled
+          doThisNextObject.decided.decision,
+          doThisNextObject.decided.updatedDescriptionFtpaEnabled
         ];
       } else if (isUpdateTribunalDecideWithRule32(req, ftpaSetAsideFeatureEnabled)) {
         decidedDescriptionParagraphs = [
-          doThisNextSectionValues.decided.underRule32.description,
-          doThisNextSectionValues.decided.underRule32.url
+          doThisNextObject.decided.underRule32.description,
+          doThisNextObject.decided.underRule32.url
         ];
         decidedInfo = {
-          title: doThisNextSectionValues.decided.underRule32.info.title,
-          text: doThisNextSectionValues.decided.underRule32.info.text
+          title: doThisNextObject.decided.underRule32.info.title,
+          text: doThisNextObject.decided.underRule32.info.text
         };
       } else {
         decision = req.session.appeal.isDecisionAllowed;
@@ -647,10 +652,10 @@ async function getAppealApplicationNextStep(req: Request) {
       } else if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
         doThisNextSection = {
           descriptionParagraphs: [
-            doThisNextSectionValues.appealSubmittedDlrmFeeRemission.detailsSent,
-            doThisNextSectionValues.appealSubmittedDlrmFeeRemission.feeDetails,
-            doThisNextSectionValues.appealSubmittedDlrmFeeRemission.tribunalCheck,
-            doThisNextSectionValues.appealSubmittedDlrmFeeRemission.dueDate
+            doThisNextObject.appealSubmittedDlrmFeeRemission.detailsSent,
+            doThisNextObject.appealSubmittedDlrmFeeRemission.feeDetails,
+            doThisNextObject.appealSubmittedDlrmFeeRemission.tribunalCheck,
+            doThisNextObject.appealSubmittedDlrmFeeRemission.dueDate
           ],
           cta: null,
           allowedAskForMoreTime: false
@@ -658,13 +663,13 @@ async function getAppealApplicationNextStep(req: Request) {
       } else {
         doThisNextSection = {
           descriptionParagraphs: [
-            isLate ? doThisNextSectionValues.pendingPayment.detailsSentLate : doThisNextSectionValues.pendingPayment.detailsSent,
-            doThisNextSectionValues.pendingPayment.dueDate,
-            doThisNextSectionValues.pendingPayment.dueDate1
+            isLate ? doThisNextObject.pendingPayment.detailsSentLate : doThisNextObject.pendingPayment.detailsSent,
+            doThisNextObject.pendingPayment.dueDate,
+            doThisNextObject.pendingPayment.dueDate1
           ],
           cta: {
             link: {
-              text: doThisNextSectionValues.pendingPayment.payForYourAppeal,
+              text: doThisNextObject.pendingPayment.payForYourAppeal,
               url: paths.common.payLater
             }
           },
@@ -675,7 +680,7 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'ftpaSubmitted':
       doThisNextSection = {
         descriptionParagraphs: (ftpaEnabled)
-          ? doThisNextSectionValues.ftpaSubmitted.description[ftpaApplicantType]
+          ? doThisNextObject.ftpaSubmitted.description[ftpaApplicantType]
           : ['Nothing to do next']
       };
       break;
@@ -685,18 +690,18 @@ async function getAppealApplicationNextStep(req: Request) {
         doThisNextSection = {
           cta: {},
           ftpaDeadline: getDueDateForAppellantToRespondToFtpaDecision(req),
-          descriptionParagraphs: doThisNextSectionValues.ftpaDecided.appellant[ftpaDecision]
+          descriptionParagraphs: doThisNextObject.ftpaDecided.appellant[ftpaDecision]
         };
       } else if (ftpaEnabled && APPLICANT_TYPE.RESPONDENT === ftpaApplicantType) {
         const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType || req.session.appeal.ftpaRespondentRjDecisionOutcomeType;
         if (ftpaSetAsideFeatureEnabled && (ftpaDecision === 'reheardRule35' || ftpaDecision === 'remadeRule31' || ftpaDecision === 'remadeRule32')) {
           doThisNextSection = {
             cta: {},
-            descriptionParagraphs: doThisNextSectionValues.ftpaDecided.respondent[ftpaDecision]
+            descriptionParagraphs: doThisNextObject.ftpaDecided.respondent[ftpaDecision]
           };
         } else {
           doThisNextSection = {
-            descriptionParagraphs: doThisNextSectionValues.ftpaDecided.respondent[ftpaDecision]
+            descriptionParagraphs: doThisNextObject.ftpaDecided.respondent[ftpaDecision]
           };
         }
       } else {
@@ -708,7 +713,7 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'remitted':
       doThisNextSection = {
         cta: {},
-        descriptionParagraphs: [doThisNextSectionValues.remitted.decision],
+        descriptionParagraphs: [doThisNextObject.remitted.decision],
         sourceOfRemittal: req.session.appeal.sourceOfRemittal
       };
       break;
@@ -746,16 +751,19 @@ function eventByLegalRep(req: Request, eventId: string, state: string): boolean 
 function getRemissionDecisionParagraphs(req: Request) {
   let doThisNextSection: DoThisNextSection;
   const remissionDecision = req.session.appeal.application.remissionDecision;
-  const isNonLegalRep = req.session.isNonLegalRep;
-  const doThisNextSectionValues = i18n.pages.overviewPage[isNonLegalRep ? 'doThisNextNonLegalRep' : 'doThisNext'];
+  const isNonLegalRep: boolean = req.session.isNonLegalRep;
+  let doThisNextObject = i18n.pages.overviewPage.doThisNext;
+  if (isNonLegalRep) {
+    doThisNextObject = transformPerspectiveToThird(doThisNextObject);
+  }
   switch (remissionDecision) {
     case 'approved':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.remissionDecided.approved.detailsSent,
-          doThisNextSectionValues.remissionDecided.approved.legalOfficerCheck,
-          doThisNextSectionValues.remissionDecided.approved.helpFulInfo,
-          doThisNextSectionValues.remissionDecided.approved.href
+          doThisNextObject.remissionDecided.approved.detailsSent,
+          doThisNextObject.remissionDecided.approved.legalOfficerCheck,
+          doThisNextObject.remissionDecided.approved.helpFulInfo,
+          doThisNextObject.remissionDecided.approved.href
         ],
         cta: null,
         allowedAskForMoreTime: false
@@ -764,10 +772,10 @@ function getRemissionDecisionParagraphs(req: Request) {
     case 'partiallyApproved':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.remissionDecided.partiallyApproved.feeForAppeal,
-          doThisNextSectionValues.remissionDecided.partiallyApproved.dueDate,
-          doThisNextSectionValues.remissionDecided.partiallyApproved.howToPay,
-          doThisNextSectionValues.remissionDecided.partiallyApproved.bulletText
+          doThisNextObject.remissionDecided.partiallyApproved.feeForAppeal,
+          doThisNextObject.remissionDecided.partiallyApproved.dueDate,
+          doThisNextObject.remissionDecided.partiallyApproved.howToPay,
+          doThisNextObject.remissionDecided.partiallyApproved.bulletText
         ],
         cta: {},
         allowedAskForMoreTime: false
@@ -779,9 +787,9 @@ function getRemissionDecisionParagraphs(req: Request) {
     case 'rejected':
       doThisNextSection = {
         descriptionParagraphs: [
-          doThisNextSectionValues.remissionDecided.rejected.feeForAppeal,
-          doThisNextSectionValues.remissionDecided.rejected.dueDate,
-          doThisNextSectionValues.remissionDecided.rejected.payForAppeal
+          doThisNextObject.remissionDecided.rejected.feeForAppeal,
+          doThisNextObject.remissionDecided.rejected.dueDate,
+          doThisNextObject.remissionDecided.rejected.payForAppeal
         ],
         cta: {},
         allowedAskForMoreTime: false
@@ -796,13 +804,16 @@ function getRemissionDecisionParagraphs(req: Request) {
 }
 
 function getFeeRemissionParagraph(deadLineDate: string, isNonLegalRep: boolean) {
-  const doThisNextSectionValues = i18n.pages.overviewPage[isNonLegalRep ? 'doThisNextNonLegalRep' : 'doThisNext'];
+  let doThisNextObject = i18n.pages.overviewPage.doThisNext;
+  if (isNonLegalRep) {
+    doThisNextObject = transformPerspectiveToThird(doThisNextObject);
+  }
   const doThisNextSection: DoThisNextSection = {
     descriptionParagraphs: [
-      doThisNextSectionValues.appealSubmittedDlrmFeeRemission.detailsSent,
-      doThisNextSectionValues.appealSubmittedDlrmFeeRemission.feeDetails,
-      doThisNextSectionValues.appealSubmittedDlrmFeeRemission.tribunalCheck,
-      doThisNextSectionValues.appealSubmittedDlrmFeeRemission.dueDate
+      doThisNextObject.appealSubmittedDlrmFeeRemission.detailsSent,
+      doThisNextObject.appealSubmittedDlrmFeeRemission.feeDetails,
+      doThisNextObject.appealSubmittedDlrmFeeRemission.tribunalCheck,
+      doThisNextObject.appealSubmittedDlrmFeeRemission.dueDate
     ],
     cta: null,
     allowedAskForMoreTime: false

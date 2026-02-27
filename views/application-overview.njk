@@ -30,7 +30,7 @@
         {% endif %}
         <h2 class="govuk-heading-m">
           {% if isNonLegalRep %}
-            {{ i18n.pages.overviewPage.doThisNextNonLegalRep.toDo if applicationNextStep.cta else i18n.pages.overviewPage.doThisNextNonLegalRep.nothingToDo }}
+            {{ i18n.pages.overviewPage.doThisNext.toDoNonLegalRep if applicationNextStep.cta else i18n.pages.overviewPage.doThisNext.nothingToDoNonLegalRep }}
           {% else %}
             {{ i18n.pages.overviewPage.doThisNext.toDo if applicationNextStep.cta else i18n.pages.overviewPage.doThisNext.nothingToDo }}
           {% endif %}

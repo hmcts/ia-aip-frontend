@@ -5,8 +5,8 @@ export default {
   cases: [
     {
       ...appealSubmittedCaseDataSTF24WES.cases[0],
-      "id": 39,
-      state: 'awaitingRespondentEvidence'
+      'id': 39,
+      'state': 'awaitingRespondentEvidence'
     }
   ]
 };

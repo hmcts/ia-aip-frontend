@@ -53,15 +53,15 @@ import partialAppealStartedCaseDataES from './data/partial-appeal-started-es';
 import partialAwaitingReasonsForAppealCaseData from './data/partial-awaiting-reasons-for-appeal';
 import partialAwaitingReasonsForAppealCaseDataES from './data/partial-awaiting-reasons-for-appeal-es';
 import startRepresentingYourself from './data/start-representing-yourself';
+import appealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/appeal-submitted-es';
+import awaitingReasonsForAppealSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-es';
+import awaitingRespondentEvidenceSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-respondent-evidence-es';
+import lateAppealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/late-appeal-submitted-es';
+import listingSTF24WES from './data/statutory-timeframe-24-weeks/listing-es';
 import submittedCmaRequirements from './data/submitted-cma-requirements';
 import submittedCmaRequirementsES from './data/submitted-cma-requirements-es';
 import uploadAddendumEvidence from './data/upload-addendum-evidence';
 import uploadAddendumEvidenceES from './data/upload-addendum-evidence-es';
-import appealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/appeal-submitted-es';
-import lateAppealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/late-appeal-submitted-es';
-import awaitingRespondentEvidenceSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-respondent-evidence-es';
-import listingSTF24WES from './data/statutory-timeframe-24-weeks/listing-es';
-import awaitingReasonsForAppealSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-es';
 
 export default {
   partialAppealStartedCaseData,

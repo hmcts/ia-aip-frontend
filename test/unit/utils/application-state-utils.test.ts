@@ -14,9 +14,9 @@ import {
   requestFeeRemissionEventIsTheLatest
 } from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
+import { yesNoToBool } from '../../../app/utils/utils';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
-import { yesNoToBool } from "../../../app/utils/utils";
 
 describe('application-state-utils', () => {
   let sandbox: sinon.SinonSandbox;

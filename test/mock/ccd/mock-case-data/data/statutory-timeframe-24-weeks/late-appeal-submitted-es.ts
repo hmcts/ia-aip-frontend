@@ -5,8 +5,8 @@ export default {
   cases: [
     {
       ...appealSubmittedCaseDataSTF24WES.cases[0],
-      "id": 38,
-      "case_data": {
+      'id': 38,
+      'case_data': {
         ...appealSubmittedCaseDataSTF24WES.cases[0].case_data,
         'submissionOutOfTime': 'Yes'
       }

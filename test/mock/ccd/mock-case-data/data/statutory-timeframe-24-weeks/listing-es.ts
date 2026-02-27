@@ -5,8 +5,8 @@ export default {
   cases: [
     {
       ...appealSubmittedCaseDataSTF24WES.cases[0],
-      "id": 40,
-      state: 'listing'
+      'id': 40,
+      'state': 'listing'
     }
   ]
 };

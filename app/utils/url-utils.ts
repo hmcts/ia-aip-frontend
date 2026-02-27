@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import { idamConfig } from '../config/idam-config';
 import { paths } from '../paths';
 
-const appPort = config.get('node.port');
+const appPort: string = config.get('node.port');
 
 export function getUrl(protocol: string, host: string, path: string): string {
   const portString = (host === 'localhost') ? ':' + appPort : '';

@@ -84,6 +84,17 @@ Feature: Overview page
     And I check page accessibility
     Then I should see the cma requirements task-list page
 
+  Scenario: Appeal Submitted Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "appealSubmittedSTF24W"
+    And I visit the overview page
+    Then I should see the 'do this next section' for 'Appeal submitted' when statutory timeframe 24 weeks is Yes
+    When I click "What is a Legal Officer?" link
+    And I check page accessibility
+    Then I should see the 'Tribunal Caseworker' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
   # Scenario: Awaiting CMA requirements appeal with time extension
   #   Given I have logged in as an appellant in state "awaitingCmaRequirements with time extensions"
   #   When I visit the overview page

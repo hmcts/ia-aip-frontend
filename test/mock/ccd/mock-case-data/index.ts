@@ -57,6 +57,7 @@ import submittedCmaRequirements from './data/submitted-cma-requirements';
 import submittedCmaRequirementsES from './data/submitted-cma-requirements-es';
 import uploadAddendumEvidence from './data/upload-addendum-evidence';
 import uploadAddendumEvidenceES from './data/upload-addendum-evidence-es';
+import appealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/appeal-submitted-es';
 
 export default {
   partialAppealStartedCaseData,
@@ -117,5 +118,6 @@ export default {
   appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES,
   appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppealES,
   euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES,
-  appealUpToFeeChoiceES
+  appealUpToFeeChoiceES,
+  appealSubmittedSTF24WES
 };

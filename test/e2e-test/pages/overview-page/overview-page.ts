@@ -85,5 +85,11 @@ module.exports = {
     When(/^I click the I am no longer representing myself link'$/, () => {
       I.click('I am no longer representing myself');
     });
+
+    Then(/^I should see the 'do this next section' for 'Appeal submitted' when statutory timeframe 24 weeks is Yes$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.nothingToDo, '//h2[1]');
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.stf24w.appealSubmitted.detailsSent}</p>`);
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.stf24w.appealSubmitted.dueDate}</p>`);
+    });
   }
 };

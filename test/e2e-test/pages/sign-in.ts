@@ -142,6 +142,10 @@ module.exports = {
           signInForUser('ftpa-out-of-time-application-started@example.com');
           break;
         }
+        case 'appealSubmittedSTF24W': {
+          signInForUser('appeal-submitted-stf24w@example.com');
+          break;
+        }
         default:
           break;
       }

@@ -1981,7 +1981,7 @@ describe('application-state-utils', () => {
         );
       });
 
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a pending time extension and stf24w was set to ${stf24w}', async () => {
+      it(`should return 'Do This next section' when application status is awaitingReasonsForAppeal and a pending time extension and stf24w was set to ${stf24w}`, async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Pending',
@@ -2015,7 +2015,7 @@ describe('application-state-utils', () => {
         );
       });
 
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a granted time extension and stf24w was set to ${stf24w}', async () => {
+      it(`should return 'Do This next section' when application status is awaitingReasonsForAppeal and a granted time extension and stf24w was set to ${stf24w}`, async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Granted',
@@ -2048,7 +2048,7 @@ describe('application-state-utils', () => {
         );
       });
 
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a refused time extension and stf24w was set to ${stf24w}', async () => {
+      it(`should return 'Do This next section' when application status is awaitingReasonsForAppeal and a refused time extension and stf24w was set to ${stf24w}`, async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Refused',

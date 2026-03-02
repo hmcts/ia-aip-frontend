@@ -349,8 +349,8 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'respondentReview':
       doThisNextSection = {
         descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.respondentReview.detailsSent,
-          i18n.pages.overviewPage.doThisNext.respondentReview.dueDate
+          doThisNext.respondentReview.detailsSent,
+          doThisNext.respondentReview.dueDate
         ],
         info: i18n.pages.overviewPage.doThisNext.respondentReview.info
       };

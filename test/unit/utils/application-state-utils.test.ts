@@ -263,20 +263,6 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('should return \'Do This next section\' when application status is respondentReview', async () => {
-      req.session.appeal.appealStatus = 'respondentReview';
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      expect(result).to.deep.equal({
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.respondentReview.detailsSent,
-          i18n.pages.overviewPage.doThisNext.respondentReview.dueDate
-        ],
-        info: i18n.pages.overviewPage.doThisNext.respondentReview.info,
-        deadline: null
-      });
-    });
-
     it('should return \'Do This next section\' when application status is decisionWithdrawn', async () => {
       req.session.appeal.appealStatus = 'decisionWithdrawn';
       const result = await getAppealApplicationNextStep(req as Request);
@@ -2096,6 +2082,20 @@ describe('application-state-utils', () => {
             doThisNext.caseUnderReview.dueDate
           ],
           allowedAskForMoreTime: false
+        });
+      });
+
+      it(`should return 'Do This next section' when application status is respondentReview and stf24w was set to ${stf24w}`, async () => {
+        req.session.appeal.appealStatus = 'respondentReview';
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal({
+          descriptionParagraphs: [
+            doThisNext.respondentReview.detailsSent,
+            doThisNext.respondentReview.dueDate
+          ],
+          info: doThisNext.respondentReview.info,
+          deadline: null
         });
       });
     });

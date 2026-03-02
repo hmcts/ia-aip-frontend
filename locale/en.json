@@ -1350,6 +1350,14 @@
           "caseUnderReview": {
             "detailsSent": "The reasons you think the Home Office decision to refuse your claim is wrong were sent to the Tribunal.",
             "dueDate": "A Legal Officer will contact you to tell you what happens next."
+          },
+          "respondentReview": {
+            "detailsSent": "The Tribunal has asked the Home Office to review your appeal. The Home Office will look at all the information you sent to the Tribunal and will either withdraw or maintain their decision to refuse your application to stay in or enter the UK. <ul class='govuk-list govuk-list--bullet'><li>If the Home Office withdraw their decision it means they will look again at their decision to refuse your application</li><li>If the Home Office maintain their decision it means they still think they were correct to refuse your application</li></ul>",
+            "dueDate": "A Legal Officer will contact you to tell you what to do next.",
+            "info": {
+              "title": "Helpful Information",
+              "url": "<a class='govuk-link govuk-!-margin-bottom-2 --display-block' href='{{ paths.common.homeOfficeWithdrawDecision }}'>What happens if the Home Office withdraw their decision</a><a class='govuk-link' href='{{ paths.common.homeOfficeMaintainDecision }}'>What happens if the Home Office maintain their decision</a>"
+            }
           }
         }
       },

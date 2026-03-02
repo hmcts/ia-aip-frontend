@@ -281,25 +281,6 @@ describe('application-state-utils', () => {
       expect(result).to.deep.equal(expected);
     });
 
-    it('should return \'Do This next section\' when application status is decisionMaintained', async () => {
-      req.session.appeal.appealStatus = 'decisionMaintained';
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      const expected = {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.decisionMaintained.description,
-          i18n.pages.overviewPage.doThisNext.decisionMaintained.description2,
-          i18n.pages.overviewPage.doThisNext.decisionMaintained.dueDate
-        ],
-        info: i18n.pages.overviewPage.doThisNext.decisionMaintained.info,
-        deadline: null,
-        cta: {},
-        hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
-      };
-
-      expect(result).to.deep.equal(expected);
-    });
-
     it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'awaitingClarifyingQuestionsAnswers';
       const result = await getAppealApplicationNextStep(req as Request);
@@ -2097,6 +2078,25 @@ describe('application-state-utils', () => {
           info: doThisNext.respondentReview.info,
           deadline: null
         });
+      });
+
+      it(`should return 'Do This next section' when application status is decisionMaintained and stf24w was set to ${stf24w}`, async () => {
+        req.session.appeal.appealStatus = 'decisionMaintained';
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        const expected = {
+          descriptionParagraphs: [
+            doThisNext.decisionMaintained.description,
+            doThisNext.decisionMaintained.description2,
+            doThisNext.decisionMaintained.dueDate
+          ],
+          info: doThisNext.decisionMaintained.info,
+          deadline: null,
+          cta: {},
+          hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
+        };
+
+        expect(result).to.deep.equal(expected);
       });
     });
   });

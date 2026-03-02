@@ -1724,8 +1724,8 @@ describe('application-state-utils', () => {
 
   const isSTF24W: ('Yes' | 'No')[] = ['Yes', 'No'];
   isSTF24W.forEach((stf24w) => {
-    const is24Weeks = yesNoToBool(stf24w);
-    const doThisNext = is24Weeks ? i18n.pages.overviewPage.doThisNext.stf24w : i18n.pages.overviewPage.doThisNext;
+    const is24WeeksTimeline = yesNoToBool(stf24w);
+    const doThisNext = is24WeeksTimeline ? i18n.pages.overviewPage.doThisNext.stf24w : i18n.pages.overviewPage.doThisNext;
 
     it(`when application status is appealSubmitted and stf24w was set to ${stf24w} should get correct 'Do This next section'`, async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
@@ -1809,7 +1809,7 @@ describe('application-state-utils', () => {
         expect(result).to.deep.equal({
           cta: null,
           deadline: '07 March 2020',
-          descriptionParagraphs: is24Weeks ? [
+          descriptionParagraphs: is24WeeksTimeline ? [
                 'Your appeal details have been sent to the Tribunal.',
                 'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
                 'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
@@ -1879,7 +1879,7 @@ describe('application-state-utils', () => {
       expect(result).to.deep.equal({
         cta: null,
         deadline: '25 January 2022',
-        descriptionParagraphs: is24Weeks ?
+        descriptionParagraphs: is24WeeksTimeline ?
             ['Your appeal is being listed for a hearing, you will receive a notification of the hearing once it has been scheduled.'] :
             [
               'A Tribunal Caseworker is looking at your answers and will contact you with the details of your hearing and to tell you what to do next.',
@@ -1914,7 +1914,7 @@ describe('application-state-utils', () => {
       expect(result).to.deep.equal({
         cta: null,
         deadline: '25 January 2022',
-        descriptionParagraphs: is24Weeks ?
+        descriptionParagraphs: is24WeeksTimeline ?
           ['Your appeal is being listed for a hearing, you will receive a notification of the hearing once it has been scheduled.'] :
           [
             'Your hearing needs were sent to the Tribunal.',
@@ -1960,7 +1960,7 @@ describe('application-state-utils', () => {
 
         expect(result).to.deep.equal(
             {
-              allowedAskForMoreTime: !is24Weeks,
+              allowedAskForMoreTime: !is24WeeksTimeline,
               cta: {
                 respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
                 url: '/case-building/home-office-decision-wrong'
@@ -1994,9 +1994,9 @@ describe('application-state-utils', () => {
 
         expect(result).to.deep.equal(
             {
-              allowedAskForMoreTime: !is24Weeks,
+              allowedAskForMoreTime: !is24WeeksTimeline,
               cta: {
-                respondBy: is24Weeks ? undefined : i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime,
+                respondBy: is24WeeksTimeline ? undefined : i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime,
                 url: '/case-building/home-office-decision-wrong'
               },
               deadline: '01 September 2020',
@@ -2027,7 +2027,7 @@ describe('application-state-utils', () => {
 
         expect(result).to.deep.equal(
             {
-              allowedAskForMoreTime: !is24Weeks,
+              allowedAskForMoreTime: !is24WeeksTimeline,
               cta: {
                 respondBy: i18n.pages.overviewPage.doThisNext.nowRespondBy,
                 url: '/case-building/home-office-decision-wrong'
@@ -2060,7 +2060,7 @@ describe('application-state-utils', () => {
 
         expect(result).to.deep.equal(
             {
-              allowedAskForMoreTime: !is24Weeks,
+              allowedAskForMoreTime: !is24WeeksTimeline,
               cta: {
                 respondBy: i18n.pages.overviewPage.doThisNext.stillRespondBy,
                 url: '/case-building/home-office-decision-wrong'

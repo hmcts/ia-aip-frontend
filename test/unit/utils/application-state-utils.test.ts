@@ -84,6 +84,10 @@ describe('application-state-utils', () => {
             {
               'id': 'draftHearingRequirements',
               'createdDate': '2022-01-11T16:00:00.000'
+            },
+            {
+              'id': 'buildCase',
+              'createdDate': '2026-03-02T16:00:00.000'
             }
           ]
         }
@@ -2075,6 +2079,21 @@ describe('application-state-utils', () => {
           descriptionParagraphs: [
             doThisNext.reasonsForAppealSubmitted.detailsSent,
             doThisNext.reasonsForAppealSubmitted.dueDate
+          ],
+          allowedAskForMoreTime: false
+        });
+      });
+
+      it(`when application status is caseUnderReview and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
+        req.session.appeal.appealStatus = 'caseUnderReview';
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal({
+          cta: null,
+          deadline: '16 March 2026',
+          descriptionParagraphs: [
+            doThisNext.caseUnderReview.detailsSent,
+            doThisNext.caseUnderReview.dueDate
           ],
           allowedAskForMoreTime: false
         });

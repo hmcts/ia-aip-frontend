@@ -1346,6 +1346,10 @@
           "reasonsForAppealSubmitted": {
             "detailsSent": "You have told us why you think the Home Office decision is wrong.",
             "dueDate": "A Legal Officer will contact you to tell you what happens next."
+          },
+          "caseUnderReview": {
+            "detailsSent": "The reasons you think the Home Office decision to refuse your claim is wrong were sent to the Tribunal.",
+            "dueDate": "A Legal Officer will contact you to tell you what happens next."
           }
         }
       },

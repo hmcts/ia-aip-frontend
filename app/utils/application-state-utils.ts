@@ -329,8 +329,8 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'reasonsForAppealSubmitted':
       doThisNextSection = {
         descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.detailsSent,
-          i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.dueDate
+          doThisNext.reasonsForAppealSubmitted.detailsSent,
+          doThisNext.reasonsForAppealSubmitted.dueDate
         ],
         cta: null,
         allowedAskForMoreTime: false

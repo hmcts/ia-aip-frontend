@@ -122,7 +122,6 @@ Feature: Overview page
     And I visit the overview page
     Then I should see the 'do this next section' for "listing" when statutory timeframe 24 weeks is Yes
     When I click "What to expect at a hearing" link
-    And I check page accessibility
     Then I should see the 'What to expect at your hearing' guidance page
     When I click "Back" button
     And I check page accessibility

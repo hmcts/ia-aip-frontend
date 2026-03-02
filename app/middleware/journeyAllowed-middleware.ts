@@ -22,17 +22,55 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
   const startRepresentingYourselfPaths = pathGetter({ ...paths.startRepresentingYourself }, req);
   const ftpaPaths = pathGetter({ ...paths.ftpa }, req);
 
-  const allowedPaths = [
-    ...appealStatusPaths,
-    ...commonPaths,
-    ...makeApplicationPaths,
-    ...nonLegalRepPaths,
-    ...startRepresentingYourselfPaths,
-    ...ftpaPaths
-  ];
+  let allowedPaths: string[];
+  if (req.session.isNonLegalRep) {
+    const nonLegalRepForbiddenCommonPaths: string[] = [
+      paths.common.changeRepresentation,
+      paths.common.changeRepresentationDownload,
+      paths.common.askForMoreTimeReason,
+      paths.common.askForMoreTimeCancel,
+      paths.common.askForMoreTimeSupportingEvidence,
+      paths.common.askForMoreTimeSupportingEvidenceUpload,
+      paths.common.askForMoreTimeSupportingEvidenceSubmit,
+      paths.common.askForMoreTimeSupportingEvidenceDelete,
+      paths.common.askForMoreTimeCheckAndSend,
+      paths.common.askForMoreTimeConfirmation,
+      paths.common.provideMoreEvidenceForm,
+      paths.common.provideMoreEvidenceUploadFile,
+      paths.common.provideMoreEvidenceDeleteFile,
+      paths.common.provideMoreEvidenceCheck,
+      paths.common.provideMoreEvidenceConfirmation,
+      paths.common.yourEvidence,
+      paths.common.yourAddendumEvidence,
+      paths.common.lrEvidence,
+      paths.common.homeOfficeAddendumEvidence,
+      paths.common.newEvidence,
+      paths.common.whyEvidenceLate,
+      paths.common.finishPayment,
+      paths.common.payLater,
+      paths.common.payImmediately,
+      paths.common.confirmationPayment,
+      paths.common.clarifyingQuestionsAnswersSentConfirmation
+    ];
+    allowedPaths = [
+      ...commonPaths.filter(path => !nonLegalRepForbiddenCommonPaths.includes(path)),
+      ...startRepresentingYourselfPaths
+    ];
+  } else {
+    allowedPaths = [
+      ...appealStatusPaths,
+      ...commonPaths,
+      ...makeApplicationPaths,
+      ...nonLegalRepPaths,
+      ...startRepresentingYourselfPaths,
+      ...ftpaPaths
+    ];
+  }
   const allowed: boolean = allowedPaths.includes(currentPath) ||
     currentPath.startsWith(paths.common.documentViewer);
-  if (allowed) { return next(); }
+  if (allowed) {
+    return next();
+  }
   return res.redirect(paths.common.forbidden);
 };
 

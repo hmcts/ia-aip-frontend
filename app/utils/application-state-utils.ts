@@ -132,6 +132,8 @@ async function getAppealApplicationNextStep(req: Request) {
   let descriptionParagraphs;
   let respondBy;
   const doThisNext = is24WeeksTimeline ? i18n.pages.overviewPage.doThisNext.stf24w : i18n.pages.overviewPage.doThisNext;
+  const allowedAskForMoreTime = !is24WeeksTimeline;
+
   switch (currentAppealStatus) {
     case 'appealStarted':
       doThisNextSection = {
@@ -263,7 +265,6 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'awaitingReasonsForAppeal':
-      const allowedAskForMoreTime = !is24WeeksTimeline;
       descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description];
       if (pendingTimeExtension) {
         descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime];
@@ -296,14 +297,17 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'awaitingReasonsForAppealPartial':
       descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description];
-      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       if (pendingTimeExtension) {
         descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime];
-        respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime;
+        if (allowedAskForMoreTime) {
+          respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime;
+        }
       } else if (decisionGranted) {
         respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
       } else if (decisionRefused) {
         respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      } else {
+        respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       }
       doThisNextSection = {
         descriptionParagraphs,
@@ -319,7 +323,7 @@ async function getAppealApplicationNextStep(req: Request) {
           url: paths.awaitingReasonsForAppeal.decision,
           respondBy
         },
-        allowedAskForMoreTime: true
+        allowedAskForMoreTime
       };
       break;
     case 'reasonsForAppealSubmitted':

@@ -259,166 +259,6 @@ describe('application-state-utils', () => {
       });
     });
 
-    describe('awaitingReasonsForAppeal', () => {
-      beforeEach(() => {
-        req.session.appeal.directions = [
-          {
-            id: '2',
-            tag: 'requestReasonsForAppeal',
-            parties: 'appellant',
-            dateDue: '2020-04-21',
-            dateSent: '2020-03-24',
-            explanation: 'direction explanation',
-            uniqueId: 'directionId'
-          },
-          {
-            id: '1',
-            tag: 'respondentEvidence',
-            parties: 'respondent',
-            dateDue: '2020-04-07',
-            dateSent: '2020-03-24',
-            explanation: 'direction explanation',
-            uniqueId: 'directionId'
-          }
-        ];
-        req.session.appeal.makeAnApplications = null;
-      });
-
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial', async () => {
-        req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
-        req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
-        const result = await getAppealApplicationNextStep(req as Request);
-
-        expect(result).to.deep.equal(
-          {
-            cta: {
-              respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
-              url: '/case-building/home-office-decision-wrong'
-            },
-            deadline: '21 April 2020',
-            descriptionParagraphs: [
-              'You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.'
-            ],
-            info: {
-              title: 'Helpful Information',
-              url: '<a href=\'{{ paths.common.homeOfficeDocuments }}\'>Understanding your Home Office documents</a>'
-            },
-            usefulDocuments: {
-              title: 'Useful documents',
-              url: '<a href=\'{{ paths.common.homeOfficeDocumentsViewer }}\'>Home Office documents about your case</a>'
-            },
-            allowedAskForMoreTime: true
-          }
-        );
-      });
-
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and pending time extension', async () => {
-        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
-          value: {
-            decision: 'Pending',
-            applicant: 'Appellant',
-            type: 'Time extension'
-          }
-        };
-        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
-        req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
-        req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
-        const result = await getAppealApplicationNextStep(req as Request);
-
-        expect(result).to.deep.equal(
-          {
-            cta: {
-              respondBy: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime,
-              url: '/case-building/home-office-decision-wrong'
-            },
-            deadline: '21 April 2020',
-            descriptionParagraphs: [
-              i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime
-            ],
-            info: {
-              title: 'Helpful Information',
-              url: '<a href=\'{{ paths.common.homeOfficeDocuments }}\'>Understanding your Home Office documents</a>'
-            },
-            usefulDocuments: {
-              title: 'Useful documents',
-              url: '<a href=\'{{ paths.common.homeOfficeDocumentsViewer }}\'>Home Office documents about your case</a>'
-            },
-            allowedAskForMoreTime: true
-          }
-        );
-      });
-
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and granted time extension', async () => {
-        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
-          value: {
-            decision: 'Granted',
-            applicant: 'Appellant'
-          }
-        };
-        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
-        req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
-        req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
-        const result = await getAppealApplicationNextStep(req as Request);
-
-        expect(result).to.deep.equal(
-          {
-            cta: {
-              respondBy: i18n.pages.overviewPage.doThisNext.nowRespondBy,
-              url: '/case-building/home-office-decision-wrong'
-            },
-            deadline: '21 April 2020',
-            descriptionParagraphs: [
-              i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description
-            ],
-            info: {
-              title: 'Helpful Information',
-              url: '<a href=\'{{ paths.common.homeOfficeDocuments }}\'>Understanding your Home Office documents</a>'
-            },
-            usefulDocuments: {
-              title: 'Useful documents',
-              url: '<a href=\'{{ paths.common.homeOfficeDocumentsViewer }}\'>Home Office documents about your case</a>'
-            },
-            allowedAskForMoreTime: true
-          }
-        );
-      });
-
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and refused time extension', async () => {
-        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
-          value: {
-            decision: 'Refused',
-            applicant: 'Appellant'
-          }
-        };
-        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
-        req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
-        req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
-        const result = await getAppealApplicationNextStep(req as Request);
-
-        expect(result).to.deep.equal(
-          {
-            cta: {
-              respondBy: i18n.pages.overviewPage.doThisNext.stillRespondBy,
-              url: '/case-building/home-office-decision-wrong'
-            },
-            deadline: '21 April 2020',
-            descriptionParagraphs: [
-              i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description
-            ],
-            info: {
-              title: 'Helpful Information',
-              url: '<a href=\'{{ paths.common.homeOfficeDocuments }}\'>Understanding your Home Office documents</a>'
-            },
-            usefulDocuments: {
-              title: 'Useful documents',
-              url: '<a href=\'{{ paths.common.homeOfficeDocumentsViewer }}\'>Home Office documents about your case</a>'
-            },
-            allowedAskForMoreTime: true
-          }
-        );
-      });
-    });
-
     it('when application status is reasonsForAppealSubmitted should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'reasonsForAppealSubmitted';
       const result = await getAppealApplicationNextStep(req as Request);
@@ -2081,6 +1921,167 @@ describe('application-state-utils', () => {
         );
       });
 
+    });
+
+    describe('awaitingReasonsForAppealPartial', () => {
+      beforeEach(() => {
+        req.session.appeal.directions = [
+          {
+            id: '2',
+            tag: 'requestReasonsForAppeal',
+            parties: 'appellant',
+            dateDue: '2020-04-21',
+            dateSent: '2020-03-24',
+            explanation: 'direction explanation',
+            uniqueId: 'directionId'
+          },
+          {
+            id: '1',
+            tag: 'respondentEvidence',
+            parties: 'respondent',
+            dateDue: '2020-04-07',
+            dateSent: '2020-03-24',
+            explanation: 'direction explanation',
+            uniqueId: 'directionId'
+          }
+        ];
+        req.session.appeal.makeAnApplications = null;
+        req.session.appeal.stf24wPreviousStatusWasYesAutoGenerated = stf24w;
+      });
+
+      it(`should return 'Do This next section' when application status is awaitingReasonsForAppealPartial and stf24w was set to ${stf24w}`, async () => {
+        req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
+        req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal(
+            {
+              cta: {
+                respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
+                url: '/case-building/home-office-decision-wrong'
+              },
+              deadline: '21 April 2020',
+              descriptionParagraphs: [
+                'You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.'
+              ],
+              info: {
+                title: 'Helpful Information',
+                url: '<a href=\'{{ paths.common.homeOfficeDocuments }}\'>Understanding your Home Office documents</a>'
+              },
+              usefulDocuments: {
+                title: 'Useful documents',
+                url: '<a href=\'{{ paths.common.homeOfficeDocumentsViewer }}\'>Home Office documents about your case</a>'
+              },
+              allowedAskForMoreTime: !is24WeeksTimeline
+            }
+        );
+      });
+
+      it(`should return 'Do This next section' when application status is awaitingReasonsForAppealPartial and pending time extension and stf24w was set to ${stf24w}`, async () => {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          value: {
+            decision: 'Pending',
+            applicant: 'Appellant',
+            type: 'Time extension'
+          }
+        };
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+        req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
+        req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal(
+            {
+              cta: {
+                respondBy: is24WeeksTimeline ? undefined : i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime,
+                url: '/case-building/home-office-decision-wrong'
+              },
+              deadline: '21 April 2020',
+              descriptionParagraphs: [
+                i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime
+              ],
+              info: {
+                title: 'Helpful Information',
+                url: '<a href=\'{{ paths.common.homeOfficeDocuments }}\'>Understanding your Home Office documents</a>'
+              },
+              usefulDocuments: {
+                title: 'Useful documents',
+                url: '<a href=\'{{ paths.common.homeOfficeDocumentsViewer }}\'>Home Office documents about your case</a>'
+              },
+              allowedAskForMoreTime: !is24WeeksTimeline
+            }
+        );
+      });
+
+      it(`should return 'Do This next section' when application status is awaitingReasonsForAppealPartial and granted time extension and stf24w was set to ${stf24w}`, async () => {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          value: {
+            decision: 'Granted',
+            applicant: 'Appellant'
+          }
+        };
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+        req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
+        req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal(
+            {
+              cta: {
+                respondBy: i18n.pages.overviewPage.doThisNext.nowRespondBy,
+                url: '/case-building/home-office-decision-wrong'
+              },
+              deadline: '21 April 2020',
+              descriptionParagraphs: [
+                i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description
+              ],
+              info: {
+                title: 'Helpful Information',
+                url: '<a href=\'{{ paths.common.homeOfficeDocuments }}\'>Understanding your Home Office documents</a>'
+              },
+              usefulDocuments: {
+                title: 'Useful documents',
+                url: '<a href=\'{{ paths.common.homeOfficeDocumentsViewer }}\'>Home Office documents about your case</a>'
+              },
+              allowedAskForMoreTime: !is24WeeksTimeline
+            }
+        );
+      });
+
+      it(`should return 'Do This next section' when application status is awaitingReasonsForAppealPartial and refused time extension and stf24w was set to ${stf24w}`, async () => {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          value: {
+            decision: 'Refused',
+            applicant: 'Appellant'
+          }
+        };
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+        req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
+        req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal(
+            {
+              cta: {
+                respondBy: i18n.pages.overviewPage.doThisNext.stillRespondBy,
+                url: '/case-building/home-office-decision-wrong'
+              },
+              deadline: '21 April 2020',
+              descriptionParagraphs: [
+                i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description
+              ],
+              info: {
+                title: 'Helpful Information',
+                url: '<a href=\'{{ paths.common.homeOfficeDocuments }}\'>Understanding your Home Office documents</a>'
+              },
+              usefulDocuments: {
+                title: 'Useful documents',
+                url: '<a href=\'{{ paths.common.homeOfficeDocumentsViewer }}\'>Home Office documents about your case</a>'
+              },
+              allowedAskForMoreTime: !is24WeeksTimeline
+            }
+        );
+      });
     });
   });
 

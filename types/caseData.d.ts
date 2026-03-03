@@ -295,6 +295,7 @@ interface CaseData {
 
 interface NlrDetails {
   emailAddress?: string;
+  phoneNumber?: string
   givenNames?: string;
   familyName?: string;
   idamId?: string

@@ -631,6 +631,17 @@
         ]
       }
     },
+    "updatePhoneNumber": {
+      "title": "Provide or update your phone number",
+      "enterPhone": "Please enter your mobile phone number for contact purposes",
+      "confirmation": {
+        "title": "You have updated your mobile phone number for this appeal",
+        "whatNextListItems": [
+          "This will only be used for contact purposes by the Tribunal and will not be shared with the Home Office.",
+          "A Tribunal Caseworker may contact you by phone to discuss the appellant's appeal if there are any issues."
+        ]
+      }
+    },
     "startRepresentingYourself": {
       "title": "Start representing yourself",
       "instructions": "You no longer have a legal representative for this appeal. To start representing yourself, you must enter the online case reference number and security code from the email, text message or letter we sent you.",
@@ -969,6 +980,7 @@
       "withdrawAppeal": "Withdraw my appeal",
       "askForFeeRemission": "Ask for a fee remission",
       "addNlr": "Add a non legal representative",
+      "updatePhone": "Provide or update my phone number",
       "appealRequests": {
         "sectionHeading": "Appeal requests",
         "askToChangeDetails": "Ask to change some of your details",

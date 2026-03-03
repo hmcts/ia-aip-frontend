@@ -1,0 +1,42 @@
+{% set pageTitleName = i18n.pages.updatePhoneNumber.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% import "helpers/text-helpers.njk" as text %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.updatePhoneNumber.title }}</h1>
+
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+
+  <form action="{{ paths.nonLegalRep.updatePhoneNumber }}" method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukInput({
+      id: "phoneNumber",
+      name: "phoneNumber",
+      type: "tel",
+      value: nlrPhoneNumber,
+      classes: "govuk-!-width-one-third",
+      label: {
+        text: i18n.pages.updatePhoneNumber.enterPhone
+      },
+      attributes: {
+        spellcheck: "false"
+      },
+      errorMessage: {
+        text: errors['phoneNumber'].text
+      } if errors['phoneNumber']
+    }) }}
+    {{ saveButton({name: 'send', text: 'Submit'}) }}
+  </form>
+
+  {{ contactUs() }}
+
+{% endblock %}

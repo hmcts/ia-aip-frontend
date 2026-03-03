@@ -646,6 +646,19 @@ function joinAppealValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function nonLegalRepPhoneNumberValidation(obj: object) {
+  const schema = Joi.object({
+    phoneNumber: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
+      .required()
+      .messages({
+        'string.empty': i18n.validationErrors.phoneEmpty,
+        'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
+        'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
+      })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 export {
   createStructuredError,
   contactDetailsValidation,
@@ -693,5 +706,6 @@ export {
   helpWithFeesValidation,
   helpWithFeesRefNumberValidation,
   joinAppealValidation,
+  nonLegalRepPhoneNumberValidation,
   deportationOrderOptionsValidation
 };

@@ -259,6 +259,11 @@ export const Events = {
     summary: 'NLR Joined appeal',
     description: 'Non Legal Rep joined appeal via PIP'
   },
+  NLR_PHONE_NUMBER_SUBMITTED: {
+    id: 'nlrPhoneNumberSubmitted',
+    summary: 'NLR phone number submitted',
+    description: 'Non Legal Rep has provided their phone number'
+  },
   MARK_APPEAL_PAID: {
     id: 'markAppealPaid',
     summary: 'Mark appeal as paid',

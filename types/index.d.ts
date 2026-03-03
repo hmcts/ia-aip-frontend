@@ -216,6 +216,7 @@ declare global {
 
   interface NlrDetails {
     emailAddress?: string;
+    phoneNumber?: string
     givenNames?: string;
     familyName?: string;
     idamId?: string

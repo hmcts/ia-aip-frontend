@@ -191,7 +191,6 @@ describe('isJourneyAllowedMiddleware', () => {
       const permittedPaths: string[] = Object.values(paths.common).filter(path => !forbiddenCommonPaths.includes(path));
       for (const path of permittedPaths) {
         next = sandbox.stub();
-        res.redirect = redirectStub;
         const reqWithPath = { ...req, path } as Request;
         isJourneyAllowedMiddleware(reqWithPath, res as Response, next);
         expect(next.calledOnceWith()).to.equal(true, `Expected to allow access to ${path} for Non legal rep but was forbidden`);
@@ -226,16 +225,34 @@ describe('isJourneyAllowedMiddleware', () => {
     }
   });
 
-  it('should render forbidden page for Non legal rep for nonLegalRepPaths', () => {
-    req.session.appeal.appealStatus = 'decided';
-    req.session.isNonLegalRep = true;
-    for (const path in paths.nonLegalRep) {
-      redirectStub = sandbox.stub();
-      res.redirect = redirectStub;
-      const reqWithPath = { ...req, path: path } as Request;
-      isJourneyAllowedMiddleware(reqWithPath, res as Response, next);
-      expect(redirectStub.calledOnceWith(paths.common.forbidden)).to.equal(true, `Expected to forbid access to ${path} for Non legal rep but was allowed`);
-    }
+  describe('nonLegalRepPaths', () => {
+    const allowedPaths: string[] = [
+      paths.nonLegalRep.updatePhoneNumber,
+      paths.nonLegalRep.updatePhoneNumberConfirmation
+    ];
+    it('should render forbidden page for Non legal rep for nonLegalRepPaths', () => {
+      req.session.appeal.appealStatus = 'decided';
+      req.session.isNonLegalRep = true;
+      const forbiddenPaths: string[] = Object.values(paths.nonLegalRep).filter(path => !allowedPaths.includes(path));
+      for (const path of forbiddenPaths) {
+        redirectStub = sandbox.stub();
+        res.redirect = redirectStub;
+        const reqWithPath = { ...req, path: path } as Request;
+        isJourneyAllowedMiddleware(reqWithPath, res as Response, next);
+        expect(redirectStub.calledOnceWith(paths.common.forbidden)).to.equal(true, `Expected to forbid access to ${path} for Non legal rep but was allowed`);
+      }
+    });
+
+    it('should allow access for Non legal rep for allowed paths in nonLegalRepPaths', () => {
+      req.session.appeal.appealStatus = 'decided';
+      req.session.isNonLegalRep = true;
+      for (const path of allowedPaths) {
+        next = sandbox.stub();
+        const reqWithPath = { ...req, path: path } as Request;
+        isJourneyAllowedMiddleware(reqWithPath, res as Response, next);
+        expect(next.calledOnceWith()).to.equal(true, `Expected to allow access to ${path} for Non legal rep but was forbidden`);
+      }
+    });
   });
 
   it('should render forbidden page for Non legal rep for ftpaPaths', () => {

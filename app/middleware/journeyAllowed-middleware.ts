@@ -54,7 +54,9 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
     ];
     allowedPaths = [
       ...commonPaths.filter(path => !nonLegalRepForbiddenCommonPaths.includes(path)),
-      ...startRepresentingYourselfPaths
+      ...startRepresentingYourselfPaths,
+      paths.nonLegalRep.updatePhoneNumber,
+      paths.nonLegalRep.updatePhoneNumberConfirmation
     ];
   } else {
     allowedPaths = [

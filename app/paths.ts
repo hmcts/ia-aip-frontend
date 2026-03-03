@@ -320,6 +320,8 @@ const paths = {
     joinAppeal: '/join-appeal',
     joinAppealConfirmDetails: '/join-appeal/confirm-details',
     joinAppealConfirmation: '/join-appeal/confirmation',
+    updatePhoneNumber: '/update-phone-number',
+    updatePhoneNumberConfirmation: '/update-phone-number/confirmation',
   },
   makeApplication: {
     // Hearing requests

@@ -184,6 +184,7 @@ import {
   setupNonLegalRepresentativeControllers
 } from './controllers/non-legal-representative/add-non-legal-representative';
 import { setupJoinAppealControllers } from './controllers/non-legal-representative/join-appeal';
+import { setupNlrUpdatePhoneNumberControllers } from './controllers/non-legal-representative/update-phone-number';
 import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-country/ooc-feature-toggle';
 import {
   setupCheckAndSendController as setupReasonsForAppealCheckAndSendController
@@ -350,6 +351,7 @@ const makeApplicationControllers = setupMakeApplicationControllers(middleware, u
 const changeRepresentationControllers = setupChangeRepresentationControllers(middleware);
 const nonLegalRepresentativeControllers = setupNonLegalRepresentativeControllers(middleware, updateAppealService);
 const joinAppealControllers = setupJoinAppealControllers(middleware, updateAppealService, ccdSystemService);
+const nlrUpdatePhoneNumberControllers = setupNlrUpdatePhoneNumberControllers(middleware, updateAppealService);
 const ftpaApplicationControlers = setupFtpaApplicationController(middleware, updateAppealService, documentManagementService);
 
 const hearingBundleFeatureToggleController = setupHearingBundleFeatureToggleController(middleware);
@@ -478,6 +480,7 @@ router.use(makeApplicationControllers);
 router.use(changeRepresentationControllers);
 router.use(nonLegalRepresentativeControllers);
 router.use(joinAppealControllers);
+router.use(nlrUpdatePhoneNumberControllers);
 router.use(ftpaApplicationControlers);
 
 router.use(hearingBundleFeatureToggleController);

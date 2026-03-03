@@ -54,7 +54,7 @@ function postJoinAppeal(ccdSystemService: CcdSystemService) {
         caseReference: req.body['caseReference'],
         joinAppealAccessCode: req.body['joinAppealAccessCode'],
         errors: errors,
-        errorList: [errors],
+        errorList: Object.values(errors),
         previousPage: paths.common.overview
       });
     } catch (error) {

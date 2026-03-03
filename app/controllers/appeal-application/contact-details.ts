@@ -16,6 +16,8 @@ import {
   addressValidation,
   contactDetailsValidation,
   dropdownValidation,
+  emailValidation,
+  hasNlrValidation,
   hasSponsorValidation,
   postcodeValidation,
   sponsorAddressValidation,
@@ -399,7 +401,7 @@ function postHasSponsor(updateAppealService: UpdateAppealService) {
         ...appealUpdated
       };
 
-      if (['No'].includes(appeal.application.hasSponsor)) return res.redirect(paths.appealStarted.taskList);
+      if (['No'].includes(appeal.application.hasSponsor)) return res.redirect(paths.appealStarted.hasNonLegalRep);
 
       const redirectPage = paths.appealStarted.sponsorName;
 
@@ -643,14 +645,114 @@ function postSponsorAuthorisation(updateAppealService: UpdateAppealService) {
         ...appealUpdated
       };
 
-      const redirectPage = paths.appealStarted.taskList;
-
-      return res.redirect(redirectPage);
+      return res.redirect(paths.appealStarted.hasNonLegalRep);
     } catch (error) {
       next(error);
     }
   };
 }
+
+function getHasNonLegalRep(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    const application = req.session.appeal.application;
+    const answer = application.hasNonLegalRep;
+    const previousPage = application.sponsorAuthorisation
+      ? paths.appealStarted.sponsorAuthorisation : paths.appealStarted.hasSponsor;
+    return res.render('appeal-application/non-legal-rep-details/has-non-legal-rep.njk', {
+      question: i18n.pages.hasNonLegalRep.title,
+      previousPage: previousPage,
+      answer: answer
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function postHasNonLegalRep(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = hasNlrValidation(req.body);
+
+      const application = req.session.appeal.application;
+      const previousPage = application.sponsorAuthorisation
+        ? paths.appealStarted.sponsorAuthorisation : paths.appealStarted.hasSponsor;
+
+      if (validation) {
+        return res.render('appeal-application/non-legal-rep-details/has-non-legal-rep.njk', {
+          question: i18n.pages.hasNonLegalRep.title,
+          previousPage: previousPage,
+          errors: validation,
+          errorList: Object.values(validation)
+        });
+      }
+
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...application,
+          hasNonLegalRep: req.body['answer']
+        }
+      };
+
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+
+      if (['No'].includes(appeal.application.hasNonLegalRep)) return res.redirect(paths.appealStarted.taskList);
+
+      return res.redirect(['No'].includes(appeal.application.hasNonLegalRep)
+        ? paths.appealStarted.taskList : paths.appealStarted.nonLegalRepEmail);
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
+function getNonLegalRepEmail(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    return res.render('appeal-application/non-legal-rep-details/non-legal-rep-email.njk', {
+      previousPage: paths.appealStarted.hasNonLegalRep,
+      nlrEmail: req.session.appeal.nlrEmail
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postNonLegalRepEmail(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = emailValidation(req.body);
+      if (validation) {
+        return res.render('appeal-application/non-legal-rep-details/non-legal-rep-email.njk', {
+          nlrEmail: req.body['email-value'],
+          errors: validation,
+          errorList: Object.values(validation),
+          previousPage: paths.appealStarted.hasNonLegalRep
+        });
+      }
+
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        nlrEmail: req.body['email-value']
+      };
+      Object.assign(req.session.appeal, { nlrEmail: appeal.nlrEmail });
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+      return res.redirect(paths.appealStarted.taskList);
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
 
 type ContactDetailsControllerDependencies = { updateAppealService: UpdateAppealService, osPlacesClient: OSPlacesClient };
 
@@ -676,6 +778,11 @@ function setupContactDetailsController(middleware: Middleware[], deps: ContactDe
   router.post(paths.appealStarted.sponsorContactDetails, middleware, postSponsorContactDetails(deps.updateAppealService));
   router.get(paths.appealStarted.sponsorAuthorisation, middleware, getSponsorAuthorisation);
   router.post(paths.appealStarted.sponsorAuthorisation, middleware, postSponsorAuthorisation(deps.updateAppealService));
+  router.get(paths.appealStarted.hasNonLegalRep, middleware, getHasNonLegalRep);
+  router.post(paths.appealStarted.hasNonLegalRep, middleware, postHasNonLegalRep(deps.updateAppealService));
+  router.get(paths.appealStarted.nonLegalRepEmail, middleware, getNonLegalRepEmail);
+  router.post(paths.appealStarted.nonLegalRepEmail, middleware, postNonLegalRepEmail(deps.updateAppealService));
+
   return router;
 }
 
@@ -702,5 +809,9 @@ export {
   postSponsorContactDetails,
   getSponsorAuthorisation,
   postSponsorAuthorisation,
+  getHasNonLegalRep,
+  postHasNonLegalRep,
+  getNonLegalRepEmail,
+  postNonLegalRepEmail,
   ContactDetailsControllerDependencies
 };

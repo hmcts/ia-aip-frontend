@@ -186,7 +186,7 @@ describe('Join appeal controllers setup', () => {
           caseReference: caseId,
           joinAppealAccessCode: accessCode,
           errors: expectedError,
-          errorList: [expectedError],
+          errorList: Object.values(expectedError),
           previousPage: paths.common.overview
         });
       });
@@ -208,7 +208,7 @@ describe('Join appeal controllers setup', () => {
           caseReference: caseId,
           joinAppealAccessCode: accessCode,
           errors: expectedError,
-          errorList: [expectedError],
+          errorList: Object.values(expectedError),
           previousPage: paths.common.overview
         });
       });
@@ -230,7 +230,7 @@ describe('Join appeal controllers setup', () => {
           caseReference: caseId,
           joinAppealAccessCode: accessCode,
           errors: expectedError,
-          errorList: [expectedError],
+          errorList: Object.values(expectedError),
           previousPage: paths.common.overview
         });
       });
@@ -252,7 +252,7 @@ describe('Join appeal controllers setup', () => {
           caseReference: caseId,
           joinAppealAccessCode: accessCode,
           errors: expectedError,
-          errorList: [expectedError],
+          errorList: Object.values(expectedError),
           previousPage: paths.common.overview
         });
       });
@@ -274,7 +274,7 @@ describe('Join appeal controllers setup', () => {
           caseReference: caseId,
           joinAppealAccessCode: accessCode,
           errors: expectedError,
-          errorList: [expectedError],
+          errorList: Object.values(expectedError),
           previousPage: paths.common.overview
         });
       });
@@ -295,7 +295,7 @@ describe('Join appeal controllers setup', () => {
           caseReference: caseId,
           joinAppealAccessCode: accessCode,
           errors: expectedError,
-          errorList: [expectedError],
+          errorList: Object.values(expectedError),
           previousPage: paths.common.overview
         });
       });

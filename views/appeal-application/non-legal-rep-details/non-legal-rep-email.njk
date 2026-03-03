@@ -1,4 +1,4 @@
-{% set pageTitleName = i18n.pages.inviteNlrToJoinAppeal.title %}
+{% set pageTitleName = i18n.pages.nonLegalRepEmail.title %}
 {% extends "layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
@@ -6,6 +6,7 @@
 {% import "helpers/text-helpers.njk" as text %}
 
 {% block content %}
+
   {% if errorList %}
     {{ govukErrorSummary({
       titleText: i18n.validationErrors.errorSummary,
@@ -14,17 +15,14 @@
   {% endif %}
   {% call govukFieldset({
     legend: {
-      text: i18n.pages.inviteNlrToJoinAppeal.title,
+      text: i18n.pages.nonLegalRepEmail.title,
       classes: "govuk-fieldset__legend--xl",
       isPageHeading: true
     }
   }) %}
-  <form action="{{ paths.nonLegalRep.inviteToJoinAppeal }}" method="post" novalidate>
-    {% if shouldAdviceShow %}
-      <div class="govuk-inset-text">
-        <p>{{ i18n.pages.inviteNlrToJoinAppeal.advice }} <a class="govuk-link" href="{{ paths.nonLegalRep.inviteToCreateAccount }}">here</a>.</p>
-      </div>
-    {% endif %}
+  <form action="{{ paths.appealStarted.nonLegalRepEmail }}" method="post" novalidate>
+    <p class="govuk-body">{{ i18n.pages.nonLegalRepEmail.hint }}</p>
+    <p class="govuk-body">{{ i18n.pages.nonLegalRepEmail.nextStep }}</p>
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukInput({
       id: "email-value",
@@ -33,7 +31,7 @@
       value: nlrEmail,
       classes: "govuk-!-width-one-third",
       label: {
-        text: i18n.pages.inviteNlrToJoinAppeal.enterEmail
+        text: i18n.pages.nonLegalRepEmail.nlrEmail
       },
       attributes: {
         spellcheck: "false"
@@ -42,7 +40,7 @@
         text: errors['email-value'].text
       } if errors['email-value']
     }) }}
-    {{ saveButton({name: 'send', text: 'Send Code'}) }}
+    {{ saveButtons() }}
   {% endcall %}
   </form>
 

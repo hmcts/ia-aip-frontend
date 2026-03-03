@@ -188,6 +188,16 @@
     "sponsorAuthorisation": {
       "title": "Do you agree to let your sponsor have access to information about your appeal?"
     },
+    "hasNonLegalRep": {
+      "title": "Do you have a non legal representative?",
+      "hint": "A non legal representative is someone you want to be able to view and track your case."
+    },
+    "nonLegalRepEmail": {
+      "title": "What is your non legal rep's email address?",
+      "nlrEmail": "Email address",
+      "hint": "Please provide an email address for your non legal representative. They will receive an email invitation to create an account if they do not already have an account with us.",
+      "nextStep": "Once your appeal has been submitted, please click the 'Add non legal representative' link on the right of your appeal page and enter the email address you provided here to verify their account and send them instructions to access your case."
+    },
     "appealType": {
       "header": "What is your appeal type?",
       "pageHint": "<p>Select one appeal type. If you are unsure, the first page of your decision letter should include the type of decision you are appealing.</p><p>If you think more than one appeal type applies to your appeal, you will have the chance to tell us about that later.</p>",
@@ -274,6 +284,10 @@
         "sponsorAddressDetails": "Sponsor's address",
         "sponsorContactDetails": "Sponsor's contact details",
         "sponsorAuthorisation": "Sponsor has access to information",
+        "hasNonLegalRep": "Non legal representative",
+        "nonLegalRepEmail": "Non legal representative's email",
+        "nonLegalRepName": "Non legal representative's name",
+        "nonLegalRepPhone": "Non legal representative's phone number",
         "appealType": "Appeal type",
         "appealLate": "Reason for late appeal",
         "supportingEvidence": "Supporting evidence",
@@ -558,6 +572,7 @@
     "addNonLegalRepresentative": {
       "title": "Add a non legal representative",
       "stepOne": "Step 1: Provide the email address of your non legal representative",
+      "hint": "If you already invited them to create an account when creating your appeal, please skip this step.",
       "instructionsPartOne": "If you want to add a non legal representative to be able to view and track your appeal, you will need to provide their email address so they can be invited to create an account.",
       "linkPartOne": "Invite to create an account",
       "stepTwo": "Step 2: Provide the email address of your non legal representative",
@@ -4112,6 +4127,7 @@
     "phoneFormat": "Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999",
     "ukPhoneFormat": "Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982",
     "hasSponsor": "Select yes if you have a sponsor",
+    "hasNonLegalRep": "Select yes if you have a non legal representative",
     "sponsorGivenNames": "Enter your sponsor's given name or names",
     "sponsorFamilyName": "Enter your sponsor's family name or names",
     "sponsorAddress": {

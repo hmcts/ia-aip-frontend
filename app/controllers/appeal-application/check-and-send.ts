@@ -184,6 +184,21 @@ async function createSummaryRowsFrom(req: Request) {
     rows.push(appealTypeRow);
   }
 
+  if (application.hasNonLegalRep) {
+
+    const hasNonLegalRep = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.hasNonLegalRep,
+      [...Object.values(application.hasNonLegalRep)],
+      paths.appealStarted.hasNonLegalRep + editParameter);
+    rows.push(hasNonLegalRep);
+
+    if (['Yes'].includes(application.hasNonLegalRep)) {
+      const nlrEmail = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail,
+        [...Object.values(req.session.appeal.nlrEmail)],
+        paths.appealStarted.nonLegalRepEmail + editParameter);
+      rows.push(nlrEmail);
+    }
+  }
+
   const homeOfficeDecisionLetterRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter,
       application.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),

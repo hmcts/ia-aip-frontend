@@ -34,6 +34,8 @@ const paths = {
     sponsorAddress: '/sponsor-address',
     sponsorContactDetails: '/sponsor-contact-preferences',
     sponsorAuthorisation: '/sponsor-authorisation',
+    hasNonLegalRep: '/has-non-legal-rep',
+    nonLegalRepEmail: '/non-legal-rep-email',
     checkAndSend: '/check-answers',
     taskList: '/about-appeal',
     appealOutOfCountry: '/in-the-uk',

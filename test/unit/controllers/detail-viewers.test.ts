@@ -1,4 +1,4 @@
-import { application, NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
   addFeeSupportStatus,
@@ -673,6 +673,118 @@ describe('DetailViewController', () => {
       });
     });
 
+
+    it('should add NLR details if present DLRM', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows.push(
+        { key: { text: 'Non legal representative\'s email' }, value: { html: 'some email' } },
+        { key: { text: 'Non legal representative\'s name' }, value: { html: 'some name' } },
+        { key: { text: 'Non legal representative\'s phone number' }, value: { html: 'some phone' } },
+      );
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+        {
+          key: { text: i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber },
+          value: { html: 'legalAidAccountNumber' }
+        }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionType = 'hoWaiverRemission';
+      req.session.appeal.application.remissionClaim = 'legalAid';
+      req.session.appeal.application.legalAidAccountNumber = 'legalAidAccountNumber';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.nlrEmail = 'someEmail';
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'some email',
+        givenNames: 'some',
+        familyName: 'name',
+        phoneNumber: 'some phone'
+      };
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should add NLR details if present non DLRM', async () => {
+      expectedSummaryRows.push(
+        { key: { text: 'Non legal representative\'s email' }, value: { html: 'some email' } },
+        { key: { text: 'Non legal representative\'s name' }, value: { html: 'some name' } },
+        { key: { text: 'Non legal representative\'s phone number' }, value: { html: 'some phone' } },
+      );
+      req.session.appeal.nlrEmail = 'someEmail';
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'some email',
+        givenNames: 'some',
+        familyName: 'name',
+        phoneNumber: 'some phone'
+      };
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRows
+      });
+    });
+
+    it('should add NLR email if no nlr details but email present DLRM', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows.push(
+        { key: { text: 'Non legal representative\'s email' }, value: { html: 'someEmail' } },
+      );
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+        {
+          key: { text: i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber },
+          value: { html: 'legalAidAccountNumber' }
+        }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionType = 'hoWaiverRemission';
+      req.session.appeal.application.remissionClaim = 'legalAid';
+      req.session.appeal.application.legalAidAccountNumber = 'legalAidAccountNumber';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.nlrEmail = 'someEmail';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+
+    it('should add NLR email if no nlr details but email present non DLRM', async () => {
+      expectedSummaryRows.push(
+        { key: { text: 'Non legal representative\'s email' }, value: { html: 'someEmail' } },
+      );
+      req.session.appeal.nlrEmail = 'someEmail';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRows
+      });
+    });
+
     it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and has sponsor not in Uk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
@@ -796,7 +908,10 @@ describe('DetailViewController', () => {
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
           { key: { text: 'Fee amount' }, value: { html: '£140' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-          { key: { text: i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber }, value: { html: 'legalAidAccountNumber' } }
+          {
+            key: { text: i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber },
+            value: { html: 'legalAidAccountNumber' }
+          }
         );
 
         req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
@@ -821,7 +936,10 @@ describe('DetailViewController', () => {
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
           { key: { text: 'Fee amount' }, value: { html: '£140' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-          { key: { text: i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstances }, value: { html: 'Exceptional reason' } },
+          {
+            key: { text: i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstances },
+            value: { html: 'Exceptional reason' }
+          },
           {
             key: { text: i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstancesEvidence },
             value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>ecDoc1.pdf</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/2'>ecDoc2.pdf</a>" }
@@ -854,9 +972,14 @@ describe('DetailViewController', () => {
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
           { key: { text: 'Fee amount' }, value: { html: '£140' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-          { key: { text: i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber }, value: { html: 'asylumSupportReference' } },
-          { key: {
-            text: i18n.pages.checkYourAnswers.rowTitles.asylumSupportDocument },
+          {
+            key: { text: i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber },
+            value: { html: 'asylumSupportReference' }
+          },
+          {
+            key: {
+              text: i18n.pages.checkYourAnswers.rowTitles.asylumSupportDocument
+            },
             value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>asylumDoc1.pdf</a>" }
           }
         );
@@ -885,8 +1008,10 @@ describe('DetailViewController', () => {
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
           { key: { text: 'Fee amount' }, value: { html: '£140' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-          { key: {
-            text: i18n.pages.checkYourAnswers.rowTitles.section17Document },
+          {
+            key: {
+              text: i18n.pages.checkYourAnswers.rowTitles.section17Document
+            },
             value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>section17Doc1.pdf</a>" }
           }
         );
@@ -914,8 +1039,10 @@ describe('DetailViewController', () => {
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
           { key: { text: 'Fee amount' }, value: { html: '£140' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-          { key: {
-            text: i18n.pages.checkYourAnswers.rowTitles.section20Document },
+          {
+            key: {
+              text: i18n.pages.checkYourAnswers.rowTitles.section20Document
+            },
             value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>section20Doc1.pdf</a>" }
           }
         );
@@ -1319,17 +1446,32 @@ describe('DetailViewController', () => {
         ],
         'feeHistoryRows': [
           [
-            { key: { text: 'Fee support type' }, value: {  html: 'Local Authority Support (Section 17)' } },
+            { key: { text: 'Fee support type' }, value: { html: 'Local Authority Support (Section 17)' } },
             { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
             { key: { text: 'Asylum Support reference number' }, value: { html: 'refNum' } },
             { key: { text: 'Legal Aid account number' }, value: { html: 'legalAidAccountNumber' } },
             { key: { text: 'Exceptional circumstances' }, value: { html: 'Exceptional reason' } },
-            { key: { text: 'Asylum support document' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 2'>file_2_name</a>" } },
-            { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 3'>file_3_name</a>" } },
-            { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 4'>file_4_name</a>" } },
-            { key: { text: 'Home Office waiver document' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 5'>file_5_name</a>" } },
-            { key: { text: 'Exceptional circumstances evidence' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" } },
-            { key: { text: 'Fee support status' }, value: {  html: 'Fee support request granted' } },
+            {
+              key: { text: 'Asylum support document' },
+              value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 2'>file_2_name</a>" }
+            },
+            {
+              key: { text: 'Local Authority letter' },
+              value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 3'>file_3_name</a>" }
+            },
+            {
+              key: { text: 'Local Authority letter' },
+              value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 4'>file_4_name</a>" }
+            },
+            {
+              key: { text: 'Home Office waiver document' },
+              value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 5'>file_5_name</a>" }
+            },
+            {
+              key: { text: 'Exceptional circumstances evidence' },
+              value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" }
+            },
+            { key: { text: 'Fee support status' }, value: { html: 'Fee support request granted' } },
             { key: { text: 'Fee to refund' }, value: { html: '£140' } }
           ],
           [
@@ -1339,7 +1481,7 @@ describe('DetailViewController', () => {
             { key: { text: 'Reason for decision' }, value: { html: 'Decision 1' } },
             { key: { text: 'Fee to refund' }, value: { html: '£130' } }
           ], [
-            { key: { text: 'Fee support type' }, value: {  html: 'Local Authority Support (Section 20)' } },
+            { key: { text: 'Fee support type' }, value: { html: 'Local Authority Support (Section 20)' } },
             { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
             {
               key: { text: 'Local Authority letter' },
@@ -3334,12 +3476,12 @@ describe('DetailViewController', () => {
 
   describe('getApplicationTitle', () => {
     it('return title based on application type', () => {
-      expect(getApplicationTitle('Time extension')).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime);
-      expect(getApplicationTitle('Link/unlink appeals')).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askLinkUnlink);
+      expect(getApplicationTitle('Time extension', false)).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime);
+      expect(getApplicationTitle('Link/unlink appeals', false)).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askLinkUnlink);
     });
 
     it('return undefined for invalid application types', () => {
-      expect(getApplicationTitle('INVALID')).to.equal(undefined);
+      expect(getApplicationTitle('INVALID', false)).to.equal(undefined);
     });
   });
 
@@ -3362,7 +3504,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askReinstate.refused);
     });
@@ -3385,7 +3527,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.default.refused);
     });
@@ -3408,7 +3550,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askChangeHearing.granted);
     });
@@ -3431,7 +3573,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
@@ -3454,7 +3596,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askReinstate.granted);
     });
@@ -3477,7 +3619,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askJudgeReview.granted);
     });
@@ -3500,7 +3642,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
@@ -3523,7 +3665,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askChangeHearing.granted);
     });
@@ -3546,7 +3688,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
@@ -3569,7 +3711,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
@@ -3592,7 +3734,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askLinkUnlink.granted);
     });
@@ -3615,7 +3757,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.granted);
     });
@@ -3638,7 +3780,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
@@ -3670,7 +3812,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
+      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision, false);
       expect(addSummaryRowStub).to.have.been.callCount(4);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason'])).to.equal(true);
@@ -3704,7 +3846,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
+      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision, false);
       expect(addSummaryRowStub).to.have.been.callCount(8);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason'])).to.equal(true);
@@ -3741,7 +3883,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      getRespondentApplicationSummaryRows(application);
+      getRespondentApplicationSummaryRows(application, false);
       expect(addSummaryRowStub).to.have.been.callCount(4);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason'])).to.equal(true);
@@ -3775,7 +3917,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      getRespondentApplicationSummaryRows(application);
+      getRespondentApplicationSummaryRows(application, false);
       expect(addSummaryRowStub).to.have.been.callCount(8);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason'])).to.equal(true);
@@ -6076,5 +6218,4 @@ describe('DetailViewController', () => {
       });
     });
   });
-})
-;
+});

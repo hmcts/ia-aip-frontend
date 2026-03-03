@@ -5,6 +5,9 @@
 {% block content %}
   <h1 class="govuk-heading-xl">{{ i18n.pages.addNonLegalRepresentative.title }}</h1>
   <h2 class="govuk-heading-m">{{ i18n.pages.addNonLegalRepresentative.stepOne }}</h2>
+  <div class="govuk-inset-text">
+    {{ i18n.pages.addNonLegalRepresentative.hint }}
+  </div>
   <p class="govuk-body">{{ i18n.pages.addNonLegalRepresentative.instructionsPartOne }}</p>
   <a href="{{ paths.nonLegalRep.inviteToCreateAccount }}" class="govuk-button">{{ i18n.pages.addNonLegalRepresentative.linkPartOne }}</a>
   <h2 class="govuk-heading-m">{{ i18n.pages.addNonLegalRepresentative.stepTwo }}</h2>

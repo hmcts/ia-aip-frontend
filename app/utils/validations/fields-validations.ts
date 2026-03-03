@@ -495,6 +495,16 @@ function hasSponsorValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function hasNlrValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.hasNonLegalRep
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
 function sponsorAddressValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     ['address-line-1']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorAddress.line1Required }),
@@ -707,5 +717,6 @@ export {
   helpWithFeesRefNumberValidation,
   joinAppealValidation,
   nonLegalRepPhoneNumberValidation,
+  hasNlrValidation,
   deportationOrderOptionsValidation
 };

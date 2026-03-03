@@ -669,6 +669,7 @@ export default class UpdateAppealService {
           ...sponsorContactDetails
         },
         sponsorAuthorisation: caseData.sponsorAuthorisation,
+        hasNonLegalRep: caseData.hasNonLegalRep,
         dateLetterSent,
         decisionLetterReceivedDate,
         isAppealLate: caseData.submissionOutOfTime ? yesNoToBool(caseData.submissionOutOfTime) : undefined,
@@ -1593,6 +1594,7 @@ export default class UpdateAppealService {
         this.mapToCCDCaseSponsorDetails(appeal, caseData);
       }
       this.assignSinglePropertyIfExists(application, 'sponsorAuthorisation', caseData, 'sponsorAuthorisation');
+      this.assignSinglePropertyIfExists(application, 'hasNonLegalRep', caseData, 'hasNonLegalRep');
     }
     this.assignSinglePropertyIfExists(application, 'deportationOrderOptions', caseData, 'deportationOrderOptions');
   }

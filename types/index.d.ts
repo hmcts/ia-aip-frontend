@@ -317,6 +317,7 @@ declare global {
       wantsSms?: boolean;
     };
     sponsorAuthorisation?: string;
+    hasNonLegalRep?: string;
     tasks?: {
       [key: string]: Task;
     };

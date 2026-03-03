@@ -39,6 +39,10 @@ Feature: Personal details enter address
     Then I see "Do you have a sponsor?" in title
     When I select No and click continue
     And I check page accessibility
+    Then I should be taken to the has non legal rep page
+    And I see "Do you have a non legal representative?" in title
+    Then I choose No and click Continue
+    And I check page accessibility
     Then I should see the task-list page
     And I should be able to click "Decision type"
     And I check page accessibility

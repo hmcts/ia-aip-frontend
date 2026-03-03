@@ -23,6 +23,7 @@ const { homeOfficeUpload } = require('../pages/home-office-details/home-office-u
 const { legalRepCreateCase } = require('../pages/legal-rep-create-case/legal-rep-create-case');
 const { makeAppealApplication } = require('../pages/make-application/make-appeal-application');
 const { makeHearingApplication } = require('../pages/make-application/make-hearing-application');
+const { nonLegalRep } = require('../pages/non-legal-rep/non-legal-rep');
 const { oocProtectionDepartureDate } = require('../pages/ooc-details/out-of-country');
 const { outOfTimeAppeal } = require('../pages/out-of-time-appeal/out-of-time');
 const { overviewPage } = require('../pages/overview-page/overview-page');
@@ -74,6 +75,7 @@ enterAddress(I);
 oocAddress(I);
 contactDetails(I);
 hasSponsor(I);
+nonLegalRep(I);
 sponsorName(I);
 sponsorAddress(I);
 sponsorContactDetails(I);

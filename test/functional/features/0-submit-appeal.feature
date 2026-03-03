@@ -91,6 +91,10 @@ Feature: Submit appeal
     When I select No and click continue
     And I check page accessibility
 
+    Then I see "Do you have a non legal representative" in title
+    When I select No and click continue
+    And I check page accessibility
+
     Then I see "Tell us about your appeal" in title
     When I click "Decision with or without a hearing" link
     And I check page accessibility

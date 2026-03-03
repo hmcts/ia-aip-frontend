@@ -37,6 +37,11 @@ Feature: Contact details
     When I enter text message number "07899999999"
     And I click "Save and continue" button
     And I check page accessibility
+    Then I should see the enter address page
+    And I see "What is your address?" in title
+    When I click save and continue
+    And I check page accessibility
+
     Then I should be taken to the has sponsor page
     Then I choose No and click Continue
     And I check page accessibility

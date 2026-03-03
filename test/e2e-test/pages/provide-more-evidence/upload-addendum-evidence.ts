@@ -15,7 +15,7 @@ module.exports = {
     });
 
     Then(/^I should see the why evidence late page$/, async () => {
-      await I.amOnPage(testUrl + paths.common.whyEvidenceLate);
+      await I.waitInUrl(testUrl + paths.common.whyEvidenceLate, 10);
     });
 
     When(/^I enter "([^"]*)" into the why evidence late text area and click Save and Continue$/, async (text: string) => {
@@ -24,11 +24,11 @@ module.exports = {
     });
 
     Then(/^I should see the provide more evidence check page$/, async () => {
-      await I.amOnPage(testUrl + paths.common.provideMoreEvidenceCheck);
+      await I.waitInUrl(testUrl + paths.common.provideMoreEvidenceCheck, 10);
     });
 
     Then(/^I should see the provide more evidence sent page$/, async () => {
-      await I.amOnPage(testUrl + paths.common.provideMoreEvidenceConfirmation);
+      await I.waitInUrl(testUrl + paths.common.provideMoreEvidenceConfirmation, 10);
     });
 
     Then(/^I should see "([^"]*)" on the page$/, async (text: string) => {

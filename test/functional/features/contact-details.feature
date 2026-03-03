@@ -48,7 +48,7 @@ Feature: Contact details
 
     Then I should be taken to the has non legal rep page
     And I see "Do you have a non legal representative?" in title
-    Then I choose Yes and click save and continue
+    Then I choose Yes and click Continue
     And I check page accessibility
     Then I should be taken to the non legal rep email page
     And I see "What is your non legal rep's email address?" in title

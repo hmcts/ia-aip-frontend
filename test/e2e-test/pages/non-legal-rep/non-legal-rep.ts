@@ -20,5 +20,11 @@ module.exports = {
     Given('I enter a valid non legal rep email', async () => {
       await I.fillField('#email-value', 'valid@test.com');
     });
+
+    When('I choose Yes and click Continue', async () => {
+      await I.checkOption('#answer');
+      I.wait(3);
+      await I.click('Continue');
+    });
   }
 };

@@ -1,4 +1,4 @@
-{% set pageTitleName = i18n.pages.contactDetails.header %}
+{% set pageTitleName = i18n.pages.inviteNlrToJoinAppeal.title %}
 {% extends "layout.njk" %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -7,6 +7,7 @@
 {% import "helpers/text-helpers.njk" as text %}
 
 {% block content %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.inviteNlrToJoinAppeal.title }}</h1>
 
   {% if errorList %}
     {{ govukErrorSummary({

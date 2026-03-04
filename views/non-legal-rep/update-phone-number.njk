@@ -1,21 +1,24 @@
 {% set pageTitleName = i18n.pages.updatePhoneNumber.title %}
 {% extends "layout.njk" %}
-{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% import "helpers/text-helpers.njk" as text %}
 
 {% block content %}
-  <h1 class="govuk-heading-xl">{{ i18n.pages.updatePhoneNumber.title }}</h1>
-
   {% if errorList %}
     {{ govukErrorSummary({
       titleText: i18n.validationErrors.errorSummary,
       errorList: errorList
     }) }}
   {% endif %}
-
+  {% call govukFieldset({
+    legend: {
+      text: i18n.pages.updatePhoneNumber.title,
+      classes: "govuk-fieldset__legend--xl",
+      isPageHeading: true
+    }
+  }) %}
   <form action="{{ paths.nonLegalRep.updatePhoneNumber }}" method="post" novalidate>
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukInput({
@@ -35,6 +38,7 @@
       } if errors['phoneNumber']
     }) }}
     {{ saveButton({name: 'send', text: 'Submit'}) }}
+  {% endcall %}
   </form>
 
   {{ contactUs() }}

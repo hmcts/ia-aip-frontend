@@ -40,8 +40,13 @@ function postInviteToCreateAccount(updateAppealService: UpdateAppealService) {
 
       const appeal: Appeal = {
         ...req.session.appeal,
-        nlrEmail: req.body['email-value']
+        nlrEmail: req.body['email-value'],
+        application: {
+          ...req.session.appeal.application,
+          hasNonLegalRep: 'Yes'
+        }
       };
+
       Object.assign(req.session.appeal, { nlrEmail: appeal.nlrEmail });
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SEND_INVITE_TO_NON_LEGAL_REP, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {

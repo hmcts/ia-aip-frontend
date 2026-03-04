@@ -153,7 +153,7 @@ describe('Add non legal representative controllers setup', () => {
       req.body = {
         'email-value': 'test@test.com'
       };
-      const expectedAppeal = { ...req.session.appeal, nlrEmail: 'test@test.com' };
+      const expectedAppeal = { ...req.session.appeal, nlrEmail: 'test@test.com', application: { ...req.session.appeal.application, hasNonLegalRep: 'Yes' } };
       await postInviteToCreateAccount(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(submitEventRefactoredStub).to.be.calledOnceWith(Events.SEND_INVITE_TO_NON_LEGAL_REP, expectedAppeal, 'idamUID', 'atoken');
       expect(res.redirect).to.be.calledOnceWith(paths.nonLegalRep.inviteToCreateAccountConfirmation);

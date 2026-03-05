@@ -447,6 +447,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
   ];
   const appealArgumentSectionEvents = [
     Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+    Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id,
     Events.SUBMIT_REASONS_FOR_APPEAL.id,
     Events.BUILD_CASE.id,
     Events.REQUEST_RESPONDENT_REVIEW.id,
@@ -489,7 +490,11 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
     States.CMA_REQUIREMENTS_SUBMITTED.id,
     States.CMA_LISTED.id,
     States.SUBMIT_HEARING_REQUIREMENTS.id,
-    States.ENDED.id
+    States.ENDED.id,
+    States.CASE_BUILDING.id,
+    States.LISTING.id,
+    States.PREPARE_FOR_HEARING.id,
+    States.REMITTED.id
   ];
 
   if (hearingBundleFeatureEnabled) {

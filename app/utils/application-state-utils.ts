@@ -523,7 +523,7 @@ async function getAppealApplicationNextStep(req: Request) {
           i18n.pages.overviewPage.doThisNext.prepareForHearing.date,
           i18n.pages.overviewPage.doThisNext.prepareForHearing.time,
           i18n.pages.overviewPage.doThisNext.prepareForHearing.hearingCentre,
-          i18n.pages.overviewPage.doThisNext.prepareForHearing.hearingNotice
+          doThisNext.prepareForHearing.hearingNotice
         ],
         info: {
           title: i18n.pages.overviewPage.doThisNext.prepareForHearing.info.title,
@@ -658,7 +658,7 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'pendingPayment':
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
-        doThisNextSection = getRemissionDecisionParagraphs(req, false);
+        doThisNextSection = getRemissionDecisionParagraphs(req, is24WeeksTimeline);
       } else if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
         doThisNextSection = {
           descriptionParagraphs: [

@@ -1367,6 +1367,9 @@
               "title": "Helpful Information",
               "url": "<a class='govuk-link govuk-!-margin-bottom-2 --display-block' href='{{ paths.common.homeOfficeMaintainDecision }}'>What happens if the Home Office maintain their decision</a><a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
             }
+          },
+          "prepareForHearing": {
+            "hearingNotice": "You can access your <a href='{{ paths.common.latestHearingNoticeViewer }}'>Notice of Hearing</a>. It includes important<br>details about the hearing and you should read it carefully."
           }
         }
       },

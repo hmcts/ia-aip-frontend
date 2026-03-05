@@ -3,6 +3,14 @@ export const States = {
     id: 'appealStarted',
     name: 'Appeal started'
   },
+  CASE_BUILDING: {
+    id: 'caseBuilding',
+    name: 'Case building'
+  },
+  REMITTED: {
+    id: 'remitted',
+    name: 'Remitted'
+  },
   PENDING_PAYMENT: {
     id: 'pendingPayment',
     name: 'Payment pending'

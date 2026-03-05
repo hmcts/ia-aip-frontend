@@ -434,8 +434,8 @@ async function getAppealApplicationNextStep(req: Request) {
       ];
       respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       if (pendingTimeExtension) {
-        descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.submitHearingRequirements.descriptionAskForMoreTime];
-        respondBy = i18n.pages.overviewPage.doThisNext.submitHearingRequirements.respondByTextAskForMoreTime;
+        descriptionParagraphs = [doThisNext.submitHearingRequirements.descriptionAskForMoreTime];
+        respondBy = doThisNext.submitHearingRequirements.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
         respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
       } else if (decisionRefused) {
@@ -451,7 +451,7 @@ async function getAppealApplicationNextStep(req: Request) {
           url: paths.submitHearingRequirements.taskList,
           respondBy
         },
-        allowedAskForMoreTime: true
+        allowedAskForMoreTime
       };
       break;
     case 'clarifyingQuestionsAnswersSubmitted':

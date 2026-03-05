@@ -1370,6 +1370,10 @@
           },
           "prepareForHearing": {
             "hearingNotice": "You can access your <a href='{{ paths.common.latestHearingNoticeViewer }}'>Notice of Hearing</a>. It includes important<br>details about the hearing and you should read it carefully."
+          },
+          "submitHearingRequirements": {
+            "descriptionAskForMoreTime": "You must respond by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span>.",
+            "respondByTextAskForMoreTime": "It’s important to respond by the deadline in order for the Tribunal to process your appeal effectively."
           }
         }
       },

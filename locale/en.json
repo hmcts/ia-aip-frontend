@@ -1374,6 +1374,9 @@
           "submitHearingRequirements": {
             "descriptionAskForMoreTime": "You must respond by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span>.",
             "respondByTextAskForMoreTime": "It’s important to respond by the deadline in order for the Tribunal to process your appeal effectively."
+          },
+          "clarifyingQuestions": {
+            "respondByTextAskForMoreTime": "It’s important to respond by the deadline."
           }
         }
       },

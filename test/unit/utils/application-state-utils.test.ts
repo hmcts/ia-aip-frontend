@@ -237,26 +237,6 @@ describe('application-state-utils', () => {
       expect(result).to.deep.equal(expected);
     });
 
-    it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section.', async () => {
-      req.session.appeal.appealStatus = 'awaitingClarifyingQuestionsAnswers';
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      const expected = {
-        'allowedAskForMoreTime': true,
-        'cta': {
-          'respondBy': 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
-          'url': '/questions-about-appeal'
-        },
-        'deadline': null,
-        'descriptionParagraphs': [
-          'You need to answer some questions about your appeal.'
-        ],
-        'info': null
-      };
-
-      expect(result).to.deep.equal(expected);
-    });
-
     it('when application status is clarifyingQuestionsAnswersSubmitted should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'clarifyingQuestionsAnswersSubmitted';
       const result = await getAppealApplicationNextStep(req as Request);
@@ -1330,7 +1310,7 @@ describe('application-state-utils', () => {
         });
       });
 
-      const testStates = ['appealSubmitted', 'lateAppealSubmitted', 'pendingPayment'];
+      let testStates = ['appealSubmitted', 'lateAppealSubmitted', 'pendingPayment'];
       testStates.forEach(state => {
         it(`when application status is ${state} with decision Approved for fee refund, flag is enabled and stf24w was set to ${stf24w} should get correct 'Do This next section'`, async () => {
           sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
@@ -2098,6 +2078,60 @@ describe('application-state-utils', () => {
               }
             }
         );
+      });
+
+      testStates = ['awaitingClarifyingQuestionsAnswers', 'awaitingClarifyingQuestionsAnswersPartial'];
+      testStates.forEach(state => {
+        it(`when application status is ${state} and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
+          req.session.appeal.appealStatus = state;
+          const result = await getAppealApplicationNextStep(req as Request);
+
+          const expected = {
+            'allowedAskForMoreTime': !is24WeeksTimeline,
+            'cta': {
+              'respondBy': 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
+              'url': '/questions-about-appeal'
+            },
+            'deadline': null,
+            'descriptionParagraphs': [
+              'You need to answer some questions about your appeal.'
+            ],
+            'info': null
+          };
+
+          expect(result).to.deep.equal(expected);
+        });
+
+
+        it(`when application status is ${state}, a pending time extension and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
+          const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+            value: {
+              decision: 'Pending',
+              applicant: 'Appellant',
+              type: 'Time extension'
+            }
+          };
+          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+          req.session.appeal.appealStatus = state;
+          const result = await getAppealApplicationNextStep(req as Request);
+
+          const respondBy = is24WeeksTimeline ? 'It’s important to respond by the deadline.' :
+              'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.'
+          const expected = {
+            'allowedAskForMoreTime': !is24WeeksTimeline,
+            'cta': {
+              'respondBy': respondBy,
+              'url': '/questions-about-appeal'
+            },
+            'deadline': null,
+            'descriptionParagraphs': [
+              'You might not get more time. You need to finish answering the Tribunal’s questions by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.'
+            ],
+            'info': null
+          };
+
+          expect(result).to.deep.equal(expected);
+        });
       });
     });
   });

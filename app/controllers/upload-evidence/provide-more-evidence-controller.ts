@@ -497,6 +497,7 @@ async function postAddendumEvidence(req: Request, res: Response, updateAppealSer
     addendumEvidence: [...addendumEvidence]
   };
   const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+  req.session.refreshCasesList = true;
 
   req.session.appeal = {
     ...req.session.appeal,
@@ -514,6 +515,7 @@ async function postAdditionalEvidence(req: Request, res: Response, updateAppealS
     additionalEvidence: [...additionalEvidence]
   };
   const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.UPLOAD_ADDITIONAL_EVIDENCE, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+  req.session.refreshCasesList = true;
 
   req.session.appeal = {
     ...req.session.appeal,

@@ -59,6 +59,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -122,6 +123,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -181,6 +183,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -241,6 +244,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -305,6 +309,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -365,6 +370,7 @@ function postDateLetterReceived(updateAppealService: UpdateAppealService) {
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated

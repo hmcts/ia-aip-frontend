@@ -163,6 +163,7 @@ describe('Out of time controller', () => {
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.lateAppeal.reason).to.equal(whyAmLate);
       expect(req.session.appeal.application.lateAppeal.evidence).to.deep.equal(evidence);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
@@ -198,6 +199,7 @@ describe('Out of time controller', () => {
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(deleteStub.calledWith(req, evidenceExample.fileId)).to.equal(true);
       expect(uploadStub.calledWith(req)).to.equal(true);
       expect(req.session.appeal.application.lateAppeal.reason).to.equal(whyAmLate);
@@ -233,6 +235,7 @@ describe('Out of time controller', () => {
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
@@ -340,6 +343,7 @@ describe('Out of time controller', () => {
 
       expect(deleteStub.calledWith(req, evidenceExample.fileId)).to.equal(true);
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.lateAppeal.evidence).to.equal(undefined);
       expect(redirectStub.called).to.equal(true);
     });

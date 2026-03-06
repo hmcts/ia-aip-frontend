@@ -57,6 +57,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_REASONS_FOR_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated

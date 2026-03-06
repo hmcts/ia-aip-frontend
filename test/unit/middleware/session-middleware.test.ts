@@ -164,6 +164,7 @@ describe('session-middleware', () => {
     expect(req.session.startRepresentingYourself).to.equal(undefined);
     expect(req.session.ccdCaseId).to.deep.equal('1234123412341234');
     expect(req.session.appeal).to.equal(appeal);
+    expect(req.session.refreshCasesList).to.equal(true);
     expect(redirectSpy.calledWith(paths.common.overview)).to.equal(true);
   });
 });

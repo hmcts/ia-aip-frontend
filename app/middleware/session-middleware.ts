@@ -45,6 +45,7 @@ async function startRepresentingYourself(req: Request, res: Response, next: Next
     req.session.ccdCaseId = caseId;
     req.session.appeal = appeal;
     req.session.startRepresentingYourself = undefined;
+    req.session.refreshCasesList = true;
     res.redirect(paths.common.overview);
   } catch (e) {
     next(e);

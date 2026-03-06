@@ -67,6 +67,7 @@ export default class UpdateAppealService {
     const ccdCase = await this._ccdService.createCase(req.idam.userDetails.uid, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
+    req.session.refreshCasesList = true;
     return req.session.appeal;
   }
 
@@ -125,6 +126,7 @@ export default class UpdateAppealService {
     };
 
     const updatedAppeal = await this._ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
+    req.session.refreshCasesList = true;
     return updatedAppeal;
   }
 

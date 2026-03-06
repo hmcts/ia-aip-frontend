@@ -216,6 +216,7 @@ describe('update-appeal-service', () => {
 
       const result = await updateAppealService.createNewAppeal(req as Request);
 
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.ccdCaseId).to.equal('newCase456');
       expect(req.session.appeal).to.equal(mockAppeal);
       expect(result).to.equal(mockAppeal);
@@ -2109,6 +2110,7 @@ describe('update-appeal-service', () => {
 
     it('updates case with ccd', async () => {
       await updateAppealServiceBis.submitEvent(Events.EDIT_APPEAL, req as Request);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(ccdService2.updateAppeal).to.be.calledWith(
         Events.EDIT_APPEAL,
         userId,
@@ -2122,6 +2124,7 @@ describe('update-appeal-service', () => {
 
     it('submits case with ccd', async () => {
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_APPEAL, req as Request);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(ccdService2.updateAppeal).to.be.calledWith(
         Events.SUBMIT_APPEAL,
         userId,
@@ -2135,6 +2138,7 @@ describe('update-appeal-service', () => {
 
     it('submits ReasonsForAppeal with ccd', async () => {
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req as Request);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(ccdService2.updateAppeal).to.be.calledWith(
         Events.SUBMIT_REASONS_FOR_APPEAL,
         userId,
@@ -2199,6 +2203,7 @@ describe('update-appeal-service', () => {
 
       } as CmaRequirements;
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_CMA_REQUIREMENTS, req as Request);
+      expect(req.session.refreshCasesList).to.equal(true);
 
       expectedCaseData = {
         ...expectedCaseData,

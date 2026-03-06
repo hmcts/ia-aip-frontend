@@ -149,6 +149,7 @@ describe('Fee waiver Controller', function () {
       await postFeeWaiver(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
@@ -173,6 +174,7 @@ describe('Fee waiver Controller', function () {
       await postFeeWaiver(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
@@ -197,6 +199,7 @@ describe('Fee waiver Controller', function () {
       await postFeeWaiver(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
@@ -242,6 +245,7 @@ describe('Fee waiver Controller', function () {
       await postFeeWaiver(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
   });
 });

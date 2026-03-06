@@ -3,22 +3,29 @@ import { paths } from '../paths';
 import UpdateAppealService from '../service/update-appeal-service';
 import { getStateName } from '../utils/utils';
 
-function getCasesList(req: Request, res: Response, next: NextFunction) {
-  try {
-    const casesList = req.session.casesList || [];
-    const casesWithStateName = casesList.map(caseItem => ({
-      ...caseItem,
-      stateName: getStateName(caseItem.state)
-    }));
+function getCasesList(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (req.session.refreshCasesList) {
+        await updateAppealService.loadAppealsList(req);
+        req.session.refreshCasesList = false;
+      }
 
-    return res.render('cases-list.njk', {
-      previousPage: paths.common.overview,
-      createNewAppealUrl: paths.common.createNewAppeal,
-      cases: casesWithStateName
-    });
-  } catch (e) {
-    next(e);
-  }
+      const casesList = req.session.casesList || [];
+      const casesWithStateName = casesList.map(caseItem => ({
+        ...caseItem,
+        stateName: getStateName(caseItem.state)
+      }));
+
+      return res.render('cases-list.njk', {
+        previousPage: paths.common.overview,
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: casesWithStateName
+      });
+    } catch (e) {
+      next(e);
+    }
+  };
 }
 
 function getCreateNewAppeal(updateAppealService: UpdateAppealService) {
@@ -34,7 +41,7 @@ function getCreateNewAppeal(updateAppealService: UpdateAppealService) {
 
 function setupCasesListController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.common.casesList, getCasesList);
+  router.get(paths.common.casesList, getCasesList(updateAppealService));
   router.get(paths.common.createNewAppeal, getCreateNewAppeal(updateAppealService));
   return router;
 }

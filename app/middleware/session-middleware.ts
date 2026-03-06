@@ -54,6 +54,7 @@ async function startRepresentingYourself(req: Request, res: Response, next: Next
 async function initSession(req: Request, res: Response, next: NextFunction) {
   try {
     await updateAppealService.loadAppealsList(req);
+    req.session.refreshCasesList = false;
     next();
   } catch (e) {
     next(e);

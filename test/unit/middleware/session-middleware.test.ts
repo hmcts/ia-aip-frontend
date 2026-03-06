@@ -70,6 +70,7 @@ describe('session-middleware', () => {
     await initSession(req as Request, res as Response, next);
 
     expect(loadAppealsListStub).to.have.been.calledOnce;
+    expect(req.session.refreshCasesList).to.equal(false);
     expect(next).to.have.been.calledOnce;
   });
 

@@ -9,10 +9,12 @@ describe('Cases List Controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: NextFunction;
+  let updateAppealService: Partial<UpdateAppealService>;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
+      query: {},
       session: {
         casesList: [
           {
@@ -29,7 +31,8 @@ describe('Cases List Controller', () => {
             appellantGivenNames: 'Jane',
             appellantFamilyName: 'Doe'
           }
-        ]
+        ],
+        refreshCasesList: false
       } as any
     } as Partial<Request>;
 
@@ -39,14 +42,18 @@ describe('Cases List Controller', () => {
     } as unknown as Partial<Response>;
 
     next = sandbox.stub() as any;
+
+    updateAppealService = {
+      loadAppealsList: sandbox.stub().resolves()
+    };
   });
 
   afterEach(() => {
     sandbox.restore();
   });
 
-  it('should render cases-list.njk with cases from session including stateName', () => {
-    getCasesList(req as Request, res as Response, next);
+  it('should render cases-list.njk with cases from session including stateName', async () => {
+    await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     const expectedCases = [
       {
@@ -67,6 +74,7 @@ describe('Cases List Controller', () => {
       }
     ];
 
+    expect(updateAppealService.loadAppealsList).to.not.have.been.called;
     expect(res.render).to.have.been.calledWith('cases-list.njk', {
       previousPage: paths.common.overview,
       createNewAppealUrl: paths.common.createNewAppeal,
@@ -74,10 +82,19 @@ describe('Cases List Controller', () => {
     });
   });
 
-  it('should render with empty array when no casesList in session', () => {
+  it('should refresh cases when refreshCasesList session flag is true', async () => {
+    req.session.refreshCasesList = true;
+
+    await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    expect(updateAppealService.loadAppealsList).to.have.been.calledWith(req);
+    expect(req.session.refreshCasesList).to.equal(false);
+  });
+
+  it('should render with empty array when no casesList in session', async () => {
     req.session.casesList = undefined;
 
-    getCasesList(req as Request, res as Response, next);
+    await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     expect(res.render).to.have.been.calledWith('cases-list.njk', {
       previousPage: paths.common.overview,
@@ -86,11 +103,11 @@ describe('Cases List Controller', () => {
     });
   });
 
-  it('should call next with error on failure', () => {
+  it('should call next with error on failure', async () => {
     const error = new Error('something went wrong');
     res.render = sandbox.stub().throws(error);
 
-    getCasesList(req as Request, res as Response, next);
+    await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     expect(next).to.have.been.calledWith(error);
   });

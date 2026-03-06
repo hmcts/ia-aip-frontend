@@ -1859,24 +1859,17 @@ describe('application-state-utils', () => {
         expect(result).to.deep.equal(expected);
       });
 
-      it(`when application status is prepareForHearing and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
-        req.session.appeal.appealStatus = 'prepareForHearing';
-        sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
-        const result = await getAppealApplicationNextStep(req as Request);
+      testStates = ['prepareForHearing', 'finalBundling'];
+      testStates.forEach(state => {
+        it(`when application status is ${state} and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
+          req.session.appeal.appealStatus = state;
+          sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
+          const result = await getAppealApplicationNextStep(req as Request);
 
-        const expected = getPreHearingAndFinalBundling();
+          const expected = getPreHearingAndFinalBundling();
 
-        expect(result).to.deep.equal(expected);
-      });
-
-      it(`when application status is finalBundling and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
-        req.session.appeal.appealStatus = 'finalBundling';
-        sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
-        const result = await getAppealApplicationNextStep(req as Request);
-
-        const expected = getPreHearingAndFinalBundling();
-
-        expect(result).to.deep.equal(expected);
+          expect(result).to.deep.equal(expected);
+        });
       });
 
       it(`when application status is finalBundling and appellant just took over case and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {

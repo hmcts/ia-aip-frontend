@@ -1,6 +1,16 @@
 {% extends 'layout.njk' %}
 {% set pageTitleName = i18n.pages.casesList.title %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "components/confirm-modal.njk" import confirmModal with context %}
 
+{% block extraModals %}
+  {{ confirmModal(
+    i18n.pages.casesList.createAppealModal.id,
+    i18n.pages.casesList.createAppealModal.title,
+    description,
+    i18n.pages.casesList.createAppealModal.confirmButton
+  ) }}
+{% endblock %}
 {% block content %}
   {% if errorList %}
     {{ govukErrorSummary({
@@ -43,9 +53,12 @@
           <p class="govuk-body">{{ i18n.pages.casesList.noCases }}</p>
         {% endif %}
 
-        <p class="govuk-body">
-          <a id="createNewAppeal" class="govuk-link" href="{{ createNewAppealUrl }}">{{ i18n.pages.casesList.createNewAppeal }}</a>
-        </p>
+        {{ govukButton({
+          text: i18n.pages.casesList.createNewAppeal,
+          attributes: {
+            id: i18n.pages.casesList.createNewAppealId
+          }
+        }) }}
       </div>
     </div>
   </div>

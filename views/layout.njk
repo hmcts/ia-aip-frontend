@@ -249,6 +249,8 @@
         ] | join() %}
 
       {{ timeoutModal() }}
+      {% block extraModals %}
+      {% endblock %}
       {{ govukPhaseBanner({
         tag: {
           text: i18n.phaseBanner.version

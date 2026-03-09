@@ -879,7 +879,15 @@
       },
       "viewLink": "View",
       "noCases": "You do not have any appeals.",
-      "createNewAppeal": "Create a new appeal"
+      "createNewAppeal": "Create a new appeal",
+      "createNewAppealId": "create-new-appeal",
+      "tooManyDraftsError": "You have too many draft appeals. Please submit or delete them before creating a new appeal.",
+      "createAppealModal": {
+        "id": "confirm-create-modal",
+        "title": "Are you sure you want to create a new appeal?",
+        "description": "You can only have {{ maxDraftAppeals }} draft appeals at one time. If you have more than this, you will need to submit or delete some first.",
+        "confirmButton": "Create new appeal"
+      }
     },
     "overviewPage": {
       "title": "Your appeal overview",

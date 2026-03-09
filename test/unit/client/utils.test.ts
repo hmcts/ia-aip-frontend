@@ -1,3 +1,4 @@
+import ConfirmModal from '../../../client/confirm-modal';
 import CookieBanner from '../../../client/cookies-banner';
 import SessionTimeout from '../../../client/session-timeout';
 import { initialize, ready } from '../../../client/utils';
@@ -9,6 +10,7 @@ describe('Client Utils', () => {
   let callbackStub: sinon.SinonStub;
   let cookieBannerStub: sinon.SinonStub;
   let sessionTimeoutStub: sinon.SinonStub;
+  let confirmCreateModalStub: sinon.SinonStub;
   let initAllStub;
 
   beforeEach(() => {
@@ -16,6 +18,7 @@ describe('Client Utils', () => {
     callbackStub = sandbox.stub();
     cookieBannerStub = sandbox.stub(CookieBanner.prototype, 'init');
     sessionTimeoutStub = sandbox.stub(SessionTimeout.prototype, 'init');
+    confirmCreateModalStub = sandbox.stub(ConfirmModal.prototype, 'init');
     initAllStub = sandbox.stub(govUK, 'initAll');
   });
 
@@ -36,6 +39,7 @@ describe('Client Utils', () => {
       expect(initAllStub.callCount).to.equal(1);
       expect(cookieBannerStub.callCount).to.equal(1);
       expect(sessionTimeoutStub.callCount).to.equal(1);
+      expect(confirmCreateModalStub.callCount).to.equal(1);
     });
   });
 });

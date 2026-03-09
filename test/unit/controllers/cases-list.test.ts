@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { SinonStub } from 'sinon';
 import { getCasesList, setupCasesListController } from '../../../app/controllers/cases-list';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 const proxyquire = require('proxyquire').noCallThru();
 
@@ -76,7 +76,8 @@ describe('Cases List Controller', () => {
     expect(res.render).to.have.been.calledWith('cases-list.njk', {
       previousPage: paths.common.overview,
       createNewAppealUrl: paths.common.createNewAppeal,
-      cases: expectedCases
+      cases: expectedCases,
+      description: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS')
     });
   });
 
@@ -97,7 +98,8 @@ describe('Cases List Controller', () => {
     expect(res.render).to.have.been.calledWith('cases-list.njk', {
       previousPage: paths.common.overview,
       createNewAppealUrl: paths.common.createNewAppeal,
-      cases: []
+      cases: [],
+      description: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS')
     });
   });
 
@@ -119,11 +121,9 @@ describe('Cases List Controller', () => {
   describe('getCreateNewAppeal', () => {
     let getCreateNewAppeal;
     let configStub;
-    let maxDraftAppealsStub: SinonStub;
     beforeEach(() => {
-      maxDraftAppealsStub = sandbox.stub().returns(5);
       configStub = {
-        get: maxDraftAppealsStub
+        get: sandbox.stub().returns(5)
       };
       getCreateNewAppeal = proxyquire('../../../app/controllers/cases-list', { config: configStub }).getCreateNewAppeal;
     });
@@ -156,9 +156,9 @@ describe('Cases List Controller', () => {
       updateAppealService.createNewAppeal = sandbox.spy();
       await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const expectedError = {
-        key: 'createNewAppeal',
-        text: 'You have too many draft appeals. Please submit or delete them before creating a new appeal.',
-        href: '#createNewAppeal'
+        key: 'create-new-appeal',
+        text: i18n.pages.casesList.tooManyDraftsError,
+        href: '#create-new-appeal'
       };
       expect(updateAppealService.createNewAppeal).to.not.be.calledWith(sinon.match.any);
       expect(res.redirect).to.not.be.calledWith(paths.common.overview);
@@ -166,7 +166,8 @@ describe('Cases List Controller', () => {
         previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: expectedCases,
-        errors: { createNewAppeal: expectedError },
+        description: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        errors: { 'create-new-appeal': expectedError },
         errorList: [expectedError]
       });
     });
@@ -178,12 +179,15 @@ describe('Cases List Controller', () => {
       ];
       req.session.casesList = expectedCases;
       updateAppealService.createNewAppeal = sandbox.spy();
-      maxDraftAppealsStub.returns(1);
+      configStub = {
+        get: sandbox.stub().returns(1)
+      };
+      getCreateNewAppeal = proxyquire('../../../app/controllers/cases-list', { config: configStub }).getCreateNewAppeal;
       await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const expectedError = {
-        key: 'createNewAppeal',
-        text: 'You have too many draft appeals. Please submit or delete them before creating a new appeal.',
-        href: '#createNewAppeal'
+        key: 'create-new-appeal',
+        text: i18n.pages.casesList.tooManyDraftsError,
+        href: '#create-new-appeal'
       };
       expect(updateAppealService.createNewAppeal).to.not.be.calledWith(sinon.match.any);
       expect(res.redirect).to.not.be.calledWith(paths.common.overview);
@@ -191,7 +195,8 @@ describe('Cases List Controller', () => {
         previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: expectedCases,
-        errors: { createNewAppeal: expectedError },
+        description: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '1'),
+        errors: { 'create-new-appeal': expectedError },
         errorList: [expectedError]
       });
     });

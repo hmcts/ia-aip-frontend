@@ -891,9 +891,10 @@
       "deleteDraftModal": {
         "id": "delete-draft-modal",
         "title": "Are you sure you want to delete this draft appeal?",
-        "description": "Once deleted, it will be removed from the system and you will not be able to access it again.",
+        "description": "Are you sure you want to delete the draft appeal with the reference {{ caseID }}. Once deleted, it will be removed from the system and you will not be able to access it again.",
         "confirmButton": "Delete draft appeal"
-      }
+      },
+      "deleteLinkClass": "delete-draft-appeal"
     },
     "overviewPage": {
       "title": "Your appeal overview",

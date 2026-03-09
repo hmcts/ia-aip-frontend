@@ -1,4 +1,5 @@
 import { paths } from '../app/paths';
+import i18n from '../locale/en.json';
 import { addAriaExpandedAttribute,addAriaExpandedEventListener } from './aria-utils';
 import ConfirmModal from './confirm-modal';
 import CookiesBanner from './cookies-banner';
@@ -14,16 +15,16 @@ export const ready = (callback: () => void): void => {
   }
 };
 
-function createModal(id: string, path: string): ConfirmModal {
-  return new ConfirmModal(id, () => window.location.assign(path));
+function createModal(id: string, linkToModalId: string, path: string): ConfirmModal {
+  return new ConfirmModal(id, linkToModalId, () => window.location.assign(path));
 }
 
 function initialize() {
   const cookies: CookiesBanner = new CookiesBanner();
   const sessionTimeout: SessionTimeout = new SessionTimeout();
   const modals = [
-    createModal('confirm-create-modal', paths.common.createNewAppeal),
-    createModal('confirm-delete-modal', paths.common.deleteDraftAppeal)
+    createModal('confirm-create-modal', `#${i18n.pages.casesList.createNewAppealId}`, paths.common.createNewAppeal),
+    createModal('confirm-delete-modal', `.${i18n.pages.casesList.deleteLinkClass}`, paths.common.deleteDraftAppeal)
   ];
   cookies.init();
   govUK.initAll();

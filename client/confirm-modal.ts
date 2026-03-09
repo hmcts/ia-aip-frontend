@@ -1,5 +1,3 @@
-import i18n from '../locale/en.json';
-
 export default class ConfirmModal {
   private confirmButtonElement: HTMLElement = null;
   private cancelButtonElement: HTMLElement = null;
@@ -13,13 +11,13 @@ export default class ConfirmModal {
   private scrollPosition: number = null;
   private body: HTMLElement = null;
   private doAction: () => void = null;
-  constructor(modalId: string, doAction: () => void) {
+  constructor(modalId: string, linkToModalSelector: string, doAction: () => void) {
     this.init = this.init.bind(this);
     this.modalElement = document.querySelector(`#${modalId}`);
     this.modalOverlayElement = document.querySelector(`#${modalId}-overlay`);
     this.confirmButtonElement = document.querySelector(`#${modalId}-confirm`);
     this.cancelButtonElement = document.querySelector(`#${modalId}-cancel`);
-    this.linkToModalElement = document.querySelector(`#${i18n.pages.casesList.createNewAppealId}`);
+    this.linkToModalElement = document.querySelector(linkToModalSelector);
     this.body = document.querySelector('body');
     this.focusableElements =
       this.modalElement?.querySelectorAll(

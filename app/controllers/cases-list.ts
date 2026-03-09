@@ -23,7 +23,7 @@ function getCasesList(updateAppealService: UpdateAppealService) {
         previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: casesList,
-        description
+        createAppealModalDescription: description
       });
     } catch (e) {
       next(e);
@@ -48,7 +48,7 @@ function getCreateNewAppeal(updateAppealService: UpdateAppealService) {
         previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: casesList,
-        description: description,
+        createAppealModalDescription: description,
         errors: tooManyAppeals,
         errorList: Object.values(tooManyAppeals),
       });

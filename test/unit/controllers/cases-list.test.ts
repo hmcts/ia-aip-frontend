@@ -77,7 +77,7 @@ describe('Cases List Controller', () => {
       previousPage: paths.common.overview,
       createNewAppealUrl: paths.common.createNewAppeal,
       cases: expectedCases,
-      description: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS')
+      createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS')
     });
   });
 
@@ -99,7 +99,7 @@ describe('Cases List Controller', () => {
       previousPage: paths.common.overview,
       createNewAppealUrl: paths.common.createNewAppeal,
       cases: [],
-      description: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS')
+      createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS')
     });
   });
 
@@ -166,7 +166,7 @@ describe('Cases List Controller', () => {
         previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: expectedCases,
-        description: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
         errors: { 'create-new-appeal': expectedError },
         errorList: [expectedError]
       });
@@ -195,7 +195,7 @@ describe('Cases List Controller', () => {
         previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: expectedCases,
-        description: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '1'),
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '1'),
         errors: { 'create-new-appeal': expectedError },
         errorList: [expectedError]
       });

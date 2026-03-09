@@ -7,8 +7,14 @@
   {{ confirmModal(
     i18n.pages.casesList.createAppealModal.id,
     i18n.pages.casesList.createAppealModal.title,
-    description,
+    createAppealModalDescription,
     i18n.pages.casesList.createAppealModal.confirmButton
+  ) }}
+  {{ confirmModal(
+    i18n.pages.casesList.deleteDraftModal.id,
+    i18n.pages.casesList.deleteDraftModal.title,
+    i18n.pages.casesList.deleteDraftModal.description,
+    i18n.pages.casesList.deleteDraftModal.confirmButton
   ) }}
 {% endblock %}
 {% block content %}

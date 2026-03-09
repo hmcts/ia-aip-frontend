@@ -887,6 +887,12 @@
         "title": "Are you sure you want to create a new appeal?",
         "description": "You can only have {{ maxDraftAppeals }} draft appeals at one time. If you have more than this, you will need to submit or delete some first.",
         "confirmButton": "Create new appeal"
+      },
+      "deleteDraftModal": {
+        "id": "delete-draft-modal",
+        "title": "Are you sure you want to delete this draft appeal?",
+        "description": "Once deleted, it will be removed from the system and you will not be able to access it again.",
+        "confirmButton": "Delete draft appeal"
       }
     },
     "overviewPage": {

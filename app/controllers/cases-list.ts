@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import { citizenLimiter } from '../middleware/distributedRateLimiter';
 import { paths } from '../paths';
 import UpdateAppealService from '../service/update-appeal-service';
 import { getStateName } from '../utils/utils';
@@ -42,7 +43,7 @@ function getCreateNewAppeal(updateAppealService: UpdateAppealService) {
 function setupCasesListController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.common.casesList, getCasesList(updateAppealService));
-  router.get(paths.common.createNewAppeal, getCreateNewAppeal(updateAppealService));
+  router.get(paths.common.createNewAppeal, citizenLimiter, getCreateNewAppeal(updateAppealService));
   return router;
 }
 

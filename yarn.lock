@@ -7549,6 +7549,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"express-rate-limit@npm:^8.3.0":
+  version: 8.3.0
+  resolution: "express-rate-limit@npm:8.3.0"
+  dependencies:
+    ip-address: "npm:10.1.0"
+  peerDependencies:
+    express: ">= 4.11"
+  checksum: 10/e896a66fecc10639e65873186fdfb71f19d6af650220eb7ea5450725215c3eed8dc6ddcfa1e68a9db8c9facc3326fbc281512ad3ccd8f107f42a2466ce12c18c
+  languageName: node
+  linkType: hard
+
 "express-session@npm:^1.19.0":
   version: 1.19.0
   resolution: "express-session@npm:1.19.0"
@@ -8852,6 +8863,7 @@ __metadata:
     eslint-plugin-chai-friendly: "npm:^1.1.0"
     eslint-plugin-import: "npm:^2.32.0"
     express: "npm:^4.22.1"
+    express-rate-limit: "npm:^8.3.0"
     express-session: "npm:^1.19.0"
     feature-policy: "npm:^0.6.0"
     global-jsdom: "npm:^24.0.0"
@@ -8885,6 +8897,7 @@ __metadata:
     process: "npm:^0.11.10"
     proxyquire: "npm:^2.1.3"
     puppeteer: "npm:^24.37.5"
+    rate-limit-redis: "npm:^4.3.1"
     redis: "npm:^3.1.2"
     sass: "npm:^1.97.3"
     sass-loader: "npm:^16.0.7"
@@ -9134,7 +9147,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ip-address@npm:^10.0.1":
+"ip-address@npm:10.1.0, ip-address@npm:^10.0.1":
   version: 10.1.0
   resolution: "ip-address@npm:10.1.0"
   checksum: 10/a6979629d1ad9c1fb424bc25182203fad739b40225aebc55ec6243bbff5035faf7b9ed6efab3a097de6e713acbbfde944baacfa73e11852bb43989c45a68d79e
@@ -13121,6 +13134,15 @@ __metadata:
   version: 1.2.1
   resolution: "range-parser@npm:1.2.1"
   checksum: 10/ce21ef2a2dd40506893157970dc76e835c78cf56437e26e19189c48d5291e7279314477b06ac38abd6a401b661a6840f7b03bd0b1249da9b691deeaa15872c26
+  languageName: node
+  linkType: hard
+
+"rate-limit-redis@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "rate-limit-redis@npm:4.3.1"
+  peerDependencies:
+    express-rate-limit: ">= 6"
+  checksum: 10/6e02374832ced889a61829e327d03d021c50c0fc3ac86674d8c922cd3a50c0451091106811c308ed5553776a28b6acbc5313e2c9d37aecb198ab306f249de21b
   languageName: node
   linkType: hard
 

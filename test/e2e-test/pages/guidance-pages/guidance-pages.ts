@@ -15,5 +15,11 @@ module.exports = {
       await I.see('Understanding your Home Office documents', 'h1');
     });
 
+    Then(/^I should see the 'What to expect at your hearing' guidance page$/, async () => {
+      await I.waitInUrl(paths.common.whatToExpectAtHearing,10);
+      await I.seeInCurrentUrl(paths.common.whatToExpectAtHearing);
+      await I.see('What to expect at your hearing', 'h1');
+    });
+
   }
 };

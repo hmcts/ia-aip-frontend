@@ -84,6 +84,60 @@ Feature: Overview page
     And I check page accessibility
     Then I should see the cma requirements task-list page
 
+  Scenario: Appeal Submitted Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "appealSubmitted with stf24w"
+    And I visit the overview page
+    Then I should see the 'do this next section' for "appealSubmitted" when statutory timeframe 24 weeks is Yes
+    When I click "What is a Legal Officer?" link
+    And I check page accessibility
+    Then I should see the 'Tribunal Caseworker' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
+  Scenario: Late Appeal Submitted Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "lateAppealSubmitted with stf24w"
+    And I visit the overview page
+    Then I should see the 'do this next section' for "lateAppealSubmitted" when statutory timeframe 24 weeks is Yes
+    When I click "What is a Legal Officer?" link
+    And I check page accessibility
+    Then I should see the 'Tribunal Caseworker' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
+  Scenario: Awaiting Respondent Evidence Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "awaitingRespondentEvidence with stf24w"
+    And I visit the overview page
+    Then I should see the 'do this next section' for "awaitingRespondentEvidence" when statutory timeframe 24 weeks is Yes
+    When I click "What is a Legal Officer?" link
+    And I check page accessibility
+    Then I should see the 'Tribunal Caseworker' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
+  Scenario: Listing Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "listing with stf24w"
+    And I visit the overview page
+    Then I should see the 'do this next section' for "listing" when statutory timeframe 24 weeks is Yes
+    When I click "What to expect at a hearing" link
+    Then I should see the 'What to expect at your hearing' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
+  Scenario: Awaiting Reasons For Appeal Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "awaitingReasonsForAppeal with stf24w"
+    And I visit the overview page
+    Then I should see the 'do this next section' for 'awaitingReasonsForAppeal' when statutory timeframe 24 weeks is Yes
+    When I click "Understanding your Home Office documents" link
+    And I check page accessibility
+    Then I should see the 'Understanding your Home Office documents' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
   # Scenario: Awaiting CMA requirements appeal with time extension
   #   Given I have logged in as an appellant in state "awaitingCmaRequirements with time extensions"
   #   When I visit the overview page

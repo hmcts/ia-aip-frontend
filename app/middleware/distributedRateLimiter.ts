@@ -31,7 +31,7 @@ export const sendCommand = (...args: string[]): Promise<RedisReply> => {
 
 export const citizenLimiter = rateLimit({
   windowMs: 60 * 1000 * 30,
-  limit: 5,
+  limit: 10,
 
   store: new RedisStore({
     sendCommand

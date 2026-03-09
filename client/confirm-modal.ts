@@ -21,7 +21,10 @@ export default class ConfirmModal {
     this.cancelButtonElement = document.querySelector(`#${modalId}-cancel`);
     this.linkToModalElement = document.querySelector(`#${i18n.pages.casesList.createNewAppealId}`);
     this.body = document.querySelector('body');
-    this.focusableElements = this.modalElement.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    this.focusableElements =
+      this.modalElement?.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      ) || ([] as unknown as NodeListOf<Element>);
     this.firstFocusableElement = this.focusableElements[0] as HTMLElement;
     this.lastFocusableElement = this.focusableElements[this.focusableElements.length - 1] as HTMLElement;
     this.doAction = doAction;

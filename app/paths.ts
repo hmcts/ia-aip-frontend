@@ -207,6 +207,7 @@ const paths = {
     overview: '/appeal-overview',
     casesList: '/cases-list',
     createNewAppeal: '/create-new-appeal',
+    deleteDraftAppeal: '/delete-draft-appeal',
     fileNotFound: '/file-not-found',
     yourCQanswers: '/your-answers/:id',
 

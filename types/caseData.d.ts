@@ -33,6 +33,7 @@ interface CaseListItem {
   state: string;
   appellantGivenNames: string;
   appellantFamilyName: string;
+  stateName?: string;
 }
 
 interface PinInPost {

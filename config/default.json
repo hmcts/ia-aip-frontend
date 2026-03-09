@@ -87,6 +87,7 @@
       ".ppsx", ".rtf", ".csv"
     ]
   },
+  "maxDraftAppeals": "MAX_DRAFT_APPEALS",
   "dueDate": {
     "ftpaDecisionResponse": 14,
     "ftpaDecisionResponseOoc": 28,

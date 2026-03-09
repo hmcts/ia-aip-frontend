@@ -52,6 +52,7 @@
   "iaPayments": {
     "apiUrl": "IA_CASE_PAYMENTS_API_URL"
   },
+  "maxDraftAppeals": "MAX_DRAFT_APPEALS",
   "launchDarkly": {
     "sdkKey": "LAUNCH_DARKLY_SDK_KEY"
   },

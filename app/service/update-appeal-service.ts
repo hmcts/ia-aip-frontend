@@ -4,7 +4,14 @@ import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { formatDate } from '../utils/date-utils';
-import { boolToYesNo, documentIdToDocStoreUrl, extendedBoolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
+import {
+  boolToYesNo,
+  documentIdToDocStoreUrl,
+  extendedBoolToYesNo,
+  getStateName,
+  toIsoDate,
+  yesNoToBool
+} from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { DocumentManagementService } from './document-management-service';
@@ -55,7 +62,8 @@ export default class UpdateAppealService {
         appealReferenceNumber: c.case_data.appealReferenceNumber || '',
         state: c.state,
         appellantGivenNames: c.case_data.appellantGivenNames || '',
-        appellantFamilyName: c.case_data.appellantFamilyName || ''
+        appellantFamilyName: c.case_data.appellantFamilyName || '',
+        stateName: getStateName(c.state)
       }));
     } else {
       req.session.casesList = [];

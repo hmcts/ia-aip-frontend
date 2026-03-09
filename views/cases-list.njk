@@ -2,6 +2,13 @@
 {% set pageTitleName = i18n.pages.casesList.title %}
 
 {% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
   <div class="govuk-width-container">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
@@ -37,7 +44,7 @@
         {% endif %}
 
         <p class="govuk-body">
-          <a class="govuk-link" href="{{ createNewAppealUrl }}">{{ i18n.pages.casesList.createNewAppeal }}</a>
+          <a id="createNewAppeal" class="govuk-link" href="{{ createNewAppealUrl }}">{{ i18n.pages.casesList.createNewAppeal }}</a>
         </p>
       </div>
     </div>

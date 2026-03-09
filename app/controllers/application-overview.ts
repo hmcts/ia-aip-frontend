@@ -91,8 +91,6 @@ function showAppealRequestSection(appealStatus: string, featureEnabled: boolean)
     States.APPEAL_TAKEN_OFFLINE.id,
     States.FTPA_SUBMITTED.id,
     States.FTPA_DECIDED.id,
-    States.AWAITING_CLARIFYING_QUESTIONS_ANSWERS.id,
-    States.CLARIFYING_QUESTIONS_ANSWERED_SUBMITTED.id,
     States.AWAITING_CMA_REQUIREMENTS.id,
     States.CMA_REQUIREMENTS_SUBMITTED.id,
     States.CMA_ADJUSTMENTS_AGREED.id,

@@ -2,6 +2,7 @@ import { Request } from 'express';
 import session from 'express-session';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
+import { States } from '../../../app/data/states';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
@@ -284,16 +285,51 @@ describe('update-appeal-service', () => {
         appealReferenceNumber: 'PA/0001/2022',
         state: 'appealStarted',
         appellantGivenNames: 'John',
-        appellantFamilyName: 'Smith'
+        appellantFamilyName: 'Smith',
+        stateName: 'Appeal started'
       });
       expect(req.session.casesList[1]).to.deep.equal({
         id: 'case2',
         appealReferenceNumber: 'PA/0002/2022',
         state: 'appealSubmitted',
         appellantGivenNames: 'Jane',
-        appellantFamilyName: 'Doe'
+        appellantFamilyName: 'Doe',
+        stateName: 'Appeal submitted'
       });
     });
+
+    for (const state of Object.values(States)) {
+      it(`should populate case state ${state.id} in case list correctly`, async () => {
+        ccdServiceMock.expects('loadCasesListForUser')
+          .withArgs(userId, { userToken, serviceToken })
+          .resolves({
+            total: 1,
+            cases: [
+              {
+                id: 'case1',
+                state: state.id,
+                case_data: {
+                  appealReferenceNumber: 'PA/0001/2022',
+                  appellantGivenNames: 'John',
+                  appellantFamilyName: 'Smith'
+                }
+              }
+            ]
+          });
+
+        await updateAppealService.loadAppealsList(req as Request);
+
+        expect(req.session.casesList).to.have.lengthOf(1);
+        expect(req.session.casesList[0]).to.deep.equal({
+          id: 'case1',
+          appealReferenceNumber: 'PA/0001/2022',
+          state: state.id,
+          appellantGivenNames: 'John',
+          appellantFamilyName: 'Smith',
+          stateName: state.name
+        });
+      });
+    }
 
     it('should set empty casesList when no cases exist', async () => {
       ccdServiceMock.expects('loadCasesListForUser')

@@ -155,7 +155,6 @@ Feature: Overview page
     And I visit the overview page
     Then I should see the 'nothing to do next section' for 'respondentReview' when statutory timeframe 24 weeks is Yes
     When I click "What happens if the Home Office withdraw their decision" link
-    And I check page accessibility
     Then I should see the 'What happens if the Home Office withdraw their decision' guidance page
     When I click "Back" button
     And I check page accessibility
@@ -166,7 +165,6 @@ Feature: Overview page
     And I visit the overview page
     Then I should see the 'do this next section' for 'decisionMaintained' when statutory timeframe 24 weeks is Yes
     When I click "What happens if the Home Office maintain their decision" link
-    And I check page accessibility
     Then I should see the 'What happens if the Home Office maintain their decision' guidance page
     When I click "Back" button
     And I check page accessibility

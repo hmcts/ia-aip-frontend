@@ -1835,7 +1835,7 @@ describe('application-state-utils', () => {
             doThisNext.respondentReview.detailsSent,
             doThisNext.respondentReview.dueDate
           ],
-          info: doThisNext.respondentReview.info,
+          info: i18n.pages.overviewPage.doThisNext.respondentReview.info,
           deadline: null
         });
       });
@@ -1850,7 +1850,7 @@ describe('application-state-utils', () => {
             doThisNext.decisionMaintained.description2,
             doThisNext.decisionMaintained.dueDate
           ],
-          info: doThisNext.decisionMaintained.info,
+          info: i18n.pages.overviewPage.doThisNext.decisionMaintained.info,
           deadline: null,
           cta: {},
           hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'

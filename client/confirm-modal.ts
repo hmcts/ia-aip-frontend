@@ -58,7 +58,7 @@ export default class ConfirmModal {
     this.modalElement.removeAttribute('aria-hidden');
     this.modalOverlayElement.removeAttribute('aria-hidden');
     this.previousFocusedElement = document.activeElement as HTMLElement;
-    this.firstFocusableElement.focus();
+    this.lastFocusableElement.focus();
     this.disableScroll();
     this.body.addEventListener('keydown', this.keyDownEventListener);
     this.addButtonListeners();
@@ -92,20 +92,16 @@ export default class ConfirmModal {
   };
 
   keyDownEventListener = (event) => {
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      if (!this.modalElement.contains(document.activeElement) || this.focusableElements.length === 1) {
-        this.firstFocusableElement.focus();
-        return;
+    if (event.key !== 'Tab') return;
+    if (event.shiftKey) {
+      if (document.activeElement === this.firstFocusableElement) {
+        event.preventDefault();
+        this.lastFocusableElement.focus();
       }
-      if (event.shiftKey) {
-        if (document.activeElement === this.firstFocusableElement) {
-          this.lastFocusableElement.focus();
-        }
-      } else {
-        if (document.activeElement === this.lastFocusableElement) {
-          this.firstFocusableElement.focus();
-        }
+    } else {
+      if (document.activeElement === this.lastFocusableElement) {
+        event.preventDefault();
+        this.firstFocusableElement.focus();
       }
     }
   };

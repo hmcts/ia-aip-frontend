@@ -49,13 +49,16 @@ export default class DeleteModal {
   };
 
   doAction = () => {
-    window.location.href = `${paths.common.deleteDraftAppeal}/${this.currentCaseId}`;
+    window.location.href = paths.common.deleteDraftAppeal.replace(':id', this.currentCaseId);
   };
 
   addLinkListeners = () => {
     if (this.linkToModalElement) {
       this.linkToModalElement
-        .forEach(element => element.addEventListener('click', this.openModal));
+        .forEach(element => {
+          element.addEventListener('click', this.openModal);
+          element.addEventListener('keydown', this.openModal);
+        });
     }
   };
 
@@ -67,8 +70,10 @@ export default class DeleteModal {
   };
 
   openModal = (event: Event) => {
-    event.preventDefault();
-
+    if (event.type === 'keydown' && (event as KeyboardEvent).key !== 'Enter') return;
+    if (event.type === 'keydown' && (event as KeyboardEvent).key === 'Enter') {
+      event.preventDefault();
+    }
     const target = event.currentTarget as HTMLElement;
     const caseId = target.dataset.caseId;
     this.currentCaseId = caseId;
@@ -77,7 +82,7 @@ export default class DeleteModal {
     this.modalElement.removeAttribute('aria-hidden');
     this.modalOverlayElement.removeAttribute('aria-hidden');
     this.previousFocusedElement = document.activeElement as HTMLElement;
-    this.firstFocusableElement.focus();
+    this.lastFocusableElement.focus();
     this.disableScroll();
     this.body.addEventListener('keydown', this.keyDownEventListener);
     this.addButtonListeners();
@@ -118,20 +123,16 @@ export default class DeleteModal {
   };
 
   keyDownEventListener = (event) => {
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      if (!this.modalElement.contains(document.activeElement) || this.focusableElements.length === 1) {
-        this.firstFocusableElement.focus();
-        return;
+    if (event.key !== 'Tab') return;
+    if (event.shiftKey) {
+      if (document.activeElement === this.firstFocusableElement) {
+        event.preventDefault();
+        this.lastFocusableElement.focus();
       }
-      if (event.shiftKey) {
-        if (document.activeElement === this.firstFocusableElement) {
-          this.lastFocusableElement.focus();
-        }
-      } else {
-        if (document.activeElement === this.lastFocusableElement) {
-          this.firstFocusableElement.focus();
-        }
+    } else {
+      if (document.activeElement === this.lastFocusableElement) {
+        event.preventDefault();
+        this.firstFocusableElement.focus();
       }
     }
   };

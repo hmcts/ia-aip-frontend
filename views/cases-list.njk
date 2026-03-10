@@ -52,7 +52,7 @@
                   <td class="govuk-table__cell">
                     <a class="govuk-link" href="{{ previousPage }}?caseId={{ case.id }}">{{ i18n.pages.casesList.viewLink }}</a>
                     {% if isDraft %}
-                      <a class="govuk-link delete-draft-appeal" data-case-id="{{ case.id }}">{{ i18n.pages.casesList.deleteLink }}</a>
+                      <a id="{{ i18n.pages.casesList.deleteLinkId }}-{{ case.id }}" class="govuk-link {{ i18n.pages.casesList.deleteLinkClass }}" data-case-id="{{ case.id }}"" role="button" tabindex="0">{{ i18n.pages.casesList.deleteLink }}</a>
                     {% endif %}
                   </td>
                 </tr>

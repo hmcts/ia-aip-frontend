@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
+import { Events } from '../data/events';
 import { formatDate } from '../utils/date-utils';
 import {
   boolToYesNo,
@@ -77,6 +78,30 @@ export default class UpdateAppealService {
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
     req.session.refreshCasesList = true;
     return req.session.appeal;
+  }
+
+
+  async deleteDraftAppeal(req: Request): Promise<void> {
+    const caseId = req.params.id;
+    const securityHeaders: SecurityHeaders = {
+      userToken: req.cookies['__auth-token'],
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+    const userId: string = req.idam.userDetails.uid;
+    const event = Events.DELETE_DRAFT_APPEAL;
+    const updateEventResponse = await this._ccdService.startUpdateAppeal(userId, caseId, event.id, securityHeaders);
+    await this._ccdService.submitUpdateAppeal(userId, caseId, securityHeaders, {
+      event: {
+        id: updateEventResponse.event_id,
+        summary: event.summary,
+        description: event.description
+      },
+      data: {},
+      event_token: updateEventResponse.token,
+      ignore_warning: true,
+      supplementary_data_request: null
+    });
+    req.session.refreshCasesList = true;
   }
 
   async loadAppealByCaseId(caseId: string, req: Request): Promise<Appeal> {

@@ -5,8 +5,19 @@ import { States } from '../data/states';
 import { citizenLimiter } from '../middleware/distributedRateLimiter';
 import { paths } from '../paths';
 import UpdateAppealService from '../service/update-appeal-service';
+import Logger, { getLogLabel } from '../utils/logger';
 import { createStructuredError } from '../utils/validations/fields-validations';
+
 const maxDraftAppeals: number = config.get('maxDraftAppeals');
+const createAppealModalDescription = i18n.pages.casesList.createAppealModal.description
+  .replace('{{ maxDraftAppeals }}', maxDraftAppeals.toString());
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
+
+enum ErrorCode {
+  tooManyDrafts = 'tooManyDrafts',
+  deleteDraftError = 'deleteDraftError'
+}
 
 function getCasesList(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -15,16 +26,30 @@ function getCasesList(updateAppealService: UpdateAppealService) {
         await updateAppealService.loadAppealsList(req);
         req.session.refreshCasesList = false;
       }
+      let errorList: ValidationError[] = null;
+      switch (req?.query?.errorCode as ErrorCode) {
+        case ErrorCode.tooManyDrafts:
+          errorList = [(createStructuredError(i18n.pages.casesList.createNewAppealId,
+            i18n.pages.casesList.tooManyDraftsError))];
+          break;
+        case ErrorCode.deleteDraftError:
+          const caseId: string = req?.query?.caseId as string;
+          const deleteDraftAppealId = `${i18n.pages.casesList.deleteLinkId}-${caseId}`;
+          errorList = [(createStructuredError(deleteDraftAppealId,
+            i18n.pages.casesList.deleteDraftError.replace('{{ caseId }}', caseId)))];
+          break;
+        default:
+          break;
+      }
 
-      const casesList: CaseListItem[] = req.session.casesList || [];
-      const description = i18n.pages.casesList.createAppealModal.description
-        .replace('{{ maxDraftAppeals }}', maxDraftAppeals.toString());
       return res.render('cases-list.njk', {
         previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
-        cases: casesList,
-        createAppealModalDescription: description
+        cases: req.session.casesList || [],
+        createAppealModalDescription,
+        errorList: errorList
       });
+
     } catch (e) {
       next(e);
     }
@@ -37,21 +62,7 @@ function getCreateNewAppeal(updateAppealService: UpdateAppealService) {
     const draftAppeals: CaseListItem[] = casesList
       .filter(appeal => appeal.state === States.APPEAL_STARTED.id);
     if (draftAppeals.length >= maxDraftAppeals) {
-      const description = i18n.pages.casesList.createAppealModal.description
-        .replace('{{ maxDraftAppeals }}', maxDraftAppeals.toString());
-      const createNewAppealId = i18n.pages.casesList.createNewAppealId;
-      const tooManyAppeals: ValidationErrors = {};
-      tooManyAppeals[createNewAppealId] = createStructuredError(createNewAppealId,
-        i18n.pages.casesList.tooManyDraftsError);
-
-      return res.render('cases-list.njk', {
-        previousPage: paths.common.overview,
-        createNewAppealUrl: paths.common.createNewAppeal,
-        cases: casesList,
-        createAppealModalDescription: description,
-        errors: tooManyAppeals,
-        errorList: Object.values(tooManyAppeals),
-      });
+      return res.redirect(`${paths.common.casesList}?errorCode=${ErrorCode.tooManyDrafts}`);
     }
     try {
       await updateAppealService.createNewAppeal(req);
@@ -62,10 +73,23 @@ function getCreateNewAppeal(updateAppealService: UpdateAppealService) {
   };
 }
 
+function getDeleteDraftAppeal(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await updateAppealService.deleteDraftAppeal(req);
+      return res.redirect(paths.common.casesList);
+    } catch (e) {
+      logger.exception(e, logLabel);
+      return res.redirect(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=${req?.params?.id}`);
+    }
+  };
+}
+
 function setupCasesListController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.common.casesList, getCasesList(updateAppealService));
   router.get(paths.common.createNewAppeal, citizenLimiter, getCreateNewAppeal(updateAppealService));
+  router.get(paths.common.deleteDraftAppeal, getDeleteDraftAppeal(updateAppealService));
   return router;
 }
 

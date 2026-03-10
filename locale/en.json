@@ -883,6 +883,7 @@
       "createNewAppeal": "Create a new appeal",
       "createNewAppealId": "create-new-appeal",
       "tooManyDraftsError": "You have too many draft appeals. Please submit or delete them before creating a new appeal.",
+      "deleteDraftError": "There was an error deleting your draft appeal with reference {{ caseId }}. Please try again.",
       "createAppealModal": {
         "id": "confirm-create-modal",
         "title": "Are you sure you want to create a new appeal?",
@@ -895,7 +896,8 @@
         "description": "Are you sure you want to delete the draft appeal with the reference {{ caseId }}. Once deleted, it will be removed from the system and you will not be able to access it again.",
         "confirmButton": "Delete draft appeal"
       },
-      "deleteLinkClass": "delete-draft-appeal"
+      "deleteLinkClass": "delete-draft-appeal",
+      "deleteLinkId": "delete"
     },
     "overviewPage": {
       "title": "Your appeal overview",

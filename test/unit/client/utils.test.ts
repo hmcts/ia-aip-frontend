@@ -1,5 +1,5 @@
-import ConfirmModal from '../../../client/confirm-modal';
 import CookieBanner from '../../../client/cookies-banner';
+import CreateModal from '../../../client/create-modal';
 import SessionTimeout from '../../../client/session-timeout';
 import { initialize, ready } from '../../../client/utils';
 import { expect, sinon } from '../../utils/testUtils';
@@ -18,7 +18,7 @@ describe('Client Utils', () => {
 
     cookieInitStub = sandbox.stub(CookieBanner.prototype, 'init');
     sessionInitStub = sandbox.stub(SessionTimeout.prototype, 'init');
-    modalInitStub = sandbox.stub(ConfirmModal.prototype, 'init');
+    modalInitStub = sandbox.stub(CreateModal.prototype, 'init');
 
     govInitStub = sandbox.stub(govUK, 'initAll');
 

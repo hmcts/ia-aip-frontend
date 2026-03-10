@@ -1,8 +1,8 @@
 import { paths } from '../app/paths';
 import i18n from '../locale/en.json';
 import { addAriaExpandedAttribute,addAriaExpandedEventListener } from './aria-utils';
-import ConfirmModal from './confirm-modal';
 import CookiesBanner from './cookies-banner';
+import CreateModal from './create-modal';
 import DeleteModal from './delete-modal';
 import { addNationalityEventListener, addStatelessEventListener } from './nationality-utils';
 import SessionTimeout from './session-timeout';
@@ -19,7 +19,7 @@ export const ready = (callback: () => void): void => {
 function initialize() {
   const cookies: CookiesBanner = new CookiesBanner();
   const sessionTimeout: SessionTimeout = new SessionTimeout();
-  const confirmCreateModal: ConfirmModal = new ConfirmModal();
+  const confirmCreateModal: CreateModal = new CreateModal();
   const deleteDraftModal: DeleteModal = new DeleteModal();
   cookies.init();
   govUK.initAll();

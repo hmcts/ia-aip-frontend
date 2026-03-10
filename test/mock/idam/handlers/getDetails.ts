@@ -46,6 +46,11 @@ const emailToUserId: Record<string, string> = {
   'respondent-review-stf24w@example.com': '44',
   'decision-maintained-stf24w@example.com': '45',
   'awaiting-reasons-for-appeal-partial-stf24w@example.com': '46',
+  'prepare-for-hearing-stf24w@example.com': '47',
+  'final-bundling-stf24w@example.com': '48',
+  'pending-payment-stf24w@example.com': '49',
+  'submit-hearing-requirements-stf24w@example.com': '50',
+  'awaiting-clarifying-questions-answers-stf24w@example.com': '51',
   'setupcase@example.com': '999'
 };
 

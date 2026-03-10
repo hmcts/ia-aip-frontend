@@ -1,3 +1,6 @@
+import { paths } from '../app/paths';
+import i18n from '../locale/en.json';
+
 export default class ConfirmModal {
   private confirmButtonElement: HTMLElement = null;
   private cancelButtonElement: HTMLElement = null;
@@ -10,14 +13,14 @@ export default class ConfirmModal {
   private previousFocusedElement: HTMLElement = null;
   private scrollPosition: number = null;
   private body: HTMLElement = null;
-  private doAction: () => void = null;
-  constructor(modalId: string, linkToModalSelector: string, doAction: () => void) {
+  constructor() {
+    const modalId = 'confirm-create-modal';
     this.init = this.init.bind(this);
     this.modalElement = document.querySelector(`#${modalId}`);
     this.modalOverlayElement = document.querySelector(`#${modalId}-overlay`);
     this.confirmButtonElement = document.querySelector(`#${modalId}-confirm`);
     this.cancelButtonElement = document.querySelector(`#${modalId}-cancel`);
-    this.linkToModalElement = document.querySelector(linkToModalSelector);
+    this.linkToModalElement = document.querySelector(`#${i18n.pages.casesList.createNewAppealId}`);
     this.body = document.querySelector('body');
     this.focusableElements =
       this.modalElement?.querySelectorAll(
@@ -25,7 +28,6 @@ export default class ConfirmModal {
       ) || ([] as unknown as NodeListOf<Element>);
     this.firstFocusableElement = this.focusableElements[0] as HTMLElement;
     this.lastFocusableElement = this.focusableElements[this.focusableElements.length - 1] as HTMLElement;
-    this.doAction = doAction;
   }
 
   init() {
@@ -41,6 +43,8 @@ export default class ConfirmModal {
     if (this.confirmButtonElement) this.confirmButtonElement.removeEventListener('click', this.doAction);
     if (this.cancelButtonElement) this.cancelButtonElement.removeEventListener('click', this.closeModal);
   };
+
+  doAction = () => window.location.assign(paths.common.createNewAppeal);
 
   addLinkListeners = () => {
     if (this.linkToModalElement) this.linkToModalElement.addEventListener('click', this.openModal);

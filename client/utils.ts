@@ -15,21 +15,14 @@ export const ready = (callback: () => void): void => {
   }
 };
 
-function createModal(id: string, linkToModalId: string, path: string): ConfirmModal {
-  return new ConfirmModal(id, linkToModalId, () => window.location.assign(path));
-}
-
 function initialize() {
   const cookies: CookiesBanner = new CookiesBanner();
   const sessionTimeout: SessionTimeout = new SessionTimeout();
-  const modals = [
-    createModal('confirm-create-modal', `#${i18n.pages.casesList.createNewAppealId}`, paths.common.createNewAppeal),
-    createModal('confirm-delete-modal', `.${i18n.pages.casesList.deleteLinkClass}`, paths.common.deleteDraftAppeal)
-  ];
+  const confirmCreateModal: ConfirmModal = new ConfirmModal();
   cookies.init();
   govUK.initAll();
   sessionTimeout.init();
-  modals.forEach(modal => modal.init());
+  confirmCreateModal.init();
   addAriaExpandedAttribute();
   addAriaExpandedEventListener();
   addStatelessEventListener();

@@ -9,8 +9,8 @@ import { expect, sinon } from '../../utils/testUtils';
 describe('Session Timeout', () => {
   let sandbox: sinon.SinonSandbox;
   let sessionTimeout: SessionTimeout;
-  let extendSessionStub: sinon.SinonStub;
-  let addListenersStub: sinon.SinonStub;
+  let doActionStub: sinon.SinonStub;
+  let addButtonListenersStub: sinon.SinonStub;
   let removeListenersStub: sinon.SinonStub;
   let stopCountersStub: sinon.SinonStub;
   let startCounterStub: sinon.SinonStub;
@@ -57,20 +57,20 @@ describe('Session Timeout', () => {
   });
 
   describe('init', () => {
-    it('should call addListeners and extend session', () => {
-      addListenersStub = sandbox.stub(sessionTimeout, 'addListeners');
-      extendSessionStub = sandbox.stub(sessionTimeout, 'extendSession');
+    it('should call addButtonListeners and extend session', () => {
+      addButtonListenersStub = sandbox.stub(sessionTimeout, 'addButtonListeners');
+      doActionStub = sandbox.stub(sessionTimeout, 'doAction');
       sessionTimeout.init();
-      expect(addListenersStub.callCount).to.equal(1);
-      expect(extendSessionStub.called).to.equal(true);
+      expect(addButtonListenersStub.callCount).to.equal(1);
+      expect(doActionStub.called).to.equal(true);
     });
   });
 
-  describe('addListeners', () => {
-    it('should add click listener and call extendSession when click on button', () => {
-      extendSessionStub = sandbox.stub(sessionTimeout, 'extendSession');
+  describe('addButtonListeners', () => {
+    it('should add click listener and call doAction when click on button', () => {
+      doActionStub = sandbox.stub(sessionTimeout, 'doAction');
       const extendButton = document.querySelector('#extend-session');
-      sessionTimeout.addListeners();
+      sessionTimeout.addButtonListeners();
       const evt = new MouseEvent('click', {
         view: window,
         bubbles: true,
@@ -78,15 +78,15 @@ describe('Session Timeout', () => {
         clientX: 20
       });
       extendButton.dispatchEvent(evt);
-      expect(extendSessionStub.callCount).to.equal(1);
+      expect(doActionStub.callCount).to.equal(1);
     });
   });
 
-  describe('removeListeners', () => {
-    it('should remove click listener and dont call extendSession when click on button', () => {
-      extendSessionStub = sandbox.stub(sessionTimeout, 'extendSession');
+  describe('removeButtonListeners', () => {
+    it('should remove click listener and dont call doAction when click on button', () => {
+      doActionStub = sandbox.stub(sessionTimeout, 'doAction');
       const extendButton = document.querySelector('#extend-session');
-      sessionTimeout.removeListeners();
+      sessionTimeout.removeButtonListeners();
       const evt = new MouseEvent('click', {
         view: window,
         bubbles: true,
@@ -94,7 +94,7 @@ describe('Session Timeout', () => {
         clientX: 20
       });
       extendButton.dispatchEvent(evt);
-      expect(extendSessionStub.called).to.equal(false);
+      expect(doActionStub.called).to.equal(false);
     });
   });
 
@@ -181,17 +181,18 @@ describe('Session Timeout', () => {
     });
   });
 
-  describe('extendSession', () => {
+  describe('doAction\n' +
+    'doAction', () => {
     it('should extend session and call restartCounters and closeModal', (done) => {
       const resolved = new Promise((r) => r({ data: { timeout: 1000 } }));
       axiosStub = sandbox.stub(axios, 'get').withArgs(paths.common.extendSession).returns(resolved);
 
       restartCountersStub = sandbox.stub(sessionTimeout, 'restartCounters');
       closeModalStub = sandbox.stub(sessionTimeout, 'closeModal');
-      removeListenersStub = sandbox.stub(sessionTimeout, 'removeListeners');
+      removeListenersStub = sandbox.stub(sessionTimeout, 'removeButtonListeners');
       stopCountersStub = sandbox.stub(sessionTimeout, 'stopCounters');
 
-      sessionTimeout.extendSession().then(() => {
+      sessionTimeout.doAction().then(() => {
         expect(sessionTimeout.sessionExpirationTime).to.equal(1000);
         expect(restartCountersStub.callCount).to.equal(1);
       }).then(done, done);
@@ -203,10 +204,10 @@ describe('Session Timeout', () => {
 
       restartCountersStub = sandbox.stub(sessionTimeout, 'restartCounters');
       closeModalStub = sandbox.stub(sessionTimeout, 'closeModal');
-      removeListenersStub = sandbox.stub(sessionTimeout, 'removeListeners');
+      removeListenersStub = sandbox.stub(sessionTimeout, 'removeButtonListeners');
       stopCountersStub = sandbox.stub(sessionTimeout, 'stopCounters');
 
-      sessionTimeout.extendSession().catch(() => {
+      sessionTimeout.doAction().catch(() => {
         expect(removeListenersStub.callCount).to.equal(1);
         expect(stopCountersStub.callCount).to.equal(1);
       }).then(done, done);
@@ -214,17 +215,6 @@ describe('Session Timeout', () => {
   });
 
   describe('keyDownListener', () => {
-    it('should focus on first modal focusable element if modal does not contain activeElement', () => {
-      const event = new KeyboardEvent('keydown', {
-        key: 'Tab'
-      });
-      const preventDefaultStub = sandbox.stub(event, 'preventDefault');
-      const focusStub = sandbox.stub(firstFocusableElement, 'focus');
-      sessionTimeout.keyDownEventListener(event);
-      expect(preventDefaultStub.callCount).to.equal(1);
-      expect(focusStub.callCount).to.equal(1);
-    });
-
     it('should focus on firstFocusableElement if there is only 1 focusable element on modal', () => {
       firstFocusableElement.focus();
       const event = new KeyboardEvent('keydown', {

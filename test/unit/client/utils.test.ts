@@ -1,5 +1,7 @@
+import ConfirmModal from '../../../client/confirm-modal';
 import CookieBanner from '../../../client/cookies-banner';
 import CreateModal from '../../../client/create-modal';
+import DeleteModal from '../../../client/delete-modal';
 import SessionTimeout from '../../../client/session-timeout';
 import { initialize, ready } from '../../../client/utils';
 import { expect, sinon } from '../../utils/testUtils';
@@ -10,7 +12,8 @@ describe('Client Utils', () => {
 
   let cookieInitStub: sinon.SinonStub;
   let sessionInitStub: sinon.SinonStub;
-  let modalInitStub: sinon.SinonStub;
+  let createModalInitStub: sinon.SinonStub;
+  let deleteModalInitStub: sinon.SinonStub;
   let govInitStub: sinon.SinonStub;
 
   beforeEach(() => {
@@ -18,7 +21,8 @@ describe('Client Utils', () => {
 
     cookieInitStub = sandbox.stub(CookieBanner.prototype, 'init');
     sessionInitStub = sandbox.stub(SessionTimeout.prototype, 'init');
-    modalInitStub = sandbox.stub(CreateModal.prototype, 'init');
+    createModalInitStub = sandbox.stub(CreateModal.prototype, 'init');
+    deleteModalInitStub = sandbox.stub(DeleteModal.prototype, 'init');
 
     govInitStub = sandbox.stub(govUK, 'initAll');
 
@@ -61,8 +65,8 @@ describe('Client Utils', () => {
       expect(cookieInitStub.calledOnce).to.equal(true);
       expect(sessionInitStub.calledOnce).to.equal(true);
       expect(govInitStub.calledOnce).to.equal(true);
-      expect(modalInitStub.calledOnce).to.equal(false);
-      expect(modalInitStub.calledTwice).to.equal(true);
+      expect(createModalInitStub.calledOnce).to.equal(true);
+      expect(deleteModalInitStub.calledOnce).to.equal(true);
     });
   });
 });

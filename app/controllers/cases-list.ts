@@ -14,7 +14,7 @@ const createAppealModalDescription = i18n.pages.casesList.createAppealModal.desc
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
-enum ErrorCode {
+export enum ErrorCode {
   tooManyDrafts = 'tooManyDrafts',
   deleteDraftError = 'deleteDraftError'
 }
@@ -96,5 +96,6 @@ function setupCasesListController(updateAppealService: UpdateAppealService): Rou
 export {
   setupCasesListController,
   getCasesList,
-  getCreateNewAppeal
+  getCreateNewAppeal,
+  getDeleteDraftAppeal
 };

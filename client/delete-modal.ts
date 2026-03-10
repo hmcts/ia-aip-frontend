@@ -1,26 +1,30 @@
 import { paths } from '../app/paths';
 import i18n from '../locale/en.json';
 
-export default class ConfirmModal {
+export default class DeleteModal {
   private confirmButtonElement: HTMLElement = null;
   private cancelButtonElement: HTMLElement = null;
-  private linkToModalElement: HTMLElement = null;
+  private linkToModalElement: NodeListOf<HTMLElement> = null;
   private modalElement: HTMLElement = null;
   private modalOverlayElement: HTMLElement = null;
+  private descriptionElement: HTMLElement = null;
   private focusableElements: NodeListOf<Element> = null;
   private firstFocusableElement: HTMLElement = null;
   private lastFocusableElement: HTMLElement = null;
   private previousFocusedElement: HTMLElement = null;
   private scrollPosition: number = null;
   private body: HTMLElement = null;
+  private currentCaseId: string = null;
+
   constructor() {
-    const modalId = 'confirm-create-modal';
+    const modalId = 'delete-draft-modal';
     this.init = this.init.bind(this);
     this.modalElement = document.querySelector(`#${modalId}`);
     this.modalOverlayElement = document.querySelector(`#${modalId}-overlay`);
     this.confirmButtonElement = document.querySelector(`#${modalId}-confirm`);
     this.cancelButtonElement = document.querySelector(`#${modalId}-cancel`);
-    this.linkToModalElement = document.querySelector(`#${i18n.pages.casesList.createNewAppealId}`);
+    this.descriptionElement = document.querySelector(`#${modalId}-description`);
+    this.linkToModalElement = document.querySelectorAll(`.${i18n.pages.casesList.deleteLinkClass}`);
     this.body = document.querySelector('body');
     this.focusableElements =
       this.modalElement?.querySelectorAll(
@@ -44,17 +48,32 @@ export default class ConfirmModal {
     if (this.cancelButtonElement) this.cancelButtonElement.removeEventListener('click', this.closeModal);
   };
 
-  doAction = () => window.location.href = paths.common.createNewAppeal;
+  doAction = () => {
+    window.location.href = `${paths.common.deleteDraftAppeal}/${this.currentCaseId}`;
+  };
 
   addLinkListeners = () => {
-    if (this.linkToModalElement) this.linkToModalElement.addEventListener('click', this.openModal);
+    if (this.linkToModalElement) {
+      this.linkToModalElement
+        .forEach(element => element.addEventListener('click', this.openModal));
+    }
   };
 
   removeLinkListeners = () => {
-    if (this.linkToModalElement) this.linkToModalElement.removeEventListener('click', this.openModal);
+    if (this.linkToModalElement) {
+      this.linkToModalElement
+        .forEach(element => element.removeEventListener('click', this.openModal));
+    }
   };
 
-  openModal = () => {
+  openModal = (event: Event) => {
+    event.preventDefault();
+
+    const target = event.currentTarget as HTMLElement;
+    const caseId = target.dataset.caseId;
+    this.currentCaseId = caseId;
+    this.updateModalContent(caseId);
+
     this.modalElement.removeAttribute('aria-hidden');
     this.modalOverlayElement.removeAttribute('aria-hidden');
     this.previousFocusedElement = document.activeElement as HTMLElement;
@@ -63,6 +82,13 @@ export default class ConfirmModal {
     this.body.addEventListener('keydown', this.keyDownEventListener);
     this.addButtonListeners();
     this.removeLinkListeners();
+  };
+
+  updateModalContent = (caseId: string) => {
+    if (this.descriptionElement) {
+      this.descriptionElement.textContent = i18n.pages.casesList.deleteDraftModal.description
+        .replace('{{ caseId }}', caseId);
+    }
   };
 
   disableScroll = () => {

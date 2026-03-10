@@ -7,9 +7,9 @@ dependencies:
   - name: nodejs
     version: 3.2.0
     repository: 'oci://hmctspublic.azurecr.io/helm'
-  - name: redis
-    version: 23.2.12
-    repository: "oci://registry-1.docker.io/bitnamicharts"
+  - name: hmcts-redis
+    version: 0.4.1
+    repository: 'oci://hmctsprod.azurecr.io/helm'
     condition: redis.enabled
   - name: idam-pr
     version: 2.2.6

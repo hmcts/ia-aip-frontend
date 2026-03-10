@@ -352,7 +352,7 @@ async function getAppealApplicationNextStep(req: Request) {
           doThisNext.respondentReview.detailsSent,
           doThisNext.respondentReview.dueDate
         ],
-        info: doThisNext.respondentReview.info
+        info: i18n.pages.overviewPage.doThisNext.respondentReview.info
       };
       break;
     case 'decisionWithdrawn':
@@ -373,7 +373,7 @@ async function getAppealApplicationNextStep(req: Request) {
           doThisNext.decisionMaintained.description2,
           doThisNext.decisionMaintained.dueDate
         ],
-        info: doThisNext.decisionMaintained.info,
+        info: i18n.pages.overviewPage.doThisNext.decisionMaintained.info,
         cta: {},
         hearingCentreEmail: getHearingCentreEmail(req)
       };

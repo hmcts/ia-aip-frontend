@@ -7,7 +7,7 @@ import outOfTimeDecisionInTime from './data/out-of-time-decision-in-time';
 import outOfTimeDecisionRejected from './data/out-of-time-decision-rejected';
 import partialAppealStartedHistoryEvent from './data/partial-appeal-started';
 import partialAwaitingReasonsForAppealHistoryEvent from './data/partial-awaiting-reasons-for-appeal';
-import recordRemissionDecisionHistoryEvent from "./data/record-remission-decision";
+import recordRemissionDecisionHistoryEvent from './data/record-remission-decision';
 import submittedCmaRequirementsEvent from './data/submitted-cma-requirements';
 import uploadAddendumEvidence from './data/upload-addendum-evidence';
 

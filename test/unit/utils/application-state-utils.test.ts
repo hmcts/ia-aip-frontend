@@ -2109,7 +2109,7 @@ describe('application-state-utils', () => {
           const result = await getAppealApplicationNextStep(req as Request);
 
           const respondBy = is24WeeksTimeline ? 'It’s important to respond by the deadline.' :
-              'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.'
+              'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.';
           const expected = {
             'allowedAskForMoreTime': !is24WeeksTimeline,
             'cta': {

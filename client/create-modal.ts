@@ -14,7 +14,9 @@ export default class CreateModal extends ConfirmModal{
     this.setupModal();
   }
 
-  doAction = () => window.location.href = paths.common.createNewAppeal;
+  getCreateUrl = () => paths.common.createNewAppeal;
+
+  doAction = () => window.location.href = this.getCreateUrl();
 
   addLinkListeners = () => {
     if (this.linkToModalElement) this.linkToModalElement.addEventListener('click', this.openModal);

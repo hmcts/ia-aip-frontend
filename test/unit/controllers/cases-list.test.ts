@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
 import { randomUUID } from 'node:crypto';
+import { NextFunction, Request, Response } from 'express';
 import {
   ErrorCode,
   getCasesList,
@@ -209,6 +209,19 @@ describe('Cases List Controller', () => {
       expect(res.redirect).to.have.been.calledWith(paths.common.overview);
     });
 
+    it('should call createNewAppeal and redirect to overview if no session caseList', async () => {
+      req.session.casesList = undefined;
+      const mockAppeal = { ccdCaseId: '12345' } as Appeal;
+      const updateAppealService = {
+        createNewAppeal: sandbox.stub().resolves(mockAppeal)
+      } as Partial<UpdateAppealService>;
+
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.createNewAppeal).to.have.been.calledWith(req);
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
+    });
+
     it('should redirect to casesList with errorCode tooManyDrafts if more than max draft cases', async () => {
       req.session.casesList = [
         appealStartedCase,
@@ -298,7 +311,7 @@ describe('Cases List Controller', () => {
     });
 
     it('should redirect to casesList with error on failure with case ID', async () => {
-      const caseId: string = randomUUID().toString()
+      const caseId: string = randomUUID().toString();
       req.params = { id: caseId };
       const error = new Error('create failed');
       const updateAppealService = {

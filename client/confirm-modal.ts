@@ -1,6 +1,3 @@
-import { paths } from '../app/paths';
-import i18n from '../locale/en.json';
-
 export default class ConfirmModal {
   protected confirmButtonElement: HTMLElement = null;
   protected cancelButtonElement: HTMLElement = null;

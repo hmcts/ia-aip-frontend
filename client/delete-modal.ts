@@ -18,9 +18,10 @@ export default class DeleteModal extends ConfirmModal{
     this.setupModal();
   }
 
-  doAction = () => {
-    window.location.href = paths.common.deleteDraftAppeal.replace(':id', this.currentCaseId);
-  };
+  getDeleteUrl = () =>
+    paths.common.deleteDraftAppeal.replace(':id', this.currentCaseId);
+
+  doAction = () => window.location.assign(this.getDeleteUrl());
 
   addLinkListeners = () => {
     if (this.linksToModalElement) {

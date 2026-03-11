@@ -13,6 +13,7 @@ const createAppealModalDescription = i18n.pages.casesList.createAppealModal.desc
   .replace('{{ maxDraftAppeals }}', maxDraftAppeals.toString());
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
+const useRedis: boolean = config.get('session.useRedis') === true;
 
 export enum ErrorCode {
   tooManyDrafts = 'tooManyDrafts',
@@ -92,7 +93,10 @@ function getDeleteDraftAppeal(updateAppealService: UpdateAppealService) {
 function setupCasesListController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.common.casesList, getCasesList(updateAppealService));
-  router.get(paths.common.createNewAppeal, citizenLimiter, getCreateNewAppeal(updateAppealService));
+  const createNewAppealMiddleware = useRedis
+    ? [citizenLimiter, getCreateNewAppeal(updateAppealService)]
+    : [getCreateNewAppeal(updateAppealService)];
+  router.get(paths.common.createNewAppeal, createNewAppealMiddleware);
   router.get(paths.common.deleteDraftAppeal, getDeleteDraftAppeal(updateAppealService));
   return router;
 }

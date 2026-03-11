@@ -1,8 +1,7 @@
-import { paths } from '../app/paths';
 import i18n from '../locale/en.json';
 import ConfirmModal from './confirm-modal';
 
-export default class CreateModal extends ConfirmModal{
+export default class CreateModal extends ConfirmModal {
   constructor() {
     super();
     const modalId = i18n.pages.casesList.createAppealModal.id;
@@ -13,10 +12,6 @@ export default class CreateModal extends ConfirmModal{
     this.linkToModalElement = document.querySelector(`#${i18n.pages.casesList.createNewAppealId}`);
     this.setupModal();
   }
-
-  getCreateUrl = () => paths.common.createNewAppeal;
-
-  doAction = () => globalThis.location.href = this.getCreateUrl();
 
   addLinkListeners = () => {
     if (this.linkToModalElement) this.linkToModalElement.addEventListener('click', this.openModal);

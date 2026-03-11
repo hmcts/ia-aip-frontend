@@ -26,7 +26,7 @@ export default class SessionTimeout extends ConfirmModal {
 
   init() {
     this.addButtonListeners();
-    void this.doAction();
+    void this.extendSession();
   }
 
   addButtonListeners = () => {

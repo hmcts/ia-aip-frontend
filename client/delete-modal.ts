@@ -4,7 +4,7 @@ import ConfirmModal from './confirm-modal';
 
 export default class DeleteModal extends ConfirmModal{
   private readonly descriptionElement: HTMLElement = null;
-  private currentCaseId: string = null;
+  private readonly confirmFormElement: HTMLElement = null;
   private readonly linksToModalElement: NodeListOf<Element> = null;
   constructor() {
     super();
@@ -15,13 +15,9 @@ export default class DeleteModal extends ConfirmModal{
     this.cancelButtonElement = document.querySelector(`#${modalId}-cancel`);
     this.descriptionElement = document.querySelector(`#${modalId}-description`);
     this.linksToModalElement = document.querySelectorAll(`.${i18n.pages.casesList.deleteLinkClass}`);
+    this.confirmFormElement = document.querySelector(`#${modalId}-form`);
     this.setupModal();
   }
-
-  getDeleteUrl = () =>
-    paths.common.deleteDraftAppeal.replace(':id', this.currentCaseId);
-
-  doAction = () => globalThis.location.href = this.getDeleteUrl();
 
   addLinkListeners = () => {
     if (this.linksToModalElement) {
@@ -50,10 +46,13 @@ export default class DeleteModal extends ConfirmModal{
     }
     const target = event.currentTarget as HTMLElement;
     const caseId = target.dataset.caseId;
-    this.currentCaseId = caseId;
+    paths.common.deleteDraftAppeal.replace(':id', caseId);
     if (this.descriptionElement) {
       this.descriptionElement.textContent = i18n.pages.casesList.deleteDraftModal.description
         .replace('{{ caseId }}', caseId);
+    }
+    if (this.confirmFormElement) {
+      this.confirmFormElement.setAttribute('action', paths.common.deleteDraftAppeal.replace(':id', caseId));
     }
 
     this.openModal();

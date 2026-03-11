@@ -19,7 +19,7 @@ async function navigateFromCasesListToOverview(I) {
   } else {
     await I.click(i18n.pages.casesList.createNewAppeal);
     await I.waitForVisible(`#${i18n.pages.casesList.createAppealModal.id}`, 30);
-    await I.click(i18n.pages.casesList.createAppealModal.confirmButton);
+    await I.click(`#${i18n.pages.casesList.createAppealModal.id}-confirm`);
   }
   await I.waitInUrl(paths.common.overview, 30);
 }

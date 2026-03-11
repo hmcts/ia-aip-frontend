@@ -53,11 +53,4 @@ describe('CreateModal', () => {
       expect(openStub.called).to.equal(false);
     });
   });
-
-  describe('getCreateUrl', () => {
-    it('should have correct path', () => {
-      createModal.getCreateUrl();
-      expect(createModal.getCreateUrl()).to.equal(paths.common.createNewAppeal);
-    });
-  });
 });

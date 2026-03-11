@@ -1,20 +1,24 @@
-{% macro confirmModal(modalId, modalTitle, modalDescription, modalButton) %}
+{% macro confirmModal(modalId, modalTitle, modalDescription, modalButton, modalHref) %}
   {% set confirmButtonId = modalId + '-confirm' %}
   {% set cancelButtonId = modalId + '-cancel' %}
   {% set titleId = modalId + '-title' %}
   {% set descriptionId = modalId + '-description' %}
   {% set overlayId = modalId + '-overlay' %}
+  {% set formId = modalId + '-form' %}
   <div class="timeout-modal" id={{ modalId }} role="dialog" aria-labelledby="{{ titleId }}" aria-describedby="{{ descriptionId }}" aria-hidden="true">
     <h2 class="govuk-heading-l" id="{{ titleId }}">{{ modalTitle }}</h2>
     <p id="{{ descriptionId }}">{{ modalDescription }}</p>
     <div class="modal-buttons__container">
-        {{ govukButton({
-          text: modalButton,
-          attributes: {
-            id: confirmButtonId
-          }
-        }) }}
-
+        <form id="{{ formId }}" action="{{ modalHref }}" method="post">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            {{ govukButton({
+              text: modalButton,
+              name: modalButton,
+              attributes: {
+                id: confirmButtonId
+              }
+            }) }}
+        </form>
         {{ govukButton({
           text: i18n.common.buttons.cancel,
           classes: "govuk-button--secondary",

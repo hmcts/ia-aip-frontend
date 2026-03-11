@@ -31,17 +31,12 @@ export default class ConfirmModal {
   }
 
   addButtonListeners = () => {
-    if (this.confirmButtonElement) this.confirmButtonElement.addEventListener('click', this.doAction);
     if (this.cancelButtonElement) this.cancelButtonElement.addEventListener('click', this.closeModal);
   };
 
   removeButtonListeners = () => {
-    if (this.confirmButtonElement) this.confirmButtonElement.removeEventListener('click', this.doAction);
     if (this.cancelButtonElement) this.cancelButtonElement.removeEventListener('click', this.closeModal);
   };
-
-  // to be implemented by subclasses;
-  doAction = () => '';
 
   addLinkListeners = () => {
     if (this.linkToModalElement) this.linkToModalElement.addEventListener('click', this.openModal);

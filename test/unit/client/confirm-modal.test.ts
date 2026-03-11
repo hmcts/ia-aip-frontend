@@ -54,37 +54,6 @@ describe('ConfirmModal', () => {
     sandbox.restore();
   });
 
-  describe('buttonListeners', () => {
-    it('should trigger doAction when confirm clicked and closeModal when cancel clicked', () => {
-      const actionStub = sandbox.stub(confirmModal, 'doAction');
-      const closeStub = sandbox.stub(confirmModal, 'closeModal');
-
-      confirmButton.dispatchEvent(new MouseEvent('click'));
-      cancelButton.dispatchEvent(new MouseEvent('click'));
-
-      expect(actionStub.called).to.equal(false);
-      expect(closeStub.called).to.equal(false);
-
-      confirmModal.addButtonListeners();
-
-      confirmButton.dispatchEvent(new MouseEvent('click'));
-      cancelButton.dispatchEvent(new MouseEvent('click'));
-
-      expect(actionStub.called).to.equal(true);
-      expect(actionStub.callCount).to.equal(1);
-      expect(closeStub.called).to.equal(true);
-      expect(closeStub.callCount).to.equal(1);
-
-      confirmModal.removeButtonListeners();
-
-      confirmButton.dispatchEvent(new MouseEvent('click'));
-      cancelButton.dispatchEvent(new MouseEvent('click'));
-
-      expect(actionStub.callCount).to.equal(1);
-      expect(closeStub.callCount).to.equal(1);
-    });
-  });
-
   describe('linkListeners', () => {
     it('should trigger openModal when link clicked', () => {
       const openStub = sandbox.stub(confirmModal, 'openModal');

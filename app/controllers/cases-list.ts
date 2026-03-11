@@ -60,7 +60,7 @@ function getCasesList(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getCreateNewAppeal(updateAppealService: UpdateAppealService) {
+function postCreateNewAppeal(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const casesList: CaseListItem[] = req.session.casesList || [];
     const draftAppeals: CaseListItem[] = casesList
@@ -77,7 +77,7 @@ function getCreateNewAppeal(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getDeleteDraftAppeal(updateAppealService: UpdateAppealService) {
+function postDeleteDraftAppeal(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       await updateAppealService.deleteDraftAppeal(req);
@@ -92,14 +92,14 @@ function getDeleteDraftAppeal(updateAppealService: UpdateAppealService) {
 function setupCasesListController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.common.casesList, getCasesList(updateAppealService));
-  router.get(paths.common.createNewAppeal, citizenLimiter, getCreateNewAppeal(updateAppealService));
-  router.get(paths.common.deleteDraftAppeal, getDeleteDraftAppeal(updateAppealService));
+  router.post(paths.common.createNewAppeal, citizenLimiter, postCreateNewAppeal(updateAppealService));
+  router.post(paths.common.deleteDraftAppeal, postDeleteDraftAppeal(updateAppealService));
   return router;
 }
 
 export {
   setupCasesListController,
   getCasesList,
-  getCreateNewAppeal,
-  getDeleteDraftAppeal
+  postCreateNewAppeal,
+  postDeleteDraftAppeal
 };

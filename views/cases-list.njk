@@ -8,13 +8,15 @@
     i18n.pages.casesList.createAppealModal.id,
     i18n.pages.casesList.createAppealModal.title,
     createAppealModalDescription,
-    i18n.pages.casesList.createAppealModal.confirmButton
+    i18n.pages.casesList.createAppealModal.confirmButton,
+    createNewAppealUrl
   ) }}
   {{ confirmModal(
     i18n.pages.casesList.deleteDraftModal.id,
     i18n.pages.casesList.deleteDraftModal.title,
     i18n.pages.casesList.deleteDraftModal.description,
-    i18n.pages.casesList.deleteDraftModal.confirmButton
+    i18n.pages.casesList.deleteDraftModal.confirmButton,
+    deleteDraftUrl
   ) }}
 {% endblock %}
 {% block content %}
@@ -50,7 +52,7 @@
                   <td class="govuk-table__cell">{{ case.appellantGivenNames }} {{ case.appellantFamilyName }}</td>
                   <td class="govuk-table__cell">{{ "DRAFT" if isDraft else case.stateName }}</td>
                   <td class="govuk-table__cell">
-                    <a class="govuk-link" href="{{ previousPage }}?caseId={{ case.id }}">{{ i18n.pages.casesList.viewLink }}</a>
+                    <a class="govuk-link" href="{{ paths.common.overview }}?caseId={{ case.id }}">{{ i18n.pages.casesList.viewLink }}</a>
                     {% if isDraft %}
                       <a id="{{ i18n.pages.casesList.deleteLinkId }}-{{ case.id }}" href='#' class="govuk-link {{ i18n.pages.casesList.deleteLinkClass }}" data-case-id="{{ case.id }}"" role="button" tabindex="0">{{ i18n.pages.casesList.deleteLink }}</a>
                     {% endif %}

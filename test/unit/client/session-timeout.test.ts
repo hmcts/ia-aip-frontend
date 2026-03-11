@@ -9,8 +9,7 @@ import { expect, sinon } from '../../utils/testUtils';
 describe('Session Timeout', () => {
   let sandbox: sinon.SinonSandbox;
   let sessionTimeout: SessionTimeout;
-  let doActionStub: sinon.SinonStub;
-  let addButtonListenersStub: sinon.SinonStub;
+  let extendSessionStub: sinon.SinonStub;
   let removeListenersStub: sinon.SinonStub;
   let stopCountersStub: sinon.SinonStub;
   let startCounterStub: sinon.SinonStub;
@@ -18,9 +17,7 @@ describe('Session Timeout', () => {
   let signOutStub: sinon.SinonStub;
   let openModalStub: sinon.SinonStub;
   let startModalCountdownStub: sinon.SinonStub;
-  let axiosStub: sinon.SinonStub;
   let restartCountersStub: sinon.SinonStub;
-  let closeModalStub: sinon.SinonStub;
   let clock: sinon.SinonFakeTimers;
   let modalElement: HTMLElement;
   let modalOverlayElement: HTMLElement;
@@ -57,18 +54,16 @@ describe('Session Timeout', () => {
   });
 
   describe('init', () => {
-    it('should call addButtonListeners and extend session', () => {
-      addButtonListenersStub = sandbox.stub(sessionTimeout, 'addButtonListeners');
-      doActionStub = sandbox.stub(sessionTimeout, 'doAction');
+    it('should call extend session', () => {
+      extendSessionStub = sandbox.stub(sessionTimeout, 'extendSession');
       sessionTimeout.init();
-      expect(addButtonListenersStub.callCount).to.equal(1);
-      expect(doActionStub.called).to.equal(true);
+      expect(extendSessionStub.called).to.equal(true);
     });
   });
 
   describe('addButtonListeners', () => {
-    it('should add click listener and call doAction when click on button', () => {
-      doActionStub = sandbox.stub(sessionTimeout, 'extendSession');
+    it('should add click listener and call extendSession when click on button', () => {
+      extendSessionStub = sandbox.stub(sessionTimeout, 'extendSession');
       const extendButton = document.querySelector('#extend-session');
       sessionTimeout.addButtonListeners();
       const evt = new MouseEvent('click', {
@@ -78,13 +73,13 @@ describe('Session Timeout', () => {
         clientX: 20
       });
       extendButton.dispatchEvent(evt);
-      expect(doActionStub.callCount).to.equal(1);
+      expect(extendSessionStub.callCount).to.equal(1);
     });
   });
 
   describe('removeButtonListeners', () => {
-    it('should remove click listener and dont call doAction when click on button', () => {
-      doActionStub = sandbox.stub(sessionTimeout, 'doAction');
+    it('should remove click listener and dont call extendSession when click on button', () => {
+      extendSessionStub = sandbox.stub(sessionTimeout, 'extendSession');
       const extendButton = document.querySelector('#extend-session');
       sessionTimeout.removeButtonListeners();
       const evt = new MouseEvent('click', {
@@ -94,7 +89,7 @@ describe('Session Timeout', () => {
         clientX: 20
       });
       extendButton.dispatchEvent(evt);
-      expect(doActionStub.called).to.equal(false);
+      expect(extendSessionStub.called).to.equal(false);
     });
   });
 
@@ -181,14 +176,13 @@ describe('Session Timeout', () => {
     });
   });
 
-  describe('doAction\n' +
-    'doAction', () => {
+  describe('extendSession', () => {
     it('should extend session and call restartCounters and closeModal', (done) => {
       const resolved = new Promise((r) => r({ data: { timeout: 1000 } }));
-      axiosStub = sandbox.stub(axios, 'get').withArgs(paths.common.extendSession).returns(resolved);
+      sandbox.stub(axios, 'get').withArgs(paths.common.extendSession).returns(resolved);
 
       restartCountersStub = sandbox.stub(sessionTimeout, 'restartCounters');
-      closeModalStub = sandbox.stub(sessionTimeout, 'closeModal');
+      sandbox.stub(sessionTimeout, 'closeModal');
       removeListenersStub = sandbox.stub(sessionTimeout, 'removeButtonListeners');
       stopCountersStub = sandbox.stub(sessionTimeout, 'stopCounters');
 
@@ -200,10 +194,10 @@ describe('Session Timeout', () => {
 
     it('should not extend session and call removeListeners and stopCounters', (done) => {
       const rejected = Promise.reject(new Error(''));
-      axiosStub = sandbox.stub(axios, 'get').withArgs(paths.common.extendSession).returns(rejected);
+      sandbox.stub(axios, 'get').withArgs(paths.common.extendSession).returns(rejected);
 
       restartCountersStub = sandbox.stub(sessionTimeout, 'restartCounters');
-      closeModalStub = sandbox.stub(sessionTimeout, 'closeModal');
+      sandbox.stub(sessionTimeout, 'closeModal');
       removeListenersStub = sandbox.stub(sessionTimeout, 'removeButtonListeners');
       stopCountersStub = sandbox.stub(sessionTimeout, 'stopCounters');
 

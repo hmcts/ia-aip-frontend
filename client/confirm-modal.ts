@@ -10,6 +10,7 @@ export default class ConfirmModal {
   protected previousFocusedElement: HTMLElement = null;
   protected scrollPosition: number = null;
   protected body: HTMLElement = null;
+
   constructor() {
     this.init = this.init.bind(this);
     this.body = document.querySelector('body');
@@ -39,7 +40,8 @@ export default class ConfirmModal {
     if (this.cancelButtonElement) this.cancelButtonElement.removeEventListener('click', this.closeModal);
   };
 
-  doAction = () => {};
+  // to be implemented by subclasses;
+  doAction = () => '';
 
   addLinkListeners = () => {
     if (this.linkToModalElement) this.linkToModalElement.addEventListener('click', this.openModal);
@@ -88,16 +90,12 @@ export default class ConfirmModal {
 
   keyDownEventListener = (event) => {
     if (event.key !== 'Tab') return;
-    if (event.shiftKey) {
-      if (document.activeElement === this.firstFocusableElement) {
-        event.preventDefault();
-        this.lastFocusableElement.focus();
-      }
-    } else {
-      if (document.activeElement === this.lastFocusableElement) {
-        event.preventDefault();
-        this.firstFocusableElement.focus();
-      }
+    if (event.shiftKey && document.activeElement === this.firstFocusableElement) {
+      event.preventDefault();
+      this.lastFocusableElement.focus();
+    } else if (!event.shiftKey && document.activeElement === this.lastFocusableElement) {
+      event.preventDefault();
+      this.firstFocusableElement.focus();
     }
   };
 }

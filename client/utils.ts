@@ -1,5 +1,3 @@
-import { paths } from '../app/paths';
-import i18n from '../locale/en.json';
 import { addAriaExpandedAttribute,addAriaExpandedEventListener } from './aria-utils';
 import CookiesBanner from './cookies-banner';
 import CreateModal from './create-modal';
@@ -9,10 +7,10 @@ import SessionTimeout from './session-timeout';
 const govUK = require('govuk-frontend');
 
 export const ready = (callback: () => void): void => {
-  if (document.readyState !== 'loading') {
-    callback();
-  } else {
+  if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', callback);
+  } else {
+    callback();
   }
 };
 

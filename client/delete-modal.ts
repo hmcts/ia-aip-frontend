@@ -3,9 +3,9 @@ import i18n from '../locale/en.json';
 import ConfirmModal from './confirm-modal';
 
 export default class DeleteModal extends ConfirmModal{
-  private descriptionElement: HTMLElement = null;
+  private readonly descriptionElement: HTMLElement = null;
   private currentCaseId: string = null;
-  private linksToModalElement: NodeListOf<Element> = null;
+  private readonly linksToModalElement: NodeListOf<Element> = null;
   constructor() {
     super();
     const modalId = i18n.pages.casesList.deleteDraftModal.id;
@@ -21,7 +21,7 @@ export default class DeleteModal extends ConfirmModal{
   getDeleteUrl = () =>
     paths.common.deleteDraftAppeal.replace(':id', this.currentCaseId);
 
-  doAction = () => window.location.assign(this.getDeleteUrl());
+  doAction = () => globalThis.location.href = this.getDeleteUrl();
 
   addLinkListeners = () => {
     if (this.linksToModalElement) {

@@ -68,7 +68,7 @@ describe('Session Timeout', () => {
 
   describe('addButtonListeners', () => {
     it('should add click listener and call doAction when click on button', () => {
-      doActionStub = sandbox.stub(sessionTimeout, 'doAction');
+      doActionStub = sandbox.stub(sessionTimeout, 'extendSession');
       const extendButton = document.querySelector('#extend-session');
       sessionTimeout.addButtonListeners();
       const evt = new MouseEvent('click', {
@@ -192,7 +192,7 @@ describe('Session Timeout', () => {
       removeListenersStub = sandbox.stub(sessionTimeout, 'removeButtonListeners');
       stopCountersStub = sandbox.stub(sessionTimeout, 'stopCounters');
 
-      sessionTimeout.doAction().then(() => {
+      sessionTimeout.extendSession().then(() => {
         expect(sessionTimeout.sessionExpirationTime).to.equal(1000);
         expect(restartCountersStub.callCount).to.equal(1);
       }).then(done, done);
@@ -207,7 +207,7 @@ describe('Session Timeout', () => {
       removeListenersStub = sandbox.stub(sessionTimeout, 'removeButtonListeners');
       stopCountersStub = sandbox.stub(sessionTimeout, 'stopCounters');
 
-      sessionTimeout.doAction().catch(() => {
+      sessionTimeout.extendSession().catch(() => {
         expect(removeListenersStub.callCount).to.equal(1);
         expect(stopCountersStub.callCount).to.equal(1);
       }).then(done, done);

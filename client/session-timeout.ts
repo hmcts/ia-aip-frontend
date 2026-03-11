@@ -29,7 +29,17 @@ export default class SessionTimeout extends ConfirmModal {
     void this.doAction();
   }
 
-  doAction = (): Promise<void> => {
+  addButtonListeners = () => {
+    if (this.confirmButtonElement) this.confirmButtonElement.addEventListener('click', this.extendSession);
+    if (this.cancelButtonElement) this.cancelButtonElement.addEventListener('click', this.closeModal);
+  };
+
+  removeButtonListeners = () => {
+    if (this.confirmButtonElement) this.confirmButtonElement.removeEventListener('click', this.extendSession);
+    if (this.cancelButtonElement) this.cancelButtonElement.removeEventListener('click', this.closeModal);
+  };
+
+  extendSession = (): Promise<void> => {
     return axios.get(paths.common.extendSession).then((response: any): void => {
       this.sessionExpirationTime = response.data.timeout;
       this.restartCounters();

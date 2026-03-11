@@ -28,20 +28,20 @@ function getCasesList(updateAppealService: UpdateAppealService) {
         req.session.refreshCasesList = false;
       }
       let errorList: ValidationError[] = null;
+      const caseId: string = req?.query?.caseId as string;
+      const deleteDraftAppealId = `${i18n.pages.casesList.deleteLinkId}-${caseId}`;
       switch (req?.query?.errorCode as ErrorCode) {
         case ErrorCode.tooManyDrafts:
           errorList = [(createStructuredError(i18n.pages.casesList.createNewAppealId,
             i18n.pages.casesList.tooManyDraftsError))];
           break;
         case ErrorCode.deleteDraftError:
-          const caseId: string = req?.query?.caseId as string;
-          const deleteDraftAppealId = `${i18n.pages.casesList.deleteLinkId}-${caseId}`;
           errorList = [(createStructuredError(deleteDraftAppealId,
             i18n.pages.casesList.deleteDraftError.replace('{{ caseId }}', caseId)))];
           break;
         case ErrorCode.caseNotFound:
           errorList = [(createStructuredError('',
-            i18n.pages.casesList.caseNotFoundError.replace('{{ caseId }}', req.query.caseId as string)))];
+            i18n.pages.casesList.caseNotFoundError.replace('{{ caseId }}', caseId)))];
           break;
         default:
           break;

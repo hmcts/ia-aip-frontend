@@ -131,16 +131,17 @@ function isAppealInProgress(appealStatus: string) {
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (req.query.caseId) {
+      const caseId = req.query.caseId as string;
       try {
-        await updateAppealService.loadAppealByCaseId(req.query.caseId as string, req);
+        await updateAppealService.loadAppealByCaseId(caseId, req);
       } catch (error) {
         logger.exception(error, logLabel);
-        return res.redirect(`${paths.common.casesList}?errorCode=${ErrorCode.caseNotFound}&caseId=${req.query.caseId}`);
+        return res.redirect(`${paths.common.casesList}?errorCode=${ErrorCode.caseNotFound}&caseId=${caseId}`);
       }
     }
 
     try {
-      if (!req.session.appeal || !req.session.appeal.application) {
+      if (!req.session?.appeal?.application) {
         return res.redirect(paths.common.casesList);
       }
 

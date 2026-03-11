@@ -33,6 +33,7 @@ nodejs:
         - launch-darkly-sdk-key
 redis:
   enabled: true
+  architecture: standalone
   image:
     registry: hmctsprod.azurecr.io
     repository: helm/hmcts-redis

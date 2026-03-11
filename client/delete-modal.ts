@@ -46,7 +46,7 @@ export default class DeleteModal extends ConfirmModal{
     }
     const target = event.currentTarget as HTMLElement;
     const caseId = target.dataset.caseId;
-    paths.common.deleteDraftAppeal.replace(':id', caseId);
+
     if (this.descriptionElement) {
       this.descriptionElement.textContent = i18n.pages.casesList.deleteDraftModal.description
         .replace('{{ caseId }}', caseId);

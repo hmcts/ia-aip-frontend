@@ -403,6 +403,100 @@ describe('timeline-utils', () => {
         }]
       );
     });
+
+    it('Should construct the timeline section for uploadAdditionalEvidenceHomeOffice event', () => {
+      req.session.appeal.timeExtensionEventsMap = [];
+      const appealArgumentSectionEvents = [Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id];
+      const history = [
+        {
+          'id': 'uploadAdditionalEvidenceHomeOffice',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'home-office'
+          }
+        }
+      ] as HistoryEvent[];
+      req.session.appeal.history = history;
+      const result = constructSection(appealArgumentSectionEvents, req.session.appeal.history, null, req as Request);
+      expect(result).to.deep.eq(
+        [{
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'The Home Office uploaded additional evidence.',
+          'links': [{
+            'title': 'Useful documents',
+            'text': 'Home Office documents',
+            'href': '{{ paths.common.homeOfficeDocumentsViewer }}'
+          }]
+        }]
+      );
+    });
+
+    it('Should construct the timeline section for uploadAdditionalEvidenceHomeOffice event in caseBuilding state', () => {
+      req.session.appeal.timeExtensionEventsMap = [];
+      const appealArgumentSectionEvents = [Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id];
+      const appealArgumentSectionStates = [States.CASE_BUILDING.id];
+      const history = [
+        {
+          'id': 'uploadAdditionalEvidenceHomeOffice',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'home-office'
+          },
+          'state': {
+            'id': 'caseBuilding',
+            'name': 'Case building'
+          }
+        }
+      ] as HistoryEvent[];
+      req.session.appeal.history = history;
+      const result = constructSection(appealArgumentSectionEvents, req.session.appeal.history, appealArgumentSectionStates, req as Request);
+      expect(result).to.deep.eq(
+        [{
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'The Home Office uploaded additional evidence.',
+          'links': [{
+            'title': 'Useful documents',
+            'text': 'Home Office documents',
+            'href': '{{ paths.common.homeOfficeDocumentsViewer }}'
+          }]
+        }]
+      );
+    });
+
+    it('Should construct the timeline section for uploadAdditionalEvidenceHomeOffice event in remitted state', () => {
+      req.session.appeal.timeExtensionEventsMap = [];
+      const appealArgumentSectionEvents = [Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id];
+      const appealArgumentSectionStates = [States.REMITTED.id];
+      const history = [
+        {
+          'id': 'uploadAdditionalEvidenceHomeOffice',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'home-office'
+          },
+          'state': {
+            'id': 'remitted',
+            'name': 'Remitted'
+          }
+        }
+      ] as HistoryEvent[];
+      req.session.appeal.history = history;
+      const result = constructSection(appealArgumentSectionEvents, req.session.appeal.history, appealArgumentSectionStates, req as Request);
+      expect(result).to.deep.eq(
+        [{
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'The Home Office uploaded additional evidence.',
+          'links': [{
+            'title': 'Useful documents',
+            'text': 'Home Office documents',
+            'href': '{{ paths.common.homeOfficeDocumentsViewer }}'
+          }]
+        }]
+      );
+    });
   });
 
   describe('getApplicationEvents', () => {
@@ -958,14 +1052,27 @@ describe('timeline-utils', () => {
   describe('getEventsAndStates', () => {
     it('should return relevant events and states when uploadAddendumEvidence feature enabled', () => {
       const eventsAndStates = getEventsAndStates(true, true, false, false);
-      expect(eventsAndStates.appealArgumentSectionEvents.length).to.deep.equal(17);
-      expect(eventsAndStates.appealArgumentSectionStates.length).to.deep.equal(14);
+      expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(18);
+      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(18);
     });
 
     it('should return relevant events and states when uploadAddendumEvidence feature disabled', () => {
       const eventsAndStates = getEventsAndStates(false, true, false, false);
-      expect(eventsAndStates.appealArgumentSectionEvents.length).to.deep.equal(13);
-      expect(eventsAndStates.appealArgumentSectionStates.length).to.deep.equal(11);
+      expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(14);
+      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(15);
+    });
+
+    it('should include uploadAdditionalEvidenceHomeOffice event in appealArgumentSectionEvents', () => {
+      const eventsAndStates = getEventsAndStates(false, false, false, false);
+      expect(eventsAndStates.appealArgumentSectionEvents).to.include(Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id);
+    });
+
+    it('should include caseBuilding, listing, prepareForHearing and remitted states in appealArgumentSectionStates', () => {
+      const eventsAndStates = getEventsAndStates(false, false, false, false);
+      expect(eventsAndStates.appealArgumentSectionStates).to.include(States.CASE_BUILDING.id);
+      expect(eventsAndStates.appealArgumentSectionStates).to.include(States.LISTING.id);
+      expect(eventsAndStates.appealArgumentSectionStates).to.include(States.PREPARE_FOR_HEARING.id);
+      expect(eventsAndStates.appealArgumentSectionStates).to.include(States.REMITTED.id);
     });
 
     it('should return relevant events when hearingBundle feature enabled', () => {

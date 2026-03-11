@@ -34,6 +34,8 @@ const paths = {
     sponsorAddress: '/sponsor-address',
     sponsorContactDetails: '/sponsor-contact-preferences',
     sponsorAuthorisation: '/sponsor-authorisation',
+    hasNonLegalRep: '/has-non-legal-rep',
+    nonLegalRepEmail: '/non-legal-rep-email',
     checkAndSend: '/check-answers',
     taskList: '/about-appeal',
     appealOutOfCountry: '/in-the-uk',
@@ -309,6 +311,19 @@ const paths = {
     termsAndConditions: '/terms-and-conditions',
     privacyPolicy: '/privacy-policy',
     accessibility: '/accessibility-statement'
+  },
+  nonLegalRep: {
+    // Non Legal Rep endpoints
+    addNonLegalRep: '/add-non-legal-rep',
+    inviteToCreateAccount: '/add-non-legal-rep/provide-email-create-account',
+    inviteToCreateAccountConfirmation: '/add-non-legal-rep/provide-email-create-account/confirmation',
+    inviteToJoinAppeal: '/add-non-legal-rep/provide-email-join-appeal',
+    inviteToJoinAppealConfirmation: '/add-non-legal-rep/provide-email-join-appeal/confirm',
+    joinAppeal: '/join-appeal',
+    joinAppealConfirmDetails: '/join-appeal/confirm-details',
+    joinAppealConfirmation: '/join-appeal/confirmation',
+    updatePhoneNumber: '/update-phone-number',
+    updatePhoneNumberConfirmation: '/update-phone-number/confirmation',
   },
   makeApplication: {
     // Hearing requests

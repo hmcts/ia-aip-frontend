@@ -1,6 +1,5 @@
 import { Request } from 'express';
 import _ from 'lodash';
-import i18n from '../../locale/en.json';
 import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';
@@ -16,6 +15,7 @@ import {
 } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline, getDueDateForAppellantToRespondToFtpaDecision } from './event-deadline-date-finder';
+import { getI18n } from './grammarPerspectiveTransformer';
 import { convertToAmountOfMoneyDividedBy100, getFee } from './payments-utils';
 import { appealHasRemissionOption, hasFeeRemissionDecision } from './remission-utils';
 
@@ -126,9 +126,10 @@ async function getAppealApplicationNextStep(req: Request) {
   const dlrmFeeRemissionFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
   const deadLineDate = getDeadline(currentAppealStatus, req, dlrmFeeRemissionFlag, ftpaSetAsideFeatureEnabled);
   const isLateRemissionRequest = req.session.appeal.application.isLateRemissionRequest;
-
+  const isNonLegalRep: boolean = req.session.isNonLegalRep;
   let descriptionParagraphs;
   let respondBy;
+  const i18n = getI18n(isNonLegalRep);
   switch (currentAppealStatus) {
     case 'appealStarted':
       doThisNextSection = {
@@ -160,7 +161,7 @@ async function getAppealApplicationNextStep(req: Request) {
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req) && !isLateRemissionRequest) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
+        doThisNextSection = getFeeRemissionParagraph(deadLineDate, isNonLegalRep);
       } else {
         doThisNextSection = {
           descriptionParagraphs: [
@@ -745,6 +746,8 @@ function eventByLegalRep(req: Request, eventId: string, state: string): boolean 
 function getRemissionDecisionParagraphs(req: Request) {
   let doThisNextSection: DoThisNextSection;
   const remissionDecision = req.session.appeal.application.remissionDecision;
+  const isNonLegalRep: boolean = req.session.isNonLegalRep;
+  const i18n = getI18n(isNonLegalRep);
   switch (remissionDecision) {
     case 'approved':
       doThisNextSection = {
@@ -792,7 +795,8 @@ function getRemissionDecisionParagraphs(req: Request) {
   return doThisNextSection;
 }
 
-function getFeeRemissionParagraph(deadLineDate: string) {
+function getFeeRemissionParagraph(deadLineDate: string, isNonLegalRep: boolean) {
+  const i18n = getI18n(isNonLegalRep);
   const doThisNextSection: DoThisNextSection = {
     descriptionParagraphs: [
       i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,

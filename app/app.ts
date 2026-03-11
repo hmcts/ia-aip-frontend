@@ -23,6 +23,7 @@ import { filterRequest } from './middleware/xss-middleware';
 import { paths } from './paths';
 import { router } from './routes';
 import { setupSession } from './session';
+import { getI18n, transformI18n } from './utils/grammarPerspectiveTransformer';
 import { getUrl } from './utils/url-utils';
 
 const featurePolicy = require('feature-policy');
@@ -56,6 +57,9 @@ function createApp() {
 
   app.set('trust proxy', 1);
   app.locals.i18n = internationalization;
+  transformI18n();
+  app.locals.i18nTransformed = getI18n(true);
+
   app.locals.paths = paths;
   app.locals.maxFileSizeInMb = config.get('evidenceUpload.maxFileSizeInMb');
   app.locals.supportedFormats = config.get('evidenceUpload.supportedFormats');

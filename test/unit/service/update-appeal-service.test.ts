@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Request } from 'express';
 import session from 'express-session';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
@@ -8,6 +9,7 @@ import { DocumentManagementService } from '../../../app/service/document-managem
 import IdamService from '../../../app/service/idam-service';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import S2SService from '../../../app/service/s2s-service';
+import { SystemAuthenticationService } from '../../../app/service/system-authentication-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { expect, sinon, validateUuid } from '../../utils/testUtils';
 
@@ -19,6 +21,7 @@ describe('update-appeal-service', () => {
   let idamService: Partial<IdamService>;
   let s2sService: Partial<S2SService>;
   let authenticationService: AuthenticationService;
+  let systemAuthenticationService: SystemAuthenticationService;
   let updateAppealService: UpdateAppealService;
   let expectedCaseData: Partial<CaseData>;
   let documentManagementService: DocumentManagementService;
@@ -41,6 +44,9 @@ describe('update-appeal-service', () => {
 
     sandbox.stub(idamService, 'getUserToken').returns(userToken);
     sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
+    sandbox.stub(axios, 'post')
+      .withArgs('S2S_URL/lease')
+      .resolves({ data: serviceToken });
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
       .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
       .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(false)
@@ -52,8 +58,9 @@ describe('update-appeal-service', () => {
       .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(false)
       .withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(false);
     documentManagementService = new DocumentManagementService(authenticationService);
+    systemAuthenticationService = new SystemAuthenticationService();
 
-    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, null, documentManagementService);
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
     req = {
       idam: {
         userDetails: {
@@ -257,6 +264,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.paidAmount).to.equal('2000');
       expect(req.session.appeal.newFeeAmount).to.equal('2000');
       expect(req.session.appeal.previousFeeAmountGbp).to.equal('2000');
+      expect(req.session.isNonLegalRep).to.equal(false);
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -554,6 +562,29 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.cmaRequirements).to.deep.equal(expectedCmaRequirements);
     });
 
+    it('set nlr flag true if userId matches nlrIdamId', async () => {
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingReasonsForAppeal',
+          case_data: { ...expectedCaseData, nlrDetails: { idamId: userId } }
+        });
+      await updateAppealService.loadAppeal(req as Request);
+      expect(req.session.isNonLegalRep).to.equal(true);
+    });
+
+    it('set nlr flag false if userId matches nlrIdamId', async () => {
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingReasonsForAppeal',
+          case_data: { ...expectedCaseData, nlrDetails: { idamId: 'someOtherId' } }
+        });
+      await updateAppealService.loadAppeal(req as Request);
+      expect(req.session.isNonLegalRep).to.equal(false);
+    });
   });
 
   describe('convert to ccd case', () => {
@@ -1575,11 +1606,11 @@ describe('update-appeal-service', () => {
     describe('ftpaR35AppellantDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaR35AppellantDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
-          'document_filename': 'FTPA_R35_DOCUMENT.PDF',
-          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+            'document_filename': 'FTPA_R35_DOCUMENT.PDF',
+            'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1628,11 +1659,11 @@ describe('update-appeal-service', () => {
     describe('ftpaR35RespondentDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaR35RespondentDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
-          'document_filename': 'FTPA_R35_DOCUMENT.PDF',
-          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+            'document_filename': 'FTPA_R35_DOCUMENT.PDF',
+            'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1648,11 +1679,11 @@ describe('update-appeal-service', () => {
     describe('ftpaApplicationAppellantDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaApplicationAppellantDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
-          'document_filename': 'FTPA_APPELLANT_DECISION_DOCUMENT.PDF',
-          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+            'document_filename': 'FTPA_APPELLANT_DECISION_DOCUMENT.PDF',
+            'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1668,11 +1699,11 @@ describe('update-appeal-service', () => {
     describe('rule32NoticeDocument', () => {
       const caseData: Partial<CaseData> = {
         'rule32NoticeDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d',
-          'document_filename': 'rule32.pdf',
-          'document_binary_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d',
+            'document_filename': 'rule32.pdf',
+            'document_binary_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1781,11 +1812,11 @@ describe('update-appeal-service', () => {
     describe('ftpaApplicationRespondentDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaApplicationRespondentDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
-          'document_filename': 'FTPA_RESPONDENT_DECISION_DOCUMENT.PDF',
-          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+            'document_filename': 'FTPA_RESPONDENT_DECISION_DOCUMENT.PDF',
+            'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -2236,7 +2267,7 @@ describe('update-appeal-service', () => {
         getServiceToken: sandbox.stub().resolves(serviceToken)
       };
       documentManagementService = new DocumentManagementService(authenticationService);
-      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, null, documentManagementService);
+      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
       expectedCaseData = {
         'asylumSupportReference': null,
         'helpWithFeesReferenceNumber': null,
@@ -2881,6 +2912,223 @@ describe('update-appeal-service', () => {
         ]);
       });
     });
+  });
 
+  describe('submitEventRefactored', async () => {
+    for (const event of Object.values(Events)) {
+      it(`should submit event ${event.id} with ccd`, async () => {
+        const appeal: Appeal = {
+          ccdCaseId: caseId,
+          appealStatus: 'appealStarted',
+        } as Appeal;
+        const userId = '12345';
+        const userToken = 'userToken';
+        sandbox.stub(ccdService, 'updateAppeal').resolves();
+        updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
+        sandbox.stub(updateAppealService, 'mapCcdCaseToAppeal').resolves();
+        await updateAppealService.submitEventRefactored(event, appeal, userId, userToken);
+        expect(ccdService.updateAppeal).to.be.calledWith(
+          event,
+          userId,
+          {
+            id: caseId,
+            state: 'appealStarted',
+            case_data: { journeyType: 'aip' }
+          },
+          {
+            userToken: `Bearer ${userToken}`,
+            serviceToken: sinon.match.string
+          });
+      });
+    }
+  });
+
+  it('submitEventByCaseDetails', async () => {
+    const event = Events.EDIT_APPEAL;
+    const ccdCaseDetails: CcdCaseDetails = {
+      id: caseId,
+      state: 'appealStarted',
+      case_data: {
+        journeyType: 'aip'
+      } as CaseData
+    };
+    const userId = '12345';
+    const userToken = 'userToken';
+    sandbox.stub(ccdService, 'updateAppeal').resolves();
+    sandbox.stub(systemAuthenticationService, 'getCaseworkSystemToken').resolves(userToken);
+    sandbox.stub(systemAuthenticationService, 'getCaseworkSystemUUID')
+      .withArgs(userToken)
+      .resolves(userId);
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
+    await updateAppealService.submitEventByCaseDetails(event, ccdCaseDetails);
+    expect(ccdService.updateAppeal).to.be.calledWith(
+      event,
+      userId,
+      {
+        id: caseId,
+        state: 'appealStarted',
+        case_data: { journeyType: 'aip' }
+      },
+      {
+        userToken: `Bearer ${userToken}`,
+        serviceToken
+      });
+  });
+
+  it('validateMidEvent should validate once if one pageId given', async () => {
+    const event = Events.EDIT_APPEAL;
+    const appeal: Appeal = {
+      ccdCaseId: caseId,
+      appealStatus: 'appealStarted',
+    } as Appeal;
+    const midEventData = {};
+    const userId = '12345';
+    const userToken = 'userToken';
+    const pageId = 'pageId1';
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
+    sandbox.stub(ccdService, 'validateMidEvent')
+      .withArgs(
+        sinon.match.any,
+        pageId,
+        userId,
+        sinon.match.any)
+      .resolves({ status: 200 });
+    const errors = await updateAppealService.validateMidEvent(event, [pageId], appeal, midEventData, userId, userToken);
+    expect(ccdService.validateMidEvent).to.be.calledOnceWith(
+      {
+        case_reference: caseId,
+        data: {},
+        event_data: {},
+        event: event,
+        ignore_warning: false
+      }, pageId, userId,
+      {
+        userToken: `Bearer ${userToken}`,
+        serviceToken
+      });
+    expect(errors.length).to.equal(0);
+  });
+
+  it('validateMidEvent should validate multiple if multiple pageIds given', async () => {
+    const event = Events.EDIT_APPEAL;
+    const appeal: Appeal = {
+      ccdCaseId: caseId,
+      appealStatus: 'appealStarted',
+    } as Appeal;
+    const midEventData = {};
+    const userId = '12345';
+    const userToken = 'userToken';
+    const pageIds = ['pageId1', 'pageId2', 'pageId3', 'pageId4'];
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
+    sandbox.stub(ccdService, 'validateMidEvent')
+      .withArgs(
+        sinon.match.any,
+        sinon.match.string,
+        userId,
+        sinon.match.any)
+      .resolves({ status: 200 });
+    const errors = await updateAppealService.validateMidEvent(event, pageIds, appeal, midEventData, userId, userToken);
+    expect(ccdService.validateMidEvent).callCount(4);
+    for (const pageId of pageIds) {
+      expect(ccdService.validateMidEvent).to.be.calledWith(
+        {
+          case_reference: caseId,
+          data: {},
+          event_data: {},
+          event: event,
+          ignore_warning: false
+        }, pageId, userId,
+        {
+          userToken: `Bearer ${userToken}`,
+          serviceToken
+        });
+    }
+    expect(errors.length).to.equal(0);
+  });
+
+  it('validateMidEvent should return error list of errors for one page', async () => {
+    const event = Events.EDIT_APPEAL;
+    const appeal: Appeal = {
+      ccdCaseId: caseId,
+      appealStatus: 'appealStarted',
+    } as Appeal;
+    const midEventData = {};
+    const userId = '12345';
+    const userToken = 'userToken';
+    const pageId = 'pageId1';
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
+    const error1 = 'error 1';
+    const error2 = 'error 2';
+    sandbox.stub(ccdService, 'validateMidEvent')
+      .withArgs(
+        sinon.match.any,
+        sinon.match.string,
+        userId,
+        sinon.match.any)
+      .resolves({ status: 422, callbackErrors: [error1, error2] });
+    const errors = await updateAppealService.validateMidEvent(event, [pageId], appeal, midEventData, userId, userToken);
+    expect(ccdService.validateMidEvent).to.be.calledOnceWith(
+      {
+        case_reference: caseId,
+        data: {},
+        event_data: {},
+        event: event,
+        ignore_warning: false
+      }, pageId, userId,
+      {
+        userToken: `Bearer ${userToken}`,
+        serviceToken
+      });
+    expect(errors.length).to.equal(2);
+    expect(errors.includes(error1)).to.equal(true);
+    expect(errors.includes(error2)).to.equal(true);
+  });
+
+  it('validateMidEvent should return error list of errors from 422 for multiple pages', async () => {
+    const event = Events.EDIT_APPEAL;
+    const appeal: Appeal = {
+      ccdCaseId: caseId,
+      appealStatus: 'appealStarted',
+    } as Appeal;
+    const midEventData = {};
+    const userId = '12345';
+    const userToken = 'userToken';
+    const pages = [
+      { id: 'pageId1', error: ['error 1-1', 'error 1-2'], status: 422 },
+      { id: 'pageId2', error: ['error 2-1', 'error 2-2'], status: 401 },
+      { id: 'pageId3', error: [], status: 200 },
+      { id: 'pageId4', error: ['error 4-1'], status: 422 }
+    ];
+    const pageIds = pages.map(page => page.id);
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
+    const validateMidEventStub = sandbox.stub(ccdService, 'validateMidEvent');
+    for (const page of pages) {
+      validateMidEventStub
+        .withArgs(
+          sinon.match.any,
+          page.id,
+          userId,
+          sinon.match.any)
+        .resolves({ status: page.status, callbackErrors: page.error });
+    }
+    const errors = await updateAppealService.validateMidEvent(event, pageIds, appeal, midEventData, userId, userToken);
+    for (const page of pages) {
+      expect(ccdService.validateMidEvent).to.be.calledWith(
+        {
+          case_reference: caseId,
+          data: {},
+          event_data: {},
+          event: event,
+          ignore_warning: false
+        }, page.id, userId,
+        {
+          userToken: `Bearer ${userToken}`,
+          serviceToken
+        });
+    }
+    expect(errors.length).to.equal(3);
+    expect(errors.includes('error 1-1')).to.equal(true);
+    expect(errors.includes('error 1-2')).to.equal(true);
+    expect(errors.includes('error 4-1')).to.equal(true);
   });
 });

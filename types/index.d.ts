@@ -210,6 +210,16 @@ declare global {
     updatedDecisionAndReasons?: DecisionAndReasons[];
     sourceOfRemittal?: string;
     remittalDocuments?: RemittalDetails[];
+    nlrEmail?: string;
+    nlrDetails?: NlrDetails
+  }
+
+  interface NlrDetails {
+    emailAddress?: string;
+    phoneNumber?: string
+    givenNames?: string;
+    familyName?: string;
+    idamId?: string
   }
 
   interface Hearing {
@@ -307,6 +317,7 @@ declare global {
       wantsSms?: boolean;
     };
     sponsorAuthorisation?: string;
+    hasNonLegalRep?: string;
     tasks?: {
       [key: string]: Task;
     };

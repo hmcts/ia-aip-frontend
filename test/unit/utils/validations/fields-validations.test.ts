@@ -6,14 +6,14 @@ import {
   dateValidation,
   deportationOrderOptionsValidation,
   DOBValidation,
-  emailValidation,
+  emailValidation, hasNlrValidation,
   helpWithFeesRefNumberValidation,
   helpWithFeesValidation,
   homeOfficeNumberValidation,
   interpreterLanguageSelectionValidation,
   interpreterSupportSelectionValidation,
   interpreterTypesSelectionValidation,
-  isDateInRange,
+  isDateInRange, joinAppealValidation,
   postcodeValidation,
   reasonForAppealDecisionValidation,
   remissionOptionsValidation,
@@ -1014,6 +1014,7 @@ describe('fields-validations', () => {
       expect(validationResult).to.deep.equal(expectedResponse);
     });
 
+
     it('should fail validation and return "string.empty if help with fees ref number is not typed" ', () => {
       const object = { 'helpWithFeesRefNumber': '' };
       const validationResult = helpWithFeesRefNumberValidation(object);
@@ -1191,5 +1192,90 @@ describe('fields-validations', () => {
       }
     };
     expect(validationResult).to.deep.equal(expectedResponse);
+  });
+
+  describe('joinAppealValidation', () => {
+    it('should validate case reference and access code', () => {
+      const object = {
+        caseReference: 'someCaseReference',
+        joinAppealAccessCode: 'someAccessCode'
+      };
+      const validationResult = joinAppealValidation(object);
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation if reference empty and return "string.empty" type', () => {
+      const object = {
+        caseReference: '',
+        joinAppealAccessCode: 'someAccessCode',
+      };
+      const validationResult = joinAppealValidation(object);
+      const expectedResponse = {
+        'caseReference': {
+          'key': 'caseReference',
+          'text': 'The Online case reference number cannot be empty',
+          'href': '#caseReference'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+
+    it('should fail validation if access code empty and return "string.empty" type', () => {
+      const object = {
+        caseReference: 'someCaseReference',
+        joinAppealAccessCode: '',
+      };
+      const validationResult = joinAppealValidation(object);
+      const expectedResponse = {
+        'joinAppealAccessCode': {
+          'key': 'joinAppealAccessCode',
+          'text': 'The access code cannot be empty',
+          'href': '#joinAppealAccessCode'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail email validation and return "string.format" type', () => {
+      const object = { 'email-value': 'thisisnotanemailexample.net' };
+      const validationResult = emailValidation(object);
+
+      const expectedResponse = {
+        'email-value': {
+          'key': 'email-value',
+          'text': 'Enter an email address in the correct format, like name@example.com',
+          'href': '#email-value'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail email validation and return "string.format" type on unicode emails', () => {
+      const object = { 'email-value': 'あいうえお@domain.com' };
+      const validationResult = emailValidation(object);
+
+      const expectedResponse = {
+        'email-value': {
+          'key': 'email-value',
+          'text': 'Enter an email address in the correct format, like name@example.com',
+          'href': '#email-value'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail hasNlrValidation and return "string.empty if no option selected" ', () => {
+      const object = {};
+      const validationResult = hasNlrValidation(object);
+      const expectedResponse = {
+        answer: {
+          href: '#answer',
+          key: 'answer',
+          text: 'Select yes if you have a non legal representative'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
   });
 });

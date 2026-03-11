@@ -448,6 +448,44 @@ describe('createSummaryRowsFrom', () => {
       });
     });
   });
+
+  it('should create NLR rows for hasNlr', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
+    req.session.appeal.application.hasNonLegalRep = 'Yes';
+    req.session.appeal.nlrEmail = 'someEmail';
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const minimisedRows = rows.map(object => {
+      return { key: object.key, value: object.value };
+    });
+    expect(minimisedRows).to.deep.contain({
+      'key': { 'text': i18n.pages.checkYourAnswers.rowTitles.hasNonLegalRep },
+      'value': { 'html': 'Yes' }
+    });
+    expect(minimisedRows).to.deep.contain({
+      'key': { 'text': i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail },
+      'value': { 'html': 'someEmail' }
+    });
+  });
+
+  it('should create NLR rows for No hasNlr', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
+    req.session.appeal.application.hasNonLegalRep = 'No';
+    req.session.appeal.nlrEmail = 'someEmail';
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const minimisedRows = rows.map(object => {
+      return { key: object.key, value: object.value };
+    });
+    expect(minimisedRows).to.deep.contain({
+      'key': { 'text': i18n.pages.checkYourAnswers.rowTitles.hasNonLegalRep },
+      'value': { 'html': 'No' }
+    });
+    expect(minimisedRows).to.not.deep.contain({
+      'key': { 'text': i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail },
+      'value': { 'html': 'someEmail' }
+    });
+  });
 });
 
 describe('Check and Send Controller', () => {

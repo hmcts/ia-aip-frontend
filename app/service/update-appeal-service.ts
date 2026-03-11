@@ -10,6 +10,7 @@ import { CcdService } from './ccd-service';
 import { DocumentManagementService } from './document-management-service';
 import LaunchDarklyService from './launchDarkly-service';
 import S2SService from './s2s-service';
+import { SystemAuthenticationService } from './system-authentication-service';
 
 enum Subscriber {
   APPELLANT = 'appellant',
@@ -28,12 +29,14 @@ function isEmpty(text: string) {
 export default class UpdateAppealService {
   private readonly _ccdService: CcdService;
   private readonly _authenticationService: AuthenticationService;
+  private readonly _systemAuthenticationService: SystemAuthenticationService;
   private readonly _s2sService: S2SService;
   private readonly _documentManagementService: DocumentManagementService;
 
-  constructor(ccdService: CcdService, authenticationService: AuthenticationService, s2sService: S2SService = null, documentManagementService: DocumentManagementService) {
+  constructor(ccdService: CcdService, authenticationService: AuthenticationService, systemAuthenticationService: SystemAuthenticationService, s2sService: S2SService, documentManagementService: DocumentManagementService) {
     this._ccdService = ccdService;
     this._authenticationService = authenticationService;
+    this._systemAuthenticationService = systemAuthenticationService;
     this._s2sService = s2sService;
     this._documentManagementService = documentManagementService;
   }
@@ -51,6 +54,8 @@ export default class UpdateAppealService {
     const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
+    const nlrIdamId = ccdCase.case_data?.nlrDetails?.idamId;
+    req.session.isNonLegalRep = req.idam.userDetails.uid === nlrIdamId;
   }
 
   private getDate(ccdDate): AppealDate {
@@ -116,6 +121,38 @@ export default class UpdateAppealService {
     };
     const ccdCase: CcdCaseDetails = await this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders);
     return this.mapCcdCaseToAppeal(ccdCase);
+  }
+
+  async submitEventByCaseDetails(event, updatedCcdCase: CcdCaseDetails): Promise<CcdCaseDetails> {
+    const userToken = await this._systemAuthenticationService.getCaseworkSystemToken();
+    const uid = await this._systemAuthenticationService.getCaseworkSystemUUID(userToken);
+    const securityHeaders: SecurityHeaders = {
+      userToken: `Bearer ${userToken}`,
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+    return this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders, true);
+  }
+
+  async validateMidEvent(event, pageIds: string[], appeal: Appeal, midEventData: any, uid: string, userToken: string): Promise<string[]> {
+    const securityHeaders: SecurityHeaders = {
+      userToken: `Bearer ${userToken}`,
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+    const midEventDetails: MidEventDetails = {
+      case_reference: appeal.ccdCaseId,
+      data: midEventData,
+      event_data: midEventData,
+      event: event,
+      ignore_warning: false
+    };
+    const errors: string[] = [];
+    for (const pageId of pageIds) {
+      const response: MidEventResponse = await this._ccdService.validateMidEvent(midEventDetails, pageId, uid, securityHeaders);
+      if (response.status === 422 && response?.callbackErrors.length > 0) {
+        errors.push(...response.callbackErrors);
+      }
+    }
+    return errors;
   }
 
   mapCcdCaseToAppeal(ccdCase: CcdCaseDetails): Appeal {
@@ -385,11 +422,11 @@ export default class UpdateAppealService {
       if (caseData.datesToAvoid.length) {
         isDateCannotAttend = true;
         dates = caseData.datesToAvoid.map((d) => {
-          return {
-            date: this.getDate(d.value.dateToAvoid),
-            reason: d.value.dateToAvoidReason
-          };
-        }
+            return {
+              date: this.getDate(d.value.dateToAvoid),
+              reason: d.value.dateToAvoidReason
+            };
+          }
         );
 
       }
@@ -407,11 +444,11 @@ export default class UpdateAppealService {
       if (caseData.datesToAvoid.length) {
         isDateCannotAttend = true;
         dates = caseData.datesToAvoid.map((d) => {
-          return {
-            date: this.getDate(d.value.dateToAvoid),
-            reason: d.value.dateToAvoidReason
-          };
-        }
+            return {
+              date: this.getDate(d.value.dateToAvoid),
+              reason: d.value.dateToAvoidReason
+            };
+          }
         );
 
       }
@@ -611,6 +648,7 @@ export default class UpdateAppealService {
       ftpaApplicationAppellantDocument: ftpaApplicationAppellantDocument,
       readonlyApplicationEnabled: true,
       sourceOfRemittal: caseData.sourceOfRemittal,
+      nlrDetails: caseData.nlrDetails,
       application: {
         appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
@@ -631,6 +669,7 @@ export default class UpdateAppealService {
           ...sponsorContactDetails
         },
         sponsorAuthorisation: caseData.sponsorAuthorisation,
+        hasNonLegalRep: caseData.hasNonLegalRep,
         dateLetterSent,
         decisionLetterReceivedDate,
         isAppealLate: caseData.submissionOutOfTime ? yesNoToBool(caseData.submissionOutOfTime) : undefined,
@@ -798,12 +837,14 @@ export default class UpdateAppealService {
     }
     caseData = {
       ...caseData,
-      ...appeal.application.personalDetails.stateless && { appellantStateless: appeal.application.personalDetails.stateless },
+      ...appeal.application?.personalDetails?.stateless && { appellantStateless: appeal.application?.personalDetails?.stateless },
       ...paymentsFlag && { rpDcAppealHearingOption: appeal.application.rpDcAppealHearingOption || null },
       ...paymentsFlag && { decisionHearingFeeOption: appeal.application.decisionHearingFeeOption || null },
       ...appeal.paymentReference && { paymentReference: appeal.paymentReference },
       ...appeal.paymentStatus && { paymentStatus: appeal.paymentStatus },
       ...appeal.paymentDate && { paymentDate: appeal.paymentDate },
+      ...appeal.nlrEmail && { nlrEmail: appeal.nlrEmail },
+      ...appeal.nlrDetails && { nlrDetails: appeal.nlrDetails },
       ...appeal.isFeePaymentEnabled && { isFeePaymentEnabled: appeal.isFeePaymentEnabled },
       ...paymentsFlag && { paAppealTypeAipPaymentOption: appeal.paAppealTypeAipPaymentOption || null },
       ...paymentsFlag && { pcqId: appeal.pcqId || null },
@@ -816,8 +857,8 @@ export default class UpdateAppealService {
       ...appeal.reheardHearingDocumentsCollection && {
         reheardHearingDocumentsCollection: this.mapAppealReheardHearingDocsToCcd(appeal.reheardHearingDocumentsCollection, appeal.documentMap)
       },
-      ...appeal.application.homeOfficeLetter && {
-        uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
+      ...appeal.application?.homeOfficeLetter && {
+        uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application?.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
       },
       ...appeal.additionalEvidence && {
         additionalEvidence: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.additionalEvidence, appeal.documentMap)
@@ -837,8 +878,8 @@ export default class UpdateAppealService {
       ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },
       ...appeal.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: appeal.ftpaAppellantOutOfTimeExplanation },
       ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime },
-      ...appeal.application.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: appeal.application.remissionRejectedDatePlus14days },
-      ...appeal.application.amountLeftToPay && { amountLeftToPay: appeal.application.amountLeftToPay }
+      ...appeal.application?.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: appeal.application?.remissionRejectedDatePlus14days },
+      ...appeal.application?.amountLeftToPay && { amountLeftToPay: appeal.application?.amountLeftToPay }
     };
     return caseData;
   }
@@ -1553,6 +1594,7 @@ export default class UpdateAppealService {
         this.mapToCCDCaseSponsorDetails(appeal, caseData);
       }
       this.assignSinglePropertyIfExists(application, 'sponsorAuthorisation', caseData, 'sponsorAuthorisation');
+      this.assignSinglePropertyIfExists(application, 'hasNonLegalRep', caseData, 'hasNonLegalRep');
     }
     this.assignSinglePropertyIfExists(application, 'deportationOrderOptions', caseData, 'deportationOrderOptions');
   }

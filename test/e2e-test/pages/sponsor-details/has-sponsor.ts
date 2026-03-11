@@ -6,7 +6,7 @@ const testUrl = config.get('testUrl');
 module.exports = {
   hasSponsor(I) {
     Given('I should be taken to the has sponsor page', async () => {
-      I.amOnPage(testUrl + paths.appealStarted.hasSponsor);
+      I.waitInUrl(testUrl + paths.appealStarted.hasSponsor, 10);
     });
 
     When('I choose No and click Continue', async () => {

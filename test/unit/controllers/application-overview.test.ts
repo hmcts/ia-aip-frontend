@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { SinonStub } from 'sinon';
 import {
   checkAppealEnded,
@@ -210,7 +210,8 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: false
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList
     });
   });
 
@@ -300,7 +301,8 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: true
+      isPostDecisionState: true,
+      previousPage: paths.common.casesList
     });
   });
 
@@ -392,7 +394,8 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: true,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: true
+      isPostDecisionState: true,
+      previousPage: paths.common.casesList
     });
   });
 
@@ -456,7 +459,8 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: false
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList
     });
   });
 
@@ -520,7 +524,8 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: false
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList
     });
   });
 
@@ -597,11 +602,12 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: false
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList
     });
   });
 
-  it('should render with only showAskForFeeRemission property', async function() {
+  it('should render with only showAskForFeeRemission property', async function () {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -696,7 +702,8 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: false
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList
     });
   });
 
@@ -1188,7 +1195,6 @@ describe('Confirmation Page Controller', () => {
     expect(loadAppealByCaseIdStub).to.be.calledWith('123', req);
     expect(res.render).to.be.calledOnceWith();
   });
-
 
   it('getApplicationOverview with caseId query param should redirect to cases list and render error if loadAppealByCaseId fails', async () => {
     req.query = { caseId: '123' };

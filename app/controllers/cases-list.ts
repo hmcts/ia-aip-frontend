@@ -48,7 +48,6 @@ function getCasesList(updateAppealService: UpdateAppealService) {
       }
 
       return res.render('cases-list.njk', {
-        previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: req.session.casesList || [],
         createAppealModalDescription,

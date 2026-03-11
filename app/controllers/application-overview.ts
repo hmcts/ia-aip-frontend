@@ -212,7 +212,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, ftpaFeatureEnabled),
         showAskForFeeRemission,
         showAskForSomethingInEndedState,
-        isPostDecisionState: isPostDecisionState(appealStatus, ftpaFeatureEnabled)
+        isPostDecisionState: isPostDecisionState(appealStatus, ftpaFeatureEnabled),
+        previousPage: paths.common.casesList
       });
     } catch (e) {
       next(e);

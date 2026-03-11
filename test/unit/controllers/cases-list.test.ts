@@ -81,7 +81,6 @@ describe('Cases List Controller', () => {
       const expectedCases = [appealStartedCase, appealSubmittedCase];
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
-        previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: expectedCases,
         createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS'),
@@ -104,7 +103,6 @@ describe('Cases List Controller', () => {
       await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
-        previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: [],
         createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS'),
@@ -122,7 +120,6 @@ describe('Cases List Controller', () => {
       };
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
-        previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: [appealStartedCase, appealSubmittedCase],
         createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS'),
@@ -141,7 +138,6 @@ describe('Cases List Controller', () => {
       };
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
-        previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: [appealStartedCase, appealSubmittedCase],
         createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS'),
@@ -159,7 +155,6 @@ describe('Cases List Controller', () => {
       };
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
-        previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: [appealStartedCase, appealSubmittedCase],
         createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS'),
@@ -178,7 +173,6 @@ describe('Cases List Controller', () => {
       };
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
-        previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: [appealStartedCase, appealSubmittedCase],
         createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS'),
@@ -196,7 +190,6 @@ describe('Cases List Controller', () => {
       };
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
-        previousPage: paths.common.overview,
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: [appealStartedCase, appealSubmittedCase],
         createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS'),

@@ -36,6 +36,7 @@ const emailToUserId: Record<string, string> = {
   'outOfTimeRejectedDecisionAppeal@example.com': '34',
   'outOfTimeInTimeDecisionAppeal@example.com': '35',
   'appealUpToFeeChoice@example.com': '36',
+  'multiple-appeals@example.com': '100',
   'setupcase@example.com': '999'
 };
 

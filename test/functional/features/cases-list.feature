@@ -35,6 +35,12 @@ Feature: Cases list page
     Given I have logged in as a user with multiple appeals
     Then I should see the cases list page
     When I click "Create a new appeal" link
+    Then I should see the confirm create appeal popup
+    When I click cancel on the confirm create appeal popup
+    Then I should see the cases list page
+    When I click "Create a new appeal" link
+    Then I should see the confirm create appeal popup
+    When I click confirm on the confirm create appeal popup
     Then I should see the appeal overview page
     And I see "Do this next" in subheading
 
@@ -53,3 +59,23 @@ Feature: Cases list page
     When I visit the cases list page
     Then I should see the cases list page
     And I should see a table with 3 appeals
+
+  Scenario: User with multiple cases can delete draft appeal from cases list
+    Given I have logged in as a user with multiple appeals
+    Then I should see the cases list page
+    And I should see a table with 3 appeals
+    And I should see appeal reference "DRAFT" in the table
+    And I should see appeal reference "PA/50100/2024" in the table
+    And I should see appeal reference "HU/50200/2024" in the table
+    And I should see "Delete" link for appeal "DRAFT"
+    And I should not see "Delete" link for appeal "PA/50100/2024"
+    And I should not see "Delete" link for appeal "HU/50200/2024"
+    When I click "Delete" link for appeal "DRAFT"
+    Then I should see the confirm delete draft popup with case id "1001"
+    When I click cancel on the confirm delete draft popup
+    Then I should see the cases list page
+    When I click "Delete" link for appeal "DRAFT"
+    Then I should see the confirm delete draft popup with case id "1001"
+    When I click confirm on the confirm delete draft popup
+    Then I should see the cases list page
+

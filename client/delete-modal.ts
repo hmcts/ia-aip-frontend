@@ -8,7 +8,7 @@ export default class DeleteModal extends ConfirmModal{
   private linksToModalElement: NodeListOf<Element> = null;
   constructor() {
     super();
-    const modalId = 'delete-draft-modal';
+    const modalId = i18n.pages.casesList.deleteDraftModal.id;
     this.modalElement = document.querySelector(`#${modalId}`);
     this.modalOverlayElement = document.querySelector(`#${modalId}-overlay`);
     this.confirmButtonElement = document.querySelector(`#${modalId}-confirm`);

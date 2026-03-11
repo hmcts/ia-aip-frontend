@@ -18,6 +18,8 @@ async function navigateFromCasesListToOverview(I) {
     await I.click('View', '.govuk-table__body');
   } else {
     await I.click(i18n.pages.casesList.createNewAppeal);
+    await I.waitForVisible(`#${i18n.pages.casesList.createAppealModal.id}`, 30);
+    await I.click(i18n.pages.casesList.createAppealModal.confirmButton);
   }
   await I.waitInUrl(paths.common.overview, 30);
 }

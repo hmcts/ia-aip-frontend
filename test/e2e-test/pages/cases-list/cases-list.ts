@@ -1,5 +1,6 @@
 import { paths } from '../../../../app/paths';
 import i18n from '../../../../locale/en.json';
+import { signInForUser } from '../helper-functions';
 
 const config = require('config');
 
@@ -9,17 +10,12 @@ module.exports = {
   casesList(I) {
     Given('I have logged in as a user with no cases', async () => {
       await I.amOnPage(testUrl + paths.common.login);
-      await I.fillField('#username', 'no-cases@example.com');
-      await I.fillField('#password', 'Apassword123');
-      await I.click('Sign in');
-      await I.waitInUrl(paths.common.casesList, 30);
+      signInForUser('no-cases@example.com');
     });
 
     Given('I have logged in as a user with multiple appeals', async () => {
       await I.amOnPage(testUrl + paths.common.login);
-      await I.fillField('#username', 'multiple-appeals@example.com');
-      await I.fillField('#password', 'Apassword123');
-      await I.click('Sign in');
+      signInForUser('multiple-appeals@example.com');
       await I.waitInUrl(paths.common.casesList, 30);
     });
 
@@ -38,7 +34,7 @@ module.exports = {
     });
 
     Then(/^I should see "Create a new appeal" link$/, async () => {
-      await I.see(i18n.pages.casesList.createNewAppeal, 'a');
+      await I.see(i18n.pages.casesList.createNewAppeal, 'button');
     });
 
     Then(/^I should see a table with (\d+) appeals?$/, async (count: string) => {
@@ -57,6 +53,10 @@ module.exports = {
       await I.see(reference, '.govuk-table__body');
     });
 
+    Then(/^I should not see appeal reference "([^"]*)" in the table$/, async (reference: string) => {
+      await I.dontSee(reference, '.govuk-table__body');
+    });
+
     When(/^I click "View" link for appeal "([^"]*)"$/, async (reference: string) => {
       // Find the row with the appeal reference and click its View link
       await I.click(`//tr[contains(., "${reference}")]//a[contains(text(), "${i18n.pages.casesList.viewLink}")]`);
@@ -66,6 +66,50 @@ module.exports = {
     When(/^I click "Create a new appeal" link$/, async () => {
       await I.click(i18n.pages.casesList.createNewAppeal);
       await I.waitInUrl(paths.common.overview, 30);
+    });
+
+    When(/^I should see the confirm create appeal popup$/, async () => {
+      await I.waitForVisible(`#${i18n.pages.casesList.createAppealModal.id}`, 30);
+      await I.see(i18n.pages.casesList.createAppealModal.title);
+      await I.see(i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS'));
+      await I.see(i18n.pages.casesList.createAppealModal.confirmButton);
+      await I.seeElement(`#${i18n.pages.casesList.createAppealModal.id}-cancel`);
+    });
+
+    When(/^I click cancel on the confirm create appeal popup$/, async () => {
+      await I.click(`#${i18n.pages.casesList.createAppealModal.id}-cancel`);
+    });
+
+    When(/^I click confirm on the confirm create appeal popup$/, async () => {
+      await I.click(`#${i18n.pages.casesList.createAppealModal.id}-confirm`);
+    });
+
+    When(/^I should see "Delete" link for appeal "([^"]*)"$/, async (reference: string) => {
+      await I.see(i18n.pages.casesList.deleteLink, `//tr[contains(., "${reference}")]`);
+    });
+
+    When(/^I should not see "Delete" link for appeal "([^"]*)"$/, async (reference: string) => {
+      await I.dontSee(i18n.pages.casesList.deleteLink, `//tr[contains(., "${reference}")]`);
+    });
+
+    When(/^I click "Delete" link for appeal "([^"]*)"$/, async (reference: string) => {
+      await I.click(`//tr[contains(., "${reference}")]//a[contains(text(), "${i18n.pages.casesList.deleteLink}")]`);
+    });
+
+    When(/^I should see the confirm delete draft popup with case id "([^"]*)"$/, async (caseId: string) => {
+      await I.waitForVisible(`#${i18n.pages.casesList.deleteDraftModal.id}`, 30);
+      await I.see(i18n.pages.casesList.deleteDraftModal.title);
+      await I.see(i18n.pages.casesList.deleteDraftModal.description.replace('{{ caseId }}', caseId));
+      await I.see(i18n.pages.casesList.deleteDraftModal.confirmButton);
+      await I.seeElement(`#${i18n.pages.casesList.deleteDraftModal.id}-cancel`);
+    });
+
+    When(/^I click confirm on the confirm delete draft popup$/, async () => {
+      await I.click(`#${i18n.pages.casesList.deleteDraftModal.id}-confirm`);
+    });
+
+    When(/^I click cancel on the confirm delete draft popup$/, async () => {
+      await I.click(`#${i18n.pages.casesList.deleteDraftModal.id}-cancel`);
     });
 
     Then(/^I should see status "([^"]*)" for appeal "([^"]*)"$/, async (status: string, reference: string) => {

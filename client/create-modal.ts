@@ -5,7 +5,7 @@ import ConfirmModal from './confirm-modal';
 export default class CreateModal extends ConfirmModal{
   constructor() {
     super();
-    const modalId = 'confirm-create-modal';
+    const modalId = i18n.pages.casesList.createAppealModal.id;
     this.modalElement = document.querySelector(`#${modalId}`);
     this.modalOverlayElement = document.querySelector(`#${modalId}-overlay`);
     this.confirmButtonElement = document.querySelector(`#${modalId}-confirm`);

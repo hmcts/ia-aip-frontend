@@ -83,10 +83,7 @@ export default class UpdateAppealService {
 
   async deleteDraftAppeal(req: Request): Promise<void> {
     const caseId = req.params.id;
-    const securityHeaders: SecurityHeaders = {
-      userToken: req.cookies['__auth-token'],
-      serviceToken: await this._s2sService.getServiceToken()
-    };
+    const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
     const userId: string = req.idam.userDetails.uid;
     const event = Events.DELETE_DRAFT_APPEAL;
     const updateEventResponse = await this._ccdService.startUpdateAppeal(userId, caseId, event.id, securityHeaders);

@@ -167,6 +167,43 @@ describe('Cases List Controller', () => {
       });
     });
 
+    it('should render cases-list.njk with correct error if errorCode query is caseNotFound with Case id', async () => {
+      const caseId: string = randomUUID().toString();
+      req.query = { errorCode: ErrorCode.caseNotFound, caseId: caseId };
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: '',
+        text: i18n.pages.casesList.caseNotFoundError.replace('{{ caseId }}', caseId),
+        href: '#'
+      };
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        previousPage: paths.common.overview,
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: [appealStartedCase, appealSubmittedCase],
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS'),
+        errorList: [expectedError]
+      });
+    });
+
+    it('should render cases-list.njk with correct error if errorCode query is caseNotFound with no Case id', async () => {
+      req.query = { errorCode: ErrorCode.caseNotFound };
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: '',
+        text: i18n.pages.casesList.caseNotFoundError.replace('{{ caseId }}', 'undefined'),
+        href: '#'
+      };
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        previousPage: paths.common.overview,
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: [appealStartedCase, appealSubmittedCase],
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', 'MAX_DRAFT_APPEALS'),
+        errorList: [expectedError]
+      });
+    });
+
     it('should call next with error on failure', async () => {
       const error = new Error('something went wrong');
       res.render = sandbox.stub().throws(error);

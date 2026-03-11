@@ -16,7 +16,8 @@ const logLabel: string = getLogLabel(__filename);
 
 export enum ErrorCode {
   tooManyDrafts = 'tooManyDrafts',
-  deleteDraftError = 'deleteDraftError'
+  deleteDraftError = 'deleteDraftError',
+  caseNotFound = 'caseNotFound'
 }
 
 function getCasesList(updateAppealService: UpdateAppealService) {
@@ -37,6 +38,10 @@ function getCasesList(updateAppealService: UpdateAppealService) {
           const deleteDraftAppealId = `${i18n.pages.casesList.deleteLinkId}-${caseId}`;
           errorList = [(createStructuredError(deleteDraftAppealId,
             i18n.pages.casesList.deleteDraftError.replace('{{ caseId }}', caseId)))];
+          break;
+        case ErrorCode.caseNotFound:
+          errorList = [(createStructuredError('',
+            i18n.pages.casesList.caseNotFoundError.replace('{{ caseId }}', req.query.caseId as string)))];
           break;
         default:
           break;

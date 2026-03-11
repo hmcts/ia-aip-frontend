@@ -9,8 +9,7 @@
     <h2 class="govuk-heading-l" id="{{ titleId }}">{{ modalTitle }}</h2>
     <p id="{{ descriptionId }}">{{ modalDescription }}</p>
     <div class="modal-buttons__container">
-        <form id="{{ formId }}" action="{{ modalHref }}" method="post">
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <form id="{{ formId }}" action="{{ modalHref }}" method="get">
             {{ govukButton({
               text: modalButton,
               name: modalButton,

@@ -8,6 +8,14 @@ import { expectedMultipleEventsData, expectedStartAppealEventData } from '../moc
 
 describe('idam-service', () => {
   const headers = {} as SecurityHeaders;
+  const user: IdamDetails = {
+    uid: 'userId',
+    name: 'forename surname',
+    given_name: 'forename',
+    family_name: 'surname',
+    sub: '',
+    roles: ['citizen']
+  };
   const userId = 'userId';
   const caseId = 'caseId';
   describe('createCase', () => {
@@ -24,21 +32,23 @@ describe('idam-service', () => {
       const expectedResult = {} as any;
       const serviceId = { $set: { HMCTSServiceId : 'BFA1' } };
 
-      submitCreateCaseStub.withArgs(userId, headers, {
+      submitCreateCaseStub.withArgs(user.uid, headers, {
         event: {
           id: 'eventId',
           summary: 'Create case AIP',
           description: 'Create case AIP'
         },
         data: {
-          journeyType: 'aip'
+          journeyType: 'aip',
+          appellantGivenNames: user.given_name,
+          appellantFamilyName: user.family_name
         },
         event_token: 'token',
         supplementary_data_request: serviceId,
         ignore_warning: true
       }).resolves(expectedResult);
 
-      const ccdCaseDetails = await ccdService.createCase(userId, headers);
+      const ccdCaseDetails = await ccdService.createCase(user, headers);
 
       expect(ccdCaseDetails).to.equal(expectedResult);
     });

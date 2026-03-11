@@ -73,7 +73,7 @@ export default class UpdateAppealService {
 
   async createNewAppeal(req: Request): Promise<Appeal> {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
-    const ccdCase = await this._ccdService.createCase(req.idam.userDetails.uid, securityHeaders);
+    const ccdCase = await this._ccdService.createCase(req.idam.userDetails, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
     req.session.refreshCasesList = true;

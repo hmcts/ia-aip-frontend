@@ -210,7 +210,7 @@ describe('update-appeal-service', () => {
       const mockAppeal = { ccdCaseId: 'newCase456' } as Appeal;
 
       ccdServiceMock.expects('createCase')
-        .withArgs(userId, { userToken, serviceToken })
+        .withArgs(req.idam.userDetails, { userToken, serviceToken })
         .resolves(mockCcdCase);
 
       const mapStub = sandbox.stub(updateAppealService, 'mapCcdCaseToAppeal').returns(mockAppeal);

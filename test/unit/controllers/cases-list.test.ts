@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import {
   ErrorCode,
   getCasesList,
-  postDeleteDraftAppeal,
+  getDeleteDraftAppeal,
   setupCasesListController
 } from '../../../app/controllers/cases-list';
 import { paths } from '../../../app/paths';
@@ -213,14 +213,14 @@ describe('Cases List Controller', () => {
     expect(router).to.not.be.null;
   });
 
-  describe('postCreateNewAppeal', () => {
-    let postCreateNewAppeal;
+  describe('getCreateNewAppeal', () => {
+    let getCreateNewAppeal;
     let configStub;
     beforeEach(() => {
       configStub = {
         get: sandbox.stub().returns(5)
       };
-      postCreateNewAppeal = proxyquire('../../../app/controllers/cases-list', { config: configStub }).postCreateNewAppeal;
+      getCreateNewAppeal = proxyquire('../../../app/controllers/cases-list', { config: configStub }).getCreateNewAppeal;
     });
 
     afterEach(() => {
@@ -233,7 +233,7 @@ describe('Cases List Controller', () => {
         createNewAppeal: sandbox.stub().resolves(mockAppeal)
       } as Partial<UpdateAppealService>;
 
-      await postCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.createNewAppeal).to.have.been.calledWith(req);
       expect(res.redirect).to.have.been.calledWith(paths.common.overview);
@@ -246,7 +246,7 @@ describe('Cases List Controller', () => {
         createNewAppeal: sandbox.stub().resolves(mockAppeal)
       } as Partial<UpdateAppealService>;
 
-      await postCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.createNewAppeal).to.have.been.calledWith(req);
       expect(res.redirect).to.have.been.calledWith(paths.common.overview);
@@ -261,7 +261,7 @@ describe('Cases List Controller', () => {
         appealStartedCase
       ];
       updateAppealService.createNewAppeal = sandbox.spy();
-      await postCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.createNewAppeal).to.not.be.calledWith(sinon.match.any);
       expect(res.redirect).to.not.be.calledWith(paths.common.overview);
       expect(res.redirect).to.be.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.tooManyDrafts}`);
@@ -275,8 +275,8 @@ describe('Cases List Controller', () => {
       configStub = {
         get: sandbox.stub().returns(1)
       };
-      postCreateNewAppeal = proxyquire('../../../app/controllers/cases-list', { config: configStub }).postCreateNewAppeal;
-      await postCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      getCreateNewAppeal = proxyquire('../../../app/controllers/cases-list', { config: configStub }).getCreateNewAppeal;
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.createNewAppeal).to.not.be.calledWith(sinon.match.any);
       expect(res.redirect).to.not.be.calledWith(paths.common.overview);
       expect(res.redirect).to.be.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.tooManyDrafts}`);
@@ -299,7 +299,7 @@ describe('Cases List Controller', () => {
         appealStartedCase
       ];
       updateAppealService.createNewAppeal = sandbox.spy();
-      await postCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.createNewAppeal).to.be.calledWith(sinon.match.any);
       expect(res.redirect).to.be.calledWith(paths.common.overview);
       expect(res.render).to.not.be.calledWith(sinon.match.any);
@@ -311,19 +311,19 @@ describe('Cases List Controller', () => {
         createNewAppeal: sandbox.stub().rejects(error)
       } as Partial<UpdateAppealService>;
 
-      await postCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledWith(error);
     });
   });
 
-  describe('postDeleteDraftAppeal', () => {
+  describe('getDeleteDraftAppeal', () => {
     it('should call deleteDraftAppeal and redirect to casesList', async () => {
       const updateAppealService = {
         deleteDraftAppeal: sandbox.stub().resolves()
       } as Partial<UpdateAppealService>;
 
-      await postDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.deleteDraftAppeal).to.have.been.calledWith(req);
       expect(res.redirect).to.have.been.calledWith(paths.common.casesList);
@@ -335,7 +335,7 @@ describe('Cases List Controller', () => {
         deleteDraftAppeal: sandbox.stub().rejects(error)
       } as Partial<UpdateAppealService>;
 
-      await postDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=undefined`);
     });
@@ -348,7 +348,7 @@ describe('Cases List Controller', () => {
         deleteDraftAppeal: sandbox.stub().rejects(error)
       } as Partial<UpdateAppealService>;
 
-      await postDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=${caseId}`);
     });

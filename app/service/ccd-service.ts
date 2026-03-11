@@ -136,18 +136,20 @@ class CcdService {
     return response.data;
   }
 
-  async createCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
-    const startEventResponse = await this.startCreateCase(userId, headers);
+  async createCase(user: IdamDetails, headers: SecurityHeaders): Promise<CcdCaseDetails> {
+    const startEventResponse = await this.startCreateCase(user.uid, headers);
     const supplementaryDataRequest = generateSupplementaryId();
 
-    return this.submitCreateCase(userId, headers, {
+    return this.submitCreateCase(user.uid, headers, {
       event: {
         id: startEventResponse.event_id,
         summary: 'Create case AIP',
         description: 'Create case AIP'
       },
       data: {
-        journeyType: 'aip'
+        journeyType: 'aip',
+        appellantGivenNames: user.given_name,
+        appellantFamilyName: user.family_name
       },
       event_token: startEventResponse.token,
       ignore_warning: true,

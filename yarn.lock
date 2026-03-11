@@ -6718,15 +6718,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:^3.3.2":
-  version: 3.3.2
-  resolution: "dompurify@npm:3.3.2"
+"dompurify@npm:^3.3.3":
+  version: 3.3.3
+  resolution: "dompurify@npm:3.3.3"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10/3ca02559677ce6d9583a500f21ffbb6b9e88f1af99f69fa0d0d9442cddbac98810588c869f8b435addb5115492d6e49870024bca322169b941bafedb99c7f281
+  checksum: 10/4cc9c539ed7136d46c6577613b8e20871c2b6165db01dfbd2a3c11c75f9e339c496ac6519a1c3190115def8cadae3720bef0417fc43fa28802c7407bab174da9
   languageName: node
   linkType: hard
 
@@ -7540,14 +7540,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express-rate-limit@npm:^8.3.0":
-  version: 8.3.0
-  resolution: "express-rate-limit@npm:8.3.0"
+"express-rate-limit@npm:^8.3.1":
+  version: 8.3.1
+  resolution: "express-rate-limit@npm:8.3.1"
   dependencies:
     ip-address: "npm:10.1.0"
   peerDependencies:
     express: ">= 4.11"
-  checksum: 10/e896a66fecc10639e65873186fdfb71f19d6af650220eb7ea5450725215c3eed8dc6ddcfa1e68a9db8c9facc3326fbc281512ad3ccd8f107f42a2466ce12c18c
+  checksum: 10/dd97bfc48c01a6d4c5433203232b5e7a1e55e21322bde49033e5f8c4339584fe671a94096144a0810f4ea21dcec8aaaf15823109627e609f8ed1bc5912a345cf
   languageName: node
   linkType: hard
 
@@ -8848,13 +8848,13 @@ __metadata:
     css-loader: "npm:^7.1.4"
     css-minimizer-webpack-plugin: "npm:^7.0.4"
     csurf: "npm:^1.11.0"
-    dompurify: "npm:^3.3.2"
+    dompurify: "npm:^3.3.3"
     dotenv-extended: "npm:^2.9.0"
     eslint: "npm:^9.39.4"
     eslint-plugin-chai-friendly: "npm:^1.1.0"
     eslint-plugin-import: "npm:^2.32.0"
     express: "npm:^4.22.1"
-    express-rate-limit: "npm:^8.3.0"
+    express-rate-limit: "npm:^8.3.1"
     express-session: "npm:^1.19.0"
     feature-policy: "npm:^0.6.0"
     global-jsdom: "npm:^24.0.0"
@@ -8871,11 +8871,11 @@ __metadata:
     jsonwebtoken: "npm:9.0.3"
     jwt-decode: "npm:^4.0.0"
     lodash: "npm:^4.17.23"
-    mini-css-extract-plugin: "npm:^2.10.0"
+    mini-css-extract-plugin: "npm:^2.10.1"
     mocha: "npm:^11.7.5"
     mocha-multi: "npm:^1.1.7"
     mochawesome: "npm:^7.1.4"
-    mockttp: "npm:^4.2.2"
+    mockttp: "npm:^4.2.3"
     moment: "npm:^2.30.1"
     multer: "npm:^2.1.1"
     nl2br: "npm:^0.0.3"
@@ -11009,15 +11009,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mini-css-extract-plugin@npm:^2.10.0":
-  version: 2.10.0
-  resolution: "mini-css-extract-plugin@npm:2.10.0"
+"mini-css-extract-plugin@npm:^2.10.1":
+  version: 2.10.1
+  resolution: "mini-css-extract-plugin@npm:2.10.1"
   dependencies:
     schema-utils: "npm:^4.0.0"
     tapable: "npm:^2.2.1"
   peerDependencies:
     webpack: ^5.0.0
-  checksum: 10/bae5350ab82171c6c9a22a4397df14aa69280f5ff0e1ff4d2429ea841bc096927b1e27ba7b75a9c3dd77bd44bab449d6197bd748381f1326cbc8befcb10d1a9e
+  checksum: 10/2d0cecc3bea85cd7f9b1ce0974f1672976d610a9267e2988ff19f5d03b017bff12b32151a412de0f519a70be7d3b050b499b20101445fb21728cc2d35dd4041a
   languageName: node
   linkType: hard
 
@@ -11278,9 +11278,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mockttp@npm:^4.2.2":
-  version: 4.2.2
-  resolution: "mockttp@npm:4.2.2"
+"mockttp@npm:^4.2.3":
+  version: 4.2.3
+  resolution: "mockttp@npm:4.2.3"
   dependencies:
     "@graphql-tools/schema": "npm:^8.5.0"
     "@graphql-tools/utils": "npm:^8.8.0"
@@ -11328,7 +11328,7 @@ __metadata:
     ws: "npm:^8.8.0"
   bin:
     mockttp: dist/admin/admin-bin.js
-  checksum: 10/ed335cc7492f781e0df2a49d52bb2b4a6083e7a61aecb748c98c5423e62a9eaa8d8615d3f550ae698bd02015667e9f59df5bcc2810f5fd1fca6313056dae0664
+  checksum: 10/dc9f396c66c0923cc6a7fbdee96b6334d76edbea0efffb0866b7d5ec56cbfa7ad9c9220afb79c45e3a31bf554f9b7e794d183da1095ee5d297c503c60ca1eb0b
   languageName: node
   linkType: hard
 

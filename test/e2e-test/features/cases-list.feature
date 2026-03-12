@@ -33,6 +33,7 @@ Scenario: Case list functionality works
   When I visit the cases list page
   And I create a new draft appeal "4" times
   And I visit the cases list page
+  And I refresh the appeal list
   Then I should see a table with 5 appeals
 
   When I create a new draft appeal

@@ -879,6 +879,7 @@
       },
       "viewLink": "View",
       "deleteLink": "Delete",
+      "refreshCaseListLink": "Refresh appeal list",
       "noCases": "You do not have any appeals.",
       "createNewAppeal": "Create a new appeal",
       "createNewAppealId": "create-new-appeal",

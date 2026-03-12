@@ -21,12 +21,23 @@ export enum ErrorCode {
   caseNotFound = 'caseNotFound'
 }
 
-function getCasesList(updateAppealService: UpdateAppealService) {
+function getRefreshCasesList(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await updateAppealService.loadAppealsList(req);
+      req.session.refreshCasesList = false;
+      return res.redirect(paths.common.casesList);
+    } catch (e) {
+      next(e);
+    }
+  };
+}
+
+function getCasesList() {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.session.refreshCasesList) {
-        await updateAppealService.loadAppealsList(req);
-        req.session.refreshCasesList = false;
+        return res.redirect(paths.common.refreshCasesList);
       }
       let errorList: ValidationError[] = null;
       const caseId: string = req?.query?.caseId as string;
@@ -92,7 +103,8 @@ function getDeleteDraftAppeal(updateAppealService: UpdateAppealService) {
 
 function setupCasesListController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.common.casesList, getCasesList(updateAppealService));
+  router.get(paths.common.casesList, getCasesList());
+  router.get(paths.common.refreshCasesList, getRefreshCasesList(updateAppealService));
   const createNewAppealMiddleware = useRedis
     ? [citizenLimiter, getCreateNewAppeal(updateAppealService)]
     : [getCreateNewAppeal(updateAppealService)];
@@ -104,6 +116,7 @@ function setupCasesListController(updateAppealService: UpdateAppealService): Rou
 export {
   setupCasesListController,
   getCasesList,
+  getRefreshCasesList,
   getCreateNewAppeal,
   getDeleteDraftAppeal
 };

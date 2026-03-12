@@ -31,6 +31,7 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">{{ i18n.pages.casesList.title }}</h1>
+        <a href="{{ paths.common.refreshCasesList }}" class="govuk-link" tabindex="0">{{ i18n.pages.casesList.refreshCaseListLink }}</a>
 
         {% if cases | length %}
           <table class="govuk-table">
@@ -54,7 +55,7 @@
                   <td class="govuk-table__cell">
                     <a class="govuk-link" href="{{ paths.common.overview }}?caseId={{ case.id }}">{{ i18n.pages.casesList.viewLink }}</a>
                     {% if isDraft %}
-                      <a id="{{ i18n.pages.casesList.deleteLinkId }}-{{ case.id }}" href='#' class="govuk-link {{ i18n.pages.casesList.deleteLinkClass }}" data-case-id="{{ case.id }}"" role="button" tabindex="0">{{ i18n.pages.casesList.deleteLink }}</a>
+                      <a id="{{ i18n.pages.casesList.deleteLinkId }}-{{ case.id }}" href='#' class="govuk-link {{ i18n.pages.casesList.deleteLinkClass }}" data-case-id="{{ case.id }}" role="button" tabindex="0">{{ i18n.pages.casesList.deleteLink }}</a>
                     {% endif %}
                   </td>
                 </tr>

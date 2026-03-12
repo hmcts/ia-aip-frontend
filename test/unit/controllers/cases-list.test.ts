@@ -1,9 +1,10 @@
-import { randomUUID } from 'node:crypto';
 import { NextFunction, Request, Response } from 'express';
+import { randomUUID } from 'node:crypto';
 import {
   ErrorCode,
   getCasesList,
   getDeleteDraftAppeal,
+  getRefreshCasesList,
   setupCasesListController
 } from '../../../app/controllers/cases-list';
 import { paths } from '../../../app/paths';
@@ -75,11 +76,29 @@ describe('Cases List Controller', () => {
   afterEach(() => {
     sandbox.restore();
   });
+  describe('getRefreshCasesList', () => {
+    const randomString = randomUUID().toString();
+    it('should call loadAppealsList and redirect to casesList', async () => {
+      req.session.refreshCasesList = randomString;
+      await getRefreshCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.loadAppealsList).to.be.calledWith(req);
+      expect(req.session.refreshCasesList).to.equal(false);
+      expect(res.redirect).to.be.calledWith(paths.common.casesList);
+    });
+
+    it('should call next with error on failure', async () => {
+      req.session.refreshCasesList = randomString;
+      updateAppealService.loadAppealsList = sandbox.stub().rejects(new Error('failed to load appeals list'));
+      await getRefreshCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.refreshCasesList).to.equal(randomString);
+      expect(res.redirect).to.not.be.calledWith(paths.common.casesList);
+    });
+  });
+
   describe('getCasesList', () => {
     it('should render cases-list.njk with cases from session including stateName', async () => {
-      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCasesList()(req as Request, res as Response, next);
       const expectedCases = [appealStartedCase, appealSubmittedCase];
-      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
         cases: expectedCases,
@@ -88,19 +107,18 @@ describe('Cases List Controller', () => {
       });
     });
 
-    it('should refresh cases when refreshCasesList session flag is true', async () => {
+    it('should redirect to refresh cases when refreshCasesList session flag is true', async () => {
       req.session.refreshCasesList = true;
 
-      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCasesList()(req as Request, res as Response, next);
 
-      expect(updateAppealService.loadAppealsList).to.have.been.calledWith(req);
-      expect(req.session.refreshCasesList).to.equal(false);
+      expect(res.redirect).to.have.been.calledWith(paths.common.refreshCasesList);
     });
 
     it('should render with empty array when no casesList in session', async () => {
       req.session.casesList = undefined;
 
-      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCasesList()(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
@@ -112,7 +130,7 @@ describe('Cases List Controller', () => {
 
     it('should render cases-list.njk with correct error if errorCode query is tooManyDrafts', async () => {
       req.query = { errorCode: ErrorCode.tooManyDrafts };
-      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCasesList()(req as Request, res as Response, next);
       const expectedError = {
         key: 'create-new-appeal',
         text: i18n.pages.casesList.tooManyDraftsError,
@@ -130,7 +148,7 @@ describe('Cases List Controller', () => {
     it('should render cases-list.njk with correct error if errorCode query is deleteDraftError with Case id', async () => {
       const caseId: string = randomUUID().toString();
       req.query = { errorCode: ErrorCode.deleteDraftError, caseId: caseId };
-      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCasesList()(req as Request, res as Response, next);
       const expectedError = {
         key: `delete-${caseId}`,
         text: i18n.pages.casesList.deleteDraftError.replace('{{ caseId }}', caseId),
@@ -147,7 +165,7 @@ describe('Cases List Controller', () => {
 
     it('should render cases-list.njk with correct error if errorCode query is deleteDraftError with no Case id', async () => {
       req.query = { errorCode: ErrorCode.deleteDraftError };
-      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCasesList()(req as Request, res as Response, next);
       const expectedError = {
         key: 'delete-undefined',
         text: i18n.pages.casesList.deleteDraftError.replace('{{ caseId }}', 'undefined'),
@@ -165,7 +183,7 @@ describe('Cases List Controller', () => {
     it('should render cases-list.njk with correct error if errorCode query is caseNotFound with Case id', async () => {
       const caseId: string = randomUUID().toString();
       req.query = { errorCode: ErrorCode.caseNotFound, caseId: caseId };
-      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCasesList()(req as Request, res as Response, next);
       const expectedError = {
         key: '',
         text: i18n.pages.casesList.caseNotFoundError.replace('{{ caseId }}', caseId),
@@ -182,7 +200,7 @@ describe('Cases List Controller', () => {
 
     it('should render cases-list.njk with correct error if errorCode query is caseNotFound with no Case id', async () => {
       req.query = { errorCode: ErrorCode.caseNotFound };
-      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCasesList()(req as Request, res as Response, next);
       const expectedError = {
         key: '',
         text: i18n.pages.casesList.caseNotFoundError.replace('{{ caseId }}', 'undefined'),
@@ -201,7 +219,7 @@ describe('Cases List Controller', () => {
       const error = new Error('something went wrong');
       res.render = sandbox.stub().throws(error);
 
-      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await getCasesList()(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledWith(error);
     });

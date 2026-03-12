@@ -12,7 +12,7 @@ nodejs:
     IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
     S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
     CCD_API_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
-    REDIS_URL: redis://{{ .Release.Name }}-redis-master
+    REDIS_URL: redis://{{ .Release.Name }}-hmcts-redis-master
     PCQ_URL: https://pcq.aat.platform.hmcts.net
     PCQ_RETURN_URL: https://${SERVICE_FQDN}/about-appeal
     NODE_ENV: development
@@ -31,12 +31,13 @@ nodejs:
         - AppInsightsInstrumentationKey
         - pcq-token-key
         - launch-darkly-sdk-key
-redis:
+hmcts-redis:
   enabled: true
   architecture: standalone
   image:
     registry: hmctsprod.azurecr.io
-    repository: helm/hmcts-redis
+    repository: imported/redis
+    tag: 8.2.1
   serviceAccount:
     create: false
     name: "iac"

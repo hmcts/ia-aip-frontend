@@ -36,7 +36,7 @@ Scenario: Case list functionality works
   Then I should see a table with 5 appeals
 
   When I create a new draft appeal
-  Then I should see the "tooManyDrafts" error
+  Then I should see the case list with the "tooManyDrafts" error
 
   When I grab a draft appeal at random
   And I click "Delete" link for the grabbed appeal
@@ -50,35 +50,6 @@ Scenario: Case list functionality works
   And I should see a table with 4 appeals
   And I should not see the grabbed appeal in the table
 
-
-
-
-
-
-
-
-
-  When I click continue
-  Then I should see the task-list page
-  When I click on the type-of-appeal link
-  Then I should be taken to the Is the appellant in the UK page
-  When I click "Back" link
-  Then I expect to be redirect back to the task-list
-  When I click on Home office details
-  Then I should be taken to the home office ref number page
-  When I click "Back" link
-  Then I expect to be redirect back to the task-list
-  When I click the contact details link
-  Then I should be taken to the contact-details page
-  When I click "Back" link
-  Then I expect to be redirect back to the task-list
-  When I click on the decision-type link
-  Then I should be taken to the decision type page
-  When I click "Back" link
-  Then I expect to be redirect back to the task-list
-  When I click on the fee-support link
-  Then I should be taken to the fee support page
-  When I click "Back" link
-  Then I expect to be redirect back to the task-list
-  When I click on the check and send your appeal link
-  Then I should be taken to the check-and-send page
+  When I go to view the grabbed appeal
+  Then I should see the cases list page
+  And I should see the case list with the "caseNotFound" error

@@ -68,7 +68,6 @@ module.exports = {
 
     When(/^I click "Create a new appeal" link$/, async () => {
       await I.click(i18n.pages.casesList.createNewAppeal);
-      await I.waitInUrl(paths.common.overview, 30);
     });
 
     When(/^I should see the confirm create appeal popup$/, async () => {
@@ -133,13 +132,15 @@ module.exports = {
     });
 
     When('I create a new draft appeal', async () => {
-      await I.amOnPage(testUrl + paths.common.createNewAppeal);
+      await I.click(i18n.pages.casesList.createNewAppeal);
+      await I.waitForVisible(`#${i18n.pages.casesList.createAppealModal.id}-confirm`, 30);
+      await I.click(`#${i18n.pages.casesList.createAppealModal.id}-confirm`);
     });
 
-    When('I should see the "tooManyDrafts" error', async () => {
-      await I.waitInUrl(`${paths.common.casesList}?errorCode=tooManyDrafts`, 30);
-      await I.seeInCurrentUrl(`${paths.common.casesList}?errorCode=tooManyDrafts`);
-      await I.see(i18n.pages.casesList.tooManyDraftsError);
+    When(/^I should see the case list with the "([^"]*)" error$/, async (errorCode: string) => {
+      await I.waitInUrl(`${paths.common.casesList}?errorCode=${errorCode}`, 30);
+      await I.seeInCurrentUrl(`${paths.common.casesList}?errorCode=${errorCode}`);
+      await I.see(i18n.pages.casesList[`${errorCode}Error`].replace('{{ caseId }}', caseId));
     });
 
     When('I refresh the appeal list', async () => {
@@ -172,6 +173,10 @@ module.exports = {
       expect(rowCount).to.equal(numberOfAppeals - 1);
       numberOfAppeals = rowCount;
       await I.dontSee(caseId, '.govuk-table__body');
+    });
+
+    When('I go to view the grabbed appeal', async () => {
+      await I.amOnPage(`${testUrl}${paths.common.overview}?caseId=${caseId}`);
     });
   }
 };

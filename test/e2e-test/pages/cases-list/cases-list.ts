@@ -56,6 +56,7 @@ module.exports = {
         } catch (error) {
           logger.exception(error, logLabel);
           logger.trace(`Failed attempt ${attempt + 1}. Refreshing case list and trying again...`, logLabel);
+          await I.wait(1);
         }
       }
       expect(hasPassed).to.equal(true, `Failed to see the expected number of appeals after ${maxAttempts} attempts.`);

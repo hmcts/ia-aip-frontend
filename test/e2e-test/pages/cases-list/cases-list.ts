@@ -1,8 +1,10 @@
 import { expect } from 'chai';
 import { paths } from '../../../../app/paths';
+import Logger, { getLogLabel } from '../../../../app/utils/logger';
 import i18n from '../../../../locale/en.json';
 import { signInForUser } from '../helper-functions';
-
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -41,10 +43,19 @@ module.exports = {
     });
 
     Then(/^I should see a table with (\d+) appeals?$/, async (count: string) => {
-      await I.seeElement('.govuk-table');
-      const rowCount = await I.grabNumberOfVisibleElements('.govuk-table__body tr');
-      if (rowCount !== parseInt(count, 10)) {
-        throw new Error(`Expected ${count} appeals but found ${rowCount}`);
+      let hasPassed = false;
+      const maxAttempts = 3;
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        try {
+          await I.amOnPage(testUrl + paths.common.refreshCasesList);
+          await I.seeElement('.govuk-table');
+          const rowCount = await I.grabNumberOfVisibleElements('.govuk-table__body tr');
+          expect(rowCount).to.equal(count, `Expected ${count} appeals but found ${rowCount}`);
+          hasPassed = true;
+        } catch (error) {
+          logger.trace(`Failed attempt ${attempt + 1}. Refreshing case list and trying again...`, logLabel);
+        }
+        expect(hasPassed).to.equal(true, `Failed to see the expected number of appeals after ${maxAttempts} attempts.`);
       }
     });
 
@@ -141,10 +152,6 @@ module.exports = {
       await I.waitInUrl(`${paths.common.casesList}?errorCode=${errorCode}`, 30);
       await I.seeInCurrentUrl(`${paths.common.casesList}?errorCode=${errorCode}`);
       await I.see(i18n.pages.casesList[`${errorCode}Error`].replace('{{ caseId }}', caseId));
-    });
-
-    When('I refresh the appeal list', async () => {
-      await I.amOnPage(testUrl + paths.common.refreshCasesList);
     });
 
     When('I grab a draft appeal at random', async () => {

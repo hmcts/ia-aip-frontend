@@ -259,7 +259,7 @@
       }) }}
       {% if previousPage %}
         {{ govukBackLink({
-          text: i18n.components.back.back,
+          text: i18n.components.back.back if not previousPageText else previousPageText,
           href: previousPage if not previousPage.attributes,
           attributes: previousPage.attributes if previousPage.attributes
         }) }}

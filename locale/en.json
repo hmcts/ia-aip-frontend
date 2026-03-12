@@ -4317,7 +4317,8 @@
       }
     },
     "back": {
-      "back": "Back"
+      "back": "Back",
+      "backToCasesList": "Back to cases list"
     },
     "progressBar": {
       "yourAppealDetails": {

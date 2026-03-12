@@ -24,6 +24,7 @@ import { CcdService } from '../../../app/service/ccd-service';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedMultipleEventsData } from '../mockData/events/expectations';
 
@@ -211,7 +212,8 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: false,
-      previousPage: paths.common.casesList
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -302,7 +304,8 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: true,
-      previousPage: paths.common.casesList
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -395,7 +398,8 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: true,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: true,
-      previousPage: paths.common.casesList
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -460,7 +464,8 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: false,
-      previousPage: paths.common.casesList
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -525,7 +530,8 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: false,
-      previousPage: paths.common.casesList
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -603,7 +609,8 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: false,
-      previousPage: paths.common.casesList
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -703,7 +710,8 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: false,
-      previousPage: paths.common.casesList
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 

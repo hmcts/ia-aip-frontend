@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
+import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { States } from '../data/states';
 import { paths } from '../paths';
@@ -213,7 +214,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showAskForFeeRemission,
         showAskForSomethingInEndedState,
         isPostDecisionState: isPostDecisionState(appealStatus, ftpaFeatureEnabled),
-        previousPage: paths.common.casesList
+        previousPage: paths.common.casesList,
+        previousPageText: i18n.components.back.backToCasesList
       });
     } catch (e) {
       next(e);

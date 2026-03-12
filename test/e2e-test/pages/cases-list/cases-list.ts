@@ -52,11 +52,12 @@ module.exports = {
           const rowCount = await I.grabNumberOfVisibleElements('.govuk-table__body tr');
           expect(rowCount).to.equal(count, `Expected ${count} appeals but found ${rowCount}`);
           hasPassed = true;
+          break;
         } catch (error) {
           logger.trace(`Failed attempt ${attempt + 1}. Refreshing case list and trying again...`, logLabel);
         }
-        expect(hasPassed).to.equal(true, `Failed to see the expected number of appeals after ${maxAttempts} attempts.`);
       }
+      expect(hasPassed).to.equal(true, `Failed to see the expected number of appeals after ${maxAttempts} attempts.`);
     });
 
     Then(/^I should see "View" link for the appeal$/, async () => {

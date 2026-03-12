@@ -91,7 +91,7 @@ withNightlyPipeline(type, product, component) {
     env.IDAM_WEB_URL = 'https://idam-web-public.aat.platform.hmcts.net'
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
     env.PCQ_URL = 'https://pcq.aat.platform.hmcts.net'
-    env.PCQ_RETURN_URL = params.testUrl + 'about-appeal'
+    env.PCQ_RETURN_URL = params.testUrl + '/about-appeal'
     env.IDAM_TESTING_SUPPORT_URL = 'https://idam-testing-support-api.aat.platform.hmcts.net'
     env.PUPPETEER_SKIP_DOWNLOAD = 'true'
     env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'true'

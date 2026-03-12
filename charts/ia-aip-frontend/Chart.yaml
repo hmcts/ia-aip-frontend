@@ -10,7 +10,7 @@ dependencies:
   - name: hmcts-redis
     version: 0.7.0
     repository: 'oci://hmctsprod.azurecr.io/helm'
-    condition: redis.enabled
+    condition: hmcts-redis.enabled
   - name: idam-pr
     version: 2.2.6
     repository: 'oci://hmctspublic.azurecr.io/helm'

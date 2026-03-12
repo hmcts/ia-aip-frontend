@@ -49,11 +49,12 @@ module.exports = {
         try {
           await I.amOnPage(testUrl + paths.common.refreshCasesList);
           await I.seeElement('.govuk-table');
-          const rowCount = await I.grabNumberOfVisibleElements('.govuk-table__body tr');
-          expect(rowCount).to.equal(count, `Expected ${count} appeals but found ${rowCount}`);
+          const rowCount: number = await I.grabNumberOfVisibleElements('.govuk-table__body tr');
+          expect(rowCount).to.equal(parseInt(count, 10), `Expected ${count} appeals but found ${rowCount}`);
           hasPassed = true;
           break;
         } catch (error) {
+          logger.exception(error, logLabel);
           logger.trace(`Failed attempt ${attempt + 1}. Refreshing case list and trying again...`, logLabel);
         }
       }

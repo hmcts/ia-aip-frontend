@@ -184,7 +184,6 @@ module.exports = {
     Given('I have logged back in for the e2e', async () => {
       I.amOnPage(testUrl + paths.common.login);
       await signInForUserFromThread();
-      await navigateFromCasesListToOverview(I);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 

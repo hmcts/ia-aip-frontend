@@ -181,6 +181,13 @@ module.exports = {
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
+    Given('I have logged in for the e2e case list', async () => {
+      I.amOnPage(testUrl + paths.common.login);
+      await createCitizenUser();
+      await signInForUserFromThread();
+      await I.seeInTitle(`Your appeals - ${i18n.serviceName} - ${i18n.provider}`);
+    });
+
     Given('I have logged back in for the e2e', async () => {
       I.amOnPage(testUrl + paths.common.login);
       await signInForUserFromThread();

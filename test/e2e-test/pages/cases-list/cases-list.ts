@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import { paths } from '../../../../app/paths';
 import i18n from '../../../../locale/en.json';
 import { signInForUser } from '../helper-functions';
@@ -5,7 +6,9 @@ import { signInForUser } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
-
+let caseId: string;
+let deleteLink: Locator;
+let numberOfAppeals: number;
 module.exports = {
   casesList(I) {
     Given('I have logged in as a user with no cases', async () => {
@@ -96,10 +99,10 @@ module.exports = {
       await I.click(`//tr[contains(., "${reference}")]//a[contains(text(), "${i18n.pages.casesList.deleteLink}")]`);
     });
 
-    When(/^I should see the confirm delete draft popup with case id "([^"]*)"$/, async (caseId: string) => {
+    When(/^I should see the confirm delete draft popup with case id "([^"]*)"$/, async (someCaseId: string) => {
       await I.waitForVisible(`#${i18n.pages.casesList.deleteDraftModal.id}`, 30);
       await I.see(i18n.pages.casesList.deleteDraftModal.title);
-      await I.see(i18n.pages.casesList.deleteDraftModal.description.replace('{{ caseId }}', caseId));
+      await I.see(i18n.pages.casesList.deleteDraftModal.description.replace('{{ caseId }}', someCaseId));
       await I.see(i18n.pages.casesList.deleteDraftModal.confirmButton);
       await I.seeElement(`#${i18n.pages.casesList.deleteDraftModal.id}-cancel`);
     });
@@ -115,6 +118,60 @@ module.exports = {
     Then(/^I should see status "([^"]*)" for appeal "([^"]*)"$/, async (status: string, reference: string) => {
       // Check that the row containing the reference also contains the status
       await I.see(status, `//tr[contains(., "${reference}")]`);
+    });
+
+    When('I click the "Back to cases list" link', async () => {
+      await I.click(i18n.components.back.backToCasesList);
+    });
+
+    When(/^I create a new draft appeal "([0-9]*)" times$/, async (times: string) => {
+      const count = parseInt(times);
+      for (let i = 0; i < count; i++) {
+        await I.amOnPage(testUrl + paths.common.createNewAppeal);
+        await I.waitInUrl(paths.common.overview, 30);
+      }
+    });
+
+    When('I create a new draft appeal', async () => {
+      await I.amOnPage(testUrl + paths.common.createNewAppeal);
+    });
+
+    When('I should see the "tooManyDrafts" error', async () => {
+      await I.waitInUrl(`${paths.common.casesList}?errorCode=tooManyDrafts`, 30);
+      await I.seeInCurrentUrl(`${paths.common.casesList}?errorCode=tooManyDrafts`);
+      await I.see(i18n.pages.casesList.tooManyDraftsError);
+    });
+
+    When('I refresh the appeal list', async () => {
+      await I.amOnPage(testUrl + paths.common.refreshCasesList);
+    });
+
+    When('I grab a draft appeal at random', async () => {
+      const rowCount: number = await I.grabNumberOfVisibleElements('.govuk-table__body tr');
+      numberOfAppeals = rowCount;
+      const randomIndex = Math.floor(Math.random() * rowCount);
+      const randomRow: Locator = locate('tbody .govuk-table__row').at(randomIndex);
+      caseId = await I.grabValueFrom(randomRow.find('td').at(1));
+      deleteLink = randomRow.find('a').withText(i18n.pages.casesList.deleteLink);
+    });
+
+    When('I click "Delete" link for the grabbed appeal', async () => {
+      await I.click(deleteLink);
+    });
+
+    When('I should see the confirm delete draft popup with case id matching the grabbed appeal', async () => {
+      await I.waitForVisible(`#${i18n.pages.casesList.deleteDraftModal.id}`, 30);
+      await I.see(i18n.pages.casesList.deleteDraftModal.title);
+      await I.see(i18n.pages.casesList.deleteDraftModal.description.replace('{{ caseId }}', caseId));
+      await I.see(i18n.pages.casesList.deleteDraftModal.confirmButton);
+      await I.seeElement(`#${i18n.pages.casesList.deleteDraftModal.id}-cancel`);
+    });
+
+    When('I should not see the grabbed appeal in the table', async () => {
+      const rowCount: number = await I.grabNumberOfVisibleElements('.govuk-table__body tr');
+      expect(rowCount).to.equal(numberOfAppeals - 1);
+      numberOfAppeals = rowCount;
+      await I.dontSee(caseId, '.govuk-table__body');
     });
   }
 };

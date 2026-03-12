@@ -148,7 +148,7 @@ withPipeline("nodejs", product, component) {
     if (params.skipFullFunctionalTests) {
       if (params.iaCaseApiPrNumber) {
         env.TEST_URL = "https://ia-case-api-pr-${params.iaCaseApiPrNumber}-aip-frontend.preview.platform.hmcts.net"
-        env.CCD_API_URL = "ccd-data-store-api-ia-case-api-pr-${params.iaCaseApiPrNumber}.preview.platform.hmcts.net"
+        env.CCD_API_URL = "https://ccd-data-store-api-ia-case-api-pr-${params.iaCaseApiPrNumber}.preview.platform.hmcts.net"
         env.EXUI_URL = "https://xui-ia-case-api-pr-3083.preview.platform.hmcts.net"
       } else {
         env.TEST_URL = "https://ia-aip-frontend-pr-${CHANGE_ID}.preview.platform.hmcts.net"

@@ -30,9 +30,11 @@
   <div class="govuk-width-container">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
+        {{ govukButton({
+          text: i18n.pages.casesList.refreshCaseListButton,
+          href: paths.common.refreshCasesList
+        }) }}
         <h1 class="govuk-heading-l">{{ i18n.pages.casesList.title }}</h1>
-        <a href="{{ paths.common.refreshCasesList }}" class="govuk-link" tabindex="0">{{ i18n.pages.casesList.refreshCaseListLink }}</a>
-
         {% if cases | length %}
           <table class="govuk-table">
             <thead class="govuk-table__head">
@@ -72,6 +74,12 @@
             id: i18n.pages.casesList.createNewAppealId
           }
         }) }}
+        <div class="govuk-inset-text">
+        <p class="govuk-body">
+          {{ i18n.pages.casesList.refreshCaseListHelpText }}
+          <a href="{{ paths.common.refreshCasesList }}" class="govuk-link" tabindex="0">{{ i18n.pages.casesList.refreshCaseListLink }}</a>.
+        </p>
+        </div>
       </div>
     </div>
   </div>

@@ -869,6 +869,7 @@
       "questions": "If you have any questions about the appeal process, call the Tribunal on<span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span> or email<a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:contactia@justice.gov.uk\"> contactia@justice.gov.uk/a>"
     },
     "casesList": {
+      "refreshCaseListButton": "Refresh",
       "title": "Your appeals",
       "columns": {
         "appealRef": "Appeal reference",
@@ -879,7 +880,8 @@
       },
       "viewLink": "View",
       "deleteLink": "Delete",
-      "refreshCaseListLink": "Refresh appeal list",
+      "refreshCaseListLink": "refresh your appeal list",
+      "refreshCaseListHelpText": "If you have created an appeal and it doesn't appear in the list, please ",
       "noCases": "You do not have any appeals.",
       "createNewAppeal": "Create a new appeal",
       "createNewAppealId": "create-new-appeal",

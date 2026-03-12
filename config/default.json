@@ -1,5 +1,6 @@
 {
   "testUrl": "https://localhost:3000",
+  "exuiUrl": "http://localhost:3002/",
   "currentEnvironment": "NODE_ENV",
   "httpProxy": false,
   "proxy": {

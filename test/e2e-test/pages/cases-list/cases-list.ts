@@ -1,10 +1,8 @@
 import { expect } from 'chai';
 import { paths } from '../../../../app/paths';
-import Logger, { getLogLabel } from '../../../../app/utils/logger';
 import i18n from '../../../../locale/en.json';
 import { signInForUser } from '../helper-functions';
-const logger: Logger = new Logger();
-const logLabel: string = getLogLabel(__filename);
+
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -43,23 +41,9 @@ module.exports = {
     });
 
     Then(/^I should see a table with (\d+) appeals?$/, async (count: string) => {
-      let hasPassed = false;
-      const maxAttempts = 3;
-      for (let attempt = 0; attempt < maxAttempts; attempt++) {
-        try {
-          await I.amOnPage(testUrl + paths.common.refreshCasesList);
-          await I.seeElement('.govuk-table');
-          const rowCount: number = await I.grabNumberOfVisibleElements('.govuk-table__body tr');
-          expect(rowCount).to.equal(parseInt(count, 10), `Expected ${count} appeals but found ${rowCount}`);
-          hasPassed = true;
-          break;
-        } catch (error) {
-          logger.exception(error, logLabel);
-          logger.trace(`Failed attempt ${attempt + 1}. Refreshing case list and trying again...`, logLabel);
-          await I.wait(1);
-        }
-      }
-      expect(hasPassed).to.equal(true, `Failed to see the expected number of appeals after ${maxAttempts} attempts.`);
+      await I.seeElement('.govuk-table');
+      const rowCount: number = await I.grabNumberOfVisibleElements('.govuk-table__body tr');
+      expect(rowCount).to.equal(parseInt(count, 10), `Expected ${count} appeals but found ${rowCount}`);
     });
 
     Then(/^I should see "View" link for the appeal$/, async () => {
@@ -189,4 +173,5 @@ module.exports = {
       await I.amOnPage(`${testUrl}${paths.common.overview}?caseId=${caseId}`);
     });
   }
-};
+}
+;

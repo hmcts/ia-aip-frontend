@@ -34,14 +34,15 @@ describe('update-appeal-service', () => {
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
     idamService = new IdamService();
-    s2sService = new S2SService();
+    s2sService = {
+      getServiceToken: sandbox.stub().resolves(serviceToken)
+    };
     authenticationService = new AuthenticationService(idamService as IdamService, s2sService as S2SService);
     ccdService = new CcdService();
 
     ccdServiceMock = sandbox.mock(ccdService);
 
     sandbox.stub(idamService, 'getUserToken').returns(userToken);
-    sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
       .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
       .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(false)
@@ -53,8 +54,7 @@ describe('update-appeal-service', () => {
       .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(false)
       .withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(false);
     documentManagementService = new DocumentManagementService(authenticationService);
-
-    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, null, documentManagementService);
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
     req = {
       idam: {
         userDetails: {
@@ -201,7 +201,46 @@ describe('update-appeal-service', () => {
     expect(updateAppealService.getAuthenticationService()).to.equal(authenticationService);
   });
   describe('createNewAppeal', () => {
-    it('should create a new case and populate session', async () => {
+    const expectedCaseList = [{
+      'id': 'newCase456',
+      'appealReferenceNumber': '',
+      'state': 'appealStarted',
+      'appellantGivenNames': '',
+      'appellantFamilyName': '',
+      'stateName': 'Appeal started'
+    }];
+    it('should create a new case and populate session and add to casesList if existing', async () => {
+      const mockCcdCase = {
+        id: 'newCase456',
+        state: 'appealStarted',
+        case_data: {} as CaseData
+      } as CcdCaseDetails;
+      const mockAppeal = { ccdCaseId: 'newCase456' } as Appeal;
+
+      ccdServiceMock.expects('createCase')
+        .withArgs(req.idam.userDetails, { userToken, serviceToken })
+        .resolves(mockCcdCase);
+
+      const mapStub = sandbox.stub(updateAppealService, 'mapCcdCaseToAppeal').returns(mockAppeal);
+      const existingCase = {
+        'id': 'existingCase124',
+        'appealReferenceNumber': 'PA/12345/2022',
+        'state': 'appealSubmitted',
+        'appellantGivenNames': 'someGivenName',
+        'appellantFamilyName': 'someFamilyName',
+        'stateName': 'Appeal Submitted'
+      };
+      req.session.casesList = [existingCase];
+      const result = await updateAppealService.createNewAppeal(req as Request);
+
+      expect(req.session.ccdCaseId).to.equal('newCase456');
+      expect(req.session.appeal).to.equal(mockAppeal);
+      expect(result).to.equal(mockAppeal);
+      expect(mapStub).to.have.been.calledWith(mockCcdCase);
+      expect(req.session.casesList).to.deep.equal([...expectedCaseList, existingCase]);
+    });
+
+    it('should create a new case and populate session and add to casesList if not existing', async () => {
       const mockCcdCase = {
         id: 'newCase456',
         state: 'appealStarted',
@@ -217,11 +256,11 @@ describe('update-appeal-service', () => {
 
       const result = await updateAppealService.createNewAppeal(req as Request);
 
-      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.ccdCaseId).to.equal('newCase456');
       expect(req.session.appeal).to.equal(mockAppeal);
       expect(result).to.equal(mockAppeal);
       expect(mapStub).to.have.been.calledWith(mockCcdCase);
+      expect(req.session.casesList).to.deep.equal(expectedCaseList);
     });
   });
 
@@ -1870,7 +1909,6 @@ describe('update-appeal-service', () => {
     let expectedCaseData: Partial<CaseData>;
     let ccdService2: Partial<CcdService>;
     let idamService2: IdamService;
-    let s2sService2: Partial<S2SService>;
     let updateAppealServiceBis: UpdateAppealService;
     const headers = {
       userToken,
@@ -2021,11 +2059,8 @@ describe('update-appeal-service', () => {
       idamService2 = {
         getUserToken: sandbox.stub().returns(userToken)
       };
-      s2sService2 = {
-        getServiceToken: sandbox.stub().resolves(serviceToken)
-      };
       documentManagementService = new DocumentManagementService(authenticationService);
-      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, null, documentManagementService);
+      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
       expectedCaseData = {
         'asylumSupportReference': null,
         'helpWithFeesReferenceNumber': null,

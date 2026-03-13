@@ -76,7 +76,17 @@ export default class UpdateAppealService {
     const ccdCase = await this._ccdService.createCase(req.idam.userDetails, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
-    req.session.refreshCasesList = true;
+    const caseList: CaseListItem[] = req.session.casesList || [];
+    const newCase: CaseListItem = {
+      id: ccdCase.id,
+      appealReferenceNumber: ccdCase.case_data.appealReferenceNumber || '',
+      state: ccdCase.state,
+      appellantGivenNames: ccdCase.case_data.appellantGivenNames || '',
+      appellantFamilyName: ccdCase.case_data.appellantFamilyName || '',
+      stateName: getStateName(ccdCase.state)
+    };
+    caseList.unshift(newCase);
+    req.session.casesList = caseList;
     return req.session.appeal;
   }
 
@@ -98,7 +108,7 @@ export default class UpdateAppealService {
       ignore_warning: true,
       supplementary_data_request: null
     });
-    req.session.refreshCasesList = true;
+    req.session.casesList = (req.session.casesList || []).filter(appeal => appeal.id !== caseId);
   }
 
   async loadAppealByCaseId(caseId: string, req: Request): Promise<Appeal> {

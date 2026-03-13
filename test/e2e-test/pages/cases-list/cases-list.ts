@@ -144,9 +144,10 @@ module.exports = {
     When('I grab a draft appeal at random', async () => {
       const rowCount: number = await I.grabNumberOfVisibleElements('.govuk-table__body tr');
       numberOfAppeals = rowCount;
-      const randomIndex = Math.floor(Math.random() * rowCount);
-      const randomRow: Locator = locate('tbody .govuk-table__row').at(randomIndex);
-      caseId = await I.grabValueFrom(randomRow.find('td').at(1));
+      const randomIndex = Math.floor(Math.random() * rowCount) + 1; // +1 because nth-child is 1-indexed
+      const randomRow: Locator = locate('tbody .govuk-table__row').at(randomIndex).first();
+      const caseIdLocator = randomRow.find('td').at(2).first();
+      caseId = await I.grabTextFrom(caseIdLocator);
       deleteLink = randomRow.find('a').withText(i18n.pages.casesList.deleteLink);
     });
 

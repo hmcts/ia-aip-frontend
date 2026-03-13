@@ -108,7 +108,7 @@ export default class UpdateAppealService {
       ignore_warning: true,
       supplementary_data_request: null
     });
-    req.session.casesList = (req.session.casesList || []).filter(appeal => appeal.id !== caseId);
+    req.session.casesList = (req.session.casesList || []).filter(appeal => appeal.id.toString() !== caseId);
   }
 
   async loadAppealByCaseId(caseId: string, req: Request): Promise<Appeal> {

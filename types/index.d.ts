@@ -509,6 +509,7 @@ declare global {
     given_name: string;
     family_name: string;
     sub: string;
+    roles?: string[];
   }
 
   interface IdamConfig {

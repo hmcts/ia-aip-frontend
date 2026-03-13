@@ -17,7 +17,10 @@ properties([
         booleanParam(name: 'skipCrossBrowserTests', defaultValue: false, description: 'Tick the checkbox to skip Cross Browser Tests stage'),
         booleanParam(name: 'skipSecurityScan', defaultValue: false, description: 'Tick the checkbox to skip Security Scan stage'),
         booleanParam(name: 'skipFullFunctionalTests', defaultValue: false, description: 'Tick the checkbox to skip Full Functional Tests stage'),
-        string(name: 'ZAP_URL_EXCLUSIONS', defaultValue: "-config globalexcludeurl.url_list.url\\(1\\).regex=\\'.*/assets/images.*\\' -config globalexcludeurl.url_list.url\\(2\\).regex=\\'.*/assets/stylesheets.*\\' -config globalexcludeurl.url_list.url\\(3\\).regex=\\'.*/assets/javascripts.*\\' -config globalexcludeurl.url_list.url\\(4\\).regex='^https?:\\/\\/.*\\/(?:.*ruxitagentjs.*)+\$' -config globalexcludeurl.url_list.url\\(5\\).regex=\\'.*/terms-and-conditions.*\\' -config globalexcludeurl.url_list.url\\(6\\).regex=\\'.*/privacy-policy.*\\' -config globalexcludeurl.url_list.url\\(7\\).regex=\\'.*/contact-us.*\\' -config globalexcludeurl.url_list.url\\(8\\).regex=\\'.*/login.*\\' -config globalexcludeurl.url_list.url\\(9\\).regex=\\'.*/cookies.*\\' -config globalexcludeurl.url_list.url\\(10\\).regex=\\'.*/cookie-preferences.*\\' -config globalexcludeurl.url_list.url\\(11\\).regex=\\'.*/robots.txt\\' -config globalexcludeurl.url_list.url\\(12\\).regex=\\'.*/sitemap.*\\' -config globalexcludeurl.url_list.url\\(13\\).regex=\\'.*jquery-3.4.1.min.js\\'")
+        string(name: 'ZAP_URL_EXCLUSIONS', defaultValue: "-config globalexcludeurl.url_list.url\\(1\\).regex=\\'.*/assets/images.*\\' -config globalexcludeurl.url_list.url\\(2\\).regex=\\'.*/assets/stylesheets.*\\' -config globalexcludeurl.url_list.url\\(3\\).regex=\\'.*/assets/javascripts.*\\' -config globalexcludeurl.url_list.url\\(4\\).regex='^https?:\\/\\/.*\\/(?:.*ruxitagentjs.*)+\$' -config globalexcludeurl.url_list.url\\(5\\).regex=\\'.*/terms-and-conditions.*\\' -config globalexcludeurl.url_list.url\\(6\\).regex=\\'.*/privacy-policy.*\\' -config globalexcludeurl.url_list.url\\(7\\).regex=\\'.*/contact-us.*\\' -config globalexcludeurl.url_list.url\\(8\\).regex=\\'.*/login.*\\' -config globalexcludeurl.url_list.url\\(9\\).regex=\\'.*/cookies.*\\' -config globalexcludeurl.url_list.url\\(10\\).regex=\\'.*/cookie-preferences.*\\' -config globalexcludeurl.url_list.url\\(11\\).regex=\\'.*/robots.txt\\' -config globalexcludeurl.url_list.url\\(12\\).regex=\\'.*/sitemap.*\\' -config globalexcludeurl.url_list.url\\(13\\).regex=\\'.*jquery-3.4.1.min.js\\'"),
+        string(name: 'testUrl', defaultValue: 'https://immigration-appeal.aat.platform.hmcts.net', description: 'URL of the environment to run tests against'),
+        string(name: 'exuiUrl', defaultValue: 'https://manage-case.aat.platform.hmcts.net', description: 'URL of exui environment to run tests against for NoC'),
+        string(name: 'ccdApiUrl', defaultValue: 'http://ccd-data-store-api-aat.service.core-compute-aat.internal', description: 'CCD data api URL')
     ])
 ])
 
@@ -76,9 +79,10 @@ withNightlyPipeline(type, product, component) {
     }
     loadVaultSecrets(secrets)
 
-    env.TEST_URL = 'https://immigration-appeal.aat.platform.hmcts.net'
+    env.TEST_URL = params.testUrl
+    env.EXUI_URL = params.exuiUrl
     env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
-    env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
+    env.CCD_API_URL = params.ccdApiUrl
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
     env.PAYMENTS_API_URL = 'http://payment-api-aat.service.core-compute-aat.internal'
     env.REF_DATA_API_URL = 'http://rd-commondata-api-aat.service.core-compute-aat.internal'
@@ -87,7 +91,7 @@ withNightlyPipeline(type, product, component) {
     env.IDAM_WEB_URL = 'https://idam-web-public.aat.platform.hmcts.net'
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
     env.PCQ_URL = 'https://pcq.aat.platform.hmcts.net'
-    env.PCQ_RETURN_URL = 'https://immigration-appeal.aat.platform.hmcts.net/about-appeal'
+    env.PCQ_RETURN_URL = params.testUrl + '/about-appeal'
     env.IDAM_TESTING_SUPPORT_URL = 'https://idam-testing-support-api.aat.platform.hmcts.net'
     env.PUPPETEER_SKIP_DOWNLOAD = 'true'
     env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'true'

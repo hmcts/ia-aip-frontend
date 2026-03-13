@@ -59,6 +59,7 @@ function postPayNow(updateAppealService: UpdateAppealService) {
         Events.EDIT_APPEAL, appeal,
         request.idam.userDetails.uid, request.cookies['__auth-token'],
         paymentsFlag);
+      request.session.refreshCasesList = true;
       request.session.appeal = { ...request.session.appeal, ...appealUpdated };
     }
 

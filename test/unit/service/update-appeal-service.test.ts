@@ -2,6 +2,7 @@ import { Request } from 'express';
 import session from 'express-session';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
+import { States } from '../../../app/data/states';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
@@ -33,14 +34,15 @@ describe('update-appeal-service', () => {
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
     idamService = new IdamService();
-    s2sService = new S2SService();
+    s2sService = {
+      getServiceToken: sandbox.stub().resolves(serviceToken)
+    };
     authenticationService = new AuthenticationService(idamService as IdamService, s2sService as S2SService);
     ccdService = new CcdService();
 
     ccdServiceMock = sandbox.mock(ccdService);
 
     sandbox.stub(idamService, 'getUserToken').returns(userToken);
-    sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
       .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
       .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(false)
@@ -52,8 +54,7 @@ describe('update-appeal-service', () => {
       .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(false)
       .withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(false);
     documentManagementService = new DocumentManagementService(authenticationService);
-
-    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, null, documentManagementService);
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
     req = {
       idam: {
         userDetails: {
@@ -199,361 +200,188 @@ describe('update-appeal-service', () => {
   it('should return the AuthenticationService instance', () => {
     expect(updateAppealService.getAuthenticationService()).to.equal(authenticationService);
   });
+  describe('createNewAppeal', () => {
+    const expectedCaseList = [{
+      'id': 'newCase456',
+      'appealReferenceNumber': '',
+      'state': 'appealStarted',
+      'appellantGivenNames': '',
+      'appellantFamilyName': '',
+      'stateName': 'Appeal started'
+    }];
+    it('should create a new case and populate session and add to casesList if existing', async () => {
+      const mockCcdCase = {
+        id: 'newCase456',
+        state: 'appealStarted',
+        case_data: {} as CaseData
+      } as CcdCaseDetails;
+      const mockAppeal = { ccdCaseId: 'newCase456' } as Appeal;
 
-  describe('loadAppeal', () => {
-    it('set case details', async () => {
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          state: 'awaitingReasonsForAppeal',
-          case_data: expectedCaseData
-        });
-      await updateAppealService.loadAppeal(req as Request);
-      expect(req.session.appeal.ccdCaseId).to.equal(caseId);
-      expect(req.session.appeal.appealReferenceNumber).to.equal(appealReferenceNumber);
-      expect(req.session.appeal.ccdReferenceNumber).to.equal(ccdReferenceNumberForDisplay);
-      expect(req.session.appeal.application.appealType).to.equal('protection');
-      expect(req.session.appeal.application.homeOfficeRefNumber).to.equal('A1234567');
-      expect(req.session.appeal.application.personalDetails.familyName).to.equal('Pedro');
-      expect(req.session.appeal.application.personalDetails.givenNames).to.equal('Jimenez');
-      expect(req.session.appeal.application.dateLetterSent.year).to.equal('2019');
-      expect(req.session.appeal.application.dateLetterSent.month).to.equal('1');
-      expect(req.session.appeal.application.dateLetterSent.day).to.equal('2');
-      expect(req.session.appeal.application.personalDetails.dob.year).to.equal('1990');
-      expect(req.session.appeal.application.personalDetails.dob.month).to.equal('3');
-      expect(req.session.appeal.application.personalDetails.dob.day).to.equal('21');
-      expect(req.session.appeal.application.personalDetails.nationality).to.equal('AF');
-      expect(req.session.appeal.application.personalDetails.address.line1).to.equal('123 An Address');
-      expect(req.session.appeal.application.personalDetails.address.city).to.equal('LONDON');
-      expect(req.session.appeal.application.personalDetails.address.postcode).to.equal('W1W 7RT');
-      expect(req.session.appeal.application.isAppealLate).to.equal(true);
-      expect(req.session.appeal.application.lateAppeal.evidence.name).to.equal('1580296112615-evidence-file.jpeg');
-      validateUuid(req.session.appeal.application.lateAppeal.evidence.fileId);
-      expect(req.session.appeal.application.contactDetails.email).to.equal('email@example.net');
-      expect(req.session.appeal.application.contactDetails.phone).to.equal('07123456789');
-      expect(req.session.appeal.application.contactDetails.wantsEmail).to.equal(true);
-      expect(req.session.appeal.application.contactDetails.wantsSms).to.equal(true);
-      expect(req.session.appeal.reasonsForAppeal.applicationReason).to.equal('I\'ve decided to appeal because ...');
-      expect(req.session.appeal.reasonsForAppeal.uploadDate).to.equal('2020-01-02');
-      expect(req.session.appeal.reasonsForAppeal.evidences).to.not.equal(null);
-      expect(req.session.appeal.reasonsForAppeal.evidences).to.not.equal(undefined);
-      expect(req.session.appeal.documentMap).to.not.equal(null);
-      expect(req.session.appeal.documentMap).to.not.equal(undefined);
-      expect(req.session.appeal.askForMoreTime).to.deep.eq({ inFlight: false });
-      expect(req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded).to.eq(false);
-      expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(false);
-      expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded).to.eq(false);
-      expect(req.session.appeal.hearingCentre).to.equal('birmingham');
-      expect(req.session.appeal.application.hasSponsor).to.equal('No');
-      expect(req.session.appeal.application.sponsorGivenNames).to.equal('ABC XYZ');
-      expect(req.session.appeal.application.sponsorFamilyName).to.equal('ABC XYZ');
-      expect(req.session.appeal.application.sponsorNameForDisplay).to.equal('ABC XYZ');
-      expect(req.session.appeal.application.sponsorAuthorisation).to.equal('ABC XYZ');
-      expect(req.session.appeal.application.feeUpdateTribunalAction).to.equal('refund');
-      expect(req.session.appeal.application.feeUpdateReason).to.equal('feeRemissionChanged');
-      expect(req.session.appeal.application.manageFeeRefundedAmount).to.equal('1000');
-      expect(req.session.appeal.application.manageFeeRequestedAmount).to.equal('1500');
-      expect(req.session.appeal.application.paidAmount).to.equal('2000');
-      expect(req.session.appeal.newFeeAmount).to.equal('2000');
-      expect(req.session.appeal.previousFeeAmountGbp).to.equal('2000');
-    });
+      ccdServiceMock.expects('createCase')
+        .withArgs(req.idam.userDetails, { userToken, serviceToken })
+        .resolves(mockCcdCase);
 
-    it('load time extensions when no time extensions', async () => {
-      expectedCaseData.timeExtensions = undefined;
-
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          state: 'awaitingReasonsForAppeal',
-          case_data: expectedCaseData
-        });
-      await updateAppealService.loadAppeal(req as Request);
-
-      expect(req.session.appeal.askForMoreTime).to.deep.equal(
-        { inFlight: false });
-    });
-
-    it('load CQ from directions object', async () => {
-
-      const directionsClarifyingQuestions: ClarifyingQuestion<Collection<SupportingDocument>>[] = [
-        {
-          id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
-          value: {
-            dateSent: '2020-04-23',
-            dueDate: '2020-05-07',
-            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?',
-            directionId: 'directionId'
-          }
-        }
-      ];
-
-      const appealClarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
-        {
-          id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
-          value: {
-            dateSent: '2020-04-23',
-            dueDate: '2020-05-07',
-            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?',
-            directionId: 'directionId'
-          }
-        },
-        {
-          value: {
-            dateSent: '2020-04-23',
-            dueDate: '2020-05-07',
-            question: 'Do you want to tell us anything else about your case?',
-            directionId: 'directionId'
-          }
-        }
-      ];
-      expectedCaseData.directions = [
-        {
-          id: '3',
-          value: {
-            tag: 'requestClarifyingQuestions',
-            dateDue: '2020-05-07',
-            parties: 'appellant',
-            dateSent: '2020-04-23',
-            explanation: 'You need to answer some questions about your appeal.',
-            previousDates: [],
-            uniqueId: 'directionId',
-            clarifyingQuestions: directionsClarifyingQuestions
-          }
-        }
-      ];
-
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          state: 'awaitingClarifyingQuestionsAnswers',
-          case_data: expectedCaseData
-        });
-      await updateAppealService.loadAppeal(req as Request);
-      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
-    });
-
-    it('load draftClarifyingQuestion', async () => {
-      const draftClarifyingQuestion: ClarifyingQuestion<Collection<SupportingDocument>> = {
-        id: 'id',
-        value: {
-          dateSent: '2020-04-23',
-          dueDate: '2020-05-07',
-          question: 'the questions',
-          answer: 'draft answer',
-          dateResponded: '2020-05-01',
-          directionId: 'directionId'
-        }
+      const mapStub = sandbox.stub(updateAppealService, 'mapCcdCaseToAppeal').returns(mockAppeal);
+      const existingCase = {
+        'id': 'existingCase124',
+        'appealReferenceNumber': 'PA/12345/2022',
+        'state': 'appealSubmitted',
+        'appellantGivenNames': 'someGivenName',
+        'appellantFamilyName': 'someFamilyName',
+        'stateName': 'Appeal Submitted'
       };
+      req.session.casesList = [existingCase];
+      const result = await updateAppealService.createNewAppeal(req as Request);
 
-      const appealClarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
-        {
-          id: 'id',
-          value: {
-            dateSent: '2020-04-23',
-            dueDate: '2020-05-07',
-            question: 'the questions',
-            answer: 'draft answer',
-            dateResponded: '2020-05-01',
-            supportingEvidence: [],
-            directionId: 'directionId'
-          }
-        }
-      ];
-      expectedCaseData.draftClarifyingQuestionsAnswers = [{ ...draftClarifyingQuestion }];
-      expectedCaseData.directions = [
-        {
-          id: '3',
-          value: {
-            tag: 'requestClarifyingQuestions',
-            dateDue: '2020-05-07',
-            parties: 'appellant',
-            dateSent: '2020-04-23',
-            explanation: 'You need to answer some questions about your appeal.',
-            previousDates: [],
-            uniqueId: 'directionId',
-            clarifyingQuestions: [
+      expect(req.session.ccdCaseId).to.equal('newCase456');
+      expect(req.session.appeal).to.equal(mockAppeal);
+      expect(result).to.equal(mockAppeal);
+      expect(mapStub).to.have.been.calledWith(mockCcdCase);
+      expect(req.session.casesList).to.deep.equal([...expectedCaseList, existingCase]);
+    });
+
+    it('should create a new case and populate session and add to casesList if not existing', async () => {
+      const mockCcdCase = {
+        id: 'newCase456',
+        state: 'appealStarted',
+        case_data: {} as CaseData
+      } as CcdCaseDetails;
+      const mockAppeal = { ccdCaseId: 'newCase456' } as Appeal;
+
+      ccdServiceMock.expects('createCase')
+        .withArgs(req.idam.userDetails, { userToken, serviceToken })
+        .resolves(mockCcdCase);
+
+      const mapStub = sandbox.stub(updateAppealService, 'mapCcdCaseToAppeal').returns(mockAppeal);
+
+      const result = await updateAppealService.createNewAppeal(req as Request);
+
+      expect(req.session.ccdCaseId).to.equal('newCase456');
+      expect(req.session.appeal).to.equal(mockAppeal);
+      expect(result).to.equal(mockAppeal);
+      expect(mapStub).to.have.been.calledWith(mockCcdCase);
+      expect(req.session.casesList).to.deep.equal(expectedCaseList);
+    });
+  });
+
+  describe('loadAppealByCaseId', () => {
+    it('should fetch case by id and populate session', async () => {
+      const mockCcdCase = {
+        id: 'case123',
+        state: 'appealStarted',
+        case_data: {} as CaseData
+      } as CcdCaseDetails;
+      const mockAppeal = { ccdCaseId: 'case123' } as Appeal;
+
+      ccdServiceMock.expects('loadCaseById')
+        .withArgs(userId, 'case123', { userToken, serviceToken })
+        .resolves(mockCcdCase);
+
+      const mapStub = sandbox.stub(updateAppealService, 'mapCcdCaseToAppeal').returns(mockAppeal);
+
+      const result = await updateAppealService.loadAppealByCaseId('case123', req as Request);
+
+      expect(req.session.ccdCaseId).to.equal('case123');
+      expect(req.session.appeal).to.equal(mockAppeal);
+      expect(result).to.equal(mockAppeal);
+      expect(mapStub).to.have.been.calledWith(mockCcdCase);
+    });
+  });
+
+  describe('loadAppealsList', () => {
+    it('should populate casesList in session when cases exist', async () => {
+      ccdServiceMock.expects('loadCasesListForUser')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          total: 2,
+          cases: [
+            {
+              id: 'case1',
+              state: 'appealStarted',
+              case_data: {
+                appealReferenceNumber: 'PA/0001/2022',
+                appellantGivenNames: 'John',
+                appellantFamilyName: 'Smith'
+              }
+            },
+            {
+              id: 'case2',
+              state: 'appealSubmitted',
+              case_data: {
+                appealReferenceNumber: 'PA/0002/2022',
+                appellantGivenNames: 'Jane',
+                appellantFamilyName: 'Doe'
+              }
+            }
+          ]
+        });
+
+      await updateAppealService.loadAppealsList(req as Request);
+
+      expect(req.session.casesList).to.have.lengthOf(2);
+      expect(req.session.casesList[0]).to.deep.equal({
+        id: 'case1',
+        appealReferenceNumber: 'PA/0001/2022',
+        state: 'appealStarted',
+        appellantGivenNames: 'John',
+        appellantFamilyName: 'Smith',
+        stateName: 'Appeal started'
+      });
+      expect(req.session.casesList[1]).to.deep.equal({
+        id: 'case2',
+        appealReferenceNumber: 'PA/0002/2022',
+        state: 'appealSubmitted',
+        appellantGivenNames: 'Jane',
+        appellantFamilyName: 'Doe',
+        stateName: 'Appeal submitted'
+      });
+    });
+
+    for (const state of Object.values(States)) {
+      it(`should populate case state ${state.id} in case list correctly`, async () => {
+        ccdServiceMock.expects('loadCasesListForUser')
+          .withArgs(userId, { userToken, serviceToken })
+          .resolves({
+            total: 1,
+            cases: [
               {
-                id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
-                value: {
-                  question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
-                }
-              },
-              {
-                id: 'ddc8a194-30b3-40d9-883e-d034a7451170',
-                value: {
-                  question: 'Tell us more about your health issues\n- How long have you suffered from this problem?\n- How does it affect your daily life?'
+                id: 'case1',
+                state: state.id,
+                case_data: {
+                  appealReferenceNumber: 'PA/0001/2022',
+                  appellantGivenNames: 'John',
+                  appellantFamilyName: 'Smith'
                 }
               }
             ]
-          }
-        }
-      ];
+          });
 
-      ccdServiceMock.expects('loadOrCreateCase')
+        await updateAppealService.loadAppealsList(req as Request);
+
+        expect(req.session.casesList).to.have.lengthOf(1);
+        expect(req.session.casesList[0]).to.deep.equal({
+          id: 'case1',
+          appealReferenceNumber: 'PA/0001/2022',
+          state: state.id,
+          appellantGivenNames: 'John',
+          appellantFamilyName: 'Smith',
+          stateName: state.name
+        });
+      });
+    }
+
+    it('should set empty casesList when no cases exist', async () => {
+      ccdServiceMock.expects('loadCasesListForUser')
         .withArgs(userId, { userToken, serviceToken })
         .resolves({
-          id: caseId,
-          state: 'awaitingClarifyingQuestionsAnswers',
-          case_data: expectedCaseData
-        });
-      await updateAppealService.loadAppeal(req as Request);
-      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
-    });
-
-    it('load clarifyingQuestion', async () => {
-      expectedCaseData.draftClarifyingQuestionsAnswers = null;
-      expectedCaseData.directions = [
-        {
-          id: '3',
-          value: {
-            tag: 'requestClarifyingQuestions',
-            dateDue: '2020-05-07',
-            parties: 'appellant',
-            dateSent: '2020-04-23',
-            explanation: 'You need to answer some questions about your appeal.',
-            clarifyingQuestions: [
-              {
-                value: {
-                  question: 'the questions'
-                }
-              }
-            ],
-            previousDates: [],
-            uniqueId: 'directionId'
-          }
-        }
-      ];
-
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          state: 'awaitingClarifyingQuestionsAnswers',
-          case_data: expectedCaseData
+          total: 0,
+          cases: []
         });
 
-      await updateAppealService.loadAppeal(req as Request);
+      await updateAppealService.loadAppealsList(req as Request);
 
-      const appealClarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
-        {
-          value: {
-            dateSent: '2020-04-23',
-            dueDate: '2020-05-07',
-            question: 'the questions',
-            directionId: 'directionId'
-          }
-        },
-        {
-          value: {
-            dateSent: '2020-04-23',
-            dueDate: '2020-05-07',
-            question: 'Do you want to tell us anything else about your case?',
-            directionId: 'directionId'
-          }
-        }
-      ];
-      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
+      expect(req.session.casesList).to.deep.equal([]);
     });
-
-    it('load cmaRequirements', async () => {
-
-      expectedCaseData = {
-        ...expectedCaseData,
-        datesToAvoid: [{
-          value: {
-            dateToAvoid: '2020-06-23',
-            dateToAvoidReason: 'I have an important appointment on this day'
-          }
-        }, {
-          value: { dateToAvoid: '2020-06-24', dateToAvoidReason: 'I need this day off' }
-        }],
-        datesToAvoidYesNo: 'Yes',
-        inCameraCourt: 'Yes',
-        inCameraCourtDescription: 'The reason why I would need a private appointment',
-        interpreterLanguage: [{ value: { language: 'Afar', languageDialect: 'A dialect' } }],
-        isHearingLoopNeeded: 'Yes',
-        isHearingRoomNeeded: 'Yes',
-        isInterpreterServicesNeeded: 'Yes',
-        multimediaEvidence: 'Yes',
-        multimediaEvidenceDescription: 'I do not own the equipment',
-        pastExperiences: 'Yes',
-        pastExperiencesDescription: 'Past experiences description',
-        physicalOrMentalHealthIssues: 'Yes',
-        physicalOrMentalHealthIssuesDescription: 'Reason for mental health conditions',
-        singleSexCourt: 'Yes',
-        singleSexCourtType: 'All female',
-        singleSexCourtTypeDescription: 'The reason why I will need an all-female',
-        additionalRequests: 'Yes',
-        additionalRequestsDescription: 'Anything else description'
-      };
-
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          state: 'awaitingCmaRequirements',
-          case_data: expectedCaseData
-        });
-      await updateAppealService.loadAppeal(req as Request);
-
-      const expectedCmaRequirements = {
-        'accessNeeds': {
-          'interpreterLanguage': [
-            {
-              'value': {
-                'language': 'Afar',
-                'languageDialect': 'A dialect'
-              }
-            }
-          ],
-          'isHearingLoopNeeded': true,
-          'isHearingRoomNeeded': true,
-          'isInterpreterServicesNeeded': true
-        },
-        'otherNeeds': {
-          'anythingElse': true,
-          'anythingElseReason': 'Anything else description',
-          'bringOwnMultimediaEquipment': false,
-          'bringOwnMultimediaEquipmentReason': 'I do not own the equipment',
-          'healthConditions': true,
-          'healthConditionsReason': 'Reason for mental health conditions',
-          'multimediaEvidence': true,
-          'pastExperiences': true,
-          'pastExperiencesReason': 'Past experiences description',
-          'privateAppointment': true,
-          'privateAppointmentReason': 'The reason why I would need a private appointment',
-          'singleSexAppointment': true,
-          'singleSexAppointmentReason': 'The reason why I will need an all-female',
-          'singleSexTypeAppointment': 'All female'
-        },
-        'datesToAvoid': {
-          'isDateCannotAttend': true,
-          'dates': [
-            {
-              'date': {
-                'day': '23',
-                'month': '6',
-                'year': '2020'
-              },
-              'reason': 'I have an important appointment on this day'
-            },
-            {
-              'date': {
-                'day': '24',
-                'month': '6',
-                'year': '2020'
-              },
-              'reason': 'I need this day off'
-            }
-          ]
-        }
-      };
-      expect(req.session.appeal.cmaRequirements).to.deep.equal(expectedCmaRequirements);
-    });
-
   });
 
   describe('convert to ccd case', () => {
@@ -2081,7 +1909,6 @@ describe('update-appeal-service', () => {
     let expectedCaseData: Partial<CaseData>;
     let ccdService2: Partial<CcdService>;
     let idamService2: IdamService;
-    let s2sService2: Partial<S2SService>;
     let updateAppealServiceBis: UpdateAppealService;
     const headers = {
       userToken,
@@ -2232,11 +2059,8 @@ describe('update-appeal-service', () => {
       idamService2 = {
         getUserToken: sandbox.stub().returns(userToken)
       };
-      s2sService2 = {
-        getServiceToken: sandbox.stub().resolves(serviceToken)
-      };
       documentManagementService = new DocumentManagementService(authenticationService);
-      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, null, documentManagementService);
+      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
       expectedCaseData = {
         'asylumSupportReference': null,
         'helpWithFeesReferenceNumber': null,
@@ -2357,6 +2181,7 @@ describe('update-appeal-service', () => {
 
     it('updates case with ccd', async () => {
       await updateAppealServiceBis.submitEvent(Events.EDIT_APPEAL, req as Request);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(ccdService2.updateAppeal).to.be.calledWith(
         Events.EDIT_APPEAL,
         userId,
@@ -2370,6 +2195,7 @@ describe('update-appeal-service', () => {
 
     it('submits case with ccd', async () => {
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_APPEAL, req as Request);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(ccdService2.updateAppeal).to.be.calledWith(
         Events.SUBMIT_APPEAL,
         userId,
@@ -2383,6 +2209,7 @@ describe('update-appeal-service', () => {
 
     it('submits ReasonsForAppeal with ccd', async () => {
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req as Request);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(ccdService2.updateAppeal).to.be.calledWith(
         Events.SUBMIT_REASONS_FOR_APPEAL,
         userId,
@@ -2447,6 +2274,7 @@ describe('update-appeal-service', () => {
 
       } as CmaRequirements;
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_CMA_REQUIREMENTS, req as Request);
+      expect(req.session.refreshCasesList).to.equal(true);
 
       expectedCaseData = {
         ...expectedCaseData,
@@ -2523,14 +2351,11 @@ describe('update-appeal-service', () => {
         additionalRequestsDescription: 'Anything else description'
       };
 
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          state: 'submitHearingRequirements',
-          case_data: expectedCaseData
-        });
-      await updateAppealService.loadAppeal(req as Request);
+      req.session.appeal = updateAppealService.mapCcdCaseToAppeal({
+        id: caseId,
+        state: 'submitHearingRequirements',
+        case_data: expectedCaseData as CaseData
+      });
 
       const expectedHearingRequirements = {
         'datesToAvoid': {

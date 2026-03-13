@@ -52,7 +52,7 @@ nodejs:
         - docmosis-access-key
         - customer-services-telephone
         - customer-services-email
-redis:
+hmcts-redis:
   enabled: false
   image:
     registry: hmctspublic.azurecr.io

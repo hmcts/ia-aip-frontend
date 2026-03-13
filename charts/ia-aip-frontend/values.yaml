@@ -52,11 +52,11 @@ nodejs:
         - docmosis-access-key
         - customer-services-telephone
         - customer-services-email
-redis:
+hmcts-redis:
   enabled: false
   image:
-    registry: hmctspublic.azurecr.io
-    repository: imported/bitnami/redis
+    registry: hmctsprod.azurecr.io
+    repository: imported/redis
   architecture: standalone
   master:
     resourcesPreset: medium

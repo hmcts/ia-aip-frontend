@@ -1,5 +1,5 @@
 nodejs:
-  image: "https://hmctspublic.azurecr.io/ia/aip-frontend:latest"
+  image: "https://hmctsprod.azurecr.io/ia/aip-frontend:latest"
   ingressHost: "ia-aip-frontend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal" # override in public facing environments
   applicationPort: 3000
   memoryRequests: 512Mi
@@ -56,7 +56,7 @@ nodejs:
 redis:
   enabled: false
   image:
-    registry: hmctspublic.azurecr.io
+    registry: hmctsprod.azurecr.io
     repository: imported/bitnami/redis
   architecture: standalone
   master:

@@ -12,6 +12,7 @@ export default {
       'case_data': {
         'journeyType': 'aip',
         'homeOfficeReferenceNumber': 'A1234564',
+        'appealType': 'protection',
         'appealReferenceNumber': 'DRAFT',
         'appellantGivenNames': '',
         'appellantFamilyName': ''

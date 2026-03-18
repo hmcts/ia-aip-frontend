@@ -18,6 +18,7 @@ const useRedis: boolean = config.get('session.useRedis') === true;
 export enum ErrorCode {
   tooManyDrafts = 'tooManyDrafts',
   deleteDraftError = 'deleteDraftError',
+  deleteNonDraftError = 'deleteNonDraftError',
   caseNotFound = 'caseNotFound'
 }
 
@@ -43,6 +44,10 @@ function getCasesList(updateAppealService: UpdateAppealService) {
         case ErrorCode.caseNotFound:
           errorList = [(createStructuredError('',
             i18n.pages.casesList.caseNotFoundError.replace('{{ caseId }}', caseId)))];
+          break;
+        case ErrorCode.deleteNonDraftError:
+          errorList = [(createStructuredError(deleteDraftAppealId,
+            i18n.pages.casesList.deleteNonDraftError.replace('{{ caseId }}', caseId)))];
           break;
         default:
           break;
@@ -80,13 +85,22 @@ function getCreateNewAppeal(updateAppealService: UpdateAppealService) {
 
 function getDeleteDraftAppeal(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      await updateAppealService.deleteDraftAppeal(req);
-      return res.redirect(paths.common.casesList);
-    } catch (e) {
-      logger.exception(e, logLabel);
-      return res.redirect(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=${req?.params?.id}`);
+    const appealToDelete: CaseListItem =
+      req.session?.casesList.find(appeal => appeal.id == req?.params?.id);
+    if (appealToDelete) {
+      if (appealToDelete.state !== States.APPEAL_STARTED.id) {
+        return res.redirect(`${paths.common.casesList}?errorCode=${ErrorCode.deleteNonDraftError}&caseId=${req?.params?.id}`);
+      }
+      try {
+        await updateAppealService.deleteDraftAppeal(req);
+        return res.redirect(paths.common.casesList);
+      } catch (e) {
+        logger.exception(e, logLabel);
+      }
+    } else {
+      logger.exception(`Could not find appeal to delete with id ${req?.params?.id} in user casesList: ${JSON.stringify(req.session.casesList)}`, logLabel);
     }
+    return res.redirect(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=${req?.params?.id}`);
   };
 }
 
@@ -94,7 +108,7 @@ function setupCasesListController(updateAppealService: UpdateAppealService): Rou
   const router = Router();
   router.get(paths.common.casesList, getCasesList(updateAppealService));
   const createNewAppealMiddleware = useRedis
-    ? [citizenLimiter, getCreateNewAppeal(updateAppealService)]
+    ? [getCreateNewAppeal(updateAppealService), citizenLimiter]
     : [getCreateNewAppeal(updateAppealService)];
   router.get(paths.common.createNewAppeal, createNewAppealMiddleware);
   router.get(paths.common.deleteDraftAppeal, getDeleteDraftAppeal(updateAppealService));

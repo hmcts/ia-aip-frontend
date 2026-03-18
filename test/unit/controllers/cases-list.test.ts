@@ -56,7 +56,7 @@ describe('Cases List Controller', () => {
             appellantFamilyName: 'Doe'
           }
         ],
-        refreshCasesList: false
+        refreshCasesList: false,
       } as any
     } as Partial<Request>;
 
@@ -197,6 +197,41 @@ describe('Cases List Controller', () => {
       });
     });
 
+    it('should render cases-list.njk with correct error if errorCode query is deleteNonDraftError with Case id', async () => {
+      const caseId: string = randomUUID().toString();
+      req.query = { errorCode: ErrorCode.deleteNonDraftError, caseId: caseId };
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: `delete-${caseId}`,
+        text: i18n.pages.casesList.deleteNonDraftError.replace('{{ caseId }}', caseId),
+        href: `#delete-${caseId}`
+      };
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: [appealStartedCase, appealSubmittedCase],
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        errorList: [expectedError]
+      });
+    });
+
+    it('should render cases-list.njk with correct error if errorCode query is deleteNonDraftError with no Case id', async () => {
+      req.query = { errorCode: ErrorCode.deleteNonDraftError };
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: 'delete-undefined',
+        text: i18n.pages.casesList.deleteNonDraftError.replace('{{ caseId }}', 'undefined'),
+        href: '#delete-undefined'
+      };
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: [appealStartedCase, appealSubmittedCase],
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        errorList: [expectedError]
+      });
+    });
+
     it('should call next with error on failure', async () => {
       const error = new Error('something went wrong');
       res.render = sandbox.stub().throws(error);
@@ -318,31 +353,60 @@ describe('Cases List Controller', () => {
   });
 
   describe('getDeleteDraftAppeal', () => {
-    it('should call deleteDraftAppeal and redirect to casesList', async () => {
+    it('should call deleteDraftAppeal and redirect to casesList if req.params.id in caseList and is draft', async () => {
+      req.session.casesList = [
+        appealStartedCase
+      ];
       const updateAppealService = {
         deleteDraftAppeal: sandbox.stub().resolves()
       } as Partial<UpdateAppealService>;
-
+      req.params = { id: appealStartedCase.id };
       await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.deleteDraftAppeal).to.have.been.calledWith(req);
       expect(res.redirect).to.have.been.calledWith(paths.common.casesList);
     });
 
-    it('should redirect to casesList with error on failure with no case ID', async () => {
-      const error = new Error('create failed');
+    it('should redirect to casesList with error if req.params.id not in caseList', async () => {
+      req.session.casesList = [
+        appealStartedCase
+      ];
       const updateAppealService = {
-        deleteDraftAppeal: sandbox.stub().rejects(error)
+        deleteDraftAppeal: sandbox.stub().resolves()
       } as Partial<UpdateAppealService>;
+      req.params = { id: '2468' };
+      await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.deleteDraftAppeal).to.not.be.calledWith(req);
+      expect(res.redirect).to.have.been.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=2468`);
+    });
 
+    it('should redirect to casesList with error if req.params.id in caseList and not draft', async () => {
+      req.session.casesList = [
+        appealSubmittedCase
+      ];
+      const updateAppealService = {
+        deleteDraftAppeal: sandbox.stub().resolves()
+      } as Partial<UpdateAppealService>;
+      req.params = { id: appealSubmittedCase.id };
+      await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.deleteDraftAppeal).to.not.be.calledWith(req);
+      expect(res.redirect).to.have.been.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.deleteNonDraftError}&caseId=1235`);
+    });
+
+    it('should redirect to casesList with error with no req.params.id', async () => {
+      const updateAppealService = {
+        deleteDraftAppeal: sandbox.stub().resolves()
+      } as Partial<UpdateAppealService>;
       await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=undefined`);
     });
 
     it('should redirect to casesList with error on failure with case ID', async () => {
-      const caseId: string = randomUUID().toString();
-      req.params = { id: caseId };
+      req.session.casesList = [
+        appealStartedCase
+      ];
+      req.params = { id: appealStartedCase.id };
       const error = new Error('create failed');
       const updateAppealService = {
         deleteDraftAppeal: sandbox.stub().rejects(error)
@@ -350,7 +414,7 @@ describe('Cases List Controller', () => {
 
       await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=${caseId}`);
+      expect(res.redirect).to.have.been.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=${appealStartedCase.id}`);
     });
   });
 });

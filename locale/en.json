@@ -884,6 +884,7 @@
       "createNewAppealId": "create-new-appeal",
       "tooManyDraftsError": "You have too many draft appeals. Please submit or delete them before creating a new appeal.",
       "deleteDraftError": "There was an error deleting your draft appeal with reference {{ caseId }}. Please try again.",
+      "deleteNonDraftError": "You cannot delete appeal with reference {{ caseId }} because it is not a DRAFT appeal.",
       "caseNotFoundError": "The case with reference {{ caseId }} could not be accessed.",
       "createAppealModal": {
         "id": "confirm-create-modal",

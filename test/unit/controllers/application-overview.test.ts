@@ -547,6 +547,7 @@ describe('Confirmation Page Controller', () => {
     };
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
+    req.session.appeal.application.appealType = 'something';
     req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
     req.session.appeal.utAppealReferenceNumber = null;
 
@@ -648,6 +649,7 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
     req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
+    req.session.appeal.application.appealType = 'something';
     req.session.appeal.application.personalDetails.givenNames = 'Appellant';
     req.session.appeal.application.personalDetails.familyName = 'Name';
 

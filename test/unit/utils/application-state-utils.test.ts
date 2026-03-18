@@ -142,7 +142,7 @@ describe('application-state-utils', () => {
 
     it('should return \'Do This next section\' when application status is appealStartedPartial', async () => {
       req.session.appeal.appealStatus = 'appealStarted';
-      req.session.appeal.application.homeOfficeRefNumber = '12345678';
+      req.session.appeal.application.appealType = '12345678';
 
       const result = await getAppealApplicationNextStep(req as Request);
 

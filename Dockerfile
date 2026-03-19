@@ -1,5 +1,5 @@
 # ---- Base image ----
-FROM hmctspublic.azurecr.io/base/node:18-alpine as base
+FROM hmctsprod.azurecr.io/base/node:18-alpine as base
 
 USER hmcts
 COPY --chown=hmcts:hmcts . .

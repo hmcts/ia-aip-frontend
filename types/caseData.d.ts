@@ -289,16 +289,16 @@ interface CaseData {
   sourceOfRemittal?: string;
   remittalDocuments: Collection<CcdRemittalDetails>[];
   refundConfirmationApplied?: string;
-  nlrEmail?: string;
-  nlrDetails?: NlrDetails;
+  nlrDetails?: CCDNlrDetails;
   deportationOrderOptions?: string;
 }
 
-interface NlrDetails {
+interface CCDNlrDetails {
   emailAddress?: string;
   phoneNumber?: string
   givenNames?: string;
   familyName?: string;
+  address?: CCDAddress;
   idamId?: string
 }
 
@@ -499,5 +499,15 @@ interface MidEventDetails {
 interface MidEventResponse {
   status?: number,
   callbackErrors?: string[]
+  details?: MidEventResponseDetails
   data?: any
+}
+
+interface MidEventResponseDetails {
+  field_errors?: FieldError[]
+}
+
+interface FieldError {
+  id: string;
+  message: string;
 }

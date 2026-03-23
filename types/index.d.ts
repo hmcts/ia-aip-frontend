@@ -210,16 +210,16 @@ declare global {
     updatedDecisionAndReasons?: DecisionAndReasons[];
     sourceOfRemittal?: string;
     remittalDocuments?: RemittalDetails[];
-    nlrEmail?: string;
     nlrDetails?: NlrDetails
   }
 
   interface NlrDetails {
-    emailAddress?: string;
-    phoneNumber?: string
     givenNames?: string;
     familyName?: string;
-    idamId?: string
+    address?: Address;
+    emailAddress?: string;
+    phoneNumber?: string
+    idamId?: string;
   }
 
   interface Hearing {
@@ -284,13 +284,7 @@ declare global {
       dob: AppealDate;
       nationality?: string;
       stateless?: string;
-      address?: {
-        line1?: string;
-        line2?: string;
-        city?: string;
-        postcode?: string;
-        county?: string;
-      }
+      address?: Address;
     };
     appellantOutOfCountryAddress?: string;
     contactDetails: {
@@ -303,13 +297,7 @@ declare global {
     sponsorGivenNames?: string;
     sponsorFamilyName?: string;
     sponsorNameForDisplay?: string;
-    sponsorAddress?: {
-      line1?: string;
-      line2?: string;
-      city?: string;
-      postcode?: string;
-      county?: string;
-    };
+    sponsorAddress?: Address;
     sponsorContactDetails?: {
       email?: string;
       wantsEmail?: boolean;
@@ -318,6 +306,7 @@ declare global {
     };
     sponsorAuthorisation?: string;
     hasNonLegalRep?: string;
+    isSponsorSameAsNlr?: string;
     tasks?: {
       [key: string]: Task;
     };
@@ -377,6 +366,14 @@ declare global {
     accessNeeds?: AccessNeeds;
     otherNeeds?: OtherNeeds;
     datesToAvoid?: DatesToAvoid;
+  }
+
+  interface Address {
+    line1?: string;
+    line2?: string;
+    city?: string;
+    postcode?: string;
+    county?: string;
   }
 
   interface AccessNeeds {

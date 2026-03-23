@@ -254,6 +254,11 @@ export const Events = {
     summary: 'Send invite to non legal rep',
     description: 'Send invite to non legal rep'
   },
+  PROVIDE_NON_LEGAL_REP_DETAILS: {
+    id: 'provideNonLegalRepDetails',
+    summary: 'AiP provide NLR details',
+    description: 'AiP provided non-legal representative details after appeal submission'
+  },
   SEND_PIP_TO_NON_LEGAL_REP: {
     id: 'sendPipToNonLegalRep',
     summary: 'Send PIP to non legal rep',
@@ -264,10 +269,10 @@ export const Events = {
     summary: 'NLR Joined appeal',
     description: 'Non Legal Rep joined appeal via PIP'
   },
-  NLR_PHONE_NUMBER_SUBMITTED: {
-    id: 'nlrPhoneNumberSubmitted',
-    summary: 'NLR phone number submitted',
-    description: 'Non Legal Rep has provided their phone number'
+  NLR_DETAILS_UPDATED: {
+    id: 'nlrDetailsUpdated',
+    summary: 'NLR updated details',
+    description: 'Non-legal Representative has updated their details'
   },
   MARK_APPEAL_PAID: {
     id: 'markAppealPaid',

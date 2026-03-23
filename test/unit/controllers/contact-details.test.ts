@@ -110,8 +110,8 @@ describe('Contact details Controller', () => {
       expect(routerPOSTStub.calledWith(paths.appealStarted.postcodeLookup)).to.equal(true);
       expect(routerGetStub.calledWith(paths.appealStarted.oocAddress)).to.equal(true);
       expect(routerPOSTStub.calledWith(paths.appealStarted.oocAddress)).to.equal(true);
-      expect(routerGetStub.calledWith(paths.appealStarted.hasSponsor)).to.equal(true);
-      expect(routerPOSTStub.calledWith(paths.appealStarted.hasSponsor)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.hasSponsorOrNlr)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.hasSponsorOrNlr)).to.equal(true);
       expect(routerGetStub.calledWith(paths.appealStarted.sponsorName)).to.equal(true);
       expect(routerPOSTStub.calledWith(paths.appealStarted.sponsorName)).to.equal(true);
       expect(routerGetStub.calledWith(paths.appealStarted.sponsorAddress)).to.equal(true);
@@ -518,21 +518,21 @@ describe('Contact details Controller', () => {
       LaunchDarklyService.close();
     });
 
-    it('should render sponsor-details/has-sponsor.njk', async () => {
+    it('should render sponsor-details/has-sponsor-or-nlr.njk', async () => {
       await getHasSponsor(req as Request, res as Response, next);
-      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk')).to.equal(true);
+      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk')).to.equal(true);
     });
 
-    it('when called with edit should render sponsor-details/has-sponsor.njk and update session', async () => {
+    it('when called with edit should render sponsor-details/has-sponsor-or-nlr.njk and update session', async () => {
       req.query = { 'edit': '' };
       await getHasSponsor(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk')).to.equal(true);
+      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk')).to.equal(true);
     });
 
-    it('should render sponsor-details/has-sponsor.njk', async () => {
+    it('should render sponsor-details/has-sponsor-or-nlr.njk', async () => {
       await getHasSponsor(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: 'Do you have a sponsor?',
         description: undefined,
         modal: undefined,
@@ -544,10 +544,10 @@ describe('Contact details Controller', () => {
       });
     });
 
-    it('should render sponsor-details/has-sponsor.njk with previous page pointing to manual-address endpoint', async () => {
+    it('should render sponsor-details/has-sponsor-or-nlr.njk with previous page pointing to manual-address endpoint', async () => {
       _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
       await getHasSponsor(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: 'Do you have a sponsor?',
         description: undefined,
         modal: undefined,
@@ -559,14 +559,14 @@ describe('Contact details Controller', () => {
       });
     });
 
-    it('should render sponsor-details/has-sponsor.njk with previous page pointing to out-of-country-address endpoint', async () => {
+    it('should render sponsor-details/has-sponsor-or-nlr.njk with previous page pointing to out-of-country-address endpoint', async () => {
       // ooc feature flag is enabled
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(true);
 
       // appeal is out of country
       req.session.appeal.appealOutOfCountry = 'Yes';
       await getHasSponsor(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: 'Do you have a sponsor?',
         description: undefined,
         modal: undefined,
@@ -605,7 +605,7 @@ describe('Contact details Controller', () => {
       expect(redirectStub.calledOnceWith(paths.appealStarted.sponsorName)).to.equal(true);
     });
 
-    it('should fail validation and sponsor-details/has-sponsor.njk with a validation error', async () => {
+    it('should fail validation and sponsor-details/has-sponsor-or-nlr.njk with a validation error', async () => {
       req.body = { 'answer': undefined };
       const expectedError: ValidationError = {
         key: 'answer',
@@ -616,7 +616,7 @@ describe('Contact details Controller', () => {
       await postHasSponsor(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.called).to.equal(false);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk', {
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: 'Do you have a sponsor?',
         description: undefined,
         modal: undefined,
@@ -658,7 +658,7 @@ describe('Contact details Controller', () => {
         {
           sponsorGivenNames: 'sponsorGivenNames',
           sponsorFamilyName: 'sponsorFamilyName',
-          previousPage: paths.appealStarted.hasSponsor
+          previousPage: paths.appealStarted.hasSponsorOrNlr
         }
       );
     });
@@ -1292,7 +1292,7 @@ describe('Contact details Controller', () => {
       getHasNonLegalRep(req as Request, res as Response, next);
       expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/has-non-legal-rep.njk', {
         question: i18n.pages.hasNonLegalRep.title,
-        previousPage: paths.appealStarted.hasSponsor,
+        previousPage: paths.appealStarted.hasSponsorOrNlr,
         answer: undefined
       })).to.equal(true);
     });
@@ -1320,7 +1320,7 @@ describe('Contact details Controller', () => {
       getHasNonLegalRep(req as Request, res as Response, next);
       expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/has-non-legal-rep.njk', {
         question: i18n.pages.hasNonLegalRep.title,
-        previousPage: paths.appealStarted.hasSponsor,
+        previousPage: paths.appealStarted.hasSponsorOrNlr,
         answer: 'Yes'
       })).to.equal(true);
     });
@@ -1362,14 +1362,14 @@ describe('Contact details Controller', () => {
       const expectedError = {
         'answer': {
           'key': 'answer',
-          'text': 'Select yes if you have a non legal representative',
+          'text': 'Select yes if you have a non-legal representative',
           'href': '#answer'
         }
       };
       expect(submit.called).to.equal(false);
       expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/has-non-legal-rep.njk', {
         question: i18n.pages.hasNonLegalRep.title,
-        previousPage: paths.appealStarted.hasSponsor,
+        previousPage: paths.appealStarted.hasSponsorOrNlr,
         errors: expectedError,
         errorList: Object.values(expectedError)
       })).to.equal(true);
@@ -1413,21 +1413,21 @@ describe('Contact details Controller', () => {
       LaunchDarklyService.close();
     });
 
-    it('should render non-legal-rep-details/non-legal-rep-email.njk', async () => {
+    it('should render non-legal-rep-details/contact-details.njk', async () => {
       getNonLegalRepEmail(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
-      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/non-legal-rep-email.njk', {
+      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/contact-details.njk', {
         previousPage: paths.appealStarted.hasNonLegalRep,
         nlrEmail: undefined
       })).to.equal(true);
     });
 
-    it('when called with edit should render non-legal-rep-details/non-legal-rep-email.njk and update session', async () => {
+    it('when called with edit should render non-legal-rep-details/contact-details.njk and update session', async () => {
       req.query = { 'edit': '' };
       req.session.appeal.nlrEmail = 'someEmail';
       getNonLegalRepEmail(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/non-legal-rep-email.njk', {
+      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/contact-details.njk', {
         previousPage: paths.appealStarted.hasNonLegalRep,
         nlrEmail: 'someEmail'
       })).to.equal(true);
@@ -1463,7 +1463,7 @@ describe('Contact details Controller', () => {
       LaunchDarklyService.close();
     });
 
-    it('should render non-legal-rep-details/non-legal-rep-email.njk with error if validation fails', async () => {
+    it('should render non-legal-rep-details/contact-details.njk with error if validation fails', async () => {
       req.body = { 'email-value': 'someInvalidEmail' };
       await postNonLegalRepEmail(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const expectedError = {
@@ -1474,7 +1474,7 @@ describe('Contact details Controller', () => {
         }
       };
       expect(submit.called).to.equal(false);
-      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/non-legal-rep-email.njk', {
+      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/contact-details.njk', {
         nlrEmail: 'someInvalidEmail',
         errors: expectedError,
         errorList: Object.values(expectedError),

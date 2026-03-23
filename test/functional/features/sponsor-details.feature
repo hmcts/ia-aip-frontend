@@ -101,7 +101,7 @@ Feature: Sponsor details
     When I select Yes and click continue
     And I check page accessibility
     Then I should be taken to the has non legal rep page
-    And I see "Do you have a non legal representative?" in title
+    And I see "Do you have a non-legal representative?" in title
     Then I choose No and click Continue
     And I check page accessibility
     Then I should see the task-list page

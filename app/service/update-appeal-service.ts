@@ -4,6 +4,7 @@ import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { formatDate } from '../utils/date-utils';
+import Logger, { getLogLabel } from '../utils/logger';
 import { boolToYesNo, documentIdToDocStoreUrl, extendedBoolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
@@ -11,7 +12,8 @@ import { DocumentManagementService } from './document-management-service';
 import LaunchDarklyService from './launchDarkly-service';
 import S2SService from './s2s-service';
 import { SystemAuthenticationService } from './system-authentication-service';
-
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 enum Subscriber {
   APPELLANT = 'appellant',
   SUPPORTER = 'supporter'
@@ -148,8 +150,13 @@ export default class UpdateAppealService {
     const errors: string[] = [];
     for (const pageId of pageIds) {
       const response: MidEventResponse = await this._ccdService.validateMidEvent(midEventDetails, pageId, uid, securityHeaders);
-      if (response.status === 422 && response?.callbackErrors.length > 0) {
-        errors.push(...response.callbackErrors);
+      if (response.status === 422) {
+        if (response?.callbackErrors?.length > 0) {
+          errors.push(...response.callbackErrors);
+        } else {
+          errors.push(...response?.details?.field_errors.map(error => `${error.id}: ${error.message}`));
+        }
+        logger.exception(`midEventValidation for ${event.id} failed with errors: ${errors}`, logLabel);
       }
     }
     return errors;
@@ -623,6 +630,7 @@ export default class UpdateAppealService {
         } as RemissionDetails;
       });
     }
+    const nlrDetails = this.mapCcdNlrDetailsToAppeal(caseData);
 
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
@@ -648,7 +656,7 @@ export default class UpdateAppealService {
       ftpaApplicationAppellantDocument: ftpaApplicationAppellantDocument,
       readonlyApplicationEnabled: true,
       sourceOfRemittal: caseData.sourceOfRemittal,
-      nlrDetails: caseData.nlrDetails,
+      nlrDetails: nlrDetails,
       application: {
         appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
@@ -835,6 +843,7 @@ export default class UpdateAppealService {
     if (askForMoreTime && askForMoreTime.reason) {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
+    this.mapToCCDCaseNlrDetails(appeal, caseData);
     caseData = {
       ...caseData,
       ...appeal.application?.personalDetails?.stateless && { appellantStateless: appeal.application?.personalDetails?.stateless },
@@ -843,8 +852,6 @@ export default class UpdateAppealService {
       ...appeal.paymentReference && { paymentReference: appeal.paymentReference },
       ...appeal.paymentStatus && { paymentStatus: appeal.paymentStatus },
       ...appeal.paymentDate && { paymentDate: appeal.paymentDate },
-      ...appeal.nlrEmail && { nlrEmail: appeal.nlrEmail },
-      ...appeal.nlrDetails && { nlrDetails: appeal.nlrDetails },
       ...appeal.isFeePaymentEnabled && { isFeePaymentEnabled: appeal.isFeePaymentEnabled },
       ...paymentsFlag && { paAppealTypeAipPaymentOption: appeal.paAppealTypeAipPaymentOption || null },
       ...paymentsFlag && { pcqId: appeal.pcqId || null },
@@ -1485,6 +1492,82 @@ export default class UpdateAppealService {
     }
   }
 
+  private mapCcdNlrDetailsToAppeal(caseData) {
+    const nlrDetails: CCDNlrDetails = caseData.nlrDetails;
+
+    if (!nlrDetails) return null;
+
+    const {
+      address,
+      givenNames,
+      familyName,
+      emailAddress,
+      phoneNumber,
+      idamId
+    } = nlrDetails;
+    const appealNlrDetails: NlrDetails = {
+      address: null,
+      givenNames: null,
+      familyName: null,
+      emailAddress: null,
+      phoneNumber: null,
+      idamId: null
+    };
+    if (address) {
+      appealNlrDetails.address = {
+        line1: address.AddressLine1,
+        line2: address.AddressLine2,
+        city: address.PostTown,
+        postcode: address.PostCode,
+        county: address.County
+      };
+    }
+
+    if (givenNames) appealNlrDetails.givenNames = givenNames;
+    if (familyName) appealNlrDetails.familyName = familyName;
+    if (emailAddress) appealNlrDetails.emailAddress = emailAddress;
+    if (phoneNumber) appealNlrDetails.phoneNumber = phoneNumber;
+    if (idamId) appealNlrDetails.idamId = idamId;
+    return appealNlrDetails;
+  }
+
+  mapToCCDCaseNlrDetails(appeal, caseData) {
+    const nlrDetails: NlrDetails = appeal.nlrDetails;
+
+    if (!nlrDetails) return;
+
+    const {
+      address,
+      givenNames,
+      familyName,
+      emailAddress,
+      phoneNumber,
+      idamId
+    } = nlrDetails;
+
+    if (!caseData.nlrDetails) {
+      caseData.nlrDetails = {};
+    }
+    const target: CCDNlrDetails = caseData.nlrDetails;
+    if (address) {
+      target.address = {
+        AddressLine1: address.line1,
+        AddressLine2: address.line2,
+        PostTown: address.city,
+        County: address.county,
+        PostCode: address.postcode,
+        Country: 'United Kingdom'
+      };
+    }
+
+    if (givenNames) target.givenNames = givenNames;
+    if (familyName) target.familyName = familyName;
+    if (emailAddress) target.emailAddress = emailAddress;
+    if (phoneNumber) target.phoneNumber = phoneNumber;
+    if (idamId) target.idamId = idamId;
+    return caseData;
+  }
+
   private mapToCCDCaseSponsorDetails(appeal, caseData) {
     const sponsorSubscription: Subscription = {
       subscriber: Subscriber.SUPPORTER,
@@ -1585,6 +1668,7 @@ export default class UpdateAppealService {
     if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
       this.mapToCCDCaseContactDetails(appeal, caseData);
       this.assignSinglePropertyIfExists(application, 'hasSponsor', caseData, 'hasSponsor');
+      this.assignSinglePropertyIfExists(application, 'hasNonLegalRep', caseData, 'hasNonLegalRep');
       this.assignSinglePropertyIfExists(application, 'sponsorGivenNames', caseData, 'sponsorGivenNames');
       this.assignSinglePropertyIfExists(application, 'sponsorFamilyName', caseData, 'sponsorFamilyName');
       this.assignSinglePropertyIfExists(application, 'sponsorNameForDisplay', caseData, 'sponsorNameForDisplay');
@@ -1594,7 +1678,6 @@ export default class UpdateAppealService {
         this.mapToCCDCaseSponsorDetails(appeal, caseData);
       }
       this.assignSinglePropertyIfExists(application, 'sponsorAuthorisation', caseData, 'sponsorAuthorisation');
-      this.assignSinglePropertyIfExists(application, 'hasNonLegalRep', caseData, 'hasNonLegalRep');
     }
     this.assignSinglePropertyIfExists(application, 'deportationOrderOptions', caseData, 'deportationOrderOptions');
   }

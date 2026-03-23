@@ -210,6 +210,15 @@ function sponsorNamesValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function nlrNamesValidation(obj: object) {
+  const schema = Joi.object({
+    nlrGivenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.nlrGivenNames }),
+    nlrFamilyName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.nlrFamilyName })
+
+  }).unknown();
+  return validate(obj, schema);
+}
+
 function witnessNameValidation(obj: object) {
   const schema = Joi.object({
     witnessName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.witnessName }),
@@ -485,20 +494,23 @@ function askForMoreTimeValidation(obj: object) {
   return validate(obj, schema);
 }
 
-function hasSponsorValidation(obj: object): null | ValidationErrors {
+function hasSponsorOrNlrValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-    answer: Joi.string().required().messages({
+    hasSponsor: Joi.string().required().messages({
       'any.required': i18n.validationErrors.hasSponsor
+    }),
+    hasNonLegalRep: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.hasNonLegalRep
     })
   }).unknown();
 
   return validate(obj, schema);
 }
 
-function hasNlrValidation(obj: object): null | ValidationErrors {
+function isSamePersonValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-    answer: Joi.string().required().messages({
-      'any.required': i18n.validationErrors.hasNonLegalRep
+    isSponsorSameAsNlr: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.isSponsorSameAsNlr
     })
   }).unknown();
 
@@ -514,6 +526,20 @@ function sponsorAddressValidation(obj: object): null | ValidationErrors {
     ['address-postcode']: Joi.string().optional().regex(postcodeRegex).messages({
       'string.pattern.base': i18n.validationErrors.postcode.invalid,
       'string.empty': i18n.validationErrors.sponsorAddress.postcodeRequired
+    })
+  }).unknown();
+  return validate(obj, schema);
+}
+
+function nlrAddressValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    ['address-line-1']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.nlrAddress.line1Required }),
+    ['address-town']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.nlrAddress.townCityRequired }),
+    ['address-county']: Joi.string().optional().empty(''),
+    ['address-line-2']: Joi.string().optional().empty(''),
+    ['address-postcode']: Joi.string().optional().regex(postcodeRegex).messages({
+      'string.pattern.base': i18n.validationErrors.postcode.invalid,
+      'string.empty': i18n.validationErrors.nlrAddress.postcodeRequired
     })
   }).unknown();
   return validate(obj, schema);
@@ -656,7 +682,29 @@ function joinAppealValidation(obj: object) {
   return validate(obj, schema);
 }
 
-function nonLegalRepPhoneNumberValidation(obj: object) {
+function nonLegalRepContactDetailsValidation(obj: object) {
+  const schema = Joi.object({
+    emailAddress: Joi.string()
+      .required()
+      .email({ minDomainSegments: 2, allowUnicode: false })
+      .messages({
+        'string.empty': i18n.validationErrors.emailEmpty,
+        'string.email': i18n.validationErrors.emailFormat
+      }),
+    phoneNumber: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
+      .required()
+      .messages({
+        'string.empty': i18n.validationErrors.phoneEmpty,
+        'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
+        'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
+      })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
+
+function nonLegalRepPhoneValidation(obj: object) {
   const schema = Joi.object({
     phoneNumber: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
       .required()
@@ -666,6 +714,7 @@ function nonLegalRepPhoneNumberValidation(obj: object) {
         'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
       })
   }).unknown();
+
   return validate(obj, schema);
 }
 
@@ -704,11 +753,13 @@ export {
   witenessesInterpreterNeedsValidation,
   interpreterTypesSelectionValidation,
   interpreterLanguageSelectionValidation,
-  hasSponsorValidation,
+  hasSponsorOrNlrValidation,
   sponsorNamesValidation,
   sponsorAddressValidation,
   sponsorContactDetailsValidation,
   sponsorAuthorisationValidation,
+  nlrNamesValidation,
+  nlrAddressValidation,
   gwfReferenceNumberValidation,
   selectedRequiredValidationDialect,
   remissionOptionsValidation,
@@ -716,7 +767,8 @@ export {
   helpWithFeesValidation,
   helpWithFeesRefNumberValidation,
   joinAppealValidation,
-  nonLegalRepPhoneNumberValidation,
-  hasNlrValidation,
+  nonLegalRepContactDetailsValidation,
+  nonLegalRepPhoneValidation,
+  isSamePersonValidation,
   deportationOrderOptionsValidation
 };

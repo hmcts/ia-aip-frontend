@@ -91,7 +91,7 @@ Feature: Submit appeal
     When I select No and click continue
     And I check page accessibility
 
-    Then I see "Do you have a non legal representative" in title
+    Then I see "Do you have a non-legal representative" in title
     When I select No and click continue
     And I check page accessibility
 

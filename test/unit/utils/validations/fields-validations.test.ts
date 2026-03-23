@@ -1272,7 +1272,7 @@ describe('fields-validations', () => {
         answer: {
           href: '#answer',
           key: 'answer',
-          text: 'Select yes if you have a non legal representative'
+          text: 'Select yes if you have a non-legal representative'
         }
       };
       expect(validationResult).to.deep.equal(expectedResponse);

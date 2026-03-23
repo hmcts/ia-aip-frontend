@@ -3,15 +3,52 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
   <h1 class="govuk-heading-xl">{{ i18n.pages.addNonLegalRepresentative.title }}</h1>
-  <h2 class="govuk-heading-m">{{ i18n.pages.addNonLegalRepresentative.stepOne }}</h2>
   <div class="govuk-inset-text">
     {{ i18n.pages.addNonLegalRepresentative.hint }}
   </div>
+  <h2 class="govuk-heading-m">{{ i18n.pages.addNonLegalRepresentative.stepOne }}</h2>
   <p class="govuk-body">{{ i18n.pages.addNonLegalRepresentative.instructionsPartOne }}</p>
-  <a href="{{ paths.nonLegalRep.inviteToCreateAccount }}" class="govuk-button">{{ i18n.pages.addNonLegalRepresentative.linkPartOne }}</a>
+  <a id="inviteCreateAccount" href="{{ paths.nonLegalRep.inviteToCreateAccount }}" class="govuk-button">{{ i18n.pages.addNonLegalRepresentative.linkPartOne }}</a>
+
   <h2 class="govuk-heading-m">{{ i18n.pages.addNonLegalRepresentative.stepTwo }}</h2>
-  <p class="govuk-body">{{ i18n.pages.addNonLegalRepresentative.instructionsPartTwo }}</p>
-  <a href="{{ paths.nonLegalRep.inviteToJoinAppeal }}" class="govuk-button">{{ i18n.pages.addNonLegalRepresentative.linkPartTwo }}</a>
+      {% if shouldProvideEmailDirectionStepTwoShow %}
+        <div class="govuk-inset-text">
+          <p>{{ i18n.pages.addNonLegalRepresentative.provideEmailDirection }} <a class="govuk-link" href="{{ paths.nonLegalRep.inviteToCreateAccount }}">here</a>.</p>
+        </div>
+      {% endif %}
+    <p class="govuk-body">{{ i18n.pages.addNonLegalRepresentative.instructionsPartTwo }}</p>
+    <a id="provideNlrDetails" href="{{ paths.nonLegalRep.provideNlrName }}" class="govuk-button">{{ i18n.pages.addNonLegalRepresentative.linkPartTwo }}</a>
+
+  <h2 class="govuk-heading-m">{{ i18n.pages.addNonLegalRepresentative.stepThree }}</h2>
+  {% if shouldProvideEmailDirectionStepThreeShow %}
+    <div class="govuk-inset-text">
+      <p>{{ i18n.pages.addNonLegalRepresentative.provideEmailDirection }} <a class="govuk-link" href="{{ paths.nonLegalRep.inviteToCreateAccount }}">here</a>.</p>
+    </div>
+  {% endif %}
+  {% if shouldUserNotExistStepThreeShow %}
+    <div class="govuk-inset-text">
+      <p>{{ i18n.pages.addNonLegalRepresentative.userNotExistDirection }} <a class="govuk-link" href="{{ paths.nonLegalRep.inviteToCreateAccount }}">here</a>.</p>
+    </div>
+  {% endif %}
+  {% if shouldNoDetailsProvidedStepThreeShow %}
+    <div class="govuk-inset-text">
+      <p>{{ i18n.pages.addNonLegalRepresentative.provideNlrDetailsDirection }} <a class="govuk-link" href="{{ paths.nonLegalRep.provideNlrName }}">here</a>.</p>
+    </div>
+  {% endif %}
+  <p class="govuk-body">{{ i18n.pages.addNonLegalRepresentative.instructionsPartThree }}</p>
+  <form method="post" action="{{ paths.nonLegalRep.inviteToJoinAppeal }}">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukButton({
+      id: 'inviteJoinAppeal',
+      text: i18n.pages.addNonLegalRepresentative.linkPartThree
+    }) }}
+  </form>
   {{ contactUs() }}
 {% endblock %}

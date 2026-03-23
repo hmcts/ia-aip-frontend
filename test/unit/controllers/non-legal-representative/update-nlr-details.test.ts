@@ -3,7 +3,7 @@ import {
   getUpdatePhoneNumber,
   getUpdatePhoneNumberConfirmation,
   postUpdatePhoneNumber, setupNlrUpdatePhoneNumberControllers,
-} from '../../../../app/controllers/non-legal-representative/update-phone-number';
+} from '../../../../app/controllers/non-legal-representative/update-nlr-details';
 import { Events } from '../../../../app/data/events';
 import { isJourneyAllowedMiddleware } from '../../../../app/middleware/journeyAllowed-middleware';
 import { paths } from '../../../../app/paths';
@@ -143,7 +143,7 @@ describe('Update phone number controllers setup', () => {
 
       const expectedAppeal = { ...req.session.appeal, nlrDetails };
       await postUpdatePhoneNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(submitEventRefactoredStub).to.be.calledOnceWith(Events.NLR_PHONE_NUMBER_SUBMITTED, expectedAppeal, 'idamUID', 'atoken');
+      expect(submitEventRefactoredStub).to.be.calledOnceWith(Events.NLR_DETAILS_UPDATED, expectedAppeal, 'idamUID', 'atoken');
       expect(res.redirect).to.be.calledOnceWith(paths.nonLegalRep.updatePhoneNumberConfirmation);
     });
 

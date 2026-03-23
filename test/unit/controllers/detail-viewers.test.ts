@@ -680,9 +680,9 @@ describe('DetailViewController', () => {
     it('should add NLR details if present DLRM', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows.push(
-        { key: { text: 'Non legal representative\'s email' }, value: { html: 'some email' } },
-        { key: { text: 'Non legal representative\'s name' }, value: { html: 'some name' } },
-        { key: { text: 'Non legal representative\'s phone number' }, value: { html: 'some phone' } },
+        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'some email' } },
+        { key: { text: 'Non-legal representative\'s name' }, value: { html: 'some name' } },
+        { key: { text: 'Non-legal representative\'s phone number' }, value: { html: 'some phone' } },
       );
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
@@ -720,9 +720,9 @@ describe('DetailViewController', () => {
 
     it('should add NLR details if present non DLRM', async () => {
       expectedSummaryRows.push(
-        { key: { text: 'Non legal representative\'s email' }, value: { html: 'some email' } },
-        { key: { text: 'Non legal representative\'s name' }, value: { html: 'some name' } },
-        { key: { text: 'Non legal representative\'s phone number' }, value: { html: 'some phone' } },
+        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'some email' } },
+        { key: { text: 'Non-legal representative\'s name' }, value: { html: 'some name' } },
+        { key: { text: 'Non-legal representative\'s phone number' }, value: { html: 'some phone' } },
       );
       req.session.appeal.nlrEmail = 'someEmail';
       req.session.appeal.nlrDetails = {
@@ -743,7 +743,7 @@ describe('DetailViewController', () => {
     it('should add NLR email if no nlr details but email present DLRM', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows.push(
-        { key: { text: 'Non legal representative\'s email' }, value: { html: 'someEmail' } },
+        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
       );
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
@@ -776,7 +776,7 @@ describe('DetailViewController', () => {
 
     it('should add NLR email if no nlr details but email present non DLRM', async () => {
       expectedSummaryRows.push(
-        { key: { text: 'Non legal representative\'s email' }, value: { html: 'someEmail' } },
+        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
       );
       req.session.appeal.nlrEmail = 'someEmail';
 

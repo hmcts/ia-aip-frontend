@@ -4,13 +4,16 @@ import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { formatDate } from '../utils/date-utils';
+import Logger, { getLogLabel } from '../utils/logger';
 import { boolToYesNo, documentIdToDocStoreUrl, extendedBoolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { DocumentManagementService } from './document-management-service';
 import LaunchDarklyService from './launchDarkly-service';
 import S2SService from './s2s-service';
-
+import { SystemAuthenticationService } from './system-authentication-service';
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 enum Subscriber {
   APPELLANT = 'appellant',
   SUPPORTER = 'supporter'
@@ -28,12 +31,14 @@ function isEmpty(text: string) {
 export default class UpdateAppealService {
   private readonly _ccdService: CcdService;
   private readonly _authenticationService: AuthenticationService;
+  private readonly _systemAuthenticationService: SystemAuthenticationService;
   private readonly _s2sService: S2SService;
   private readonly _documentManagementService: DocumentManagementService;
 
-  constructor(ccdService: CcdService, authenticationService: AuthenticationService, s2sService: S2SService = null, documentManagementService: DocumentManagementService) {
+  constructor(ccdService: CcdService, authenticationService: AuthenticationService, systemAuthenticationService: SystemAuthenticationService, s2sService: S2SService, documentManagementService: DocumentManagementService) {
     this._ccdService = ccdService;
     this._authenticationService = authenticationService;
+    this._systemAuthenticationService = systemAuthenticationService;
     this._s2sService = s2sService;
     this._documentManagementService = documentManagementService;
   }
@@ -51,6 +56,8 @@ export default class UpdateAppealService {
     const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
+    const nlrIdamId = ccdCase.case_data?.nlrDetails?.idamId;
+    req.session.isNonLegalRep = req.idam.userDetails.uid === nlrIdamId;
   }
 
   private getDate(ccdDate): AppealDate {
@@ -116,6 +123,43 @@ export default class UpdateAppealService {
     };
     const ccdCase: CcdCaseDetails = await this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders);
     return this.mapCcdCaseToAppeal(ccdCase);
+  }
+
+  async submitEventByCaseDetails(event, updatedCcdCase: CcdCaseDetails): Promise<CcdCaseDetails> {
+    const userToken = await this._systemAuthenticationService.getCaseworkSystemToken();
+    const uid = await this._systemAuthenticationService.getCaseworkSystemUUID(userToken);
+    const securityHeaders: SecurityHeaders = {
+      userToken: `Bearer ${userToken}`,
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+    return this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders, true);
+  }
+
+  async validateMidEvent(event, pageIds: string[], appeal: Appeal, midEventData: any, uid: string, userToken: string): Promise<string[]> {
+    const securityHeaders: SecurityHeaders = {
+      userToken: `Bearer ${userToken}`,
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+    const midEventDetails: MidEventDetails = {
+      case_reference: appeal.ccdCaseId,
+      data: midEventData,
+      event_data: midEventData,
+      event: event,
+      ignore_warning: false
+    };
+    const errors: string[] = [];
+    for (const pageId of pageIds) {
+      const response: MidEventResponse = await this._ccdService.validateMidEvent(midEventDetails, pageId, uid, securityHeaders);
+      if (response.status === 422) {
+        if (response?.callbackErrors?.length > 0) {
+          errors.push(...response.callbackErrors);
+        } else {
+          errors.push(...response?.details?.field_errors.map(error => `${error.id}: ${error.message}`));
+        }
+        logger.exception(`midEventValidation for ${event.id} failed with errors: ${errors}`, logLabel);
+      }
+    }
+    return errors;
   }
 
   mapCcdCaseToAppeal(ccdCase: CcdCaseDetails): Appeal {
@@ -385,11 +429,11 @@ export default class UpdateAppealService {
       if (caseData.datesToAvoid.length) {
         isDateCannotAttend = true;
         dates = caseData.datesToAvoid.map((d) => {
-          return {
-            date: this.getDate(d.value.dateToAvoid),
-            reason: d.value.dateToAvoidReason
-          };
-        }
+            return {
+              date: this.getDate(d.value.dateToAvoid),
+              reason: d.value.dateToAvoidReason
+            };
+          }
         );
 
       }
@@ -407,11 +451,11 @@ export default class UpdateAppealService {
       if (caseData.datesToAvoid.length) {
         isDateCannotAttend = true;
         dates = caseData.datesToAvoid.map((d) => {
-          return {
-            date: this.getDate(d.value.dateToAvoid),
-            reason: d.value.dateToAvoidReason
-          };
-        }
+            return {
+              date: this.getDate(d.value.dateToAvoid),
+              reason: d.value.dateToAvoidReason
+            };
+          }
         );
 
       }
@@ -586,6 +630,7 @@ export default class UpdateAppealService {
         } as RemissionDetails;
       });
     }
+    const nlrDetails = this.mapCcdNlrDetailsToAppeal(caseData);
 
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
@@ -611,6 +656,7 @@ export default class UpdateAppealService {
       ftpaApplicationAppellantDocument: ftpaApplicationAppellantDocument,
       readonlyApplicationEnabled: true,
       sourceOfRemittal: caseData.sourceOfRemittal,
+      nlrDetails: nlrDetails,
       application: {
         appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
@@ -631,6 +677,7 @@ export default class UpdateAppealService {
           ...sponsorContactDetails
         },
         sponsorAuthorisation: caseData.sponsorAuthorisation,
+        hasNonLegalRep: caseData.hasNonLegalRep,
         dateLetterSent,
         decisionLetterReceivedDate,
         isAppealLate: caseData.submissionOutOfTime ? yesNoToBool(caseData.submissionOutOfTime) : undefined,
@@ -796,9 +843,10 @@ export default class UpdateAppealService {
     if (askForMoreTime && askForMoreTime.reason) {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
+    this.mapToCCDCaseNlrDetails(appeal, caseData);
     caseData = {
       ...caseData,
-      ...appeal.application.personalDetails.stateless && { appellantStateless: appeal.application.personalDetails.stateless },
+      ...appeal.application?.personalDetails?.stateless && { appellantStateless: appeal.application?.personalDetails?.stateless },
       ...paymentsFlag && { rpDcAppealHearingOption: appeal.application.rpDcAppealHearingOption || null },
       ...paymentsFlag && { decisionHearingFeeOption: appeal.application.decisionHearingFeeOption || null },
       ...appeal.paymentReference && { paymentReference: appeal.paymentReference },
@@ -816,8 +864,8 @@ export default class UpdateAppealService {
       ...appeal.reheardHearingDocumentsCollection && {
         reheardHearingDocumentsCollection: this.mapAppealReheardHearingDocsToCcd(appeal.reheardHearingDocumentsCollection, appeal.documentMap)
       },
-      ...appeal.application.homeOfficeLetter && {
-        uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
+      ...appeal.application?.homeOfficeLetter && {
+        uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application?.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
       },
       ...appeal.additionalEvidence && {
         additionalEvidence: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.additionalEvidence, appeal.documentMap)
@@ -837,8 +885,8 @@ export default class UpdateAppealService {
       ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },
       ...appeal.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: appeal.ftpaAppellantOutOfTimeExplanation },
       ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime },
-      ...appeal.application.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: appeal.application.remissionRejectedDatePlus14days },
-      ...appeal.application.amountLeftToPay && { amountLeftToPay: appeal.application.amountLeftToPay }
+      ...appeal.application?.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: appeal.application?.remissionRejectedDatePlus14days },
+      ...appeal.application?.amountLeftToPay && { amountLeftToPay: appeal.application?.amountLeftToPay }
     };
     return caseData;
   }
@@ -1444,6 +1492,82 @@ export default class UpdateAppealService {
     }
   }
 
+  private mapCcdNlrDetailsToAppeal(caseData) {
+    const nlrDetails: CCDNlrDetails = caseData.nlrDetails;
+
+    if (!nlrDetails) return null;
+
+    const {
+      address,
+      givenNames,
+      familyName,
+      emailAddress,
+      phoneNumber,
+      idamId
+    } = nlrDetails;
+    const appealNlrDetails: NlrDetails = {
+      address: null,
+      givenNames: null,
+      familyName: null,
+      emailAddress: null,
+      phoneNumber: null,
+      idamId: null
+    };
+    if (address) {
+      appealNlrDetails.address = {
+        line1: address.AddressLine1,
+        line2: address.AddressLine2,
+        city: address.PostTown,
+        postcode: address.PostCode,
+        county: address.County
+      };
+    }
+
+    if (givenNames) appealNlrDetails.givenNames = givenNames;
+    if (familyName) appealNlrDetails.familyName = familyName;
+    if (emailAddress) appealNlrDetails.emailAddress = emailAddress;
+    if (phoneNumber) appealNlrDetails.phoneNumber = phoneNumber;
+    if (idamId) appealNlrDetails.idamId = idamId;
+    return appealNlrDetails;
+  }
+
+  mapToCCDCaseNlrDetails(appeal, caseData) {
+    const nlrDetails: NlrDetails = appeal.nlrDetails;
+
+    if (!nlrDetails) return;
+
+    const {
+      address,
+      givenNames,
+      familyName,
+      emailAddress,
+      phoneNumber,
+      idamId
+    } = nlrDetails;
+
+    if (!caseData.nlrDetails) {
+      caseData.nlrDetails = {};
+    }
+    const target: CCDNlrDetails = caseData.nlrDetails;
+    if (address) {
+      target.address = {
+        AddressLine1: address.line1,
+        AddressLine2: address.line2,
+        PostTown: address.city,
+        County: address.county,
+        PostCode: address.postcode,
+        Country: 'United Kingdom'
+      };
+    }
+
+    if (givenNames) target.givenNames = givenNames;
+    if (familyName) target.familyName = familyName;
+    if (emailAddress) target.emailAddress = emailAddress;
+    if (phoneNumber) target.phoneNumber = phoneNumber;
+    if (idamId) target.idamId = idamId;
+    return caseData;
+  }
+
   private mapToCCDCaseSponsorDetails(appeal, caseData) {
     const sponsorSubscription: Subscription = {
       subscriber: Subscriber.SUPPORTER,
@@ -1544,6 +1668,7 @@ export default class UpdateAppealService {
     if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
       this.mapToCCDCaseContactDetails(appeal, caseData);
       this.assignSinglePropertyIfExists(application, 'hasSponsor', caseData, 'hasSponsor');
+      this.assignSinglePropertyIfExists(application, 'hasNonLegalRep', caseData, 'hasNonLegalRep');
       this.assignSinglePropertyIfExists(application, 'sponsorGivenNames', caseData, 'sponsorGivenNames');
       this.assignSinglePropertyIfExists(application, 'sponsorFamilyName', caseData, 'sponsorFamilyName');
       this.assignSinglePropertyIfExists(application, 'sponsorNameForDisplay', caseData, 'sponsorNameForDisplay');

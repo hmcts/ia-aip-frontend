@@ -25,10 +25,14 @@ interface CcdCaseDetails {
   case_data: CaseData;
   created_date?: string;
   last_modified?: string;
+  error?: string;
+  message?: string;
 }
 
 interface PinInPost {
   pinUsed: 'Yes' | 'No';
+  expiryDate: Date;
+  accessCode: string;
 }
 
 interface CaseData {
@@ -210,7 +214,9 @@ interface CaseData {
   sponsorEmail?: string;
   sponsorMobileNumber?: string;
   sponsorAuthorisation?: string;
+  hasNonLegalRep?: string;
   appellantPinInPost?: PinInPost;
+  joinAppealPin?: PinInPost;
   isAppellantAttendingTheHearing?: 'Yes' | 'No';
   isAppellantGivingOralEvidence?: 'Yes' | 'No';
   ftpaApplicantType?: string;
@@ -283,7 +289,17 @@ interface CaseData {
   sourceOfRemittal?: string;
   remittalDocuments: Collection<CcdRemittalDetails>[];
   refundConfirmationApplied?: string;
+  nlrDetails?: CCDNlrDetails;
   deportationOrderOptions?: string;
+}
+
+interface CCDNlrDetails {
+  emailAddress?: string;
+  phoneNumber?: string
+  givenNames?: string;
+  familyName?: string;
+  address?: CCDAddress;
+  idamId?: string
 }
 
 interface Application<T> {
@@ -470,4 +486,28 @@ interface InterpreterLanguageRefData {
 interface Value {
   code?: string;
   label?: string;
+}
+
+interface MidEventDetails {
+  case_reference: string;
+  data: any;
+  event: CcdEvent,
+  event_data: any,
+  ignore_warning: boolean;
+}
+
+interface MidEventResponse {
+  status?: number,
+  callbackErrors?: string[]
+  details?: MidEventResponseDetails
+  data?: any
+}
+
+interface MidEventResponseDetails {
+  field_errors?: FieldError[]
+}
+
+interface FieldError {
+  id: string;
+  message: string;
 }

@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import moment from 'moment';
-import i18n from '../../locale/en.json';
 import { APPLICANT_TYPE, FEATURE_FLAGS, FTPA_DECISION_OUTCOME_TYPE } from '../data/constants';
 import { countryList } from '../data/country-list';
 import { paths } from '../paths';
@@ -9,6 +8,7 @@ import { DocumentManagementService } from '../service/document-management-servic
 import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dateTimeFormat, dayMonthYearFormat, formatDate } from '../utils/date-utils';
+import { getI18n } from '../utils/grammarPerspectiveTransformer';
 import { getFee } from '../utils/payments-utils';
 import {
   appealHasNoRemissionOption,
@@ -50,7 +50,7 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
   const hasSponsor = application.hasSponsor && application.hasSponsor === 'Yes';
   let rows = [];
   let rowsCont = [];
-
+  const i18n = getI18n(req.session.isNonLegalRep);
   if (appellantInUk && !hasSponsor) {
 
     rows = [
@@ -172,6 +172,7 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     if (paymentTypeRow) rows.push(paymentTypeRow);
     if (fee) rows.push(feeAmountRow);
   }
+  getNonLegalRepDetails(req, rows);
   return rows;
 }
 
@@ -189,7 +190,8 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   const personalDetailsRows = [];
   const feeDetailsRows = [];
   const feeHistoryRows = [];
-
+  const isNonLegalRep: boolean = req.session.isNonLegalRep;
+  const i18n = getI18n(isNonLegalRep);
   // about appeal section
   aboutAppealRows.push(
     application.appellantInUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantInUk, [application.appellantInUk], null)
@@ -230,6 +232,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   if (decisionType) aboutAppealRows.push(decisionTypeRow);
   aboutAppealRows.push(application.isAppealLate && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [application.lateAppeal.reason], null));
   aboutAppealRows.push(application.isAppealLate && application.lateAppeal.evidence && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`]));
+  getNonLegalRepDetails(req, aboutAppealRows);
 
   // personal details section
   personalDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [application.personalDetails.givenNames, application.personalDetails.familyName], null, Delimiter.SPACE));
@@ -323,7 +326,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
       const fee = getFee(req.session.appeal);
       if (application.feeUpdateTribunalAction) {
         feeDetailsRows.push(newFeeAmount ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [calculateAmountToPounds(newFeeAmount)]) : null);
-        addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, feeAmountGbp, null);
+        addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, feeAmountGbp, null, isNonLegalRep);
       } else if (appealHasNoRemissionOption(application)) {
         feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
@@ -343,9 +346,11 @@ async function addPaymentDetails(req: Request, application: AppealApplication, f
   const fee = getFee(req.session.appeal);
   const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
   const { paymentStatus = null, newFeeAmount = null, previousFeeAmountGbp = null } = req.session.appeal;
+  const isNonLegalRep: boolean = req.session.isNonLegalRep;
+  const i18n = getI18n(isNonLegalRep);
   if (application.feeUpdateTribunalAction) {
     feeDetailsRows.push(newFeeAmount ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [calculateAmountToPounds(newFeeAmount)]) : null);
-    addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, null, previousFeeAmountGbp);
+    addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus, null, previousFeeAmountGbp, isNonLegalRep);
   } else {
     feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
     addPaymentStatusTitle(refundFeatureEnabled, feeDetailsRows, req);
@@ -353,35 +358,49 @@ async function addPaymentDetails(req: Request, application: AppealApplication, f
   }
 }
 
+function getNonLegalRepDetails(req: Request, rows: any[]) {
+  const i18n = getI18n(req.session.isNonLegalRep);
+  if (req.session.appeal.nlrDetails) {
+    const nlrDetails: NlrDetails = req.session.appeal.nlrDetails;
+    rows.push(
+      (nlrDetails.givenNames && nlrDetails.familyName) && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName, [nlrDetails.givenNames, nlrDetails.familyName], null, Delimiter.SPACE),
+      nlrDetails.emailAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail, [nlrDetails.emailAddress]),
+      nlrDetails.phoneNumber && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone, [nlrDetails.phoneNumber]),
+      nlrDetails.address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress, [...Object.values(nlrDetails.address)], null, Delimiter.BREAK_LINE)
+    );
+  }
+}
+
 function getAmountToRefund(calculatedAmount, amountLeftToPay) {
   return '£' + (calculatedAmount - amountLeftToPay / 100);
 }
+
 function calculateAmountToPounds(amount) {
   return '£' + (amount / 100);
 }
 
 async function addPreviousRemissionDetails(
-    req: Request,
-    application: AppealApplication,
-    feeHistoryRows: any[]
+  req: Request,
+  application: AppealApplication,
+  feeHistoryRows: any[]
 ) {
   const refundFeatureEnabled = await LaunchDarklyService.getInstance()
-      .getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    .getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
 
   const fee = refundFeatureEnabled ? getFee(req.session.appeal) : null;
-
+  const isNonLegalRep: boolean = req.session.isNonLegalRep;
   application.previousRemissionDetails.forEach((remissionDetail: RemissionDetails, index: number) => {
     const row: any[] = [];
 
-    addFeeRemissionType(remissionDetail, row);
+    addFeeRemissionType(remissionDetail, row, isNonLegalRep);
     addDateOfApplication(req, application, index, row);
-    addBasicFields(remissionDetail, row);
-    addDocumentFields(remissionDetail, row);
-    addArrayDocumentFields(remissionDetail, row);
-    addHelpWithFees(remissionDetail, row);
+    addBasicFields(remissionDetail, row, isNonLegalRep);
+    addDocumentFields(remissionDetail, row, isNonLegalRep);
+    addArrayDocumentFields(remissionDetail, row, isNonLegalRep);
+    addHelpWithFees(remissionDetail, row, isNonLegalRep);
 
     if (refundFeatureEnabled && fee) {
-      addRefundDecision(remissionDetail, fee, row);
+      addRefundDecision(remissionDetail, fee, row, isNonLegalRep);
     }
 
     feeHistoryRows.push(row);
@@ -392,37 +411,40 @@ async function addPreviousRemissionDetails(
  * === Helpers ===
  */
 
-function addFeeRemissionType(remissionDetail: RemissionDetails, row: any[]) {
+function addFeeRemissionType(remissionDetail: RemissionDetails, row: any[], isNonLegalRep: boolean) {
   if (!remissionDetail.feeRemissionType) return;
 
   const { feeRemissionType } = remissionDetail;
   const label = localAuthorityFeeRemissionTypes.has(feeRemissionType)
-      ? `Local Authority Support (${feeRemissionType})`
-      : feeRemissionType;
+    ? `Local Authority Support (${feeRemissionType})`
+    : feeRemissionType;
 
+  const i18n = getI18n(isNonLegalRep);
   row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, [label], null));
 }
 
 function addDateOfApplication(
-    req: Request,
-    application: AppealApplication,
-    index: number,
-    row: any[]
+  req: Request,
+  application: AppealApplication,
+  index: number,
+  row: any[]
 ) {
+  const i18n = getI18n(req.session.isNonLegalRep);
   row.push(addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.dateOfApplication,
-      [getRecordRemissionDate(req, index, application.previousRemissionDetails.length)],
-      null
+    i18n.pages.checkYourAnswers.rowTitles.dateOfApplication,
+    [getRecordRemissionDate(req, index, application.previousRemissionDetails.length)],
+    null
   ));
 }
 
-function addBasicFields(remissionDetail: RemissionDetails, row: any[]) {
+function addBasicFields(remissionDetail: RemissionDetails, row: any[], isNonLegalRep: boolean) {
   const mappings: Record<string, string | undefined> = {
     asylumSupportReferenceNumber: remissionDetail.asylumSupportReference,
     legalAidAccountNumber: remissionDetail.legalAidAccountNumber,
     exceptionalCircumstances: remissionDetail.exceptionalCircumstances
   };
 
+  const i18n = getI18n(isNonLegalRep);
   Object.entries(mappings).forEach(([key, value]) => {
     if (value) {
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles[key], [value], null));
@@ -430,7 +452,7 @@ function addBasicFields(remissionDetail: RemissionDetails, row: any[]) {
   });
 }
 
-function addDocumentFields(remissionDetail: RemissionDetails, row: any[]) {
+function addDocumentFields(remissionDetail: RemissionDetails, row: any[], isNonLegalRep: boolean) {
   const docMappings: Record<string, Evidence | undefined> = {
     asylumSupportDocument: remissionDetail.asylumSupportDocument,
     section17Document: remissionDetail.section17Document,
@@ -438,6 +460,7 @@ function addDocumentFields(remissionDetail: RemissionDetails, row: any[]) {
     homeOfficeWaiverDocument: remissionDetail.homeOfficeWaiverDocument
   };
 
+  const i18n = getI18n(isNonLegalRep);
   Object.entries(docMappings).forEach(([key, doc]) => {
     if (doc) {
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles[key], [getEvidenceUrl(doc)], null));
@@ -445,76 +468,84 @@ function addDocumentFields(remissionDetail: RemissionDetails, row: any[]) {
   });
 }
 
-function addArrayDocumentFields(remissionDetail: RemissionDetails, row: any[]) {
+function addArrayDocumentFields(remissionDetail: RemissionDetails, row: any[], isNonLegalRep: boolean) {
   const arrayDocMappings: Record<string, Evidence[] | undefined> = {
     exceptionalCircumstancesEvidence: remissionDetail.remissionEcEvidenceDocuments,
     localAuthorityLetter: remissionDetail.localAuthorityLetters
   };
 
+  const i18n = getI18n(isNonLegalRep);
   Object.entries(arrayDocMappings).forEach(([key, docs]) => {
     if (docs?.length) {
       row.push(addSummaryRow(
-          i18n.pages.checkYourAnswers.rowTitles[key],
-          docs.map(getEvidenceUrl),
-          null
+        i18n.pages.checkYourAnswers.rowTitles[key],
+        docs.map(getEvidenceUrl),
+        null
       ));
     }
   });
 }
 
-function addHelpWithFees(remissionDetail: RemissionDetails, row: any[]) {
+function addHelpWithFees(remissionDetail: RemissionDetails, row: any[], isNonLegalRep: boolean) {
+  const i18n = getI18n(isNonLegalRep);
   if (remissionDetail.helpWithFeesReferenceNumber) {
     row.push(addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber,
-        [remissionDetail.helpWithFeesReferenceNumber],
-        null
+      i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber,
+      [remissionDetail.helpWithFeesReferenceNumber],
+      null
     ));
   }
 }
 
-function addRefundDecision(remissionDetail: RemissionDetails, fee: any, row: any[]) {
+function addRefundDecision(remissionDetail: RemissionDetails, fee: any, row: any[], isNonLegalRep: boolean) {
+  const i18n = getI18n(isNonLegalRep);
   switch (remissionDetail.remissionDecision) {
     case 'Approved':
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-          ['Fee support request granted'], null));
+        ['Fee support request granted'], null));
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToRefund,
-          [`£${fee.calculated_amount}`], null));
+        [`£${fee.calculated_amount}`], null));
       break;
 
     case 'Partially approved':
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-          ['Fee support request partially granted'], null));
+        ['Fee support request partially granted'], null));
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
-          [remissionDetail.remissionDecisionReason], null));
+        [remissionDetail.remissionDecisionReason], null));
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToRefund,
-          [getAmountToRefund(fee.calculated_amount, remissionDetail.amountLeftToPay)], null));
+        [getAmountToRefund(fee.calculated_amount, remissionDetail.amountLeftToPay)], null));
       break;
 
     case 'Rejected':
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-          ['Fee support requested refused'], null));
+        ['Fee support requested refused'], null));
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
-          [remissionDetail.remissionDecisionReason], null));
+        [remissionDetail.remissionDecisionReason], null));
       break;
   }
 }
 
-function addFeeUpdatePaymentSection(application: AppealApplication, feeDetailsRows: any[], fee: { code: string; calculated_amount: any; version: string }, paymentStatus: string, feeAmountGbp: string, previousFeeAmountGbp: string) {
+function addFeeUpdatePaymentSection(application: AppealApplication, feeDetailsRows: any[], fee: {
+  code: string;
+  calculated_amount: any;
+  version: string
+}, paymentStatus: string, feeAmountGbp: string, previousFeeAmountGbp: string, isNonLegalRep: boolean) {
   const { feeUpdateReason = null } = application;
+  const i18n = getI18n(isNonLegalRep);
   if (application.feeUpdateTribunalAction === 'additionalPayment') {
-    addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows, fee, previousFeeAmountGbp, feeAmountGbp);
-    addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows, fee, feeUpdateReason);
+    addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows, fee, previousFeeAmountGbp, feeAmountGbp, isNonLegalRep);
+    addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows, fee, feeUpdateReason, isNonLegalRep);
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [i18n.pages.checkYourAnswers.rowTitles.additionalPaymentRequested], null));
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToPay, [calculateAmountToPounds(application.manageFeeRequestedAmount)], null));
 
   } else if (application.feeUpdateTribunalAction === 'refund') {
-    addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows, fee, previousFeeAmountGbp, feeAmountGbp);
-    addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows, fee, feeUpdateReason);
+    addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows, fee, previousFeeAmountGbp, feeAmountGbp, isNonLegalRep);
+    addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows, fee, feeUpdateReason, isNonLegalRep);
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [i18n.pages.checkYourAnswers.rowTitles.toBeRefunded], null));
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToBeRefund, [calculateAmountToPounds(application.manageFeeRefundedAmount)], null));
   } else if (application.feeUpdateTribunalAction === 'noAction') {
-    addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows, fee, previousFeeAmountGbp, feeAmountGbp);
-    addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows, fee, feeUpdateReason);
+    addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows, fee, previousFeeAmountGbp, feeAmountGbp, isNonLegalRep);
+    addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows, fee, feeUpdateReason, isNonLegalRep);
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
   }
 }
@@ -523,39 +554,55 @@ function getEvidenceUrl(evidence: Evidence) {
   return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
 }
 
-function addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows: any[], fee: { code: string; calculated_amount: any; version: string }, previousFeeAmountGbp: string, feeAmountGbp: string) {
+function addFeeUpdatePaymentSectionFeeLine(application, feeDetailsRows: any[], fee: {
+  code: string;
+  calculated_amount: any;
+  version: string
+}, previousFeeAmountGbp: string, feeAmountGbp: string, isNonLegalRep: boolean) {
+  const i18n = getI18n(isNonLegalRep);
   feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmountPaid, [calculateAmountToPounds(previousFeeAmountGbp ? previousFeeAmountGbp : feeAmountGbp ? feeAmountGbp : application.paidAmount)]) : null);
 }
 
-function addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows: any[], fee: { code: string; calculated_amount: any; version: string }, feeUpdateReason: string) {
+function addFeeUpdatePaymentSectionReasonForFeeChangeLine(feeDetailsRows: any[], fee: {
+  code: string;
+  calculated_amount: any;
+  version: string
+}, feeUpdateReason: string, isNonLegalRep: boolean) {
+  const i18n = getI18n(isNonLegalRep);
   feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForFeeChange, [i18n.pages.checkYourAnswers.rowTitles[feeUpdateReason]], null));
 }
 
 function addPaymentStatusTitle(refundFeatureEnabled: boolean, feeDetailsRows: any[], req: Request) {
   if (refundFeatureEnabled) {
+    const i18n = getI18n(req.session.isNonLegalRep);
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [getPaymentStatusRow(req)], null));
   }
 }
 
-function addFeeSupportStatus(refundFeatureEnabled: boolean, feeDetailsRows: any[], req: Request, application: AppealApplication, fee: { code: string; calculated_amount: any; version: string }) {
+function addFeeSupportStatus(refundFeatureEnabled: boolean, feeDetailsRows: any[], req: Request, application: AppealApplication, fee: {
+  code: string;
+  calculated_amount: any;
+  version: string
+}) {
+  const i18n = getI18n(req.session.isNonLegalRep);
   if (refundFeatureEnabled && paymentForAppealHasBeenMade(req)) {
     if (application.remissionDecision === 'approved') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-          ['Fee support request granted'], null));
+        ['Fee support request granted'], null));
       if (application.refundRequested) {
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToRefund, [`£${fee.calculated_amount}`], null));
       }
 
     } else if (application.remissionDecision === 'partiallyApproved') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-          ['Fee support request partially granted'], null));
+        ['Fee support request partially granted'], null));
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [application.remissionDecisionReason], null));
       if (application.refundRequested) {
         feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToRefund, [getAmountToRefund(fee.calculated_amount, application.amountLeftToPay)], null));
       }
     } else if (application.remissionDecision === 'rejected') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-          ['Fee support requested refused'], null));
+        ['Fee support requested refused'], null));
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [application.remissionDecisionReason], null));
     }
   } else if (refundFeatureEnabled && !paymentForAppealHasBeenMade(req)) {
@@ -578,6 +625,7 @@ function getRecordRemissionDate(req: Request, index: number, previousRemissionDe
 function setupAnswersReasonsForAppeal(req: Request, fromLegalRep: boolean): Array<any> {
   const array = [];
   const data = req.session.appeal.reasonsForAppeal;
+  const i18n = getI18n(req.session.isNonLegalRep);
   if (fromLegalRep) {
     array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.uploadDateLabel, [data.uploadDate], null));
     if (data.evidences) {
@@ -605,10 +653,11 @@ function setupAnswersReasonsForAppeal(req: Request, fromLegalRep: boolean): Arra
   return array;
 }
 
-function getMakeAnApplicationSummaryRows(makeAnApplicationEvent: Collection<Application<Evidence>>) {
+function getMakeAnApplicationSummaryRows(makeAnApplicationEvent: Collection<Application<Evidence>>, isNonLegalRep: boolean) {
   const request = [];
   const data = makeAnApplicationEvent.value;
-  request.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [getApplicationTitle(data.type)]));
+  const i18n = getI18n(isNonLegalRep);
+  request.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [getApplicationTitle(data.type, isNonLegalRep)]));
   request.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, [data.details]));
   if (data.evidence.length) {
     const evidenceText = data.evidence.map((evidence) => {
@@ -629,9 +678,10 @@ function getMakeAnApplicationSummaryRows(makeAnApplicationEvent: Collection<Appl
   return { request };
 }
 
-function getRespondentApplicationSummaryRows(application: Collection<Application<Evidence>>) {
+function getRespondentApplicationSummaryRows(application: Collection<Application<Evidence>>, isNonLegalRep: boolean) {
   const request = [];
   const data = application.value;
+  const i18n = getI18n(isNonLegalRep);
   const requestType = i18n.pages.detailViewers.makeAnApplication.respondent.request.types[application.value.type];
   request.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, [requestType]));
   request.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, [data.details]));
@@ -654,8 +704,9 @@ function getRespondentApplicationSummaryRows(application: Collection<Application
   return { request };
 }
 
-function getApplicationTitle(type: any): string {
+function getApplicationTitle(type: any, isNonLegalRep: boolean): string {
   const applicationType = getApplicationType(type);
+  const i18n = getI18n(isNonLegalRep);
   if (applicationType) {
     return i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes[applicationType.code];
   }
@@ -675,6 +726,7 @@ function setupCmaRequirementsViewer(req: Request) {
   const submitCmaRequirements = getAppealApplicationData('submitCmaRequirements', req);
   const { data } = submitCmaRequirements[0];
   const cmaRequirements: CmaRequirements = req.session.appeal.cmaRequirements;
+  const i18n = getI18n(req.session.isNonLegalRep);
   if (_.has(data, 'isInterpreterServicesNeeded')) {
     interpreter.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.interpreterTitle], null));
     interpreter.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.isInterpreterServicesNeeded], null));
@@ -801,6 +853,7 @@ function setupCmaRequirementsViewer(req: Request) {
 }
 
 async function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction) {
+  const i18n = getI18n(req.session.isNonLegalRep);
   try {
     const drlmFeeRemissionFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (drlmFeeRemissionFeatureFlag) {
@@ -840,6 +893,7 @@ function getReasonsForAppealViewer(req: Request, res: Response, next: NextFuncti
 }
 
 function getLrReasonsForAppealViewer(req: Request, res: Response, next: NextFunction) {
+  const i18n = getI18n(req.session.isNonLegalRep);
   try {
     const previousPage: string = paths.common.overview;
     const data = setupAnswersReasonsForAppeal(req, true);
@@ -911,15 +965,16 @@ function getMakeAnApplicationViewer(req: Request, res: Response, next: NextFunct
       previousPage: previousPage,
       hearingCentreEmail
     };
+    const isNonLegalRep: boolean = req.session.isNonLegalRep;
     if (applicant === 'Appellant') {
       options = {
         ...options,
-        ...getAppellantApplicationDetails(application)
+        ...getAppellantApplicationDetails(application, isNonLegalRep)
       };
     } else if (applicant === 'Respondent') {
       options = {
         ...options,
-        ...getRespondentApplicationDetails(application)
+        ...getRespondentApplicationDetails(application, isNonLegalRep)
       };
     }
     return res.render('detail-viewers/make-an-application-details-viewer.njk', options);
@@ -928,12 +983,13 @@ function getMakeAnApplicationViewer(req: Request, res: Response, next: NextFunct
   }
 }
 
-function getRespondentApplicationDetails(application: Collection<Application<Evidence>>) {
-  const { request, response = null } = getRespondentApplicationSummaryRows(application);
+function getRespondentApplicationDetails(application: Collection<Application<Evidence>>, isNonLegalRep: boolean) {
+  const { request, response = null } = getRespondentApplicationSummaryRows(application, isNonLegalRep);
   const applicationType = application.value.type;
   const decision = application.value.decision;
+  const i18n = getI18n(isNonLegalRep);
   const whatNextPending = i18n.pages.detailViewers.makeAnApplication.respondent.request.whatNext[applicationType];
-  const whatNextDecided = getMakeAnApplicationDecisionWhatNext(application);
+  const whatNextDecided = getMakeAnApplicationDecisionWhatNext(application, isNonLegalRep);
   const options = {
     title: i18n.pages.detailViewers.makeAnApplication.respondent.request.title,
     description: i18n.pages.detailViewers.makeAnApplication.respondent.request.description,
@@ -954,9 +1010,10 @@ function getRespondentApplicationDetails(application: Collection<Application<Evi
     };
 }
 
-function getAppellantApplicationDetails(application: Collection<Application<Evidence>>) {
-  const { request, response = null } = getMakeAnApplicationSummaryRows(application);
-  const whatNext = getMakeAnApplicationDecisionWhatNext(application);
+function getAppellantApplicationDetails(application: Collection<Application<Evidence>>, isNonLegalRep: boolean) {
+  const { request, response = null } = getMakeAnApplicationSummaryRows(application, isNonLegalRep);
+  const whatNext = getMakeAnApplicationDecisionWhatNext(application, isNonLegalRep);
+  const i18n = getI18n(isNonLegalRep);
   return {
     title: i18n.pages.detailViewers.makeAnApplication.appellant.title,
     whatNextTitle: i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.title,
@@ -966,10 +1023,11 @@ function getAppellantApplicationDetails(application: Collection<Application<Evid
   };
 }
 
-function getMakeAnApplicationDecisionWhatNext(makeAnApplicationEvent: Collection<Application<Evidence>>) {
+function getMakeAnApplicationDecisionWhatNext(makeAnApplicationEvent: Collection<Application<Evidence>>, isNonLegalRep: boolean) {
   const data = makeAnApplicationEvent.value;
   const applicationType = getApplicationType(data.type);
   if (applicationType && data.decision !== 'Pending') {
+    const i18n = getI18n(isNonLegalRep);
     const questionKey = applicationType.parent ? applicationType.parent : applicationType.code;
     const decisionKey = data.decision.toLowerCase();
     const whatNextSource = data.applicant === 'Respondent'
@@ -1018,6 +1076,7 @@ function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
     const previousPage: string = paths.common.overview;
     const endedAppealDoc = req.session.appeal.tribunalDocuments.find(doc => ['endAppeal', 'endAppealAutomatically'].includes(doc.tag));
     const fileNameFormatted = fileNameFormatter(endedAppealDoc.name);
+    const i18n = getI18n(req.session.isNonLegalRep);
     const data = [
       addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(endedAppealDoc.dateUploaded).format(dayMonthYearFormat)]),
       addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${endedAppealDoc.fileId}'>${fileNameFormatted}</a>`])
@@ -1094,6 +1153,7 @@ function getHearingNoticeViewer(req: Request, res: Response, next: NextFunction)
     const hearingNoticeDocument: Evidence = getHearingNoticeDocument(req);
     const data = [];
     const fileNameFormatted = fileNameFormatter(hearingNoticeDocument.name);
+    const i18n = getI18n(req.session.isNonLegalRep);
     data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(hearingNoticeDocument.dateUploaded).format(dayMonthYearFormat)]));
     data.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingNoticeDocument.fileId}'>${fileNameFormatted}</a>`]));
 
@@ -1112,6 +1172,7 @@ function getHearingAdjournmentNoticeViewer(req: Request, res: Response, next: Ne
     const previousPage: string = paths.common.overview;
     const hearingAdjournmentNoticeDocuments = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'noticeOfAdjournedHearing');
     const data = [];
+    const i18n = getI18n(req.session.isNonLegalRep);
     hearingAdjournmentNoticeDocuments.forEach(document => {
       const fileNameFormatted = fileNameFormatter(document.name);
       data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(document.dateUploaded).format(dayMonthYearFormat)]));
@@ -1136,6 +1197,7 @@ function getDecisionAndReasonsViewer(req: Request, res: Response, next: NextFunc
 
     const data = [];
     let fileNameFormatted = fileNameFormatter(coverLetterDocument.name);
+    const i18n = getI18n(req.session.isNonLegalRep);
     data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(coverLetterDocument.dateUploaded).format(dayMonthYearFormat)]));
     data.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${coverLetterDocument.fileId}'>${fileNameFormatted}</a>`]));
 
@@ -1164,6 +1226,7 @@ async function getUpdatedTribunalDecisionWithRule32Viewer(req: Request, res: Res
       const fileNameFormatted = fileNameFormatter(rule32Document.name);
 
       const data = [];
+      const i18n = getI18n(req.session.isNonLegalRep);
       data.push(addSummaryRow(i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.documentText, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${rule32Document.fileId}'>${fileNameFormatted}</a>`]));
 
       return res.render('templates/details-viewer.njk', {
@@ -1182,6 +1245,7 @@ function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunct
     const previousPage: string = paths.common.overview;
     const recordOutOfTimeDecisionDoc = req.session.appeal.tribunalDocuments.find(doc => doc.tag === 'recordOutOfTimeDecisionDocument');
     const fileNameFormatted = fileNameFormatter(recordOutOfTimeDecisionDoc.name);
+    const i18n = getI18n(req.session.isNonLegalRep);
     const data = [
       addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.decision, [i18n.pages.detailViewers.outOfTimeDecision.type[req.session.appeal.outOfTimeDecisionType]]),
       addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.decisionMaker, [req.session.appeal.outOfTimeDecisionMaker]),
@@ -1203,6 +1267,7 @@ function getHomeOfficeWithdrawLetter(req: Request, res: Response, next: NextFunc
     const homeOfficeResponseDocuments = req.session.appeal.respondentDocuments.filter(doc => doc.tag === 'appealResponse');
 
     const homeOfficeLetter = homeOfficeResponseDocuments.shift();
+    const i18n = getI18n(req.session.isNonLegalRep);
     const data = [
       addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.dateUploaded, [moment(homeOfficeLetter.dateUploaded).format(dayMonthYearFormat)]),
       addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${homeOfficeLetter.fileId}'>${fileNameFormatter(homeOfficeLetter.name)}</a>`]),
@@ -1227,6 +1292,7 @@ function getHomeOfficeResponse(req: Request, res: Response, next: NextFunction) 
     const homeOfficeResponseDocuments = req.session.appeal.respondentDocuments.filter(doc => doc.tag === 'appealResponse');
 
     const homeOfficeLetter = homeOfficeResponseDocuments.shift();
+    const i18n = getI18n(req.session.isNonLegalRep);
     const data = [
       addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.dateUploaded, [moment(homeOfficeLetter.dateUploaded).format(dayMonthYearFormat)]),
       addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${homeOfficeLetter.fileId}'>${fileNameFormatter(homeOfficeLetter.name)}</a>`]),
@@ -1249,6 +1315,7 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
   try {
     const previousPage: string = paths.common.overview;
     let hearingBundles: Evidence[] = [];
+    const i18n = getI18n(req.session.isNonLegalRep);
     if (req.session.appeal.hearingDocuments) {
       hearingBundles = req.session.appeal.hearingDocuments
         .filter(doc => doc.tag === 'hearingBundle' || doc.tag === 'updatedHearingBundle');
@@ -1319,6 +1386,7 @@ function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunc
 
     const data = [];
 
+    const i18n = getI18n(req.session.isNonLegalRep);
     if (ftpaGrounds && ftpaGrounds.length) {
       data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [formatTextForCYA(ftpaGrounds)]));
     }
@@ -1376,6 +1444,7 @@ async function getFtpaRespondentDecisionDetails(req: Request, res: Response, nex
       decision: []
     };
 
+    const i18n = getI18n(req.session.isNonLegalRep);
     const isGrantedOrPartiallyGranted = [FTPA_DECISION_OUTCOME_TYPE.GRANTED, FTPA_DECISION_OUTCOME_TYPE.PARTIALLY_GRANTED].includes(ftpaDecision);
     if (isGrantedOrPartiallyGranted) {
       attachFtpaDocuments(ftpaGroundsDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.groundsDocument);
@@ -1438,6 +1507,7 @@ async function getFtpaAppellantDecisionDetails(req: Request, res: Response, next
     const ftpaDecisionDate = req.session.appeal.ftpaAppellantDecisionDate;
     const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
     const ftpaAppellantDecisionRemadeRule32Text = req.session.appeal.ftpaAppellantDecisionRemadeRule32Text;
+    const i18n = getI18n(req.session.isNonLegalRep);
 
     const data = {
       application: [],
@@ -1525,6 +1595,7 @@ function getDirectionHistory(req: Request, res: Response, next: NextFunction) {
 
 function getAppellantDirectionHistoryDetails(req: Request, res: Response, next: NextFunction, direction: Direction) {
   try {
+    const i18n = getI18n(req.session.isNonLegalRep);
     const previousPage: string = paths.common.overview;
     const data = [];
     data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.appellant.explanation, [formatTextForCYA(direction.explanation)]));
@@ -1544,6 +1615,7 @@ function getAppellantDirectionHistoryDetails(req: Request, res: Response, next: 
 function getRespondentDirectionHistoryDetails(req: Request, res: Response, next: NextFunction, direction: Direction) {
   try {
     const previousPage: string = paths.common.overview;
+    const i18n = getI18n(req.session.isNonLegalRep);
     const data = [];
     data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.respondent.explanation, [formatTextForCYA(direction.explanation)]));
     data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.respondent.dateDue, [formatTextForCYA(moment(direction.dateDue).format(dayMonthYearFormat))]));
@@ -1561,6 +1633,7 @@ function getRespondentDirectionHistoryDetails(req: Request, res: Response, next:
 
 async function getUpdatedDecisionAndReasonsViewer(req: Request, res: Response, next: NextFunction) {
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
+  const i18n = getI18n(req.session.isNonLegalRep);
   if (ftpaSetAsideFeatureEnabled) {
     try {
       const previousPage: string = paths.common.overview;
@@ -1614,7 +1687,7 @@ async function getUpdatedDecisionAndReasonsViewer(req: Request, res: Response, n
 }
 
 async function getRemittalDocumentsViewer(req: Request, res: Response, next: NextFunction) {
-
+  const i18n = getI18n(req.session.isNonLegalRep);
   try {
     const previousPage: string = paths.common.overview;
     const remittalDocuments = req.session.appeal.remittalDocuments;

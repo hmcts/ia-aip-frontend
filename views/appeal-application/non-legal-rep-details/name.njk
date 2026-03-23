@@ -1,0 +1,55 @@
+{% set pageTitleName = i18n.pages.nlrName.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      errorList: errorList
+    }) }}
+  {% endif %}
+
+  <form method="post" action="{{ postAction }}" type="submit">
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.nlrName.title,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {{ govukInput({
+        label: {
+          text: i18n.pages.nlrName.nlrGivenNames
+        },
+        classes: "govuk-input--width-20",
+        id: "nlrGivenNames",
+        name: "nlrGivenNames",
+        value: nlrGivenNames,
+        errorMessage: {
+          text: error["nlrGivenNames"].text
+        } if error["nlrGivenNames"]
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: i18n.pages.nlrName.nlrFamilyName
+        },
+        classes: "govuk-input--width-20",
+        id: "nlrFamilyName",
+        name: "nlrFamilyName",
+        value: nlrFamilyName,
+        errorMessage: {
+          text: error["nlrFamilyName"].text
+        } if error["nlrFamilyName"]
+      }) }}
+      {% if saveForLater %}
+        {{ saveButtons() }}
+      {% else %}
+        {{ saveButton() }}
+      {% endif %}
+    {% endcall %}
+  </form>
+  {{ contactUs() }}
+{% endblock %}

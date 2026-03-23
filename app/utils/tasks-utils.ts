@@ -50,9 +50,20 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
   const sponsorContactDetails: boolean = sponsorEmail && sponsorWantsEmail || sponsorPhone && sponsorWantsSms;
   const outUkContactDetailsComplete: boolean = (appellantContactDetails && hasSponsorNo) ||
     (appellantContactDetails && hasSponsorYes && sponsorGivenNames && sponsorFamilyName && sponsorAddress && sponsorContactDetails && sponsorAuthorisation);
+  const hasNlrNo: boolean = appeal.application.hasNonLegalRep && appeal.application.hasNonLegalRep === 'No' || false;
+  const hasNlr: boolean = !!_.get(appeal.application, 'hasNonLegalRep');
+  const nlrGivenNames: boolean = !!_.get(appeal.nlrDetails, 'givenNames');
+  const nlrFamilyName: boolean = !!_.get(appeal.nlrDetails, 'familyName');
+  const nlrPhoneNumber: boolean = !!_.get(appeal.nlrDetails, 'phoneNumber');
+  const nlrEmailAddress: boolean = !!_.get(appeal.nlrDetails, 'emailAddress');
+  const nlrLine1: boolean = !!_.get(appeal.nlrDetails, 'address.line1');
+  const nlrCity: boolean = !!_.get(appeal.nlrDetails, 'address.city');
+  const nlrPostcode: boolean = !!_.get(appeal.nlrDetails, 'address.postcode');
+  const nlrDetailsComplete: boolean = !hasNlr || hasNlrNo || (nlrGivenNames && nlrFamilyName && nlrPhoneNumber && nlrEmailAddress && nlrLine1 && nlrCity && nlrPostcode);
+  const appellantInUk: boolean = _.get(appeal.application, 'appellantInUk') === 'Yes';
   const contactDetails: Task = {
     saved: (email && wantsEmail) || (phone && wantsSms) || postcode || line1 || appellantOutOfCountryAddress,
-    completed: _.get(appeal.application, 'appellantInUk') === 'Yes' ? appellantContactDetails : outUkContactDetailsComplete,
+    completed: (appellantInUk ? appellantContactDetails : outUkContactDetailsComplete) && nlrDetailsComplete,
     active: homeOfficeDetails.completed || homeOfficeDetailsOOC.completed
   };
 

@@ -1,0 +1,46 @@
+{% set pageTitleName = i18n.pages.inviteNlrToCreateAccount.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% import "helpers/text-helpers.njk" as text %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  {% call govukFieldset({
+    legend: {
+      text: i18n.pages.inviteNlrToCreateAccount.title,
+      classes: "govuk-fieldset__legend--xl",
+      isPageHeading: true
+    }
+  }) %}
+  <form action="{{ paths.nonLegalRep.inviteToCreateAccount }}" method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukInput({
+      id: "email-value",
+      name: "email-value",
+      type: "email",
+      value: nlrEmail,
+      classes: "govuk-!-width-one-third",
+      label: {
+        text: i18n.pages.inviteNlrToCreateAccount.enterEmail
+      },
+      attributes: {
+        spellcheck: "false"
+      },
+      errorMessage: {
+        text: errors['email-value'].text
+      } if errors['email-value']
+    }) }}
+    {{ saveButton({name: 'send', text: 'Send Invite'}) }}
+  {% endcall %}
+  </form>
+
+  {{ contactUs() }}
+
+{% endblock %}

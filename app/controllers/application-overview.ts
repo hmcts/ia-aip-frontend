@@ -1,4 +1,4 @@
-import { application, NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
 import { FEATURE_FLAGS } from '../data/constants';
@@ -6,7 +6,11 @@ import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getAppealApplicationNextStep, isAddendumEvidenceUploadState, transferredToUpperTribunal } from '../utils/application-state-utils';
+import {
+  getAppealApplicationNextStep,
+  isAddendumEvidenceUploadState,
+  transferredToUpperTribunal
+} from '../utils/application-state-utils';
 import { getHearingCentre } from '../utils/cma-hearing-details';
 import { formatDate, timeFormat } from '../utils/date-utils';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
@@ -46,7 +50,7 @@ function getHearingDetails(req: Request): Hearing {
   return null;
 }
 
-function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnabled: boolean) {
+function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnabled: boolean, isCitizen: boolean) {
   const provideMoreEvidenceStates = [
     States.RESPONDENT_REVIEW.id,
     States.SUBMIT_HEARING_REQUIREMENTS.id,
@@ -67,12 +71,12 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
   ];
   const preAddendumEvidenceUploadState = isAddendumEvidenceUploadState(appealStatus);
   if (!preAddendumEvidenceUploadState) {
-    return provideMoreEvidenceStates.includes(appealStatus);
+    return isCitizen && provideMoreEvidenceStates.includes(appealStatus);
   }
-  return featureEnabled && preAddendumEvidenceUploadState;
+  return isCitizen && (featureEnabled && preAddendumEvidenceUploadState);
 }
 
-function showAppealRequestSection(appealStatus: string, featureEnabled: boolean) {
+function showAppealRequestSection(appealStatus: string, featureEnabled: boolean, isCitizen: boolean) {
   const showAppealRequestsStates = [
     States.APPEAL_SUBMITTED.id,
     States.PENDING_PAYMENT.id,
@@ -99,11 +103,11 @@ function showAppealRequestSection(appealStatus: string, featureEnabled: boolean)
     States.CMA_LISTED.id,
     States.ADJOURNED.id
   ];
-  return featureEnabled ? showAppealRequestsStates.includes(appealStatus) : featureEnabled;
+  return isCitizen && (featureEnabled ? showAppealRequestsStates.includes(appealStatus) : featureEnabled);
 }
 
-function showAppealRequestSectionInAppealEndedStatus(appealStatus: string, featureEnabled: boolean): boolean {
-  return featureEnabled ? States.ENDED.id === appealStatus : featureEnabled;
+function showAppealRequestSectionInAppealEndedStatus(appealStatus: string, featureEnabled: boolean, isCitizen: boolean): boolean {
+  return isCitizen && (featureEnabled ? States.ENDED.id === appealStatus : featureEnabled);
 }
 
 function showHearingRequestSection(appealStatus: string, featureEnabled: boolean) {
@@ -117,8 +121,10 @@ function showHearingRequestSection(appealStatus: string, featureEnabled: boolean
   return featureEnabled ? showHearingRequestsStates.includes(appealStatus) : featureEnabled;
 }
 
-function isAppealInProgress(appealStatus: string) {
-  return appealStatus !== States.APPEAL_STARTED.id && appealStatus !== States.PENDING_PAYMENT.id && appealStatus !== States.ENDED.id;
+export const endedStates = [States.APPEAL_STARTED.id, States.PENDING_PAYMENT.id, States.ENDED.id];
+
+function isAppealInProgress(appealStatus: string, isCitizen: boolean) {
+  return isCitizen && !endedStates.includes(appealStatus);
 }
 
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
@@ -135,30 +141,30 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
       const ftpaFeatureEnabled = await isFtpaFeatureEnabled(req);
 
+      const isCitizen: boolean = !req.session.isNonLegalRep;
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
       const saveAndAskForMoreTime = _.has(req.query, 'save-and-ask-for-more-time');
       const { appealReferenceNumber, appealStatus, paymentStatus, paAppealTypeAipPaymentOption } = req.session.appeal;
       const loggedInUserFullName: string = getAppellantName(req);
       const appealRefNumber = getAppealRefNumber(appealReferenceNumber);
-      const stagesStatus = buildProgressBarStages(appealStatus, paymentStatus);
+      const stagesStatus = buildProgressBarStages(appealStatus, req.session.isNonLegalRep, paymentStatus);
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);
       const hearingDetails = getHearingDetails(req);
-      let showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
+      let showPayLaterLink = isCitizen && (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
       if (refundFeatureEnabled) {
         showPayLaterLink = (req.session.appeal.application.refundConfirmationApplied || payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req))
           && !isPostDecisionState(appealStatus, ftpaFeatureEnabled)
           && !isRemissionApprovedOrPartiallyApproved(req.session.appeal);
       }
 
-      const showChangeRepresentation = isAppealInProgress(appealStatus);
-      const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled);
-      const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
-      const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
-      const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
-          && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
+      const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled, isCitizen);
+      const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled, isCitizen);
+      const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled, isCitizen);
+      const showHearingRequests = isCitizen && showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
+        && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
 
       const application = req.session.appeal.application;
 
@@ -168,6 +174,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
       const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;
 
+      const appealInProgress = isAppealInProgress(appealStatus, isCitizen);
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
         appealRefNumber: appealRefNumber,
@@ -187,10 +194,12 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showPayLaterLink,
         ftpaFeatureEnabled,
         hearingDetails,
-        showChangeRepresentation,
-        showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, ftpaFeatureEnabled),
+        showChangeRepresentation: appealInProgress,
+        showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, ftpaFeatureEnabled, isCitizen),
         showAskForFeeRemission,
+        showNonLegalRep: appealInProgress,
         showAskForSomethingInEndedState,
+        isNonLegalRep: !isCitizen,
         isPostDecisionState: isPostDecisionState(appealStatus, ftpaFeatureEnabled)
       });
     } catch (e) {
@@ -200,16 +209,17 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 }
 
 function isPostDecisionState(appealStatus: string, ftpaEnabled: boolean) {
-  const postDecisionStates = [ States.DECIDED.id, States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id ];
+  const postDecisionStates = [States.DECIDED.id, States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id];
 
   return postDecisionStates.includes(appealStatus) && ftpaEnabled;
 }
 
-function showFtpaApplicationLink(appeal: Appeal, ftpaEnabled: boolean) {
+function showFtpaApplicationLink(appeal: Appeal, ftpaEnabled: boolean, isCitizen: boolean) {
   return ftpaEnabled
-      && [ States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id ].includes(appeal.appealStatus)
-      && hasRespondentFtpaApplication(appeal)
-      && !hasAppellantFtpaApplication(appeal);
+    && [States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id].includes(appeal.appealStatus)
+    && hasRespondentFtpaApplication(appeal)
+    && !hasAppellantFtpaApplication(appeal)
+    && isCitizen;
 }
 
 function hasAppellantFtpaApplication(appeal: Appeal): boolean {

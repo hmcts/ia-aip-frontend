@@ -16,7 +16,12 @@ import {
   addressValidation,
   contactDetailsValidation,
   dropdownValidation,
-  hasSponsorValidation,
+  emailValidation,
+  hasSponsorOrNlrValidation,
+  isSamePersonValidation,
+  nlrAddressValidation,
+  nlrNamesValidation,
+  nonLegalRepContactDetailsValidation,
   postcodeValidation,
   sponsorAddressValidation,
   sponsorAuthorisationValidation,
@@ -85,10 +90,10 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
       const redirectedPagePath = await isOutOfCountryAppeal(req) ? paths.appealStarted.oocAddress : ukAddress;
 
       const redirectPage = getRedirectPage(
-          editingMode,
-          paths.appealStarted.checkAndSend,
-          req.body.saveForLater,
-          redirectedPagePath
+        editingMode,
+        paths.appealStarted.checkAndSend,
+        req.body.saveForLater,
+        redirectedPagePath
       );
       return res.redirect(redirectPage);
     } catch (error) {
@@ -160,7 +165,7 @@ function postEnterAddressForOutOfCountryAppeal(updateAppealService: UpdateAppeal
         ...req.session.appeal,
         ...appealUpdated
       };
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.hasSponsor);
+      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.hasSponsorOrNlr);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
@@ -212,8 +217,8 @@ function buildAddressList(addressLookupResult) {
   });
 
   const selectAddresses = lookedUpAddresses.length === 1 ?
-      i18n.pages.postcodeLookup.addressFound :
-      `${lookedUpAddresses.length} ${i18n.pages.postcodeLookup.addressesFound}`;
+    i18n.pages.postcodeLookup.addressFound :
+    `${lookedUpAddresses.length} ${i18n.pages.postcodeLookup.addressesFound}`;
   const addresses = [
     {
       value: '',
@@ -333,7 +338,7 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.hasSponsor);
+      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.hasSponsorOrNlr);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
@@ -341,45 +346,41 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
   };
 }
 
-async function getHasSponsor(req: Request, res: Response, next: NextFunction) {
+async function getHasSponsorOrNlr(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const application = req.session.appeal.application;
-    const answer = application.hasSponsor;
+    const hasSponsor = application.hasSponsor;
+    const hasNonLegalRep = application.hasNonLegalRep;
     const ukAddress = _.has(application, 'personalDetails.address.line1') ? paths.appealStarted.enterAddress : paths.appealStarted.enterPostcode;
     const previousPage = await isOutOfCountryAppeal(req) ? paths.appealStarted.oocAddress : ukAddress;
-    return res.render('appeal-application/sponsor-details/has-sponsor.njk', {
-      question: i18n.pages.hasSponsor.title,
-      description: undefined,
-      modal: undefined,
-      questionId: undefined,
+    return res.render('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
+      question: i18n.pages.hasSponsorOrNlr.title,
       previousPage: previousPage,
-      answer: answer,
-      errors: undefined,
-      errorList: undefined
+      hasSponsor: hasSponsor,
+      hasNonLegalRep: hasNonLegalRep
     });
   } catch (error) {
     next(error);
   }
 }
 
-function postHasSponsor(updateAppealService: UpdateAppealService) {
+function postHasSponsorOrNlr(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = hasSponsorValidation(req.body);
-
+      const validation = hasSponsorOrNlrValidation(req.body);
       const application = req.session.appeal.application;
+      const hasSponsor = req.body['hasSponsor'];
+      const hasNonLegalRep = req.body['hasNonLegalRep'];
       const ukAddress = _.has(application, 'personalDetails.address.line1') ? paths.appealStarted.enterAddress : paths.appealStarted.enterPostcode;
       const previousPage = await isOutOfCountryAppeal(req) ? paths.appealStarted.oocAddress : ukAddress;
 
       if (validation) {
-        return res.render('appeal-application/sponsor-details/has-sponsor.njk', {
-          question: i18n.pages.hasSponsor.title,
-          description: undefined,
-          modal: undefined,
-          questionId: undefined,
+        return res.render('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
+          question: i18n.pages.hasSponsorOrNlr.title,
           previousPage: previousPage,
-          answer: undefined,
+          hasSponsor: hasSponsor,
+          hasNonLegalRep: hasNonLegalRep,
           errors: validation,
           errorList: Object.values(validation)
         });
@@ -389,7 +390,70 @@ function postHasSponsor(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         application: {
           ...application,
-          hasSponsor: req.body['answer']
+          hasSponsor: req.body['hasSponsor'],
+          hasNonLegalRep: req.body['hasNonLegalRep']
+        }
+      };
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+
+      const sponsor = appeal.application.hasSponsor === 'Yes';
+      const nlr = appeal.application.hasNonLegalRep === 'Yes';
+
+      if (sponsor && nlr) return res.redirect(paths.appealStarted.isSponsorSameAsNlr);
+
+      if (sponsor) return res.redirect(paths.appealStarted.sponsorName);
+
+      if (nlr) return res.redirect(paths.appealStarted.nlrName);
+
+      return res.redirect(paths.appealStarted.taskList);
+
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
+function getSamePerson(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    const application = req.session.appeal.application;
+    const isSponsorSameAsNlr = application.isSponsorSameAsNlr;
+    return res.render('appeal-application/sponsor-details/is-same-person.njk', {
+      question: i18n.pages.isSponsorSameAsNlr.title,
+      previousPage: paths.appealStarted.hasSponsorOrNlr,
+      isSponsorSameAsNlr: isSponsorSameAsNlr
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function postSamePerson(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = isSamePersonValidation(req.body);
+
+      const application = req.session.appeal.application;
+
+      if (validation) {
+        return res.render('appeal-application/sponsor-details/is-same-person.njk', {
+          question: i18n.pages.isSponsorSameAsNlr.title,
+          previousPage: paths.appealStarted.hasSponsorOrNlr,
+          isSponsorSameAsNlr: application.isSponsorSameAsNlr,
+          errors: validation,
+          errorList: Object.values(validation)
+        });
+      }
+
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...application,
+          isSponsorSameAsNlr: req.body['isSponsorSameAsNlr']
         }
       };
 
@@ -399,11 +463,11 @@ function postHasSponsor(updateAppealService: UpdateAppealService) {
         ...appealUpdated
       };
 
-      if (['No'].includes(appeal.application.hasSponsor)) return res.redirect(paths.appealStarted.taskList);
-
-      const redirectPage = paths.appealStarted.sponsorName;
-
-      return res.redirect(redirectPage);
+      if (appeal.application.isSponsorSameAsNlr === 'No') {
+        return res.redirect(paths.appealStarted.sponsorName);
+      } else {
+        throw new Error('Same person not yet implemented until NLR specific done');
+      }
     } catch (error) {
       next(error);
     }
@@ -418,7 +482,7 @@ function getSponsorName(req: Request, res: Response, next: NextFunction) {
     return res.render('appeal-application/sponsor-details/sponsor-name.njk', {
       sponsorGivenNames,
       sponsorFamilyName,
-      previousPage: paths.appealStarted.hasSponsor
+      previousPage: paths.appealStarted.hasSponsorOrNlr
     });
   } catch (e) {
     next(e);
@@ -438,7 +502,7 @@ function postSponsorName(updateAppealService: UpdateAppealService) {
           sponsorGivenNames: req.body.sponsorGivenNames,
           error: validation,
           errorList: Object.values(validation),
-          previousPage: paths.appealStarted.hasSponsor
+          previousPage: paths.appealStarted.hasSponsorOrNlr
         });
       }
 
@@ -643,8 +707,205 @@ function postSponsorAuthorisation(updateAppealService: UpdateAppealService) {
         ...appealUpdated
       };
 
-      const redirectPage = paths.appealStarted.taskList;
+      if (appeal.application.hasNonLegalRep) return res.redirect(paths.appealStarted.nlrName);
 
+      return res.redirect(paths.appealStarted.taskList);
+
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
+function getNlrName(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    const previousPage = req.session.appeal?.application?.hasSponsor == 'Yes'
+      ? paths.appealStarted.sponsorAuthorisation
+      : paths.appealStarted.hasSponsorOrNlr;
+    const nlrGivenNames = req.session?.appeal?.nlrDetails?.givenNames;
+    const nlrFamilyName = req.session?.appeal?.nlrDetails?.familyName;
+    return res.render('appeal-application/non-legal-rep-details/name.njk', {
+      postAction: paths.appealStarted.nlrName,
+      nlrGivenNames,
+      nlrFamilyName,
+      previousPage: previousPage,
+      saveForLater: true
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postNlrName(updateAppealService: UpdateAppealService) {
+  return async function (req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = nlrNamesValidation(req.body);
+      if (validation) {
+        const previousPage = req.session.appeal.application.hasSponsor == 'Yes'
+          ? paths.appealStarted.sponsorAuthorisation
+          : paths.appealStarted.hasSponsorOrNlr;
+        return res.render('appeal-application/non-legal-rep-details/name.njk', {
+          postAction: paths.appealStarted.nlrName,
+          nlrGivenNames: req.body.nlrGivenNames,
+          nlrFamilyName: req.body.nlrFamilyName,
+          error: validation,
+          errorList: Object.values(validation),
+          previousPage: previousPage,
+          saveForLater: true
+        });
+      }
+
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        nlrDetails: {
+          ...req.session.appeal.nlrDetails,
+          givenNames: req.body.nlrGivenNames,
+          familyName: req.body.nlrFamilyName
+        },
+      };
+
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+
+      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.nlrAddress);
+      return res.redirect(redirectPage);
+    } catch (e) {
+      next(e);
+    }
+  };
+}
+
+function getNlrAddress(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    const address = req.session.appeal?.nlrDetails?.address || null;
+    res.render('appeal-application/non-legal-rep-details/address.njk', {
+      postAction: paths.appealStarted.nlrAddress,
+      address,
+      previousPage: paths.appealStarted.nlrName,
+      saveForLater: true
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postNlrAddress(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'address-line-1', 'address-line-2', 'address-town', 'address-county', 'address-postcode')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
+      const validation = nlrAddressValidation(req.body);
+      if (validation !== null) {
+        const previousPage = req.session.previousPage ? req.session.previousPage : paths.appealStarted.nlrName;
+        return res.render('appeal-application/non-legal-rep-details/address.njk', {
+          postAction: paths.appealStarted.nlrAddress,
+          nlrAddress: {
+            line1: req.body['address-line-1'],
+            line2: req.body['address-line-2'],
+            city: req.body['address-town'],
+            county: req.body['address-county'],
+            postcode: req.body['address-postcode']
+          },
+          error: validation,
+          errorList: Object.values(validation),
+          previousPage: previousPage,
+          saveForLater: true
+        });
+      }
+
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        nlrDetails: {
+          ...req.session.appeal.nlrDetails,
+          address: {
+            line1: req.body['address-line-1'],
+            line2: req.body['address-line-2'],
+            city: req.body['address-town'],
+            county: req.body['address-county'],
+            postcode: req.body['address-postcode']
+          }
+        }
+      };
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.nlrContactDetails);
+      return res.redirect(redirectPage);
+    } catch (e) {
+      next(e);
+    }
+  };
+}
+
+function getNlrContactDetails(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    const emailAddress = req.session.appeal?.nlrDetails?.emailAddress;
+    const phoneNumber = req.session.appeal?.nlrDetails?.phoneNumber;
+    return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
+      title: i18n.pages.nlrContactDetails.title,
+      hint: i18n.pages.nlrContactDetails.hint,
+      nextStep: i18n.pages.nlrContactDetails.nextStep,
+      showEmail: true,
+      postAction: paths.appealStarted.nlrContactDetails,
+      emailAddress,
+      phoneNumber,
+      previousPage: paths.appealStarted.nlrAddress,
+      saveForLater: true
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function postNlrContactDetails(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = nonLegalRepContactDetailsValidation(req.body);
+      if (validation) {
+        return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
+          title: i18n.pages.nlrContactDetails.title,
+          hint: i18n.pages.nlrContactDetails.hint,
+          nextStep: i18n.pages.nlrContactDetails.nextStep,
+          showEmail: true,
+          postAction: paths.appealStarted.nlrContactDetails,
+          emailAddress: req.body['emailAddress'],
+          phoneNumber: req.body['phoneNumber'],
+          errors: validation,
+          errorList: Object.values(validation),
+          previousPage: paths.appealStarted.nlrAddress,
+          saveForLater: true
+        });
+      }
+
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        nlrDetails: {
+          ...req.session.appeal.nlrDetails,
+          phoneNumber: req.body['phoneNumber'],
+          emailAddress: req.body['emailAddress'],
+        }
+      };
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+
+      const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
       return res.redirect(redirectPage);
     } catch (error) {
       next(error);
@@ -652,7 +913,10 @@ function postSponsorAuthorisation(updateAppealService: UpdateAppealService) {
   };
 }
 
-type ContactDetailsControllerDependencies = { updateAppealService: UpdateAppealService, osPlacesClient: OSPlacesClient };
+type ContactDetailsControllerDependencies = {
+  updateAppealService: UpdateAppealService,
+  osPlacesClient: OSPlacesClient
+};
 
 function setupContactDetailsController(middleware: Middleware[], deps: ContactDetailsControllerDependencies): Router {
   const router = Router();
@@ -666,8 +930,10 @@ function setupContactDetailsController(middleware: Middleware[], deps: ContactDe
   router.post(paths.appealStarted.postcodeLookup, middleware, postPostcodeLookupPage);
   router.get(paths.appealStarted.oocAddress, middleware, getEnterAddressForOutOfCountryAppeal);
   router.post(paths.appealStarted.oocAddress, middleware, postEnterAddressForOutOfCountryAppeal(deps.updateAppealService));
-  router.get(paths.appealStarted.hasSponsor, middleware, getHasSponsor);
-  router.post(paths.appealStarted.hasSponsor, middleware, postHasSponsor(deps.updateAppealService));
+  router.get(paths.appealStarted.hasSponsorOrNlr, middleware, getHasSponsorOrNlr);
+  router.post(paths.appealStarted.hasSponsorOrNlr, middleware, postHasSponsorOrNlr(deps.updateAppealService));
+  router.get(paths.appealStarted.isSponsorSameAsNlr, middleware, getSamePerson);
+  router.post(paths.appealStarted.isSponsorSameAsNlr, middleware, postSamePerson(deps.updateAppealService));
   router.get(paths.appealStarted.sponsorName, middleware, getSponsorName);
   router.post(paths.appealStarted.sponsorName, middleware, postSponsorName(deps.updateAppealService));
   router.get(paths.appealStarted.sponsorAddress, middleware, getSponsorAddress);
@@ -676,6 +942,13 @@ function setupContactDetailsController(middleware: Middleware[], deps: ContactDe
   router.post(paths.appealStarted.sponsorContactDetails, middleware, postSponsorContactDetails(deps.updateAppealService));
   router.get(paths.appealStarted.sponsorAuthorisation, middleware, getSponsorAuthorisation);
   router.post(paths.appealStarted.sponsorAuthorisation, middleware, postSponsorAuthorisation(deps.updateAppealService));
+  router.get(paths.appealStarted.nlrName, middleware, getNlrName);
+  router.post(paths.appealStarted.nlrName, middleware, postNlrName(deps.updateAppealService));
+  router.get(paths.appealStarted.nlrAddress, middleware, getNlrAddress);
+  router.post(paths.appealStarted.nlrAddress, middleware, postNlrAddress(deps.updateAppealService));
+  router.get(paths.appealStarted.nlrContactDetails, middleware, getNlrContactDetails);
+  router.post(paths.appealStarted.nlrContactDetails, middleware, postNlrContactDetails(deps.updateAppealService));
+
   return router;
 }
 
@@ -692,8 +965,8 @@ export {
   getEnterAddressForOutOfCountryAppeal,
   postEnterAddressForOutOfCountryAppeal,
   isOutOfCountryAppeal,
-  getHasSponsor,
-  postHasSponsor,
+  getHasSponsorOrNlr,
+  postHasSponsorOrNlr,
   getSponsorName,
   postSponsorName,
   getSponsorAddress,

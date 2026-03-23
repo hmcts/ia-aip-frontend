@@ -184,7 +184,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
     it('should fail validation and render template with errors', async () => {
       req.params.id = '0';
 
-      const invalidDate = moment().add(1, 'week');
+      const invalidDate = moment(new Date('10-02-1989')).add(1, 'week');
 
       req.body['day'] = invalidDate.date();
       req.body['month'] = invalidDate.month();

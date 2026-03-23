@@ -154,9 +154,17 @@
       "textMessage": "Mobile phone",
       "minorsHelp": "If you are under 18 years old, you can enter contact details for a parent, guardian, sponsor or other responsible adult"
     },
-    "hasSponsor": {
-      "title": "Do you have a sponsor?",
-      "hint": "A sponsor is usually someone you want to join in the UK."
+    "hasSponsorOrNlr": {
+      "title": "Do you have a sponsor or a non-legal representative?",
+      "whoTheyAre": "Who they might be",
+      "textBullet1": "A sponsor is usually someone the appellant CONTENT NEEDS TO GO HERE. They can have information about the appeal if the appellant agrees, but they cannot play an active role in it.",
+      "textBullet2": "A non-legal representative is someone CONTENT NEEDS TO GO HERE.  They can play an active role in the appeal, including representing the appellant at a hearing, and will be sent all information relating to the appeal.",
+      "textBullet3": "This can be the same person, or it may be different people.",
+      "hasSponsorLabel": "Do you have a sponsor?",
+      "hasNonLegalRepLabel": "Do you have a non-legal representative?"
+    },
+    "isSponsorSameAsNlr": {
+      "title": "Are your sponsor and non-legal representative the same person?"
     },
     "sponsorName": {
       "title": "What is your sponsor's name?",
@@ -188,6 +196,45 @@
     "sponsorAuthorisation": {
       "title": "Do you agree to let your sponsor have access to information about your appeal?"
     },
+    "nlrName": {
+      "title": "What is your non-legal representative's name?",
+      "nlrGivenNames": "Given names",
+      "nlrFamilyName": "Family name"
+    },
+    "nlrAddress": {
+      "heading": "What is your non-legal representative's address?",
+      "title": "What is your non-legal representative's address?",
+      "change": "Change",
+      "inputs": {
+        "building": "Building and street",
+        "buildingAndStreet": "Building and street <span class=\"govuk-visually-hidden\">line 1 of 2</span>",
+        "buildingAndStreet2": "<span class=\"govuk-visually-hidden\">Building and street line 2 of 2</span>",
+        "town": "Town or city",
+        "country": "Country",
+        "county": "County",
+        "postcode": "Postcode"
+      }
+    },
+    "nlrContactDetails": {
+      "title": "What are your non-legal representative's contact details?",
+      "emailAddress": "Email address",
+      "phoneNumber": "UK Phone number",
+      "hint": "Please provide an email address and phone number for your non-legal representative. They will receive an email invitation to create an account if they do not already have an account with us.",
+      "nextStep": "Once your appeal has been submitted, please click the 'Add non-legal representative' link on the right of your appeal page and enter the email address you provided here to verify their account and send them instructions to access your case."
+    },
+    "nlrPhoneNumber": {
+      "title": "What is your non-legal representative's UK phone number?",
+      "hint": "Please provide a UK phone number for your non-legal representative. This will be used in case of urgent contact."
+    },
+    "provideNlrDetails": {
+      "title": "Provide your non-legal representative's details",
+      "confirmation": {
+        "title": "You have provided your non-legal representative's details",
+        "whatNextContent": [
+          "Once your non-legal representative has signed up to HMCTS services, you may proceed to Step 3."
+        ]
+      }
+    },
     "appealType": {
       "header": "What is your appeal type?",
       "pageHint": "<p>Select one appeal type. If you are unsure, the first page of your decision letter should include the type of decision you are appealing.</p><p>If you think more than one appeal type applies to your appeal, you will have the chance to tell us about that later.</p>",
@@ -209,7 +256,7 @@
     },
     "decisionTypePage": {
       "title": "How do you want your appeal to be decided?",
-      "hint" : {
+      "hint": {
         "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
         "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80.</p><p>Select an option</p>"
       },
@@ -274,6 +321,11 @@
         "sponsorAddressDetails": "Sponsor's address",
         "sponsorContactDetails": "Sponsor's contact details",
         "sponsorAuthorisation": "Sponsor has access to information",
+        "hasNonLegalRep": "Non-legal representative",
+        "nonLegalRepEmail": "Non-legal representative's email",
+        "nonLegalRepName": "Non-legal representative's name",
+        "nonLegalRepPhone": "Non-legal representative's phone number",
+        "nonLegalRepAddress": "Non-legal representative's address",
         "appealType": "Appeal type",
         "appealLate": "Reason for late appeal",
         "supportingEvidence": "Supporting evidence",
@@ -435,6 +487,7 @@
       "title": "Your appeal details have been sent",
       "payNowTitle": "Your appeal has been submitted",
       "seeProgress": "See your appeal progress",
+      "seeNonLegalRep": "Back to add non-legal representative",
       "whatHappensNext": "What happens next",
       "info": "You will receive a notification to confirm that the Tribunal has received your appeal details",
       "askHomeOffice": "A Legal Officer will ask the Home Office to send any documents it has about your case to the Tribunal",
@@ -554,6 +607,100 @@
       "downloadHeading": "Download a document to give to your legal representative",
       "downloadInstructions": "Click the download button to save a document that you can email or post to your legal representative. The document includes all the information your legal representative will need to access your case.",
       "downloadButton": "Document download"
+    },
+    "addNonLegalRepresentative": {
+      "title": "Add a non-legal representative",
+      "hint": "If you provided your non-legal representative's details when creating your appeal, please skip to step 3.",
+      "stepOne": "Step 1: Provide the email address of your non-legal representative",
+      "instructionsPartOne": "If you want to add a non-legal representative to be able to view and track your appeal, you must provide their email address. If they have not yet signed up to HMCTS services, they will be invited to create an account.",
+      "linkPartOne": "Invite to create an account",
+      "stepTwo": "Step 2: Provide the rest of your non-legal representative details",
+      "instructionsPartTwo": "You must provide your non-legal representative's name, address and UK phone number. Before starting this step, make sure you have their details at hand.",
+      "linkPartTwo": "Provide details",
+      "stepThree": "Step 3: Invite your non-legal representative to join the appeal",
+      "instructionsPartThree": "Once your non-legal representative has created an account, and you have provided their details, then select the below button. We will then verify their account has been created and send them instructions to access your case.",
+      "linkPartThree": "Invite to join the appeal",
+      "provideEmailDirection": "If you want to add a non-legal representative to be able to view and track your appeal, you will need invite them to create an account by providing their email address",
+      "provideNlrDetailsDirection": "If you want to add a non-legal representative to be able to view and track your appeal, you will need provide us with their name, address and UK phone number",
+      "userNotExistDirection": "If you want to add a non-legal representative to be able to view and track your appeal, they will first need to sign up to HMCTS services. You may invite them again to create an account by providing their email address",
+      "userNotExistsError": "The user with the email address that you have provided in Step 1 has not signed up to HMCTS services.",
+      "noEmailProvidedError": "You need to provide an email address for your non-legal representative",
+      "noDetailsProvidedError": "You need to provide your non-legal representative's details",
+      "unknownError": "Unknown error code"
+    },
+    "inviteNlrToCreateAccount": {
+      "title": "Invite a non-legal representative to create an account",
+      "enterEmail": "Enter the email address of your non-legal representative",
+      "confirmation": {
+        "title": "You have invited a non-legal representative to create an account",
+        "whatNextListItems": [
+          "Your non-legal representative will receive an email invitation to create an account.",
+          "This will be sent to the email address you provided - <b>{{ nlrEmail }}</b>.",
+          "Once your non-legal representative has created an account, you will need to re-enter their email address so we can verify their account has been created and send them instructions to access your case."
+        ]
+      }
+    },
+    "inviteNlrToJoinAppeal": {
+      "title": "Invite a non-legal representative to join your appeal",
+      "enterEmail": "Enter the email address of your non-legal representative",
+      "userNotExistsError": "The user with the email address that you have provided in Step 1 has not signed up to HMCTS services.",
+      "advice": "If you want to add a non-legal representative to be able to view and track your appeal, you will need invite them to create an account by providing their email address",
+      "adviceLink": "<a class=\"govuk-link\" href=\"{{ paths.nonLegalRep.inviteToCreateAccount }}\">here</a>",
+      "confirmation": {
+        "title": "You have invited a non-legal representative to join your appeal",
+        "whatNextListItems": [
+          "Your non-legal representative will receive an email containing a code and instructions on how to join your appeal.",
+          "This will be sent to the email address you provided - <b>{{ nlrEmail }}</b>.",
+          "Once your non-legal representative has successfully joined your appeal, you will both receive a notification and they will be able to view and track your appeal."
+        ]
+      }
+    },
+    "joinAppeal": {
+      "title": "Join an appeal as a non-legal representative",
+      "instructions": "To join an appeal as a non-legal representative, you will need to:",
+      "partOne": "Make sure you have received an email inviting you to join the appeal. This will include the case reference number and a code to join the appeal.",
+      "partTwo": "Enter the online case reference number provided to you via email.",
+      "partThree": "Enter the code to join the appeal provided to you via email.",
+      "instructionsPartTwo": "If you have not received an email inviting you to join the appeal, please contact the appellant to invite you to join the appeal by providing your email address.",
+      "enterCaseReference": {
+        "label": "Online case reference number",
+        "hintText": "For example, 1234-1234-1234-1234",
+        "error": "The Online case reference number you have entered is not valid or does not exist. Please check the number and try again."
+      },
+      "enterAccessCode": {
+        "label": "Enter the access code you received in your email for the appeal you want to join",
+        "pinNotExistError": "There is no access code for the case with the reference {{ caseReference }}. Please ask the appellant to invite you to join the appeal.",
+        "pinInvalidError": "The access code provided is not valid for the case with the reference {{ caseReference }}. Please try entering it again.",
+        "pinUsedError": "The access code provided for the case with the reference {{ caseReference }} has already been used. Please ask the appellant to invite you to join the appeal again.",
+        "pinExpiredError": "The access code provided for the case with the reference {{ caseReference }} has expired. Please ask the appellant to invite you to join the appeal again.",
+        "pinGenericError": "There is an issue with the access code provided for the case with the reference {{ caseReference }}. Please ask the appellant to invite you to join the appeal again."
+      },
+      "confirmDetails": {
+        "title": "Case details",
+        "instructions": "These are the appellant's details of the appeal you are about to join. If these are not the correct details, you should contact the Tribunal.",
+        "fieldReferenceNumber": "Online case reference number",
+        "fieldAppealReference": "Appeal reference",
+        "fieldName": "Appellant's Name",
+        "nextStepTitle": "Access your case",
+        "nextStepInstructions": "Once you confirm these details, you will be able to access the appeal and track its progress. You will also receive notifications when there are updates to the appeal.",
+        "confirmButton": "Confirm details",
+        "confirmButtonId": "confirm-details-button",
+        "error": "There was an issue joining the appeal. Please try again. If the issue persists, please contact the Tribunal."
+      },
+      "confirmation": {
+        "title": "You have joined the appeal as a non-legal representative",
+        "whatNextContent": [
+          "You have successfully joined the appeal for {{ appellantName }} as a non-legal representative.",
+          "You can now access the appeal and track its progress. You will also receive notifications when there are updates to the appeal."
+        ]
+      }
+    },
+    "updateNlrDetails": {
+      "title": "Update your details",
+      "confirmation": {
+        "title": "You have updated your details attached to this appeal",
+        "whatHappensNextContent": "You will receive an email confirming you have successfully updated your details."
+      }
     },
     "startRepresentingYourself": {
       "title": "Start representing yourself",
@@ -892,6 +1039,8 @@
       "iWantTo": "I want to...",
       "withdrawAppeal": "Withdraw my appeal",
       "askForFeeRemission": "Ask for a fee remission",
+      "addNlr": "Add a non-legal representative",
+      "updateDetails": "Update my details",
       "appealRequests": {
         "sectionHeading": "Appeal requests",
         "askToChangeDetails": "Ask to change some of your details",
@@ -4033,6 +4182,8 @@
     "phoneFormat": "Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999",
     "ukPhoneFormat": "Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982",
     "hasSponsor": "Select yes if you have a sponsor",
+    "hasNonLegalRep": "Select yes if you have a non-legal representative",
+    "isSponsorSameAsNlr": "Select yes if your sponsor and non-legal representative are the same person",
     "sponsorGivenNames": "Enter your sponsor's given name or names",
     "sponsorFamilyName": "Enter your sponsor's family name or names",
     "sponsorAddress": {
@@ -4045,6 +4196,23 @@
       "selectOneOption": "Select at least one of the contact options"
     },
     "sponsorAuthorisation": "Select yes if you agree to let your sponsor have access to information about your appeal",
+    "nlrGivenNames": "Enter your non-legal representative's given name or names",
+    "nlrFamilyName": "Enter your non-legal representative's family name or names",
+    "nlrAddress": {
+      "required": "Select your address",
+      "line1Required": "Enter your non-legal representative's building number and street name",
+      "townCityRequired": "Enter your non-legal representative's Town or City",
+      "postcodeRequired": "Enter your non-legal representative's Postcode"
+    },
+    "nlrDetails": {
+      "givenNames": "You need to provide your non-legal representative's given name or names",
+      "familyName": "You need to provide your non-legal representative's family name or names",
+      "phoneNumber": "You need to provide your non-legal representative's UK phone number",
+      "address": "You need to provide your non-legal representative's address",
+      "addressLine1": "You need to provide your non-legal representative's building number and street name",
+      "addressTownCity": "You need to provide your non-legal representative's Town or City",
+      "addressPostcode": "You need to provide your non-legal representative's Postcode"
+    },
     "acceptanceStatement": "Select if you believe the information you have given is true.",
     "contactDetails": {
       "selectOneOption": "Select at least one of the contact options"
@@ -4238,7 +4406,9 @@
       "ftpaEvidenceQuestion": "Select Yes if you want to provide supporting evidence",
       "ftpaOutOfTimeReason": "Enter the reason the application is late"
     },
-    "deportationOrder": "Select yes if a deportation order has been made"
+    "deportationOrder": "Select yes if a deportation order has been made",
+    "caseReference": "The Online case reference number cannot be empty",
+    "joinAppealAccessCode": "The access code cannot be empty"
   },
   "components": {
     "evidenceList": {

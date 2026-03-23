@@ -55,7 +55,7 @@ function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
   }, {
     key: { text: 'Sponsor' },
     value: { html: 'Yes' },
-    actions: { items: [{ href: '/has-sponsor?edit', text: 'Change' }] }
+    actions: { items: [{ href: '/has-sponsor-or-non-legal-rep?edit', text: 'Change' }] }
   }, {
     key: { text: 'Sponsor\'s name' },
     value: { html: 'Frank Smith' },

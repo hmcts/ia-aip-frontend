@@ -1,7 +1,7 @@
-import i18n from '../../locale/en.json';
 import { States } from '../data/states';
+import { getI18n } from './grammarPerspectiveTransformer';
 
-function buildProgressBarStages(state: string, paymentStatus?: string) {
+function buildProgressBarStages(state: string, isNonLegalRep: boolean, paymentStatus?: string) {
   const stages = {
     yourAppealDetails: {
       activeStatus: [
@@ -39,7 +39,7 @@ function buildProgressBarStages(state: string, paymentStatus?: string) {
       activeStatus: []
     }
   };
-
+  const i18n = getI18n(isNonLegalRep);
   const yourAppealDetailsStage = {
     title: i18n.components.progressBar.yourAppealDetails.title,
     ariaLabel: i18n.components.progressBar.yourAppealDetails.ariaLabel,

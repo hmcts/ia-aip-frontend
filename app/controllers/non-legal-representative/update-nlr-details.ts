@@ -288,5 +288,14 @@ function setupNlrUpdatePhoneNumberControllers(middleware: Middleware[], updateAp
 }
 
 export {
-  setupNlrUpdatePhoneNumberControllers
+  setupNlrUpdatePhoneNumberControllers,
+  getNlrName,
+  postNlrName,
+  getNlrAddress,
+  postNlrAddress,
+  getNlrContactDetails,
+  postNlrContactDetails,
+  getUpdateNlrDetailsCheckAndSend,
+  postUpdateNlrDetailsCheckAndSend,
+  getUpdateNlrDetailsConfirmation
 };

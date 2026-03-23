@@ -227,8 +227,14 @@ describe('isJourneyAllowedMiddleware', () => {
 
   describe('nonLegalRepPaths', () => {
     const allowedPaths: string[] = [
-      paths.nonLegalRep.updatePhoneNumber,
-      paths.nonLegalRep.updatePhoneNumberConfirmation
+      paths.nonLegalRep.joinAppeal,
+      paths.nonLegalRep.joinAppealConfirmation,
+      paths.nonLegalRep.joinAppealConfirmDetails,
+      paths.nonLegalRep.updateName,
+      paths.nonLegalRep.updateAddress,
+      paths.nonLegalRep.updateContactDetails,
+      paths.nonLegalRep.updateDetailsCheckAndSend,
+      paths.nonLegalRep.updateDetailsConfirmation
     ];
     it('should render forbidden page for Non legal rep for nonLegalRepPaths', () => {
       req.session.appeal.appealStatus = 'decided';

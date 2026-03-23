@@ -466,6 +466,15 @@ export {
   getInviteToCreateAccount,
   postInviteToCreateAccount,
   getInviteToCreateAccountConfirmation,
+  getNlrName,
+  postNlrName,
+  getNlrAddress,
+  postNlrAddress,
+  getNlrPhoneNumber,
+  postNlrPhoneNumber,
+  getCheckAndSend,
+  postCheckAndSend,
+  getProvideNlrDetailsConfirmation,
   postInviteToJoinAppeal,
   getInviteToJoinAppealConfirmation
 };

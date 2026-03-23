@@ -3,14 +3,13 @@ import * as _ from 'lodash';
 import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
 import {
   getContactDetails,
-  getHasNonLegalRep,
-  getHasSponsor, getNonLegalRepEmail,
+  getHasSponsorOrNlr,
   getSponsorAddress,
   getSponsorAuthorisation,
   getSponsorContactDetails,
   getSponsorName,
-  postContactDetails, postHasNonLegalRep,
-  postHasSponsor, postNonLegalRepEmail,
+  postContactDetails,
+  postHasSponsorOrNlr,
   postSponsorAddress,
   postSponsorAuthorisation,
   postSponsorContactDetails,
@@ -112,6 +111,8 @@ describe('Contact details Controller', () => {
       expect(routerPOSTStub.calledWith(paths.appealStarted.oocAddress)).to.equal(true);
       expect(routerGetStub.calledWith(paths.appealStarted.hasSponsorOrNlr)).to.equal(true);
       expect(routerPOSTStub.calledWith(paths.appealStarted.hasSponsorOrNlr)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.isSponsorSameAsNlr)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.isSponsorSameAsNlr)).to.equal(true);
       expect(routerGetStub.calledWith(paths.appealStarted.sponsorName)).to.equal(true);
       expect(routerPOSTStub.calledWith(paths.appealStarted.sponsorName)).to.equal(true);
       expect(routerGetStub.calledWith(paths.appealStarted.sponsorAddress)).to.equal(true);
@@ -120,10 +121,12 @@ describe('Contact details Controller', () => {
       expect(routerPOSTStub.calledWith(paths.appealStarted.sponsorContactDetails)).to.equal(true);
       expect(routerGetStub.calledWith(paths.appealStarted.sponsorAuthorisation)).to.equal(true);
       expect(routerPOSTStub.calledWith(paths.appealStarted.sponsorAuthorisation)).to.equal(true);
-      expect(routerGetStub.calledWith(paths.appealStarted.hasNonLegalRep)).to.equal(true);
-      expect(routerPOSTStub.calledWith(paths.appealStarted.hasNonLegalRep)).to.equal(true);
-      expect(routerGetStub.calledWith(paths.appealStarted.nonLegalRepEmail)).to.equal(true);
-      expect(routerPOSTStub.calledWith(paths.appealStarted.nonLegalRepEmail)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.nlrName)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.nlrName)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.nlrAddress)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.nlrAddress)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.nlrContactDetails)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.nlrContactDetails)).to.equal(true);
     });
   });
 
@@ -512,50 +515,42 @@ describe('Contact details Controller', () => {
     });
   });
 
-  describe('getHasSponsor', () => {
+  describe('getHasSponsorOrNlr', () => {
     afterEach(() => {
       sandbox.restore();
       LaunchDarklyService.close();
     });
 
     it('should render sponsor-details/has-sponsor-or-nlr.njk', async () => {
-      await getHasSponsor(req as Request, res as Response, next);
+      await getHasSponsorOrNlr(req as Request, res as Response, next);
       expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk')).to.equal(true);
     });
 
     it('when called with edit should render sponsor-details/has-sponsor-or-nlr.njk and update session', async () => {
       req.query = { 'edit': '' };
-      await getHasSponsor(req as Request, res as Response, next);
+      await getHasSponsorOrNlr(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
       expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk')).to.equal(true);
     });
 
     it('should render sponsor-details/has-sponsor-or-nlr.njk', async () => {
-      await getHasSponsor(req as Request, res as Response, next);
+      await getHasSponsorOrNlr(req as Request, res as Response, next);
       expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
-        question: 'Do you have a sponsor?',
-        description: undefined,
-        modal: undefined,
-        questionId: undefined,
+        question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.enterPostcode,
-        answer: undefined,
-        errors: undefined,
-        errorList: undefined
+        hasSponsor: undefined,
+        hasNonLegalRep: undefined
       });
     });
 
     it('should render sponsor-details/has-sponsor-or-nlr.njk with previous page pointing to manual-address endpoint', async () => {
       _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
-      await getHasSponsor(req as Request, res as Response, next);
+      await getHasSponsorOrNlr(req as Request, res as Response, next);
       expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
-        question: 'Do you have a sponsor?',
-        description: undefined,
-        modal: undefined,
-        questionId: undefined,
+        question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.enterAddress,
-        answer: undefined,
-        errors: undefined,
-        errorList: undefined
+        hasSponsor: undefined,
+        hasNonLegalRep: undefined
       });
     });
 
@@ -565,21 +560,17 @@ describe('Contact details Controller', () => {
 
       // appeal is out of country
       req.session.appeal.appealOutOfCountry = 'Yes';
-      await getHasSponsor(req as Request, res as Response, next);
+      await getHasSponsorOrNlr(req as Request, res as Response, next);
       expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
-        question: 'Do you have a sponsor?',
-        description: undefined,
-        modal: undefined,
-        questionId: undefined,
+        question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.oocAddress,
-        answer: undefined,
-        errors: undefined,
-        errorList: undefined
+        hasSponsor: undefined,
+        hasNonLegalRep: undefined
       });
     });
   });
 
-  describe('postHasSponsor', () => {
+  describe('postHasSponsorOrNlr', () => {
     let appeal: Appeal;
     beforeEach(() => {
       appeal = {
@@ -598,8 +589,11 @@ describe('Contact details Controller', () => {
     });
 
     it('should validate and redirect to the sponsor name page', async () => {
-      req.body['answer'] = 'Yes';
-      await postHasSponsor(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      req.body['hasSponsor'] = 'Yes';
+      req.body['hasNonLegalRep'] = 'No';
+      appeal.application.hasSponsor = 'Yes';
+      appeal.application.hasNonLegalRep = 'No';
+      await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.sponsorName)).to.equal(true);
@@ -607,32 +601,37 @@ describe('Contact details Controller', () => {
 
     it('should fail validation and sponsor-details/has-sponsor-or-nlr.njk with a validation error', async () => {
       req.body = { 'answer': undefined };
-      const expectedError: ValidationError = {
-        key: 'answer',
-        text: 'Select yes if you have a sponsor',
-        href: '#answer'
+      const expectedError: ValidationErrors = {
+        hasSponsor: {
+          key: 'hasSponsor',
+          text: 'Select yes if you have a sponsor',
+          href: '#hasSponsor'
+        },
+        hasNonLegalRep: {
+          key: 'hasNonLegalRep',
+          text: 'Select yes if you have a non-legal representative',
+          href: '#hasNonLegalRep'
+        }
       };
 
-      await postHasSponsor(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.called).to.equal(false);
       expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
-        question: 'Do you have a sponsor?',
-        description: undefined,
-        modal: undefined,
-        questionId: undefined,
+        question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.enterPostcode,
-        answer: undefined,
-        errors: { answer: expectedError },
-        errorList: [expectedError]
+        hasSponsor: undefined,
+        hasNonLegalRep: undefined,
+        errors: expectedError,
+        errorList: Object.values(expectedError)
       });
     });
 
-    it('postHasSponsor should catch exception and call next with the error', async () => {
+    it('postHasSponsorOrNlr should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'hasSponsor': undefined };
       res.render = renderStub.throws(error);
-      await postHasSponsor(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
@@ -1242,12 +1241,22 @@ describe('Contact details Controller', () => {
       } as Appeal);
     });
 
-    it('should validate and redirect to hasNonLegalRep', async () => {
+    it('should validate and redirect to taskList', async () => {
       req.body['answer'] = 'Yes';
       await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
-      expect(redirectStub.calledOnceWith(paths.appealStarted.hasNonLegalRep)).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
+    });
+
+    it('should validate and redirect to nlrName if hasNlr yes', async () => {
+      req.body['answer'] = 'Yes';
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      appeal.application.hasNonLegalRep = 'Yes';
+      await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.nlrName)).to.equal(true);
     });
 
     it('should fail validation and sponsor-details/sponsor-authorisation.njk with a validation error', async () => {
@@ -1278,226 +1287,6 @@ describe('Contact details Controller', () => {
       req.body = { 'sponsorAuthorisation': undefined };
       res.render = renderStub.throws(error);
       await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next.calledOnceWith(error)).to.equal(true);
-    });
-  });
-
-  describe('getHasNonLegalRep', () => {
-    afterEach(() => {
-      sandbox.restore();
-      LaunchDarklyService.close();
-    });
-
-    it('should render non-legal-rep-details/has-non-legal-rep.njk', async () => {
-      getHasNonLegalRep(req as Request, res as Response, next);
-      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/has-non-legal-rep.njk', {
-        question: i18n.pages.hasNonLegalRep.title,
-        previousPage: paths.appealStarted.hasSponsorOrNlr,
-        answer: undefined
-      })).to.equal(true);
-    });
-
-    it('when called with edit should render non-legal-rep-details/has-non-legal-rep.njk and update session', async () => {
-      req.query = { 'edit': '' };
-      getHasNonLegalRep(req as Request, res as Response, next);
-      expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/has-non-legal-rep.njk')).to.equal(true);
-    });
-
-    it('should render non-legal-rep-details/has-non-legal-rep.njk with previous page pointing to sponsor-authorisation endpoint', async () => {
-      _.set(req.session.appeal.application, 'sponsorAuthorisation', 'Yes');
-      getHasNonLegalRep(req as Request, res as Response, next);
-      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/has-non-legal-rep.njk', {
-        question: i18n.pages.hasNonLegalRep.title,
-        previousPage: paths.appealStarted.sponsorAuthorisation,
-        answer: undefined
-      })).to.equal(true);
-    });
-
-
-    it('should render non-legal-rep-details/has-non-legal-rep.njk with saved answer if present', async () => {
-      _.set(req.session.appeal.application, 'hasNonLegalRep', 'Yes');
-      getHasNonLegalRep(req as Request, res as Response, next);
-      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/has-non-legal-rep.njk', {
-        question: i18n.pages.hasNonLegalRep.title,
-        previousPage: paths.appealStarted.hasSponsorOrNlr,
-        answer: 'Yes'
-      })).to.equal(true);
-    });
-
-    it('should catch an exception and call next()', () => {
-      const error = new Error('the error');
-      res.render = renderStub.throws(error);
-      getHasNonLegalRep(req as Request, res as Response, next);
-      expect(next.calledOnceWith(error)).to.equal(true);
-    });
-  });
-
-  describe('postHasNonLegalRep', () => {
-    let appeal: Appeal;
-    beforeEach(() => {
-      appeal = {
-        ...req.session.appeal,
-        application: {
-          ...req.session.appeal.application,
-          hasNonLegalRep: 'Yes'
-        }
-      };
-
-      updateAppealService.submitEventRefactored = submit.returns({
-        application: {
-          hasNonLegalRep: 'Yes'
-        }
-      } as Appeal);
-    });
-
-    afterEach(() => {
-      sandbox.restore();
-      LaunchDarklyService.close();
-    });
-
-    it('should render non-legal-rep-details/has-non-legal-rep.njk with error if validation fails', async () => {
-      req.body = { 'answer': undefined };
-      await postHasNonLegalRep(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      const expectedError = {
-        'answer': {
-          'key': 'answer',
-          'text': 'Select yes if you have a non-legal representative',
-          'href': '#answer'
-        }
-      };
-      expect(submit.called).to.equal(false);
-      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/has-non-legal-rep.njk', {
-        question: i18n.pages.hasNonLegalRep.title,
-        previousPage: paths.appealStarted.hasSponsorOrNlr,
-        errors: expectedError,
-        errorList: Object.values(expectedError)
-      })).to.equal(true);
-    });
-
-    it('should validate and redirect to taskList if No', async () => {
-      appeal.application.hasNonLegalRep = 'No';
-      req.body['answer'] = 'No';
-      submit.resolves();
-      updateAppealService.submitEventRefactored = submit;
-      await postHasNonLegalRep(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
-      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
-    });
-
-
-    it('should validate and redirect to taskList if Yes', async () => {
-      appeal.application.hasNonLegalRep = 'Yes';
-      req.body['answer'] = 'Yes';
-      updateAppealService.submitEventRefactored = submit;
-      await postHasNonLegalRep(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
-      expect(redirectStub.calledOnceWith(paths.appealStarted.nonLegalRepEmail)).to.equal(true);
-    });
-
-    it('should catch an exception and call next()', async () => {
-      appeal.application.hasNonLegalRep = 'Yes';
-      req.body['answer'] = 'Yes';
-      const error = new Error('the error');
-      updateAppealService.submitEventRefactored = submit.throws(error);
-      await postHasNonLegalRep(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next.calledOnceWith(error)).to.equal(true);
-    });
-  });
-
-  describe('getNonLegalRepEmail', () => {
-    afterEach(() => {
-      sandbox.restore();
-      LaunchDarklyService.close();
-    });
-
-    it('should render non-legal-rep-details/contact-details.njk', async () => {
-      getNonLegalRepEmail(req as Request, res as Response, next);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
-      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/contact-details.njk', {
-        previousPage: paths.appealStarted.hasNonLegalRep,
-        nlrEmail: undefined
-      })).to.equal(true);
-    });
-
-    it('when called with edit should render non-legal-rep-details/contact-details.njk and update session', async () => {
-      req.query = { 'edit': '' };
-      req.session.appeal.nlrEmail = 'someEmail';
-      getNonLegalRepEmail(req as Request, res as Response, next);
-      expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/contact-details.njk', {
-        previousPage: paths.appealStarted.hasNonLegalRep,
-        nlrEmail: 'someEmail'
-      })).to.equal(true);
-    });
-
-    it('should catch an exception and call next()', () => {
-      const error = new Error('the error');
-      res.render = renderStub.throws(error);
-      getNonLegalRepEmail(req as Request, res as Response, next);
-      expect(next.calledOnceWith(error)).to.equal(true);
-    });
-  });
-
-  describe('postHasNonLegalRep', () => {
-    let appeal: Appeal;
-    beforeEach(() => {
-      appeal = {
-        ...req.session.appeal,
-        application: {
-          ...req.session.appeal.application
-        }
-      };
-
-      updateAppealService.submitEventRefactored = submit.returns({
-        application: {
-          hasNonLegalRep: 'Yes'
-        }
-      } as Appeal);
-    });
-
-    afterEach(() => {
-      sandbox.restore();
-      LaunchDarklyService.close();
-    });
-
-    it('should render non-legal-rep-details/contact-details.njk with error if validation fails', async () => {
-      req.body = { 'email-value': 'someInvalidEmail' };
-      await postNonLegalRepEmail(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      const expectedError = {
-        'email-value': {
-          'key': 'email-value',
-          'text': 'Enter an email address in the correct format, like name@example.com',
-          'href': '#email-value'
-        }
-      };
-      expect(submit.called).to.equal(false);
-      expect(renderStub.calledOnceWith('appeal-application/non-legal-rep-details/contact-details.njk', {
-        nlrEmail: 'someInvalidEmail',
-        errors: expectedError,
-        errorList: Object.values(expectedError),
-        previousPage: paths.appealStarted.hasNonLegalRep
-      })).to.equal(true);
-    });
-
-    it('should validate and redirect to taskList', async () => {
-      req.body = { 'email-value': 'valid@test.com' };
-      appeal.nlrEmail = 'valid@test.com';
-      updateAppealService.submitEventRefactored = submit.resolves();
-      await postNonLegalRepEmail(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
-      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
-    });
-
-
-    it('should catch an exception and call next()', async () => {
-      req.body = { 'email-value': 'valid@test.com' };
-      const error = new Error('the error');
-      updateAppealService.submitEventRefactored = submit.throws(error);
-      await postNonLegalRepEmail(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
     });
   });

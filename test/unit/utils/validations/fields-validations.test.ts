@@ -6,7 +6,7 @@ import {
   dateValidation,
   deportationOrderOptionsValidation,
   DOBValidation,
-  emailValidation, hasNlrValidation,
+  emailValidation,
   helpWithFeesRefNumberValidation,
   helpWithFeesValidation,
   homeOfficeNumberValidation,
@@ -1260,19 +1260,6 @@ describe('fields-validations', () => {
           'key': 'email-value',
           'text': 'Enter an email address in the correct format, like name@example.com',
           'href': '#email-value'
-        }
-      };
-      expect(validationResult).to.deep.equal(expectedResponse);
-    });
-
-    it('should fail hasNlrValidation and return "string.empty if no option selected" ', () => {
-      const object = {};
-      const validationResult = hasNlrValidation(object);
-      const expectedResponse = {
-        answer: {
-          href: '#answer',
-          key: 'answer',
-          text: 'Select yes if you have a non-legal representative'
         }
       };
       expect(validationResult).to.deep.equal(expectedResponse);

@@ -2,11 +2,14 @@ import { Request, Response } from 'express';
 import {
   getAddNonLegalRepresentative,
   getInviteToCreateAccount,
-  getInviteToCreateAccountConfirmation,
-  getInviteToJoinAppeal,
-  getInviteToJoinAppealConfirmation,
   postInviteToCreateAccount,
-  postInviteToJoinAppeal,
+  getInviteToCreateAccountConfirmation,
+  getNlrName,
+  getNlrAddress,
+  getNlrPhoneNumber,
+  getCheckAndSend,
+  getProvideNlrDetailsConfirmation,
+  getInviteToJoinAppealConfirmation,
   setupNonLegalRepresentativeControllers
 } from '../../../../app/controllers/non-legal-representative/add-non-legal-representative';
 import { Events } from '../../../../app/data/events';
@@ -153,7 +156,7 @@ describe('Add non-legal representative controllers setup', () => {
       req.body = {
         'email-value': 'test@test.com'
       };
-      const expectedAppeal = { ...req.session.appeal, nlrEmail: 'test@test.com', application: { ...req.session.appeal.application, hasNonLegalRep: 'Yes' } };
+      const expectedAppeal = { ...req.session.appeal, nlrDetails: { emailAddress: 'test@test.com' }, application: { ...req.session.appeal.application, hasNonLegalRep: 'Yes' } };
       await postInviteToCreateAccount(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(submitEventRefactoredStub).to.be.calledOnceWith(Events.SEND_INVITE_TO_NON_LEGAL_REP, expectedAppeal, 'idamUID', 'atoken');
       expect(res.redirect).to.be.calledOnceWith(paths.nonLegalRep.inviteToCreateAccountConfirmation);
@@ -183,21 +186,25 @@ describe('Add non-legal representative controllers setup', () => {
       expect(res.render).to.be.calledWith('templates/confirmation-page.njk', {
         title: i18n.pages.inviteNlrToCreateAccount.confirmation.title,
         whatNextListItems: i18n.pages.inviteNlrToCreateAccount.confirmation.whatNextListItems,
-        nlrEmail: undefined
+        nlrEmail: undefined,
+        backToAddNlr: true
       });
     });
 
     it('should render confirmation-page with nlrEmail', () => {
       req.session = {
         appeal: {
-          nlrEmail: 'someEmail'
+          nlrDetails: {
+            emailAddress: 'someEmail'
+          }
         } as Appeal
       } as any;
       getInviteToCreateAccountConfirmation(req as Request, res as Response, next);
       expect(res.render).to.be.calledWith('templates/confirmation-page.njk', {
         title: i18n.pages.inviteNlrToCreateAccount.confirmation.title,
         whatNextListItems: i18n.pages.inviteNlrToCreateAccount.confirmation.whatNextListItems,
-        nlrEmail: 'someEmail'
+        nlrEmail: 'someEmail',
+        backToAddNlr: true
       });
     });
 
@@ -205,149 +212,6 @@ describe('Add non-legal representative controllers setup', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
       getInviteToCreateAccountConfirmation(req as Request, res as Response, next);
-      expect(next.calledWith(error)).to.equal(true);
-    });
-  });
-
-  describe('getInviteToJoinAppeal', () => {
-    it('should render provide-email-join-appeal', () => {
-      getInviteToJoinAppeal(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/provide-email-join-appeal.njk', {
-        previousPage: paths.nonLegalRep.addNonLegalRep
-      });
-    });
-
-    it('should catch an error and redirect with error', () => {
-      const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
-      getInviteToJoinAppeal(req as Request, res as Response, next);
-      expect(next.calledWith(error)).to.equal(true);
-    });
-  });
-
-  describe('postInviteToJoinAppeal', () => {
-    let submitEventRefactoredStub: sinon.SinonStub;
-    let validationMidEventStub: sinon.SinonStub;
-    let renderStub: sinon.SinonStub;
-    let redirectStub: sinon.SinonStub;
-
-    beforeEach(() => {
-      submitEventRefactoredStub = sandbox.stub();
-      validationMidEventStub = sandbox.stub();
-      updateAppealService = {
-        submitEventRefactored: submitEventRefactoredStub,
-        validateMidEvent: validationMidEventStub
-      };
-
-      redirectStub = sandbox.stub();
-      renderStub = sandbox.stub();
-      res = {
-        render: renderStub,
-        send: sandbox.stub(),
-        redirect: redirectStub,
-        locals: {}
-      } as Partial<Response>;
-    });
-
-    it('should render provide-email-join-appeal with correct errors if email is empty', async () => {
-      req.body = {
-        'email-value': ''
-      };
-      const expectedValidationError = {
-        'email-value': {
-          key: 'email-value',
-          href: '#email-value',
-          text: i18n.validationErrors.emailEmpty
-        }
-      };
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/provide-email-join-appeal.njk', {
-        nlrEmail: '',
-        errors: expectedValidationError,
-        errorList: Object.values(expectedValidationError),
-        previousPage: paths.nonLegalRep.addNonLegalRep
-      });
-    });
-
-    it('should render provide-email-join-appeal with correct errors if email validation fails', async () => {
-      req.body = {
-        'email-value': 'something that is not an email'
-      };
-      const expectedValidationError = {
-        'email-value': {
-          key: 'email-value',
-          href: '#email-value',
-          text: i18n.validationErrors.emailFormat
-        }
-      };
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/provide-email-join-appeal.njk', {
-        nlrEmail: 'something that is not an email',
-        errors: expectedValidationError,
-        errorList: Object.values(expectedValidationError),
-        previousPage: paths.nonLegalRep.addNonLegalRep
-      });
-    });
-
-    it('should render provide-email-join-appeal with correct error if mid event validation fails', async () => {
-      req.body = {
-        'email-value': 'test@test.com'
-      };
-      const expectedValidationError = {
-        'email-value': {
-          key: 'email-value',
-          href: '#email-value',
-          text: i18n.pages.inviteNlrToJoinAppeal.userNotExistsError
-        }
-      };
-      validationMidEventStub.resolves(['some mid event error']);
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/provide-email-join-appeal.njk', {
-        nlrEmail: 'test@test.com',
-        shouldAdviceShow: true,
-        errors: expectedValidationError,
-        errorList: Object.values(expectedValidationError),
-        previousPage: paths.nonLegalRep.addNonLegalRep
-      });
-    });
-
-    it('should redirect to inviteToJoinAppealConfirmation if validation, mid event validation and event succeed', async () => {
-      req.body = {
-        'email-value': 'test@test.com'
-      };
-      validationMidEventStub.resolves([]);
-      submitEventRefactoredStub.resolves({});
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(req.session.appeal.nlrEmail).to.equal('test@test.com');
-      expect(res.redirect).to.be.calledOnceWith(paths.nonLegalRep.inviteToJoinAppealConfirmation);
-    });
-
-    it('should catch a validation error and redirect with error', async () => {
-      const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next.calledWith(error)).to.equal(true);
-    });
-
-    it('should catch mid event validation error and redirect with error', async () => {
-      req.body = {
-        'email-value': 'test@test.com'
-      };
-      const error = new Error('the error');
-      validationMidEventStub.throws(error);
-      submitEventRefactoredStub.resolves({});
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next.calledWith(error)).to.equal(true);
-    });
-
-    it('should catch event submission error and redirect with error', async () => {
-      req.body = {
-        'email-value': 'test@test.com'
-      };
-      const error = new Error('the error');
-      validationMidEventStub.resolves([]);
-      submitEventRefactoredStub.throws(error);
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledWith(error)).to.equal(true);
     });
   });
@@ -365,7 +229,7 @@ describe('Add non-legal representative controllers setup', () => {
     it('should render confirmation-page with nlrEmail', () => {
       req.session = {
         appeal: {
-          nlrEmail: 'someEmail'
+          nlrDetails: { emailAddress: 'someEmail' }
         } as Appeal
       } as any;
       getInviteToJoinAppealConfirmation(req as Request, res as Response, next);
@@ -396,7 +260,15 @@ describe('Add non-legal representative controllers setup', () => {
       expect(routerGetStub.calledWith(paths.nonLegalRep.inviteToCreateAccount, middleware, getInviteToCreateAccount)).to.equal(true);
       expect(routerPostStub.calledWith(paths.nonLegalRep.inviteToCreateAccount, middleware, sinon.match.any)).to.equal(true);
       expect(routerGetStub.calledWith(paths.nonLegalRep.inviteToCreateAccountConfirmation, middleware, getInviteToCreateAccountConfirmation)).to.equal(true);
-      expect(routerGetStub.calledWith(paths.nonLegalRep.inviteToJoinAppeal, middleware, getInviteToJoinAppeal)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.nonLegalRep.provideNlrName, middleware, getNlrName)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.nonLegalRep.provideNlrName, middleware, sinon.match.any)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.nonLegalRep.provideNlrAddress, middleware, getNlrAddress)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.nonLegalRep.provideNlrAddress, middleware, sinon.match.any)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.nonLegalRep.provideNlrPhoneNumber, middleware, getNlrPhoneNumber)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.nonLegalRep.provideNlrPhoneNumber, middleware, sinon.match.any)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.nonLegalRep.provideNlrDetailsCheckAndSend, middleware, getCheckAndSend)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.nonLegalRep.provideNlrDetailsCheckAndSend, middleware, sinon.match.any)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.nonLegalRep.provideNlrDetailsConfirmation, middleware, getProvideNlrDetailsConfirmation)).to.equal(true);
       expect(routerPostStub.calledWith(paths.nonLegalRep.inviteToJoinAppeal, middleware, sinon.match.any)).to.equal(true);
       expect(routerGetStub.calledWith(paths.nonLegalRep.inviteToJoinAppealConfirmation, middleware, getInviteToJoinAppealConfirmation)).to.equal(true);
     });

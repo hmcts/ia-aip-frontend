@@ -680,9 +680,10 @@ describe('DetailViewController', () => {
     it('should add NLR details if present DLRM', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows.push(
-        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'some email' } },
         { key: { text: 'Non-legal representative\'s name' }, value: { html: 'some name' } },
+        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
         { key: { text: 'Non-legal representative\'s phone number' }, value: { html: 'some phone' } },
+        { key: { text: 'Non-legal representative\'s address' }, value: { html: 'some line1<br>some city<br>some postcode' } }
       );
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
@@ -699,12 +700,16 @@ describe('DetailViewController', () => {
       req.session.appeal.application.remissionClaim = 'legalAid';
       req.session.appeal.application.legalAidAccountNumber = 'legalAidAccountNumber';
       req.session.appeal.feeWithHearing = '140';
-      req.session.appeal.nlrEmail = 'someEmail';
       req.session.appeal.nlrDetails = {
-        emailAddress: 'some email',
+        emailAddress: 'someEmail',
         givenNames: 'some',
         familyName: 'name',
-        phoneNumber: 'some phone'
+        phoneNumber: 'some phone',
+        address: {
+          line1: 'some line1',
+          city: 'some city',
+          postcode: 'some postcode'
+        }
       };
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
@@ -720,65 +725,20 @@ describe('DetailViewController', () => {
 
     it('should add NLR details if present non DLRM', async () => {
       expectedSummaryRows.push(
-        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'some email' } },
         { key: { text: 'Non-legal representative\'s name' }, value: { html: 'some name' } },
+        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
         { key: { text: 'Non-legal representative\'s phone number' }, value: { html: 'some phone' } },
+        { key: { text: 'Non-legal representative\'s address' }, value: { html: 'some line1' } },
       );
-      req.session.appeal.nlrEmail = 'someEmail';
       req.session.appeal.nlrDetails = {
-        emailAddress: 'some email',
+        emailAddress: 'someEmail',
         givenNames: 'some',
         familyName: 'name',
-        phoneNumber: 'some phone'
-      };
-
-      await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
-        title: i18n.pages.detailViewers.appealDetails.title,
-        previousPage: paths.common.overview,
-        data: expectedSummaryRows
-      });
-    });
-
-    it('should add NLR email if no nlr details but email present DLRM', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows.push(
-        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
-      );
-
-      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-        { key: { text: 'Fee amount' }, value: { html: '£140' } },
-        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-        {
-          key: { text: i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber },
-          value: { html: 'legalAidAccountNumber' }
+        phoneNumber: 'some phone',
+        address: {
+          line1: 'some line1'
         }
-      );
-
-      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
-      req.session.appeal.application.remissionType = 'hoWaiverRemission';
-      req.session.appeal.application.remissionClaim = 'legalAid';
-      req.session.appeal.application.legalAidAccountNumber = 'legalAidAccountNumber';
-      req.session.appeal.feeWithHearing = '140';
-      req.session.appeal.nlrEmail = 'someEmail';
-
-      await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
-        title: i18n.pages.detailViewers.appealDetails.title,
-        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
-        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
-        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
-        previousPage: paths.common.overview,
-        data: expectedSummaryRowsWithDlrmFeeRemission
-      });
-    });
-
-
-    it('should add NLR email if no nlr details but email present non DLRM', async () => {
-      expectedSummaryRows.push(
-        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
-      );
-      req.session.appeal.nlrEmail = 'someEmail';
+      };
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {

@@ -95,7 +95,7 @@ function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
   }, {
     key: { text: 'Sponsor' },
     value: { html: 'Yes' },
-    actions: { items: [{ href: '/has-sponsor?edit', text: 'Change', visuallyHiddenText: 'Sponsor' }] }
+    actions: { items: [{ href: '/has-sponsor-or-non-legal-rep?edit', text: 'Change', visuallyHiddenText: 'Sponsor' }] }
   }, {
     key: { text: 'Sponsor\'s name' },
     value: { html: 'Frank Smith' },
@@ -213,7 +213,7 @@ function getMockedSummaryRowsPayment(appealType = 'protection'): SummaryRow[] {
   }, {
     key: { text: 'Sponsor' },
     value: { html: 'Yes' },
-    actions: { items: [{ href: '/has-sponsor?edit', text: 'Change', visuallyHiddenText: 'Sponsor' }] }
+    actions: { items: [{ href: '/has-sponsor-or-non-legal-rep?edit', text: 'Change', visuallyHiddenText: 'Sponsor' }] }
   }, {
     key: { text: 'Sponsor\'s name' },
     value: { html: 'Frank Smith' },
@@ -452,7 +452,18 @@ describe('createSummaryRowsFrom', () => {
   it('should create NLR rows for hasNlr', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     req.session.appeal.application.hasNonLegalRep = 'Yes';
-    req.session.appeal.nlrEmail = 'someEmail';
+    req.session.appeal.nlrDetails = {
+      emailAddress: 'someEmail',
+      givenNames: 'GivenNames',
+      familyName: 'familyNames',
+      phoneNumber: 'phoneNumber',
+      address: {
+        line1: 'addressLine1',
+        line2: 'addressLine2',
+        city: 'city',
+        postcode: 'postcode'
+      }
+    };
 
     const rows: any[] = await createSummaryRowsFrom(req as Request);
     const minimisedRows = rows.map(object => {
@@ -471,7 +482,7 @@ describe('createSummaryRowsFrom', () => {
   it('should create NLR rows for No hasNlr', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     req.session.appeal.application.hasNonLegalRep = 'No';
-    req.session.appeal.nlrEmail = 'someEmail';
+    req.session.appeal.nlrDetails = {emailAddress: 'someEmail'};
 
     const rows: any[] = await createSummaryRowsFrom(req as Request);
     const minimisedRows = rows.map(object => {

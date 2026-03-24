@@ -116,18 +116,15 @@ function postJoinAppealConfirmDetails(updateAppealService: UpdateAppealService, 
     try {
       const caseId: string = req.session.joinAppealPipValidation.caseSummary.referenceNumber;
       const appellantId: string = req.idam.userDetails.uid;
-      const nlrDetails: NlrDetails = {
-        idamId: appellantId,
-        emailAddress: req.idam.userDetails.sub,
-        givenNames: req.idam.userDetails.given_name,
-        familyName: req.idam.userDetails.family_name
-      };
       const response: AxiosResponse<CcdCaseDetails> = await ccdSystemService.getCaseById(caseId);
       const updatedCaseDetails: CcdCaseDetails = {
         ...response.data,
         case_data: {
           ...response.data.case_data,
-          nlrDetails: nlrDetails
+          nlrDetails: {
+            ...response.data.case_data.nlrDetails,
+            idamId: appellantId
+          }
         }
       };
       const eventResponse: CcdCaseDetails = await updateAppealService.submitEventByCaseDetails(Events.JOIN_APPEAL_CONFIRMATION, updatedCaseDetails);

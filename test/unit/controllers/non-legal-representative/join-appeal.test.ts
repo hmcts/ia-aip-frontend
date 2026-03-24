@@ -370,10 +370,7 @@ describe('Join appeal controllers setup', () => {
       case_data: {
         something: 'value',
         nlrDetails: {
-          idamId: uuid,
-          emailAddress: someEmail,
-          givenNames: firstName,
-          familyName: lastName
+          idamId: uuid
         }
       }
     };

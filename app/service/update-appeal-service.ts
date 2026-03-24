@@ -1515,11 +1515,11 @@ export default class UpdateAppealService {
     };
     if (address) {
       appealNlrDetails.address = {
-        line1: address.AddressLine1,
-        line2: address.AddressLine2,
-        city: address.PostTown,
-        postcode: address.PostCode,
-        county: address.County
+        line1: address.AddressLine1|| null,
+        line2: address.AddressLine2 || null,
+        city: address.PostTown|| null,
+        postcode: address.PostCode|| null,
+        county: address.County|| null
       };
     }
 
@@ -1551,11 +1551,11 @@ export default class UpdateAppealService {
     const target: CCDNlrDetails = caseData.nlrDetails;
     if (address) {
       target.address = {
-        AddressLine1: address.line1,
-        AddressLine2: address.line2,
-        PostTown: address.city,
-        County: address.county,
-        PostCode: address.postcode,
+        AddressLine1: address.line1 || null,
+        AddressLine2: address.line2 || null,
+        PostTown: address.city || null,
+        County: address.county || null,
+        PostCode: address.postcode || null,
         Country: 'United Kingdom'
       };
     }

@@ -349,12 +349,12 @@ interface InterpreterLanguage {
 }
 
 interface CCDAddress {
-  AddressLine1: string;
-  AddressLine2: string;
-  PostTown: string;
-  County: string;
-  PostCode: string;
-  Country: string;
+  AddressLine1?: string;
+  AddressLine2?: string;
+  PostTown?: string;
+  County?: string;
+  PostCode?: string;
+  Country?: string;
 }
 
 interface SubscriptionCollection {

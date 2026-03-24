@@ -2014,6 +2014,78 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.hearingRequirements.witness2InterpreterSignLanguage).to.deep.eq(caseData.witness2InterpreterSignLanguage);
       });
     });
+
+    describe('map non-legal rep details from caseData to appeal', () => {
+      function getMappedAppeal(caseData: Partial<CaseData>): any {
+        const appeal: Partial<CcdCaseDetails> = {
+          case_data: caseData as CaseData
+        };
+        return updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+      }
+
+      it('do nothing if no details present', () => {
+        const caseData: Partial<CaseData> = {};
+        const mappedAppeal = getMappedAppeal(caseData);
+
+        expect(mappedAppeal.nlrDetails).to.equal(null);
+      });
+
+      it('map correctly if full details present with full address', () => {
+        const caseData: Partial<CaseData> = {
+          nlrDetails: {
+            givenNames: 'givenNames',
+            familyName: 'familyName',
+            emailAddress: 'emailAddress',
+            phoneNumber: 'phoneNumber',
+            idamId: 'idamId',
+            address: {
+              AddressLine1: 'AddressLine1',
+              AddressLine2: 'AddressLine2',
+              PostTown: 'PostTown',
+              PostCode: 'PostCode',
+              County: 'County',
+              Country: 'Country'
+            },
+          }
+        };
+        const mappedAppeal = getMappedAppeal(caseData);
+
+        expect(mappedAppeal.nlrDetails.givenNames).to.equal('givenNames');
+        expect(mappedAppeal.nlrDetails.familyName).to.equal('familyName');
+        expect(mappedAppeal.nlrDetails.emailAddress).to.equal('emailAddress');
+        expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
+        expect(mappedAppeal.nlrDetails.idamId).to.equal('idamId');
+        expect(mappedAppeal.nlrDetails.address.line1).to.equal('AddressLine1');
+        expect(mappedAppeal.nlrDetails.address.line2).to.equal('AddressLine2');
+        expect(mappedAppeal.nlrDetails.address.city).to.equal('PostTown');
+        expect(mappedAppeal.nlrDetails.address.county).to.equal('County');
+        expect(mappedAppeal.nlrDetails.address.postcode).to.equal('PostCode');
+      });
+
+      it('map correctly if partial details present with partial address', () => {
+        const caseData: Partial<CaseData> = {
+          nlrDetails: {
+            emailAddress: 'emailAddress',
+            phoneNumber: 'phoneNumber',
+            address: {
+              Country: 'Country'
+            },
+          }
+        };
+        const mappedAppeal = getMappedAppeal(caseData);
+
+        expect(mappedAppeal.nlrDetails.givenNames).to.equal(null);
+        expect(mappedAppeal.nlrDetails.familyName).to.equal(null);
+        expect(mappedAppeal.nlrDetails.emailAddress).to.equal('emailAddress');
+        expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
+        expect(mappedAppeal.nlrDetails.idamId).to.equal(null);
+        expect(mappedAppeal.nlrDetails.address.line1).to.equal(null);
+        expect(mappedAppeal.nlrDetails.address.line2).to.equal(null);
+        expect(mappedAppeal.nlrDetails.address.city).to.equal(null);
+        expect(mappedAppeal.nlrDetails.address.county).to.equal(null);
+        expect(mappedAppeal.nlrDetails.address.postcode).to.equal(null);
+      });
+    });
   });
 
   describe('map the refundConfirmationApplied from Yes value', () => {
@@ -3130,5 +3202,77 @@ describe('update-appeal-service', () => {
     expect(errors.includes('error 1-1')).to.equal(true);
     expect(errors.includes('error 1-2')).to.equal(true);
     expect(errors.includes('error 4-1')).to.equal(true);
+  });
+
+  describe('mapToCCDCaseNlrDetails', () => {
+    let appeal;
+    let caseData;
+    beforeEach(() => {
+      appeal = {};
+      caseData = {};
+    });
+    it('if no appeal nlr details then do nothing', () => {
+      updateAppealService.mapToCCDCaseNlrDetails(appeal, caseData);
+      expect(caseData).to.deep.equal({});
+    });
+
+    it('if appeal full nlr details then map full', () => {
+      appeal['nlrDetails'] = {
+        givenNames: 'givenNames',
+        familyName: 'familyName',
+        emailAddress: 'emailAddress',
+        phoneNumber: 'phoneNumber',
+        idamId: 'idamId',
+        address: {
+          line1: 'line1',
+          line2: 'line2',
+          city: 'city',
+          postcode: 'postcode',
+          county: 'county'
+        },
+      };
+      updateAppealService.mapToCCDCaseNlrDetails(appeal, caseData);
+      expect(caseData).to.deep.equal({
+        nlrDetails: {
+          givenNames: 'givenNames',
+          familyName: 'familyName',
+          emailAddress: 'emailAddress',
+          phoneNumber: 'phoneNumber',
+          idamId: 'idamId',
+          address: {
+            AddressLine1: 'line1',
+            AddressLine2: 'line2',
+            PostTown: 'city',
+            County: 'county',
+            PostCode: 'postcode',
+            Country: 'United Kingdom'
+          }
+        }
+      });
+    });
+
+    it('if appeal partial nlr details then map partial', () => {
+      appeal['nlrDetails'] = {
+        emailAddress: 'emailAddress',
+        phoneNumber: 'phoneNumber',
+        address: {},
+      };
+      updateAppealService.mapToCCDCaseNlrDetails(appeal, caseData);
+      expect(caseData).to.deep.equal({
+        nlrDetails: {
+          emailAddress: 'emailAddress',
+          phoneNumber: 'phoneNumber',
+          address: {
+            AddressLine1: null,
+            AddressLine2: null,
+            PostTown: null,
+            County: null,
+            PostCode: null,
+            Country: 'United Kingdom'
+          }
+        }
+      });
+    });
+
   });
 });

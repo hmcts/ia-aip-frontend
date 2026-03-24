@@ -30,36 +30,45 @@ function stringToErrorCode(someString: string) {
   }
 }
 
+interface RenderObject {
+  previousPage: string;
+  shouldProvideEmailDirectionStepTwoShow?: boolean;
+  shouldProvideEmailDirectionStepThreeShow?: boolean;
+  shouldNoDetailsProvidedStepThreeShow?: boolean;
+  shouldUserNotExistStepThreeShow?: boolean;
+  errors?: ValidationErrors;
+  errorList?: ValidationError[];
+}
 function getAddNonLegalRepresentative(req: Request, res: Response, next: NextFunction) {
   try {
     if (req.query?.errorCode) {
       const error: ErrorCode = stringToErrorCode(req.query.errorCode as string);
       let structuredError: ValidationErrors;
-      const renderObject = {
+      const renderObject: RenderObject = {
         previousPage: paths.common.overview
       };
       switch (error) {
         case ErrorCode.stepTwoNoEmailProvided:
           structuredError = { 'provideNlrDetails': createStructuredError('provideNlrDetails', i18n.pages.addNonLegalRepresentative.noEmailProvidedError) };
-          renderObject['shouldProvideEmailDirectionStepTwoShow'] = true;
+          renderObject.shouldProvideEmailDirectionStepTwoShow = true;
           break;
         case ErrorCode.stepThreeNoEmailProvided:
           structuredError = { 'inviteJoinAppeal': createStructuredError('inviteJoinAppeal', i18n.pages.addNonLegalRepresentative.noEmailProvidedError) };
-          renderObject['shouldProvideEmailDirectionStepThreeShow'] = true;
+          renderObject.shouldProvideEmailDirectionStepThreeShow = true;
           break;
         case ErrorCode.stepThreeNoDetailsProvided:
           structuredError = { 'inviteJoinAppeal': createStructuredError('inviteJoinAppeal', i18n.pages.addNonLegalRepresentative.noDetailsProvidedError) };
-          renderObject['shouldNoDetailsProvidedStepThreeShow'] = true;
+          renderObject.shouldNoDetailsProvidedStepThreeShow = true;
           break;
         case ErrorCode.stepThreeUserNotExisting:
           structuredError = { 'inviteJoinAppeal': createStructuredError('inviteJoinAppeal', i18n.pages.addNonLegalRepresentative.userNotExistsError) };
-          renderObject['shouldUserNotExistStepThreeShow'] = true;
+          renderObject.shouldUserNotExistStepThreeShow = true;
           break;
         case ErrorCode.unknown:
           structuredError = { 'provideNlrDetails': createStructuredError('provideNlrDetails', i18n.pages.addNonLegalRepresentative.unknownError) };
       }
-      renderObject['errors'] = structuredError;
-      renderObject['errorList'] = Object.values(structuredError);
+      renderObject.errors = structuredError;
+      renderObject.errorList = Object.values(structuredError);
       return res.render('non-legal-rep/add-non-legal-representative.njk', renderObject);
     }
     return res.render('non-legal-rep/add-non-legal-representative.njk', {
@@ -132,7 +141,6 @@ function getInviteToCreateAccountConfirmation(req: Request, res: Response, next:
 
 function getNlrName(req: Request, res: Response, next: NextFunction) {
   try {
-
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const nlrDetails = req.session?.appeal?.nlrDetails;
     if (!nlrDetails?.emailAddress) {
@@ -291,12 +299,13 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
     const editParameter = '?edit';
     const nlrDetails: NlrDetails = req.session.appeal.nlrDetails;
+    const nlrAddress = nlrDetails.address ? Object.values(nlrDetails.address) : [];
     const summaryLists: SummaryList[] = [{
       summaryRows: [
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
           [nlrDetails.givenNames, nlrDetails.familyName], paths.nonLegalRep.provideNlrName + editParameter, Delimiter.SPACE),
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
-          [...Object.values(nlrDetails.address)], paths.nonLegalRep.provideNlrAddress + editParameter, Delimiter.BREAK_LINE),
+          [...nlrAddress], paths.nonLegalRep.provideNlrAddress + editParameter, Delimiter.BREAK_LINE),
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
           [nlrDetails.phoneNumber], paths.nonLegalRep.provideNlrPhoneNumber + editParameter)
       ]
@@ -349,12 +358,13 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
           }
         });
         const editParameter = '?edit';
+        const address = nlrDetails.address ? Object.values(nlrDetails.address) : [];
         const summaryLists: SummaryList[] = [{
           summaryRows: [
             addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
               [nlrDetails.givenNames, nlrDetails.familyName], paths.nonLegalRep.provideNlrName + editParameter, Delimiter.SPACE),
             addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
-              [...Object.values(nlrDetails.address)], paths.nonLegalRep.provideNlrAddress + editParameter, Delimiter.BREAK_LINE),
+              [...address], paths.nonLegalRep.provideNlrAddress + editParameter, Delimiter.BREAK_LINE),
             addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
               [nlrDetails.phoneNumber], paths.nonLegalRep.provideNlrPhoneNumber + editParameter)
           ]
@@ -461,7 +471,6 @@ function setupNonLegalRepresentativeControllers(middleware: Middleware[], update
 }
 
 export {
-  setupNonLegalRepresentativeControllers,
   getAddNonLegalRepresentative,
   getInviteToCreateAccount,
   postInviteToCreateAccount,
@@ -476,5 +485,6 @@ export {
   postCheckAndSend,
   getProvideNlrDetailsConfirmation,
   postInviteToJoinAppeal,
-  getInviteToJoinAppealConfirmation
+  getInviteToJoinAppealConfirmation,
+  setupNonLegalRepresentativeControllers
 };

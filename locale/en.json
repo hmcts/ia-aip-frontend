@@ -4208,10 +4208,21 @@
       "givenNames": "You need to provide your non-legal representative's given name or names",
       "familyName": "You need to provide your non-legal representative's family name or names",
       "phoneNumber": "You need to provide your non-legal representative's UK phone number",
+      "emailAddress": "You need to provide your non-legal representative's email address",
       "address": "You need to provide your non-legal representative's address",
       "addressLine1": "You need to provide your non-legal representative's building number and street name",
       "addressTownCity": "You need to provide your non-legal representative's Town or City",
       "addressPostcode": "You need to provide your non-legal representative's Postcode"
+    },
+    "nlrDetailsPersonal": {
+      "givenNames": "You need to provide your updated given name or names",
+      "familyName": "You need to provide your updated family name or names",
+      "phoneNumber": "You need to provide your updated UK phone number",
+      "emailAddress": "You need to provide your updated email address",
+      "address": "You need to provide your updated address",
+      "addressLine1": "You need to provide your updated building number and street name",
+      "addressTownCity": "You need to provide your updated Town or City",
+      "addressPostcode": "You need to provide your updated Postcode"
     },
     "acceptanceStatement": "Select if you believe the information you have given is true.",
     "contactDetails": {

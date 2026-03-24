@@ -203,7 +203,7 @@ function postUpdateNlrDetailsCheckAndSend(updateAppealService: UpdateAppealServi
     try {
       const nlrDetails: NlrDetails = req.session.appeal?.nlrDetails;
       if (nlrDetails.givenNames && nlrDetails.familyName && nlrDetails.phoneNumber && nlrDetails.address
-        && nlrDetails.address?.line1 && nlrDetails.address?.city && nlrDetails.address?.postcode) {
+        && nlrDetails.address?.line1 && nlrDetails.address?.city && nlrDetails.address?.postcode && nlrDetails.emailAddress) {
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.PROVIDE_NON_LEGAL_REP_DETAILS,
           req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
         req.session.appeal = {
@@ -218,6 +218,7 @@ function postUpdateNlrDetailsCheckAndSend(updateAppealService: UpdateAppealServi
           { key: 'givenNames', value: nlrDetails.givenNames },
           { key: 'familyName', value: nlrDetails.familyName },
           { key: 'phoneNumber', value: nlrDetails.phoneNumber },
+          { key: 'emailAddress', value: nlrDetails.emailAddress },
           { key: 'address', value: nlrDetails.address },
           { key: 'addressLine1', value: nlrDetails.address?.line1 },
           { key: 'addressTownCity', value: nlrDetails.address?.city },
@@ -228,7 +229,7 @@ function postUpdateNlrDetailsCheckAndSend(updateAppealService: UpdateAppealServi
           if (!value) {
             validationErrors[key] = createStructuredError(
               key,
-              i18n.validationErrors.nlrDetails[key]
+              i18n.validationErrors.nlrDetailsPersonal[key]
             );
           }
         });
@@ -265,7 +266,7 @@ function getUpdateNlrDetailsConfirmation(req: Request, res: Response, next: Next
   try {
     res.render('templates/confirmation-page.njk', {
       title: i18n.pages.updateNlrDetails.confirmation.title,
-      whatHappensNextContent: i18n.pages.updateNlrDetails.confirmation.title,
+      whatHappensNextContent: i18n.pages.updateNlrDetails.confirmation.whatHappensNextContent,
     });
   } catch (e) {
     next(e);

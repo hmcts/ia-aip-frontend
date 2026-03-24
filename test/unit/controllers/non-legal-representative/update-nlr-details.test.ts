@@ -610,13 +610,14 @@ describe('Update phone number controllers setup', () => {
       await postUpdateNlrDetailsCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
-        'givenNames': createStructuredError('givenNames', i18n.validationErrors.nlrDetails.givenNames),
-        'familyName': createStructuredError('familyName', i18n.validationErrors.nlrDetails.familyName),
-        'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.nlrDetails.phoneNumber),
-        'address': createStructuredError('address', i18n.validationErrors.nlrDetails.address),
-        'addressLine1': createStructuredError('addressLine1', i18n.validationErrors.nlrDetails.addressLine1),
-        'addressTownCity': createStructuredError('addressTownCity', i18n.validationErrors.nlrDetails.addressTownCity),
-        'addressPostcode': createStructuredError('addressPostcode', i18n.validationErrors.nlrDetails.addressPostcode)
+        'givenNames': createStructuredError('givenNames', i18n.validationErrors.nlrDetailsPersonal.givenNames),
+        'familyName': createStructuredError('familyName', i18n.validationErrors.nlrDetailsPersonal.familyName),
+        'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.nlrDetailsPersonal.phoneNumber),
+        'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.nlrDetailsPersonal.emailAddress),
+        'address': createStructuredError('address', i18n.validationErrors.nlrDetailsPersonal.address),
+        'addressLine1': createStructuredError('addressLine1', i18n.validationErrors.nlrDetailsPersonal.addressLine1),
+        'addressTownCity': createStructuredError('addressTownCity', i18n.validationErrors.nlrDetailsPersonal.addressTownCity),
+        'addressPostcode': createStructuredError('addressPostcode', i18n.validationErrors.nlrDetailsPersonal.addressPostcode)
       };
 
       expect(renderStub).calledWith('templates/check-and-send.njk', {
@@ -683,9 +684,9 @@ describe('Update phone number controllers setup', () => {
       await postUpdateNlrDetailsCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
-        'addressLine1': createStructuredError('addressLine1', i18n.validationErrors.nlrDetails.addressLine1),
-        'addressTownCity': createStructuredError('addressTownCity', i18n.validationErrors.nlrDetails.addressTownCity),
-        'addressPostcode': createStructuredError('addressPostcode', i18n.validationErrors.nlrDetails.addressPostcode)
+        'addressLine1': createStructuredError('addressLine1', i18n.validationErrors.nlrDetailsPersonal.addressLine1),
+        'addressTownCity': createStructuredError('addressTownCity', i18n.validationErrors.nlrDetailsPersonal.addressTownCity),
+        'addressPostcode': createStructuredError('addressPostcode', i18n.validationErrors.nlrDetailsPersonal.addressPostcode)
       };
 
       expect(renderStub).calledWith('templates/check-and-send.njk', {
@@ -777,7 +778,7 @@ describe('Update phone number controllers setup', () => {
       getUpdateNlrDetailsConfirmation(req as Request, res as Response, next);
       expect(res.render).to.be.calledOnceWith('templates/confirmation-page.njk', {
         title: i18n.pages.updateNlrDetails.confirmation.title,
-        whatHappensNextContent: i18n.pages.updateNlrDetails.confirmation.title,
+        whatHappensNextContent: i18n.pages.updateNlrDetails.confirmation.whatHappensNextContent,
       });
     });
 

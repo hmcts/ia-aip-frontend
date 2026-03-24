@@ -537,7 +537,7 @@ function nlrAddressValidation(obj: object): null | ValidationErrors {
     ['address-town']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.nlrAddress.townCityRequired }),
     ['address-county']: Joi.string().optional().empty(''),
     ['address-line-2']: Joi.string().optional().empty(''),
-    ['address-postcode']: Joi.string().optional().regex(postcodeRegex).messages({
+    ['address-postcode']: Joi.string().required().regex(postcodeRegex).messages({
       'string.pattern.base': i18n.validationErrors.postcode.invalid,
       'string.empty': i18n.validationErrors.nlrAddress.postcodeRequired
     })

@@ -4,9 +4,7 @@ import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
-import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import {
   createStructuredError,
@@ -14,7 +12,6 @@ import {
   nlrNamesValidation,
   nonLegalRepContactDetailsValidation
 } from '../../utils/validations/fields-validations';
-import { ErrorCode } from './add-non-legal-representative';
 
 function getNlrName(req: Request, res: Response, next: NextFunction) {
   try {
@@ -67,7 +64,7 @@ function postNlrName() {
 function getNlrAddress(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-    const address = req.session.appeal?.nlrDetails?.address;
+    const address: Address = req.session.appeal?.nlrDetails?.address;
     res.render('appeal-application/non-legal-rep-details/address.njk', {
       postAction: paths.nonLegalRep.updateAddress,
       address,
@@ -175,16 +172,17 @@ function getUpdateNlrDetailsCheckAndSend(req: Request, res: Response, next: Next
   try {
     const editParameter = '?edit';
     const nlrDetails: NlrDetails = req.session.appeal.nlrDetails;
+    const addressValues = nlrDetails.address ? Object.values(nlrDetails.address) : [];
     const summaryLists: SummaryList[] = [{
       summaryRows: [
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
-          [nlrDetails.givenNames, nlrDetails.familyName], paths.nonLegalRep.updateName + editParameter, Delimiter.SPACE),
+          [nlrDetails?.givenNames, nlrDetails?.familyName], paths.nonLegalRep.updateName + editParameter, Delimiter.SPACE),
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
-          [...Object.values(nlrDetails.address)], paths.nonLegalRep.updateAddress + editParameter, Delimiter.BREAK_LINE),
+          [...addressValues], paths.nonLegalRep.updateAddress + editParameter, Delimiter.BREAK_LINE),
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail,
-          [nlrDetails.phoneNumber], paths.nonLegalRep.updateContactDetails + editParameter),
+          [nlrDetails?.emailAddress], paths.nonLegalRep.updateContactDetails + editParameter),
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
-          [nlrDetails.phoneNumber], paths.nonLegalRep.updateContactDetails + editParameter)
+          [nlrDetails?.phoneNumber], paths.nonLegalRep.updateContactDetails + editParameter)
       ]
     }];
 
@@ -235,14 +233,15 @@ function postUpdateNlrDetailsCheckAndSend(updateAppealService: UpdateAppealServi
           }
         });
         const editParameter = '?edit';
+        const addressValues = nlrDetails.address ? Object.values(nlrDetails.address) : [];
         const summaryLists: SummaryList[] = [{
           summaryRows: [
             addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
               [nlrDetails.givenNames, nlrDetails.familyName], paths.nonLegalRep.updateName + editParameter, Delimiter.SPACE),
             addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
-              [...Object.values(nlrDetails.address)], paths.nonLegalRep.updateAddress + editParameter, Delimiter.BREAK_LINE),
+              [...addressValues], paths.nonLegalRep.updateAddress + editParameter, Delimiter.BREAK_LINE),
             addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail,
-              [nlrDetails.phoneNumber], paths.nonLegalRep.updateContactDetails + editParameter),
+              [nlrDetails.emailAddress], paths.nonLegalRep.updateContactDetails + editParameter),
             addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
               [nlrDetails.phoneNumber], paths.nonLegalRep.updateContactDetails + editParameter)
           ]

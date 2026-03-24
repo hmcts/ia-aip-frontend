@@ -327,8 +327,8 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const nlrDetails: NlrDetails = req.session.appeal?.nlrDetails;
-      if (nlrDetails.givenNames && nlrDetails.familyName && nlrDetails.phoneNumber && nlrDetails.address
-        && nlrDetails.address?.line1 && nlrDetails.address?.city && nlrDetails.address?.postcode) {
+      if (nlrDetails.givenNames && nlrDetails.familyName && nlrDetails.phoneNumber && nlrDetails?.address?.line1
+        && nlrDetails?.address?.city && nlrDetails?.address?.postcode) {
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.PROVIDE_NON_LEGAL_REP_DETAILS,
           req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
         req.session.appeal = {

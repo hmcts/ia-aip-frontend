@@ -24,7 +24,7 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
 
   let allowedPaths: string[];
   if (req.session.isNonLegalRep) {
-    const nonLegalRepForbiddenCommonPaths: string[] = [
+    const nonLegalRepForbiddenCommonPaths: Set<string> = new Set([
       paths.common.changeRepresentation,
       paths.common.changeRepresentationDownload,
       paths.common.askForMoreTimeReason,
@@ -51,9 +51,9 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
       paths.common.payImmediately,
       paths.common.confirmationPayment,
       paths.common.clarifyingQuestionsAnswersSentConfirmation
-    ];
+    ]);
     allowedPaths = [
-      ...commonPaths.filter(path => !nonLegalRepForbiddenCommonPaths.includes(path)),
+      ...commonPaths.filter(path => !nonLegalRepForbiddenCommonPaths.has(path)),
       ...startRepresentingYourselfPaths,
       paths.nonLegalRep.joinAppeal,
       paths.nonLegalRep.joinAppealConfirmation,

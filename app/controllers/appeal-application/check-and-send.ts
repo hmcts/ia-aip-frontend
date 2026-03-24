@@ -187,7 +187,7 @@ async function createSummaryRowsFrom(req: Request) {
   if (application.hasNonLegalRep) {
 
     const hasNonLegalRep = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.hasNonLegalRep,
-      [...Object.values(application.hasNonLegalRep)],
+      Object.values(application.hasNonLegalRep),
       paths.appealStarted.hasSponsorOrNlr + editParameter);
     rows.push(hasNonLegalRep);
 
@@ -199,7 +199,7 @@ async function createSummaryRowsFrom(req: Request) {
       }
       if (nlrDetails.address) {
         rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
-          [...Object.values(nlrDetails.address)], paths.appealStarted.nlrAddress + editParameter, Delimiter.BREAK_LINE));
+          Object.values(nlrDetails.address), paths.appealStarted.nlrAddress + editParameter, Delimiter.BREAK_LINE));
       }
       if (nlrDetails.emailAddress) {
         rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail,

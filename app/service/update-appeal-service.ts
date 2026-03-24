@@ -154,7 +154,8 @@ export default class UpdateAppealService {
         if (response?.callbackErrors?.length > 0) {
           errors.push(...response.callbackErrors);
         } else {
-          errors.push(...response?.details?.field_errors.map(error => `${error.id}: ${error.message}`));
+          errors.push(...(response?.details?.field_errors || [])
+            .map(error => `${error.id}: ${error.message}`));
         }
         logger.exception(`midEventValidation for ${event.id} failed with errors: ${errors}`, logLabel);
       }

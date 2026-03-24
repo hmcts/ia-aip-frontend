@@ -366,7 +366,7 @@ function getNonLegalRepDetails(req: Request, rows: any[]) {
       (nlrDetails.givenNames && nlrDetails.familyName) && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName, [nlrDetails.givenNames, nlrDetails.familyName], null, Delimiter.SPACE),
       nlrDetails.emailAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail, [nlrDetails.emailAddress]),
       nlrDetails.phoneNumber && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone, [nlrDetails.phoneNumber]),
-      nlrDetails.address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress, [...Object.values(nlrDetails.address)], null, Delimiter.BREAK_LINE)
+      nlrDetails.address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress, Object.values(nlrDetails.address), null, Delimiter.BREAK_LINE)
     );
   }
 }

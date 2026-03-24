@@ -465,6 +465,7 @@ function postSamePerson(updateAppealService: UpdateAppealService) {
       if (appeal.application.isSponsorSameAsNlr === 'No') {
         return res.redirect(paths.appealStarted.sponsorName);
       } else {
+        // TODO replace below with implemented logic
         throw new Error('Same person not yet implemented until NLR specific done');
       }
     } catch (error) {

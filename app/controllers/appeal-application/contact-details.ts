@@ -16,7 +16,6 @@ import {
   addressValidation,
   contactDetailsValidation,
   dropdownValidation,
-  emailValidation,
   hasSponsorOrNlrValidation,
   isSamePersonValidation,
   nlrAddressValidation,
@@ -396,7 +395,7 @@ function postHasSponsorOrNlr(updateAppealService: UpdateAppealService) {
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
       req.session.appeal = {
-        ...req.session.appeal,
+        ...appeal,
         ...appealUpdated
       };
 
@@ -459,7 +458,7 @@ function postSamePerson(updateAppealService: UpdateAppealService) {
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
       req.session.appeal = {
-        ...req.session.appeal,
+        ...appeal,
         ...appealUpdated
       };
 
@@ -769,7 +768,7 @@ function postNlrName(updateAppealService: UpdateAppealService) {
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
-        ...req.session.appeal,
+        ...appeal,
         ...appealUpdated
       };
 
@@ -837,7 +836,7 @@ function postNlrAddress(updateAppealService: UpdateAppealService) {
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
-        ...req.session.appeal,
+        ...appeal,
         ...appealUpdated
       };
       const redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.nlrContactDetails);
@@ -901,7 +900,7 @@ function postNlrContactDetails(updateAppealService: UpdateAppealService) {
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
-        ...req.session.appeal,
+        ...appeal,
         ...appealUpdated
       };
 
@@ -953,20 +952,23 @@ function setupContactDetailsController(middleware: Middleware[], deps: ContactDe
 }
 
 export {
-  setupContactDetailsController,
   getContactDetails,
   postContactDetails,
-  postEnterPostcodePage,
-  getEnterPostcodePage,
-  getManualEnterAddressPage,
-  postManualEnterAddressPage,
-  getPostcodeLookupPage,
-  postPostcodeLookupPage,
+  isOutOfCountryAppeal,
   getEnterAddressForOutOfCountryAppeal,
   postEnterAddressForOutOfCountryAppeal,
-  isOutOfCountryAppeal,
+  getEnterPostcodePage,
+  postEnterPostcodePage,
+  buildAddressList,
+  getPostcodeLookupPage,
+  postPostcodeLookupPage,
+  findAddress,
+  getManualEnterAddressPage,
+  postManualEnterAddressPage,
   getHasSponsorOrNlr,
   postHasSponsorOrNlr,
+  getSamePerson,
+  postSamePerson,
   getSponsorName,
   postSponsorName,
   getSponsorAddress,
@@ -975,5 +977,12 @@ export {
   postSponsorContactDetails,
   getSponsorAuthorisation,
   postSponsorAuthorisation,
+  getNlrName,
+  postNlrName,
+  getNlrAddress,
+  postNlrAddress,
+  getNlrContactDetails,
+  postNlrContactDetails,
+  setupContactDetailsController,
   ContactDetailsControllerDependencies
 };

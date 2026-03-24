@@ -107,7 +107,7 @@ function postInviteToCreateAccount(updateAppealService: UpdateAppealService) {
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SEND_INVITE_TO_NON_LEGAL_REP, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
-        ...req.session.appeal,
+        ...appeal,
         ...appealUpdated
       };
       return res.redirect(paths.nonLegalRep.inviteToCreateAccountConfirmation);

@@ -691,27 +691,26 @@ function nonLegalRepContactDetailsValidation(obj: object) {
         'string.empty': i18n.validationErrors.emailEmpty,
         'string.email': i18n.validationErrors.emailFormat
       }),
-    phoneNumber: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
+    phoneNumber: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164').defaultCountry('GB')
       .required()
       .messages({
         'string.empty': i18n.validationErrors.phoneEmpty,
-        'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
-        'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
+        'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.ukPhoneFormat,
+        'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.ukPhoneFormat
       })
   }).unknown();
 
   return validate(obj, schema);
 }
 
-
 function nonLegalRepPhoneValidation(obj: object) {
   const schema = Joi.object({
-    phoneNumber: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
+    phoneNumber: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164').defaultCountry('GB')
       .required()
       .messages({
         'string.empty': i18n.validationErrors.phoneEmpty,
-        'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
-        'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
+        'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.ukPhoneFormat,
+        'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.ukPhoneFormat
       })
   }).unknown();
 

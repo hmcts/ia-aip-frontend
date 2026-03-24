@@ -687,7 +687,7 @@ describe('Add non-legal representative controllers setup', () => {
       await postNlrPhoneNumber()(req as Request, res as Response, next);
 
       const expectedError = {
-        'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.phoneFormat)
+        'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.ukPhoneFormat)
       };
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrPhoneNumber.title,

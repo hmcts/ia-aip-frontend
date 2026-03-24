@@ -1829,7 +1829,7 @@ describe('Contact details Controller', () => {
 
       const expectedError = {
         'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.emailFormat),
-        'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.phoneFormat)
+        'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.ukPhoneFormat)
       };
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrContactDetails.title,

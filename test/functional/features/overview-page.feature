@@ -87,7 +87,7 @@ Feature: Overview page
   Scenario: Appeal Submitted Statutory Timeframe 24 Weeks
     Given I have logged in as an appellant in state "appealSubmitted with stf24w"
     And I visit the overview page
-    Then I should see the 'do this next section' for "appealSubmitted" when statutory timeframe 24 weeks is Yes
+    Then I should see the 'nothing to do next section' for "appealSubmitted" when statutory timeframe 24 weeks is Yes
     When I click "What is a Legal Officer?" link
     And I check page accessibility
     Then I should see the 'Tribunal Caseworker' guidance page
@@ -98,7 +98,7 @@ Feature: Overview page
   Scenario: Late Appeal Submitted Statutory Timeframe 24 Weeks
     Given I have logged in as an appellant in state "lateAppealSubmitted with stf24w"
     And I visit the overview page
-    Then I should see the 'do this next section' for "lateAppealSubmitted" when statutory timeframe 24 weeks is Yes
+    Then I should see the 'nothing to do next section' for "lateAppealSubmitted" when statutory timeframe 24 weeks is Yes
     When I click "What is a Legal Officer?" link
     And I check page accessibility
     Then I should see the 'Tribunal Caseworker' guidance page
@@ -109,7 +109,7 @@ Feature: Overview page
   Scenario: Awaiting Respondent Evidence Statutory Timeframe 24 Weeks
     Given I have logged in as an appellant in state "awaitingRespondentEvidence with stf24w"
     And I visit the overview page
-    Then I should see the 'do this next section' for "awaitingRespondentEvidence" when statutory timeframe 24 weeks is Yes
+    Then I should see the 'nothing to do next section' for "awaitingRespondentEvidence" when statutory timeframe 24 weeks is Yes
     When I click "What is a Legal Officer?" link
     And I check page accessibility
     Then I should see the 'Tribunal Caseworker' guidance page
@@ -120,7 +120,7 @@ Feature: Overview page
   Scenario: Listing Statutory Timeframe 24 Weeks
     Given I have logged in as an appellant in state "listing with stf24w"
     And I visit the overview page
-    Then I should see the 'do this next section' for "listing" when statutory timeframe 24 weeks is Yes
+    Then I should see the 'nothing to do next section' for "listing" when statutory timeframe 24 weeks is Yes
     When I click "What to expect at a hearing" link
     Then I should see the 'What to expect at your hearing' guidance page
     When I click "Back" button
@@ -131,6 +131,49 @@ Feature: Overview page
     Given I have logged in as an appellant in state "awaitingReasonsForAppeal with stf24w"
     And I visit the overview page
     Then I should see the 'do this next section' for 'awaitingReasonsForAppeal' when statutory timeframe 24 weeks is Yes
+    When I click "Understanding your Home Office documents" link
+    And I check page accessibility
+    Then I should see the 'Understanding your Home Office documents' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
+  Scenario: Reasons For Appeal Submitted Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "reasonsForAppealSubmitted with stf24w"
+    And I visit the overview page
+    Then I should see the 'nothing to do next section' for "reasonsForAppealSubmitted" when statutory timeframe 24 weeks is Yes
+    And I check page accessibility
+
+  Scenario: Case Under Review Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "caseUnderReview with stf24w"
+    And I visit the overview page
+    Then I should see the 'nothing to do next section' for "caseUnderReview" when statutory timeframe 24 weeks is Yes
+    And I check page accessibility
+
+  Scenario: Respondent Review Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "respondentReview with stf24w"
+    And I visit the overview page
+    Then I should see the 'nothing to do next section' for 'respondentReview' when statutory timeframe 24 weeks is Yes
+    When I click "What happens if the Home Office withdraw their decision" link
+    Then I should see the 'What happens if the Home Office withdraw their decision' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
+  Scenario: Decision Maintained Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "decisionMaintained with stf24w"
+    And I visit the overview page
+    Then I should see the 'do this next section' for 'decisionMaintained' when statutory timeframe 24 weeks is Yes
+    When I click "What happens if the Home Office maintain their decision" link
+    Then I should see the 'What happens if the Home Office maintain their decision' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
+  Scenario: Awaiting Reasons For Appeal Partial Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "awaitingReasonsForAppealPartial with stf24w"
+    And I visit the overview page
+    Then I should see the 'do this next section' for 'awaitingReasonsForAppealPartial' when statutory timeframe 24 weeks is Yes
     When I click "Understanding your Home Office documents" link
     And I check page accessibility
     Then I should see the 'Understanding your Home Office documents' guidance page

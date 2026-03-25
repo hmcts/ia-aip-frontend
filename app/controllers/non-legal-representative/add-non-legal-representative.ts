@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import { boolean } from 'joi';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
@@ -355,19 +356,19 @@ function getSummaryRows(req: Request) {
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
       [nlrDetails.phoneNumber], paths.nonLegalRep.provideNlrPhoneNumber + editParameter)];
   if (hasSponsor) {
-    summaryRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
-      [req.session.appeal?.application?.isSponsorSameAsNlr], paths.nonLegalRep.provideNlrIsSamePerson + editParameter))
+    summaryRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.isSponsorSameAsNlr,
+      [req.session.appeal?.application?.isSponsorSameAsNlr], paths.nonLegalRep.provideNlrIsSamePerson + editParameter));
   }
   return summaryRows;
 }
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-
+    const hasSponsor = req.session.appeal?.application?.hasSponsor == 'Yes';
     return res.render('templates/check-and-send.njk', {
       pageTitle: i18n.pages.inviteNlrToJoinAppeal.title,
       formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
-      previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+      previousPage: hasSponsor ? paths.nonLegalRep.provideNlrIsSamePerson : paths.nonLegalRep.provideNlrPhoneNumber,
       summaryLists: [{ summaryRows: getSummaryRows(req) }],
       noSaveForLater: true
     });
@@ -411,10 +412,11 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
           }
         });
 
+        const hasSponsor = req.session.appeal?.application?.hasSponsor == 'Yes';
         return res.render('templates/check-and-send.njk', {
           pageTitle: i18n.pages.provideNlrDetails.title,
           formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
-          previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+          previousPage: hasSponsor ? paths.nonLegalRep.provideNlrIsSamePerson : paths.nonLegalRep.provideNlrPhoneNumber,
           summaryLists: [{ summaryRows: getSummaryRows(req) }],
           errorList: Object.values(validationErrors),
           noSaveForLater: true

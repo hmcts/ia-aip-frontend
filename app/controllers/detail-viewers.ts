@@ -360,14 +360,20 @@ async function addPaymentDetails(req: Request, application: AppealApplication, f
 
 function getNonLegalRepDetails(req: Request, rows: any[]) {
   const i18n = getI18n(req.session.isNonLegalRep);
-  if (req.session.appeal.nlrDetails) {
+  const appeal = req.session.appeal;
+  const hasNonLegalRep = appeal?.application?.hasNonLegalRep
+    && appeal?.application?.hasNonLegalRep === 'Yes';
+  if (req.session.appeal.nlrDetails && hasNonLegalRep) {
     const nlrDetails: NlrDetails = req.session.appeal.nlrDetails;
     rows.push(
       (nlrDetails.givenNames && nlrDetails.familyName) && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName, [nlrDetails.givenNames, nlrDetails.familyName], null, Delimiter.SPACE),
       nlrDetails.emailAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail, [nlrDetails.emailAddress]),
       nlrDetails.phoneNumber && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone, [nlrDetails.phoneNumber]),
-      nlrDetails.address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress, Object.values(nlrDetails.address), null, Delimiter.BREAK_LINE)
+      nlrDetails.address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress, [...Object.values(nlrDetails.address)], null, Delimiter.BREAK_LINE)
     );
+    if (appeal?.application?.isSponsorSameAsNlr) {
+      rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.isSponsorSameAsNlr, [appeal.application.isSponsorSameAsNlr]));
+    }
   }
 }
 

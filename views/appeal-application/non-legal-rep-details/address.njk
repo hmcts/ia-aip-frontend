@@ -1,4 +1,4 @@
-{% set pageTitleName = i18n.pages.nlrAddress.title %}
+{% set pageTitleName = title if title else i18n.pages.nlrAddress.title, %}
 {% extends 'layout.njk' %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
@@ -14,7 +14,7 @@
   <form action="{{ postAction }}" method="post">
     {% call govukFieldset({
       legend: {
-        text: i18n.pages.nlrAddress.heading,
+        text: title if title else i18n.pages.nlrAddress.title,
         classes: "govuk-fieldset__legend--xl",
         isPageHeading: true
       }

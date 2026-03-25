@@ -191,23 +191,27 @@ async function createSummaryRowsFrom(req: Request) {
       paths.appealStarted.hasSponsorOrNlr + editParameter);
     rows.push(hasNonLegalRep);
 
-    if (['Yes'].includes(application.hasNonLegalRep)) {
-      const nlrDetails: NlrDetails = req.session.appeal.nlrDetails;
-      if (nlrDetails.givenNames && nlrDetails.familyName) {
+    if (application.hasNonLegalRep === 'Yes') {
+      const nlrDetails: NlrDetails = req.session.appeal?.nlrDetails;
+      if (nlrDetails?.givenNames && nlrDetails?.familyName) {
         rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
           [nlrDetails.givenNames, nlrDetails.familyName], paths.appealStarted.nlrName + editParameter, Delimiter.SPACE));
       }
-      if (nlrDetails.address) {
+      if (nlrDetails?.address) {
         rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
           Object.values(nlrDetails.address), paths.appealStarted.nlrAddress + editParameter, Delimiter.BREAK_LINE));
       }
-      if (nlrDetails.emailAddress) {
+      if (nlrDetails?.emailAddress) {
         rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail,
           [nlrDetails.emailAddress], paths.appealStarted.nlrContactDetails + editParameter));
       }
-      if (nlrDetails.phoneNumber) {
+      if (nlrDetails?.phoneNumber) {
         rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
           [nlrDetails.phoneNumber], paths.appealStarted.nlrContactDetails + editParameter));
+      }
+      if (req.session.appeal?.application?.isSponsorSameAsNlr) {
+        rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.isSponsorSameAsNlr,
+          [req.session.appeal.application.isSponsorSameAsNlr], paths.nonLegalRep.provideNlrIsSamePerson + editParameter));
       }
     }
   }

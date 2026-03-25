@@ -8,6 +8,7 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getRedirectPage } from '../../utils/utils';
 import {
   createStructuredError,
+  isSamePersonValidation,
   nlrAddressValidation,
   nlrNamesValidation,
   nonLegalRepContactDetailsValidation
@@ -20,6 +21,7 @@ function getNlrName(req: Request, res: Response, next: NextFunction) {
     const nlrGivenNames = nlrDetails?.givenNames;
     const nlrFamilyName = nlrDetails?.familyName;
     return res.render('appeal-application/non-legal-rep-details/name.njk', {
+      title: i18n.pages.nlrName.titlePersonal,
       postAction: paths.nonLegalRep.updateName,
       nlrGivenNames,
       nlrFamilyName,
@@ -36,6 +38,7 @@ function postNlrName() {
       const validation = nlrNamesValidation(req.body);
       if (validation) {
         return res.render('appeal-application/non-legal-rep-details/name.njk', {
+          title: i18n.pages.nlrName.titlePersonal,
           postAction: paths.nonLegalRep.updateName,
           nlrGivenNames: req.body.nlrGivenNames,
           nlrFamilyName: req.body.nlrFamilyName,
@@ -66,6 +69,7 @@ function getNlrAddress(req: Request, res: Response, next: NextFunction) {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const address: Address = req.session.appeal?.nlrDetails?.address;
     res.render('appeal-application/non-legal-rep-details/address.njk', {
+      title: i18n.pages.nlrAddress.titlePersonal,
       postAction: paths.nonLegalRep.updateAddress,
       address,
       previousPage: paths.nonLegalRep.updateName
@@ -81,6 +85,7 @@ function postNlrAddress() {
       const validation = nlrAddressValidation(req.body);
       if (validation !== null) {
         return res.render('appeal-application/non-legal-rep-details/address.njk', {
+          title: i18n.pages.nlrAddress.titlePersonal,
           postAction: paths.nonLegalRep.updateAddress,
           nlrAddress: {
             line1: req.body['address-line-1'],
@@ -123,7 +128,7 @@ function getNlrContactDetails(req: Request, res: Response, next: NextFunction) {
     const emailAddress = req.session.appeal?.nlrDetails?.emailAddress;
     const phoneNumber = req.session.appeal?.nlrDetails?.phoneNumber;
     return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
-      title: i18n.pages.nlrContactDetails.title,
+      title: i18n.pages.nlrContactDetails.titlePersonal,
       showEmail: true,
       postAction: paths.nonLegalRep.updateContactDetails,
       emailAddress,
@@ -142,7 +147,7 @@ function postNlrContactDetails() {
       const validation = nonLegalRepContactDetailsValidation(req.body);
       if (validation) {
         return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
-          title: i18n.pages.nlrContactDetails.title,
+          title: i18n.pages.nlrContactDetails.titlePersonal,
           showEmail: true,
           postAction: paths.nonLegalRep.updateContactDetails,
           emailAddress: req.body['emailAddress'],
@@ -161,6 +166,54 @@ function postNlrContactDetails() {
           emailAddress: req.body['emailAddress'],
         }
       };
+      const hasSponsor: boolean = req.session.appeal?.application?.hasSponsor == 'Yes';
+      return res.redirect(hasSponsor ? paths.nonLegalRep.updateIsSamePerson : paths.nonLegalRep.updateDetailsCheckAndSend);
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
+function getSamePerson(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    const application = req.session.appeal.application;
+    const isSponsorSameAsNlr = application.isSponsorSameAsNlr;
+    return res.render('appeal-application/sponsor-details/is-same-person.njk', {
+      question: i18n.pages.isSponsorSameAsNlr.titlePersonal,
+      previousPage: paths.nonLegalRep.updateContactDetails,
+      isSponsorSameAsNlr: isSponsorSameAsNlr
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function postSamePerson() {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = isSamePersonValidation(req.body);
+
+      const application = req.session.appeal.application;
+
+      if (validation) {
+        return res.render('appeal-application/sponsor-details/is-same-person.njk', {
+          question: i18n.pages.isSponsorSameAsNlr.titlePersonal,
+          previousPage: paths.nonLegalRep.updateContactDetails,
+          isSponsorSameAsNlr: application.isSponsorSameAsNlr,
+          errors: validation,
+          errorList: Object.values(validation)
+        });
+      }
+
+      req.session.appeal = {
+        ...req.session.appeal,
+        application: {
+          ...application,
+          isSponsorSameAsNlr: req.body['isSponsorSameAsNlr']
+        }
+      };
+
       return res.redirect(paths.nonLegalRep.updateDetailsCheckAndSend);
     } catch (error) {
       next(error);
@@ -168,29 +221,35 @@ function postNlrContactDetails() {
   };
 }
 
+function getSummaryRows(req) {
+  const editParameter = '?edit';
+  const nlrDetails: NlrDetails = req.session.appeal.nlrDetails;
+  const addressValues = nlrDetails.address ? Object.values(nlrDetails.address) : [];
+  const summaryRows: SummaryRow[] = [
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepNamePersonal,
+      [nlrDetails?.givenNames, nlrDetails?.familyName], paths.nonLegalRep.updateName + editParameter, Delimiter.SPACE),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddressPersonal,
+      [...addressValues], paths.nonLegalRep.updateAddress + editParameter, Delimiter.BREAK_LINE),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmailPersonal,
+      [nlrDetails?.emailAddress], paths.nonLegalRep.updateContactDetails + editParameter),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhonePersonal,
+      [nlrDetails?.phoneNumber], paths.nonLegalRep.updateContactDetails + editParameter)
+  ];
+  if (req.session.appeal?.application?.hasSponsor == 'Yes') {
+    summaryRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.isSponsorSameAsNlrPersonal,
+      [req.session.appeal?.application?.isSponsorSameAsNlr], paths.nonLegalRep.updateIsSamePerson + editParameter));
+  }
+
+  return summaryRows;
+}
+
 function getUpdateNlrDetailsCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-    const editParameter = '?edit';
-    const nlrDetails: NlrDetails = req.session.appeal.nlrDetails;
-    const addressValues = nlrDetails.address ? Object.values(nlrDetails.address) : [];
-    const summaryLists: SummaryList[] = [{
-      summaryRows: [
-        addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
-          [nlrDetails?.givenNames, nlrDetails?.familyName], paths.nonLegalRep.updateName + editParameter, Delimiter.SPACE),
-        addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
-          [...addressValues], paths.nonLegalRep.updateAddress + editParameter, Delimiter.BREAK_LINE),
-        addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail,
-          [nlrDetails?.emailAddress], paths.nonLegalRep.updateContactDetails + editParameter),
-        addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
-          [nlrDetails?.phoneNumber], paths.nonLegalRep.updateContactDetails + editParameter)
-      ]
-    }];
-
     return res.render('templates/check-and-send.njk', {
-      pageTitle: i18n.pages.inviteNlrToJoinAppeal.title,
+      pageTitle: i18n.pages.updateNlrDetails.title,
       formAction: paths.nonLegalRep.updateDetailsCheckAndSend,
       previousPage: paths.nonLegalRep.updateContactDetails,
-      summaryLists: summaryLists,
+      summaryLists: [{ summaryRows: getSummaryRows(req) }],
       noSaveForLater: true
     });
   } catch (e) {
@@ -204,7 +263,7 @@ function postUpdateNlrDetailsCheckAndSend(updateAppealService: UpdateAppealServi
       const nlrDetails: NlrDetails = req.session.appeal?.nlrDetails;
       if (nlrDetails.givenNames && nlrDetails.familyName && nlrDetails.phoneNumber && nlrDetails?.address?.line1
         && nlrDetails?.address?.city && nlrDetails?.address?.postcode && nlrDetails.emailAddress) {
-        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.PROVIDE_NON_LEGAL_REP_DETAILS,
+        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.NLR_DETAILS_UPDATED,
           req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
         req.session.appeal = {
           ...req.session.appeal,
@@ -233,25 +292,12 @@ function postUpdateNlrDetailsCheckAndSend(updateAppealService: UpdateAppealServi
             );
           }
         });
-        const editParameter = '?edit';
-        const addressValues = nlrDetails.address ? Object.values(nlrDetails.address) : [];
-        const summaryLists: SummaryList[] = [{
-          summaryRows: [
-            addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
-              [nlrDetails.givenNames, nlrDetails.familyName], paths.nonLegalRep.updateName + editParameter, Delimiter.SPACE),
-            addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
-              [...addressValues], paths.nonLegalRep.updateAddress + editParameter, Delimiter.BREAK_LINE),
-            addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail,
-              [nlrDetails.emailAddress], paths.nonLegalRep.updateContactDetails + editParameter),
-            addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
-              [nlrDetails.phoneNumber], paths.nonLegalRep.updateContactDetails + editParameter)
-          ]
-        }];
+
         return res.render('templates/check-and-send.njk', {
           pageTitle: i18n.pages.updateNlrDetails.title,
           formAction: paths.nonLegalRep.updateDetailsCheckAndSend,
           previousPage: paths.nonLegalRep.updateContactDetails,
-          summaryLists: summaryLists,
+          summaryLists: [{ summaryRows: getSummaryRows(req) }],
           errorList: Object.values(validationErrors),
           noSaveForLater: true
         });
@@ -281,6 +327,8 @@ function setupNlrUpdatePhoneNumberControllers(middleware: Middleware[], updateAp
   router.post(paths.nonLegalRep.updateAddress, middleware, postNlrAddress());
   router.get(paths.nonLegalRep.updateContactDetails, middleware, getNlrContactDetails);
   router.post(paths.nonLegalRep.updateContactDetails, middleware, postNlrContactDetails());
+  router.get(paths.nonLegalRep.updateIsSamePerson, middleware, getSamePerson);
+  router.post(paths.nonLegalRep.updateIsSamePerson, middleware, postSamePerson());
   router.get(paths.nonLegalRep.updateDetailsCheckAndSend, middleware, getUpdateNlrDetailsCheckAndSend);
   router.post(paths.nonLegalRep.updateDetailsCheckAndSend, middleware, postUpdateNlrDetailsCheckAndSend(updateAppealService));
   router.get(paths.nonLegalRep.updateDetailsConfirmation, middleware, getUpdateNlrDetailsConfirmation);
@@ -295,6 +343,8 @@ export {
   postNlrAddress,
   getNlrContactDetails,
   postNlrContactDetails,
+  getSamePerson,
+  postSamePerson,
   getUpdateNlrDetailsCheckAndSend,
   postUpdateNlrDetailsCheckAndSend,
   getUpdateNlrDetailsConfirmation

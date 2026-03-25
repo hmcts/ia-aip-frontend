@@ -479,6 +479,21 @@ describe('createSummaryRowsFrom', () => {
     });
   });
 
+  it('should create row for isSponsorSameAsNlr', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
+    req.session.appeal.application.hasNonLegalRep = 'Yes';
+    req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const minimisedRows = rows.map(object => {
+      return { key: object.key, value: object.value };
+    });
+    expect(minimisedRows).to.deep.contain({
+      'key': { 'text': i18n.pages.checkYourAnswers.rowTitles.isSponsorSameAsNlr },
+      'value': { 'html': 'Yes' }
+    });
+  });
+
   it('should create NLR rows for No hasNlr', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     req.session.appeal.application.hasNonLegalRep = 'No';

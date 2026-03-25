@@ -700,6 +700,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.remissionClaim = 'legalAid';
       req.session.appeal.application.legalAidAccountNumber = 'legalAidAccountNumber';
       req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
       req.session.appeal.nlrDetails = {
         emailAddress: 'someEmail',
         givenNames: 'some',
@@ -729,6 +730,7 @@ describe('DetailViewController', () => {
         { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
         { key: { text: 'Non-legal representative\'s phone number' }, value: { html: 'some phone' } },
         { key: { text: 'Non-legal representative\'s address' }, value: { html: 'some line1' } },
+        { key: { text: 'Is your sponsor the same as your non-legal representative?' }, value: { html: 'Yes' } },
       );
       req.session.appeal.nlrDetails = {
         emailAddress: 'someEmail',
@@ -739,6 +741,8 @@ describe('DetailViewController', () => {
           line1: 'some line1'
         }
       };
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
@@ -747,6 +751,7 @@ describe('DetailViewController', () => {
         data: expectedSummaryRows
       });
     });
+    
 
     it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and has sponsor not in Uk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);

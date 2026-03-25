@@ -334,6 +334,7 @@ const paths = {
     updateName: '/update-nlr-details/name',
     updateAddress: '/update-nlr-details/address',
     updateContactDetails: '/update-nlr-details/contact-details',
+    updateIsSamePerson: '/update-nlr-details/is-same-person-as-sponsor',
     updateDetailsCheckAndSend: '/update-nlr-details/confirm',
     updateDetailsConfirmation: '/update-nlr-details/confirmation',
   },

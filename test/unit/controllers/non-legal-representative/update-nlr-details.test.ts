@@ -3,11 +3,13 @@ import {
   getNlrAddress,
   getNlrContactDetails,
   getNlrName,
+  getSamePerson,
   getUpdateNlrDetailsCheckAndSend,
   getUpdateNlrDetailsConfirmation,
   postNlrAddress,
   postNlrContactDetails,
   postNlrName,
+  postSamePerson,
   postUpdateNlrDetailsCheckAndSend,
   setupNlrUpdatePhoneNumberControllers,
 } from '../../../../app/controllers/non-legal-representative/update-nlr-details';
@@ -73,6 +75,7 @@ describe('Update phone number controllers setup', () => {
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+        title: i18n.pages.nlrName.titlePersonal,
         postAction: paths.nonLegalRep.updateName,
         nlrGivenNames: undefined,
         nlrFamilyName: undefined,
@@ -86,6 +89,7 @@ describe('Update phone number controllers setup', () => {
       getNlrName(req as Request, res as Response, next);
 
       expect(renderStub.calledWith('appeal-application/non-legal-rep-details/name.njk', {
+        title: i18n.pages.nlrName.titlePersonal,
         postAction: paths.nonLegalRep.updateName,
         nlrGivenNames: 'someGivenName',
         nlrFamilyName: 'someFamilyName',
@@ -110,6 +114,7 @@ describe('Update phone number controllers setup', () => {
         'nlrFamilyName': buildExpectedRequiredError('nlrFamilyName')
       };
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+        title: i18n.pages.nlrName.titlePersonal,
         postAction: paths.nonLegalRep.updateName,
         nlrGivenNames: undefined,
         nlrFamilyName: undefined,
@@ -129,6 +134,7 @@ describe('Update phone number controllers setup', () => {
       };
 
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+        title: i18n.pages.nlrName.titlePersonal,
         postAction: paths.nonLegalRep.updateName,
         nlrGivenNames: 'someGivenName',
         nlrFamilyName: '',
@@ -148,6 +154,7 @@ describe('Update phone number controllers setup', () => {
         'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrFamilyName)
       };
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+        title: i18n.pages.nlrName.titlePersonal,
         postAction: paths.nonLegalRep.updateName,
         nlrGivenNames: '',
         nlrFamilyName: '',
@@ -197,6 +204,7 @@ describe('Update phone number controllers setup', () => {
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+        title: i18n.pages.nlrAddress.titlePersonal,
         postAction: paths.nonLegalRep.updateAddress,
         address: undefined,
         previousPage: paths.nonLegalRep.updateName
@@ -214,6 +222,7 @@ describe('Update phone number controllers setup', () => {
       getNlrAddress(req as Request, res as Response, next);
 
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+        title: i18n.pages.nlrAddress.titlePersonal,
         postAction: paths.nonLegalRep.updateAddress,
         address: expectedAddress,
         previousPage: paths.nonLegalRep.updateName
@@ -238,6 +247,7 @@ describe('Update phone number controllers setup', () => {
         'address-postcode': buildExpectedRequiredError('address-postcode')
       };
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+        title: i18n.pages.nlrAddress.titlePersonal,
         postAction: paths.nonLegalRep.updateAddress,
         nlrAddress: {
           line1: undefined,
@@ -264,6 +274,7 @@ describe('Update phone number controllers setup', () => {
         'address-postcode': createStructuredError('address-postcode', i18n.validationErrors.nlrAddress.postcodeRequired)
       };
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+        title: i18n.pages.nlrAddress.titlePersonal,
         postAction: paths.nonLegalRep.updateAddress,
         nlrAddress: {
           line1: '',
@@ -292,6 +303,7 @@ describe('Update phone number controllers setup', () => {
         }
       };
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+        title: i18n.pages.nlrAddress.titlePersonal,
         postAction: paths.nonLegalRep.updateAddress,
         nlrAddress: {
           line1: 'line1',
@@ -358,7 +370,7 @@ describe('Update phone number controllers setup', () => {
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
-        title: i18n.pages.nlrContactDetails.title,
+        title: i18n.pages.nlrContactDetails.titlePersonal,
         showEmail: true,
         postAction: paths.nonLegalRep.updateContactDetails,
         emailAddress: undefined,
@@ -374,7 +386,7 @@ describe('Update phone number controllers setup', () => {
       getNlrContactDetails(req as Request, res as Response, next);
 
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
-        title: i18n.pages.nlrContactDetails.title,
+        title: i18n.pages.nlrContactDetails.titlePersonal,
         showEmail: true,
         postAction: paths.nonLegalRep.updateContactDetails,
         emailAddress: 'emailAddress',
@@ -401,7 +413,7 @@ describe('Update phone number controllers setup', () => {
         'phoneNumber': buildExpectedRequiredError('phoneNumber')
       };
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
-        title: i18n.pages.nlrContactDetails.title,
+        title: i18n.pages.nlrContactDetails.titlePersonal,
         showEmail: true,
         postAction: paths.nonLegalRep.updateContactDetails,
         emailAddress: undefined,
@@ -422,7 +434,7 @@ describe('Update phone number controllers setup', () => {
         'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.phoneEmpty)
       };
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
-        title: i18n.pages.nlrContactDetails.title,
+        title: i18n.pages.nlrContactDetails.titlePersonal,
         showEmail: true,
         postAction: paths.nonLegalRep.updateContactDetails,
         emailAddress: '',
@@ -443,7 +455,7 @@ describe('Update phone number controllers setup', () => {
         'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.ukPhoneFormat)
       };
       expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
-        title: i18n.pages.nlrContactDetails.title,
+        title: i18n.pages.nlrContactDetails.titlePersonal,
         showEmail: true,
         postAction: paths.nonLegalRep.updateContactDetails,
         emailAddress: 'invalid',
@@ -466,9 +478,88 @@ describe('Update phone number controllers setup', () => {
       expect(redirectStub).calledWith(paths.nonLegalRep.updateDetailsCheckAndSend);
     });
 
+    it('should update req.session.appeal and redirect to updateIsSamePerson if validation passes and has sponsor', async () => {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.body['emailAddress'] = 'test@test.com';
+      req.body['phoneNumber'] = '07827297000';
+      expect(req.session.appeal.nlrDetails.phoneNumber).to.equal(undefined);
+      expect(req.session.appeal.nlrDetails.emailAddress).to.equal(undefined);
+      await postNlrContactDetails()(req as Request, res as Response, next);
+
+      expect(req.session.appeal.nlrDetails.phoneNumber).to.equal('07827297000');
+      expect(req.session.appeal.nlrDetails.emailAddress).to.equal('test@test.com');
+      expect(redirectStub).calledWith(paths.nonLegalRep.updateIsSamePerson);
+    });
+
     it('should catch an error and call next with error', async () => {
       res.render = throwStub;
       await postNlrAddress()(req as Request, res as Response, next);
+
+      expect(next.calledWith(error)).to.equal(true);
+    });
+  });
+
+  describe('getSamePerson', () => {
+    it('should render is-same-person.njk', () => {
+      req.query.edit = '';
+      getSamePerson(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.isEdit).to.equal(true);
+      expect(renderStub).calledWith('appeal-application/sponsor-details/is-same-person.njk', {
+        question: i18n.pages.isSponsorSameAsNlr.titlePersonal,
+        previousPage: paths.nonLegalRep.updateContactDetails,
+        isSponsorSameAsNlr: undefined
+      });
+    });
+
+    it('should render is-same-person.njk with field', () => {
+      req.session.appeal.application.isSponsorSameAsNlr = 'something';
+
+      getSamePerson(req as Request, res as Response, next);
+
+      expect(renderStub).calledWith('appeal-application/sponsor-details/is-same-person.njk', {
+        question: i18n.pages.isSponsorSameAsNlr.titlePersonal,
+        previousPage: paths.nonLegalRep.updateContactDetails,
+        isSponsorSameAsNlr: 'something'
+      });
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      getSamePerson(req as Request, res as Response, next);
+
+      expect(next.calledWith(error)).to.equal(true);
+    });
+  });
+
+  describe('postSamePerson', () => {
+    it('should render with error if validation fails required', async () => {
+      await postSamePerson()(req as Request, res as Response, next);
+
+      const expectedError = {
+        'isSponsorSameAsNlr': createStructuredError('isSponsorSameAsNlr', i18n.validationErrors.isSponsorSameAsNlr)
+      };
+      expect(renderStub).calledWith('appeal-application/sponsor-details/is-same-person.njk', {
+        question: i18n.pages.isSponsorSameAsNlr.titlePersonal,
+        previousPage: paths.nonLegalRep.updateContactDetails,
+        isSponsorSameAsNlr: undefined,
+        errors: expectedError,
+        errorList: Object.values(expectedError)
+      });
+    });
+
+    it('should update req.session.appeal and redirect to updateDetailsCheckAndSend', async () => {
+      req.body.isSponsorSameAsNlr = 'No';
+      expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal(undefined);
+
+      await postSamePerson()(req as Request, res as Response, next);
+      expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal('No');
+      expect(redirectStub).calledWith(paths.nonLegalRep.updateDetailsCheckAndSend);
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      await postSamePerson()(req as Request, res as Response, next);
 
       expect(next.calledWith(error)).to.equal(true);
     });
@@ -479,48 +570,48 @@ describe('Update phone number controllers setup', () => {
       getUpdateNlrDetailsCheckAndSend(req as Request, res as Response, next);
 
       expect(renderStub).calledWith('templates/check-and-send.njk', {
-        pageTitle: i18n.pages.inviteNlrToJoinAppeal.title,
+        pageTitle: i18n.pages.updateNlrDetails.title,
         formAction: paths.nonLegalRep.updateDetailsCheckAndSend,
         previousPage: paths.nonLegalRep.updateContactDetails,
         summaryLists: [{
           summaryRows: [{
-            'key': { 'text': "Non-legal representative's name" },
+            'key': { 'text': 'Your name' },
             'value': { 'html': ' ' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/name?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's name"
+                'visuallyHiddenText': 'Your name'
               }]
             }
           }, {
-            'key': { 'text': "Non-legal representative's address" },
+            'key': { 'text': 'Your address' },
             'value': { 'html': '' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/address?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's address"
+                'visuallyHiddenText': 'Your address'
               }]
             }
           }, {
-            'key': { 'text': "Non-legal representative's email" },
+            'key': { 'text': 'Your email address' },
             'value': { 'html': '' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/contact-details?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's email"
+                'visuallyHiddenText': 'Your email address'
               }]
             }
           }, {
-            'key': { 'text': "Non-legal representative's phone number" },
+            'key': { 'text': 'Your phone number' },
             'value': { 'html': '' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/contact-details?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's phone number"
+                'visuallyHiddenText': 'Your phone number'
               }]
             }
           }]
@@ -547,48 +638,128 @@ describe('Update phone number controllers setup', () => {
       getUpdateNlrDetailsCheckAndSend(req as Request, res as Response, next);
 
       expect(renderStub).calledWith('templates/check-and-send.njk', {
-        pageTitle: i18n.pages.inviteNlrToJoinAppeal.title,
+        pageTitle: i18n.pages.updateNlrDetails.title,
         formAction: paths.nonLegalRep.updateDetailsCheckAndSend,
         previousPage: paths.nonLegalRep.updateContactDetails,
         summaryLists: [{
           summaryRows: [{
-            'key': { 'text': "Non-legal representative's name" },
+            'key': { 'text': 'Your name' },
             'value': { 'html': 'someGivenNames someFamilyName' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/name?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's name"
+                'visuallyHiddenText': 'Your name'
               }]
             }
           }, {
-            'key': { 'text': "Non-legal representative's address" },
+            'key': { 'text': 'Your address' },
             'value': { 'html': 'someLine1<br>someLine2<br>someCity<br>someCounty<br>somePostcode' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/address?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's address"
+                'visuallyHiddenText': 'Your address'
               }]
             }
           }, {
-            'key': { 'text': "Non-legal representative's email" },
+            'key': { 'text': 'Your email address' },
             'value': { 'html': 'someEmailAddress' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/contact-details?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's email"
+                'visuallyHiddenText': 'Your email address'
               }]
             }
           }, {
-            'key': { 'text': "Non-legal representative's phone number" },
+            'key': { 'text': 'Your phone number' },
             'value': { 'html': 'somePhoneNumber' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/contact-details?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's phone number"
+                'visuallyHiddenText': 'Your phone number'
+              }]
+            }
+          }]
+        }],
+        noSaveForLater: true
+      });
+    });
+
+    it('should render check and send page with evidence with isSponsorSameAsNlr if hasSponsor', () => {
+      req.session.appeal.nlrDetails = {
+        givenNames: 'someGivenNames',
+        familyName: 'someFamilyName',
+        phoneNumber: 'somePhoneNumber',
+        emailAddress: 'someEmailAddress',
+        address: {
+          line1: 'someLine1',
+          line2: 'someLine2',
+          city: 'someCity',
+          county: 'someCounty',
+          postcode: 'somePostcode',
+        }
+      };
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
+
+      getUpdateNlrDetailsCheckAndSend(req as Request, res as Response, next);
+
+      expect(renderStub).calledWith('templates/check-and-send.njk', {
+        pageTitle: i18n.pages.updateNlrDetails.title,
+        formAction: paths.nonLegalRep.updateDetailsCheckAndSend,
+        previousPage: paths.nonLegalRep.updateContactDetails,
+        summaryLists: [{
+          summaryRows: [{
+            'key': { 'text': 'Your name' },
+            'value': { 'html': 'someGivenNames someFamilyName' },
+            'actions': {
+              'items': [{
+                'href': '/update-nlr-details/name?edit',
+                'text': 'Change',
+                'visuallyHiddenText': 'Your name'
+              }]
+            }
+          }, {
+            'key': { 'text': 'Your address' },
+            'value': { 'html': 'someLine1<br>someLine2<br>someCity<br>someCounty<br>somePostcode' },
+            'actions': {
+              'items': [{
+                'href': '/update-nlr-details/address?edit',
+                'text': 'Change',
+                'visuallyHiddenText': 'Your address'
+              }]
+            }
+          }, {
+            'key': { 'text': 'Your email address' },
+            'value': { 'html': 'someEmailAddress' },
+            'actions': {
+              'items': [{
+                'href': '/update-nlr-details/contact-details?edit',
+                'text': 'Change',
+                'visuallyHiddenText': 'Your email address'
+              }]
+            }
+          }, {
+            'key': { 'text': 'Your phone number' },
+            'value': { 'html': 'somePhoneNumber' },
+            'actions': {
+              'items': [{
+                'href': '/update-nlr-details/contact-details?edit',
+                'text': 'Change',
+                'visuallyHiddenText': 'Your phone number'
+              }]
+            }
+          }, {
+            'key': { 'text': 'Are you also acting as the sponsor on this appeal?' },
+            'value': { 'html': 'Yes' },
+            'actions': {
+              'items': [{
+                'href': '/update-nlr-details/is-same-person-as-sponsor?edit',
+                'text': 'Change',
+                'visuallyHiddenText': 'Are you also acting as the sponsor on this appeal?'
               }]
             }
           }]
@@ -626,43 +797,43 @@ describe('Update phone number controllers setup', () => {
         previousPage: paths.nonLegalRep.updateContactDetails,
         summaryLists: [{
           summaryRows: [{
-            'key': { 'text': "Non-legal representative's name" },
+            'key': { 'text': 'Your name' },
             'value': { 'html': ' ' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/name?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's name"
+                'visuallyHiddenText': 'Your name'
               }]
             }
           }, {
-            'key': { 'text': "Non-legal representative's address" },
+            'key': { 'text': 'Your address' },
             'value': { 'html': '' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/address?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's address"
+                'visuallyHiddenText': 'Your address'
               }]
             }
           }, {
-            'key': { 'text': "Non-legal representative's email" },
+            'key': { 'text': 'Your email address' },
             'value': { 'html': '' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/contact-details?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's email"
+                'visuallyHiddenText': 'Your email address'
               }]
             }
           }, {
-            'key': { 'text': "Non-legal representative's phone number" },
+            'key': { 'text': 'Your phone number' },
             'value': { 'html': '' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/contact-details?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's phone number"
+                'visuallyHiddenText': 'Your phone number'
               }]
             }
           }]
@@ -695,43 +866,43 @@ describe('Update phone number controllers setup', () => {
         previousPage: paths.nonLegalRep.updateContactDetails,
         summaryLists: [{
           summaryRows: [{
-            'key': { 'text': "Non-legal representative's name" },
+            'key': { 'text': 'Your name' },
             'value': { 'html': 'givenNames familyName' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/name?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's name"
+                'visuallyHiddenText': 'Your name'
               }]
             }
           }, {
-            'key': { 'text': "Non-legal representative's address" },
+            'key': { 'text': 'Your address' },
             'value': { 'html': '' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/address?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's address"
+                'visuallyHiddenText': 'Your address'
               }]
             }
           }, {
-            'key': { 'text': "Non-legal representative's email" },
+            'key': { 'text': 'Your email address' },
             'value': { 'html': 'emailAddress' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/contact-details?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's email"
+                'visuallyHiddenText': 'Your email address'
               }]
             }
           }, {
-            'key': { 'text': "Non-legal representative's phone number" },
+            'key': { 'text': 'Your phone number' },
             'value': { 'html': 'phoneNumber' },
             'actions': {
               'items': [{
                 'href': '/update-nlr-details/contact-details?edit',
                 'text': 'Change',
-                'visuallyHiddenText': "Non-legal representative's phone number"
+                'visuallyHiddenText': 'Your phone number'
               }]
             }
           }]
@@ -761,7 +932,7 @@ describe('Update phone number controllers setup', () => {
       };
       await postUpdateNlrDetailsCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(submitStub).calledWith(Events.PROVIDE_NON_LEGAL_REP_DETAILS, req.session.appeal, 'idamUID', 'atoken');
+      expect(submitStub).calledWith(Events.NLR_DETAILS_UPDATED, req.session.appeal, 'idamUID', 'atoken');
       expect(redirectStub).calledWith(paths.nonLegalRep.updateDetailsConfirmation);
     });
 

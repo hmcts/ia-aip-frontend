@@ -900,6 +900,76 @@ describe('Add non-legal representative controllers setup', () => {
       });
     });
 
+    it('should render check and send page with isSponsorSameAsNlr if hasSponsor', () => {
+      req.session.appeal.nlrDetails = {
+        givenNames: 'someGivenNames',
+        familyName: 'someFamilyName',
+        phoneNumber: 'somePhoneNumber',
+        emailAddress: 'someEmailAddress',
+        address: {
+          line1: 'someLine1',
+          line2: 'someLine2',
+          city: 'someCity',
+          county: 'someCounty',
+          postcode: 'somePostcode',
+        }
+      };
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
+
+      getCheckAndSend(req as Request, res as Response, next);
+
+      expect(renderStub).calledWith('templates/check-and-send.njk', {
+        pageTitle: i18n.pages.inviteNlrToJoinAppeal.title,
+        formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
+        previousPage: paths.nonLegalRep.provideNlrIsSamePerson,
+        summaryLists: [{
+          summaryRows: [{
+            'key': { 'text': "Non-legal representative's name" },
+            'value': { 'html': 'someGivenNames someFamilyName' },
+            'actions': {
+              'items': [{
+                'href': '/add-non-legal-rep/provide-name?edit',
+                'text': 'Change',
+                'visuallyHiddenText': "Non-legal representative's name"
+              }]
+            }
+          }, {
+            'key': { 'text': "Non-legal representative's address" },
+            'value': { 'html': 'someLine1<br>someLine2<br>someCity<br>someCounty<br>somePostcode' },
+            'actions': {
+              'items': [{
+                'href': '/add-non-legal-rep/provide-address?edit',
+                'text': 'Change',
+                'visuallyHiddenText': "Non-legal representative's address"
+              }]
+            }
+          }, {
+            'key': { 'text': "Non-legal representative's phone number" },
+            'value': { 'html': 'somePhoneNumber' },
+            'actions': {
+              'items': [{
+                'href': '/add-non-legal-rep/provide-phone-number?edit',
+                'text': 'Change',
+                'visuallyHiddenText': "Non-legal representative's phone number"
+              }]
+            }
+          }, {
+            'key': { 'text': 'Is your sponsor the same as your non-legal representative?' },
+            'value': { 'html': 'Yes' },
+            'actions': {
+              'items': [{
+                'href': '/add-non-legal-rep/is-same-person-as-sponsor?edit',
+                'text': 'Change',
+                'visuallyHiddenText': 'Is your sponsor the same as your non-legal representative?'
+              }]
+            }
+          }]
+        }],
+        noSaveForLater: true
+      });
+    });
+
     it('should catch an error and call next with error', async () => {
       res.render = throwStub;
       getCheckAndSend(req as Request, res as Response, next);

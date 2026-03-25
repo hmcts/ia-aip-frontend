@@ -8,7 +8,7 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getRedirectPage } from '../../utils/utils';
 import {
   createStructuredError,
-  emailValidation,
+  emailValidation, isSamePersonValidation,
   nlrAddressValidation,
   nlrNamesValidation,
   nonLegalRepPhoneValidation
@@ -287,6 +287,53 @@ function postNlrPhoneNumber() {
           phoneNumber: req.body['phoneNumber']
         }
       };
+      const hasSponsor = req.session.appeal?.application?.hasSponsor == 'Yes';
+      return res.redirect(hasSponsor ? paths.nonLegalRep.provideNlrIsSamePerson : paths.nonLegalRep.provideNlrDetailsCheckAndSend);
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
+function getSamePerson(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    const application = req.session.appeal.application;
+    const isSponsorSameAsNlr = application.isSponsorSameAsNlr;
+    return res.render('appeal-application/sponsor-details/is-same-person.njk', {
+      question: i18n.pages.isSponsorSameAsNlr.title,
+      previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+      isSponsorSameAsNlr: isSponsorSameAsNlr
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function postSamePerson() {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = isSamePersonValidation(req.body);
+
+      const application = req.session.appeal.application;
+
+      if (validation) {
+        return res.render('appeal-application/sponsor-details/is-same-person.njk', {
+          question: i18n.pages.isSponsorSameAsNlr.title,
+          previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+          isSponsorSameAsNlr: application.isSponsorSameAsNlr,
+          errors: validation,
+          errorList: Object.values(validation)
+        });
+      }
+
+      req.session.appeal = {
+        ...req.session.appeal,
+        application: {
+          ...application,
+          isSponsorSameAsNlr: req.body['isSponsorSameAsNlr']
+        }
+      };
 
       return res.redirect(paths.nonLegalRep.provideNlrDetailsCheckAndSend);
     } catch (error) {
@@ -295,27 +342,33 @@ function postNlrPhoneNumber() {
   };
 }
 
+function getSummaryRows(req: Request) {
+  const editParameter = '?edit';
+  const nlrDetails: NlrDetails = req.session.appeal.nlrDetails;
+  const nlrAddress = nlrDetails.address ? Object.values(nlrDetails.address) : [];
+  const hasSponsor: boolean = req.session.appeal?.application?.hasSponsor == 'Yes';
+  const summaryRows: SummaryRow[] = [
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
+      [nlrDetails.givenNames, nlrDetails.familyName], paths.nonLegalRep.provideNlrName + editParameter, Delimiter.SPACE),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
+      [...nlrAddress], paths.nonLegalRep.provideNlrAddress + editParameter, Delimiter.BREAK_LINE),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
+      [nlrDetails.phoneNumber], paths.nonLegalRep.provideNlrPhoneNumber + editParameter)];
+  if (hasSponsor) {
+    summaryRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
+      [req.session.appeal?.application?.isSponsorSameAsNlr], paths.nonLegalRep.provideNlrIsSamePerson + editParameter))
+  }
+  return summaryRows;
+}
+
 function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-    const editParameter = '?edit';
-    const nlrDetails: NlrDetails = req.session.appeal.nlrDetails;
-    const nlrAddress = nlrDetails.address ? Object.values(nlrDetails.address) : [];
-    const summaryLists: SummaryList[] = [{
-      summaryRows: [
-        addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
-          [nlrDetails.givenNames, nlrDetails.familyName], paths.nonLegalRep.provideNlrName + editParameter, Delimiter.SPACE),
-        addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
-          [...nlrAddress], paths.nonLegalRep.provideNlrAddress + editParameter, Delimiter.BREAK_LINE),
-        addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
-          [nlrDetails.phoneNumber], paths.nonLegalRep.provideNlrPhoneNumber + editParameter)
-      ]
-    }];
 
     return res.render('templates/check-and-send.njk', {
       pageTitle: i18n.pages.inviteNlrToJoinAppeal.title,
       formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
       previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
-      summaryLists: summaryLists,
+      summaryLists: [{ summaryRows: getSummaryRows(req) }],
       noSaveForLater: true
     });
   } catch (e) {
@@ -357,23 +410,12 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
             );
           }
         });
-        const editParameter = '?edit';
-        const address = nlrDetails.address ? Object.values(nlrDetails.address) : [];
-        const summaryLists: SummaryList[] = [{
-          summaryRows: [
-            addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
-              [nlrDetails.givenNames, nlrDetails.familyName], paths.nonLegalRep.provideNlrName + editParameter, Delimiter.SPACE),
-            addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
-              [...address], paths.nonLegalRep.provideNlrAddress + editParameter, Delimiter.BREAK_LINE),
-            addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
-              [nlrDetails.phoneNumber], paths.nonLegalRep.provideNlrPhoneNumber + editParameter)
-          ]
-        }];
+
         return res.render('templates/check-and-send.njk', {
           pageTitle: i18n.pages.provideNlrDetails.title,
           formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
           previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
-          summaryLists: summaryLists,
+          summaryLists: [{ summaryRows: getSummaryRows(req) }],
           errorList: Object.values(validationErrors),
           noSaveForLater: true
         });
@@ -461,6 +503,8 @@ function setupNonLegalRepresentativeControllers(middleware: Middleware[], update
   router.post(paths.nonLegalRep.provideNlrAddress, middleware, postNlrAddress());
   router.get(paths.nonLegalRep.provideNlrPhoneNumber, middleware, getNlrPhoneNumber);
   router.post(paths.nonLegalRep.provideNlrPhoneNumber, middleware, postNlrPhoneNumber());
+  router.get(paths.nonLegalRep.provideNlrIsSamePerson, middleware, getSamePerson);
+  router.post(paths.nonLegalRep.provideNlrIsSamePerson, middleware, postSamePerson());
   router.get(paths.nonLegalRep.provideNlrDetailsCheckAndSend, middleware, getCheckAndSend);
   router.post(paths.nonLegalRep.provideNlrDetailsCheckAndSend, middleware, postCheckAndSend(updateAppealService));
   router.get(paths.nonLegalRep.provideNlrDetailsConfirmation, middleware, getProvideNlrDetailsConfirmation);
@@ -481,6 +525,8 @@ export {
   postNlrAddress,
   getNlrPhoneNumber,
   postNlrPhoneNumber,
+  getSamePerson,
+  postSamePerson,
   getCheckAndSend,
   postCheckAndSend,
   getProvideNlrDetailsConfirmation,

@@ -16,6 +16,8 @@ import {
   postNlrAddress,
   postNlrName,
   postNlrPhoneNumber,
+  getSamePerson, 
+  postSamePerson,
   setupNonLegalRepresentativeControllers
 } from '../../../../app/controllers/non-legal-representative/add-non-legal-representative';
 import { Events } from '../../../../app/data/events';
@@ -710,6 +712,17 @@ describe('Add non-legal representative controllers setup', () => {
       expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrDetailsCheckAndSend);
     });
 
+
+    it('should update req.session.appeal and redirect to isSamePerson if validation passes and hasSponsor', async () => {
+      req.body['phoneNumber'] = '07827297000';
+      req.session.appeal.application.hasSponsor = 'Yes';
+      expect(req.session.appeal.nlrDetails.phoneNumber).to.equal(undefined);
+      await postNlrPhoneNumber()(req as Request, res as Response, next);
+
+      expect(req.session.appeal.nlrDetails.phoneNumber).to.equal('07827297000');
+      expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrIsSamePerson);
+    });
+
     it('should catch an error and call next with error', async () => {
       res.render = throwStub;
       await postNlrAddress()(req as Request, res as Response, next);
@@ -718,6 +731,72 @@ describe('Add non-legal representative controllers setup', () => {
     });
   });
 
+  describe('getSamePerson', () => {
+    it('should render is-same-person.njk', () => {
+      req.query.edit = '';
+      getSamePerson(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.isEdit).to.equal(true);
+      expect(renderStub).calledWith('appeal-application/sponsor-details/is-same-person.njk', {
+        question: i18n.pages.isSponsorSameAsNlr.title,
+        previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+        isSponsorSameAsNlr: undefined
+      });
+    });
+
+    it('should render is-same-person.njk with field', () => {
+      req.session.appeal.application.isSponsorSameAsNlr = 'something';
+
+      getSamePerson(req as Request, res as Response, next);
+
+      expect(renderStub).calledWith('appeal-application/sponsor-details/is-same-person.njk', {
+        question: i18n.pages.isSponsorSameAsNlr.title,
+        previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+        isSponsorSameAsNlr: 'something'
+      });
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      getSamePerson(req as Request, res as Response, next);
+
+      expect(next.calledWith(error)).to.equal(true);
+    });
+  });
+
+  describe('postSamePerson', () => {
+    it('should render with error if validation fails required', async () => {
+      await postSamePerson()(req as Request, res as Response, next);
+
+      const expectedError = {
+        'isSponsorSameAsNlr': createStructuredError('isSponsorSameAsNlr', i18n.validationErrors.isSponsorSameAsNlr)
+      };
+      expect(renderStub).calledWith('appeal-application/sponsor-details/is-same-person.njk', {
+        question: i18n.pages.isSponsorSameAsNlr.title,
+        previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+        isSponsorSameAsNlr: undefined,
+        errors: expectedError,
+        errorList: Object.values(expectedError)
+      });
+    });
+
+    it('should update req.session.appeal and redirect to provideNlrDetailsCheckAndSend', async () => {
+      req.body.isSponsorSameAsNlr = 'No';
+      expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal(undefined);
+
+      await postSamePerson()(req as Request, res as Response, next);
+      expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal('No');
+      expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrDetailsCheckAndSend);
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      await postSamePerson()(req as Request, res as Response, next);
+
+      expect(next.calledWith(error)).to.equal(true);
+    });
+  });
+  
   describe('getCheckAndSend', () => {
     it('should render check and send page without evidence', () => {
       getCheckAndSend(req as Request, res as Response, next);

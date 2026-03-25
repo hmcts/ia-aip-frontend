@@ -678,6 +678,7 @@ export default class UpdateAppealService {
           ...sponsorContactDetails
         },
         sponsorAuthorisation: caseData.sponsorAuthorisation,
+        isSponsorSameAsNlr: caseData.isSponsorSameAsNlr,
         hasNonLegalRep: caseData.hasNonLegalRep,
         dateLetterSent,
         decisionLetterReceivedDate,

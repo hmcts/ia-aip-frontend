@@ -767,6 +767,15 @@ describe('Contact details Controller', () => {
       expect(redirectStub).calledWith(paths.appealStarted.sponsorName);
     });
 
+    it('should update req.session.appeal and redirect to nlrName if yes', async () => {
+      req.body.isSponsorSameAsNlr = 'Yes';
+      expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal(undefined);
+
+      await postSamePerson(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal('Yes');
+      expect(redirectStub).calledWith(paths.appealStarted.nlrName);
+    });
+
     it('should catch an error and call next with error', async () => {
       res.render = throwStub;
       await postSamePerson(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

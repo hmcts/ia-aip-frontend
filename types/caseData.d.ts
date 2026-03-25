@@ -215,6 +215,7 @@ interface CaseData {
   sponsorMobileNumber?: string;
   sponsorAuthorisation?: string;
   hasNonLegalRep?: string;
+  isSponsorSameAsNlr?: string;
   appellantPinInPost?: PinInPost;
   joinAppealPin?: PinInPost;
   isAppellantAttendingTheHearing?: 'Yes' | 'No';

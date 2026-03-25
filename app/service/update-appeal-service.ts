@@ -1670,6 +1670,7 @@ export default class UpdateAppealService {
       this.mapToCCDCaseContactDetails(appeal, caseData);
       this.assignSinglePropertyIfExists(application, 'hasSponsor', caseData, 'hasSponsor');
       this.assignSinglePropertyIfExists(application, 'hasNonLegalRep', caseData, 'hasNonLegalRep');
+      this.assignSinglePropertyIfExists(application, 'isSponsorSameAsNlr', caseData, 'isSponsorSameAsNlr');
       this.assignSinglePropertyIfExists(application, 'sponsorGivenNames', caseData, 'sponsorGivenNames');
       this.assignSinglePropertyIfExists(application, 'sponsorFamilyName', caseData, 'sponsorFamilyName');
       this.assignSinglePropertyIfExists(application, 'sponsorNameForDisplay', caseData, 'sponsorNameForDisplay');

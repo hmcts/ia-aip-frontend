@@ -2,7 +2,7 @@
 {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 
 {% set serviceName %}{{ i18n.serviceName }}{% endset %}
-{% set serviceUrl %}{{ paths.common.start }}{% endset %}
+{% set serviceUrl %}{{ paths.common.casesList }}{% endset %}
 {% set navigationEndHtml %}
   {% if authenticated %}
   <li class="govuk-service-navigation__item govuk-service-navigation__navigation-end"><a class="govuk-service-navigation__link" href="/logout">{{ i18n.components.header.signOut }}</a></li>

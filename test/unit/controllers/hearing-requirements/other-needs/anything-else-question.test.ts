@@ -131,6 +131,7 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Question con
 
       expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsAnythingElseReasons)).to.equal(true);
       expect(req.session.appeal.hearingRequirements.otherNeeds.anythingElse).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(submit.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
     });
 

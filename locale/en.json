@@ -868,6 +868,39 @@
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
       "questions": "If you have any questions about the appeal process, call the Tribunal on<span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span> or email<a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:contactia@justice.gov.uk\"> contactia@justice.gov.uk/a>"
     },
+    "casesList": {
+      "title": "Your appeals",
+      "columns": {
+        "appealRef": "Appeal reference",
+        "caseRef": "Case reference",
+        "appellant": "Appellant",
+        "status": "Status",
+        "options": "Options"
+      },
+      "viewLink": "View",
+      "deleteLink": "Delete",
+      "noCases": "You do not have any appeals.",
+      "createNewAppeal": "Create a new appeal",
+      "createNewAppealId": "create-new-appeal",
+      "tooManyDraftsError": "You have too many draft appeals. Please submit or delete them before creating a new appeal.",
+      "deleteDraftError": "There was an error deleting your draft appeal with reference {{ caseId }}. Please try again.",
+      "deleteNonDraftError": "You cannot delete appeal with reference {{ caseId }} because it is not a DRAFT appeal.",
+      "caseNotFoundError": "The case with reference {{ caseId }} could not be accessed.",
+      "createAppealModal": {
+        "id": "confirm-create-modal",
+        "title": "Are you sure you want to create a new appeal?",
+        "description": "You can only have {{ maxDraftAppeals }} draft appeals at one time. If you have more than this, you will need to submit or delete some first.",
+        "confirmButton": "Create new appeal"
+      },
+      "deleteDraftModal": {
+        "id": "delete-draft-modal",
+        "title": "Are you sure you want to delete this draft appeal?",
+        "description": "Are you sure you want to delete the draft appeal with the reference {{ caseId }}. Once deleted, it will be removed from the system and you will not be able to access it again.",
+        "confirmButton": "Delete draft appeal"
+      },
+      "deleteLinkClass": "delete-draft-appeal",
+      "deleteLinkId": "delete"
+    },
     "overviewPage": {
       "title": "Your appeal overview",
       "contactUs": "Contact us for help",
@@ -4322,7 +4355,8 @@
       }
     },
     "back": {
-      "back": "Back"
+      "back": "Back",
+      "backToCasesList": "Back to your appeals"
     },
     "progressBar": {
       "yourAppealDetails": {

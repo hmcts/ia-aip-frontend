@@ -1,0 +1,76 @@
+{% extends 'layout.njk' %}
+{% set pageTitleName = i18n.pages.casesList.title %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "components/confirm-modal.njk" import confirmModal with context %}
+
+{% block extraModals %}
+  {{ confirmModal(
+    i18n.pages.casesList.createAppealModal.id,
+    i18n.pages.casesList.createAppealModal.title,
+    createAppealModalDescription,
+    i18n.pages.casesList.createAppealModal.confirmButton,
+    createNewAppealUrl
+  ) }}
+  {{ confirmModal(
+    i18n.pages.casesList.deleteDraftModal.id,
+    i18n.pages.casesList.deleteDraftModal.title,
+    i18n.pages.casesList.deleteDraftModal.description,
+    i18n.pages.casesList.deleteDraftModal.confirmButton,
+    deleteDraftUrl
+  ) }}
+{% endblock %}
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">{{ i18n.pages.casesList.title }}</h1>
+        {% if cases | length %}
+          <table class="govuk-table">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.appealRef }}</th>
+                <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.caseRef }}</th>
+                <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.appellant }}</th>
+                <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.status }}</th>
+                <th scope="col" class="govuk-table__header">{{ i18n.pages.casesList.columns.options }}</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              {% for case in cases %}
+                {% set isDraft = case.state == "appealStarted"%}
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">{{ case.appealReferenceNumber }}</td>
+                  <td class="govuk-table__cell">{{ case.id }}</td>
+                  <td class="govuk-table__cell">{{ case.appellantGivenNames }} {{ case.appellantFamilyName }}</td>
+                  <td class="govuk-table__cell">{{ "DRAFT" if isDraft else case.stateName }}</td>
+                  <td class="govuk-table__cell">
+                    <a class="govuk-link" href="{{ paths.common.overview }}?caseId={{ case.id }}">{{ i18n.pages.casesList.viewLink }}</a>
+                    {% if isDraft %}
+                      <a id="{{ i18n.pages.casesList.deleteLinkId }}-{{ case.id }}" href='#' class="govuk-link {{ i18n.pages.casesList.deleteLinkClass }}" data-case-id="{{ case.id }}" role="button" tabindex="0">{{ i18n.pages.casesList.deleteLink }}</a>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="govuk-body">{{ i18n.pages.casesList.noCases }}</p>
+        {% endif %}
+
+        {{ govukButton({
+          text: i18n.pages.casesList.createNewAppeal,
+          attributes: {
+            id: i18n.pages.casesList.createNewAppealId
+          }
+        }) }}
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -28,6 +28,7 @@ export default {
         'appellantGivenNames': 'aa',
         'journeyType': 'aip',
         'appellantFamilyName': 'asd',
+        'appealReferenceNumber': 'PA/50001/2020',
         'appellantNationalities': [{ 'id': '39dd0f68-aa9f-41b0-99a8-e553e1ce0fb1', 'value': { 'code': 'AX' } }],
         'homeOfficeDecisionDate': '2020-02-10',
         'searchPostcode': 'W1W 7RT',

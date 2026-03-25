@@ -384,7 +384,7 @@ async function getAppealApplicationNextStep(req: Request) {
       respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       if (pendingTimeExtension) {
         descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.clarifyingQuestions.descriptionAskForMoreTime];
-        respondBy = i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime;
+        respondBy = doThisNext.clarifyingQuestions.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
         respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
       } else if (decisionRefused) {
@@ -397,7 +397,7 @@ async function getAppealApplicationNextStep(req: Request) {
           url: paths.awaitingClarifyingQuestionsAnswers.questionsList,
           respondBy
         },
-        allowedAskForMoreTime: true
+        allowedAskForMoreTime
       };
       break;
     case 'awaitingCmaRequirements':
@@ -434,8 +434,8 @@ async function getAppealApplicationNextStep(req: Request) {
       ];
       respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       if (pendingTimeExtension) {
-        descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.submitHearingRequirements.descriptionAskForMoreTime];
-        respondBy = i18n.pages.overviewPage.doThisNext.submitHearingRequirements.respondByTextAskForMoreTime;
+        descriptionParagraphs = [doThisNext.submitHearingRequirements.descriptionAskForMoreTime];
+        respondBy = doThisNext.submitHearingRequirements.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
         respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
       } else if (decisionRefused) {
@@ -451,7 +451,7 @@ async function getAppealApplicationNextStep(req: Request) {
           url: paths.submitHearingRequirements.taskList,
           respondBy
         },
-        allowedAskForMoreTime: true
+        allowedAskForMoreTime
       };
       break;
     case 'clarifyingQuestionsAnswersSubmitted':
@@ -523,7 +523,7 @@ async function getAppealApplicationNextStep(req: Request) {
           i18n.pages.overviewPage.doThisNext.prepareForHearing.date,
           i18n.pages.overviewPage.doThisNext.prepareForHearing.time,
           i18n.pages.overviewPage.doThisNext.prepareForHearing.hearingCentre,
-          i18n.pages.overviewPage.doThisNext.prepareForHearing.hearingNotice
+          doThisNext.prepareForHearing.hearingNotice
         ],
         info: {
           title: i18n.pages.overviewPage.doThisNext.prepareForHearing.info.title,
@@ -658,7 +658,7 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'pendingPayment':
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
-        doThisNextSection = getRemissionDecisionParagraphs(req, false);
+        doThisNextSection = getRemissionDecisionParagraphs(req, is24WeeksTimeline);
       } else if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
         doThisNextSection = {
           descriptionParagraphs: [

@@ -85,5 +85,19 @@ module.exports = {
     When(/^I click the I am no longer representing myself link'$/, () => {
       I.click('I am no longer representing myself');
     });
+
+    Then(/^I should see the 'do this next section' for "([^"]*)" when statutory timeframe 24 weeks is Yes$/, (state) => {
+      I.see(i18n.pages.overviewPage.doThisNext.nothingToDo, '//h2[1]');
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.stf24w[state].detailsSent}</p>`);
+      if (!['listing', 'awaitingRespondentEvidence'].includes(state)) {
+        I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.stf24w[state].dueDate}</p>`);
+      }
+    });
+
+    Then(/^I should see the 'do this next section' for 'awaitingReasonsForAppeal' when statutory timeframe 24 weeks is Yes$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description}</p>`);
+      I.dontSeeElement('//a[contains(., "Ask for more time")]');
+    });
   }
 };

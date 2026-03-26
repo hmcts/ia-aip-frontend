@@ -6,12 +6,12 @@ import {
   getHasSponsorOrNlr,
   getNlrAddress,
   getNlrContactDetails,
-  getNlrName,
+  getNlrName, getNlrNamePreviousPage,
   getSamePerson,
   getSponsorAddress,
   getSponsorAuthorisation,
   getSponsorContactDetails,
-  getSponsorName,
+  getSponsorName, getSponsorNamePreviousPage,
   postContactDetails,
   postHasSponsorOrNlr,
   postNlrAddress,
@@ -784,6 +784,18 @@ describe('Contact details Controller', () => {
     });
   });
 
+  describe('getSponsorNamePreviousPage', () => {
+    it('should return isSponsorSameAsNlr if hasNonLegalRep', function () {
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      expect(getSponsorNamePreviousPage(req as Request)).to.equal(paths.appealStarted.isSponsorSameAsNlr);
+    });
+
+    it('should return hasSponsorOrNlr if no hasNonLegalRep', function () {
+      req.session.appeal.application.hasNonLegalRep = 'No';
+      expect(getSponsorNamePreviousPage(req as Request)).to.equal(paths.appealStarted.hasSponsorOrNlr);
+    });
+  });
+
   describe('getSponsorNamePage', () => {
     it('should render sponsor-details/sponsor-name.njk', function () {
       getSponsorName(req as Request, res as Response, next);
@@ -1436,6 +1448,25 @@ describe('Contact details Controller', () => {
       res.render = renderStub.throws(error);
       await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
+    });
+  });
+
+  describe('getNlrNamePreviousPage', () => {
+    it('should return isSponsorSameAsNlr if hasSponsor and isSamePerson', function () {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
+      expect(getNlrNamePreviousPage(req as Request)).to.equal(paths.appealStarted.isSponsorSameAsNlr);
+    });
+
+    it('should return sponsorAuthorisation if hasSponsor and not isSamePerson', function () {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'No';
+      expect(getNlrNamePreviousPage(req as Request)).to.equal(paths.appealStarted.sponsorAuthorisation);
+    });
+
+    it('should return hasSponsorOrNlr if no hasSponsor', function () {
+      req.session.appeal.application.hasSponsor = 'No';
+      expect(getNlrNamePreviousPage(req as Request)).to.equal(paths.appealStarted.hasSponsorOrNlr);
     });
   });
 

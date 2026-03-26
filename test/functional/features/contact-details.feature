@@ -42,25 +42,66 @@ Feature: Contact details
     When I click save and continue
     And I check page accessibility
 
-    Then I should be taken to the has sponsor page
-    Then I choose No and click Continue
+    Then I should be taken to the has sponsor or nlr page
+    When I select "No" for sponsor and "Yes" for non-legal representative and click continue
     And I check page accessibility
 
-    Then I should be taken to the has non legal rep page
-    And I see "Do you have a non-legal representative?" in title
-    Then I choose Yes and click Continue
+    Then I should be taken to the non legal rep name page
+    When I click the back button
+
+    Then I should be taken to the has sponsor or nlr page
+    When I select "Yes" for sponsor and "Yes" for non-legal representative and click continue
+
+    Then I should be taken to the is sponsor and nlr the same person page
     And I check page accessibility
-    Then I should be taken to the non legal rep email page
-    And I see "What is your non legal rep's email address?" in title
+    When I select "No" for same person and save and continue
+
+    Then I should be taken to the has sponsor name page
+    When I click the back button
+
+    Then I should be taken to the is sponsor and nlr the same person page
+    When I select "Yes" for same person and save and continue
+
+    Then I should be taken to the non legal rep name page
+    And I check page accessibility
+    And I see "What is your non-legal representative's name?" in title
     And I click save and continue
     Then I should see error summary
     And I check page accessibility
+    When I enter a non legal rep name
+    And I click save and continue
 
+    Then I should be taken to the non legal rep address page
+    And I check page accessibility
+    And I see "What is your non-legal representative's address?" in title
+    And I click save and continue
+    Then I should see error summary
+    And I check page accessibility
+    When I enter a non legal rep address without postcode
+    And I click save and continue
+    Then I should see error summary
+    When I enter a non legal rep address with invalid postcode
+    And I click save and continue
+    Then I should see error summary
+    When I enter a valid non legal rep address
+    And I click save and continue
+
+    Then I should be taken to the non legal rep contact details page
+    And I check page accessibility
+    And I see "What are your non-legal representative's contact details?" in title
+    And I click save and continue
+    Then I should see error summary
+    And I check page accessibility
     When I enter an invalid non legal rep email
+    And I enter an invalid non legal rep phone number
     And I click save and continue
     Then I should see error summary
-
     When I enter a valid non legal rep email
+    And I enter a valid landline non legal rep phone number
+    And I click save and continue
+    Then I should see error summary
+    When I enter a valid non legal rep email
+    And I enter a valid non legal rep phone number
     And I click save and continue
 
     Then I should see the task-list page

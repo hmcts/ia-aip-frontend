@@ -2,7 +2,6 @@ Feature: Personal details enter address
   In order complete my appeal
   As a citizen
   I want to be able to enter my address
-
   Scenario: Entering my address should open next task
     Given I have logged in as an appellant with email "appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal@example.com"
     And I am on the personal details enter address page
@@ -35,13 +34,9 @@ Feature: Personal details enter address
     When I enter building and street "1 Some way", Town or city "Nowhere", Postcode "CM15 8BN"
     And I click "Save and continue" button
     And I check page accessibility
-    And I should be taken to the has sponsor page
-    Then I see "Do you have a sponsor?" in title
-    When I select No and click continue
-    And I check page accessibility
-    Then I should be taken to the has non legal rep page
-    And I see "Do you have a non-legal representative?" in title
-    Then I choose No and click Continue
+    And I should be taken to the has sponsor or nlr page
+    Then I see "Do you have a sponsor or a non-legal representative?" in title
+    When I select "No" for sponsor and "No" for non-legal representative and click continue
     And I check page accessibility
     Then I should see the task-list page
     And I should be able to click "Decision type"

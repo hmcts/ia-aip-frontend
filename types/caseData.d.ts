@@ -198,6 +198,11 @@ interface CaseData {
   witness9InterpreterSignLanguage?: InterpreterLanguageRefData;
   witness10InterpreterSignLanguage?: InterpreterLanguageRefData;
   interpreterLanguage?: Collection<InterpreterLanguage>[];
+  isNlrInterpreterRequired?: string;
+  nlrInterpreterLanguageCategory?: string[];
+  nlrInterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  nlrInterpreterSignLanguage?: InterpreterLanguageRefData;
+  nlrOutsideUK?: string;
   isDecisionAllowed?: string;
   updateTribunalDecisionList?: string;
   typesOfUpdateTribunalDecision?: DynamicList;

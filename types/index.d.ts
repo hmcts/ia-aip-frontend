@@ -496,6 +496,12 @@ declare global {
     };
     datesToAvoid?: DatesToAvoid;
     // [key: string]: any;
+    isNlrInterpreterRequired?: string;
+    nlrInterpreterLanguageCategory?: string[];
+    nlrInterpreterSpokenLanguage?: InterpreterLanguageRefData;
+    nlrInterpreterSignLanguage?: InterpreterLanguageRefData;
+    nlrOutsideUK?: string;
+
   }
 
   interface RespondentDocument {

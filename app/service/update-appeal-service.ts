@@ -12,8 +12,10 @@ import { DocumentManagementService } from './document-management-service';
 import LaunchDarklyService from './launchDarkly-service';
 import S2SService from './s2s-service';
 import { SystemAuthenticationService } from './system-authentication-service';
+
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
+
 enum Subscriber {
   APPELLANT = 'appellant',
   SUPPORTER = 'supporter'
@@ -201,7 +203,7 @@ export default class UpdateAppealService {
     let ftpaApplicationAppellantDocument: Evidence = null;
     let requestClarifyingQuestionsDirection: Collection<CcdDirection>;
     const cmaRequirements: CmaRequirements = {};
-    const hearingRequirements: HearingRequirements = {};
+    let hearingRequirements: HearingRequirements = {};
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     const hasPendingTimeExtension = false;
     const documentMap: DocumentMap[] = [];
@@ -561,6 +563,8 @@ export default class UpdateAppealService {
     if (caseData.remoteVideoCall) {
       this.mapHearingOtherNeedsFromCCDCase(caseData, hearingRequirements);
     }
+
+    hearingRequirements = this.mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements);
 
     if (caseData.ftpaR35AppellantDocument && caseData.ftpaR35AppellantDocument.document_filename) {
       reheardRule35AppellantDocument = this.mapSupportingDocumentToEvidence(caseData.ftpaR35AppellantDocument, documentMap);
@@ -1517,11 +1521,11 @@ export default class UpdateAppealService {
     };
     if (address) {
       appealNlrDetails.address = {
-        line1: address.AddressLine1|| null,
+        line1: address.AddressLine1 || null,
         line2: address.AddressLine2 || null,
-        city: address.PostTown|| null,
-        postcode: address.PostCode|| null,
-        county: address.County|| null
+        city: address.PostTown || null,
+        postcode: address.PostCode || null,
+        county: address.County || null
       };
     }
 
@@ -1531,6 +1535,27 @@ export default class UpdateAppealService {
     if (phoneNumber) appealNlrDetails.phoneNumber = phoneNumber;
     if (idamId) appealNlrDetails.idamId = idamId;
     return appealNlrDetails;
+  }
+
+  private mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements) {
+    if (caseData?.hasNonLegalRep === 'Yes') {
+      if (caseData?.nlrOutsideUK) {
+        hearingRequirements.nlrOutsideUK = caseData.nlrOutsideUK;
+      }
+      if (caseData?.isNlrInterpreterRequired) {
+        hearingRequirements.isNlrInterpreterRequired = caseData.isNlrInterpreterRequired;
+      }
+      if (caseData?.nlrInterpreterLanguageCategory) {
+        hearingRequirements.nlrInterpreterLanguageCategory = caseData.nlrInterpreterLanguageCategory;
+      }
+      if (caseData?.nlrInterpreterSpokenLanguage) {
+        hearingRequirements.nlrInterpreterSpokenLanguage = caseData.nlrInterpreterSpokenLanguage;
+      }
+      if (caseData?.nlrInterpreterSignLanguage) {
+        hearingRequirements.nlrInterpreterSignLanguage = caseData.nlrInterpreterSignLanguage;
+      }
+    }
+    return hearingRequirements;
   }
 
   mapToCCDCaseNlrDetails(appeal, caseData) {
@@ -1752,6 +1777,7 @@ export default class UpdateAppealService {
   private mapToCCDCaseHearingRequirements(appeal, caseData) {
     this.mapToCCDAttendance(appeal, caseData);
     this.mapToCCDWitnesses(appeal, caseData);
+    this.mapToCCDNlrRequirements(appeal, caseData);
     this.mapToCCDInterpreterRequirements(appeal, caseData);
     this.mapToCCDWitnessInterpreterRequirements(appeal, caseData);
     this.mapToCCDCaseHearingRoomNeeded(appeal, caseData);
@@ -1890,6 +1916,28 @@ export default class UpdateAppealService {
     }
   }
 
+  private mapToCCDNlrRequirements(appeal, caseData) {
+    if (_.has(appeal?.application?.hasNonLegalRep, 'Yes')) {
+      if(_.has(appeal.hearingRequirements, 'nlrOutsideUK')) {
+        caseData.nlrOutsideUK = appeal.hearingRequirements.nlrOutsideUK;
+      }
+      if (_.has(appeal.hearingRequirements, 'isNlrInterpreterRequired')) {
+        caseData.isNlrInterpreterRequired = appeal.hearingRequirements.isNlrInterpreterRequired;
+      }
+      if (_.has(appeal.hearingRequirements, 'isNlrInterpreterRequired')) {
+        caseData.isNlrInterpreterRequired = appeal.hearingRequirements.isNlrInterpreterRequired;
+      }
+      if (_.has(appeal.hearingRequirements, 'nlrInterpreterLanguageCategory')) {
+        caseData.nlrInterpreterLanguageCategory = appeal.hearingRequirements.nlrInterpreterLanguageCategory;
+      }
+      if (_.has(appeal.hearingRequirements, 'nlrInterpreterSpokenLanguage')) {
+        caseData.nlrInterpreterSpokenLanguage = appeal.hearingRequirements.nlrInterpreterSpokenLanguage;
+      }
+      if (_.has(appeal.hearingRequirements, 'nlrInterpreterSignLanguage')) {
+        caseData.nlrInterpreterSignLanguage = appeal.hearingRequirements.nlrInterpreterSignLanguage;
+      }
+    }
+  }
   private mapToCCDInterpreterRequirements(appeal, caseData) {
     if (_.has(appeal.hearingRequirements, 'isInterpreterServicesNeeded')) {
       caseData.isInterpreterServicesNeeded = boolToYesNo(appeal.hearingRequirements.isInterpreterServicesNeeded);

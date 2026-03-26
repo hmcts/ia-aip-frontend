@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { boolean } from 'joi';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';

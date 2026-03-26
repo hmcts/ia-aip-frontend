@@ -177,7 +177,7 @@ async function getAppealApplicationNextStep(req: Request) {
         };
       }
       break;
-    case 'listing':
+    case 'listing': {
       const paragraphs = eventByLegalRep(req, Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, 'listing')
         ? [
           i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction1,
@@ -198,6 +198,7 @@ async function getAppealApplicationNextStep(req: Request) {
         allowedAskForMoreTime: false
       };
       break;
+    }
     case 'lateAppealSubmitted':
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req) && !isLateRemissionRequest) {
         doThisNextSection = getRemissionDecisionParagraphs(req);

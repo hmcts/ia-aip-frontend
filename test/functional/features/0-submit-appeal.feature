@@ -87,12 +87,8 @@ Feature: Submit appeal
     And I click "Save and continue" button
     And I check page accessibility
 
-    Then I see "Do you have a sponsor" in title
-    When I select No and click continue
-    And I check page accessibility
-
-    Then I see "Do you have a non-legal representative" in title
-    When I select No and click continue
+    Then I see "Do you have a sponsor or a non-legal representative?" in title
+    When I select "No" for sponsor and "No" for non-legal representative and click continue
     And I check page accessibility
 
     Then I see "Tell us about your appeal" in title

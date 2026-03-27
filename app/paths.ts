@@ -96,6 +96,17 @@ const paths = {
     taskList: '/hearing-needs',
     witnesses: '/hearing-witnesses',
     accessNeeds: '/hearing-access-needs',
+    
+    nlrAttending: '/hearing-non-legal-rep',
+    nlrOutsideUK: '/hearing-non-legal-rep-outside-uk',
+    nlrNeeds: '/hearing-non-legal-rep-needs',
+    isNlrInterpreterRequired: '/hearing-non-legal-rep-interpreter',
+    nlrHearingInterpreterTypes: '/hearing-non-legal-rep-interpreter-types',
+    nlrHearingInterpreterSpokenLanguageSelection: '/hearing-non-legal-rep-interpreter-spoken-language-selection',
+    nlrHearingInterpreterSignLanguageSelection: '/hearing-non-legal-rep-interpreter-sign-language-selection',
+    nlrNeedsHearingLoop: '/hearing-non-legal-rep-hearing-loop',
+    nlrNeedsStepFreeAccess: '/hearing-non-legal-rep-step-free-access',
+
     otherNeeds: '/hearing-other-needs',
     datesToAvoidQuestion: '/hearing-dates-avoid',
     checkAndSend: '/hearing-check-answers',

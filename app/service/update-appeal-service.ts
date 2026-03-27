@@ -1542,6 +1542,9 @@ export default class UpdateAppealService {
       if (caseData?.nlrOutsideUK) {
         hearingRequirements.nlrOutsideUK = caseData.nlrOutsideUK;
       }
+      if (caseData?.nlrAttending) {
+        hearingRequirements.nlrAttending = caseData.nlrAttending;
+      }
       if (caseData?.isNlrInterpreterRequired) {
         hearingRequirements.isNlrInterpreterRequired = caseData.isNlrInterpreterRequired;
       }
@@ -1921,8 +1924,8 @@ export default class UpdateAppealService {
       if(_.has(appeal.hearingRequirements, 'nlrOutsideUK')) {
         caseData.nlrOutsideUK = appeal.hearingRequirements.nlrOutsideUK;
       }
-      if (_.has(appeal.hearingRequirements, 'isNlrInterpreterRequired')) {
-        caseData.isNlrInterpreterRequired = appeal.hearingRequirements.isNlrInterpreterRequired;
+      if(_.has(appeal.hearingRequirements, 'nlrAttending')) {
+        caseData.nlrAttending = appeal.hearingRequirements.nlrAttending;
       }
       if (_.has(appeal.hearingRequirements, 'isNlrInterpreterRequired')) {
         caseData.isNlrInterpreterRequired = appeal.hearingRequirements.isNlrInterpreterRequired;

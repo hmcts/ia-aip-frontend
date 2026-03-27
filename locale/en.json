@@ -3451,6 +3451,7 @@
         "datesToAvoidTitle": "Dates to avoid",
         "witnessesTitle": "Witnesses",
         "appellantTitle": "Appellant",
+        "nonLegalRepTitle": "Non-legal representative",
         "evidenceTitle": "Evidence"
       }
     },
@@ -3474,6 +3475,7 @@
           "witnesses": "Witnesses",
           "attendance": "Attendance",
           "accessNeeds": "Access needs",
+          "nlrNeeds": "Non-legal representative",
           "otherNeeds": "Other needs",
           "datesToAvoid": "Dates to avoid",
           "checkAndSend": "Check and send"
@@ -3485,8 +3487,18 @@
         },
         "accessNeeds": {
           "id": "accessNeedsLink",
-          "title": "Will you or any witnesses need an interpreter,step-free access or a hearing loop at the hearing?",
+          "title": "Will you or any witnesses need an interpreter, step-free access or a hearing loop at the hearing?",
           "path": "submitHearingRequirements.accessNeeds"
+        },
+        "nlrAttending": {
+          "id": "nlrAttendingLink",
+          "title": "Will your non-legal representative attend the hearing?",
+          "path": "submitHearingRequirements.nlrAttending"
+        },
+        "nlrNeeds": {
+          "id": "nlrNeedsLink",
+          "title": "Will your non-legal representative need an interpreter, step-free access or a hearing loop at the hearing?",
+          "path": "submitHearingRequirements.nlrNeeds"
         },
         "otherNeeds": {
           "id": "otherNeedsLink",
@@ -3608,6 +3620,59 @@
           "text": "A hearing loop is a sound system designed to help people who use hearing aids."
         }
       },
+      "nlrNeedsSection": {
+        "nlrAttending": {
+          "title": "Will your non-legal representative attend the hearing?"
+        },
+        "nlrOutsideUK": {
+          "title": "Will your non-legal representative take part in the hearing from outside the UK?",
+          "text": "If you answer yes, a Tribunal Caseworker will contact you to ask for more information about where your non-legal representative will be for the hearing."
+        },
+        "communicationAndAccessSupportPage": {
+          "title": "Communication and access support",
+          "text": "<p>Use this form if your non-legal representative needs to request:</p><p><ul><li>an interpreter for translating spoken language</li><li>an interpreter for sign language</li><li>step-free access</li><li>a hearing loop</li></ul></p><p>They will be provided at the hearing.</p>"
+        },
+        "isNlrInterpreterRequired": {
+          "title": "Will your non-legal representative need an interpreter at the hearing?",
+          "text": "We will provide an interpreter for your non-legal representative. They cannot bring your own."
+        },
+        "interpreterTypePage": {
+          "title": "What kind of interpreter do you need to request for your non-legal representative?"
+        },
+        "interpreterSpokenLanguageSelection": {
+          "pageTitle": "Tell us about your non-legal representative's language requirements",
+          "title": "Tell us about your non-legal representative's language requirements",
+          "text": "We will provide an interpreter for your non-legal representative to understand spoken communication.",
+          "dropdownListText": "Select language",
+          "checkBoxText": "Enter the language manually",
+          "languageManuallyText": "Enter the details of the language you need to request for your non-legal representative"
+        },
+        "interpreterSignLanguageSelection": {
+          "pageTitle": "Tell us about your non-legal representative's sign language requirements",
+          "title": "Tell us about your non-legal representative's sign language requirements",
+          "text": "We will provide a sign language interpreter for your non-legal representative to understand spoken communication.",
+          "dropdownListText": "Select sign language",
+          "checkBoxText": "Enter the language manually",
+          "languageManuallyText": "Enter the details of the language you need to request for your non-legal representative"
+        },
+        "additionalLanguagePage": {
+          "pageTitle": "Add language details",
+          "title": "Add language details",
+          "text": "Dialect (Enter N/A if no dialect required)",
+          "languages": "Languages",
+          "language": "Language",
+          "dialect": "Dialect",
+          "hint": "A dialect is a form of a language spoken in a part of a country or by groups of people in a country."
+        },
+        "nlrNeedsStepFreeAccess": {
+          "title": "Will your non-legal representative need step-free access?",
+          "text": "If your non-legal representative is in a wheelchair or has any other mobility issues, we will provide step-free access at the hearing."
+        },
+        "nlrNeedsHearingLoop": {
+          "title": "Will your non-legal representative need a hearing loop?",
+          "text": "A hearing loop is a sound system designed to help people who use hearing aids."
+        }
+      },
       "otherNeedsSection": {
         "startPage": {
           "title": "Other needs",
@@ -3697,10 +3762,21 @@
         }
       },
       "datesToAvoidSection": {
+        "questionPageNlr": {
+          "title": "Are there any dates that you, your non-legal representative or any witnesses cannot go to the hearing?",
+          "question": "Are there any dates between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you, your non-legal representative or any witnesses cannot go to the hearing?",
+          "description": "You will need to tell us why you, your non-legal representative or any witnesses cannot go to the hearing on the dates you include."
+        },
         "questionPage": {
           "title": "Are there any dates that you or any witnesses cannot go to the hearing?",
           "question": "Are there any dates between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?",
           "description": "You will need to tell us why you or any witnesses cannot go to the hearing on the dates you include."
+        },
+        "enterADatePageNlr": {
+          "title": "Enter the date you, your non-legal representative or any witnesses cannot go to the hearing",
+          "heading": "Enter the date you, your non-legal representative or any witnesses cannot go to the hearing",
+          "description": "Only include dates from {{ availableHearingDates.from }} to {{ availableHearingDates.to }}.",
+          "hint": "For example, 12 11 2020"
         },
         "enterADatePage": {
           "title": "Enter the date you or any witnesses cannot go to the hearing",
@@ -3708,9 +3784,17 @@
           "description": "Only include dates from {{ availableHearingDates.from }} to {{ availableHearingDates.to }}.",
           "hint": "For example, 12 11 2020"
         },
+        "reasonNlr": {
+          "title": "Why can you, your non-legal representative or any witnesses not go to the hearing on this date?",
+          "heading": "Why can you, your non-legal representative or any witnesses not go to the hearing on this date?"
+        },
         "reason": {
           "title": "Why can you or any witnesses not go to the hearing on this date?",
           "heading": "Why can you or any witnesses not go to the hearing on this date?"
+        },
+        "addAnotherDateQuestionNlr": {
+          "title": "Is there another date that you, your non-legal representative or any witnesses cannot go to the hearing?",
+          "heading": "Is there another date between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you, your non-legal representative or any witnesses cannot go to the hearing?"
         },
         "addAnotherDateQuestion": {
           "title": "Is there another date that you or any witnesses cannot go to the hearing?",
@@ -4356,6 +4440,12 @@
       "witnessesSection": {
         "witnessesOnHearingRequired": "Select yes if any witnesses will be coming to the hearing",
         "witnessesOutsideUKRequired": "Select Yes if you or any witnesses will take part in the hearing from outside the UK"
+      },
+      "nlrNeedsSection": {
+        "nlrAttendingRequired": "Select Yes if your non-legal representative will be coming to the hearing",
+        "nlrOutsideUKRequired": "Select Yes if your non-legal representative will take part in the hearing from outside the UK",
+        "nlrNeedsHearingLoopRequired": "Select Yes if your non-legal representative will need a hearing loop",
+        "nlrNeedsStepFreeAccessRequired": "Select Yes if your non-legal representative will need a step-free access"
       },
       "interpreterSuuport": {
         "selectOneOption": "You must select at least one option"

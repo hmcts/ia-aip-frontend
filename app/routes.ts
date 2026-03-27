@@ -124,6 +124,7 @@ import {
   setupHearingBundleFeatureToggleController,
   setupHearingRequirementsFeatureToggleController
 } from './controllers/hearing-requirements/hearings-feature-toggle';
+import { setupHearingNonLegalRepNeedsController } from './controllers/hearing-requirements/non-legal-rep';
 import {
   setupHearingAnythingElseQuestionController
 } from './controllers/hearing-requirements/other-needs/anything-else-question';
@@ -318,6 +319,7 @@ const provideMoreEvidence = setupProvideMoreEvidenceController(middleware, updat
 const submitHearingRequirementsTaskListController = setupSubmitHearingRequirementsTaskListController([hearingRequirementsMiddleware]);
 const submitHearingRequirementsFeatureToggleController = setupHearingRequirementsFeatureToggleController([hearingRequirementsMiddleware]);
 const submitHearingRequirementsAccessNeedsController = setupHearingAccessNeedsController([hearingRequirementsMiddleware], updateAppealService, refDataService);
+const submitHearingRequirementsNonLegalRepNeedsController = setupHearingNonLegalRepNeedsController([hearingRequirementsMiddleware], updateAppealService, refDataService);
 const witnessesOnHearingQuestionController = setupWitnessesOnHearingQuestionController(middleware, updateAppealService);
 const witnessesOutsideUkQuestionController = setupWitnessesOutsideUkQuestionController(middleware, updateAppealService);
 const witnessNamesController = setupWitnessNamesController(middleware, updateAppealService);
@@ -424,6 +426,7 @@ router.use(witnessesOnHearingQuestionController);
 router.use(witnessesOutsideUkQuestionController);
 router.use(witnessNamesController);
 router.use(submitHearingRequirementsAccessNeedsController);
+router.use(submitHearingRequirementsNonLegalRepNeedsController);
 router.use(hearingRequirementsOtherNeedsStartPageController);
 router.use(hearingRequirementsOtherNeedsAnythingElseQuestionController);
 router.use(hearingRequirementsOtherNeedsHealthConditionsQuestionController);

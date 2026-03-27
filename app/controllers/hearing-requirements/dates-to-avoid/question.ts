@@ -9,15 +9,22 @@ import { dayMonthYearFormat } from '../../../utils/date-utils';
 import { getHearingStartDate, postHearingRequirementsYesNoHandler, setCheckedAttributeToQuestion } from '../common';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
-const pageTitle = i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.title;
+
+const getPageTitle = (hasNonLegalRep: boolean) => hasNonLegalRep
+  ? i18n.pages.hearingRequirements.datesToAvoidSection.questionPageNlr.title
+  : i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.title;
+
 const formAction = paths.submitHearingRequirements.hearingDatesToAvoidQuestion;
 
 function getQuestion(appeal: Appeal) {
   const present = _.has(appeal, 'hearingRequirements.datesToAvoid.isDateCannotAttend') || null;
+  const hasNonLegalRep = appeal?.application?.hasNonLegalRep === 'Yes';
+  const source = hasNonLegalRep ? i18n.pages.hearingRequirements.datesToAvoidSection.questionPageNlr
+    : i18n.pages.hearingRequirements.datesToAvoidSection.questionPage;
   const question = {
     name: 'answer',
-    title: i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.question,
-    hint: i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.description,
+    title: source.question,
+    hint: source.description,
     options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
   };
 
@@ -39,7 +46,7 @@ function getDatesToAvoidQuestion(req: Request, res: Response, next: NextFunction
   try {
     return res.render('templates/radio-question-page.njk', {
       previousPage,
-      pageTitle,
+      pageTitle: getPageTitle(req.session.appeal?.application?.hasNonLegalRep === 'Yes'),
       formAction,
       question,
       availableHearingDates,
@@ -62,7 +69,7 @@ function postDatesToAvoidQuestion(updateAppealService: UpdateAppealService) {
       const question = getQuestion(req.session.appeal);
       const pageContent = {
         previousPage,
-        pageTitle,
+        pageTitle: getPageTitle(req.session.appeal?.application?.hasNonLegalRep === 'Yes'),
         formAction,
         question,
         availableHearingDates,

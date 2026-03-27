@@ -203,6 +203,7 @@ interface CaseData {
   nlrInterpreterSpokenLanguage?: InterpreterLanguageRefData;
   nlrInterpreterSignLanguage?: InterpreterLanguageRefData;
   nlrOutsideUK?: string;
+  nlrAttending?: string;
   isDecisionAllowed?: string;
   updateTribunalDecisionList?: string;
   typesOfUpdateTribunalDecision?: DynamicList;

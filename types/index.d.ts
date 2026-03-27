@@ -501,7 +501,9 @@ declare global {
     nlrInterpreterSpokenLanguage?: InterpreterLanguageRefData;
     nlrInterpreterSignLanguage?: InterpreterLanguageRefData;
     nlrOutsideUK?: string;
-
+    nlrAttending?: string;
+    nlrNeedsHearingLoop?: string;
+    nlrNeedsStepFreeAccess?: string;
   }
 
   interface RespondentDocument {

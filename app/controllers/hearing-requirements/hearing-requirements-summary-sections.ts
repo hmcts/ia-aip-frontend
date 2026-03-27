@@ -27,7 +27,7 @@ function buildWitnessesSectionSummaryList(hearingRequirements: HearingRequiremen
   );
 
   witnessesRows.push(
-    getSummaryRow(visibleChangeLink,i18n.common.cya.answerRowTitle,
+    getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
       [boolToYesNo(hearingRequirements.witnessesOnHearing)],
       paths.submitHearingRequirements.witnesses + editParameter)
   );
@@ -59,16 +59,16 @@ function buildWitnessesSectionSummaryList(hearingRequirements: HearingRequiremen
     const appellantRows: SummaryRow[] = [];
 
     appellantRows.push(
-        addSummaryRow(
-            i18n.common.cya.questionRowTitle,
-            [i18n.pages.hearingRequirements.witnessesSection.appellantPresent.title]
-        )
+      addSummaryRow(
+        i18n.common.cya.questionRowTitle,
+        [i18n.pages.hearingRequirements.witnessesSection.appellantPresent.title]
+      )
     );
 
     appellantRows.push(
-        getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
-            [boolToYesNo(hearingRequirements.isAppellantAttendingTheHearing)],
-            paths.submitHearingRequirements.appellantAttendingHearing + editParameter)
+      getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+        [boolToYesNo(hearingRequirements.isAppellantAttendingTheHearing)],
+        paths.submitHearingRequirements.appellantAttendingHearing + editParameter)
     );
 
     witnessesSectionSummaryList.push({
@@ -82,16 +82,16 @@ function buildWitnessesSectionSummaryList(hearingRequirements: HearingRequiremen
     const evidenceRows: SummaryRow[] = [];
 
     evidenceRows.push(
-        addSummaryRow(
-            i18n.common.cya.questionRowTitle,
-            [i18n.pages.hearingRequirements.witnessesSection.oralEvidence.title]
-        )
+      addSummaryRow(
+        i18n.common.cya.questionRowTitle,
+        [i18n.pages.hearingRequirements.witnessesSection.oralEvidence.title]
+      )
     );
 
     evidenceRows.push(
-        getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
-            [boolToYesNo(hearingRequirements.isAppellantGivingOralEvidence)],
-            paths.submitHearingRequirements.appellantOralEvidence + editParameter)
+      getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+        [boolToYesNo(hearingRequirements.isAppellantGivingOralEvidence)],
+        paths.submitHearingRequirements.appellantOralEvidence + editParameter)
     );
 
     witnessesSectionSummaryList.push({
@@ -121,6 +121,159 @@ function buildWitnessNamesList(witnessesRows: SummaryRow[], witnessNames: Witnes
       );
     });
   }
+}
+
+function buildNlrNeedsSummaryList(hearingRequirements: HearingRequirements, visibleChangeLink: boolean) {
+  const nlrNeedsSummaryLists: SummaryList[] = [];
+  const nlrNeedsRows: SummaryRow[] = [];
+
+  nlrNeedsRows.push(
+    addSummaryRow(
+      i18n.common.cya.questionRowTitle,
+      [i18n.pages.hearingRequirements.nlrNeedsSection.nlrAttending.title]
+    ),
+    getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+      [hearingRequirements.nlrAttending],
+      paths.submitHearingRequirements.nlrAttending + editParameter)
+  );
+  const isNlrAttending = hearingRequirements?.nlrAttending === 'Yes';
+  if (!isNlrAttending) {
+    nlrNeedsRows.push(
+      addSummaryRow(
+        i18n.common.cya.questionRowTitle,
+        [i18n.pages.hearingRequirements.nlrNeedsSection.nlrOutsideUK.title]
+      ),
+      getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+        [hearingRequirements.nlrOutsideUK],
+        paths.submitHearingRequirements.nlrOutsideUK + editParameter)
+    );
+  }
+  const isNlrOutsideUk = hearingRequirements?.nlrOutsideUK === 'Yes';
+  if (isNlrAttending || isNlrOutsideUk) {
+    nlrNeedsRows.push(
+      addSummaryRow(
+        i18n.common.cya.questionRowTitle,
+        [i18n.pages.hearingRequirements.nlrNeedsSection.isNlrInterpreterRequired.title]
+      ),
+      getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+        [hearingRequirements.isNlrInterpreterRequired],
+        paths.submitHearingRequirements.isNlrInterpreterRequired + editParameter)
+    );
+  }
+  nlrNeedsSummaryLists.push({
+    title: i18n.pages.cmaRequirementsCYA.rows.nonLegalRepTitle,
+    summaryRows: nlrNeedsRows
+  });
+
+  // NLR Interpreter category
+  const isNlrInterpreterRequired = hearingRequirements?.isNlrInterpreterRequired === 'Yes';
+  if (isNlrInterpreterRequired) {
+    nlrNeedsSummaryLists.push({
+      title: i18n.pages.cmaRequirementsCYA.rows.interpreterTitle,
+      summaryRows: buildNlrInterpreterSummaryList(visibleChangeLink, hearingRequirements)
+    });
+  }
+
+  // Step free access category
+  const stepFreeRows: SummaryRow[] = [];
+
+  stepFreeRows.push(
+    addSummaryRow(
+      i18n.common.cya.questionRowTitle,
+      [i18n.pages.hearingRequirements.nlrNeedsSection.nlrNeedsStepFreeAccess.title]
+    )
+  );
+
+  stepFreeRows.push(
+    getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+      [hearingRequirements.nlrNeedsStepFreeAccess],
+      paths.submitHearingRequirements.nlrNeedsStepFreeAccess + editParameter)
+  );
+
+  nlrNeedsSummaryLists.push({
+    title: i18n.pages.cmaRequirementsCYA.rows.hearingLoopTitle,
+    summaryRows: stepFreeRows
+  });
+
+  // Hearing loop access category
+  const hearingLoopRows: SummaryRow[] = [];
+
+  hearingLoopRows.push(
+    addSummaryRow(
+      i18n.common.cya.questionRowTitle,
+      [i18n.pages.hearingRequirements.nlrNeedsSection.nlrNeedsHearingLoop.title]
+    )
+  );
+
+  hearingLoopRows.push(
+    getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+      [hearingRequirements.nlrNeedsHearingLoop],
+      paths.submitHearingRequirements.nlrNeedsHearingLoop + editParameter)
+  );
+
+  nlrNeedsSummaryLists.push({
+    title: i18n.pages.cmaRequirementsCYA.rows.hearingLoopTitle,
+    summaryRows: hearingLoopRows
+  });
+  return nlrNeedsSummaryLists;
+}
+
+function buildNlrInterpreterSummaryList(visibleChangeLink: boolean, hearingRequirements: HearingRequirements) {
+  const interpreterRows: SummaryRow[] = [];
+  interpreterRows.push(
+    getSummaryRow(visibleChangeLink,
+      i18n.common.cya.questionRowTitle,
+      [i18n.pages.hearingRequirements.nlrNeedsSection.interpreterTypePage.title]
+    )
+  );
+
+  const nlrInterpreterLanguageCategoryList = hearingRequirements.nlrInterpreterLanguageCategory || [];
+  const nlrInterpreterLanguageCategory = buildLanguageCategorySummaryString(nlrInterpreterLanguageCategoryList);
+
+  interpreterRows.push(
+    getSummaryRow(visibleChangeLink,
+      i18n.common.cya.answerRowTitle,
+      [nlrInterpreterLanguageCategory],
+      paths.submitHearingRequirements.nlrHearingInterpreterTypes
+    )
+  );
+
+  if (hearingRequirements.nlrInterpreterSpokenLanguage
+    && nlrInterpreterLanguageCategoryList?.includes('spokenLanguageInterpreter')) {
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink,
+        i18n.common.cya.questionRowTitle,
+        [i18n.pages.hearingRequirements.nlrNeedsSection.interpreterSpokenLanguageSelection.title]
+      )
+    );
+
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink,
+        i18n.common.cya.answerRowTitle,
+        [getInterpreterLanguageAnswer(hearingRequirements.nlrInterpreterSpokenLanguage)],
+        paths.submitHearingRequirements.nlrHearingInterpreterSpokenLanguageSelection
+      )
+    );
+  }
+
+  if (hearingRequirements.nlrInterpreterSignLanguage
+    && nlrInterpreterLanguageCategoryList?.includes('signLanguageInterpreter')) {
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink,
+        i18n.common.cya.questionRowTitle,
+        [i18n.pages.hearingRequirements.nlrNeedsSection.interpreterSignLanguageSelection.title]
+      )
+    );
+
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink,
+        i18n.common.cya.answerRowTitle,
+        [getInterpreterLanguageAnswer(hearingRequirements.nlrInterpreterSignLanguage)],
+        paths.submitHearingRequirements.nlrHearingInterpreterSignLanguageSelection
+      )
+    );
+  }
+  return interpreterRows;
 }
 
 function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, visibleChangeLink: boolean) {
@@ -399,7 +552,7 @@ function buildOtherNeedsSummaryList(otherNeeds: HearingOtherNeeds, visibleChange
     );
 
     privateAppointmentRows.push(
-      getSummaryRow(visibleChangeLink,i18n.common.cya.answerRowTitle,
+      getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
         [`<pre>${otherNeeds.privateAppointmentReason}</pre>`],
         paths.submitHearingRequirements.otherNeedsPrivateHearingReason + editParameter)
     );
@@ -551,7 +704,7 @@ function buildDatesToAvoidSummaryList(datesToAvoid: DatesToAvoid, visibleChangeL
           `<b>${i18n.common.cya.reason}</b>`,
           Delimiter.BREAK_LINE,
           `<pre>${dateEntry.reason || ''}</pre>`],
-          `${paths.submitHearingRequirements.hearingDatesToAvoidEnterDate}/${i}${editParameter}`
+        `${paths.submitHearingRequirements.hearingDatesToAvoidEnterDate}/${i}${editParameter}`
       ));
     });
   }
@@ -563,34 +716,48 @@ function buildDatesToAvoidSummaryList(datesToAvoid: DatesToAvoid, visibleChangeL
   return datesToAvoidSummaryLists;
 }
 
-export function buildHearingRequirementsSummarySections(hearingRequirements: HearingRequirements, visibleChangeLink: boolean) {
+export function buildHearingRequirementsSummarySections(hearingRequirements: HearingRequirements, visibleChangeLink: boolean, hasNonLegalRep: boolean) {
   const hearingRequirementsSummarySections: SummarySection[] = [];
 
   const witnessesSectionList: SummaryList[] = buildWitnessesSectionSummaryList(hearingRequirements, visibleChangeLink);
-
+  let count = 1;
   const title = ((typeof hearingRequirements.isAppellantGivingOralEvidence !== 'undefined') || (typeof hearingRequirements.isAppellantAttendingTheHearing !== 'undefined')) ?
-      `${i18n.pages.hearingRequirements.taskList.sections.attendance}` : `${i18n.pages.hearingRequirements.taskList.sections.witnesses}`;
+    `${i18n.pages.hearingRequirements.taskList.sections.attendance}` : `${i18n.pages.hearingRequirements.taskList.sections.witnesses}`;
   hearingRequirementsSummarySections.push({
-    title: '1. ' + title,
+    title: `${count}. ` + title,
     summaryLists: witnessesSectionList
   });
+  count++;
 
   const accessNeedsSummaryLists: SummaryList[] = buildAccessNeedsSummaryList(hearingRequirements, visibleChangeLink);
 
   hearingRequirementsSummarySections.push({
-    title: `2. ${i18n.pages.hearingRequirements.taskList.sections.accessNeeds}`,
+    title: `${count}. ${i18n.pages.hearingRequirements.taskList.sections.accessNeeds}`,
     summaryLists: accessNeedsSummaryLists
   });
+  count++;
+  if (hasNonLegalRep) {
+    const nlrNeedsSummaryLists: SummaryList[] = buildNlrNeedsSummaryList(hearingRequirements, visibleChangeLink);
+
+    hearingRequirementsSummarySections.push(
+      {
+        title: `${count}. ${i18n.pages.hearingRequirements.taskList.sections.nlrNeeds}`,
+        summaryLists: nlrNeedsSummaryLists
+      }
+    );
+    count++;
+  }
 
   if (hearingRequirements.otherNeeds) {
     const otherNeedsSummaryLists: SummaryList[] = buildOtherNeedsSummaryList(hearingRequirements.otherNeeds, visibleChangeLink);
 
     hearingRequirementsSummarySections.push(
       {
-        title: `3. ${i18n.pages.hearingRequirements.taskList.sections.otherNeeds}`,
+        title: `${count}. ${i18n.pages.hearingRequirements.taskList.sections.otherNeeds}`,
         summaryLists: otherNeedsSummaryLists
       }
     );
+    count++;
   }
 
   if (hearingRequirements.datesToAvoid) {
@@ -598,10 +765,11 @@ export function buildHearingRequirementsSummarySections(hearingRequirements: Hea
 
     hearingRequirementsSummarySections.push(
       {
-        title: `4. ${i18n.pages.hearingRequirements.taskList.sections.datesToAvoid}`,
+        title: `${count}. ${i18n.pages.hearingRequirements.taskList.sections.datesToAvoid}`,
         summaryLists: datesToAvoidSummaryLists
       }
     );
+    count++;
   }
   return hearingRequirementsSummarySections;
 }

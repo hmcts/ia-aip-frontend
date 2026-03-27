@@ -54,7 +54,8 @@ function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: 
       date: { ...req.body },
       availableHearingDates,
       previousPage: previousPage,
-      saveAndContinueOnly: true
+      saveAndContinueOnly: true,
+      hasNonLegalRep: req.session.appeal?.application?.hasNonLegalRep === 'Yes'
     });
   }
 
@@ -80,7 +81,8 @@ function getEnterADatePageWithId(req: Request, res: Response, next: NextFunction
         date: dateToEdit,
         availableHearingDates,
         previousPage: previousPage,
-        saveAndContinueOnly: true
+        saveAndContinueOnly: true,
+        hasNonLegalRep: req.session.appeal?.application?.hasNonLegalRep === 'Yes'
       });
     }
   } catch (e) {
@@ -108,7 +110,8 @@ function getEnterADatePage(req: Request, res: Response, next: NextFunction) {
       date: lastDate,
       availableHearingDates,
       previousPage: previousPage,
-      saveAndContinueOnly: true
+      saveAndContinueOnly: true,
+      hasNonLegalRep: req.session.appeal?.application?.hasNonLegalRep === 'Yes'
     });
   } catch (e) {
     next(e);

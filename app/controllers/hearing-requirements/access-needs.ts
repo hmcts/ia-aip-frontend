@@ -11,7 +11,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import {
   convertDynamicListToSelectItemList, preparePostInterpreterLanguageSubmissionObj,
   retrieveInterpreterDynamicListByDataType
-} from '../../utils/hearings-requirement-utils';
+} from '../../utils/hearing-requirements-utils';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';

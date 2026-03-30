@@ -5,10 +5,7 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import RefDataService from '../../service/ref-data-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import {
-  convertDynamicListToSelectItemList, preparePostInterpreterLanguageSubmissionObj,
-  retrieveInterpreterDynamicListByDataType
-} from '../../utils/hearings-requirement-utils';
+import * as HearingUtils from '../../utils/hearing-requirements-utils';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import {
@@ -18,42 +15,13 @@ import {
 } from '../../utils/validations/fields-validations';
 
 const spokenLanguageInterpreterString = 'spokenLanguageInterpreter';
-const signLanguageInterpreterString = 'signLanguageInterpreter';
+  const signLanguageInterpreterString = 'signLanguageInterpreter';
 const commonRefDataSpokenLanguageDataType = 'InterpreterLanguage';
 const commonRefDataSignLanguageDataType = 'SignLanguage';
 
-function getNlrRadioQuestion(hearingRequirements: HearingRequirements, page: string) {
-  const options = [
-    { text: 'Yes', value: 'Yes', checked: hearingRequirements[page] == 'Yes' },
-    { text: 'No', value: 'No', checked: hearingRequirements[page] == 'No' }
-  ];
-  return {
-    name: 'answer',
-    title: i18n.pages.hearingRequirements.nlrNeedsSection[page].title,
-    hint: i18n.pages.hearingRequirements.nlrNeedsSection[page].text,
-    options: options
-  };
-}
-
-function nlrRadioRender(req: Request, res: Response, page: string, previousPage: string, validation?: ValidationErrors) {
-  const resObject = {
-    previousPage,
-    pageTitle: i18n.pages.hearingRequirements.nlrNeedsSection[page].title,
-    formAction: paths.submitHearingRequirements[page],
-    question: getNlrRadioQuestion(req.session.appeal.hearingRequirements, page),
-    saveAndContinue: true
-  };
-
-  if (validation) {
-    resObject['errors'] = validation;
-    resObject['errorList'] = Object.values(validation);
-  }
-  return res.render('templates/radio-question-page.njk', resObject);
-}
-
 function getNlrAttending(req: Request, res: Response, next: NextFunction) {
   try {
-    return nlrRadioRender(req, res, 'nlrAttending', paths.submitHearingRequirements.taskList);
+    return HearingUtils.nlrRadioRender(req, res, next, 'nlrAttending', paths.submitHearingRequirements.taskList);
   } catch (e) {
     next(e);
   }
@@ -64,7 +32,7 @@ function postNlrAttending(updateAppealService: UpdateAppealService) {
     try {
       const validation = yesOrNoRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.nlrNeedsSection.nlrAttendingRequired);
       if (validation) {
-        return nlrRadioRender(req, res, 'nlrAttending', paths.submitHearingRequirements.taskList, validation);
+        return HearingUtils.nlrRadioRender(req, res, next, 'nlrAttending', paths.submitHearingRequirements.taskList, validation);
       }
       const selectedValue = req.body['answer'];
       const appeal: Appeal = {
@@ -88,7 +56,7 @@ function postNlrAttending(updateAppealService: UpdateAppealService) {
 
 function getNlrOutsideUK(req: Request, res: Response, next: NextFunction) {
   try {
-    return nlrRadioRender(req, res, 'nlrOutsideUK', paths.submitHearingRequirements.nlrAttending);
+    return HearingUtils.nlrRadioRender(req, res, next, 'nlrOutsideUK', paths.submitHearingRequirements.nlrAttending);
   } catch (e) {
     next(e);
   }
@@ -99,7 +67,7 @@ function postNlrOutsideUK(updateAppealService: UpdateAppealService) {
     try {
       const validation = yesOrNoRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.nlrNeedsSection.nlrOutsideUKRequired);
       if (validation) {
-        return nlrRadioRender(req, res, 'nlrOutsideUK', paths.submitHearingRequirements.nlrAttending, validation);
+        return HearingUtils.nlrRadioRender(req, res, next, 'nlrOutsideUK', paths.submitHearingRequirements.nlrAttending, validation);
       }
 
       const selectedValue = req.body['answer'];
@@ -134,7 +102,7 @@ function getNlrNeeds(req: Request, res: Response, next: NextFunction) {
 
 function getIsNlrInterpreterRequiredPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return nlrRadioRender(req, res, 'isNlrInterpreterRequired', paths.submitHearingRequirements.nlrNeeds);
+    return HearingUtils.nlrRadioRender(req, res, next, 'isNlrInterpreterRequired', paths.submitHearingRequirements.nlrNeeds);
   } catch (e) {
     next(e);
   }
@@ -143,9 +111,9 @@ function getIsNlrInterpreterRequiredPage(req: Request, res: Response, next: Next
 function postIsNlrInterpreterRequiredPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = yesOrNoRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.nlrNeedsSection.nlrOutsideUKRequired);
+      const validation = yesOrNoRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.nlrNeedsSection.isNlrInterpreterRequiredRequired);
       if (validation) {
-        return nlrRadioRender(req, res, 'isNlrInterpreterRequired', paths.submitHearingRequirements.nlrNeeds, validation);
+        return HearingUtils.nlrRadioRender(req, res, next, 'isNlrInterpreterRequired', paths.submitHearingRequirements.nlrNeeds, validation);
       }
 
       const selectedValue = req.body['answer'];
@@ -239,42 +207,14 @@ function postNlrInterpreterTypePage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getInterpreterRenderObject(interpreterLanguageType: InterpreterLanguageRefData,
-                                    interpreterSpokenSignLanguageDynamicList: DynamicList,
-                                    spokenLanguage: boolean,
-                                    previousPage: string,
-                                    validation?: ValidationErrors) {
-  const source = spokenLanguage ? i18n.pages.hearingRequirements.nlrNeedsSection.interpreterSpokenLanguageSelection
-    : i18n.pages.hearingRequirements.nlrNeedsSection.interpreterSignLanguageSelection;
-
-  const renderObject = {
-    previousPage: previousPage,
-    formAction: spokenLanguage ? paths.submitHearingRequirements.nlrHearingInterpreterSpokenLanguageSelection
-      : paths.submitHearingRequirements.nlrHearingInterpreterSignLanguageSelection,
-    pageTitle: source.title,
-    pageText: source.text,
-    dropdownListText: source.dropdownListText,
-    checkBoxText: source.checkBoxText,
-    languageManuallyText: source.languageManuallyText,
-    languageManualEntry: interpreterLanguageType?.languageManualEntry?.includes('Yes') || false,
-    languageManualEntryDescription: interpreterLanguageType?.languageManualEntryDescription || '',
-    items: convertDynamicListToSelectItemList(interpreterSpokenSignLanguageDynamicList)
-  };
-  if (validation) {
-    renderObject['errors'] = validation;
-    renderObject['errorList'] = Object.values(validation);
-  }
-  return renderObject;
-}
-
 function getNlrHearingInterpreterSpokenLanguageSelection(refDataServiceObj: RefDataService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const interpreterLanguageType: InterpreterLanguageRefData = req.session.appeal?.hearingRequirements?.nlrInterpreterSpokenLanguage;
       const interpreterSpokenSignLanguageDynamicList: DynamicList = interpreterLanguageType?.languageRefData ||
-        await retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSpokenLanguageDataType);
+        await HearingUtils.retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSpokenLanguageDataType);
       return res.render('hearing-requirements/interpreter-language-selection.njk',
-        getInterpreterRenderObject(interpreterLanguageType, interpreterSpokenSignLanguageDynamicList, true,
+        HearingUtils.getInterpreterRenderObject(interpreterLanguageType, interpreterSpokenSignLanguageDynamicList, true,
           paths.submitHearingRequirements.nlrHearingInterpreterTypes));
     } catch (error) {
       next(error);
@@ -290,19 +230,19 @@ function postNlrHearingInterpreterSpokenLanguageSelection(updateAppealService: U
       }
       const interpreterLanguageType: InterpreterLanguageRefData = req.session.appeal?.hearingRequirements?.nlrInterpreterSpokenLanguage;
       const interpreterSpokenSignLanguageDynamicList = interpreterLanguageType?.languageRefData ||
-        await retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSpokenLanguageDataType);
+        await HearingUtils.retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSpokenLanguageDataType);
       const validation = interpreterLanguageSelectionValidation(req.body);
       if (validation) {
         return res.render('hearing-requirements/interpreter-language-selection.njk',
-          getInterpreterRenderObject(interpreterLanguageType, interpreterSpokenSignLanguageDynamicList, true,
-            paths.submitHearingRequirements.nlrHearingInterpreterTypes ,validation));
+          HearingUtils.getInterpreterRenderObject(interpreterLanguageType, interpreterSpokenSignLanguageDynamicList, true,
+            paths.submitHearingRequirements.nlrHearingInterpreterTypes, validation));
       }
 
       const appeal = {
         ...req.session.appeal,
         hearingRequirements: {
           ...req.session.appeal.hearingRequirements,
-          nlrInterpreterSpokenLanguage: preparePostInterpreterLanguageSubmissionObj(req, interpreterSpokenSignLanguageDynamicList)
+          nlrInterpreterSpokenLanguage: HearingUtils.preparePostInterpreterLanguageSubmissionObj(req, interpreterSpokenSignLanguageDynamicList)
         }
       };
       const category = appeal.hearingRequirements?.nlrInterpreterLanguageCategory || [];
@@ -327,12 +267,12 @@ function getNlrHearingInterpreterSignLanguageSelection(refDataServiceObj: RefDat
     try {
       const interpreterLanguageType: InterpreterLanguageRefData = req.session.appeal?.hearingRequirements?.nlrInterpreterSignLanguage;
       const interpreterSpokenSignLanguageDynamicList: DynamicList = interpreterLanguageType?.languageRefData ||
-        await retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSignLanguageDataType);
+        await HearingUtils.retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSignLanguageDataType);
       const category = req.session.appeal?.hearingRequirements?.nlrInterpreterLanguageCategory || [];
       const previousPage = category.includes(spokenLanguageInterpreterString) ? paths.submitHearingRequirements.nlrHearingInterpreterSpokenLanguageSelection
         : paths.submitHearingRequirements.nlrHearingInterpreterTypes;
       return res.render('hearing-requirements/interpreter-language-selection.njk',
-        getInterpreterRenderObject(interpreterLanguageType, interpreterSpokenSignLanguageDynamicList, false, previousPage));
+        HearingUtils.getInterpreterRenderObject(interpreterLanguageType, interpreterSpokenSignLanguageDynamicList, false, previousPage));
     } catch (error) {
       next(error);
     }
@@ -347,21 +287,21 @@ function postNlrHearingInterpreterSignLanguageSelection(updateAppealService: Upd
       }
       const interpreterLanguageType: InterpreterLanguageRefData = req.session.appeal?.hearingRequirements?.nlrInterpreterSignLanguage;
       const interpreterSpokenSignLanguageDynamicList = interpreterLanguageType?.languageRefData ||
-        await retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSignLanguageDataType);
+        await HearingUtils.retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSignLanguageDataType);
       const validation = interpreterLanguageSelectionValidation(req.body);
       if (validation) {
         const category = req.session.appeal?.hearingRequirements?.nlrInterpreterLanguageCategory || [];
         const previousPage = category.includes(spokenLanguageInterpreterString) ? paths.submitHearingRequirements.nlrHearingInterpreterSpokenLanguageSelection
           : paths.submitHearingRequirements.nlrHearingInterpreterTypes;
         return res.render('hearing-requirements/interpreter-language-selection.njk',
-          getInterpreterRenderObject(interpreterLanguageType, interpreterSpokenSignLanguageDynamicList, false, previousPage, validation));
+          HearingUtils.getInterpreterRenderObject(interpreterLanguageType, interpreterSpokenSignLanguageDynamicList, false, previousPage, validation));
       }
 
       const appeal = {
         ...req.session.appeal,
         hearingRequirements: {
           ...req.session.appeal.hearingRequirements,
-          nlrInterpreterSignLanguage: preparePostInterpreterLanguageSubmissionObj(req, interpreterSpokenSignLanguageDynamicList)
+          nlrInterpreterSignLanguage: HearingUtils.preparePostInterpreterLanguageSubmissionObj(req, interpreterSpokenSignLanguageDynamicList)
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
@@ -377,20 +317,9 @@ function postNlrHearingInterpreterSignLanguageSelection(updateAppealService: Upd
   };
 }
 
-function getStepFreeAccessPreviousPage(req: Request) {
-  const category = req.session.appeal?.hearingRequirements?.nlrInterpreterLanguageCategory || [];
-  if (category.includes('signLanguageInterpreter')) {
-    return paths.submitHearingRequirements.nlrHearingInterpreterSignLanguageSelection;
-  }
-  if (category.includes('spokenLanguageInterpreter')) {
-    return paths.submitHearingRequirements.nlrHearingInterpreterSpokenLanguageSelection;
-  }
-  return paths.submitHearingRequirements.isNlrInterpreterRequired;
-}
-
 function getNlrNeedStepFreeAccess(req: Request, res: Response, next: NextFunction) {
   try {
-    return nlrRadioRender(req, res, 'nlrNeedsStepFreeAccess', getStepFreeAccessPreviousPage(req));
+    return HearingUtils.nlrRadioRender(req, res, next, 'nlrNeedsStepFreeAccess', HearingUtils.getStepFreeAccessPreviousPage(req));
   } catch (e) {
     next(e);
   }
@@ -401,7 +330,7 @@ function postNlrNeedStepFreeAccess(updateAppealService: UpdateAppealService) {
     try {
       const validation = yesOrNoRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.nlrNeedsSection.nlrNeedsStepFreeAccessRequired);
       if (validation) {
-        return nlrRadioRender(req, res, 'nlrNeedsStepFreeAccess', getStepFreeAccessPreviousPage(req));
+        return HearingUtils.nlrRadioRender(req, res, next, 'nlrNeedsStepFreeAccess', HearingUtils.getStepFreeAccessPreviousPage(req), validation);
       }
 
       const selectedValue = req.body['answer'];
@@ -426,7 +355,7 @@ function postNlrNeedStepFreeAccess(updateAppealService: UpdateAppealService) {
 
 function getNlrNeedHearingLoop(req: Request, res: Response, next: NextFunction) {
   try {
-    return nlrRadioRender(req, res, 'nlrNeedsHearingLoop', paths.submitHearingRequirements.nlrNeedsStepFreeAccess);
+    return HearingUtils.nlrRadioRender(req, res, next, 'nlrNeedsHearingLoop', paths.submitHearingRequirements.nlrNeedsStepFreeAccess);
   } catch (e) {
     next(e);
   }
@@ -437,7 +366,7 @@ function postNlrNeedHearingLoop(updateAppealService: UpdateAppealService) {
     try {
       const validation = yesOrNoRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.nlrNeedsSection.nlrNeedsHearingLoopRequired);
       if (validation) {
-        return nlrRadioRender(req, res, 'nlrNeedsHearingLoop', paths.submitHearingRequirements.nlrNeedsStepFreeAccess);
+        return HearingUtils.nlrRadioRender(req, res, next, 'nlrNeedsHearingLoop', paths.submitHearingRequirements.nlrNeedsStepFreeAccess, validation);
       }
 
       const selectedValue = req.body['answer'];
@@ -484,5 +413,22 @@ function setupHearingNonLegalRepNeedsController(middleware: Middleware[], update
 }
 
 export {
-  setupHearingNonLegalRepNeedsController
+  setupHearingNonLegalRepNeedsController,
+  getNlrAttending,
+  postNlrAttending,
+  getNlrOutsideUK,
+  postNlrOutsideUK,
+  getNlrNeeds,
+  getIsNlrInterpreterRequiredPage,
+  postIsNlrInterpreterRequiredPage,
+  getNlrInterpreterTypePage,
+  postNlrInterpreterTypePage,
+  getNlrHearingInterpreterSpokenLanguageSelection,
+  postNlrHearingInterpreterSpokenLanguageSelection,
+  getNlrHearingInterpreterSignLanguageSelection,
+  postNlrHearingInterpreterSignLanguageSelection,
+  getNlrNeedStepFreeAccess,
+  postNlrNeedStepFreeAccess,
+  getNlrNeedHearingLoop,
+  postNlrNeedHearingLoop
 };

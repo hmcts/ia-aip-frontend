@@ -4444,6 +4444,7 @@
       "nlrNeedsSection": {
         "nlrAttendingRequired": "Select Yes if your non-legal representative will be coming to the hearing",
         "nlrOutsideUKRequired": "Select Yes if your non-legal representative will take part in the hearing from outside the UK",
+        "isNlrInterpreterRequiredRequired": "Select Yes if your non-legal representative will need an interpreter at the hearing",
         "nlrNeedsHearingLoopRequired": "Select Yes if your non-legal representative will need a hearing loop",
         "nlrNeedsStepFreeAccessRequired": "Select Yes if your non-legal representative will need a step-free access"
       },

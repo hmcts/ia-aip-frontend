@@ -152,5 +152,31 @@ describe('progress-bar utils', () => {
       expectedStages[2].completed = false;
       expect(expectedStages).to.deep.equal(stages);
     });
+
+    it('listing', () => {
+      const stages = buildProgressBarStages('listing');
+      const expectedStages = defaultStages;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
+      expectedStages[1].active = false;
+      expectedStages[1].completed = true;
+      expectedStages[2].active = true;
+      expectedStages[2].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
+
+    it('listing when stf24w is set to \'Yes\'', () => {
+      const paymentStatus = 'Payment pending';
+      const is24WeeksTimeline = true;
+      const stages = buildProgressBarStages('listing', paymentStatus, is24WeeksTimeline);
+      const expectedStages = defaultStages;
+      expectedStages[0].active = true;
+      expectedStages[0].completed = false;
+      expectedStages[1].active = false;
+      expectedStages[1].completed = false;
+      expectedStages[2].active = false;
+      expectedStages[2].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
   });
 });

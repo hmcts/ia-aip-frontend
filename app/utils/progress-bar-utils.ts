@@ -1,14 +1,15 @@
 import i18n from '../../locale/en.json';
 import { States } from '../data/states';
 
-function buildProgressBarStages(state: string, paymentStatus?: string) {
+function buildProgressBarStages(state: string, paymentStatus?: string, is24WeeksTimeline?: boolean) {
   const stages = {
     yourAppealDetails: {
       activeStatus: [
         States.APPEAL_STARTED.id,
         States.PENDING_PAYMENT.id,
         States.APPEAL_SUBMITTED.id,
-        States.AWAITING_RESPONDENT_EVIDENCE.id
+        States.AWAITING_RESPONDENT_EVIDENCE.id,
+        ...(is24WeeksTimeline ? [States.LISTING.id] : [])
       ]
     },
     yourAppealArgument: {
@@ -29,10 +30,10 @@ function buildProgressBarStages(state: string, paymentStatus?: string) {
       activeStatus: [
         States.SUBMIT_HEARING_REQUIREMENTS.id,
         States.DRAFT_HEARING_REQUIREMENTS.id,
-        States.LISTING.id,
         States.PREPARE_FOR_HEARING.id,
         States.FINAL_BUNDLING.id,
-        States.PRE_HEARING.id
+        States.PRE_HEARING.id,
+        ...(is24WeeksTimeline ? [] : [States.LISTING.id])
       ]
     },
     yourAppealDecision: {

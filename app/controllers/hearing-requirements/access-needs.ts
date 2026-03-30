@@ -8,6 +8,10 @@ import { isoLanguages } from '../../data/isoLanguages';
 import { paths } from '../../paths';
 import RefDataService from '../../service/ref-data-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import {
+  convertDynamicListToSelectItemList, preparePostInterpreterLanguageSubmissionObj,
+  retrieveInterpreterDynamicListByDataType
+} from '../../utils/hearings-requirement-utils';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
@@ -737,23 +741,6 @@ function getPrepareInterpreterLanguageType(req: Request, res: Response, language
   });
 }
 
-function preparePostInterpreterLanguageSubmissionObj(req: Request, languageList: DynamicList): InterpreterLanguageRefData {
-  const interpreterSpokenOrSignLanguage: InterpreterLanguageRefData = {};
-  if (req.body.languageRefData) {
-    interpreterSpokenOrSignLanguage.languageRefData = { ...languageList };
-    for (const languageObj of interpreterSpokenOrSignLanguage.languageRefData.list_items) {
-      if (req.body.languageRefData === languageObj.code) {
-        interpreterSpokenOrSignLanguage.languageRefData.value = languageObj;
-        break;
-      }
-    }
-  } else if (req.body.languageManualEntry && req.body.languageManualEntry.includes('Yes')) {
-    interpreterSpokenOrSignLanguage.languageManualEntry = ['Yes'];
-    interpreterSpokenOrSignLanguage.languageManualEntryDescription = req.body.languageManualEntryDescription;
-  }
-  return interpreterSpokenOrSignLanguage;
-}
-
 function showSelectedLanguage(selectedlanguageCode: Object, languageList) {
   let resultList = languageList;
   if (selectedlanguageCode && languageList) {
@@ -767,32 +754,6 @@ function showSelectedLanguage(selectedlanguageCode: Object, languageList) {
     });
   }
   return resultList;
-}
-
-function convertDynamicListToSelectItemList(obj: DynamicList) {
-  const selectItemList = [];
-  if (obj && obj.list_items) {
-    selectItemList.push({ 'text': 'Select language', value: '' });
-    obj.list_items.forEach((language) => {
-      selectItemList.push({ text: language.label, value: language.code, selected: (obj.value && obj.value.code === language.code) });
-    });
-
-  }
-  return selectItemList;
-}
-
-function convertCommonRefDataToValueList(commonRefData: any): DynamicList {
-  let vauleList: Value[];
-  if (commonRefData) {
-    const commonRefDataObject = JSON.parse(commonRefData);
-    vauleList = [];
-    commonRefDataObject['list_of_values']
-      .filter(obj => obj['active_flag'] === 'Y')
-      .map(obj => {
-        vauleList.push({ label: obj['value_en'], code: obj['key'] });
-      });
-  }
-  return { value: null, list_items: vauleList };
 }
 
 function clearUnnecessaryInterpreterCachedData(hearingRequirements: HearingRequirements) {
@@ -1082,11 +1043,6 @@ function setupHearingAccessNeedsController(middleware: Middleware[], updateAppea
   router.post(paths.submitHearingRequirements.hearingLoop, middleware, postHearingLoopPage(updateAppealService));
 
   return router;
-}
-
-async function retrieveInterpreterDynamicListByDataType(refDataServiceObj: RefDataService, req: Request, dataType: String): Promise<DynamicList> {
-  const data = await refDataServiceObj.getCommonRefData(req, dataType);
-  return convertCommonRefDataToValueList(data);
 }
 
 export {

@@ -474,12 +474,12 @@ function convertDynamicListToSelectItemList(obj: DynamicList) {
     value: string,
     selected?: boolean
   };
-  if (obj && obj.list_items) {
+  if (obj?.list_items) {
     const selectItemList: SelectItem[] = obj.list_items.map(language => {
       return {
         text: language.label,
         value: language.code,
-        selected: (obj.value && obj.value.code === language.code)
+        selected: (obj?.value?.code === language.code)
       };
     });
     selectItemList.unshift({ text: 'Select language', value: '' });
@@ -529,7 +529,7 @@ function setupHearingNonLegalRepNeedsController(middleware: Middleware[], update
   return router;
 }
 
-async function retrieveInterpreterDynamicListByDataType(refDataServiceObj: RefDataService, req: Request, dataType: String): Promise<DynamicList> {
+async function retrieveInterpreterDynamicListByDataType(refDataServiceObj: RefDataService, req: Request, dataType: string): Promise<DynamicList> {
   const data = await refDataServiceObj.getCommonRefData(req, dataType);
   return convertCommonRefDataToValueList(data);
 }

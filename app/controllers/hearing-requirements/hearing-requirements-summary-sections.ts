@@ -181,10 +181,7 @@ function buildNlrNeedsSummaryList(hearingRequirements: HearingRequirements, visi
     addSummaryRow(
       i18n.common.cya.questionRowTitle,
       [i18n.pages.hearingRequirements.nlrNeedsSection.nlrNeedsStepFreeAccess.title]
-    )
-  );
-
-  stepFreeRows.push(
+    ),
     getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
       [hearingRequirements.nlrNeedsStepFreeAccess],
       paths.submitHearingRequirements.nlrNeedsStepFreeAccess + editParameter)
@@ -202,10 +199,7 @@ function buildNlrNeedsSummaryList(hearingRequirements: HearingRequirements, visi
     addSummaryRow(
       i18n.common.cya.questionRowTitle,
       [i18n.pages.hearingRequirements.nlrNeedsSection.nlrNeedsHearingLoop.title]
-    )
-  );
-
-  hearingLoopRows.push(
+    ),
     getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
       [hearingRequirements.nlrNeedsHearingLoop],
       paths.submitHearingRequirements.nlrNeedsHearingLoop + editParameter)
@@ -220,17 +214,13 @@ function buildNlrNeedsSummaryList(hearingRequirements: HearingRequirements, visi
 
 function buildNlrInterpreterSummaryList(visibleChangeLink: boolean, hearingRequirements: HearingRequirements) {
   const interpreterRows: SummaryRow[] = [];
+  const nlrInterpreterLanguageCategoryList = hearingRequirements.nlrInterpreterLanguageCategory || [];
+  const nlrInterpreterLanguageCategory = buildLanguageCategorySummaryString(nlrInterpreterLanguageCategoryList);
   interpreterRows.push(
     getSummaryRow(visibleChangeLink,
       i18n.common.cya.questionRowTitle,
       [i18n.pages.hearingRequirements.nlrNeedsSection.interpreterTypePage.title]
-    )
-  );
-
-  const nlrInterpreterLanguageCategoryList = hearingRequirements.nlrInterpreterLanguageCategory || [];
-  const nlrInterpreterLanguageCategory = buildLanguageCategorySummaryString(nlrInterpreterLanguageCategoryList);
-
-  interpreterRows.push(
+    ),
     getSummaryRow(visibleChangeLink,
       i18n.common.cya.answerRowTitle,
       [nlrInterpreterLanguageCategory],
@@ -244,10 +234,7 @@ function buildNlrInterpreterSummaryList(visibleChangeLink: boolean, hearingRequi
       getSummaryRow(visibleChangeLink,
         i18n.common.cya.questionRowTitle,
         [i18n.pages.hearingRequirements.nlrNeedsSection.interpreterSpokenLanguageSelection.title]
-      )
-    );
-
-    interpreterRows.push(
+      ),
       getSummaryRow(visibleChangeLink,
         i18n.common.cya.answerRowTitle,
         [getInterpreterLanguageAnswer(hearingRequirements.nlrInterpreterSpokenLanguage)],
@@ -262,10 +249,7 @@ function buildNlrInterpreterSummaryList(visibleChangeLink: boolean, hearingRequi
       getSummaryRow(visibleChangeLink,
         i18n.common.cya.questionRowTitle,
         [i18n.pages.hearingRequirements.nlrNeedsSection.interpreterSignLanguageSelection.title]
-      )
-    );
-
-    interpreterRows.push(
+      ),
       getSummaryRow(visibleChangeLink,
         i18n.common.cya.answerRowTitle,
         [getInterpreterLanguageAnswer(hearingRequirements.nlrInterpreterSignLanguage)],

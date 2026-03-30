@@ -9,36 +9,42 @@ import { getHearingRequirementsReasonHandler, handleHearingRequirementsSaveForLa
 const formAction = paths.submitHearingRequirements.hearingDateToAvoidReasons;
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
-const pageContent = (hasNonLegalRep: boolean) => {
-  const source = hasNonLegalRep ? i18n.pages.hearingRequirements.datesToAvoidSection.reasonNlr
-    : i18n.pages.hearingRequirements.datesToAvoidSection.reason;
-  return {
-    formAction,
-    pageTitle: source.title,
-    previousPage: previousPage,
-    question: {
-      name: 'reason',
-      title: source.heading,
-      value: ''
-    },
-    supportingEvidence: false,
-    timeExtensionAllowed: false
-  };
+const pageContent = {
+  formAction,
+  pageTitle: i18n.pages.hearingRequirements.datesToAvoidSection.reason.title,
+  previousPage: previousPage,
+  question: {
+    name: 'reason',
+    title: i18n.pages.hearingRequirements.datesToAvoidSection.reason.heading,
+    value: ''
+  },
+  supportingEvidence: false,
+  timeExtensionAllowed: false
 };
+
+function setPageContentAroundNlr(isNlr: boolean) {
+  if (isNlr) {
+    pageContent.pageTitle = i18n.pages.hearingRequirements.datesToAvoidSection.reasonNlr.title;
+    pageContent.question.title = i18n.pages.hearingRequirements.datesToAvoidSection.reasonNlr.heading;
+  } else {
+    pageContent.pageTitle = i18n.pages.hearingRequirements.datesToAvoidSection.reason.title;
+    pageContent.question.title = i18n.pages.hearingRequirements.datesToAvoidSection.reason.heading;
+  }
+}
 
 function getDatesToAvoidReasonWithId(req: Request, res: Response, next: NextFunction) {
   try {
 
     const dateId = req.params.id;
-    const hasNonLegalRep = req.session.appeal?.application?.hasNonLegalRep === 'Yes';
-    pageContent(hasNonLegalRep).formAction = `${formAction}/${dateId}`;
+
+    pageContent.formAction = `${formAction}/${dateId}`;
 
     const { datesToAvoid } = req.session.appeal.hearingRequirements;
     const dateToAvoid: CmaDateToAvoid = datesToAvoid.dates[dateId];
 
-    pageContent(hasNonLegalRep).question.value = dateToAvoid.reason ? dateToAvoid.reason : '';
-
-    return res.render('templates/textarea-question-page.njk', pageContent(hasNonLegalRep));
+    pageContent.question.value = dateToAvoid.reason ? dateToAvoid.reason : '';
+    setPageContentAroundNlr(req.session.appeal?.application?.hasNonLegalRep === 'Yes');
+    return res.render('templates/textarea-question-page.njk', pageContent);
   } catch (e) {
     next(e);
   }
@@ -48,11 +54,11 @@ function getDatesToAvoidReason(req: Request, res: Response, next: NextFunction) 
   try {
     const { datesToAvoid } = req.session.appeal.hearingRequirements;
     const last: CmaDateToAvoid = datesToAvoid.dates[datesToAvoid.dates.length - 1];
-    const hasNonLegalRep = req.session.appeal?.application?.hasNonLegalRep === 'Yes';
 
-    pageContent(hasNonLegalRep).question.value = last.reason ? last.reason : '';
-    pageContent(hasNonLegalRep).formAction = formAction;
-    return res.render('templates/textarea-question-page.njk', pageContent(hasNonLegalRep));
+    pageContent.question.value = last.reason ? last.reason : '';
+    pageContent.formAction = formAction;
+    setPageContentAroundNlr(req.session.appeal?.application?.hasNonLegalRep === 'Yes');
+    return res.render('templates/textarea-question-page.njk', pageContent);
   } catch (e) {
     next(e);
   }
@@ -79,8 +85,8 @@ function postDatesToAvoidReasonWithId(updateAppealService: UpdateAppealService) 
       };
 
       await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
-      return getHearingRequirementsReasonHandler(pageContent(req.session.appeal?.application?.hasNonLegalRep === 'Yes'),
-        onValidationErrorMessage, onSuccess, req, res, next);
+      setPageContentAroundNlr(req.session.appeal?.application?.hasNonLegalRep === 'Yes');
+      return getHearingRequirementsReasonHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
 
     } catch (e) {
       next(e);
@@ -106,8 +112,8 @@ function postDatesToAvoidReason(updateAppealService: UpdateAppealService) {
           : getConditionalRedirectUrl(req, res, paths.submitHearingRequirements.hearingDateToAvoidNew);
       };
       await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
-      return getHearingRequirementsReasonHandler(pageContent(req.session.appeal?.application?.hasNonLegalRep === 'Yes'),
-        onValidationErrorMessage, onSuccess, req, res, next);
+      setPageContentAroundNlr(req.session.appeal?.application?.hasNonLegalRep === 'Yes');
+      return getHearingRequirementsReasonHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
 
     } catch (e) {
       next(e);

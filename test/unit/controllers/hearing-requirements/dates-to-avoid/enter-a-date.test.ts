@@ -31,6 +31,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
       params: {},
       session: {
         appeal: {
+          application: {},
           directions: [],
           hearingRequirements: {
             datesToAvoid: {
@@ -72,8 +73,32 @@ describe('Hearing Requirements - Enter A date controller', () => {
 
   describe('getEnterADatePage', () => {
     it('should render template', () => {
+      const expectedArgs = {
+        date: null,
+        availableHearingDates: { from: '30 March 2026', to: '11 May 2026' },
+        formAction: '/hearing-dates-avoid-enter',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        saveAndContinueOnly: true,
+        hasNonLegalRep: false
+      };
+
       getEnterADatePage(req as Request, res as Response, next);
-      expect(renderStub.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk')).to.equal(true);
+      expect(renderStub).to.be.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs);
+    });
+
+    it('should render template with hasNonLegalRep', () => {
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      const expectedArgs = {
+        date: null,
+        availableHearingDates: { from: '30 March 2026', to: '11 May 2026' },
+        formAction: '/hearing-dates-avoid-enter',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        saveAndContinueOnly: true,
+        hasNonLegalRep: true
+      };
+
+      getEnterADatePage(req as Request, res as Response, next);
+      expect(renderStub).to.be.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -108,12 +133,47 @@ describe('Hearing Requirements - Enter A date controller', () => {
         availableHearingDates: { from: availableHearingDates.from, to: availableHearingDates.to },
         formAction: '/hearing-dates-avoid-enter/0',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
-        saveAndContinueOnly: true
-
+        saveAndContinueOnly: true,
+        hasNonLegalRep: false
       };
 
       getEnterADatePageWithId(req as Request, res as Response, next);
       expect(renderStub.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs)).to.equal(true);
+    });
+
+    it('should render template with previously saved answer and hasNonLegalRep', () => {
+
+      req.params.id = '0';
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      req.session.appeal.hearingRequirements.datesToAvoid.dates = [{
+        date: {
+          day: '20',
+          month: '6',
+          year: '2020'
+        }
+      }];
+
+      const availableHearingDates = {
+        from: moment().add(0, 'week').format(dayMonthYearFormat),
+        to: moment().add(6, 'week').format(dayMonthYearFormat)
+      };
+
+      const expectedArgs = {
+        date: { day: '20', month: '6', year: '2020' },
+        availableHearingDates: { from: availableHearingDates.from, to: availableHearingDates.to },
+        formAction: '/hearing-dates-avoid-enter/0',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        saveAndContinueOnly: true,
+        hasNonLegalRep: true
+      };
+
+      getEnterADatePageWithId(req as Request, res as Response, next);
+      expect(renderStub.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs)).to.equal(true);
+    });
+
+    it('should do nothing template with no dates', () => {
+      getEnterADatePageWithId(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(false);
     });
 
     it('should catch error and call next with error', () => {
@@ -161,7 +221,47 @@ describe('Hearing Requirements - Enter A date controller', () => {
         availableHearingDates,
         formAction: '/hearing-dates-avoid-enter',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
-        saveAndContinueOnly: true
+        saveAndContinueOnly: true,
+        hasNonLegalRep: false
+
+      };
+
+      await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(renderStub).to.be.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk',
+        expectedArgs);
+    });
+
+    it('should fail validation and render template with errors and hasNonLegalRep', async () => {
+      const invalidDate = moment().add(-1, 'week');
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      req.body['day'] = invalidDate.date();
+      req.body['month'] = invalidDate.month() + 1;
+      req.body['year'] = invalidDate.year();
+
+      const availableHearingDates = {
+        from: moment().add(0, 'week').format(dayMonthYearFormat),
+        to: moment().add(6, 'week').format(dayMonthYearFormat)
+      };
+
+      const expectedValidationError = {
+        date: {
+          key: 'date',
+          text: `Enter a date between ${availableHearingDates.from} and ${availableHearingDates.to}`,
+          href: '#date'
+        }
+      };
+
+      const expectedArgs = {
+        errors: expectedValidationError,
+        errorList: Object.values(expectedValidationError),
+        date: { ...req.body },
+        availableHearingDates,
+        formAction: '/hearing-dates-avoid-enter',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        saveAndContinueOnly: true,
+        hasNonLegalRep: true
+
       };
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -210,7 +310,8 @@ describe('Hearing Requirements - Enter A date controller', () => {
         availableHearingDates,
         formAction: '/hearing-dates-avoid-enter/0',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
-        saveAndContinueOnly: true
+        saveAndContinueOnly: true,
+        hasNonLegalRep: false
       };
 
       await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

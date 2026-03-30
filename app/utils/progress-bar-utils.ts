@@ -9,7 +9,6 @@ function buildProgressBarStages(state: string, paymentStatus?: string, is24Weeks
         States.PENDING_PAYMENT.id,
         States.APPEAL_SUBMITTED.id,
         States.AWAITING_RESPONDENT_EVIDENCE.id,
-        ...(is24WeeksTimeline ? [States.LISTING.id] : [])
       ]
     },
     yourAppealArgument: {
@@ -33,13 +32,18 @@ function buildProgressBarStages(state: string, paymentStatus?: string, is24Weeks
         States.PREPARE_FOR_HEARING.id,
         States.FINAL_BUNDLING.id,
         States.PRE_HEARING.id,
-        ...(is24WeeksTimeline ? [] : [States.LISTING.id])
       ]
     },
     yourAppealDecision: {
       activeStatus: []
     }
   };
+
+  if (is24WeeksTimeline) {
+    stages.yourAppealDetails.activeStatus.push(States.LISTING.id);
+  } else {
+    stages.yourHearingDetails.activeStatus.push(States.LISTING.id);
+  }
 
   const yourAppealDetailsStage = {
     title: i18n.components.progressBar.yourAppealDetails.title,

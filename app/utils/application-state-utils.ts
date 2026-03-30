@@ -132,6 +132,8 @@ async function getAppealApplicationNextStep(req: Request) {
   let descriptionParagraphs;
   let respondBy;
   const doThisNext = is24WeeksTimeline ? i18n.pages.overviewPage.doThisNext.stf24w : i18n.pages.overviewPage.doThisNext;
+  const allowedAskForMoreTime = !is24WeeksTimeline;
+
   switch (currentAppealStatus) {
     case 'appealStarted':
       doThisNextSection = {
@@ -263,7 +265,6 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'awaitingReasonsForAppeal':
-      const allowedAskForMoreTime = !is24WeeksTimeline;
       descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description];
       if (pendingTimeExtension) {
         descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime];
@@ -296,14 +297,17 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'awaitingReasonsForAppealPartial':
       descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description];
-      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       if (pendingTimeExtension) {
         descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime];
-        respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime;
+        if (allowedAskForMoreTime) {
+          respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime;
+        }
       } else if (decisionGranted) {
         respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
       } else if (decisionRefused) {
         respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      } else {
+        respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       }
       doThisNextSection = {
         descriptionParagraphs,
@@ -319,14 +323,14 @@ async function getAppealApplicationNextStep(req: Request) {
           url: paths.awaitingReasonsForAppeal.decision,
           respondBy
         },
-        allowedAskForMoreTime: true
+        allowedAskForMoreTime
       };
       break;
     case 'reasonsForAppealSubmitted':
       doThisNextSection = {
         descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.detailsSent,
-          i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.dueDate
+          doThisNext.reasonsForAppealSubmitted.detailsSent,
+          doThisNext.reasonsForAppealSubmitted.dueDate
         ],
         cta: null,
         allowedAskForMoreTime: false
@@ -335,8 +339,8 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'caseUnderReview':
       doThisNextSection = {
         descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.caseUnderReview.detailsSent,
-          i18n.pages.overviewPage.doThisNext.caseUnderReview.dueDate
+          doThisNext.caseUnderReview.detailsSent,
+          doThisNext.caseUnderReview.dueDate
         ],
         cta: null,
         allowedAskForMoreTime: false
@@ -345,8 +349,8 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'respondentReview':
       doThisNextSection = {
         descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.respondentReview.detailsSent,
-          i18n.pages.overviewPage.doThisNext.respondentReview.dueDate
+          doThisNext.respondentReview.detailsSent,
+          doThisNext.respondentReview.dueDate
         ],
         info: i18n.pages.overviewPage.doThisNext.respondentReview.info
       };
@@ -365,9 +369,9 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'decisionMaintained':
       doThisNextSection = {
         descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.decisionMaintained.description,
-          i18n.pages.overviewPage.doThisNext.decisionMaintained.description2,
-          i18n.pages.overviewPage.doThisNext.decisionMaintained.dueDate
+          doThisNext.decisionMaintained.description,
+          doThisNext.decisionMaintained.description2,
+          doThisNext.decisionMaintained.dueDate
         ],
         info: i18n.pages.overviewPage.doThisNext.decisionMaintained.info,
         cta: {},

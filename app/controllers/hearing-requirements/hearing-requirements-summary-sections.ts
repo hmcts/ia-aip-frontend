@@ -148,24 +148,25 @@ function buildNlrNeedsSummaryList(hearingRequirements: HearingRequirements, visi
         paths.submitHearingRequirements.nlrOutsideUK + editParameter)
     );
   }
-  const isNlrOutsideUk = hearingRequirements?.nlrOutsideUK === 'Yes';
-  if (isNlrAttending || isNlrOutsideUk) {
-    nlrNeedsRows.push(
-      addSummaryRow(
-        i18n.common.cya.questionRowTitle,
-        [i18n.pages.hearingRequirements.nlrNeedsSection.isNlrInterpreterRequired.title]
-      ),
-      getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
-        [hearingRequirements.isNlrInterpreterRequired],
-        paths.submitHearingRequirements.isNlrInterpreterRequired + editParameter)
-    );
-  }
   nlrNeedsSummaryLists.push({
     title: i18n.pages.cmaRequirementsCYA.rows.nonLegalRepTitle,
     summaryRows: nlrNeedsRows
   });
+  const isNlrOutsideUk = hearingRequirements?.nlrOutsideUK === 'Yes';
+  if (!isNlrAttending && !isNlrOutsideUk) {
+    return nlrNeedsSummaryLists;
+  }
 
   // NLR Interpreter category
+  nlrNeedsRows.push(
+    addSummaryRow(
+      i18n.common.cya.questionRowTitle,
+      [i18n.pages.hearingRequirements.nlrNeedsSection.isNlrInterpreterRequired.title]
+    ),
+    getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+      [hearingRequirements.isNlrInterpreterRequired],
+      paths.submitHearingRequirements.isNlrInterpreterRequired + editParameter)
+  );
   const isNlrInterpreterRequired = hearingRequirements?.isNlrInterpreterRequired === 'Yes';
   if (isNlrInterpreterRequired) {
     nlrNeedsSummaryLists.push({
@@ -188,7 +189,7 @@ function buildNlrNeedsSummaryList(hearingRequirements: HearingRequirements, visi
   );
 
   nlrNeedsSummaryLists.push({
-    title: i18n.pages.cmaRequirementsCYA.rows.hearingLoopTitle,
+    title: i18n.pages.cmaRequirementsCYA.rows.stepFreeTitle,
     summaryRows: stepFreeRows
   });
 
@@ -224,7 +225,7 @@ function buildNlrInterpreterSummaryList(visibleChangeLink: boolean, hearingRequi
     getSummaryRow(visibleChangeLink,
       i18n.common.cya.answerRowTitle,
       [nlrInterpreterLanguageCategory],
-      paths.submitHearingRequirements.nlrHearingInterpreterTypes
+      paths.submitHearingRequirements.nlrHearingInterpreterTypes + editParameter
     )
   );
 
@@ -238,7 +239,7 @@ function buildNlrInterpreterSummaryList(visibleChangeLink: boolean, hearingRequi
       getSummaryRow(visibleChangeLink,
         i18n.common.cya.answerRowTitle,
         [getInterpreterLanguageAnswer(hearingRequirements.nlrInterpreterSpokenLanguage)],
-        paths.submitHearingRequirements.nlrHearingInterpreterSpokenLanguageSelection
+        paths.submitHearingRequirements.nlrHearingInterpreterSpokenLanguageSelection + editParameter
       )
     );
   }
@@ -253,7 +254,7 @@ function buildNlrInterpreterSummaryList(visibleChangeLink: boolean, hearingRequi
       getSummaryRow(visibleChangeLink,
         i18n.common.cya.answerRowTitle,
         [getInterpreterLanguageAnswer(hearingRequirements.nlrInterpreterSignLanguage)],
-        paths.submitHearingRequirements.nlrHearingInterpreterSignLanguageSelection
+        paths.submitHearingRequirements.nlrHearingInterpreterSignLanguageSelection + editParameter
       )
     );
   }

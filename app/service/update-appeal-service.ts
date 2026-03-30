@@ -1537,7 +1537,7 @@ export default class UpdateAppealService {
     return appealNlrDetails;
   }
 
-  private mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements) {
+  public mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements) {
     if (caseData?.hasNonLegalRep === 'Yes') {
       if (caseData?.nlrOutsideUK) {
         hearingRequirements.nlrOutsideUK = caseData.nlrOutsideUK;

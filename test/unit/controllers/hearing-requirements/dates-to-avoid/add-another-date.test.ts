@@ -3,10 +3,11 @@ import moment from 'moment';
 import { SinonStub } from 'sinon';
 import {
   getAddAnotherDateQuestionPage, postAddAnotherDateQuestionPage,
-  setupHearingDatesToAvoidAddAnotherDateController
+  setupHearingDatesToAvoidAddAnotherDateController, getQuestion, getPageTitle
 } from '../../../../../app/controllers/hearing-requirements/dates-to-avoid/add-another-date';
 import { paths } from '../../../../../app/paths';
 import { dayMonthYearFormat } from '../../../../../app/utils/date-utils';
+import i18n from '../../../../../locale/en.json';
 import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('Hearing Requirements - Add Another Date Question controller', () => {
@@ -116,6 +117,42 @@ describe('Hearing Requirements - Add Another Date Question controller', () => {
 
       postAddAnotherDateQuestionPage(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
+    });
+  });
+
+  describe('getPageTitle', () => {
+    it('should return correct page title if hasNonLegalRep is true', () => {
+      const pageTitle = getPageTitle(true);
+      expect(pageTitle).to.equal(i18n.pages.hearingRequirements.datesToAvoidSection.addAnotherDateQuestionNlr.title);
+    });
+
+    it('should return correct page title if hasNonLegalRep is false', () => {
+      const pageTitle = getPageTitle(false);
+      expect(pageTitle).to.equal(i18n.pages.hearingRequirements.datesToAvoidSection.addAnotherDateQuestion.title);
+    });
+  });
+
+  describe('getQuestion', () => {
+    it('should return correct question if hasNonLegalRep is true', () => {
+      const question = getQuestion(true);
+      expect(question).to.deep.equal(
+        {
+          name: 'answer',
+          title: i18n.pages.hearingRequirements.datesToAvoidSection.addAnotherDateQuestionNlr.heading,
+          options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
+        }
+      );
+    });
+
+    it('should return correct question if hasNonLegalRep is false', () => {
+      const question = getQuestion(false);
+      expect(question).to.deep.equal(
+        {
+          name: 'answer',
+          title: i18n.pages.hearingRequirements.datesToAvoidSection.addAnotherDateQuestion.heading,
+          options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
+        }
+      );
     });
   });
 });

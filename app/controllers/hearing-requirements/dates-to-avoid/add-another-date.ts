@@ -82,5 +82,7 @@ function setupHearingDatesToAvoidAddAnotherDateController(middleware: Middleware
 export {
   setupHearingDatesToAvoidAddAnotherDateController,
   getAddAnotherDateQuestionPage,
-  postAddAnotherDateQuestionPage
+  postAddAnotherDateQuestionPage,
+  getQuestion,
+  getPageTitle
 };

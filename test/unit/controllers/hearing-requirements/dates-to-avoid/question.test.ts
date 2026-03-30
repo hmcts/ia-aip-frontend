@@ -1,13 +1,14 @@
 import express, { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
 import {
-  getDatesToAvoidQuestion,
+  getDatesToAvoidQuestion, getPageTitle, getQuestion,
   postDatesToAvoidQuestion,
   setupHearingDatesToAvoidQuestionController
 } from '../../../../../app/controllers/hearing-requirements/dates-to-avoid/question';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { dayMonthYearFormat } from '../../../../../app/utils/date-utils';
+import i18n from '../../../../../locale/en.json';
 import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('Hearing Requirements - Question controller', () => {
@@ -25,8 +26,11 @@ describe('Hearing Requirements - Question controller', () => {
       params: {},
       session: {
         appeal: {
+          application: {},
           directions: [],
-          hearingRequirements: {}
+          hearingRequirements: {
+            datesToAvoid: {}
+          }
         } as Partial<Appeal>
       }
     } as Partial<Request>;
@@ -152,6 +156,59 @@ describe('Hearing Requirements - Question controller', () => {
 
       await postDatesToAvoidQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
+    });
+  });
+  
+  describe('getPageTitle', () => {
+    it('should return correct page title if hasNonLegalRep is true', () => {
+      const pageTitle = getPageTitle(true);
+      expect(pageTitle).to.equal(i18n.pages.hearingRequirements.datesToAvoidSection.questionPageNlr.title);
+    });
+
+    it('should return correct page title if hasNonLegalRep is false', () => {
+      const pageTitle = getPageTitle(false);
+      expect(pageTitle).to.equal(i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.title);
+    });
+  });
+
+  describe('getQuestion', () => {
+    it('should return correct question if hasNonLegalRep Yes without isDateCannotAttend', () => {
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      const question = getQuestion(req.session.appeal);
+      expect(question).to.deep.equal(
+        {
+          name: 'answer',
+          title: i18n.pages.hearingRequirements.datesToAvoidSection.questionPageNlr.question,
+          hint: i18n.pages.hearingRequirements.datesToAvoidSection.questionPageNlr.description,
+          options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
+        }
+      );
+    });
+
+    it('should return correct question if hasNonLegalRep No with isDateCannotAttend true', () => {
+      req.session.appeal.hearingRequirements.datesToAvoid.isDateCannotAttend = true;
+      const question = getQuestion(req.session.appeal);
+      expect(question).to.deep.equal(
+        {
+          name: 'answer',
+          title: i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.question,
+          hint: i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.description,
+          options: [{ value: 'yes', text: 'Yes', checked: true }, { value: 'no', text: 'No', checked: false }]
+        }
+      );
+    });
+
+    it('should return correct question if hasNonLegalRep No with isDateCannotAttend false', () => {
+      req.session.appeal.hearingRequirements.datesToAvoid.isDateCannotAttend = false;
+      const question = getQuestion(req.session.appeal);
+      expect(question).to.deep.equal(
+        {
+          name: 'answer',
+          title: i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.question,
+          hint: i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.description,
+          options: [{ value: 'yes', text: 'Yes', checked: false }, { value: 'no', text: 'No', checked: true }]
+        }
+      );
     });
   });
 });

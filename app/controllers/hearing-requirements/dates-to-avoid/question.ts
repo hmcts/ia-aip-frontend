@@ -130,5 +130,7 @@ function setupHearingDatesToAvoidQuestionController(middleware: Middleware[], up
 export {
   setupHearingDatesToAvoidQuestionController,
   getDatesToAvoidQuestion,
-  postDatesToAvoidQuestion
+  postDatesToAvoidQuestion,
+  getPageTitle,
+  getQuestion
 };

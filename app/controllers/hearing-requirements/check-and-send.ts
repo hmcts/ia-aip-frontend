@@ -9,7 +9,8 @@ import { buildHearingRequirementsSummarySections } from './hearing-requirements-
 function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
   try {
     const hearingRequirements: HearingRequirements = req.session.appeal.hearingRequirements;
-    const hearingRequirementsSummarySections = buildHearingRequirementsSummarySections(hearingRequirements,true);
+    const hasNlr: boolean = req.session.appeal?.application?.hasNonLegalRep === 'Yes';
+    const hearingRequirementsSummarySections = buildHearingRequirementsSummarySections(hearingRequirements, true, hasNlr);
 
     res.render('templates/check-and-send.njk', {
       pageTitle: i18n.pages.cmaRequirementsCYA.title,
@@ -27,7 +28,7 @@ function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
     try {
       if (req.body['saveForLater']) {
         await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
-        return handleHearingRequirementsSaveForLater(req,res);
+        return handleHearingRequirementsSaveForLater(req, res);
       }
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {

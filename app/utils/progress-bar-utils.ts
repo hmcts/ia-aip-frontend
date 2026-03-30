@@ -8,7 +8,7 @@ function buildProgressBarStages(state: string, paymentStatus?: string, is24Weeks
         States.APPEAL_STARTED.id,
         States.PENDING_PAYMENT.id,
         States.APPEAL_SUBMITTED.id,
-        States.AWAITING_RESPONDENT_EVIDENCE.id,
+        States.AWAITING_RESPONDENT_EVIDENCE.id
       ]
     },
     yourAppealArgument: {
@@ -31,7 +31,7 @@ function buildProgressBarStages(state: string, paymentStatus?: string, is24Weeks
         States.DRAFT_HEARING_REQUIREMENTS.id,
         States.PREPARE_FOR_HEARING.id,
         States.FINAL_BUNDLING.id,
-        States.PRE_HEARING.id,
+        States.PRE_HEARING.id
       ]
     },
     yourAppealDecision: {

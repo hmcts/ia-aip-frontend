@@ -189,15 +189,15 @@ async function getAppealApplicationNextStep(req: Request) {
         paragraphs = [i18n.pages.overviewPage.doThisNext.stf24w.listing.detailsSent];
       } else {
         paragraphs = eventByLegalRep(req, Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, 'listing')
-            ? [
-              i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction1,
-              i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction2,
-              i18n.pages.overviewPage.doThisNext.listing.dueDate
-            ]
-            : [
-              i18n.pages.overviewPage.doThisNext.listing.detailsSent,
-              i18n.pages.overviewPage.doThisNext.listing.dueDate
-            ];
+          ? [
+            i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction1,
+            i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction2,
+            i18n.pages.overviewPage.doThisNext.listing.dueDate
+          ]
+          : [
+            i18n.pages.overviewPage.doThisNext.listing.detailsSent,
+            i18n.pages.overviewPage.doThisNext.listing.dueDate
+          ];
       }
       doThisNextSection = {
         descriptionParagraphs: paragraphs,

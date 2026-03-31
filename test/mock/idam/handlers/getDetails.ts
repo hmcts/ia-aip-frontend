@@ -36,6 +36,16 @@ const emailToUserId: Record<string, string> = {
   'outOfTimeRejectedDecisionAppeal@example.com': '34',
   'outOfTimeInTimeDecisionAppeal@example.com': '35',
   'appealUpToFeeChoice@example.com': '36',
+  'appeal-submitted-stf24w@example.com': '37',
+  'late-appeal-submitted-stf24w@example.com': '38',
+  'awaiting-respondent-evidence-stf24w@example.com': '39',
+  'listing-stf24w@example.com': '40',
+  'awaiting-reasons-for-appeal-stf24w@example.com': '41',
+  'reasons-for-appeal-submitted-stf24w@example.com': '42',
+  'case-under-review-stf24w@example.com': '43',
+  'respondent-review-stf24w@example.com': '44',
+  'decision-maintained-stf24w@example.com': '45',
+  'awaiting-reasons-for-appeal-partial-stf24w@example.com': '46',
   'setupcase@example.com': '999'
 };
 

@@ -1545,6 +1545,12 @@ export default class UpdateAppealService {
       if (caseData?.nlrAttending) {
         hearingRequirements.nlrAttending = caseData.nlrAttending;
       }
+      if (caseData?.nlrNeedsStepFreeAccess) {
+        hearingRequirements.nlrNeedsStepFreeAccess = caseData.nlrNeedsStepFreeAccess;
+      }
+      if (caseData?.nlrNeedsHearingLoop) {
+        hearingRequirements.nlrNeedsHearingLoop = caseData.nlrNeedsHearingLoop;
+      }
       if (caseData?.isNlrInterpreterRequired) {
         hearingRequirements.isNlrInterpreterRequired = caseData.isNlrInterpreterRequired;
       }
@@ -1919,13 +1925,19 @@ export default class UpdateAppealService {
     }
   }
 
-  private mapToCCDNlrRequirements(appeal, caseData) {
-    if (_.has(appeal?.application?.hasNonLegalRep, 'Yes')) {
+  public mapToCCDNlrRequirements(appeal, caseData) {
+    if (appeal?.application?.hasNonLegalRep === 'Yes') {
       if(_.has(appeal.hearingRequirements, 'nlrOutsideUK')) {
         caseData.nlrOutsideUK = appeal.hearingRequirements.nlrOutsideUK;
       }
       if(_.has(appeal.hearingRequirements, 'nlrAttending')) {
         caseData.nlrAttending = appeal.hearingRequirements.nlrAttending;
+      }
+      if(_.has(appeal.hearingRequirements, 'nlrNeedsStepFreeAccess')) {
+        caseData.nlrNeedsStepFreeAccess = appeal.hearingRequirements.nlrNeedsStepFreeAccess;
+      }
+      if(_.has(appeal.hearingRequirements, 'nlrNeedsHearingLoop')) {
+        caseData.nlrNeedsHearingLoop = appeal.hearingRequirements.nlrNeedsHearingLoop;
       }
       if (_.has(appeal.hearingRequirements, 'isNlrInterpreterRequired')) {
         caseData.isNlrInterpreterRequired = appeal.hearingRequirements.isNlrInterpreterRequired;

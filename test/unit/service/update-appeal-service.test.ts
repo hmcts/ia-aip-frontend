@@ -3304,12 +3304,16 @@ describe('update-appeal-service', () => {
       caseData.hasNonLegalRep = 'Yes';
       caseData.nlrOutsideUK = 'nlrOutsideUK';
       caseData.nlrAttending = 'nlrAttending';
+      caseData.nlrNeedsHearingLoop = 'nlrNeedsHearingLoop';
+      caseData.nlrNeedsStepFreeAccess = 'nlrNeedsStepFreeAccess';
       caseData.isNlrInterpreterRequired = 'isNlrInterpreterRequired';
       caseData.nlrInterpreterLanguageCategory = 'nlrInterpreterLanguageCategory';
       caseData.nlrInterpreterSpokenLanguage = 'nlrInterpreterSpokenLanguage';
       caseData.nlrInterpreterSignLanguage = 'nlrInterpreterSignLanguage';
       expect(hearingRequirements.nlrOutsideUK).to.equal(undefined);
       expect(hearingRequirements.nlrAttending).to.equal(undefined);
+      expect(hearingRequirements.nlrNeedsHearingLoop).to.equal(undefined);
+      expect(hearingRequirements.nlrNeedsStepFreeAccess).to.equal(undefined);
       expect(hearingRequirements.isNlrInterpreterRequired).to.equal(undefined);
       expect(hearingRequirements.nlrInterpreterLanguageCategory).to.equal(undefined);
       expect(hearingRequirements.nlrInterpreterSpokenLanguage).to.equal(undefined);
@@ -3317,6 +3321,8 @@ describe('update-appeal-service', () => {
       hearingRequirements = updateAppealService.mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements);
       expect(hearingRequirements.nlrOutsideUK).to.equal('nlrOutsideUK');
       expect(hearingRequirements.nlrAttending).to.equal('nlrAttending');
+      expect(hearingRequirements.nlrNeedsHearingLoop).to.equal('nlrNeedsHearingLoop');
+      expect(hearingRequirements.nlrNeedsStepFreeAccess).to.equal('nlrNeedsStepFreeAccess');
       expect(hearingRequirements.isNlrInterpreterRequired).to.equal('isNlrInterpreterRequired');
       expect(hearingRequirements.nlrInterpreterLanguageCategory).to.equal('nlrInterpreterLanguageCategory');
       expect(hearingRequirements.nlrInterpreterSpokenLanguage).to.equal('nlrInterpreterSpokenLanguage');
@@ -3324,4 +3330,57 @@ describe('update-appeal-service', () => {
     });
   });
 
+  describe('mapToCCDNlrRequirements', () => {
+    let appeal;
+    let caseData;
+    beforeEach(() => {
+      appeal = { application: {}, hearingRequirements: {} };
+      caseData = {};
+    });
+    it('if nlr reqs then do nothing', () => {
+      updateAppealService.mapToCCDNlrRequirements(appeal, caseData);
+      expect(caseData).to.deep.equal({});
+    });
+
+    it('if hasNonLegalRep is No then do nothing ', () => {
+      appeal.application.hasNonLegalRep = 'No';
+      updateAppealService.mapToCCDNlrRequirements(appeal, caseData);
+      expect(caseData).to.deep.equal({});
+    });
+
+    it('if hasNonLegalRep is Yes but other fields null then do nothing ', () => {
+      appeal.application.hasNonLegalRep = 'No';
+      updateAppealService.mapToCCDNlrRequirements(appeal, caseData);
+      expect(caseData).to.deep.equal({});
+    });
+
+    it('if hasNonLegalRep is Yes but other fields non null then map ', () => {
+      appeal.application.hasNonLegalRep = 'Yes';
+      appeal.hearingRequirements.nlrOutsideUK = 'nlrOutsideUK';
+      appeal.hearingRequirements.nlrAttending = 'nlrAttending';
+      appeal.hearingRequirements.nlrNeedsStepFreeAccess = 'nlrNeedsStepFreeAccess';
+      appeal.hearingRequirements.nlrNeedsHearingLoop = 'nlrNeedsHearingLoop';
+      appeal.hearingRequirements.isNlrInterpreterRequired = 'isNlrInterpreterRequired';
+      appeal.hearingRequirements.nlrInterpreterLanguageCategory = 'nlrInterpreterLanguageCategory';
+      appeal.hearingRequirements.nlrInterpreterSpokenLanguage = 'nlrInterpreterSpokenLanguage';
+      appeal.hearingRequirements.nlrInterpreterSignLanguage = 'nlrInterpreterSignLanguage';
+      expect(caseData.nlrOutsideUK).to.equal(undefined);
+      expect(caseData.nlrAttending).to.equal(undefined);
+      expect(caseData.nlrNeedsStepFreeAccess).to.equal(undefined);
+      expect(caseData.nlrNeedsHearingLoop).to.equal(undefined);
+      expect(caseData.isNlrInterpreterRequired).to.equal(undefined);
+      expect(caseData.nlrInterpreterLanguageCategory).to.equal(undefined);
+      expect(caseData.nlrInterpreterSpokenLanguage).to.equal(undefined);
+      expect(caseData.nlrInterpreterSignLanguage).to.equal(undefined);
+      updateAppealService.mapToCCDNlrRequirements(appeal, caseData);
+      expect(caseData.nlrOutsideUK).to.equal('nlrOutsideUK');
+      expect(caseData.nlrAttending).to.equal('nlrAttending');
+      expect(caseData.nlrNeedsStepFreeAccess).to.equal('nlrNeedsStepFreeAccess');
+      expect(caseData.nlrNeedsHearingLoop).to.equal('nlrNeedsHearingLoop');
+      expect(caseData.isNlrInterpreterRequired).to.equal('isNlrInterpreterRequired');
+      expect(caseData.nlrInterpreterLanguageCategory).to.equal('nlrInterpreterLanguageCategory');
+      expect(caseData.nlrInterpreterSpokenLanguage).to.equal('nlrInterpreterSpokenLanguage');
+      expect(caseData.nlrInterpreterSignLanguage).to.equal('nlrInterpreterSignLanguage');
+    });
+  });
 });

@@ -204,6 +204,8 @@ interface CaseData {
   nlrInterpreterSignLanguage?: InterpreterLanguageRefData;
   nlrOutsideUK?: string;
   nlrAttending?: string;
+  nlrNeedsStepFreeAccess?: string;
+  nlrNeedsHearingLoop?: string;
   isDecisionAllowed?: string;
   updateTribunalDecisionList?: string;
   typesOfUpdateTribunalDecision?: DynamicList;

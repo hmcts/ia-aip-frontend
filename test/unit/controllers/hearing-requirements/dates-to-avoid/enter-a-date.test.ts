@@ -23,9 +23,11 @@ describe('Hearing Requirements - Enter A date controller', () => {
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
   let submitStub: sinon.SinonStub;
-  
+  let clock: sinon.SinonFakeTimers;
+
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    clock = sandbox.useFakeTimers(new Date('2025-03-20'));
     req = {
       body: {},
       params: {},
@@ -56,6 +58,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
   });
 
   afterEach(() => {
+    clock.restore();
     sandbox.restore();
   });
 
@@ -75,7 +78,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
     it('should render template', () => {
       const expectedArgs = {
         date: null,
-        availableHearingDates: { from: '30 March 2026', to: '11 May 2026' },
+        availableHearingDates: { from: '20 March 2025', to: '01 May 2025' },
         formAction: '/hearing-dates-avoid-enter',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         saveAndContinueOnly: true,
@@ -90,7 +93,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
       req.session.appeal.application.hasNonLegalRep = 'Yes';
       const expectedArgs = {
         date: null,
-        availableHearingDates: { from: '30 March 2026', to: '11 May 2026' },
+        availableHearingDates: { from: '20 March 2025', to: '01 May 2025' },
         formAction: '/hearing-dates-avoid-enter',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         saveAndContinueOnly: true,

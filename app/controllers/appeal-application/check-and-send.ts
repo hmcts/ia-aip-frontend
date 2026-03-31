@@ -152,29 +152,35 @@ async function createSummaryRowsFrom(req: Request) {
     rows.push(hasSponsor);
 
     if (['Yes'].includes(application.hasSponsor)) {
+      if (application?.isSponsorSameAsNlr === 'Yes') {
+        const isSponsorSameAsNlrRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.isSponsorSameAsNlr,
+          [application.isSponsorSameAsNlr],
+          paths.nonLegalRep.provideNlrIsSamePerson + editParameter);
+        rows.push(isSponsorSameAsNlrRow);
+      } else {
+        const hasSponsorName = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay,
+          [...Object.values(application.sponsorNameForDisplay)],
+          paths.appealStarted.sponsorName + editParameter);
 
-      const hasSponsorName = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay,
-        [...Object.values(application.sponsorNameForDisplay)],
-        paths.appealStarted.sponsorName + editParameter);
+        const hasSponsorAddress = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails,
+          [...Object.values(application.sponsorAddress)],
+          paths.appealStarted.sponsorAddress + editParameter,
+          Delimiter.BREAK_LINE);
 
-      const hasSponsorAddress = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails,
-        [...Object.values(application.sponsorAddress)],
-        paths.appealStarted.sponsorAddress + editParameter,
-        Delimiter.BREAK_LINE);
+        const hasSponsorContactDetails = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails,
+          [application.sponsorContactDetails.email, application.sponsorContactDetails.phone],
+          paths.appealStarted.sponsorContactDetails + editParameter,
+          Delimiter.BREAK_LINE);
 
-      const hasSponsorContactDetails = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails,
-        [application.sponsorContactDetails.email, application.sponsorContactDetails.phone],
-        paths.appealStarted.sponsorContactDetails + editParameter,
-        Delimiter.BREAK_LINE);
+        const hasSponsorAuthorisation = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAuthorisation,
+          [...Object.values(application.sponsorAuthorisation)],
+          paths.appealStarted.sponsorAuthorisation + editParameter);
 
-      const hasSponsorAuthorisation = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAuthorisation,
-        [...Object.values(application.sponsorAuthorisation)],
-        paths.appealStarted.sponsorAuthorisation + editParameter);
-
-      rows.push(hasSponsorName);
-      rows.push(hasSponsorAddress);
-      rows.push(hasSponsorContactDetails);
-      rows.push(hasSponsorAuthorisation);
+        rows.push(hasSponsorName);
+        rows.push(hasSponsorAddress);
+        rows.push(hasSponsorContactDetails);
+        rows.push(hasSponsorAuthorisation);
+      }
     }
 
     const appealTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType,

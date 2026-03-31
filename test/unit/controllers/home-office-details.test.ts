@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import session from 'express-session';
 import moment from 'moment';
+import { fn as momentProto } from 'moment';
 import {
   getDateLetterReceived,
   getDateLetterSent,
@@ -28,8 +29,11 @@ describe('Home Office Details Controller', function () {
   let submitRefactoredStub: sinon.SinonStub;
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
+  let clock: sinon.SinonFakeTimers;
+  const mockDate: Date = new Date('2025-03-20');
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    clock = sandbox.useFakeTimers(mockDate);
     req = {
       body: {},
       session: {
@@ -78,6 +82,7 @@ describe('Home Office Details Controller', function () {
   });
 
   afterEach(() => {
+    clock.restore();
     sandbox.restore();
   });
 
@@ -296,15 +301,16 @@ describe('Home Office Details Controller', function () {
 
   describe('postDateLetterSent', () => {
     describe('appeal on time', () => {
-      const date = moment().subtract(14, 'd');
+      const date = new Date(mockDate);
+      date.setDate(mockDate.getDate() - 14);
       let appeal: Appeal;
       let day: string;
       let month: string;
       let year: string;
       beforeEach(() => {
-        day = date.format('DD');
-        month = date.format('MM');
-        year = date.format('YYYY');
+        day = date.getDate().toString();
+        month = (date.getMonth() + 1).toString();
+        year = date.getFullYear().toString();
         req.body['day'] = day;
         req.body['month'] = month;
         req.body['year'] = year;
@@ -364,18 +370,19 @@ describe('Home Office Details Controller', function () {
     });
 
     describe('appeal out of time', () => {
-      const date = moment().subtract(15, 'd');
+      const date = new Date(mockDate);
+      date.setDate(mockDate.getDate() - 15);
       let appeal: Appeal;
       let day: string;
       let month: string;
       let year: string;
       beforeEach(() => {
-        day = date.format('DD');
-        month = date.format('MM');
-        year = date.format('YYYY');
-        req.body['day'] = date.format('DD');
-        req.body['month'] = date.format('MM');
-        req.body['year'] = date.format('YYYY');
+        day = date.getDate().toString();
+        month = (date.getMonth() + 1).toString();
+        year = date.getFullYear().toString();
+        req.body['day'] = day;
+        req.body['month'] = month;
+        req.body['year'] = year;
         appeal = {
           ...req.session.appeal,
           application: {
@@ -562,10 +569,8 @@ describe('Home Office Details Controller', function () {
     });
 
     it('should fail validation and render a validation error with day in future', async () => {
-      const currentDate = new Date();
-
       const tomorrowDate = new Date();
-      tomorrowDate.setDate(currentDate.getDate() + 1);
+      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
 
       req.body['day'] = tomorrowDate.getDate();
       req.body['month'] = tomorrowDate.getMonth() + 1;
@@ -595,12 +600,10 @@ describe('Home Office Details Controller', function () {
     });
 
     it('should fail validation and render a validation error with invalid date', async () => {
-      const currentDate = new Date();
-
       const tomorrowDate = new Date();
-      tomorrowDate.setDate(currentDate.getDate() + 1);
+      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
 
-      req.body['day'] = 31;
+      req.body['day'] = 35;
       req.body['month'] = 9;
       req.body['year'] = 2024;
 

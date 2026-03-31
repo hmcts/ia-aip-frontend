@@ -1932,6 +1932,9 @@ export default class UpdateAppealService {
       }
       if(_.has(appeal.hearingRequirements, 'nlrAttending')) {
         caseData.nlrAttending = appeal.hearingRequirements.nlrAttending;
+        if (appeal.hearingRequirements.nlrAttending === 'Yes') {
+          caseData.nlrOutsideUK = 'No';
+        }
       }
       if(_.has(appeal.hearingRequirements, 'nlrNeedsStepFreeAccess')) {
         caseData.nlrNeedsStepFreeAccess = appeal.hearingRequirements.nlrNeedsStepFreeAccess;

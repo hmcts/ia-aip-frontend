@@ -40,7 +40,12 @@ const usersToCaseData: Record<string, any> = {
   '39': mockData.awaitingRespondentEvidenceSTF24WES,
   '40': mockData.listingSTF24WES,
   '41': mockData.awaitingReasonsForAppealSTF24WES,
-  '100': mockData.multipleAppealsES
+  '100': mockData.multipleAppealsES,
+  '42': mockData.reasonsForAppealSubmittedSTF24WES,
+  '43': mockData.caseUnderReviewSTF24WES,
+  '44': mockData.respondentReviewSTF24WES,
+  '45': mockData.decisionMaintainedSTF24WES,
+  '46': mockData.awaitingReasonsForAppealPartialSTF24WES,
 };
 
 export async function setupLoadCasesES(server: Mockttp) {

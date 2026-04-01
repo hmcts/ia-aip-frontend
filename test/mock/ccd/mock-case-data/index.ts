@@ -55,6 +55,16 @@ import partialAppealStartedCaseDataES from './data/partial-appeal-started-es';
 import partialAwaitingReasonsForAppealCaseData from './data/partial-awaiting-reasons-for-appeal';
 import partialAwaitingReasonsForAppealCaseDataES from './data/partial-awaiting-reasons-for-appeal-es';
 import startRepresentingYourself from './data/start-representing-yourself';
+import appealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/appeal-submitted-es';
+import awaitingReasonsForAppealSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-es';
+import awaitingReasonsForAppealPartialSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-partial-es';
+import awaitingRespondentEvidenceSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-respondent-evidence-es';
+import caseUnderReviewSTF24WES from './data/statutory-timeframe-24-weeks/case-under-review-es';
+import decisionMaintainedSTF24WES from './data/statutory-timeframe-24-weeks/decision-maintained-es';
+import lateAppealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/late-appeal-submitted-es';
+import listingSTF24WES from './data/statutory-timeframe-24-weeks/listing-es';
+import reasonsForAppealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/reasons-for-appeal-submitted-es';
+import respondentReviewSTF24WES from './data/statutory-timeframe-24-weeks/respondent-review-es';
 import submittedCmaRequirements from './data/submitted-cma-requirements';
 import submittedCmaRequirementsES from './data/submitted-cma-requirements-es';
 import uploadAddendumEvidence from './data/upload-addendum-evidence';
@@ -123,5 +133,15 @@ export default {
   multipleAppealsES,
   multipleAppealCase1001,
   multipleAppealCase1002,
-  multipleAppealCase1003
+  multipleAppealCase1003,
+  appealSubmittedSTF24WES,
+  lateAppealSubmittedSTF24WES,
+  awaitingRespondentEvidenceSTF24WES,
+  listingSTF24WES,
+  awaitingReasonsForAppealSTF24WES,
+  reasonsForAppealSubmittedSTF24WES,
+  caseUnderReviewSTF24WES,
+  respondentReviewSTF24WES,
+  decisionMaintainedSTF24WES,
+  awaitingReasonsForAppealPartialSTF24WES
 };

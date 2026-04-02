@@ -9,7 +9,6 @@ export const FEATURE_FLAGS = {
   UPLOAD_ADDENDUM_EVIDENCE: 'aip-upload-addendum-evidence-feature',
   MAKE_APPLICATION: 'aip-make-application-feature',
   FTPA: 'aip-ftpa-feature',
-  USE_CCD_DOCUMENT_AM: 'use-ccd-document-am',
   DLRM_FEE_REMISSION_FEATURE_FLAG: 'dlrm-fee-remission-feature-flag',
   DLRM_SETASIDE_FEATURE_FLAG: 'dlrm-setaside-feature-flag',
   DLRM_REFUND_FEATURE_FLAG: 'dlrm-refund-feature-flag',

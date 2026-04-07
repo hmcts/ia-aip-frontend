@@ -1359,6 +1359,16 @@
             "description": "The Home Office has reviewed your appeal and decided to maintain their decision to refuse your application to stay in or enter the UK. Read the <a class='govuk-link' href='{{ paths.common.homeOfficeResponse }}'>Home Office Response</a>.",
             "description2": "If you want to respond, you can <a class='govuk-link' href='{{ paths.common.provideMoreEvidenceForm }}'>provide more evidence</a> at any time.",
             "dueDate": "Your appeal will be decided at the hearing."
+          },
+          "prepareForHearing": {
+            "hearingNotice": "You can access your <a href='{{ paths.common.latestHearingNoticeViewer }}'>Notice of Hearing</a>. It includes important<br>details about the hearing and you should read it carefully."
+          },
+          "submitHearingRequirements": {
+            "descriptionAskForMoreTime": "You must respond by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span>.",
+            "respondByTextAskForMoreTime": "It’s important to respond by the deadline in order for the Tribunal to process your appeal effectively."
+          },
+          "clarifyingQuestions": {
+            "respondByTextAskForMoreTime": "It’s important to respond by the deadline."
           }
         }
       },

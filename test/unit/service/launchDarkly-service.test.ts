@@ -25,7 +25,7 @@ describe('launchDarkly-service', () => {
     const trueFlags = ['online-card-payments-feature', 'pcq-feature', 'aip-hearing-requirements-feature',
       'aip-hearing-bundle-feature', 'aip-ooc-feature', 'aip-upload-addendum-evidence-feature',
       'aip-make-application-feature', 'aip-ftpa-feature', 'dlrm-fee-remission-feature-flag',
-      'dlrm-setaside-feature-flag', 'dlrm-refund-feature-flag', 'dlrm-internal-feature-flag', 'use-ccd-document-am'];
+      'dlrm-setaside-feature-flag', 'dlrm-refund-feature-flag', 'dlrm-internal-feature-flag'];
     for (const flag of trueFlags) {
       const result = instance.getTestFlagValue(flag);
       expect(result).to.equal(true);

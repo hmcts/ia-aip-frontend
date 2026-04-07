@@ -63,7 +63,6 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
       case 'dlrm-setaside-feature-flag':
       case 'dlrm-refund-feature-flag':
       case 'dlrm-internal-feature-flag':
-      case 'use-ccd-document-am':
         return true;
       default:
         return false;

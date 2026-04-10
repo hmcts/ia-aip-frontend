@@ -56,15 +56,25 @@ import partialAwaitingReasonsForAppealCaseData from './data/partial-awaiting-rea
 import partialAwaitingReasonsForAppealCaseDataES from './data/partial-awaiting-reasons-for-appeal-es';
 import startRepresentingYourself from './data/start-representing-yourself';
 import appealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/appeal-submitted-es';
+import appealSubmittedSTF24W from './data/statutory-timeframe-24-weeks/appeal-submitted';
 import awaitingReasonsForAppealSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-es';
+import awaitingReasonsForAppealSTF24W from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal';
 import awaitingReasonsForAppealPartialSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-partial-es';
+import awaitingReasonsForAppealPartialSTF24W from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-partial';
 import awaitingRespondentEvidenceSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-respondent-evidence-es';
+import awaitingRespondentEvidenceSTF24W from './data/statutory-timeframe-24-weeks/awaiting-respondent-evidence';
 import caseUnderReviewSTF24WES from './data/statutory-timeframe-24-weeks/case-under-review-es';
+import caseUnderReviewSTF24W from './data/statutory-timeframe-24-weeks/case-under-review';
 import decisionMaintainedSTF24WES from './data/statutory-timeframe-24-weeks/decision-maintained-es';
+import decisionMaintainedSTF24W from './data/statutory-timeframe-24-weeks/decision-maintained';
 import lateAppealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/late-appeal-submitted-es';
+import lateAppealSubmittedSTF24W from './data/statutory-timeframe-24-weeks/late-appeal-submitted';
 import listingSTF24WES from './data/statutory-timeframe-24-weeks/listing-es';
+import listingSTF24W from './data/statutory-timeframe-24-weeks/listing';
 import reasonsForAppealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/reasons-for-appeal-submitted-es';
+import reasonsForAppealSubmittedSTF24W from './data/statutory-timeframe-24-weeks/reasons-for-appeal-submitted';
 import respondentReviewSTF24WES from './data/statutory-timeframe-24-weeks/respondent-review-es';
+import respondentReviewSTF24W from './data/statutory-timeframe-24-weeks/respondent-review';
 import submittedCmaRequirements from './data/submitted-cma-requirements';
 import submittedCmaRequirementsES from './data/submitted-cma-requirements-es';
 import uploadAddendumEvidence from './data/upload-addendum-evidence';
@@ -135,13 +145,23 @@ export default {
   multipleAppealCase1002,
   multipleAppealCase1003,
   appealSubmittedSTF24WES,
+  appealSubmittedSTF24W,
   lateAppealSubmittedSTF24WES,
+  lateAppealSubmittedSTF24W,
   awaitingRespondentEvidenceSTF24WES,
+  awaitingRespondentEvidenceSTF24W,
   listingSTF24WES,
+  listingSTF24W,
   awaitingReasonsForAppealSTF24WES,
+  awaitingReasonsForAppealSTF24W,
   reasonsForAppealSubmittedSTF24WES,
+  reasonsForAppealSubmittedSTF24W,
   caseUnderReviewSTF24WES,
+  caseUnderReviewSTF24W,
   respondentReviewSTF24WES,
+  respondentReviewSTF24W,
   decisionMaintainedSTF24WES,
-  awaitingReasonsForAppealPartialSTF24WES
+  decisionMaintainedSTF24W,
+  awaitingReasonsForAppealPartialSTF24WES,
+  awaitingReasonsForAppealPartialSTF24W
 };

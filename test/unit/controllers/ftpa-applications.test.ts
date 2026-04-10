@@ -873,6 +873,7 @@ describe('Ftpa application controllers setup', () => {
       await postFtpaCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(redirectStub.calledWith(paths.ftpa.ftpaConfirmation)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.ftpaProvideEvidence).to.eq(undefined);
       expect(req.session.appeal.ftpaOutOfTimeProvideEvidence).to.eq(undefined);
     });

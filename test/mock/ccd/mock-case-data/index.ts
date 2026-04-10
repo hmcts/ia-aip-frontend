@@ -40,6 +40,8 @@ import euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressA
 import euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES from './data/euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal-es';
 import ftpaOutOfTimeApplicationStarted from './data/ftpa-out-of-time-application-started';
 import ftpaOutOfTimeApplicationStartedES from './data/ftpa-out-of-time-application-started-es';
+import { multipleAppealCase1001, multipleAppealCase1002, multipleAppealCase1003 } from './data/multiple-appeals';
+import multipleAppealsES from './data/multiple-appeals-es';
 import outOfTimeDecisionGranted from './data/out-of-time-decision-granted';
 import outOfTimeDecisionGrantedES from './data/out-of-time-decision-granted-es';
 import outOfTimeDecisionInTime from './data/out-of-time-decision-in-time';
@@ -53,15 +55,25 @@ import partialAppealStartedCaseDataES from './data/partial-appeal-started-es';
 import partialAwaitingReasonsForAppealCaseData from './data/partial-awaiting-reasons-for-appeal';
 import partialAwaitingReasonsForAppealCaseDataES from './data/partial-awaiting-reasons-for-appeal-es';
 import startRepresentingYourself from './data/start-representing-yourself';
+import appealSubmittedSTF24W from './data/statutory-timeframe-24-weeks/appeal-submitted';
 import appealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/appeal-submitted-es';
+import awaitingReasonsForAppealSTF24W from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal';
 import awaitingReasonsForAppealSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-es';
+import awaitingReasonsForAppealPartialSTF24W from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-partial';
 import awaitingReasonsForAppealPartialSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-partial-es';
+import awaitingRespondentEvidenceSTF24W from './data/statutory-timeframe-24-weeks/awaiting-respondent-evidence';
 import awaitingRespondentEvidenceSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-respondent-evidence-es';
+import caseUnderReviewSTF24W from './data/statutory-timeframe-24-weeks/case-under-review';
 import caseUnderReviewSTF24WES from './data/statutory-timeframe-24-weeks/case-under-review-es';
+import decisionMaintainedSTF24W from './data/statutory-timeframe-24-weeks/decision-maintained';
 import decisionMaintainedSTF24WES from './data/statutory-timeframe-24-weeks/decision-maintained-es';
+import lateAppealSubmittedSTF24W from './data/statutory-timeframe-24-weeks/late-appeal-submitted';
 import lateAppealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/late-appeal-submitted-es';
+import listingSTF24W from './data/statutory-timeframe-24-weeks/listing';
 import listingSTF24WES from './data/statutory-timeframe-24-weeks/listing-es';
+import reasonsForAppealSubmittedSTF24W from './data/statutory-timeframe-24-weeks/reasons-for-appeal-submitted';
 import reasonsForAppealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/reasons-for-appeal-submitted-es';
+import respondentReviewSTF24W from './data/statutory-timeframe-24-weeks/respondent-review';
 import respondentReviewSTF24WES from './data/statutory-timeframe-24-weeks/respondent-review-es';
 import submittedCmaRequirements from './data/submitted-cma-requirements';
 import submittedCmaRequirementsES from './data/submitted-cma-requirements-es';
@@ -128,14 +140,28 @@ export default {
   appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppealES,
   euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppealES,
   appealUpToFeeChoiceES,
+  multipleAppealsES,
+  multipleAppealCase1001,
+  multipleAppealCase1002,
+  multipleAppealCase1003,
   appealSubmittedSTF24WES,
+  appealSubmittedSTF24W,
   lateAppealSubmittedSTF24WES,
+  lateAppealSubmittedSTF24W,
   awaitingRespondentEvidenceSTF24WES,
+  awaitingRespondentEvidenceSTF24W,
   listingSTF24WES,
+  listingSTF24W,
   awaitingReasonsForAppealSTF24WES,
+  awaitingReasonsForAppealSTF24W,
   reasonsForAppealSubmittedSTF24WES,
+  reasonsForAppealSubmittedSTF24W,
   caseUnderReviewSTF24WES,
+  caseUnderReviewSTF24W,
   respondentReviewSTF24WES,
+  respondentReviewSTF24W,
   decisionMaintainedSTF24WES,
-  awaitingReasonsForAppealPartialSTF24WES
+  decisionMaintainedSTF24W,
+  awaitingReasonsForAppealPartialSTF24WES,
+  awaitingReasonsForAppealPartialSTF24W
 };

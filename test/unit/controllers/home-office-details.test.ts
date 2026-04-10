@@ -134,6 +134,7 @@ describe('Home Office Details Controller', function () {
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('1212-0099-0089-1080');
       expect(redirectStub.calledWith(paths.appealStarted.name)).to.equal(true);
     });
@@ -156,6 +157,7 @@ describe('Home Office Details Controller', function () {
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('A1234567');
       expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
@@ -179,6 +181,7 @@ describe('Home Office Details Controller', function () {
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('1212-0099-0089-1080');
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.equal(undefined);
@@ -340,6 +343,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -354,6 +358,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -409,6 +414,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -423,6 +429,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -436,6 +443,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -449,6 +457,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -463,6 +472,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -702,6 +712,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.homeOfficeDecisionLetter)).to.equal(true);
     });
 
@@ -800,6 +811,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterReceived(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.homeOfficeDecisionLetter)).to.equal(true);
     });
 

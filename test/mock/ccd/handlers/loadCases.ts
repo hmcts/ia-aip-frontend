@@ -34,15 +34,56 @@ const usersToCaseData: Record<string, any[]> = {
   '33': [mockData.outOfTimeDecisionGranted],
   '34': [mockData.outOfTimeDecisionRejected],
   '35': [mockData.outOfTimeDecisionInTime],
-  '36': [mockData.appealUpToFeeChoice]
+  '36': [mockData.appealUpToFeeChoice],
+  '37': [mockData.appealSubmittedSTF24W],
+  '38': [mockData.lateAppealSubmittedSTF24W],
+  '39': [mockData.awaitingRespondentEvidenceSTF24W],
+  '40': [mockData.listingSTF24W],
+  '41': [mockData.awaitingReasonsForAppealSTF24W],
+  '42': [mockData.reasonsForAppealSubmittedSTF24W],
+  '43': [mockData.caseUnderReviewSTF24W],
+  '44': [mockData.respondentReviewSTF24W],
+  '45': [mockData.decisionMaintainedSTF24W],
+  '46': [mockData.awaitingReasonsForAppealPartialSTF24W],
+  '100': [mockData.multipleAppealCase1001, mockData.multipleAppealCase1002, mockData.multipleAppealCase1003]
 };
 
 export async function setupLoadCases(server: Mockttp) {
+  // Handler for loading a single case by ID
   await server.forGet(
-    /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases/
+    /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/(\d+)$/
   ).thenCallback(async (request) => {
     const match = request.url.match(
-      /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases/
+      /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/(\d+)$/
+    );
+    const caseId = match ? match[4] : undefined;
+    if (!caseId) {
+      return {
+        statusCode: 400,
+        json: { error: 'Missing caseId param' }
+      };
+    }
+    // Search all cases across all users to find the case by ID
+    const allCases = Object.values(usersToCaseData).flat();
+    const caseData = allCases.find((c: any) => String(c.id) === caseId);
+    if (caseData) {
+      return {
+        statusCode: 200,
+        json: caseData
+      };
+    }
+    return {
+      statusCode: 404,
+      json: { error: 'Case not found' }
+    };
+  });
+
+  // Handler for listing all cases for a user
+  await server.forGet(
+    /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases$/
+  ).thenCallback(async (request) => {
+    const match = request.url.match(
+      /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases$/
     );
     const userId = match ? match[1] : undefined;
     if (!userId) {

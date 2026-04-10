@@ -167,6 +167,7 @@ describe('Question-page controller', () => {
       await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.answer).to.deep.equal(req.body.answer);
       expect(redirectStub.callCount).to.equal(1);
       expect(redirectStub.calledOnceWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id))).to.equal(true);
@@ -183,6 +184,7 @@ describe('Question-page controller', () => {
       await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.answer).to.deep.equal(req.body.answer);
       expect(redirectStub.callCount).to.equal(1);
       expect(redirectStub.calledOnceWith(paths.common.overview + '?saved')).to.equal(true);

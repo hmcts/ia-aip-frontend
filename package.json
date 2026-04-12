@@ -46,7 +46,7 @@
     "@hmcts/properties-volume": "^0.0.13",
     "@launchdarkly/node-server-sdk": "^9.10.8",
     "applicationinsights": "^1.8.10",
-    "axios": "^1.13.5",
+    "axios": "^1.15.0",
     "config": "^4.4.1",
     "connect-redis": "^4.0.4",
     "cookie-parser": "^1.4.7",

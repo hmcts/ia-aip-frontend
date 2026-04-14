@@ -46,7 +46,7 @@ function getHearingDetails(req: Request): Hearing {
   return null;
 }
 
-function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnabled: boolean) {
+function checkEnableProvideMoreEvidenceSection(appealStatus: string) {
   const provideMoreEvidenceStates = [
     States.RESPONDENT_REVIEW.id,
     States.SUBMIT_HEARING_REQUIREMENTS.id,
@@ -69,10 +69,10 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
   if (!preAddendumEvidenceUploadState) {
     return provideMoreEvidenceStates.includes(appealStatus);
   }
-  return featureEnabled && preAddendumEvidenceUploadState;
+  return preAddendumEvidenceUploadState;
 }
 
-function showAppealRequestSection(appealStatus: string, featureEnabled: boolean) {
+function showAppealRequestSection(appealStatus: string) {
   const showAppealRequestsStates = [
     States.APPEAL_SUBMITTED.id,
     States.PENDING_PAYMENT.id,
@@ -99,14 +99,14 @@ function showAppealRequestSection(appealStatus: string, featureEnabled: boolean)
     States.CMA_LISTED.id,
     States.ADJOURNED.id
   ];
-  return featureEnabled ? showAppealRequestsStates.includes(appealStatus) : featureEnabled;
+  return showAppealRequestsStates.includes(appealStatus);
 }
 
-function showAppealRequestSectionInAppealEndedStatus(appealStatus: string, featureEnabled: boolean): boolean {
-  return featureEnabled ? States.ENDED.id === appealStatus : featureEnabled;
+function showAppealRequestSectionInAppealEndedStatus(appealStatus: string): boolean {
+  return States.ENDED.id === appealStatus;
 }
 
-function showHearingRequestSection(appealStatus: string, featureEnabled: boolean) {
+function showHearingRequestSection(appealStatus: string) {
   const showHearingRequestsStates = [
     States.PREPARE_FOR_HEARING.id,
     States.FINAL_BUNDLING.id,
@@ -114,7 +114,7 @@ function showHearingRequestSection(appealStatus: string, featureEnabled: boolean
     States.DECISION.id,
     States.ADJOURNED.id
   ];
-  return featureEnabled ? showHearingRequestsStates.includes(appealStatus) : featureEnabled;
+  return showHearingRequestsStates.includes(appealStatus);
 }
 
 function isAppealInProgress(appealStatus: string) {
@@ -130,8 +130,6 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         req.session.appeal.appealStatus = hearingBundleFeatureEnabled ? 'preHearing' : 'preHearingOutOfCountryFeatureDisabled';
       }
 
-      const makeApplicationFeatureEnabled = true;
-      const uploadAddendumEvidenceFeatureEnabled = true;
       const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
       const ftpaFeatureEnabled = await isFtpaFeatureEnabled(req);
 
@@ -154,10 +152,10 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       }
 
       const showChangeRepresentation = isAppealInProgress(appealStatus);
-      const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled);
-      const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
-      const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled);
-      const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
+      const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus);
+      const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus);
+      const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus);
+      const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus)
           && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
 
       const application = req.session.appeal.application;

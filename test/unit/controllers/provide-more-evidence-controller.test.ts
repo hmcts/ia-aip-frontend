@@ -260,7 +260,6 @@ describe('Provide more evidence controller', () => {
     });
 
     it('should upload file when addendum evidence and feature flag enabled', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(true);
       const fileSizeInMb = 0.001;
       const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
       const mockFile = {

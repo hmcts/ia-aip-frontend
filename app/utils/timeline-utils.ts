@@ -319,12 +319,11 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const ccdService = updateAppealService.getCcdService();
   req.session.appeal.history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
 
-  const uploadAddendumEvidenceFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
   const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
   const ftpaFeatureEnabled: boolean = await isFtpaFeatureEnabled(req);
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
   const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
-  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled, refundFeatureEnabled);
+  const eventsAndStates = getEventsAndStates(hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled, refundFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
   let appealHearingRequirementsSection = constructSection(
@@ -435,8 +434,7 @@ function getApplicationHistoryAppealRemissionSection(req, manageAFeeUpdate, refu
   }
 }
 
-function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
-                            hearingBundleFeatureEnabled: boolean,
+function getEventsAndStates(hearingBundleFeatureEnabled: boolean,
                             ftpaFeatureEnabled: boolean,
                             ftpaSetAsideFeatureEnabled: boolean,
                             refundFeatureEnabled: boolean = false) {
@@ -504,18 +502,17 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
         );
   }
 
-  if (uploadAddendumEvidenceFeatureEnabled) {
-    appealArgumentSectionEvents.push(
-            Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
-            Events.UPLOAD_ADDENDUM_EVIDENCE_HOME_OFFICE.id,
-            Events.UPLOAD_ADDENDUM_EVIDENCE.id,
-            Events.UPLOAD_ADDENDUM_EVIDENCE_ADMIN_OFFICER.id
-        );
+  appealArgumentSectionEvents.push(
+          Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
+          Events.UPLOAD_ADDENDUM_EVIDENCE_HOME_OFFICE.id,
+          Events.UPLOAD_ADDENDUM_EVIDENCE.id,
+          Events.UPLOAD_ADDENDUM_EVIDENCE_ADMIN_OFFICER.id
+      );
 
-    appealHearingRequirementsSectionEvents.push(Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id);
+  appealHearingRequirementsSectionEvents.push(Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id);
 
-    appealArgumentSectionStates.push(States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id);
-  }
+  appealArgumentSectionStates.push(States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id);
+
 
   return {
     appealArgumentSectionEvents,

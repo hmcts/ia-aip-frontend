@@ -286,22 +286,6 @@ describe('Provide more evidence controller', () => {
       expect(req.session.appeal.addendumEvidence[0].name).to.equal(documentUploadResponse.name);
     });
 
-    it('should redirect to appeal overview page when addendum evidence and feature flag disabled', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(false);
-      const fileSizeInMb = 0.001;
-      const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
-      const mockFile = {
-        originalname: 'somefile.png',
-        size: mockSizeInBytes
-      } as Express.Multer.File;
-
-      req.file = mockFile;
-      req.session.appeal.appealStatus = States.PRE_HEARING.id;
-
-      await uploadProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
-    });
-
   });
 
   describe('postProvideMoreEvidenceCheckAndSend', () => {
@@ -319,7 +303,6 @@ describe('Provide more evidence controller', () => {
     });
 
     it('should redirect to provide-more-evidence confirmation page when addendum evidence and feature flag enabled', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(true);
       req.session.appeal.appealStatus = States.PRE_HEARING.id;
       const file = {
         originalname: 'file.png',
@@ -330,20 +313,6 @@ describe('Provide more evidence controller', () => {
       await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
       expect(redirectStub.calledWith(paths.common.provideMoreEvidenceConfirmation)).to.equal(true);
-    });
-
-    it('should redirect to appeal overview page when addendum evidence and feature flag disabled', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(false);
-      req.session.appeal.appealStatus = States.PRE_HEARING.id;
-      const file = {
-        originalname: 'file.png',
-        mimetype: 'type'
-      };
-      req.file = file as Express.Multer.File;
-
-      await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-
-      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
     });
 
     it('should catch an error and redirect with error', async () => {

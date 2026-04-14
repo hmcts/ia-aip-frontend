@@ -56,7 +56,6 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
       case 'aip-hearing-requirements-feature':
       case 'aip-hearing-bundle-feature':
       case 'aip-ooc-feature':
-      case 'aip-upload-addendum-evidence-feature':
       case 'aip-make-application-feature':
       case 'aip-ftpa-feature':
       case 'dlrm-fee-remission-feature-flag':

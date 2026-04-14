@@ -130,8 +130,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         req.session.appeal.appealStatus = hearingBundleFeatureEnabled ? 'preHearing' : 'preHearingOutOfCountryFeatureDisabled';
       }
 
-      const makeApplicationFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.MAKE_APPLICATION, false);
-      const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
+      const makeApplicationFeatureEnabled = true;
+      const uploadAddendumEvidenceFeatureEnabled = true;
       const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
       const ftpaFeatureEnabled = await isFtpaFeatureEnabled(req);
 

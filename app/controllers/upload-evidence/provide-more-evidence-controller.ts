@@ -482,10 +482,6 @@ function getProvideAdditionalEvidenceCheckAndSend(req: Request, res: Response) {
 }
 
 async function postAddendumEvidence(req: Request, res: Response, updateAppealService: UpdateAppealService): Promise<any> {
-  const featureEnabled = await isUploadAddendumEvidenceFeatureEnabled(req);
-  if (!featureEnabled) {
-    return res.redirect(paths.common.overview);
-  }
 
   const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence || [])];
   const appeal: Appeal = {

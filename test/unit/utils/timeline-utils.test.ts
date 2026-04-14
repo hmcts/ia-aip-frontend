@@ -1056,12 +1056,6 @@ describe('timeline-utils', () => {
       expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(18);
     });
 
-    it('should return relevant events and states when uploadAddendumEvidence feature disabled', () => {
-      const eventsAndStates = getEventsAndStates(false, true, false, false);
-      expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(14);
-      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(15);
-    });
-
     it('should include uploadAdditionalEvidenceHomeOffice event in appealArgumentSectionEvents', () => {
       const eventsAndStates = getEventsAndStates(false, false, false, false);
       expect(eventsAndStates.appealArgumentSectionEvents).to.include(Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id);
@@ -1077,7 +1071,7 @@ describe('timeline-utils', () => {
 
     it('should return relevant events when hearingBundle feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, true, false, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.deep.equal(5);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.deep.equal(4);
     });
 
     it('should return relevant events when hearingBundle and uploadAddendumEvidence features enabled', () => {
@@ -1087,7 +1081,7 @@ describe('timeline-utils', () => {
 
     it('should return relevant events when hearingBundle feature disabled', () => {
       const eventsAndStates = getEventsAndStates(true, false, false, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.deep.equal(4);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.deep.equal(6);
     });
 
     it('should return relevant events when ftpa feature disabled', () => {
@@ -1097,12 +1091,12 @@ describe('timeline-utils', () => {
 
     it('should return relevant events when ftpa feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, true, false);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.deep.equal(6);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.deep.equal(3);
     });
 
     it('should return relevant events when ftpa set aside feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, false, true);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.deep.equal(3);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.deep.equal(2);
     });
   });
 

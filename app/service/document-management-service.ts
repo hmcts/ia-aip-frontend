@@ -7,16 +7,10 @@ import { DmDocumentManagementService } from './dm-document-management-service';
 import LaunchDarklyService from './launchDarkly-service';
 
 class DocumentManagementService {
-  private dmDocumentManagementService: DmDocumentManagementService;
   private cdamDocumentManagementService: CdamDocumentManagementService;
 
   constructor(authenticationService: AuthenticationService) {
-    this.dmDocumentManagementService = new DmDocumentManagementService(authenticationService);
     this.cdamDocumentManagementService = new CdamDocumentManagementService(authenticationService);
-  }
-
-  async useCDAM(req: Request) {
-    return LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false);
   }
 
   /**
@@ -27,11 +21,7 @@ class DocumentManagementService {
    * @property {string} req.idam.userDetails.uid - the user id
    */
   async uploadFile(req: Request): Promise<DocumentUploadResponse> {
-    if (await this.useCDAM(req)) {
-      return this.cdamDocumentManagementService.uploadFile(req);
-    } else {
-      return this.dmDocumentManagementService.uploadFile(req);
-    }
+    return this.cdamDocumentManagementService.uploadFile(req);
   }
 
   /**
@@ -41,11 +31,7 @@ class DocumentManagementService {
    * @param fileLocation - the target file url to be deleted
    */
   async deleteFile(req: Request, fileId: string): Promise<DocumentUploadResponse> {
-    if (await this.useCDAM(req)) {
-      return this.cdamDocumentManagementService.deleteFile(req, fileId);
-    } else {
-      return this.dmDocumentManagementService.deleteFile(req, fileId);
-    }
+    return this.cdamDocumentManagementService.deleteFile(req, fileId);
   }
 
   /**
@@ -55,11 +41,7 @@ class DocumentManagementService {
    * @param fileLocation - the target file url to be fetched
    */
   async fetchFile(req: Request, fileLocation: string) {
-    if (await this.useCDAM(req)) {
-      return this.cdamDocumentManagementService.fetchFile(req, fileLocation);
-    } else {
-      return this.dmDocumentManagementService.fetchFile(req, fileLocation);
-    }
+    return this.cdamDocumentManagementService.fetchFile(req, fileLocation);
   }
 
   public removeFromDocumentMapper(fileId: string, documentMap: DocumentMap[]): DocumentMap[] {

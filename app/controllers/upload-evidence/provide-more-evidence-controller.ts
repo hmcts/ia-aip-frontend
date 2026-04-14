@@ -419,10 +419,6 @@ function buildUploadedAddendumEvidenceDocumentsSummaryList(addendumEvidenceDocum
 }
 
 async function uploadAddendumEvidence(req: Request, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
-  const featureEnabled = await isUploadAddendumEvidenceFeatureEnabled(req);
-  if (!featureEnabled) {
-    return res.redirect(paths.common.overview);
-  }
 
   const addendumEvidenceDocument: DocumentUploadResponse = await documentManagementService.uploadFile(req);
   const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence || [])];
@@ -546,12 +542,6 @@ async function deleteAdditionalEvidence(req: Request, res: Response, documentMan
   req.session.appeal.documentMap = documentMap;
 
   return res.redirect(paths.common.provideMoreEvidenceForm);
-}
-
-async function isUploadAddendumEvidenceFeatureEnabled(req: Request) {
-  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-  const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, defaultFlag);
-  return uploadAddendumEvidenceFeatureEnabled;
 }
 
 function getUploadedAddendumEvidenceDocuments(req: Request, uploadedBy: string): Evidence[] {

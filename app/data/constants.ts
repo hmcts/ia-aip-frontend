@@ -6,7 +6,6 @@ export const FEATURE_FLAGS = {
   HEARING_REQUIREMENTS: 'aip-hearing-requirements-feature',
   HEARING_BUNDLE: 'aip-hearing-bundle-feature',
   OUT_OF_COUNTRY: 'aip-ooc-feature',
-  MAKE_APPLICATION: 'aip-make-application-feature',
   FTPA: 'aip-ftpa-feature',
   DLRM_FEE_REMISSION_FEATURE_FLAG: 'dlrm-fee-remission-feature-flag',
   DLRM_SETASIDE_FEATURE_FLAG: 'dlrm-setaside-feature-flag',

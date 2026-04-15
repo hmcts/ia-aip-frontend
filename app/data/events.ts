@@ -253,5 +253,10 @@ export const Events = {
     id: 'markAppealPaid',
     summary: 'Mark appeal as paid',
     description: 'Make a paid'
+  },
+  HOME_OFFICE_REFERENCE_DATA: {
+    id: 'homeOfficeReferenceData',
+    summary: 'Home office reference data',
+    description: 'Home office reference data'
   }
 };

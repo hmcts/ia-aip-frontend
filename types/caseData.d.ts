@@ -471,3 +471,27 @@ interface Value {
   code?: string;
   label?: string;
 }
+
+interface MidEventDetails {
+  case_reference: string;
+  data: any;
+  event: CcdEvent,
+  event_data: any,
+  ignore_warning: boolean;
+}
+
+interface MidEventResponse {
+  status?: number,
+  callbackErrors?: string[]
+  details?: MidEventResponseDetails
+  data?: any
+}
+
+interface MidEventResponseDetails {
+  field_errors?: FieldError[]
+}
+
+interface FieldError {
+  id: string;
+  message: string;
+}

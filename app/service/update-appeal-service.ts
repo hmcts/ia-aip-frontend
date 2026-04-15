@@ -118,6 +118,35 @@ export default class UpdateAppealService {
     return this.mapCcdCaseToAppeal(ccdCase);
   }
 
+  async validateMidEvent(event, pageIds: string[], appeal: Appeal, midEventData: any, uid: string, userToken: string): Promise<string[]> {
+    const securityHeaders: SecurityHeaders = {
+      userToken: `Bearer ${userToken}`,
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+    const caseData: CaseData = this.convertToCcdCaseData(appeal);
+    const midEventDetails: MidEventDetails = {
+      case_reference: appeal.ccdCaseId,
+      data: midEventData,
+      event_data: caseData,
+      event: event,
+      ignore_warning: false
+    };
+    const errors: string[] = [];
+    for (const pageId of pageIds) {
+      const response: MidEventResponse = await this._ccdService.validateMidEvent(midEventDetails, pageId, uid, securityHeaders);
+      if (response.status === 422) {
+        if (response?.callbackErrors?.length > 0) {
+          errors.push(...response.callbackErrors);
+        } else {
+          errors.push(...(response?.details?.field_errors || [])
+              .map(error => `${error.id}: ${error.message}`));
+        }
+        console.log(`midEventValidation for ${event.id} failed with errors: ${errors}`);
+      }
+    }
+    return errors;
+  }
+
   mapCcdCaseToAppeal(ccdCase: CcdCaseDetails): Appeal {
     const caseData: CaseData = ccdCase.case_data;
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);

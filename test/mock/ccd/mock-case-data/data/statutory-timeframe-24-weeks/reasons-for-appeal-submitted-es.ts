@@ -1,12 +1,6 @@
-import appealSubmittedCaseDataSTF24WES from './appeal-submitted-es';
+import data from './reasons-for-appeal-submitted';
 
 export default {
   'total': 1,
-  cases: [
-    {
-      ...appealSubmittedCaseDataSTF24WES.cases[0],
-      'id': 42,
-      'state': 'reasonsForAppealSubmitted'
-    }
-  ]
+  cases: [data]
 };

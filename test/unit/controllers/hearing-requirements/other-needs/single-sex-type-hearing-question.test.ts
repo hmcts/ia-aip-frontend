@@ -132,6 +132,7 @@ describe('Hearing Requirements - Other Needs Section: Single sex type hearing Qu
       await postSingleSexTypeHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsAllMaleHearing)).to.equal(true);
       expect(req.session.appeal.hearingRequirements.otherNeeds.singleSexTypeAppointment).to.equal('All male');
     });
@@ -141,6 +142,7 @@ describe('Hearing Requirements - Other Needs Section: Single sex type hearing Qu
       await postSingleSexTypeHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsAllFemaleHearing)).to.equal(true);
       expect(req.session.appeal.hearingRequirements.otherNeeds.singleSexTypeAppointment).to.equal('All female');
     });

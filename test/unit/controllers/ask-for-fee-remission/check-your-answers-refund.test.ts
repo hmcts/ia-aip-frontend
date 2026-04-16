@@ -203,7 +203,9 @@ describe('CYA Refund Controller', function () {
 
       await postCheckYourAnswersRefund(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(submitStub.calledWith(Events.REQUEST_FEE_REMISSION, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealSubmitted.confirmationRefund)).to.equal(true);
     });
 

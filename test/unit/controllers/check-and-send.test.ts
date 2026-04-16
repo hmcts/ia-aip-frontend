@@ -699,6 +699,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(resRedirectSpy.called).to.equal(true);
     });
 
@@ -722,6 +723,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(resRedirectSpy.called).to.equal(true);
     });
 
@@ -733,6 +735,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(resRedirectSpy.called).to.equal(true);
     });
 
@@ -744,6 +747,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
 
     it('should submit appeal for "euSettlementScheme"', async () => {
@@ -754,6 +758,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(resRedirectSpy.called).to.equal(true);
     });
 
@@ -765,6 +770,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(resRedirectSpy.called).to.equal(true);
     });
 
@@ -776,6 +782,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(resRedirectSpy.called).to.equal(true);
     });
 

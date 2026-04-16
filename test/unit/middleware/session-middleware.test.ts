@@ -66,11 +66,12 @@ describe('session-middleware', () => {
   });
 
   it('initSession', async () => {
-    const loadAppealStub = sandbox.stub(UpdateAppealService.prototype, 'loadAppeal');
+    const loadAppealsListStub = sandbox.stub(UpdateAppealService.prototype, 'loadAppealsList');
     await initSession(req as Request, res as Response, next);
 
-    expect(loadAppealStub.callCount).to.equal(1);
-    expect(next.callCount).to.equal(1);
+    expect(loadAppealsListStub).to.have.been.calledOnce;
+    expect(req.session.refreshCasesList).to.equal(false);
+    expect(next).to.have.been.calledOnce;
   });
 
   it('checkSession has auth token and application', () => {
@@ -87,6 +88,16 @@ describe('session-middleware', () => {
 
     expect(redirectSpy.calledWith(paths.common.login)).to.equal(true);
     expect(clearCookieStub.called).to.equal(true);
+  });
+
+  it('checkSession has auth token, no appeal, but casesList present should call next', () => {
+    req.cookies['__auth-token'] = 'authTokenValue';
+    req.session.appeal = {} as any;
+    req.session.casesList = [{ id: '1234' }] as any;
+    checkSession({})(req as Request, res as Response, next);
+
+    expect(next).to.have.been.calledOnce;
+    expect(res.redirect).to.not.have.been.called;
   });
 
   it('checkSession has no auth token', () => {
@@ -153,6 +164,7 @@ describe('session-middleware', () => {
     expect(req.session.startRepresentingYourself).to.equal(undefined);
     expect(req.session.ccdCaseId).to.deep.equal('1234123412341234');
     expect(req.session.appeal).to.equal(appeal);
+    expect(req.session.refreshCasesList).to.equal(true);
     expect(redirectSpy.calledWith(paths.common.overview)).to.equal(true);
   });
 });

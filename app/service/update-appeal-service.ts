@@ -141,7 +141,7 @@ export default class UpdateAppealService {
           errors.push(...(response?.details?.field_errors || [])
               .map(error => `${error.id}: ${error.message}`));
         }
-        console.log(`midEventValidation for ${event.id} failed with errors: ${errors}`);
+        console.error(`midEventValidation for ${event.id} failed with errors: ${errors}`);
       }
     }
     return errors;

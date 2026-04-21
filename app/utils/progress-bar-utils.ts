@@ -1,7 +1,7 @@
 import i18n from '../../locale/en.json';
 import { States } from '../data/states';
 
-function buildProgressBarStages(state: string, paymentStatus?: string) {
+function buildProgressBarStages(state: string, paymentStatus?: string, is24WeeksTimeline?: boolean) {
   const stages = {
     yourAppealDetails: {
       activeStatus: [
@@ -29,7 +29,6 @@ function buildProgressBarStages(state: string, paymentStatus?: string) {
       activeStatus: [
         States.SUBMIT_HEARING_REQUIREMENTS.id,
         States.DRAFT_HEARING_REQUIREMENTS.id,
-        States.LISTING.id,
         States.PREPARE_FOR_HEARING.id,
         States.FINAL_BUNDLING.id,
         States.PRE_HEARING.id
@@ -39,6 +38,12 @@ function buildProgressBarStages(state: string, paymentStatus?: string) {
       activeStatus: []
     }
   };
+
+  if (is24WeeksTimeline) {
+    stages.yourAppealDetails.activeStatus.push(States.LISTING.id);
+  } else {
+    stages.yourHearingDetails.activeStatus.push(States.LISTING.id);
+  }
 
   const yourAppealDetailsStage = {
     title: i18n.components.progressBar.yourAppealDetails.title,

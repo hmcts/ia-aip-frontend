@@ -166,6 +166,17 @@ class CcdService {
     });
   }
 
+  async validateMidEvent(midEventDetails: MidEventDetails, pageId: string, userId: string, headers: SecurityHeaders): Promise<MidEventResponse> {
+    const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/validate?pageId=${pageId}`;
+    const options: any = this.createOptions(
+        userId,
+        headers
+    );
+
+    const response = await axios.post(url, midEventDetails, options);
+    return response.data;
+  }
+
   async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     logger.trace('Loading or creating case', logLabel);
     const data: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);

@@ -57,6 +57,9 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
           homeOfficeRefNumber: req.body.homeOfficeRefNumber
         }
       };
+      const midEventData = { homeOfficeReferenceNumber: req.body.homeOfficeRefNumber };
+      await updateAppealService.validateMidEvent(Events.HOME_OFFICE_REFERENCE_DATA, ['homeOfficeReferenceNumber'], appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {

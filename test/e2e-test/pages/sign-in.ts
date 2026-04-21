@@ -142,6 +142,46 @@ module.exports = {
           signInForUser('ftpa-out-of-time-application-started@example.com');
           break;
         }
+        case 'appealSubmitted with stf24w': {
+          signInForUser('appeal-submitted-stf24w@example.com');
+          break;
+        }
+        case 'lateAppealSubmitted with stf24w': {
+          signInForUser('late-appeal-submitted-stf24w@example.com');
+          break;
+        }
+        case 'awaitingRespondentEvidence with stf24w': {
+          signInForUser('awaiting-respondent-evidence-stf24w@example.com');
+          break;
+        }
+        case 'listing with stf24w': {
+          signInForUser('listing-stf24w@example.com');
+          break;
+        }
+        case 'awaitingReasonsForAppeal with stf24w': {
+          signInForUser('awaiting-reasons-for-appeal-stf24w@example.com');
+          break;
+        }
+        case 'reasonsForAppealSubmitted with stf24w': {
+          signInForUser('reasons-for-appeal-submitted-stf24w@example.com');
+          break;
+        }
+        case 'caseUnderReview with stf24w': {
+          signInForUser('case-under-review-stf24w@example.com');
+          break;
+        }
+        case 'respondentReview with stf24w': {
+          signInForUser('respondent-review-stf24w@example.com');
+          break;
+        }
+        case 'decisionMaintained with stf24w': {
+          signInForUser('decision-maintained-stf24w@example.com');
+          break;
+        }
+        case 'awaitingReasonsForAppealPartial with stf24w': {
+          signInForUser('awaiting-reasons-for-appeal-partial-stf24w@example.com');
+          break;
+        }
         default:
           break;
       }

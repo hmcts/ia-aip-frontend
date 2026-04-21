@@ -85,5 +85,38 @@ module.exports = {
     When(/^I click the I am no longer representing myself link'$/, () => {
       I.click('I am no longer representing myself');
     });
+
+    Then(/^I should see the 'nothing to do next section' for "([^"]*)" when statutory timeframe 24 weeks is Yes$/, (state) => {
+      I.see(i18n.pages.overviewPage.doThisNext.nothingToDo, '//h2[1]');
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.stf24w[state].detailsSent}</p>`);
+      if (!['listing', 'awaitingRespondentEvidence'].includes(state)) {
+        I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.stf24w[state].dueDate}</p>`);
+      }
+    });
+
+    Then(/^I should see the 'do this next section' for 'awaitingReasonsForAppeal' when statutory timeframe 24 weeks is Yes$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description}</p>`);
+      I.dontSeeElement('//a[contains(., "Ask for more time")]');
+    });
+
+    Then(/^I should see the 'do this next section' for 'awaitingReasonsForAppealPartial' when statutory timeframe 24 weeks is Yes$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description}</p>`);
+      I.dontSeeElement('//a[contains(., "Ask for more time")]');
+    });
+
+    Then(/^I should see the 'nothing to do next section' for 'respondentReview' when statutory timeframe 24 weeks is Yes$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.nothingToDo, '//h2[1]');
+      I.see('The Tribunal has asked the Home Office to review your appeal. The Home Office will look at all the information you sent to the Tribunal and will either withdraw or maintain their decision to refuse your application to stay in or enter the UK.');
+      I.see('A Legal Officer will contact you to tell you what to do next.');
+    });
+
+    Then(/^I should see the 'do this next section' for 'decisionMaintained' when statutory timeframe 24 weeks is Yes$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+      I.see('The Home Office has reviewed your appeal and decided to maintain their decision to refuse your application to stay in or enter the UK. Read the Home Office Response.');
+      I.see('If you want to respond, you can provide more evidence at any time.');
+      I.see('Your appeal will be decided at the hearing.');
+    });
   }
 };

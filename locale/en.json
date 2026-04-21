@@ -1306,6 +1306,60 @@
             "decisionPartiallyApprovedPaymentStatus": "Not paid",
             "decisionRejectedPaymentStatus": "Not paid"
           }
+        },
+        "stf24w": {
+          "appealSubmitted": {
+            "detailsSent": "Your appeal details have been sent to the Tribunal.",
+            "dueDate": "A Legal Officer will contact you to tell you what happens next.",
+            "info": {
+              "title": "Helpful Information",
+              "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Legal Officer?</a>"
+            }
+          },
+          "remissionDecided": {
+            "approved": {
+              "detailsSent": "Your appeal details have been sent to the Tribunal.",
+              "legalOfficerCheck": "A Legal Officer will contact you to tell you what happens next.",
+              "helpFulInfo": "<b>Helpful information</b>",
+              "href": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Legal Officer?</a>"
+            }
+          },
+          "lateAppealSubmitted": {
+            "detailsSent": "Your late appeal details have been sent to the Tribunal.",
+            "dueDate": "A Legal Officer will contact you to tell you what happens next.",
+            "info": {
+              "title": "Helpful Information",
+              "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Legal Officer?</a>"
+            }
+          },
+          "listing": {
+            "detailsSent": "Your appeal is being listed for a hearing, you will receive a notification of the hearing once it has been scheduled."
+          },
+          "awaitingRespondentEvidence": {
+            "detailsSent": "Your appeal details have been sent to the Tribunal.",
+            "dueDate": "The Tribunal will contact you by <span class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span> to tell you what to do next.",
+            "info": {
+              "title": "Helpful Information",
+              "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Legal Officer?</a>"
+            }
+          },
+          "reasonsForAppealSubmitted": {
+            "detailsSent": "You have told us why you think the Home Office decision is wrong.",
+            "dueDate": "A Legal Officer will contact you to tell you what happens next."
+          },
+          "caseUnderReview": {
+            "detailsSent": "The reasons you think the Home Office decision to refuse your claim is wrong were sent to the Tribunal.",
+            "dueDate": "A Legal Officer will contact you to tell you what happens next."
+          },
+          "respondentReview": {
+            "detailsSent": "The Tribunal has asked the Home Office to review your appeal. The Home Office will look at all the information you sent to the Tribunal and will either withdraw or maintain their decision to refuse your application to stay in or enter the UK. <ul class='govuk-list govuk-list--bullet'><li>If the Home Office withdraw their decision it means they will look again at their decision to refuse your application</li><li>If the Home Office maintain their decision it means they still think they were correct to refuse your application</li></ul>",
+            "dueDate": "A Legal Officer will contact you to tell you what to do next."
+          },
+          "decisionMaintained": {
+            "description": "The Home Office has reviewed your appeal and decided to maintain their decision to refuse your application to stay in or enter the UK. Read the <a class='govuk-link' href='{{ paths.common.homeOfficeResponse }}'>Home Office Response</a>.",
+            "description2": "If you want to respond, you can <a class='govuk-link' href='{{ paths.common.provideMoreEvidenceForm }}'>provide more evidence</a> at any time.",
+            "dueDate": "Your appeal will be decided at the hearing."
+          }
         }
       },
       "timeline": {

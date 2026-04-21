@@ -26,6 +26,7 @@ describe('Home Office Details Controller', function () {
   const logger: Logger = new Logger();
   let submitStub: sinon.SinonStub;
   let submitRefactoredStub: sinon.SinonStub;
+  let validateStub: sinon.SinonStub;
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
   beforeEach(() => {
@@ -56,6 +57,7 @@ describe('Home Office Details Controller', function () {
 
     submitStub = sandbox.stub();
     submitRefactoredStub = sandbox.stub();
+    validateStub = sandbox.stub();
     renderStub = sandbox.stub();
     redirectStub = sandbox.stub();
 
@@ -73,7 +75,8 @@ describe('Home Office Details Controller', function () {
         case_data: {
           homeOfficeReferenceNumber: 'A1234567'
         }
-      })
+      }),
+      validateMidEvent: validateStub.returns({})
     };
   });
 

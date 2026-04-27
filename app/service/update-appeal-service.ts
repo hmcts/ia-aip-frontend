@@ -123,11 +123,10 @@ export default class UpdateAppealService {
       userToken: `Bearer ${userToken}`,
       serviceToken: await this._s2sService.getServiceToken()
     };
-    const caseData: CaseData = this.convertToCcdCaseData(appeal);
     const midEventDetails: MidEventDetails = {
       case_reference: appeal.ccdCaseId,
       data: midEventData,
-      event_data: caseData,
+      event_data: midEventData,
       event: event,
       ignore_warning: false
     };
@@ -141,7 +140,6 @@ export default class UpdateAppealService {
           errors.push(...(response?.details?.field_errors || [])
               .map(error => `${error.id}: ${error.message}`));
         }
-        console.error(`midEventValidation for ${event.id} failed with errors: ${errors}`);
       }
     }
     return errors;

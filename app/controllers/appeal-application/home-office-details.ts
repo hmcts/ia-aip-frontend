@@ -9,7 +9,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { getNationalitiesOptions } from '../../utils/nationalities';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { getRedirectPage } from '../../utils/utils';
+import { getRedirectPage, toIsoDate } from '../../utils/utils';
 import {
   appellantNamesValidation,
   dateLetterReceivedValidation,
@@ -57,8 +57,9 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
           homeOfficeRefNumber: req.body.homeOfficeRefNumber
         }
       };
+      const pageIds: string[] = ['editAppealcuiHomeOfficeReferenceNumber']
       const midEventData = { homeOfficeReferenceNumber: req.body.homeOfficeRefNumber };
-      await updateAppealService.validateMidEvent(Events.HOME_OFFICE_REFERENCE_DATA, ['homeOfficeReferenceNumber'], appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
@@ -123,6 +124,13 @@ function postNamePage(updateAppealService: UpdateAppealService) {
         }
       };
 
+      const pageIds: string[] = ['editAppealcuiAppellantName']
+      const midEventData = {
+        appellantGivenNames: req.body.givenNames,
+        appellantFamilyName: req.body.familyName
+      };
+      await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
@@ -182,6 +190,11 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
           }
         }
       };
+
+      const pageIds: string[] = ['editAppealcuiAppellantDob']
+      const midEventData = { appellantDateOfBirth: toIsoDate(appeal.application.personalDetails.dob) };
+      await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {

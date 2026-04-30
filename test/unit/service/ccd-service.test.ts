@@ -234,6 +234,33 @@ describe('idam-service', () => {
           '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
       expect(postRequest.calledOnceWith(ccdBaseUrl + expectedUrl, midEventDetails)).to.equal(true);
     });
+
+    it('validateMidEvent returns error data', async () => {
+      const caseData = { journeyType: 'AIP' } as Partial<CaseData>;
+      const midEventDetails: MidEventDetails = {
+        case_reference: caseId,
+        data: caseData,
+        event_data: caseData,
+        ignore_warning: true,
+        event: Events.EDIT_APPEAL
+      };
+      const pageId: string = 'somePageId';
+      const error = {
+        status: 422,
+        response: {
+          data: {
+            message: 'Please contact HMCTS for support.'
+          }
+        }
+      }
+      postRequest.rejects(error);
+      const response = await ccdService.validateMidEvent(midEventDetails, pageId, userId, headers);
+
+      const expectedUrl =
+          '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
+      expect(postRequest.calledOnceWith(ccdBaseUrl + expectedUrl, midEventDetails)).to.equal(true);
+      expect(response).to.deep.equal(error.response.data);
+    });
   });
 
 });

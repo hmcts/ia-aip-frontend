@@ -20,6 +20,7 @@ describe('Home Office Details Controller', function () {
   let redirectStub: sinon.SinonStub;
   let submitStub: sinon.SinonStub;
   let submitRefactoredStub: sinon.SinonStub;
+  let validateMidEventStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -51,6 +52,7 @@ describe('Home Office Details Controller', function () {
     renderStub = sandbox.stub();
     redirectStub = sandbox.stub();
     submitRefactoredStub = sandbox.stub();
+    validateMidEventStub = sandbox.stub();
 
     res = {
       render: renderStub,
@@ -60,7 +62,8 @@ describe('Home Office Details Controller', function () {
 
     updateAppealService = {
       submitEventRefactored: submitRefactoredStub,
-      submitEvent: submitStub
+      submitEvent: submitStub,
+      validateMidEvent: validateMidEventStub.returns([])
     } as Partial<UpdateAppealService>;
 
     next = sandbox.stub();
@@ -267,6 +270,38 @@ describe('Home Office Details Controller', function () {
           personalDetails: { familyName: '', givenNames: '' },
           previousPage: paths.appealStarted.gwfReference
         });
+    });
+
+    it('should fail validateMidEvent and render personal-details/name.njk with error', async () => {
+      req.body.givenNames = 'Lewis';
+      req.body.familyName = 'Williams';
+      const errorMessage = 'Please contact HMCTS for support.';
+      updateAppealService.validateMidEvent = validateMidEventStub.returns([errorMessage]);
+      await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const familyNameError: ValidationError = {
+        href: '#familyName',
+        key: 'familyName',
+        text: errorMessage
+      };
+      const givenNameErrors: ValidationError = {
+        href: '#givenNames',
+        key: 'givenNames',
+        text: errorMessage
+      };
+
+      expect(submitStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
+          'appeal-application/personal-details/name.njk',
+          {
+            error: {
+              givenNames: givenNameErrors,
+              familyName: familyNameError
+            },
+            errorList: [ givenNameErrors, familyNameError ],
+            personalDetails: { familyName: req.body.familyName, givenNames: req.body.givenNames },
+            previousPage: paths.appealStarted.details
+          });
     });
   });
 });

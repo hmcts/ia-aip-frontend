@@ -173,8 +173,12 @@ class CcdService {
         headers
     );
 
-    const response = await axios.post(url, midEventDetails, options);
-    return response.data;
+    try {
+      const response = await axios.post(url, midEventDetails, options);
+      return response.data;
+    } catch (e) {
+      return e.response.data;
+    }
   }
 
   async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {

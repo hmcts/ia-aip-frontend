@@ -26,7 +26,7 @@ describe('Home Office Details Controller', function () {
   const logger: Logger = new Logger();
   let submitStub: sinon.SinonStub;
   let submitRefactoredStub: sinon.SinonStub;
-  let validateStub: sinon.SinonStub;
+  let validateMidEventStub: sinon.SinonStub;
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
   beforeEach(() => {
@@ -57,7 +57,7 @@ describe('Home Office Details Controller', function () {
 
     submitStub = sandbox.stub();
     submitRefactoredStub = sandbox.stub();
-    validateStub = sandbox.stub();
+    validateMidEventStub = sandbox.stub();
     renderStub = sandbox.stub();
     redirectStub = sandbox.stub();
 
@@ -76,7 +76,7 @@ describe('Home Office Details Controller', function () {
           homeOfficeReferenceNumber: 'A1234567'
         }
       }),
-      validateMidEvent: validateStub.returns({})
+      validateMidEvent: validateMidEventStub.returns([])
     };
   });
 
@@ -270,6 +270,30 @@ describe('Home Office Details Controller', function () {
       res.render = renderStub.throws(error);
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
+    });
+
+    it('should fail validateMidEvent and render home-office/details.njk with error', async () => {
+      const errorMessage = 'Please contact HMCTS for support.';
+      updateAppealService.validateMidEvent = validateMidEventStub.returns([errorMessage]);
+      req.body['homeOfficeRefNumber'] = '1212-0099-0089-1080';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const error = {
+        href: '#homeOfficeRefNumber',
+        key: 'homeOfficeRefNumber',
+        text: errorMessage
+      };
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
+        'appeal-application/home-office/details.njk',
+        {
+          errors: {
+            homeOfficeRefNumber: error
+          },
+          errorList: [error],
+          homeOfficeRefNumber: '1212-0099-0089-1080',
+          previousPage: paths.appealStarted.taskList
+      });
     });
   });
 

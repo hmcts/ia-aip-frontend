@@ -12,6 +12,7 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage, toIsoDate } from '../../utils/utils';
 import {
   appellantNamesValidation,
+  createStructuredError,
   dateLetterReceivedValidation,
   dateLetterSentValidation,
   dateOfBirthValidation,
@@ -33,6 +34,17 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function renderHomeOfficeDetailsError(req: Request, res: Response, errors: ValidationErrors) {
+  return res.render('appeal-application/home-office/details.njk',
+      {
+        errors: errors,
+        errorList: Object.values(errors),
+        homeOfficeRefNumber: req.body.homeOfficeRefNumber,
+        previousPage: paths.appealStarted.taskList
+      }
+  );
+}
+
 function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -41,14 +53,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       }
       const validation = homeOfficeNumberValidation(req.body);
       if (validation) {
-        return res.render('appeal-application/home-office/details.njk',
-          {
-            errors: validation,
-            errorList: Object.values(validation),
-            homeOfficeRefNumber: req.body.homeOfficeRefNumber,
-            previousPage: paths.appealStarted.taskList
-          }
-        );
+        return renderHomeOfficeDetailsError(req, res, validation);
       }
       const appeal: Appeal = {
         ...req.session.appeal,
@@ -57,9 +62,16 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
           homeOfficeRefNumber: req.body.homeOfficeRefNumber
         }
       };
-      const pageIds: string[] = ['editAppealcuiHomeOfficeReferenceNumber']
+      const pageIds: string[] = ['editAppealcuiHomeOfficeReferenceNumber'];
       const midEventData = { homeOfficeReferenceNumber: req.body.homeOfficeRefNumber };
-      await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
+      if (midEventErrors?.length > 0) {
+        const structuredError = {
+          homeOfficeRefNumber: createStructuredError('homeOfficeRefNumber', midEventErrors[0])
+        };
+        return renderHomeOfficeDetailsError(req, res, structuredError);
+      }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
@@ -91,6 +103,20 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function renderNamePageError(req: Request, res: Response, errors: ValidationErrors) {
+  const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
+  const previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
+  return res.render('appeal-application/personal-details/name.njk', {
+    personalDetails: {
+      familyName: req.body.familyName,
+      givenNames: req.body.givenNames
+    },
+    error: errors,
+    errorList: Object.values(errors),
+    previousPage
+  });
+}
+
 function postNamePage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
@@ -99,17 +125,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
       }
       const validation = appellantNamesValidation(req.body);
       if (validation) {
-        const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
-        const previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
-        return res.render('appeal-application/personal-details/name.njk', {
-          personalDetails: {
-            familyName: req.body.familyName,
-            givenNames: req.body.givenNames
-          },
-          error: validation,
-          errorList: Object.values(validation),
-          previousPage
-        });
+        return renderNamePageError(req, res, validation);
       }
 
       const appeal: Appeal = {
@@ -124,12 +140,20 @@ function postNamePage(updateAppealService: UpdateAppealService) {
         }
       };
 
-      const pageIds: string[] = ['editAppealcuiAppellantName']
+      const pageIds: string[] = ['editAppealcuiAppellantName'];
       const midEventData = {
         appellantGivenNames: req.body.givenNames,
         appellantFamilyName: req.body.familyName
       };
-      await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
+      if (midEventErrors?.length > 0) {
+        const structuredError = {
+          givenNames: createStructuredError('givenNames', midEventErrors[0]),
+          familyName: createStructuredError('familyName', midEventErrors[0])
+        };
+        return renderNamePageError(req, res, structuredError);
+      }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
@@ -160,6 +184,15 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function renderDateOfBirthError(req: Request, res: Response, errors: boolean | ValidationErrors) {
+  return res.render('appeal-application/personal-details/date-of-birth.njk', {
+    errors: errors,
+    errorList: Object.values(errors),
+    dob: { ...req.body },
+    previousPage: paths.appealStarted.name
+  });
+}
+
 function postDateOfBirth(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
@@ -168,12 +201,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
       }
       const validation = dateOfBirthValidation(req.body);
       if (validation != null) {
-        return res.render('appeal-application/personal-details/date-of-birth.njk', {
-          errors: validation,
-          errorList: Object.values(validation),
-          dob: { ...req.body },
-          previousPage: paths.appealStarted.name
-        });
+        return renderDateOfBirthError(req, res, validation);
       }
 
       const appeal: Appeal = {
@@ -191,9 +219,16 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
         }
       };
 
-      const pageIds: string[] = ['editAppealcuiAppellantDob']
+      const pageIds: string[] = ['editAppealcuiAppellantDob'];
       const midEventData = { appellantDateOfBirth: toIsoDate(appeal.application.personalDetails.dob) };
-      await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
+      if (midEventErrors?.length > 0) {
+        const structuredError = {
+          dob: createStructuredError('dob', midEventErrors[0])
+        };
+        return renderDateOfBirthError(req, res, structuredError);
+      }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);

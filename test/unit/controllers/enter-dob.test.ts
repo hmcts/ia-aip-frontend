@@ -23,6 +23,7 @@ describe('Personal Details Controller', function () {
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
   let submitStub: sinon.SinonStub;
+  let validateMidEventStub: sinon.SinonStub;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -51,6 +52,7 @@ describe('Personal Details Controller', function () {
     } as unknown as Partial<Request>;
 
     submitStub = sandbox.stub();
+    validateMidEventStub = sandbox.stub();
     renderStub = sandbox.stub();
     redirectStub = sandbox.stub();
 
@@ -60,7 +62,10 @@ describe('Personal Details Controller', function () {
       redirect: redirectStub
     } as Partial<Response>;
 
-    updateAppealService = { submitEventRefactored: submitStub } as Partial<UpdateAppealService>;
+    updateAppealService = {
+      submitEventRefactored: submitStub,
+      validateMidEvent: validateMidEventStub.returns([])
+    } as Partial<UpdateAppealService>;
 
     next = sandbox.stub();
   });
@@ -266,6 +271,34 @@ describe('Personal Details Controller', function () {
           errorList: [ errorDate ],
           previousPage: paths.appealStarted.name
         }
+      );
+    });
+
+    it('should fail validateMidEvent and render appeal-application/personal-details/date-of-birth.njk with error', async () => {
+      req.body.day = 1;
+      req.body.month = 11;
+      req.body.year = 1993;
+      const errorMessage = 'Please contact HMCTS for support.';
+      updateAppealService.validateMidEvent = validateMidEventStub.returns([errorMessage]);
+
+      await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const dobError: ValidationError = {
+        href: '#dob',
+        key: 'dob',
+        text: errorMessage
+      };
+      expect(submitStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
+          'appeal-application/personal-details/date-of-birth.njk',
+          {
+            dob: { day: req.body.day, month: req.body.month, year: req.body.year },
+            errors: {
+              dob: dobError
+            },
+            errorList: [ dobError ],
+            previousPage: paths.appealStarted.name
+          }
       );
     });
   });

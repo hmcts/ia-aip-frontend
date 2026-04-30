@@ -252,7 +252,7 @@ describe('idam-service', () => {
             message: 'Please contact HMCTS for support.'
           }
         }
-      }
+      };
       postRequest.rejects(error);
       const response = await ccdService.validateMidEvent(midEventDetails, pageId, userId, headers);
 

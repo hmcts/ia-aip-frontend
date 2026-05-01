@@ -4426,7 +4426,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.15.2":
+"axios@npm:^1.7.2":
   version: 1.15.2
   resolution: "axios@npm:1.15.2"
   dependencies:
@@ -4434,17 +4434,6 @@ __metadata:
     form-data: "npm:^4.0.5"
     proxy-from-env: "npm:^2.1.0"
   checksum: 10/eebbd8cb777316d4252cd994a06ec9fb956ef519214a62dab6c5443ae8b753b5116e9a770502316789e6cdef1101e6aae53b6936d6a3791b2d66d75f4d7d2462
-  languageName: node
-  linkType: hard
-
-"axios@npm:^1.7.2":
-  version: 1.13.6
-  resolution: "axios@npm:1.13.6"
-  dependencies:
-    follow-redirects: "npm:^1.15.11"
-    form-data: "npm:^4.0.5"
-    proxy-from-env: "npm:^1.1.0"
-  checksum: 10/a7ed83c2af3ef21d64609df0f85e76893a915a864c5934df69241001d0578082d6521a0c730bf37518ee458821b5695957cb10db9fc705f2a8996c8686ea7a89
   languageName: node
   linkType: hard
 
@@ -8843,7 +8832,6 @@ __metadata:
     allure-js-commons: "npm:^3.5.0"
     allure-mocha: "npm:^3.5.0"
     applicationinsights: "npm:^1.8.10"
-    axios: "npm:^1.15.2"
     babel-loader: "npm:^9.2.1"
     chai: "npm:^6.2.2"
     chai-as-promised: "npm:^8.0.2"

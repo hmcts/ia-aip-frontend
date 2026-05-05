@@ -74,6 +74,10 @@ module.exports = {
       I.seeElement('//a[contains(., "Ask for more time")]');
     });
 
+    Then(/^I should not see the 'ask for more time' link$/, () => {
+      I.dontSeeElement('//a[contains(., "Ask for more time")]');
+    });
+
     When(/^I click 'ask for more time'$/, () => {
       I.click('Ask for more time');
     });
@@ -117,6 +121,36 @@ module.exports = {
       I.see('The Home Office has reviewed your appeal and decided to maintain their decision to refuse your application to stay in or enter the UK. Read the Home Office Response.');
       I.see('If you want to respond, you can provide more evidence at any time.');
       I.see('Your appeal will be decided at the hearing.');
+    });
+
+    Then(/^I should see the 'do this next section' for 'prepareForHearing' and 'finalBundling' when statutory timeframe 24 weeks is Yes$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+      I.see('The Tribunal has set a date for your hearing. Here are the details:');
+      I.see('Date: 01 March 2026');
+      I.see('Time: 4:00 pm');
+      I.see('Location: Taylor House');
+      I.see('You can access your Notice of Hearing. It includes important');
+      I.see('details about the hearing and you should read it carefully.');
+    });
+
+    Then(/^I should see the 'nothing to do next section' for 'pendingPayment' when statutory timeframe 24 weeks is Yes$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.nothingToDo, '//h2[1]');
+      I.see('Your appeal details have been sent to the Tribunal.');
+      I.see('A Legal Officer will contact you to tell you what happens next.');
+      I.see('What is a Legal Officer?');
+    });
+
+    Then(/^I should see the 'do this next section' for 'submitHearingRequirements' when statutory timeframe 24 weeks is Yes$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+      I.see('You must respond by 14 March 2026');
+      I.see('It’s important to respond by the deadline in order for the Tribunal to process your appeal effectively.');
+      I.see('What to expect at a hearing');
+    });
+
+    Then(/^I should see the 'do this next section' for 'awaitingClarifyingQuestionsAnswers' when statutory timeframe 24 weeks is Yes$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+      I.see('You need to answer some questions about your appeal.');
+      I.see('You need to respond by 07 May 2020.');
     });
   }
 };

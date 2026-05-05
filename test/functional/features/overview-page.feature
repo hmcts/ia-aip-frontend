@@ -181,6 +181,55 @@ Feature: Overview page
     And I check page accessibility
     Then I should see the appeal overview page
 
+  Scenario: Prepare For Hearing Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "prepareForHearing with stf24w"
+    And I visit the overview page
+    Then I should see the 'do this next section' for 'prepareForHearing' and 'finalBundling' when statutory timeframe 24 weeks is Yes
+    When I click "What to expect at a hearing" link
+    Then I should see the 'What to expect at your hearing' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
+  Scenario: Final Bundling Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "finalBundling with stf24w"
+    And I visit the overview page
+    Then I should see the 'do this next section' for 'prepareForHearing' and 'finalBundling' when statutory timeframe 24 weeks is Yes
+    When I click "What to expect at a hearing" link
+    Then I should see the 'What to expect at your hearing' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
+  Scenario: Pending Payment Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "pendingPayment with stf24w"
+    And I visit the overview page
+    Then I should see the 'nothing to do next section' for 'pendingPayment' when statutory timeframe 24 weeks is Yes
+    When I click "What is a Legal Officer?" link
+    And I check page accessibility
+    Then I should see the 'Tribunal Caseworker' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
+  Scenario: Submit Hearing Requirements Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "submitHearingRequirements with stf24w"
+    And I visit the overview page
+    Then I should see the 'do this next section' for 'submitHearingRequirements' when statutory timeframe 24 weeks is Yes
+    Then I should not see the 'ask for more time' link
+    When I click "What to expect at a hearing" link
+    Then I should see the 'What to expect at your hearing' guidance page
+    When I click "Back" button
+    And I check page accessibility
+    Then I should see the appeal overview page
+
+  Scenario: Awaiting Clarifying Questions Answers Statutory Timeframe 24 Weeks
+    Given I have logged in as an appellant in state "awaitingClarifyingQuestionsAnswers with stf24w"
+    And I visit the overview page
+    Then I should see the 'do this next section' for 'awaitingClarifyingQuestionsAnswers' when statutory timeframe 24 weeks is Yes
+    Then I should not see the 'ask for more time' link
+    And I check page accessibility
+
   # Scenario: Awaiting CMA requirements appeal with time extension
   #   Given I have logged in as an appellant in state "awaitingCmaRequirements with time extensions"
   #   When I visit the overview page

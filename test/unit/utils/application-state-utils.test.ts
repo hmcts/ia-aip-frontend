@@ -1,7 +1,7 @@
-import {Request} from 'express';
-import {FEATURE_FLAGS} from '../../../app/data/constants';
-import {States} from '../../../app/data/states';
-import {paths} from '../../../app/paths';
+import { Request } from 'express';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
+import { States } from '../../../app/data/states';
+import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import {
   getAppealApplicationNextStep,
@@ -14,9 +14,9 @@ import {
   requestFeeRemissionEventIsTheLatest
 } from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
-import {yesNoToBool} from '../../../app/utils/utils';
+import { yesNoToBool } from '../../../app/utils/utils';
 import i18n from '../../../locale/en.json';
-import {expect, sinon} from '../../utils/testUtils';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('application-state-utils', () => {
   let sandbox: sinon.SinonSandbox;
@@ -484,12 +484,12 @@ describe('application-state-utils', () => {
       'decision': 'allowed',
       'descriptionParagraphs': [
         'A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>',
-        '<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br/> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> <br/> <p> If you disagree with this decision, you have until <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> to appeal to the Upper Tribunal. </p>'
+        '<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>'
       ],
       'info': {
+        'title': 'Appeal Information',
         'text': 'If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.',
-        'title': 'Helpful Information',
-        'url': '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>'
+        'url': '<a href="{{ paths.ftpa.ftpaApplication }}">Apply for permission to appeal to the Upper Tribunal</a>'
       }
     };
 

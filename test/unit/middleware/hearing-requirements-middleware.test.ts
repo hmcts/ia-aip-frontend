@@ -63,23 +63,12 @@ describe('hearingRequirementsMiddleware', () => {
     }
   });
 
-  it('should redirect to respective hearings page if the hearing bundle feature is enabled', async () => {
+  it('should redirect to respective hearings page', async () => {
     const reqWithPath: Partial<Request> = {
       ...req,
       path: paths.common.overview
     };
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(reqWithPath as Request, 'aip-hearing-bundle-feature', false).resolves(true);
     await hearingBundleFeatureMiddleware(reqWithPath as Request, res as Response, next);
     expect(next.called).to.equal(true);
-  });
-
-  it('should redirect to overview page if the hearing bundle feature is disabled', async () => {
-    const reqWithPath: Partial<Request> = {
-      ...req,
-      path: paths.common.overview
-    };
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(reqWithPath as Request, 'aip-hearing-bundle-feature', false).resolves(false);
-    await hearingBundleFeatureMiddleware(reqWithPath as Request, res as Response, next);
-    expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
   });
 });

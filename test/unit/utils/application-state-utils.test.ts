@@ -476,7 +476,6 @@ describe('application-state-utils', () => {
       }
     ];
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true)
       .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(false);
 
     const result = await getAppealApplicationNextStep(req as Request);
@@ -511,7 +510,6 @@ describe('application-state-utils', () => {
       }
     ];
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true)
       .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     const result = await getAppealApplicationNextStep(req as Request);
 
@@ -1863,7 +1861,6 @@ describe('application-state-utils', () => {
       testStates.forEach(state => {
         it(`when application status is ${state} and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
           req.session.appeal.appealStatus = state;
-          sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
           const result = await getAppealApplicationNextStep(req as Request);
 
           const expected = getPreHearingAndFinalBundling();
@@ -1886,7 +1883,6 @@ describe('application-state-utils', () => {
           }
         } as HistoryEvent;
         req.session.appeal.history.push(event);
-        sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
         const result = await getAppealApplicationNextStep(req as Request);
 
         const expected = getPreHearingAndFinalBundling();

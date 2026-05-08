@@ -2,7 +2,6 @@ export const CQ_NOTHING_ELSE: string = 'Nothing else';
 
 export const FEATURE_FLAGS = {
   CARD_PAYMENTS: 'online-card-payments-feature',
-  HEARING_BUNDLE: 'aip-hearing-bundle-feature',
   OUT_OF_COUNTRY: 'aip-ooc-feature',
   FTPA: 'aip-ftpa-feature',
   DLRM_FEE_REMISSION_FEATURE_FLAG: 'dlrm-fee-remission-feature-flag',

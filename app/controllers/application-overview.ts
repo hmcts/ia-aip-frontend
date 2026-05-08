@@ -12,7 +12,7 @@ import { formatDate, timeFormat } from '../utils/date-utils';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
-import { hasPendingTimeExtension, isFtpaFeatureEnabled } from '../utils/utils';
+import { hasPendingTimeExtension } from '../utils/utils';
 
 function getAppealRefNumber(appealRef: string) {
   if (appealRef && appealRef.toUpperCase() === 'DRAFT') {
@@ -130,7 +130,6 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       }
 
       const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
-      const ftpaFeatureEnabled = await isFtpaFeatureEnabled(req);
 
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
@@ -143,10 +142,10 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);
       const hearingDetails = getHearingDetails(req);
-      let showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
+      let showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus);
       if (refundFeatureEnabled) {
         showPayLaterLink = (req.session.appeal.application.refundConfirmationApplied || payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req))
-          && !isPostDecisionState(appealStatus, ftpaFeatureEnabled)
+          && !isPostDecisionState(appealStatus)
           && !isRemissionApprovedOrPartiallyApproved(req.session.appeal);
       }
 
@@ -155,7 +154,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus);
       const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus);
       const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus)
-          && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
+          && !isPostDecisionState(appealStatus);
 
       const application = req.session.appeal.application;
 
@@ -182,13 +181,12 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showAppealRequestsInAppealEndedStatus,
         showHearingRequests,
         showPayLaterLink,
-        ftpaFeatureEnabled,
         hearingDetails,
         showChangeRepresentation,
-        showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, ftpaFeatureEnabled),
+        showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal),
         showAskForFeeRemission,
         showAskForSomethingInEndedState,
-        isPostDecisionState: isPostDecisionState(appealStatus, ftpaFeatureEnabled)
+        isPostDecisionState: isPostDecisionState(appealStatus)
       });
     } catch (e) {
       next(e);
@@ -196,15 +194,14 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
   };
 }
 
-function isPostDecisionState(appealStatus: string, ftpaEnabled: boolean) {
+function isPostDecisionState(appealStatus: string) {
   const postDecisionStates = [ States.DECIDED.id, States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id ];
 
-  return postDecisionStates.includes(appealStatus) && ftpaEnabled;
+  return postDecisionStates.includes(appealStatus);
 }
 
-function showFtpaApplicationLink(appeal: Appeal, ftpaEnabled: boolean) {
-  return ftpaEnabled
-      && [ States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id ].includes(appeal.appealStatus)
+function showFtpaApplicationLink(appeal: Appeal) {
+  return [ States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id ].includes(appeal.appealStatus)
       && hasRespondentFtpaApplication(appeal)
       && !hasAppellantFtpaApplication(appeal);
 }

@@ -15,7 +15,6 @@ import {
   getFtpaApplicantType,
   getLatestUpdateRemissionDecionsEventHistory,
   getLatestUpdateTribunalDecisionHistory,
-  isFtpaFeatureEnabled,
   isNonStandardDirectionEnabled,
   isReadonlyApplicationEnabled,
   isUpdateTribunalDecideWithRule31,
@@ -319,11 +318,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const ccdService = updateAppealService.getCcdService();
   req.session.appeal.history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
 
-  const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
-  const ftpaFeatureEnabled: boolean = await isFtpaFeatureEnabled(req);
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
   const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
-  const eventsAndStates = getEventsAndStates(hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled, refundFeatureEnabled);
+  const eventsAndStates = getEventsAndStates(ftpaSetAsideFeatureEnabled, refundFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
   let appealHearingRequirementsSection = constructSection(
@@ -434,9 +431,7 @@ function getApplicationHistoryAppealRemissionSection(req, manageAFeeUpdate, refu
   }
 }
 
-function getEventsAndStates(hearingBundleFeatureEnabled: boolean,
-                            ftpaFeatureEnabled: boolean,
-                            ftpaSetAsideFeatureEnabled: boolean,
+function getEventsAndStates(ftpaSetAsideFeatureEnabled: boolean,
                             refundFeatureEnabled: boolean = false) {
   const appealHearingRequirementsSectionEvents = [
     Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
@@ -461,14 +456,13 @@ function getEventsAndStates(hearingBundleFeatureEnabled: boolean,
   ];
   const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id, Events.MARK_APPEAL_AS_REMITTED.id];
 
-  if (ftpaFeatureEnabled) {
-    appealDecisionSectionEvents.push(
-            Events.APPLY_FOR_FTPA_APPELLANT.id,
-            Events.APPLY_FOR_FTPA_RESPONDENT.id,
-            Events.LEADERSHIP_JUDGE_FTPA_DECISION.id,
-            Events.RESIDENT_JUDGE_FTPA_DECISION.id
-        );
-  }
+  appealDecisionSectionEvents.push(
+          Events.APPLY_FOR_FTPA_APPELLANT.id,
+          Events.APPLY_FOR_FTPA_RESPONDENT.id,
+          Events.LEADERSHIP_JUDGE_FTPA_DECISION.id,
+          Events.RESIDENT_JUDGE_FTPA_DECISION.id
+      );
+
 
   if (ftpaSetAsideFeatureEnabled) {
     appealDecisionSectionEvents.push(
@@ -495,12 +489,11 @@ function getEventsAndStates(hearingBundleFeatureEnabled: boolean,
     States.REMITTED.id
   ];
 
-  if (hearingBundleFeatureEnabled) {
-    appealHearingRequirementsSectionEvents.push(
-            Events.LIST_CASE.id,
-            Events.RECORD_ADJOURNMENT_DETAILS.id
-        );
-  }
+
+  appealHearingRequirementsSectionEvents.push(
+          Events.LIST_CASE.id,
+          Events.RECORD_ADJOURNMENT_DETAILS.id
+      );
 
   appealArgumentSectionEvents.push(
           Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,

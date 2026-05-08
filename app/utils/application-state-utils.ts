@@ -10,7 +10,6 @@ import {
   getAppellantApplications,
   getFtpaApplicantType,
   hasPendingTimeExtension,
-  isFtpaFeatureEnabled,
   isUpdateTribunalDecideWithRule31,
   isUpdateTribunalDecideWithRule32,
   yesNoToBool
@@ -121,7 +120,6 @@ async function getAppealApplicationNextStep(req: Request) {
   const decisionRefused = applications.length > 0 && applications[0].value.decision === 'Refused' || null;
   let doThisNextSection: DoThisNextSection;
   const isLate = req.session.appeal.application.isAppealLate;
-  const ftpaEnabled: boolean = await isFtpaFeatureEnabled(req);
   const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
   const dlrmFeeRemissionFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
@@ -597,29 +595,17 @@ async function getAppealApplicationNextStep(req: Request) {
       let decidedInfo;
       let decision;
 
-      if (ftpaEnabled) {
-        decidedDescriptionParagraphs = [
-          i18n.pages.overviewPage.doThisNext.decided.decision,
-          i18n.pages.overviewPage.doThisNext.decided.descriptionFtpaEnabled
-        ];
 
-        decidedInfo = {
-          title: i18n.pages.overviewPage.doThisNext.decided.info.titleFtpaEnabled,
-          text: i18n.pages.overviewPage.doThisNext.decided.info.text,
-          url: i18n.pages.overviewPage.doThisNext.decided.info.urlFtpaEnabled
-        };
+      decidedDescriptionParagraphs = [
+        i18n.pages.overviewPage.doThisNext.decided.decision,
+        i18n.pages.overviewPage.doThisNext.decided.descriptionFtpaEnabled
+      ];
 
-      } else {
-        decidedDescriptionParagraphs = [
-          i18n.pages.overviewPage.doThisNext.decided.decision,
-          i18n.pages.overviewPage.doThisNext.decided.description
-        ];
-
-        decidedInfo = {
-          title: i18n.pages.overviewPage.doThisNext.decided.info.title,
-          url: i18n.pages.overviewPage.doThisNext.decided.info.url
-        };
-      }
+      decidedInfo = {
+        title: i18n.pages.overviewPage.doThisNext.decided.info.titleFtpaEnabled,
+        text: i18n.pages.overviewPage.doThisNext.decided.info.text,
+        url: i18n.pages.overviewPage.doThisNext.decided.info.urlFtpaEnabled
+      };
 
       if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.updatedAppealDecision) {
         decision = req.session.appeal.updatedAppealDecision.toLowerCase();
@@ -681,20 +667,18 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'ftpaSubmitted':
       doThisNextSection = {
-        descriptionParagraphs: (ftpaEnabled)
-          ? i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description[ftpaApplicantType]
-          : ['Nothing to do next']
+        descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description[ftpaApplicantType]
       };
       break;
     case 'ftpaDecided':
-      if (ftpaEnabled && APPLICANT_TYPE.APPELLANT === ftpaApplicantType) {
+      if (APPLICANT_TYPE.APPELLANT === ftpaApplicantType) {
         const ftpaDecision = req.session.appeal.ftpaAppellantDecisionOutcomeType || req.session.appeal.ftpaAppellantRjDecisionOutcomeType;
         doThisNextSection = {
           cta: {},
           ftpaDeadline: getDueDateForAppellantToRespondToFtpaDecision(req),
           descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided.appellant[ftpaDecision]
         };
-      } else if (ftpaEnabled && APPLICANT_TYPE.RESPONDENT === ftpaApplicantType) {
+      } else if (APPLICANT_TYPE.RESPONDENT === ftpaApplicantType) {
         const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType || req.session.appeal.ftpaRespondentRjDecisionOutcomeType;
         if (ftpaSetAsideFeatureEnabled && (ftpaDecision === 'reheardRule35' || ftpaDecision === 'remadeRule31' || ftpaDecision === 'remadeRule32')) {
           doThisNextSection = {

@@ -855,22 +855,22 @@ describe('Confirmation Page Controller', () => {
   });
 
   it('isPostDecisionState should return true when in decided state', () => {
-    const result = isPostDecisionState(States.DECIDED.id, true);
+    const result = isPostDecisionState(States.DECIDED.id);
     expect(result).to.equal(true);
   });
 
   it('isPostDecisionState should return true when in ftpaDecided state', () => {
-    const result = isPostDecisionState(States.FTPA_DECIDED.id, true);
+    const result = isPostDecisionState(States.FTPA_DECIDED.id);
     expect(result).to.equal(true);
   });
 
   it('isPostDecisionState should return true when in ftpaSubmitted state', () => {
-    const result = isPostDecisionState(States.FTPA_SUBMITTED.id, true);
+    const result = isPostDecisionState(States.FTPA_SUBMITTED.id);
     expect(result).to.equal(true);
   });
 
   it('isPostDecisionState should return false when in state other than decided, ftpaDecided or ftpaSubmitted', () => {
-    const result = isPostDecisionState(States.APPEAL_SUBMITTED.id, true);
+    const result = isPostDecisionState(States.APPEAL_SUBMITTED.id);
     expect(result).to.equal(false);
   });
 
@@ -880,7 +880,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_SUBMITTED.id,
       ftpaAppellantApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal);
     expect(result).to.equal(false);
   });
 
@@ -890,7 +890,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_DECIDED.id,
       ftpaAppellantApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal);
     expect(result).to.equal(false);
   });
 
@@ -900,7 +900,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_SUBMITTED.id,
       ftpaRespondentApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal);
     expect(result).to.equal(true);
   });
 
@@ -910,7 +910,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_DECIDED.id,
       ftpaRespondentApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal);
     expect(result).to.equal(true);
   });
 
@@ -919,7 +919,7 @@ describe('Confirmation Page Controller', () => {
       ...req.session.appeal,
       appealStatus: States.DECIDED.id
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal);
     expect(result).to.equal(false);
   });
 
@@ -1007,7 +1007,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_SUBMITTED.id,
       ftpaAppellantApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal);
     expect(result).to.equal(false);
   });
 
@@ -1017,7 +1017,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_DECIDED.id,
       ftpaAppellantApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal);
     expect(result).to.equal(false);
   });
 
@@ -1027,7 +1027,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_SUBMITTED.id,
       ftpaRespondentApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal);
     expect(result).to.equal(true);
   });
 
@@ -1037,7 +1037,7 @@ describe('Confirmation Page Controller', () => {
       appealStatus: States.FTPA_DECIDED.id,
       ftpaRespondentApplicationDate: '2020-01-01'
     };
-    const result = showFtpaApplicationLink(appeal, true);
+    const result = showFtpaApplicationLink(appeal);
     expect(result).to.equal(true);
   });
 

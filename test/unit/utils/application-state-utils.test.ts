@@ -463,40 +463,6 @@ describe('application-state-utils', () => {
     });
   });
 
-  it('when application status is decided should get correct Do this next section - FTPA disabled', async () => {
-    req.session.appeal.appealStatus = 'decided';
-    req.session.appeal.isDecisionAllowed = 'allowed';
-    req.session.appeal.finalDecisionAndReasonsDocuments = [
-      {
-        fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
-        name: 'PA 50012 2022-bond20-Decision-and-reasons-FINAL.pdf',
-        id: '2',
-        tag: 'finalDecisionAndReasonsPdf',
-        dateUploaded: '2022-01-26'
-      }
-    ];
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(false);
-
-    const result = await getAppealApplicationNextStep(req as Request);
-    const expected = {
-      'allowedAskForMoreTime': false,
-      'cta': {},
-      'deadline': '09 February 2022',
-      'decision': 'allowed',
-      'descriptionParagraphs': [
-        'A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>',
-        '<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> <br> <p> If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to appeal to the Upper Tribunal. </p>'
-      ],
-      'info': {
-        'title': 'Helpful Information',
-        'url': '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>'
-      }
-    };
-
-    expect(result).to.deep.equal(expected);
-  });
-
   it('when application status is decided should get correct Do this next section - FTPA enabled.', async () => {
     req.session.appeal.appealStatus = 'decided';
     req.session.appeal.isDecisionAllowed = 'allowed';
@@ -509,8 +475,6 @@ describe('application-state-utils', () => {
         dateUploaded: '2022-01-26'
       }
     ];
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     const result = await getAppealApplicationNextStep(req as Request);
 
     const expected = {
@@ -608,8 +572,7 @@ describe('application-state-utils', () => {
   });
 
   it('when application status is ftpaSubmitted after respondent ftpa application should get correct Do this next section.', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
     req.session.appeal.appealStatus = 'ftpaSubmitted';
     req.session.appeal.ftpaRespondentApplicationDate = '2022-01-01';
     req.session.appeal.history = [
@@ -644,8 +607,6 @@ describe('application-state-utils', () => {
   });
 
   it('when application status is ftpaSubmitted after appellant ftpa application should get correct Do this next section.', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaSubmitted';
     req.session.appeal.ftpaAppellantApplicationDate = '2022-01-01';
     req.session.appeal.history = [
@@ -683,8 +644,7 @@ describe('application-state-utils', () => {
   });
 
   it('when application is granted for respondent ftpa application should get correct Do this next section.', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'granted';
@@ -702,8 +662,7 @@ describe('application-state-utils', () => {
   });
 
   it('when application is refused for respondent ftpa application should get correct Do this next section.', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'refused';
@@ -721,8 +680,7 @@ describe('application-state-utils', () => {
   });
 
   it('when application is partially granted for respondent ftpa application should get correct Do this next section.', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'partiallyGranted';
@@ -740,8 +698,7 @@ describe('application-state-utils', () => {
   });
 
   it('when respondent ftpa application is partially granted by resident judge, should get correct Do this next section.', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentRjDecisionOutcomeType = 'partiallyGranted';
@@ -759,8 +716,7 @@ describe('application-state-utils', () => {
   });
 
   it('when application is not admitted for respondent ftpa application should get correct Do this next section.', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.ftpaRespondentDecisionOutcomeType = 'notAdmitted';
@@ -779,7 +735,6 @@ describe('application-state-utils', () => {
 
   it('when application is decided as reheardRule35 for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
       .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
@@ -803,7 +758,6 @@ describe('application-state-utils', () => {
 
   it('when application is decided as remadeRule31 for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
       .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
@@ -826,7 +780,6 @@ describe('application-state-utils', () => {
 
   it('when application is decided as remadeRule32 for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
       .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
@@ -849,7 +802,6 @@ describe('application-state-utils', () => {
 
   it('when application is decided as reheardRule35 for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
       .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
@@ -872,7 +824,6 @@ describe('application-state-utils', () => {
 
   it('when application is decided as remadeRule31 for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
       .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
@@ -895,7 +846,6 @@ describe('application-state-utils', () => {
 
   it('when application is decided as remadeRule32 for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
       .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'respondent';
@@ -917,8 +867,6 @@ describe('application-state-utils', () => {
   });
 
   it('when application is granted for appellant ftpa application should get correct Do this next section.', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'appellant';
     req.session.appeal.ftpaAppellantDecisionOutcomeType = 'granted';
@@ -942,8 +890,7 @@ describe('application-state-utils', () => {
   });
 
   it('when application is refused for appellant ftpa application should get correct Do this next section.', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'appellant';
     req.session.appeal.ftpaAppellantDecisionOutcomeType = 'refused';
@@ -969,8 +916,7 @@ describe('application-state-utils', () => {
   });
 
   it('when application is partially granted for appellant ftpa application should get correct Do this next section.', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'appellant';
     req.session.appeal.ftpaAppellantDecisionOutcomeType = 'partiallyGranted';
@@ -997,8 +943,7 @@ describe('application-state-utils', () => {
   });
 
   it('when application is not admitted for appellant ftpa application should get correct Do this next section.', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'appellant';
     req.session.appeal.ftpaAppellantDecisionOutcomeType = 'notAdmitted';
@@ -1025,8 +970,7 @@ describe('application-state-utils', () => {
   });
 
   it('when appellant ftpa application is not admitted by resident judge, should get correct Do this next section.', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'appellant';
     req.session.appeal.ftpaAppellantRjDecisionOutcomeType = 'notAdmitted';

@@ -103,7 +103,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('makeFtpaApplication', () => {
     it('should clear local ftpa data', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const docs = [
         {
@@ -131,15 +130,7 @@ describe('Ftpa application controllers setup', () => {
       expect(req.session.appeal.ftpaAppellantOutOfTimeDocuments).to.deep.equals([]);
     });
 
-    it('should redirect to overview page if feature disabled', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(false);
-      await makeFtpaApplication(req as Request, res as Response, next);
-
-      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
-    });
-
     it('should redirect to ftpa reason page when in time application', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.finalDecisionAndReasonsDocuments = [
         ...finalDecisionAndReasonsDocumentsInTime
@@ -151,7 +142,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should redirect to ftpa out of time reason page when out of time application', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.finalDecisionAndReasonsDocuments = [
         ...finalDecisionAndReasonsDocumentsOutOfTime
@@ -165,7 +155,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('getFtpaReason', () => {
     it('should render correctly when in time', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.ftpaAppellantGrounds = '';
 
@@ -187,7 +176,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should render correctly when out of time, no evidence', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal = {
         ...req.session.appeal,
@@ -213,7 +201,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should render correctly when out of time with evidence', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal = {
         ...req.session.appeal,
@@ -239,17 +226,7 @@ describe('Ftpa application controllers setup', () => {
       });
     });
 
-    it('should redirect to overview page if feature disabled', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(false);
-      await makeFtpaApplication(req as Request, res as Response, next);
-
-      await getFtpaReason(req as Request, res as Response, next);
-
-      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
-    });
-
     it('should catch an error and redirect with error', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const error = new Error('the error');
       res.render = renderStub.throws(error);
@@ -262,7 +239,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('getFtpaOutOfTimeReason', () => {
     it('should render correctly', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.finalDecisionAndReasonsDocuments = [
         ...finalDecisionAndReasonsDocumentsOutOfTime
@@ -285,18 +261,7 @@ describe('Ftpa application controllers setup', () => {
       });
     });
 
-    it('should redirect to overview page if feature disabled', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(false);
-
-      await makeFtpaApplication(req as Request, res as Response, next);
-
-      await getFtpaOutOfTimeReason(req as Request, res as Response, next);
-
-      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
-    });
-
     it('should catch an error and redirect with error', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.finalDecisionAndReasonsDocuments = [
         ...finalDecisionAndReasonsDocumentsOutOfTime
@@ -313,7 +278,6 @@ describe('Ftpa application controllers setup', () => {
   describe('postFtpaReason', () => {
 
     it('should redirect to provide evidence question page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.body['ftpaReason'] = 'Grounds for ftpa application';
 
@@ -323,7 +287,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should redirect to reason-for-application-page with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       postFtpaReason(req as Request, res as Response, next);
 
@@ -331,7 +294,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should catch an error and redirect with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const error = new Error('the error');
       res.redirect = redirectStub.throws(error);
@@ -345,7 +307,6 @@ describe('Ftpa application controllers setup', () => {
   describe('postFtpaOutOfTimeReason', () => {
 
     it('should redirect to provide evidence question page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.body['ftpaOutOfTimeReason'] = 'Reason for late ftpa application';
 
@@ -356,7 +317,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should redirect to reason-for-out-of-time-application page with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       postFtpaOutOfTimeReason(req as Request, res as Response, next);
 
@@ -364,7 +324,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should catch an error and redirect with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const error = new Error('the error');
       res.redirect = redirectStub.throws(error);
@@ -377,7 +336,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('getProvideFtpaEvidenceQuestion', () => {
     it('should render evidence-question-page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.ftpaProvideEvidence = 'Yes';
       const question = {
@@ -415,7 +373,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should catch an error and redirect with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const error = new Error('the error');
       res.render = renderStub.throws(error);
@@ -428,7 +385,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('getProvideFtpaOutOfTimeEvidenceQuestion', () => {
     it('should render evidence-question-page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.ftpaOutOfTimeProvideEvidence = 'Yes';
       const question = {
@@ -466,7 +422,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should catch an error and redirect with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const error = new Error('the error');
       res.render = renderStub.throws(error);
@@ -480,7 +435,6 @@ describe('Ftpa application controllers setup', () => {
   describe('postProvideEvidenceQuestion', () => {
 
     it('should redirect to provide evidence document page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.body['answer'] = 'Yes';
 
@@ -490,7 +444,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should redirect to check your answer page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.body['answer'] = 'No';
 
@@ -500,7 +453,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should redirect to evidence-question-page with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       postProvideEvidenceQuestion(req as Request, res as Response, next);
 
@@ -508,7 +460,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should catch an error and redirect with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const error = new Error('the error');
       res.redirect = redirectStub.throws(error);
@@ -522,7 +473,6 @@ describe('Ftpa application controllers setup', () => {
   describe('postProvideOutOfTimeEvidenceQuestion', () => {
 
     it('should redirect to provide evidence document page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.body['answer'] = 'Yes';
 
@@ -532,7 +482,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should redirect to ftpa reason page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.body['answer'] = 'No';
 
@@ -542,7 +491,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should redirect to out of time evidence-question-page with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       postProvideOutOfTimeEvidenceQuestion(req as Request, res as Response, next);
 
@@ -550,7 +498,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should catch an error and redirect with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const error = new Error('the error');
       res.redirect = redirectStub.throws(error);
@@ -563,7 +510,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('getProvideDocument', () => {
     it('should render with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.query.error = 'noFileSelected';
       const errorList = [{ key: 'file-upload', text: 'Select a file', href: '#file-upload' }];
@@ -607,7 +553,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('getProvideEvidenceDocument', () => {
     it('should render evidence document upload page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const expectedRenderPayload = {
         title: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaEvidence.title,
@@ -628,7 +573,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should catch an error and redirect with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const error = new Error('the error');
       res.render = renderStub.throws(error);
@@ -641,7 +585,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('getProvideOutOfTimeEvidenceDocument', () => {
     it('should render out of time evidence document upload page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const expectedRenderPayload = {
         title: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaEvidence.title,
@@ -662,7 +605,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should catch an error and redirect with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const error = new Error('the error');
       res.render = renderStub.throws(error);
@@ -676,7 +618,6 @@ describe('Ftpa application controllers setup', () => {
   describe('postFtpaEvidence', () => {
 
     it('should redirect to check-and-send-page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.ftpaAppellantEvidenceDocuments = [
         {
@@ -693,7 +634,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should redirect to evidence document upload page with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       postFtpaEvidence(req as Request, res as Response, next);
 
@@ -701,7 +641,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should catch an error and redirect with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const error = new Error('the error');
       res.redirect = redirectStub.throws(error);
@@ -715,7 +654,6 @@ describe('Ftpa application controllers setup', () => {
   describe('postFtpaOutOfTimeEvidence', () => {
 
     it('should redirect to ftpa-reason-page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.ftpaAppellantOutOfTimeDocuments = [
         {
@@ -732,7 +670,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should redirect to evidence document upload page with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       postFtpaOutOfTimeEvidence(req as Request, res as Response, next);
 
@@ -740,7 +677,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should catch an error and redirect with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const error = new Error('the error');
       res.redirect = redirectStub.throws(error);
@@ -753,7 +689,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('uploadEvidence', () => {
     it('should upload evidence successfully', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const fileSizeInMb = 0.001;
       const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
@@ -781,7 +716,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should redirect with error', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       await uploadEvidence(
         documentManagementService as DocumentManagementService,
@@ -794,7 +728,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('deleteEvidence', () => {
     it('should delete evidence successfully', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.ftpaAppellantEvidenceDocuments = [{ fileId: '1', name: 'name' } as Evidence];
       req.session.appeal.documentMap = [{ id: '1', url: 'docStoreURLToFile' }];
@@ -813,7 +746,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('getFtpaCheckAndSend', () => {
     it('should render when in time', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.ftpaProvideEvidence = 'Yes';
 
@@ -833,7 +765,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should render when no supporting evidence', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.ftpaProvideEvidence = 'No';
 
@@ -855,7 +786,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('postFtpaCheckAndSend', () => {
     it('should submit application successfully when in time', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const evidence = [
         {
@@ -880,7 +810,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('getConfirmation', () => {
     it('should render confirmation-page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       getConfirmation(req as Request, res as Response, next);
 
@@ -893,7 +822,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('isFtpaApplicationOutOfTime', () => {
     it('should return true when application is made out of time', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.finalDecisionAndReasonsDocuments = [
         {
@@ -908,7 +836,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should return false when application is made in time', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.finalDecisionAndReasonsDocuments = [
         {
@@ -935,7 +862,6 @@ describe('Ftpa application controllers setup', () => {
       }
     ];
     it('should return summary list with supporting evidence', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.ftpaAppellantEvidenceDocuments = mockEvidenceDocuments;
       req.session.appeal.ftpaAppellantGrounds = 'Grounds for ftpa application';
@@ -946,7 +872,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should return summary list without supporting evidence', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.ftpaAppellantGrounds = 'Grounds for ftpa application';
 
@@ -956,7 +881,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should return out of time summary list with supporting evidence', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.ftpaAppellantEvidenceDocuments = mockEvidenceDocuments;
       req.session.appeal.ftpaAppellantGrounds = 'Grounds for ftpa application';
@@ -969,7 +893,6 @@ describe('Ftpa application controllers setup', () => {
     });
 
     it('should return out of time summary list without supporting evidence', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.session.appeal.ftpaAppellantGrounds = 'Grounds for ftpa application';
       req.session.appeal.ftpaAppellantOutOfTimeExplanation = 'Out of time explanations';
@@ -983,7 +906,6 @@ describe('Ftpa application controllers setup', () => {
 
   describe('setupAppealRequestControllers', () => {
     it('should setup routes', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');

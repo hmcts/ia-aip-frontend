@@ -52,7 +52,6 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
   getTestFlagValue(flag: string) {
     switch (flag) {
       case 'online-card-payments-feature':
-      case 'aip-ftpa-feature':
       case 'dlrm-fee-remission-feature-flag':
       case 'dlrm-setaside-feature-flag':
       case 'dlrm-refund-feature-flag':

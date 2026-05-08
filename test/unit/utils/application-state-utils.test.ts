@@ -484,11 +484,11 @@ describe('application-state-utils', () => {
       'decision': 'allowed',
       'descriptionParagraphs': [
         'A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>',
-        '<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br/> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> <br/> <p> If you disagree with this decision, you have until <span class=\\"govuk-!-font-weight-bold\\">{{ applicationNextStep.deadline }}</span> to appeal to the Upper Tribunal. </p>'
+        '<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br/> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> <br/> <p> If you disagree with this decision, you have until <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> to appeal to the Upper Tribunal. </p>'
       ],
       'info': {
-        'title': 'Helpful Information',
         'text': 'If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.',
+        'title': 'Helpful Information',
         'url': '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>'
       }
     };

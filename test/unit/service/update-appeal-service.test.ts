@@ -44,8 +44,7 @@ describe('update-appeal-service', () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
       .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
       .withArgs(req as Request, FEATURE_FLAGS.HEARING_BUNDLE, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.OUT_OF_COUNTRY, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(false);
+      .withArgs(req as Request, FEATURE_FLAGS.OUT_OF_COUNTRY, false).resolves(false);
     documentManagementService = new DocumentManagementService(authenticationService);
 
     updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, null, documentManagementService);

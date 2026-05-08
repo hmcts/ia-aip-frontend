@@ -43,8 +43,6 @@ describe('update-appeal-service', () => {
     sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
       .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.HEARING_REQUIREMENTS, false).resolves(false)
       .withArgs(req as Request, FEATURE_FLAGS.HEARING_BUNDLE, false).resolves(false)
       .withArgs(req as Request, FEATURE_FLAGS.OUT_OF_COUNTRY, false).resolves(false)
       .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(false);

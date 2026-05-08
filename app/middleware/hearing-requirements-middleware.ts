@@ -4,12 +4,7 @@ import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
 
 async function hearingRequirementsMiddleware(req: Request, res: Response, next: NextFunction) {
-  const hearingRequirementsEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_REQUIREMENTS, false);
-  if (hearingRequirementsEnabled) {
-    return next();
-  } else {
-    return res.redirect(paths.common.overview);
-  }
+  return next();
 }
 
 async function hearingBundleFeatureMiddleware(req: Request, res: Response, next: NextFunction) {

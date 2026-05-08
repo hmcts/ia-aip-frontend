@@ -1051,52 +1051,14 @@ describe('timeline-utils', () => {
 
   describe('getEventsAndStates', () => {
     it('should return relevant events and states when uploadAddendumEvidence feature enabled', () => {
-      const eventsAndStates = getEventsAndStates(true, true, false, false);
+      const eventsAndStates = getEventsAndStates(false, false);
       expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(18);
       expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(18);
     });
 
-    it('should include uploadAdditionalEvidenceHomeOffice event in appealArgumentSectionEvents', () => {
-      const eventsAndStates = getEventsAndStates(false, false, false, false);
-      expect(eventsAndStates.appealArgumentSectionEvents).to.include(Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id);
-    });
-
-    it('should include caseBuilding, listing, prepareForHearing and remitted states in appealArgumentSectionStates', () => {
-      const eventsAndStates = getEventsAndStates(false, false, false, false);
-      expect(eventsAndStates.appealArgumentSectionStates).to.include(States.CASE_BUILDING.id);
-      expect(eventsAndStates.appealArgumentSectionStates).to.include(States.LISTING.id);
-      expect(eventsAndStates.appealArgumentSectionStates).to.include(States.PREPARE_FOR_HEARING.id);
-      expect(eventsAndStates.appealArgumentSectionStates).to.include(States.REMITTED.id);
-    });
-
-    it('should return relevant events when hearingBundle feature enabled', () => {
-      const eventsAndStates = getEventsAndStates(false, true, false, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.deep.equal(4);
-    });
-
     it('should return relevant events when hearingBundle and uploadAddendumEvidence features enabled', () => {
-      const eventsAndStates = getEventsAndStates(true, true, false, false);
+      const eventsAndStates = getEventsAndStates(false, false);
       expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.deep.equal(6);
-    });
-
-    it('should return relevant events when hearingBundle feature disabled', () => {
-      const eventsAndStates = getEventsAndStates(true, false, false, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.deep.equal(6);
-    });
-
-    it('should return relevant events when ftpa feature disabled', () => {
-      const eventsAndStates = getEventsAndStates(false, false, false, false);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.deep.equal(2);
-    });
-
-    it('should return relevant events when ftpa feature enabled', () => {
-      const eventsAndStates = getEventsAndStates(false, false, true, false);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.deep.equal(3);
-    });
-
-    it('should return relevant events when ftpa set aside feature enabled', () => {
-      const eventsAndStates = getEventsAndStates(false, false, false, true);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.deep.equal(2);
     });
   });
 

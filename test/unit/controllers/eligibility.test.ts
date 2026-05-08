@@ -53,25 +53,8 @@ describe('Type of appeal Controller', () => {
   });
 
   describe('load first question', () => {
-    it('loads first question', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(false);
-      req.session.eligibility = {};
-      await eligibilityQuestionGet(req as Request, res as Response, next);
-
-      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
-        question: i18n.eligibility[0].question,
-        description: i18n.eligibility[0].description,
-        modal: i18n.eligibility[0].modal,
-        questionId: '0',
-        previousPage: paths.common.start,
-        answer: '',
-        errors: undefined,
-        errorList: undefined
-      });
-    });
 
     it('loads first question ooc feature flag', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(true);
 
       req.session.eligibility = {};
       await eligibilityQuestionGet(req as Request, res as Response, next);
@@ -88,110 +71,11 @@ describe('Type of appeal Controller', () => {
       });
     });
 
-    it('loads another question', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(false);
-      req.query = { id: '2' };
-      req.session.eligibility = {};
-
-      await eligibilityQuestionGet(req as Request, res as Response, next);
-
-      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
-        question: i18n.eligibility[2].question,
-        description: i18n.eligibility[2].description,
-        modal: i18n.eligibility[2].modal,
-        questionId: '2',
-        previousPage: `${paths.common.questions}?id=1`,
-        answer: '',
-        errors: undefined,
-        errorList: undefined
-      });
-    });
-
-    it('loads answer', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(false);
-      req.query = { id: '1' };
-      req.session.eligibility = {
-        '1': {
-          answer: 'yes'
-        }
-      };
-
-      await eligibilityQuestionGet(req as Request, res as Response, next);
-
-      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
-        question: i18n.eligibility[1].question,
-        description: i18n.eligibility[1].description,
-        modal: i18n.eligibility[1].modal,
-        questionId: '1',
-        previousPage: `${paths.common.questions}?id=0`,
-        answer: 'yes',
-        errors: undefined,
-        errorList: undefined
-      });
-    });
-
-    it('cannot skip eligibility questions', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(false);
-      req.query = { id: '3' };
-
-      await eligibilityQuestionGet(req as Request, res as Response, next);
-
-      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
-        question: i18n.eligibility[0].question,
-        description: i18n.eligibility[0].description,
-        modal: i18n.eligibility[0].modal,
-        questionId: '0',
-        previousPage: paths.common.start,
-        answer: '',
-        errors: undefined,
-        errorList: undefined
-      });
-    });
   });
 
   describe('handles an answer', () => {
-    it('redirects to next question if answer eligible', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(false);
-      req.body = {
-        questionId: '0',
-        answer: i18n.eligibility[0].eligibleAnswer
-      };
-      req.session.eligibility = {};
-
-      await eligibilityQuestionPost(req as Request, res as Response, next);
-
-      expect(redirectStub.calledWith(`${paths.common.questions}?id=1`)).to.equal(true);
-    });
-
-    it('redirects to ineligible page if answer ineligible', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(false);
-      req.body = {
-        questionId: '0',
-        answer: opposite(i18n.eligibility[0].eligibleAnswer)
-      };
-      req.session.eligibility = {};
-
-      await eligibilityQuestionPost(req as Request, res as Response, next);
-
-      expect(redirectStub.calledWith(`${paths.common.ineligible}?id=0`)).to.equal(true);
-    });
-
-    it('redirects to eligible page if all answers eligible', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(false);
-      const finalQuestionId = i18n.eligibility.length - 1;
-      req.body = {
-        questionId: finalQuestionId + '',
-        answer: i18n.eligibility[finalQuestionId].eligibleAnswer
-      };
-      req.session.eligibility = {};
-
-      await eligibilityQuestionPost(req as Request, res as Response, next);
-
-      expect(redirectStub.calledWith(`${paths.common.eligible}?id=${finalQuestionId}`)).to.equal(true);
-    });
 
     it('redirects to eligible page if all answers eligible OOC', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(true);
       const finalQuestionId = i18n.eligibilityOOCFlag.length - 1;
       req.body = {
         questionId: finalQuestionId + '',
@@ -214,28 +98,6 @@ describe('Type of appeal Controller', () => {
       await eligibilityQuestionPost(req as Request, res as Response, next);
 
       expect(req.session.eligibility['0']).to.deep.equal({ answer: 'yes' });
-    });
-
-    it('reload page if no option selected', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(false);
-      req.body = {
-        questionId: '2'
-      };
-      req.session.eligibility = {};
-
-      await eligibilityQuestionPost(req as Request, res as Response, next);
-
-      const error = { href: '#answer', key: 'answer', text: i18n.eligibility[2].errorMessage };
-      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
-        answer: undefined,
-        errorList: [error],
-        errors: { answer: error },
-        previousPage: '/eligibility?id=1',
-        question: i18n.eligibility[2].question,
-        description: i18n.eligibility[2].description,
-        modal: i18n.eligibility[0].modal,
-        questionId: '2'
-      });
     });
   });
 
@@ -269,23 +131,8 @@ describe('Type of appeal Controller', () => {
   });
 
   describe('getIneligible', () => {
-    it('should render the view', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(false);
-      req.query = { id: '0' };
-      const questionId: string = req.query.id as string;
-      await getIneligible(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('eligibility/ineligible-page.njk',
-        {
-          title: i18n.ineligible[questionId].title,
-          description: i18n.ineligible[questionId].description,
-          optionsList: i18n.ineligible[questionId].optionsList,
-          previousPage: `${paths.common.questions}?id=0`
-        }
-      );
-    });
 
     it('should render the view OOC', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(true);
       req.query = { id: '0' };
       const questionId: string = req.query.id as string;
       await getIneligible(req as Request, res as Response, next);

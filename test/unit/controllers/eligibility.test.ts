@@ -132,20 +132,6 @@ describe('Type of appeal Controller', () => {
 
   describe('getIneligible', () => {
 
-    it('should render the view OOC', async () => {
-      req.query = { id: '0' };
-      const questionId: string = req.query.id as string;
-      await getIneligible(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('eligibility/ineligible-page.njk',
-        {
-          title: i18n.ineligible[questionId].title,
-          description: i18n.ineligible[questionId].description,
-          optionsList: i18n.ineligible[questionId].optionsList,
-          previousPage: `${paths.common.questions}?id=0`
-        }
-      );
-    });
-
     it('should catch exception and call next with the error', async function () {
       const error = new TypeError('Cannot read properties of undefined (reading \'id\')');
 

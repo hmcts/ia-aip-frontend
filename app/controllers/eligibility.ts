@@ -2,7 +2,6 @@ import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
-import LaunchDarklyService from '../service/launchDarkly-service';
 import { yesOrNoRequiredValidation } from '../utils/validations/fields-validations';
 
 function getPreviousPageLink(questionId) {

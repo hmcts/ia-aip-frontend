@@ -130,7 +130,6 @@ describe('Confirmation Page Controller', () => {
     } as Partial<Response>;
 
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(true)
       .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
 
     next = sandbox.stub();

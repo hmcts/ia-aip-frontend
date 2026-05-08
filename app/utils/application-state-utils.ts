@@ -505,14 +505,6 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'prepareForHearing':
     case 'finalBundling':
-      const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
-      if (!hearingBundleFeatureEnabled) {
-        return {
-          descriptionParagraphs: [
-            i18n.pages.overviewPage.doThisNext.nothingToDo
-          ]
-        };
-      }
       const description = eventByLegalRep(req, Events.CREATE_CASE_SUMMARY.id, 'finalBundling')
         ? i18n.pages.overviewPage.doThisNext.prepareForHearing.providedByLr.description
         : i18n.pages.overviewPage.doThisNext.prepareForHearing.description;

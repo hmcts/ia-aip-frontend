@@ -482,17 +482,11 @@ interface MidEventDetails {
 }
 
 interface MidEventResponse {
+  status: number,
+  data: MidEventResponseData
+}
+
+interface MidEventResponseData {
   status?: number,
   callbackErrors?: string[]
-  details?: MidEventResponseDetails
-  data?: any
-}
-
-interface MidEventResponseDetails {
-  field_errors?: FieldError[]
-}
-
-interface FieldError {
-  id: string;
-  message: string;
 }

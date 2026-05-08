@@ -249,7 +249,7 @@ describe('idam-service', () => {
         status: 422,
         response: {
           data: {
-            message: 'Please contact HMCTS for support.'
+            callbackErrors: ['Please contact HMCTS for support.']
           }
         }
       };
@@ -259,7 +259,7 @@ describe('idam-service', () => {
       const expectedUrl =
           '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
       expect(postRequest.calledOnceWith(ccdBaseUrl + expectedUrl, midEventDetails)).to.equal(true);
-      expect(response).to.deep.equal(error.response.data);
+      expect(response).to.deep.equal(error.response);
     });
   });
 

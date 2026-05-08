@@ -174,10 +174,9 @@ class CcdService {
     );
 
     try {
-      const response = await axios.post(url, midEventDetails, options);
-      return response.data;
+      return await axios.post(url, midEventDetails, options);
     } catch (e) {
-      return e.response.data;
+      return e.response;
     }
   }
 

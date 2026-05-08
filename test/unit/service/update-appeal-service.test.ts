@@ -2885,7 +2885,7 @@ describe('update-appeal-service', () => {
   });
 
   describe('validateMidEvent', () => {
-    it('validateMidEvent should validate once if one pageId given', async () => {
+    it('validateMidEvent should validate', async () => {
       const event = Events.EDIT_APPEAL;
       const appeal: Appeal = {
         ccdCaseId: caseId,
@@ -2902,8 +2902,8 @@ describe('update-appeal-service', () => {
               pageId,
               userId,
               sinon.match.any)
-          .resolves({ status: 200 });
-      const errors = await updateAppealService.validateMidEvent(event, [pageId], appeal, midEventData, userId, userToken);
+          .resolves({ status: 200, data: {} });
+      const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
       expect(ccdService.validateMidEvent).to.be.calledOnceWith(
           {
             case_reference: caseId,
@@ -2919,44 +2919,7 @@ describe('update-appeal-service', () => {
       expect(errors.length).to.equal(0);
     });
 
-    it('validateMidEvent should validate multiple if multiple pageIds given', async () => {
-      const event = Events.EDIT_APPEAL;
-      const appeal: Appeal = {
-        ccdCaseId: caseId,
-        appealStatus: 'appealStarted',
-      } as Appeal;
-      const midEventData = {};
-      const userId = '12345';
-      const userToken = 'userToken';
-      const pageIds = ['pageId1', 'pageId2', 'pageId3', 'pageId4'];
-      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
-      sandbox.stub(ccdService, 'validateMidEvent')
-          .withArgs(
-              sinon.match.any,
-              sinon.match.string,
-              userId,
-              sinon.match.any)
-          .resolves({ status: 200 });
-      const errors = await updateAppealService.validateMidEvent(event, pageIds, appeal, midEventData, userId, userToken);
-      expect(ccdService.validateMidEvent).callCount(4);
-      for (const pageId of pageIds) {
-        expect(ccdService.validateMidEvent).to.be.calledWith(
-            {
-              case_reference: caseId,
-              data: {},
-              event_data: {},
-              event: event,
-              ignore_warning: false
-            }, pageId, userId,
-            {
-              userToken: `Bearer ${userToken}`,
-              serviceToken
-            });
-      }
-      expect(errors.length).to.equal(0);
-    });
-
-    it('validateMidEvent should return error list of errors for one page', async () => {
+    it('validateMidEvent should return list of errors', async () => {
       const event = Events.EDIT_APPEAL;
       const appeal: Appeal = {
         ccdCaseId: caseId,
@@ -2975,8 +2938,8 @@ describe('update-appeal-service', () => {
               sinon.match.string,
               userId,
               sinon.match.any)
-          .resolves({ status: 422, callbackErrors: [error1, error2] });
-      const errors = await updateAppealService.validateMidEvent(event, [pageId], appeal, midEventData, userId, userToken);
+          .resolves({ status: 422, data: { callbackErrors: [error1, error2] }});
+      const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
       expect(ccdService.validateMidEvent).to.be.calledOnceWith(
           {
             case_reference: caseId,
@@ -2994,7 +2957,7 @@ describe('update-appeal-service', () => {
       expect(errors.includes(error2)).to.equal(true);
     });
 
-    it('validateMidEvent should return error list of errors from 422 for multiple pages', async () => {
+    it('validateMidEvent should return list of errors', async () => {
       const event = Events.EDIT_APPEAL;
       const appeal: Appeal = {
         ccdCaseId: caseId,
@@ -3003,43 +2966,30 @@ describe('update-appeal-service', () => {
       const midEventData = {};
       const userId = '12345';
       const userToken = 'userToken';
-      const pages = [
-        { id: 'pageId1', error: ['error 1-1', 'error 1-2'], status: 422 },
-        { id: 'pageId2', error: ['error 2-1', 'error 2-2'], status: 401 },
-        { id: 'pageId3', error: [], status: 200 },
-        { id: 'pageId4', error: ['error 4-1'], status: 422 }
-      ];
-      const pageIds = pages.map(page => page.id);
+      const pageId = 'pageId1';
       updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
-      const validateMidEventStub = sandbox.stub(ccdService, 'validateMidEvent');
-      for (const page of pages) {
-        validateMidEventStub
-            .withArgs(
-                sinon.match.any,
-                page.id,
-                userId,
-                sinon.match.any)
-            .resolves({ status: page.status, callbackErrors: page.error });
-      }
-      const errors = await updateAppealService.validateMidEvent(event, pageIds, appeal, midEventData, userId, userToken);
-      for (const page of pages) {
-        expect(ccdService.validateMidEvent).to.be.calledWith(
-            {
-              case_reference: caseId,
-              data: {},
-              event_data: {},
-              event: event,
-              ignore_warning: false
-            }, page.id, userId,
-            {
-              userToken: `Bearer ${userToken}`,
-              serviceToken
-            });
-      }
-      expect(errors.length).to.equal(3);
-      expect(errors.includes('error 1-1')).to.equal(true);
-      expect(errors.includes('error 1-2')).to.equal(true);
-      expect(errors.includes('error 4-1')).to.equal(true);
+      sandbox.stub(ccdService, 'validateMidEvent')
+          .withArgs(
+              sinon.match.any,
+              sinon.match.string,
+              userId,
+              sinon.match.any)
+          .resolves({ status: 401, data: { callbackErrors: ['error'] }});
+      const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
+      expect(ccdService.validateMidEvent).to.be.calledOnceWith(
+          {
+            case_reference: caseId,
+            data: {},
+            event_data: {},
+            event: event,
+            ignore_warning: false
+          }, pageId, userId,
+          {
+            userToken: `Bearer ${userToken}`,
+            serviceToken
+          });
+      expect(errors.length).to.equal(1);
+      expect(errors.includes("There is a problem")).to.equal(true);
     });
   });
 });

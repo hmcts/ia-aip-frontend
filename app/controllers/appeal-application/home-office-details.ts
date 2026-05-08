@@ -62,9 +62,9 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
           homeOfficeRefNumber: req.body.homeOfficeRefNumber
         }
       };
-      const pageIds: string[] = ['editAppealcuiHomeOfficeReferenceNumber'];
+      const pageId: string = 'editAppealcuiHomeOfficeReferenceNumber';
       const midEventData = { homeOfficeReferenceNumber: req.body.homeOfficeRefNumber };
-      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
       if (midEventErrors?.length > 0) {
         const structuredError = {
@@ -140,12 +140,12 @@ function postNamePage(updateAppealService: UpdateAppealService) {
         }
       };
 
-      const pageIds: string[] = ['editAppealcuiAppellantName'];
+      const pageId: string = 'editAppealcuiAppellantName';
       const midEventData = {
         appellantGivenNames: req.body.givenNames,
         appellantFamilyName: req.body.familyName
       };
-      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
       if (midEventErrors?.length > 0) {
         const structuredError = {
@@ -219,9 +219,9 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
         }
       };
 
-      const pageIds: string[] = ['editAppealcuiAppellantDob'];
+      const pageId: string = 'editAppealcuiAppellantDob';
       const midEventData = { appellantDateOfBirth: toIsoDate(appeal.application.personalDetails.dob) };
-      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageIds, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
       if (midEventErrors?.length > 0) {
         const structuredError = {

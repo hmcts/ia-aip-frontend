@@ -4,7 +4,7 @@
     "useRedis": true,
     "useLogger": false,
     "cookie": {
-      "secure": false
+      "secure": true
     }
   },
   "evidenceUpload": {

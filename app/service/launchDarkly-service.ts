@@ -53,7 +53,6 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
     switch (flag) {
       case 'online-card-payments-feature':
       case 'pcq-feature':
-      case 'aip-hearing-requirements-feature':
       case 'aip-hearing-bundle-feature':
       case 'aip-ooc-feature':
       case 'aip-ftpa-feature':

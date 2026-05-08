@@ -50,20 +50,6 @@ describe('hearingRequirementsMiddleware', () => {
     sandbox.restore();
   });
 
-  it('should redirect to overview page if the hearing requirements is disabled', async () => {
-    req.session.appeal.appealStatus = 'submitHearingRequirements';
-    const getVariationStub = sandbox.stub(LaunchDarklyService.prototype, 'getVariation');
-    for (const hearingRequirementEndPoint in paths.submitHearingRequirements) {
-      const reqWithPath: Partial<Request> = {
-        ...req,
-        path: hearingRequirementEndPoint
-      };
-      getVariationStub.withArgs(reqWithPath as Request, 'aip-hearing-requirements-feature', false).resolves(false);
-      await hearingRequirementsMiddleware(reqWithPath as Request, res as Response, next);
-      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
-    }
-  });
-
   it('should redirect to respective hearing requirements page if the hearing requirements is enabled', async () => {
     req.session.appeal.appealStatus = 'submitHearingRequirements';
     const getVariationStub = sandbox.stub(LaunchDarklyService.prototype, 'getVariation');
@@ -72,7 +58,6 @@ describe('hearingRequirementsMiddleware', () => {
         ...req,
         path: hearingRequirementEndPoint
       };
-      getVariationStub.withArgs(reqWithPath as Request, 'aip-hearing-requirements-feature', false).resolves(true);
       await hearingRequirementsMiddleware(reqWithPath as Request, res as Response, next);
       expect(next.called).to.equal(true);
     }

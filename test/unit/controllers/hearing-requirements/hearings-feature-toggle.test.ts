@@ -52,7 +52,6 @@ describe('setupHearingRequirementsFeatureToggleController', () => {
   });
 
   it('should redirect to taskList page if the hearing requirements is enabled', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-requirements-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'submitHearingRequirements';
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
     setupHearingRequirementsFeatureToggleController([hearingRequirementsMiddleware]);

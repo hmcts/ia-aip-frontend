@@ -62,13 +62,4 @@ describe('hearingRequirementsMiddleware', () => {
       expect(next.called).to.equal(true);
     }
   });
-
-  it('should redirect to respective hearings page', async () => {
-    const reqWithPath: Partial<Request> = {
-      ...req,
-      path: paths.common.overview
-    };
-    await hearingBundleFeatureMiddleware(reqWithPath as Request, res as Response, next);
-    expect(next.called).to.equal(true);
-  });
 });

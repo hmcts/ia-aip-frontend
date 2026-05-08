@@ -165,50 +165,6 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('get correct \'Do This next section\' when application status is pendingPayment', async () => {
-      req.session.appeal.appealStatus = 'pendingPayment';
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      expect(result).to.deep.equal({
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
-          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
-          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate1
-        ],
-        cta: {
-          link: {
-            text: i18n.pages.overviewPage.doThisNext.pendingPayment.payForYourAppeal,
-            url: paths.common.payLater
-          }
-        },
-        allowedAskForMoreTime: false,
-        deadline: '22 February 2020'
-      });
-    });
-
-    it('get correct \'Do This next section\' when application status is pendingPayment and dlrm fee support is' +
-      ' on', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-      req.session.appeal.appealStatus = 'pendingPayment';
-      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
-      req.session.appeal.appealOutOfCountry = 'Yes';
-
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      expect(result).to.deep.equal({
-        cta: null,
-        deadline: '07 March 2020',
-        descriptionParagraphs: [
-          'Your appeal details have been sent to the Tribunal.',
-          'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
-          'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
-          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
-        ],
-        allowedAskForMoreTime: false
-      });
-    });
-
     it('when application status is lateAppealSubmitted with fee and setAside is enabled should get correct \'Do This' +
       ' next section\'', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
@@ -276,26 +232,6 @@ describe('application-state-utils', () => {
         deadline: null,
         cta: {},
         hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
-      };
-
-      expect(result).to.deep.equal(expected);
-    });
-
-    it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section.', async () => {
-      req.session.appeal.appealStatus = 'awaitingClarifyingQuestionsAnswers';
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      const expected = {
-        'allowedAskForMoreTime': true,
-        'cta': {
-          'respondBy': 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
-          'url': '/questions-about-appeal'
-        },
-        'deadline': null,
-        'descriptionParagraphs': [
-          'You need to answer some questions about your appeal.'
-        ],
-        'info': null
       };
 
       expect(result).to.deep.equal(expected);
@@ -407,60 +343,6 @@ describe('application-state-utils', () => {
           'usefulDocuments': {
             'title': 'Useful documents',
             'url': '<a href=\'{{ paths.common.whatToExpectAtCMA }}\'>Notice of Case Management Appointment.pdf</a>'
-          }
-        }
-      );
-    });
-    it('when application status is submitHearingRequirements should get correct Do this next section.', async () => {
-      req.session.appeal.appealStatus = 'submitHearingRequirements';
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      const expected = {
-        allowedAskForMoreTime: true,
-        cta: {
-          respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
-          url: '/hearing-needs'
-        },
-        deadline: '28 July 2020',
-        descriptionParagraphs: [
-          'Your appeal is going to hearing.',
-          'Tell us if there is anything you will need at the hearing, like an <p>interpreter or step-free access.'
-        ],
-        info: {
-          title: 'Helpful Information',
-          url: '<a href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
-        }
-      };
-
-      expect(result).to.deep.equal(expected);
-    });
-
-    it('should return \'Do This next section\' when application status is submitHearingRequirements and a pending time extension', async () => {
-      const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
-        value: {
-          decision: 'Pending',
-          applicant: 'Appellant',
-          type: 'Time extension'
-        }
-      };
-      req.session.appeal.appealStatus = 'submitHearingRequirements';
-      req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
-      const result = await getAppealApplicationNextStep(req as Request);
-
-      expect(result).to.deep.equal(
-        {
-          allowedAskForMoreTime: true,
-          cta: {
-            respondBy: 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
-            url: '/hearing-needs'
-          },
-          deadline: '28 July 2020',
-          descriptionParagraphs: [
-            'You need to respond by by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span>.'
-          ],
-          info: {
-            title: 'Helpful Information',
-            url: '<a href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
           }
         }
       );
@@ -580,71 +462,6 @@ describe('application-state-utils', () => {
       );
     });
   });
-
-  it('when application status is prepareForHearing should get correct Do this next section.', async () => {
-    req.session.appeal.appealStatus = 'prepareForHearing';
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
-    const result = await getAppealApplicationNextStep(req as Request);
-
-    const expected = getPreHearingAndFinalBundling();
-
-    expect(result).to.deep.equal(expected);
-  });
-
-  it('when application status is finalBundling should get correct Do this next section.', async () => {
-    req.session.appeal.appealStatus = 'finalBundling';
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
-    const result = await getAppealApplicationNextStep(req as Request);
-
-    const expected = getPreHearingAndFinalBundling();
-
-    expect(result).to.deep.equal(expected);
-  });
-
-  it('when application status is finalBundling and appellant just took over case should get correct Do this next section.', async () => {
-    req.session.appeal.appealStatus = 'finalBundling';
-    req.session.appeal.history = req.session.appeal.history.filter(event => event.id !== 'createCaseSummary');
-    const event = {
-      'id': 'createCaseSummary',
-      'createdDate': '2022-01-11T16:00:00.000',
-      'state': {
-        'id': 'finalBundling'
-      },
-      'user': {
-        'id': 'legal-rep'
-      }
-    } as HistoryEvent;
-    req.session.appeal.history.push(event);
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
-    const result = await getAppealApplicationNextStep(req as Request);
-
-    const expected = getPreHearingAndFinalBundling();
-    expected['descriptionParagraphs'][0] = 'The hearing bundle is ready to view. This is a record of all the information and evidence about this appeal. You should read it carefully.';
-
-    expect(result).to.deep.equal(expected);
-  });
-
-  function getPreHearingAndFinalBundling() {
-    return {
-      'allowedAskForMoreTime': false,
-      'cta': {},
-      'date': '11 August 2020',
-      'deadline': 'TBC',
-      'descriptionParagraphs': [
-        'The Tribunal has set a date for your hearing. Here are the details:',
-        '<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}',
-        '<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}',
-        '<span class=\"govuk-!-font-weight-bold\">Location:</span> {{ applicationNextStep.hearingCentre }} ',
-        'You can now access your <a href=\'{{ paths.common.latestHearingNoticeViewer }}\'>Notice of Hearing</a>.  It includes important<br>details about the hearing and you should read it carefully.'
-      ],
-      'info': {
-        'title': 'Helpful Information',
-        'url': '<a href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
-      },
-      'hearingCentre': 'Taylor House',
-      'time': '10:00 am'
-    };
-  }
 
   it('when application status is decided should get correct Do this next section - FTPA disabled', async () => {
     req.session.appeal.appealStatus = 'decided';
@@ -1296,27 +1113,6 @@ describe('application-state-utils', () => {
     expect(result).to.deep.equal('aappealSubmitted');
   });
 
-  it('when application is in final bundling state after decision without hearing, should return correct do this next.', async () => {
-    req.session.appeal.appealStatus = 'finalBundling';
-    const event = {
-      'id': 'decisionWithoutHearing',
-      'createdDate': '2022-01-11T16:00:00.000'
-    } as HistoryEvent;
-    req.session.appeal.history.push(event);
-    const result = await getAppealApplicationNextStep(req as Request);
-
-    const expected = {
-      'deadline': 'TBC',
-      'descriptionParagraphs': [
-        'You chose to have your appeal to be decided without a hearing.',
-        'A judge will decide your appeal based on the information and evidence provided by you and the Home Office.',
-        'The Tribunal will contact you when a decision has been made.'
-      ]
-    };
-
-    expect(result).to.deep.equal(expected);
-  });
-
   it('check isEventLatestInHistoryList work as expected', async () => {
     const { appeal } = req.session;
     const testData = [
@@ -1482,42 +1278,6 @@ describe('application-state-utils', () => {
     });
   });
 
-  it('when application status is pendingPayment with decision rejected for fee refund and flag is enabled should get correct \'Do This' +
-    ' next section\'', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-
-    req.session.appeal.appealStatus = 'pendingPayment';
-    req.session.appeal.application.remissionDecision = 'rejected';
-    req.session.appeal.feeWithHearing = '140';
-    req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-    req.session.appeal.application.remissionRejectedDatePlus14days = '2022-03-12';
-    req.session.appeal.history = [
-      {
-        'id': 'recordRemissionDecision',
-        'createdDate': '2020-02-22T15:36:26.099'
-      },
-      {
-        'id': 'submitAppeal',
-        'createdDate': '2020-02-22T15:36:26.099'
-      }
-    ] as HistoryEvent[];
-    const result = await getAppealApplicationNextStep(req as Request);
-
-    expect(result).to.deep.equal({
-      cta: {},
-      deadline: '07 March 2020',
-      feeForAppeal: '140',
-      remissionRejectedDatePlus14days: '2022-03-12',
-      descriptionParagraphs: [
-        'The fee for this appeal is £{{ applicationNextStep.feeForAppeal }}.',
-        'If you do not pay the fee by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.',
-        '<a href={{ paths.common.payLater }}>Pay for the appeal</a>'
-      ],
-      allowedAskForMoreTime: false
-    });
-  });
-
   const isSTF24W: ('Yes' | 'No')[] = ['Yes', 'No'];
   isSTF24W.forEach((stf24w) => {
     describe(`getAppealApplicationNextStep when stf24w is set to ${stf24w}`, () => {
@@ -1550,7 +1310,7 @@ describe('application-state-utils', () => {
         });
       });
 
-      const testStates = ['appealSubmitted', 'lateAppealSubmitted'];
+      let testStates = ['appealSubmitted', 'lateAppealSubmitted', 'pendingPayment'];
       testStates.forEach(state => {
         it(`when application status is ${state} with decision Approved for fee refund, flag is enabled and stf24w was set to ${stf24w} should get correct 'Do This next section'`, async () => {
           sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
@@ -2097,6 +1857,274 @@ describe('application-state-utils', () => {
         };
 
         expect(result).to.deep.equal(expected);
+      });
+
+      testStates = ['prepareForHearing', 'finalBundling'];
+      testStates.forEach(state => {
+        it(`when application status is ${state} and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
+          req.session.appeal.appealStatus = state;
+          sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
+          const result = await getAppealApplicationNextStep(req as Request);
+
+          const expected = getPreHearingAndFinalBundling();
+
+          expect(result).to.deep.equal(expected);
+        });
+      });
+
+      it(`when application status is finalBundling and appellant just took over case and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
+        req.session.appeal.appealStatus = 'finalBundling';
+        req.session.appeal.history = req.session.appeal.history.filter(event => event.id !== 'createCaseSummary');
+        const event = {
+          'id': 'createCaseSummary',
+          'createdDate': '2022-01-11T16:00:00.000',
+          'state': {
+            'id': 'finalBundling'
+          },
+          'user': {
+            'id': 'legal-rep'
+          }
+        } as HistoryEvent;
+        req.session.appeal.history.push(event);
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        const expected = getPreHearingAndFinalBundling();
+        expected['descriptionParagraphs'][0] = 'The hearing bundle is ready to view. This is a record of all the information and evidence about this appeal. You should read it carefully.';
+
+        expect(result).to.deep.equal(expected);
+      });
+
+      it(`when application is in final bundling state after decision without hearing and stf24w was set to ${stf24w}, should return correct do this next.`, async () => {
+        req.session.appeal.appealStatus = 'finalBundling';
+        const event = {
+          'id': 'decisionWithoutHearing',
+          'createdDate': '2022-01-11T16:00:00.000'
+        } as HistoryEvent;
+        req.session.appeal.history.push(event);
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        const expected = {
+          'deadline': 'TBC',
+          'descriptionParagraphs': [
+            'You chose to have your appeal to be decided without a hearing.',
+            'A judge will decide your appeal based on the information and evidence provided by you and the Home Office.',
+            'The Tribunal will contact you when a decision has been made.'
+          ]
+        };
+
+        expect(result).to.deep.equal(expected);
+      });
+
+      function getPreHearingAndFinalBundling() {
+        return {
+          'allowedAskForMoreTime': false,
+          'cta': {},
+          'date': '11 August 2020',
+          'deadline': 'TBC',
+          'descriptionParagraphs': [
+            'The Tribunal has set a date for your hearing. Here are the details:',
+            '<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}',
+            '<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}',
+            '<span class=\"govuk-!-font-weight-bold\">Location:</span> {{ applicationNextStep.hearingCentre }} ',
+            doThisNext.prepareForHearing.hearingNotice
+          ],
+          'info': {
+            'title': 'Helpful Information',
+            'url': '<a href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
+          },
+          'hearingCentre': 'Taylor House',
+          'time': '10:00 am'
+        };
+      }
+
+      it(`get correct 'Do This next section' when application status is pendingPayment and stf24w was set to ${stf24w}`, async () => {
+        req.session.appeal.appealStatus = 'pendingPayment';
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal({
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
+            i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
+            i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate1
+          ],
+          cta: {
+            link: {
+              text: i18n.pages.overviewPage.doThisNext.pendingPayment.payForYourAppeal,
+              url: paths.common.payLater
+            }
+          },
+          allowedAskForMoreTime: false,
+          deadline: '22 February 2020'
+        });
+      });
+
+      it(`get correct 'Do This next section' when application status is pendingPayment and dlrm fee support is on and stf24w was set to ${stf24w}`, async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+            .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+        req.session.appeal.appealStatus = 'pendingPayment';
+        req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+        req.session.appeal.appealOutOfCountry = 'Yes';
+
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal({
+          cta: null,
+          deadline: '07 March 2020',
+          descriptionParagraphs: [
+            'Your appeal details have been sent to the Tribunal.',
+            'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+            'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
+            'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+          ],
+          allowedAskForMoreTime: false
+        });
+      });
+
+      it(`when application status is pendingPayment with decision rejected for fee refund and flag is enabled and stf24w was set to ${stf24w} should get correct 'Do This next section'`, async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+            .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+        req.session.appeal.appealStatus = 'pendingPayment';
+        req.session.appeal.application.remissionDecision = 'rejected';
+        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+        req.session.appeal.application.remissionRejectedDatePlus14days = '2022-03-12';
+        req.session.appeal.history = [
+          {
+            'id': 'recordRemissionDecision',
+            'createdDate': '2020-02-22T15:36:26.099'
+          },
+          {
+            'id': 'submitAppeal',
+            'createdDate': '2020-02-22T15:36:26.099'
+          }
+        ] as HistoryEvent[];
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal({
+          cta: {},
+          deadline: '07 March 2020',
+          feeForAppeal: '140',
+          remissionRejectedDatePlus14days: '2022-03-12',
+          descriptionParagraphs: [
+            'The fee for this appeal is £{{ applicationNextStep.feeForAppeal }}.',
+            'If you do not pay the fee by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.',
+            '<a href={{ paths.common.payLater }}>Pay for the appeal</a>'
+          ],
+          allowedAskForMoreTime: false
+        });
+      });
+
+      it(`when application status is submitHearingRequirements and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
+        req.session.appeal.appealStatus = 'submitHearingRequirements';
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        const expected = {
+          allowedAskForMoreTime: !is24WeeksTimeline,
+          cta: {
+            respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
+            url: '/hearing-needs'
+          },
+          deadline: '28 July 2020',
+          descriptionParagraphs: [
+            'Your appeal is going to hearing.',
+            'Tell us if there is anything you will need at the hearing, like an <p>interpreter or step-free access.'
+          ],
+          info: {
+            title: 'Helpful Information',
+            url: '<a href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
+          }
+        };
+
+        expect(result).to.deep.equal(expected);
+      });
+
+      it(`should return 'Do This next section' when application status is submitHearingRequirements and a pending time extension and stf24w was set to ${stf24w}`, async () => {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          value: {
+            decision: 'Pending',
+            applicant: 'Appellant',
+            type: 'Time extension'
+          }
+        };
+        req.session.appeal.appealStatus = 'submitHearingRequirements';
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+        const result = await getAppealApplicationNextStep(req as Request);
+
+        expect(result).to.deep.equal(
+            {
+              allowedAskForMoreTime: !is24WeeksTimeline,
+              cta: {
+                respondBy: is24WeeksTimeline ?
+                    'It’s important to respond by the deadline in order for the Tribunal to process your appeal effectively.' :
+                    'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
+                url: '/hearing-needs'
+              },
+              deadline: '28 July 2020',
+              descriptionParagraphs: is24WeeksTimeline ?
+                ['You must respond by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span>.'] :
+                ['You need to respond by by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span>.'],
+              info: {
+                title: 'Helpful Information',
+                url: '<a href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
+              }
+            }
+        );
+      });
+
+      testStates = ['awaitingClarifyingQuestionsAnswers', 'awaitingClarifyingQuestionsAnswersPartial'];
+      testStates.forEach(state => {
+        it(`when application status is ${state} and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
+          req.session.appeal.appealStatus = state;
+          const result = await getAppealApplicationNextStep(req as Request);
+
+          const expected = {
+            'allowedAskForMoreTime': !is24WeeksTimeline,
+            'cta': {
+              'respondBy': 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
+              'url': '/questions-about-appeal'
+            },
+            'deadline': null,
+            'descriptionParagraphs': [
+              'You need to answer some questions about your appeal.'
+            ],
+            'info': null
+          };
+
+          expect(result).to.deep.equal(expected);
+        });
+
+
+        it(`when application status is ${state}, a pending time extension and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
+          const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+            value: {
+              decision: 'Pending',
+              applicant: 'Appellant',
+              type: 'Time extension'
+            }
+          };
+          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+          req.session.appeal.appealStatus = state;
+          const result = await getAppealApplicationNextStep(req as Request);
+
+          const respondBy = is24WeeksTimeline ? 'It’s important to respond by the deadline.' :
+              'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.';
+          const expected = {
+            'allowedAskForMoreTime': !is24WeeksTimeline,
+            'cta': {
+              'respondBy': respondBy,
+              'url': '/questions-about-appeal'
+            },
+            'deadline': null,
+            'descriptionParagraphs': [
+              'You might not get more time. You need to finish answering the Tribunal’s questions by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.'
+            ],
+            'info': null
+          };
+
+          expect(result).to.deep.equal(expected);
+        });
       });
     });
   });

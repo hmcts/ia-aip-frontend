@@ -256,27 +256,66 @@ describe('Type of appeal Controller', () => {
       expect(renderStub.calledOnceWith('templates/radio-question-page.njk')).to.equal(true);
     });
 
-    it('should validate and redirect to the task-list page for revocationOfProtection appeal type', async () => {
+    it('should invoke PCQ for revocationOfProtection appeal type', async () => {
       req.body['answer'] = 'decisionWithHearing';
       req.session.appeal.application.appealType = 'revocationOfProtection';
+
       appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
       appeal.application.decisionHearingFeeOption = '';
-      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
-      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
+      sinon.stub(PcqService.prototype, 'checkPcqHealth').resolves(true);
+      sinon.stub(PcqService.prototype, 'getPcqId').returns('pcq-id');
+
+      const invokePcqStub = sinon.stub(PcqService.prototype, 'invokePcq');
+
+      await postDecisionType(updateAppealService as UpdateAppealService)(
+          req as Request,
+          res as Response,
+          next
+      );
+
+      expect(
+          submitStub.calledWith(
+              Events.EDIT_APPEAL,
+              sinon.match.any,
+              'idamUID',
+              'atoken'
+          )
+      ).to.equal(true);
+
+      expect(invokePcqStub.calledOnce).to.equal(true);
     });
 
-    it('should validate and redirect to the task-list page for refusalOfHumanRights appeal type', async () => {
+    it('should invoke PCQ for refusalOfHumanRights appeal type', async () => {
       req.body['answer'] = 'decisionWithHearing';
+
       req.session.appeal.application.appealType = 'refusalOfHumanRights';
+
       appeal.application.appealType = 'refusalOfHumanRights';
       appeal.application.rpDcAppealHearingOption = '';
       appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
-      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
+      sinon.stub(PcqService.prototype, 'checkPcqHealth').resolves(true);
+      sinon.stub(PcqService.prototype, 'getPcqId').returns('pcq-id');
+
+      const invokePcqStub = sinon.stub(PcqService.prototype, 'invokePcq');
+
+      await postDecisionType(updateAppealService as UpdateAppealService)(
+          req as Request,
+          res as Response,
+          next
+      );
+
+      expect(
+          submitStub.calledWith(
+              Events.EDIT_APPEAL,
+              sinon.match.any,
+              'idamUID',
+              'atoken'
+          )
+      ).to.equal(true);
+
+      expect(invokePcqStub.calledOnce).to.equal(true);
     });
 
     it('getDecisionType should catch exception and call next with the error', async () => {

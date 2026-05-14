@@ -199,7 +199,7 @@ describe('application-state-utils', () => {
     });
 
     it('when application status is lateAppealRejected should get correct \'Do This next section\'', async () => {
-      req.session.appeal.appealStatus = 'appealStarted';
+      req.session.appeal.appealStatus = 'appealSubmitted';
       req.session.appeal.outOfTimeDecisionType = 'rejected';
       req.session.appeal.application.isAppealLate = true;
 
@@ -1066,14 +1066,14 @@ describe('application-state-utils', () => {
     expect(offlineDate).to.deep.equal('2021-06-30');
   });
 
-  it('when application has not ended and outOfTimeDecisionType is rejected and appeal is late status, should be lateAppealRejected.', () => {
-    req.session.appeal.appealStatus = 'appealStarted';
+  it('when application has not ended and outOfTimeDecisionType is rejected and appeal is late but appealStatus is not appealSubmitted, should return appealStatus.', () => {
+    req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
     req.session.appeal.outOfTimeDecisionType = 'rejected';
     req.session.appeal.application.isAppealLate = true;
 
     const result = getAppealStatus(req as Request);
 
-    expect(result).to.deep.equal('lateAppealRejected');
+    expect(result).to.deep.equal('awaitingReasonsForAppeal');
   });
 
   it('when application has ended and outOfTimeDecisionType is rejected and appeal is late status, should be ended.', () => {
@@ -1086,10 +1086,20 @@ describe('application-state-utils', () => {
     expect(result).to.deep.equal('ended');
   });
 
-  it('when application hasn\'t ended and isAppealLate.', () => {
+  it('when application hasn\'t ended and isAppealLate but appealStatus is not appealSubmitted, should return appealStatus.', () => {
     req.session.appeal.appealStatus = 'notEnded';
     req.session.appeal.application.isAppealLate = true;
     req.session.appeal.outOfTimeDecisionType = 'rejected';
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.deep.equal('notEnded');
+  });
+
+  it('when outOfTimeDecisionType is rejected and appealStatus is appealSubmitted, should be lateAppealRejected.', () => {
+    req.session.appeal.appealStatus = 'appealSubmitted';
+    req.session.appeal.outOfTimeDecisionType = 'rejected';
+    req.session.appeal.application.isAppealLate = true;
+
     const result = getAppealStatus(req as Request);
 
     expect(result).to.deep.equal('lateAppealRejected');

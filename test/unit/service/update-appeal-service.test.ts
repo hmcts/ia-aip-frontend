@@ -43,14 +43,8 @@ describe('update-appeal-service', () => {
     sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
       .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.HEARING_REQUIREMENTS, false).resolves(false)
       .withArgs(req as Request, FEATURE_FLAGS.HEARING_BUNDLE, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.OUT_OF_COUNTRY, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.MAKE_APPLICATION, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(false);
+      .withArgs(req as Request, FEATURE_FLAGS.OUT_OF_COUNTRY, false).resolves(false);
     documentManagementService = new DocumentManagementService(authenticationService);
 
     updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, null, documentManagementService);

@@ -123,12 +123,6 @@ export function formatCaseId(caseId: any) {
   return caseStr.toString();
 }
 
-export async function isFtpaFeatureEnabled(req: Request) {
-  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-  const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
-  return isFtpaFeatureEnabled;
-}
-
 export function isNonStandardDirectionEnabled(req: Request) {
   return req.session.appeal.nonStandardDirectionEnabled;
 }

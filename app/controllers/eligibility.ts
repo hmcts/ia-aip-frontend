@@ -2,7 +2,6 @@ import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
-import LaunchDarklyService from '../service/launchDarkly-service';
 import { yesOrNoRequiredValidation } from '../utils/validations/fields-validations';
 
 function getPreviousPageLink(questionId) {
@@ -127,28 +126,14 @@ async function isEligibilityQuestion(questionId: string, answer: string, i18nEli
     i18nEligibility[questionId].eligibleAnswer.indexOf(answer) > -1;
 }
 
-async function outOfCountryFeature() {
-  return LaunchDarklyService.getInstance().getVariation(null, 'aip-ooc-feature', false);
-}
-
 async function getI18nEligibility() {
-  const oocFlag = await outOfCountryFeature();
 
-  if (oocFlag) {
-    return i18n.eligibilityOOCFlag;
-  } else {
-    return i18n.eligibility;
-  }
+  return i18n.eligibilityOOCFlag;
 }
 
 async function getI18nIneligible() {
-  const oocFlag = await outOfCountryFeature();
 
-  if (oocFlag) {
-    return i18n.ineligibleOOCFlag;
-  } else {
-    return i18n.ineligible;
-  }
+  return i18n.ineligibleOOCFlag;
 }
 
 export {

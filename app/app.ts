@@ -153,22 +153,6 @@ function configureHelmet(app: Application) {
     res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
     next();
   });
-  app.use(featurePolicy({
-    features: {
-      accelerometer: ['\'none\''],
-      ambientLightSensor: ['\'none\''],
-      autoplay: ['\'none\''],
-      camera: ['\'none\''],
-      geolocation: ['\'none\''],
-      gyroscope: ['\'none\''],
-      magnetometer: ['\'none\''],
-      microphone: ['\'none\''],
-      payment: ['\'none\''],
-      speaker: ['\'none\''],
-      usb: ['\'none\''],
-      vibrate: ['\'none\'']
-    }
-  }));
   app.use(permissionsPolicy);
   app.use(nocache());
 }
@@ -186,7 +170,7 @@ function permissionsPolicy(req: Request, res: Response, next: NextFunction) {
       'magnetometer=()',
       'microphone=()',
       'payment=()',
-      'speaker=()',
+      'speaker-selection=()',
       'usb=()',
       'vibrate=()'
     ].join(', ')

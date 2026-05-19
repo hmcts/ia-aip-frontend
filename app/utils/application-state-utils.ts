@@ -70,10 +70,10 @@ function getAppealStatus(req: Request) {
     && appeal.history.find(event => event.id === Events.DECISION_WITHOUT_HEARING.id)) {
     return 'decidedWithoutHearing';
   } else if (appeal.application.isAppealLate && appeal.appealStatus !== States.ENDED.id) {
-    if (appeal.outOfTimeDecisionType === 'rejected') {
+    if (appeal.outOfTimeDecisionType === 'rejected' && appeal.appealStatus === States.APPEAL_SUBMITTED.id) {
       return 'lateAppealRejected';
     }
-    if (appeal.appealStatus === 'appealSubmitted') {
+    if (appeal.appealStatus === States.APPEAL_SUBMITTED.id) {
       return 'lateAppealSubmitted';
     }
     return appeal.appealStatus;

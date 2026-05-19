@@ -278,15 +278,20 @@ describe('Personal Details Controller', function () {
       req.body.day = 1;
       req.body.month = 11;
       req.body.year = 1993;
-      const errorMessage = 'Please contact HMCTS for support.';
+      const errorMessage = 'You should enter the appellant\'s details exactly as they appear on the decision letter, so that we can verify them';
       updateAppealService.validateMidEvent = validateMidEventStub.returns([errorMessage]);
 
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      const dobError: ValidationError = {
-        href: '#dob',
-        key: 'dob',
-        text: errorMessage
+      const fieldErrorMessage = 'There is a problem';
+      const dayError: ValidationError = {
+        href: '#day',
+        key: 'day',
+        text: fieldErrorMessage
+      };
+      const errorList = {
+        ...dayError,
+        text: "You should enter the details exactly as they appear on the decision letter, so that we can verify them"
       };
       expect(submitStub.called).to.equal(false);
       expect(renderStub).to.be.calledWith(
@@ -294,9 +299,9 @@ describe('Personal Details Controller', function () {
           {
             dob: { day: req.body.day, month: req.body.month, year: req.body.year },
             errors: {
-              dob: dobError
+              day: dayError
             },
-            errorList: [ dobError ],
+            errorList: [errorList],
             previousPage: paths.appealStarted.name
           }
       );

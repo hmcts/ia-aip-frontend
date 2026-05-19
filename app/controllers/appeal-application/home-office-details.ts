@@ -34,11 +34,11 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function renderHomeOfficeDetailsError(req: Request, res: Response, errors: ValidationErrors) {
+function renderHomeOfficeDetailsError(req: Request, res: Response, errors: ValidationErrors, errorList: ValidationErrors | string[]) {
   return res.render('appeal-application/home-office/details.njk',
       {
         errors: errors,
-        errorList: Object.values(errors),
+        errorList: Object.values(errorList),
         homeOfficeRefNumber: req.body.homeOfficeRefNumber,
         previousPage: paths.appealStarted.taskList
       }
@@ -53,7 +53,10 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       }
       const validation = homeOfficeNumberValidation(req.body);
       if (validation) {
-        return renderHomeOfficeDetailsError(req, res, validation);
+        const fieldErrors = {
+          homeOfficeRefNumber: createStructuredError('homeOfficeRefNumber', i18n.validationErrors.errorSummary)
+        };
+        return renderHomeOfficeDetailsError(req, res, fieldErrors, validation);
       }
       const appeal: Appeal = {
         ...req.session.appeal,
@@ -67,10 +70,13 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
       if (midEventErrors?.length > 0) {
-        const structuredError = {
+        const fieldErrors = {
+          homeOfficeRefNumber: createStructuredError('homeOfficeRefNumber', i18n.validationErrors.errorSummary)
+        };
+        const errorListObj = {
           homeOfficeRefNumber: createStructuredError('homeOfficeRefNumber', midEventErrors[0])
         };
-        return renderHomeOfficeDetailsError(req, res, structuredError);
+        return renderHomeOfficeDetailsError(req, res, fieldErrors, errorListObj);
       }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
@@ -103,7 +109,7 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function renderNamePageError(req: Request, res: Response, errors: ValidationErrors) {
+function renderNamePageError(req: Request, res: Response, errors: ValidationErrors, errorList: ValidationErrors | string[]) {
   const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
   const previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
   return res.render('appeal-application/personal-details/name.njk', {
@@ -112,7 +118,7 @@ function renderNamePageError(req: Request, res: Response, errors: ValidationErro
       givenNames: req.body.givenNames
     },
     error: errors,
-    errorList: Object.values(errors),
+    errorList: Object.values(errorList),
     previousPage
   });
 }
@@ -125,7 +131,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
       }
       const validation = appellantNamesValidation(req.body);
       if (validation) {
-        return renderNamePageError(req, res, validation);
+        return renderNamePageError(req, res, validation, validation);
       }
 
       const appeal: Appeal = {
@@ -148,11 +154,14 @@ function postNamePage(updateAppealService: UpdateAppealService) {
       const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
       if (midEventErrors?.length > 0) {
-        const structuredError = {
-          givenNames: createStructuredError('givenNames', midEventErrors[0]),
-          familyName: createStructuredError('familyName', midEventErrors[0])
+        const fieldErrors = {
+          givenNames: createStructuredError('givenNames', i18n.validationErrors.errorSummary),
+          familyName: createStructuredError('familyName', i18n.validationErrors.errorSummary)
         };
-        return renderNamePageError(req, res, structuredError);
+        const errorListObj = {
+          givenNames: createStructuredError('givenNames', midEventErrors[0].replace('appellant\'s ', ''))
+        };
+        return renderNamePageError(req, res, fieldErrors, errorListObj);
       }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
@@ -184,10 +193,10 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function renderDateOfBirthError(req: Request, res: Response, errors: boolean | ValidationErrors) {
+function renderDateOfBirthError(req: Request, res: Response, errors: boolean | ValidationErrors, errorList: ValidationErrors | string[]) {
   return res.render('appeal-application/personal-details/date-of-birth.njk', {
     errors: errors,
-    errorList: Object.values(errors),
+    errorList: Object.values(errorList),
     dob: { ...req.body },
     previousPage: paths.appealStarted.name
   });
@@ -201,7 +210,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
       }
       const validation = dateOfBirthValidation(req.body);
       if (validation != null) {
-        return renderDateOfBirthError(req, res, validation);
+        return renderDateOfBirthError(req, res, validation, validation as ValidationErrors);
       }
 
       const appeal: Appeal = {
@@ -224,10 +233,13 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
       const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
       if (midEventErrors?.length > 0) {
-        const structuredError = {
-          dob: createStructuredError('dob', midEventErrors[0])
+        const fieldErrors = {
+          day: createStructuredError('day', i18n.validationErrors.errorSummary)
         };
-        return renderDateOfBirthError(req, res, structuredError);
+        const errorListObj = {
+          day: createStructuredError('day', midEventErrors[0].replace('appellant\'s ', ''))
+        };
+        return renderDateOfBirthError(req, res, fieldErrors, errorListObj);
       }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;

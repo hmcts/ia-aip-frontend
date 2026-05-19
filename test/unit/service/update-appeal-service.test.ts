@@ -2989,7 +2989,7 @@ describe('update-appeal-service', () => {
             serviceToken
           });
       expect(errors.length).to.equal(1);
-      expect(errors.includes("There is a problem")).to.equal(true);
+      expect(errors.includes('There is a problem')).to.equal(true);
     });
   });
 });

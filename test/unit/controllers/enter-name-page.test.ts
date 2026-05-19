@@ -275,19 +275,24 @@ describe('Home Office Details Controller', function () {
     it('should fail validateMidEvent and render personal-details/name.njk with error', async () => {
       req.body.givenNames = 'Lewis';
       req.body.familyName = 'Williams';
-      const errorMessage = 'Please contact HMCTS for support.';
+      const errorMessage = 'You should enter the appellant\'s details exactly as they appear on the decision letter, so that we can verify them';
       updateAppealService.validateMidEvent = validateMidEventStub.returns([errorMessage]);
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      const fieldErrorMessage = 'There is a problem';
       const familyNameError: ValidationError = {
         href: '#familyName',
         key: 'familyName',
-        text: errorMessage
+        text: fieldErrorMessage
       };
       const givenNameErrors: ValidationError = {
         href: '#givenNames',
         key: 'givenNames',
-        text: errorMessage
+        text: fieldErrorMessage
+      };
+      const errorList = {
+        ...givenNameErrors,
+        text: "You should enter the details exactly as they appear on the decision letter, so that we can verify them"
       };
 
       expect(submitStub.called).to.equal(false);
@@ -298,7 +303,7 @@ describe('Home Office Details Controller', function () {
               givenNames: givenNameErrors,
               familyName: familyNameError
             },
-            errorList: [ givenNameErrors, familyNameError ],
+            errorList: [errorList],
             personalDetails: { familyName: req.body.familyName, givenNames: req.body.givenNames },
             previousPage: paths.appealStarted.details
           });

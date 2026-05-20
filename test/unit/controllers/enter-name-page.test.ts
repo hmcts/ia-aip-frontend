@@ -292,7 +292,7 @@ describe('Home Office Details Controller', function () {
       };
       const errorList = {
         ...givenNameErrors,
-        text: "You should enter the details exactly as they appear on the decision letter, so that we can verify them"
+        text: 'You should enter the details exactly as they appear on the decision letter, so that we can verify them'
       };
 
       expect(submitStub.called).to.equal(false);

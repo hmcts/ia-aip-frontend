@@ -7,6 +7,7 @@ import { setupStartAppealStartEvent } from './startAppealStartEvent';
 import { setupStartAppealSubmitEvent } from './startAppealSubmitEvent';
 import { setupStartRepresentingYourself } from './startRepresentingYourself';
 import { setupTestHandler } from './test';
+import { setupValidate } from './validate';
 
 export default [
   setupLoadCases,
@@ -17,5 +18,6 @@ export default [
   setupStartAppealStartEvent,
   setupStartAppealSubmitEvent,
   setupStartRepresentingYourself,
-  setupTestHandler
+  setupTestHandler,
+  setupValidate
 ];

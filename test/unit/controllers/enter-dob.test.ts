@@ -278,7 +278,7 @@ describe('Personal Details Controller', function () {
       req.body.day = 1;
       req.body.month = 11;
       req.body.year = 1993;
-      const errorMessage = 'You should enter the appellant\'s details exactly as they appear on the decision letter, so that we can verify them';
+      const errorMessage = 'You should enter the details exactly as they appear on the decision letter, so that we can verify them';
       updateAppealService.validateMidEvent = validateMidEventStub.returns([errorMessage]);
 
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

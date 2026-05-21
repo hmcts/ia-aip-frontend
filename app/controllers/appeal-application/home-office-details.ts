@@ -156,7 +156,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
           familyName: createStructuredError('familyName', i18n.validationErrors.errorSummary)
         };
         const errorListObj = {
-          givenNames: createStructuredError('givenNames', midEventErrors[0].replace('appellant\'s ', ''))
+          givenNames: createStructuredError('givenNames', midEventErrors[0])
         };
         return renderNamePageError(req, res, fieldErrors, errorListObj);
       }
@@ -234,7 +234,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
           day: createStructuredError('day', i18n.validationErrors.errorSummary)
         };
         const errorListObj = {
-          day: createStructuredError('day', midEventErrors[0].replace('appellant\'s ', ''))
+          day: createStructuredError('day', midEventErrors[0])
         };
         return renderDateOfBirthError(req, res, fieldErrors, errorListObj);
       }

@@ -275,7 +275,7 @@ describe('Home Office Details Controller', function () {
     it('should fail validateMidEvent and render personal-details/name.njk with error', async () => {
       req.body.givenNames = 'Lewis';
       req.body.familyName = 'Williams';
-      const errorMessage = 'You should enter the appellant\'s details exactly as they appear on the decision letter, so that we can verify them';
+      const errorMessage = 'You should enter the details exactly as they appear on the decision letter, so that we can verify them';
       updateAppealService.validateMidEvent = validateMidEventStub.returns([errorMessage]);
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 

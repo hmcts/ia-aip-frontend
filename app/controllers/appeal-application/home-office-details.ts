@@ -34,10 +34,13 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function renderHomeOfficeDetailsError(req: Request, res: Response, errors: ValidationErrors, errorList: ValidationErrors | string[]) {
+function renderHomeOfficeDetailsError(req: Request, res: Response, errorList: ValidationErrors | string[]) {
+  const fieldErrors = {
+    homeOfficeRefNumber: createStructuredError('homeOfficeRefNumber', i18n.validationErrors.errorSummary)
+  };
   return res.render('appeal-application/home-office/details.njk',
       {
-        errors: errors,
+        errors: fieldErrors,
         errorList: Object.values(errorList),
         homeOfficeRefNumber: req.body.homeOfficeRefNumber,
         previousPage: paths.appealStarted.taskList
@@ -53,10 +56,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       }
       const validation = homeOfficeNumberValidation(req.body);
       if (validation) {
-        const fieldErrors = {
-          homeOfficeRefNumber: createStructuredError('homeOfficeRefNumber', i18n.validationErrors.errorSummary)
-        };
-        return renderHomeOfficeDetailsError(req, res, fieldErrors, validation);
+        return renderHomeOfficeDetailsError(req, res, validation);
       }
       const appeal: Appeal = {
         ...req.session.appeal,
@@ -70,13 +70,10 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
       if (midEventErrors?.length > 0) {
-        const fieldErrors = {
-          homeOfficeRefNumber: createStructuredError('homeOfficeRefNumber', i18n.validationErrors.errorSummary)
-        };
         const errorListObj = {
           homeOfficeRefNumber: createStructuredError('homeOfficeRefNumber', midEventErrors[0])
         };
-        return renderHomeOfficeDetailsError(req, res, fieldErrors, errorListObj);
+        return renderHomeOfficeDetailsError(req, res, errorListObj);
       }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;

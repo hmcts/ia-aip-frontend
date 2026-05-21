@@ -149,10 +149,13 @@ function getGwfReference(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function renderGwfReferenceError(req: Request, res: Response, errors: ValidationErrors, errorList: ValidationErrors | string[]) {
+function renderGwfReferenceError(req: Request, res: Response, errorList: ValidationErrors | string[]) {
+  const fieldErrors = {
+    gwfReferenceNumber: createStructuredError('gwfReferenceNumber', i18n.validationErrors.errorSummary)
+  };
   return res.render('appeal-application/out-of-country/gwf-reference.njk',
       {
-        errors: errors,
+        errors: fieldErrors,
         errorList: Object.values(errorList),
         gwfReferenceNumber: req.body.gwfReferenceNumber,
         previousPage: paths.appealStarted.taskList
@@ -168,10 +171,7 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
       }
       const validation = gwfReferenceNumberValidation(req.body);
       if (validation) {
-        const fieldErrors = {
-          gwfReferenceNumber: createStructuredError('gwfReferenceNumber', i18n.validationErrors.errorSummary)
-        };
-        return renderGwfReferenceError(req, res, fieldErrors, validation);
+        return renderGwfReferenceError(req, res, validation);
       }
       const appeal: Appeal = {
         ...req.session.appeal,
@@ -186,13 +186,10 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
       const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
       if (midEventErrors?.length > 0) {
-        const fieldErrors = {
-          gwfReferenceNumber: createStructuredError('gwfReferenceNumber', i18n.validationErrors.errorSummary)
-        };
         const errorListObj = {
           gwfReferenceNumber: createStructuredError('gwfReferenceNumber', midEventErrors[0])
         };
-        return renderGwfReferenceError(req, res, fieldErrors, errorListObj);
+        return renderGwfReferenceError(req, res, errorListObj);
       }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;

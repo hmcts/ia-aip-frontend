@@ -176,12 +176,6 @@ async function createSummaryRowsFrom(req: Request) {
       rows.push(hasSponsorContactDetails);
       rows.push(hasSponsorAuthorisation);
     }
-
-    const appealTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType,
-        [appealTypeNames],
-        paths.appealStarted.typeOfAppeal + editParameter,
-        Delimiter.BREAK_LINE);
-    rows.push(appealTypeRow);
   }
 
   const homeOfficeDecisionLetterRow = addSummaryRow(

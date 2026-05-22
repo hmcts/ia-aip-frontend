@@ -37,6 +37,7 @@ export default class PaymentService {
       paymentReference: results.reference
     };
     const appealUpdated: Appeal = await this.updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true);
+    req.session.refreshCasesList = true;
     req.session.appeal = {
       ...req.session.appeal,
       ...appealUpdated

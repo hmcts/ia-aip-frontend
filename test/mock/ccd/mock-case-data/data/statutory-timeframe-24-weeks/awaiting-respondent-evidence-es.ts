@@ -1,12 +1,6 @@
-import appealSubmittedCaseDataSTF24WES from './appeal-submitted-es';
+import data from './awaiting-respondent-evidence';
 
 export default {
   'total': 1,
-  cases: [
-    {
-      ...appealSubmittedCaseDataSTF24WES.cases[0],
-      'id': 39,
-      'state': 'awaitingRespondentEvidence'
-    }
-  ]
+  cases: [data]
 };

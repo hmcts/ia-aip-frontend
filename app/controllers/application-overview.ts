@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
+import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { States } from '../data/states';
 import { paths } from '../paths';
@@ -13,10 +14,15 @@ import {
 } from '../utils/application-state-utils';
 import { getHearingCentre } from '../utils/cma-hearing-details';
 import { formatDate, timeFormat } from '../utils/date-utils';
+import Logger, { getLogLabel } from '../utils/logger';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
 import { hasPendingTimeExtension, isFtpaFeatureEnabled } from '../utils/utils';
+import { ErrorCode } from './cases-list';
+
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 
 function getAppealRefNumber(appealRef: string) {
   if (appealRef && appealRef.toUpperCase() === 'DRAFT') {
@@ -95,8 +101,6 @@ function showAppealRequestSection(appealStatus: string, featureEnabled: boolean,
     States.APPEAL_TAKEN_OFFLINE.id,
     States.FTPA_SUBMITTED.id,
     States.FTPA_DECIDED.id,
-    States.AWAITING_CLARIFYING_QUESTIONS_ANSWERS.id,
-    States.CLARIFYING_QUESTIONS_ANSWERED_SUBMITTED.id,
     States.AWAITING_CMA_REQUIREMENTS.id,
     States.CMA_REQUIREMENTS_SUBMITTED.id,
     States.CMA_ADJUSTMENTS_AGREED.id,
@@ -129,7 +133,21 @@ function isAppealInProgress(appealStatus: string, isCitizen: boolean) {
 
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    if (req.query.caseId) {
+      const caseId = req.query.caseId as string;
+      try {
+        await updateAppealService.loadAppealByCaseId(caseId, req);
+      } catch (error) {
+        logger.exception(error, logLabel);
+        return res.redirect(`${paths.common.casesList}?errorCode=${ErrorCode.caseNotFound}&caseId=${caseId}`);
+      }
+    }
+
     try {
+      if (!req.session?.appeal?.application) {
+        return res.redirect(paths.common.casesList);
+      }
+
       // TODO: remove after Feature flag for AIP Hearing (Bundling) is permanently switched on
       const hearingBundleFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
       if (req.session.appeal.appealStatus === 'preHearing' || req.session.appeal.appealStatus === 'preHearingOutOfCountryFeatureDisabled') {
@@ -200,7 +218,9 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showNonLegalRep: appealInProgress,
         showAskForSomethingInEndedState,
         isNonLegalRep: !isCitizen,
-        isPostDecisionState: isPostDecisionState(appealStatus, ftpaFeatureEnabled)
+        isPostDecisionState: isPostDecisionState(appealStatus, ftpaFeatureEnabled),
+        previousPage: paths.common.casesList,
+        previousPageText: i18n.components.back.backToCasesList
       });
     } catch (e) {
       next(e);

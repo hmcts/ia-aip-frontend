@@ -142,6 +142,7 @@ describe('Out of Country Controller', function () {
       await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.typeOfAppeal)).to.equal(true);
     });
 
@@ -241,6 +242,7 @@ describe('Out of Country Controller', function () {
       await postOocHrInside(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
@@ -338,6 +340,7 @@ describe('Out of Country Controller', function () {
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 

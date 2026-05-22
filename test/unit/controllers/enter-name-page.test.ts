@@ -157,6 +157,7 @@ describe('Home Office Details Controller', function () {
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.dob)).to.equal(true);
     });
 
@@ -166,6 +167,7 @@ describe('Home Office Details Controller', function () {
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
@@ -196,6 +198,7 @@ describe('Home Office Details Controller', function () {
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
   });

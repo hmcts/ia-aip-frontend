@@ -301,6 +301,8 @@ describe('Ask for more time Controller', function () {
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.MAKE_AN_APPLICATION, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.askForMoreTime.inFlight).to.equal(true);
     });
 

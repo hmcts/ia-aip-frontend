@@ -395,6 +395,7 @@ function postFtpaCheckAndSend(updateAppealService: UpdateAppealService) {
       };
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.APPLY_FOR_FTPA_APPELLANT, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
 
       req.session.appeal = {
         ...req.session.appeal,

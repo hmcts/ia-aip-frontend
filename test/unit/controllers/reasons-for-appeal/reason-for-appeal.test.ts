@@ -121,6 +121,7 @@ describe('Reasons for Appeal Controller', function () {
       req.body.applicationReason = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(redirectStub.calledWith(paths.awaitingReasonsForAppeal.supportingEvidence)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
 
     it('when in Edit mode should pass validation and redirect to check-and-send without error', async () => {
@@ -128,6 +129,7 @@ describe('Reasons for Appeal Controller', function () {
       req.body.applicationReason = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(redirectStub.calledWith(paths.awaitingReasonsForAppeal.checkAndSend)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
 
     it('when Save for later should pass validation and redirect to overview page without error', async () => {
@@ -135,6 +137,7 @@ describe('Reasons for Appeal Controller', function () {
       req.body.saveForLater = 'saveForLater';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(redirectStub.calledWith('/appeal-overview?saved')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
 
     it('when in edit mode and click on Save for later should pass validation and redirect to overview page without error', async () => {
@@ -143,6 +146,7 @@ describe('Reasons for Appeal Controller', function () {
       req.body.saveForLater = 'saveForLater';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(redirectStub.calledWith('/appeal-overview?saved')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
 
     it('when Save and ask for more time should pass validation and redirect to more time page without error', async () => {
@@ -150,6 +154,7 @@ describe('Reasons for Appeal Controller', function () {
       req.body.saveAndAskForMoreTime = 'saveAndAskForMoreTime';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(redirectStub.calledWith(paths.common.askForMoreTimeReason)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
   });
 
@@ -179,6 +184,7 @@ describe('Reasons for Appeal Controller', function () {
       req.session.appeal.reasonsForAppeal.evidences = evidenceMock;
       await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(redirectStub.calledWith(paths.awaitingReasonsForAppeal.checkAndSend)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
 
     it('when in Edit mode should pass validation and redirect to check-and-send without error', async () => {
@@ -187,6 +193,7 @@ describe('Reasons for Appeal Controller', function () {
 
       await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(redirectStub.calledWith(paths.awaitingReasonsForAppeal.checkAndSend)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
 
     it('when Save for later should pass validation and redirect to overview page without error', async () => {

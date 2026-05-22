@@ -196,6 +196,7 @@ describe('Type of appeal Controller', () => {
       req.body['answer'] = 'decisionWithoutHearing';
       req.session.appeal.application.appealType = 'revocationOfProtection';
       await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
@@ -277,6 +278,7 @@ describe('Type of appeal Controller', () => {
       await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
@@ -289,6 +291,7 @@ describe('Type of appeal Controller', () => {
       await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 

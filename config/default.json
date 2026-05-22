@@ -1,5 +1,6 @@
 {
   "testUrl": "https://localhost:3000",
+  "exuiUrl": "http://localhost:3002/",
   "currentEnvironment": "NODE_ENV",
   "httpProxy": false,
   "proxy": {
@@ -87,6 +88,7 @@
       ".ppsx", ".rtf", ".csv"
     ]
   },
+  "maxDraftAppeals": 5,
   "dueDate": {
     "ftpaDecisionResponse": 14,
     "ftpaDecisionResponseOoc": 28,

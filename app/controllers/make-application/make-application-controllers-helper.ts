@@ -195,6 +195,7 @@ function postProvideSupportingEvidenceCheckAndSend(updateAppealService: UpdateAp
         ...req.session.appeal
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.MAKE_AN_APPLICATION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
 
       req.session.appeal = {
         ...req.session.appeal,

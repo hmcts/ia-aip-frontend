@@ -140,6 +140,7 @@ describe('Asylum support Controller', function () {
       await postAsylumSupport(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.asylumSupportRefNumber).to.deep.equal('12345');
       expect(redirectStub.calledWith(paths.appealStarted.taskList)).to.equal(true);
     });

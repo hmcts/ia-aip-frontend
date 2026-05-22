@@ -138,6 +138,7 @@ describe('Hearing Requirements - Other Needs Section: Private Hearing Question c
       await postPrivateHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsPrivateHearingReason)).to.equal(true);
       expect(req.session.appeal.hearingRequirements.otherNeeds.privateAppointment).to.equal(true);
     });
@@ -147,6 +148,7 @@ describe('Hearing Requirements - Other Needs Section: Private Hearing Question c
       await postPrivateHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsHealthConditions)).to.equal(true);
       expect(req.session.appeal.hearingRequirements.otherNeeds.privateAppointment).to.equal(false);
     });

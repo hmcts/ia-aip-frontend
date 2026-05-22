@@ -10,6 +10,9 @@ import {
   getSamePerson,
   getSponsorAddress,
   getSponsorAuthorisation,
+  getHasSponsor,
+  getSponsorAddress,
+  getSponsorAuthorisation,
   getSponsorContactDetails,
   getSponsorName, getSponsorNamePreviousPage,
   postContactDetails,
@@ -18,6 +21,9 @@ import {
   postNlrContactDetails,
   postNlrName,
   postSamePerson,
+  postSponsorAddress,
+  postSponsorAuthorisation,
+  postHasSponsor,
   postSponsorAddress,
   postSponsorAuthorisation,
   postSponsorContactDetails,
@@ -352,6 +358,7 @@ describe('Contact details Controller', () => {
           await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
           expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+          expect(req.session.refreshCasesList).to.equal(true);
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
           expect(redirectStub.calledWith(paths.appealStarted.enterPostcode)).to.equal(true);
         });
@@ -366,6 +373,7 @@ describe('Contact details Controller', () => {
           await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
           expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+          expect(req.session.refreshCasesList).to.equal(true);
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
           expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
           expect(req.session.appeal.application.isEdit).to.equal(undefined);
@@ -474,6 +482,7 @@ describe('Contact details Controller', () => {
           await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
           expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+          expect(req.session.refreshCasesList).to.equal(true);
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
           expect(redirectStub.calledWith(paths.appealStarted.enterPostcode)).to.equal(true);
         });
@@ -484,6 +493,7 @@ describe('Contact details Controller', () => {
           await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
           expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+          expect(req.session.refreshCasesList).to.equal(true);
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
           expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
           expect(req.session.appeal.application.isEdit).to.equal(undefined);
@@ -652,7 +662,7 @@ describe('Contact details Controller', () => {
       expect(req.session.appeal.application.hasNonLegalRep).to.equal(undefined);
 
       await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.hasSponsor).to.equal('Yes');
       expect(req.session.appeal.application.hasNonLegalRep).to.equal('Yes');
       expect(submit).calledWith(Events.EDIT_APPEAL, req.session.appeal, 'idamUID', 'atoken', false);
@@ -667,6 +677,7 @@ describe('Contact details Controller', () => {
 
       await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.hasSponsor).to.equal('Yes');
       expect(req.session.appeal.application.hasNonLegalRep).to.equal('No');
       expect(submit).calledWith(Events.EDIT_APPEAL, req.session.appeal, 'idamUID', 'atoken', false);
@@ -681,6 +692,7 @@ describe('Contact details Controller', () => {
 
       await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.hasSponsor).to.equal('No');
       expect(req.session.appeal.application.hasNonLegalRep).to.equal('Yes');
       expect(submit).calledWith(Events.EDIT_APPEAL, req.session.appeal, 'idamUID', 'atoken', false);
@@ -695,6 +707,7 @@ describe('Contact details Controller', () => {
 
       await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.hasSponsor).to.equal('No');
       expect(req.session.appeal.application.hasNonLegalRep).to.equal('No');
       expect(submit).calledWith(Events.EDIT_APPEAL, req.session.appeal, 'idamUID', 'atoken', false);
@@ -848,6 +861,7 @@ describe('Contact details Controller', () => {
       await postSponsorName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.sponsorAddress)).to.equal(true);
     });
 
@@ -857,6 +871,7 @@ describe('Contact details Controller', () => {
       await postSponsorName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
@@ -887,6 +902,7 @@ describe('Contact details Controller', () => {
       await postSponsorName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
   });
@@ -959,6 +975,7 @@ describe('Contact details Controller', () => {
       await postSponsorAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.sponsorContactDetails)).to.equal(true);
     });
 
@@ -975,6 +992,7 @@ describe('Contact details Controller', () => {
       await postSponsorAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.equal(undefined);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
@@ -1215,6 +1233,7 @@ describe('Contact details Controller', () => {
           await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
           expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+          expect(req.session.refreshCasesList).to.equal(true);
           expect(req.session.appeal.application.sponsorContactDetails).to.deep.equal(sponsorContactDetails);
           expect(redirectStub.calledWith(paths.appealStarted.sponsorAuthorisation)).to.equal(true);
         });
@@ -1229,6 +1248,7 @@ describe('Contact details Controller', () => {
           await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
           expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+          expect(req.session.refreshCasesList).to.equal(true);
           expect(req.session.appeal.application.sponsorContactDetails).to.deep.equal(sponsorContactDetails);
           expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
           expect(req.session.appeal.application.isEdit).to.equal(undefined);
@@ -1337,6 +1357,7 @@ describe('Contact details Controller', () => {
           await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
           expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+          expect(req.session.refreshCasesList).to.equal(true);
           expect(req.session.appeal.application.sponsorContactDetails).to.deep.equal(sponsorContactDetails);
           expect(redirectStub.calledWith(paths.appealStarted.sponsorAuthorisation)).to.equal(true);
         });
@@ -1347,6 +1368,7 @@ describe('Contact details Controller', () => {
           await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
           expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+          expect(req.session.refreshCasesList).to.equal(true);
           expect(req.session.appeal.application.sponsorContactDetails).to.deep.equal(sponsorContactDetails);
           expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
           expect(req.session.appeal.application.isEdit).to.equal(undefined);
@@ -1406,6 +1428,7 @@ describe('Contact details Controller', () => {
       await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 

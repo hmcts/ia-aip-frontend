@@ -1,17 +1,9 @@
 import { getCitizenUserFromThread } from '../../service/user-service';
 
 const config = require('config');
-let exuiBaseUrl;
 
-const testUrl = config.get('testUrl');
+const exuiBaseUrl = config.get('exuiUrl');
 
-if (testUrl.includes('localhost')) {
-  exuiBaseUrl = 'http://localhost:3002/';
-} else if (testUrl.includes('aat') || testUrl.includes('preview')) {
-  exuiBaseUrl = 'https://manage-case.aat.platform.hmcts.net/';
-} else if (testUrl.includes('demo')) {
-  exuiBaseUrl = 'https://manage-case.demo.platform.hmcts.net/';
-}
 module.exports = {
   aipToLegalRepNoC(I) {
     When(/^I log in as a Legal Rep$/, async () => {
@@ -21,7 +13,7 @@ module.exports = {
         if (success === true) {
           break;
         } else {
-          await I.amOnPage(exuiBaseUrl + 'auth/logout');
+          await I.amOnPage(exuiBaseUrl + '/auth/logout');
           await I.amOnPage(exuiBaseUrl);
           await I.waitForElement('#username', 30);
           await I.fillField('#username', config.get('testAccounts.testLawFirmAUsername'));

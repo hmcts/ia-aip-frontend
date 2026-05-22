@@ -148,6 +148,7 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Reason contr
     it('should validate and redirect to next page', async () => {
       req.body['reason'] = 'the answer here';
       await postHearingAnythingElseReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(submit.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
       expect(redirectStub.calledWith(paths.submitHearingRequirements.taskList)).to.equal(true);
     });

@@ -58,11 +58,16 @@ import awaitingReasonsForAppealSTF24WES from './data/statutory-timeframe-24-week
 import awaitingReasonsForAppealPartialSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-partial-es';
 import awaitingRespondentEvidenceSTF24WES from './data/statutory-timeframe-24-weeks/awaiting-respondent-evidence-es';
 import caseUnderReviewSTF24WES from './data/statutory-timeframe-24-weeks/case-under-review-es';
+import clarifyingQuestionsSTF24WES from './data/statutory-timeframe-24-weeks/clarifying-questions-es';
 import decisionMaintainedSTF24WES from './data/statutory-timeframe-24-weeks/decision-maintained-es';
+import finalBundlingSTF24WES from './data/statutory-timeframe-24-weeks/final-bundling-es';
 import lateAppealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/late-appeal-submitted-es';
 import listingSTF24WES from './data/statutory-timeframe-24-weeks/listing-es';
+import pendingPaymentSTF24WES from './data/statutory-timeframe-24-weeks/pending-payment-es';
+import prepareForHearingSTF24WES from './data/statutory-timeframe-24-weeks/prepare-for-hearing-es';
 import reasonsForAppealSubmittedSTF24WES from './data/statutory-timeframe-24-weeks/reasons-for-appeal-submitted-es';
 import respondentReviewSTF24WES from './data/statutory-timeframe-24-weeks/respondent-review-es';
+import submitHearingRequirementsSTF24WES from './data/statutory-timeframe-24-weeks/submit-hearing-requirements-es';
 import submittedCmaRequirements from './data/submitted-cma-requirements';
 import submittedCmaRequirementsES from './data/submitted-cma-requirements-es';
 import uploadAddendumEvidence from './data/upload-addendum-evidence';
@@ -137,5 +142,10 @@ export default {
   caseUnderReviewSTF24WES,
   respondentReviewSTF24WES,
   decisionMaintainedSTF24WES,
-  awaitingReasonsForAppealPartialSTF24WES
+  awaitingReasonsForAppealPartialSTF24WES,
+  prepareForHearingSTF24WES,
+  finalBundlingSTF24WES,
+  pendingPaymentSTF24WES,
+  submitHearingRequirementsSTF24WES,
+  clarifyingQuestionsSTF24WES
 };

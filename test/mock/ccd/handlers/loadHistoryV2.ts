@@ -15,7 +15,8 @@ const caseIdToHistory: Record<string, any> = {
   '3': mockData.appealSubmittedHistoryEvent,
   '4': mockData.awaitingReasonsForAppealHistoryEvent,
   '5': mockData.partialAwaitingReasonsForAppealHistoryEvent,
-  '7': mockData.awaitingReasonsForAppealHistoryEvent
+  '7': mockData.awaitingReasonsForAppealHistoryEvent,
+  '49': mockData.recordRemissionDecisionHistoryEvent
 };
 
 export async function setupLoadHistoryV2(server: Mockttp) {

@@ -182,6 +182,26 @@ module.exports = {
           signInForUser('awaiting-reasons-for-appeal-partial-stf24w@example.com');
           break;
         }
+        case 'prepareForHearing with stf24w': {
+          signInForUser('prepare-for-hearing-stf24w@example.com');
+          break;
+        }
+        case 'finalBundling with stf24w': {
+          signInForUser('final-bundling-stf24w@example.com');
+          break;
+        }
+        case 'pendingPayment with stf24w': {
+          signInForUser('pending-payment-stf24w@example.com');
+          break;
+        }
+        case 'submitHearingRequirements with stf24w': {
+          signInForUser('submit-hearing-requirements-stf24w@example.com');
+          break;
+        }
+        case 'awaitingClarifyingQuestionsAnswers with stf24w': {
+          signInForUser('awaiting-clarifying-questions-answers-stf24w@example.com');
+          break;
+        }
         default:
           break;
       }

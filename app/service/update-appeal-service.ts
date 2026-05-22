@@ -5,6 +5,7 @@ import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { formatDate } from '../utils/date-utils';
+import Logger, { getLogLabel } from '../utils/logger';
 import {
   boolToYesNo,
   documentIdToDocStoreUrl,
@@ -13,8 +14,6 @@ import {
   toIsoDate,
   yesNoToBool
 } from '../utils/utils';
-import Logger, { getLogLabel } from '../utils/logger';
-import { boolToYesNo, documentIdToDocStoreUrl, extendedBoolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { DocumentManagementService } from './document-management-service';

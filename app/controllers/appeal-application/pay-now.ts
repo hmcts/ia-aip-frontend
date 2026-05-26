@@ -92,8 +92,6 @@ function postPayNow(updateAppealService: UpdateAppealService) {
       await persistAppeal(appeal, paymentsFlag);
       const redirectPage = getRedirectPage(editingMode, editingModeRedirect, request.body.saveForLater, defaultRedirect);
       if (['protection'].includes(appeal.application.appealType) && !appeal.pcqId) {
-        const pcqFlag = await LaunchDarklyService.getInstance().getVariation(request, FEATURE_FLAGS.PCQ, false);
-        if (!pcqFlag) return res.redirect(redirectPage);
         const pcqService = new PcqService();
         const isPcqUp: boolean = await pcqService.checkPcqHealth();
         if (isPcqUp) {

@@ -8,12 +8,10 @@ import { DocumentManagementService } from '../../service/document-management-ser
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getDueDateForAppellantToRespondToJudgeDecision } from '../../utils/event-deadline-date-finder';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
-import { formatTextForCYA, isFtpaFeatureEnabled } from '../../utils/utils';
+import { formatTextForCYA } from '../../utils/utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
 async function makeFtpaApplication(req: Request, res: Response, next: NextFunction) {
-  const ftpaFlag = await isFtpaFeatureEnabled(req);
-  if (!ftpaFlag) return res.redirect(paths.common.overview);
 
   req.session.appeal = {
     ...req.session.appeal,
@@ -66,8 +64,6 @@ async function getReason(req: Request, res: Response, next: NextFunction, config
 }
 
 async function getFtpaOutOfTimeReason(req: Request, res: Response, next: NextFunction) {
-  const ftpaFlag = await isFtpaFeatureEnabled(req);
-  if (!ftpaFlag) return res.redirect(paths.common.overview);
 
   const config = {
     title: i18n.pages.ftpaApplication.ftpaOutOfTimeReason.title,
@@ -101,8 +97,6 @@ function postFtpaOutOfTimeReason(req: Request, res: Response, next: NextFunction
 }
 
 async function getFtpaReason(req: Request, res: Response, next: NextFunction) {
-  const ftpaFlag = await isFtpaFeatureEnabled(req);
-  if (!ftpaFlag) return res.redirect(paths.common.overview);
 
   const previousPage = req.session.appeal.ftpaAppellantSubmissionOutOfTime === 'Yes'
       ? (req.session.appeal.ftpaOutOfTimeProvideEvidence === 'Yes'
@@ -548,6 +542,5 @@ export {
   getFtpaCheckAndSend,
   buildSummaryList,
   isFtpaApplicationOutOfTime,
-  isFtpaFeatureEnabled,
   setupFtpaApplicationController
 };

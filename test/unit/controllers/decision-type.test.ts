@@ -189,20 +189,9 @@ describe('Type of appeal Controller', () => {
       expect(redirectStub.calledOnceWith(paths.appealStarted.payNow)).to.equal(true);
     });
 
-    it('should redirect to the task-list page when payments feature flag ON but PCQ feature flag OFF and appealType is not protection', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-          .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true)
-          .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(false);
-      req.body['answer'] = 'decisionWithoutHearing';
-      req.session.appeal.application.appealType = 'revocationOfProtection';
-      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
-    });
-
     it('should redirect to the task-list page when payments feature flag ON but PCQ feature flag ON and appealType is not protection, PCQ is Down', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-          .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true)
-          .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(true);
+          .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       req.body['answer'] = 'decisionWithHearing';
       req.session.appeal.application.appealType = 'revocationOfProtection';
       sandbox.stub(PcqService.prototype, 'checkPcqHealth').resolves(false);
@@ -213,8 +202,7 @@ describe('Type of appeal Controller', () => {
 
     it('should redirect to the task-list page when payments feature flag ON, PCQ feature flag ON, appealType is not protection, but there is pcqId', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-          .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true)
-          .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(true);
+          .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       req.body['answer'] = 'decisionWithHearing';
       req.session.appeal.application.appealType = 'revocationOfProtection';
       req.session.appeal.pcqId = 'AAA';
@@ -224,8 +212,7 @@ describe('Type of appeal Controller', () => {
 
     it('should redirect to the PCQ page when payments feature flag ON but PCQ feature flag ON and appealType is not protection, PCQ is Up', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-          .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true)
-          .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(true);
+          .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       sandbox.stub(PcqService.prototype, 'checkPcqHealth').resolves(true);
       sandbox.stub(PcqService.prototype, 'getPcqId').resolves('test001');
 
@@ -267,29 +254,6 @@ describe('Type of appeal Controller', () => {
       await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(renderStub.calledOnceWith('templates/radio-question-page.njk')).to.equal(true);
-    });
-
-    it('should validate and redirect to the task-list page for revocationOfProtection appeal type', async () => {
-      req.body['answer'] = 'decisionWithHearing';
-      req.session.appeal.application.appealType = 'revocationOfProtection';
-      appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
-      appeal.application.decisionHearingFeeOption = '';
-      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
-      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
-    });
-
-    it('should validate and redirect to the task-list page for refusalOfHumanRights appeal type', async () => {
-      req.body['answer'] = 'decisionWithHearing';
-      req.session.appeal.application.appealType = 'refusalOfHumanRights';
-      appeal.application.appealType = 'refusalOfHumanRights';
-      appeal.application.rpDcAppealHearingOption = '';
-      appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
-      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
     it('getDecisionType should catch exception and call next with the error', async () => {

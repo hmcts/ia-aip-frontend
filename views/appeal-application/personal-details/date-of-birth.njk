@@ -1,5 +1,6 @@
 {% set pageTitleName = i18n.pages.DOB.title %}
 {% extends 'layout.njk' %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 
 {% block content %}
@@ -11,60 +12,67 @@
     }) }}
   {% endif %}
   <form method="post" action="{{ paths.appealStarted.dob }}" type="submit">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    {% set errorMessage =  errors.day.text if errors.day %}
-    {% set errorMessage =  errors.month.text if errors.month else errorMessage %}
-    {% set errorMessage =  errors.year.text if errors.year else errorMessage %}
-    {% set errorMessage =  errors.date.text if errors.date else errorMessage %}
+    {% call govukFieldset({
+      legend: {
+        isPageHeading: true,
+        text: i18n.pages.DOB.title,
+        classes: 'govuk-fieldset__legend--xl'
+      }
+    }) %}
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {% set errorMessage =  errors.day.text if errors.day %}
+      {% set errorMessage =  errors.month.text if errors.month else errorMessage %}
+      {% set errorMessage =  errors.year.text if errors.year else errorMessage %}
+      {% set errorMessage =  errors.date.text if errors.date else errorMessage %}
 
-    {{ govukDateInput({
-      fieldset: {
-        legend: {
-          isPageHeading: true,
-          text: i18n.pages.DOB.title,
-          classes: 'govuk-fieldset__legend--xl'
-        }
-      },
-      hint: {
-        text: i18n.pages.DOB.hint
-      },
-      id: 'date',
-      name: 'date',
-      errorMessage: {
-        html: errorMessage
-      } if errors,
-      items: [
-        {
-          id: 'day',
-          name: "day",
-          classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
-          value: dob.day,
-          attributes: {
-          max: 31
-        }
-        },
-        {
-          id: 'month',
-          name: "month",
-          classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
-          value: dob.month,
-          attributes: {
-          max: 12
-        }
-        },
-        {
-          id: 'year',
-          name: "year",
-          classes: "govuk-input--width-4 govuk-input--error" if errorMessage else "govuk-input--width-4",
-          value: dob.year,
-          attributes: {
-          max: 9999
-        }
-        }
-      ]
-    }) }}
+      <ul class="govuk-list govuk-list--bullet">
+        {% for hint in i18n.pages.DOB.hints %}
+          <li>{{ hint | safe }}</li>
+        {% endfor %}
+      </ul>
 
-    {{ saveButtons() }}
+      {{ govukDateInput({
+        hint: {
+          text: i18n.pages.DOB.dateHint
+        },
+        id: 'date',
+        name: 'date',
+        errorMessage: {
+          html: errorMessage
+        } if errors,
+        items: [
+          {
+            id: 'day',
+            name: "day",
+            classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
+            value: dob.day,
+            attributes: {
+            max: 31
+          }
+          },
+          {
+            id: 'month',
+            name: "month",
+            classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
+            value: dob.month,
+            attributes: {
+            max: 12
+          }
+          },
+          {
+            id: 'year',
+            name: "year",
+            classes: "govuk-input--width-4 govuk-input--error" if errorMessage else "govuk-input--width-4",
+            value: dob.year,
+            attributes: {
+            max: 9999
+          }
+          }
+        ]
+      }) }}
+
+      {{ saveButtons() }}
+    {% endcall %}
   </form>
   {{ contactUs() }}
 {% endblock %}

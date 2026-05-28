@@ -19,6 +19,13 @@
       }
     }) %}
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+      <ul class="govuk-list govuk-list--bullet">
+        {% for hint in i18n.pages.name.hints %}
+          <li>{{ hint | safe }}</li>
+        {% endfor %}
+      </ul>
+
       {{ govukInput({
         label: {
           text: i18n.pages.name.givenNames

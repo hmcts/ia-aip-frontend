@@ -20,15 +20,12 @@
       }
     }) %}
       <h2>{{ i18n.pages.homeOfficePage.label }}</h2>
-      <p>{{ i18n.pages.homeOfficePage.description }}</p>
 
       <ul class="govuk-list govuk-list--bullet">
         {% for hint in i18n.pages.homeOfficePage.hints %}
           <li>{{ hint | safe }}</li>
         {% endfor %}
       </ul>
-
-      <p>{{ i18n.pages.homeOfficePage.footNote | safe  }}</p>
 
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       

@@ -864,6 +864,7 @@
       "needMoreTime": "Need more time?"
     },
     "ineligiblePage": {
+      "title": "You cannot currently use the service",
       "moreInfo": {
         "title": "More information",
         "moreInfoList": [

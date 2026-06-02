@@ -1,10 +1,10 @@
-import data from './awaiting-reasons-for-appeal';
+import awaitingReasonsForAppealCaseDataSTF24W from './awaiting-reasons-for-appeal';
 
 export default {
-  ...data,
+  ...awaitingReasonsForAppealCaseDataSTF24W,
   'id': 46,
   'case_data': {
-    ...data.case_data,
+    ...awaitingReasonsForAppealCaseDataSTF24W.case_data,
     'reasonsForAppealDecision': 'test'
   }
 };

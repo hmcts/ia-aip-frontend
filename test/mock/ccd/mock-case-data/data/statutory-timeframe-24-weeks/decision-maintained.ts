@@ -1,7 +1,8 @@
-import data from './appeal-submitted';
+import appealSubmittedCaseDataSTF24W from './appeal-submitted';
 
 export default {
-  ...data,
+  ...appealSubmittedCaseDataSTF24W,
   'id': 45,
   'state': 'decisionMaintained'
+
 };

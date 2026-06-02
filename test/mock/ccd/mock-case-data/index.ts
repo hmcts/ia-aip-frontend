@@ -169,7 +169,6 @@ export default {
   decisionMaintainedSTF24W,
   awaitingReasonsForAppealPartialSTF24WES,
   awaitingReasonsForAppealPartialSTF24W,
-  awaitingReasonsForAppealPartialSTF24WES,
   prepareForHearingSTF24WES,
   finalBundlingSTF24WES,
   pendingPaymentSTF24WES,

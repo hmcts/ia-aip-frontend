@@ -3,32 +3,35 @@ import i18n from '../../../locale/en.json';
 import { expect } from '../../utils/testUtils';
 
 describe('progress-bar utils', () => {
-  const defaultStages = [
-    {
-      title: i18n.components.progressBar.yourAppealDetails.title,
-      ariaLabel: i18n.components.progressBar.yourAppealDetails.ariaLabel,
-      active: false,
-      completed: false
-    },
-    {
-      title: i18n.components.progressBar.yourAppealArgument.title,
-      ariaLabel: i18n.components.progressBar.yourAppealArgument.ariaLabel,
-      active: false,
-      completed: false
-    },
-    {
-      title: i18n.components.progressBar.yourHearingDetails.title,
-      ariaLabel: i18n.components.progressBar.yourHearingDetails.ariaLabel,
-      active: false,
-      completed: false
-    },
-    {
-      title: i18n.components.progressBar.yourAppealDecision.title,
-      ariaLabel: i18n.components.progressBar.yourAppealDecision.ariaLabel,
-      active: false,
-      completed: false
-    }
-  ];
+  let defaultStages;
+  beforeEach(() => {
+    defaultStages = [
+      {
+        title: i18n.components.progressBar.yourAppealDetails.title,
+        ariaLabel: i18n.components.progressBar.yourAppealDetails.ariaLabel,
+        active: false,
+        completed: false
+      },
+      {
+        title: i18n.components.progressBar.yourAppealArgument.title,
+        ariaLabel: i18n.components.progressBar.yourAppealArgument.ariaLabel,
+        active: false,
+        completed: false
+      },
+      {
+        title: i18n.components.progressBar.yourHearingDetails.title,
+        ariaLabel: i18n.components.progressBar.yourHearingDetails.ariaLabel,
+        active: false,
+        completed: false
+      },
+      {
+        title: i18n.components.progressBar.yourAppealDecision.title,
+        ariaLabel: i18n.components.progressBar.yourAppealDecision.ariaLabel,
+        active: false,
+        completed: false
+      }
+    ];
+  });
 
   describe('should build progress bar stages using state', () => {
 
@@ -150,6 +153,28 @@ describe('progress-bar utils', () => {
       expectedStages[1].completed = true;
       expectedStages[2].active = true;
       expectedStages[2].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
+
+    it('listing', () => {
+      const stages = buildProgressBarStages('listing');
+      const expectedStages = defaultStages;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
+      expectedStages[1].active = false;
+      expectedStages[1].completed = true;
+      expectedStages[2].active = true;
+      expectedStages[2].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
+
+    it('listing when stf24w is set to \'Yes\'', () => {
+      const paymentStatus = 'Payment pending';
+      const is24WeeksTimeline = true;
+      const stages = buildProgressBarStages('listing', paymentStatus, is24WeeksTimeline);
+      const expectedStages = defaultStages;
+      expectedStages[0].active = true;
+      expectedStages[0].completed = false;
       expect(expectedStages).to.deep.equal(stages);
     });
   });

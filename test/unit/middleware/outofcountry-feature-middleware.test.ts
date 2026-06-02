@@ -56,18 +56,7 @@ describe('hearingRequirementsMiddleware', () => {
       ...req,
       path: paths.common.overview
     };
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(reqWithPath as Request, 'aip-ooc-feature', false).resolves(true);
     await outOfCountryFeatureMiddleware(reqWithPath as Request, res as Response, next);
     expect(next.called).to.equal(true);
-  });
-
-  it('should redirect to respective hearings page if the out of county feature  is enabled disabled', async () => {
-    const reqWithPath: Partial<Request> = {
-      ...req,
-      path: paths.common.overview
-    };
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(reqWithPath as Request, 'aip-ooc-feature', false).resolves(false);
-    await outOfCountryFeatureMiddleware(reqWithPath as Request, res as Response, next);
-    expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
   });
 });

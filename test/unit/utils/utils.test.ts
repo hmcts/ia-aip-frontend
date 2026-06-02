@@ -8,7 +8,8 @@ import {
   formatWitnessName,
   getApplicationType,
   getFtpaApplicantType,
-  getLatestUpdateRemissionDecionsEventHistory,
+  getLatestRequestFeeRemissionEventHistory,
+  getLatestUpdateRemissionDecisionsEventHistory,
   getLatestUpdateTribunalDecisionHistory,
   hasPendingTimeExtension,
   isRemissionDecisionDecided,
@@ -442,7 +443,7 @@ describe('utils', () => {
       });
     });
 
-    it('getLatestUpdateRemissionDecionsEventHistory', () => {
+    it('getLatestUpdateRemissionDecisionsEventHistory', () => {
       const { appeal } = req.session;
       appeal.application.remissionDecision = 'approved';
       appeal.history = [
@@ -460,8 +461,31 @@ describe('utils', () => {
         }
       ] as HistoryEvent[];
 
-      const latesHistoryEvent = getLatestUpdateRemissionDecionsEventHistory(req as Request, true);
+      const latesHistoryEvent = getLatestUpdateRemissionDecisionsEventHistory(req as Request, true);
       expect(latesHistoryEvent.id).to.deep.equal('recordRemissionDecision');
+      expect(latesHistoryEvent.createdDate).to.deep.equal('2024-04-07T15:36:26.099');
+    });
+
+    it('getLatestRequestFeeRemissionEventHistory', () => {
+      const { appeal } = req.session;
+      appeal.application.refundRequested = true;
+      appeal.history = [
+        {
+          'id': 'requestFeeRemission',
+          'createdDate': '2024-03-07T15:36:26.099'
+        },
+        {
+          'id': 'requestFeeRemission',
+          'createdDate': '2024-04-07T15:36:26.099'
+        },
+        {
+          'id': 'updateTribunalDecision',
+          'createdDate': '2024-03-07T15:36:26.099'
+        }
+      ] as HistoryEvent[];
+
+      const latesHistoryEvent = getLatestRequestFeeRemissionEventHistory(req as Request, true);
+      expect(latesHistoryEvent.id).to.deep.equal('requestFeeRemission');
       expect(latesHistoryEvent.createdDate).to.deep.equal('2024-04-07T15:36:26.099');
     });
   });

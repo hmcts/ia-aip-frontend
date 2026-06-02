@@ -161,7 +161,7 @@ export function isRemissionDecisionDecided(req: Request, refundFeatureEnabled: b
     !!req.session.appeal.application.remissionDecision);
 }
 
-export function getLatestUpdateRemissionDecionsEventHistory(req: Request, refundFeatureEnabled: boolean = false): HistoryEvent {
+export function getLatestUpdateRemissionDecisionsEventHistory(req: Request, refundFeatureEnabled: boolean = false): HistoryEvent {
   return isRemissionDecisionDecided(req, refundFeatureEnabled) ? req.session.appeal.history
     .filter(history => history.id === Events.RECORD_REMISSION_DECISION.id)
     .sort((a: any, b: any) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())[0] : null;

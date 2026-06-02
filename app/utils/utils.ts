@@ -167,6 +167,12 @@ export function getLatestUpdateRemissionDecionsEventHistory(req: Request, refund
     .sort((a: any, b: any) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())[0] : null;
 }
 
+export function getLatestRequestFeeRemissionEventHistory(req: Request, refundFeatureEnabled: boolean = false): HistoryEvent {
+  return !isRemissionDecisionDecided(req, refundFeatureEnabled) ? req.session.appeal.history
+    .filter(history => history.id === Events.REQUEST_FEE_REMISSION.id)
+    .sort((a: any, b: any) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())[0] : null;
+}
+
 export function formatWitnessName(witnessName: WitnessName) {
   const givenNames = witnessName.witnessGivenNames;
   const familyName = witnessName.witnessFamilyName;

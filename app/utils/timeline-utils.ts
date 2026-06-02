@@ -14,6 +14,7 @@ import {
   getApplicant,
   getFtpaApplicantType,
   getLatestUpdateRemissionDecionsEventHistory,
+  getLatestRequestFeeRemissionEventHistory,
   getLatestUpdateTribunalDecisionHistory,
   isNonStandardDirectionEnabled,
   isReadonlyApplicationEnabled,
@@ -415,18 +416,33 @@ function getApplicationHistoryPaymentEvent(paymentDate) {
 function getApplicationHistoryAppealRemissionSection(req, manageAFeeUpdate, refundFeatureEnabled, appealRemissionSection, application, applicationEvents, submitCQHistory, directionsHistory) {
   if (manageAFeeUpdate) {
     return manageAFeeUpdate;
-  } else if (refundFeatureEnabled && application.remissionDecision) {
-    const latestUpdateRemissionDecisionHistory = getLatestUpdateRemissionDecionsEventHistory(req, refundFeatureEnabled);
-    const decisionRemissionEvent = [{
-      date: moment(latestUpdateRemissionDecisionHistory.createdDate).format('DD MMMM YYYY'),
-      dateObject: new Date(latestUpdateRemissionDecisionHistory.createdDate),
-      text: i18n.pages.overviewPage.timeline.feeRemissionDecision.text || null,
-      links: i18n.pages.overviewPage.timeline.feeRemissionDecision.links
-    }];
-    if (appealRemissionSection) {
-      return decisionRemissionEvent.concat(appealRemissionSection);
-    } else {
-      return decisionRemissionEvent.concat(applicationEvents, submitCQHistory, directionsHistory);
+  } else if (refundFeatureEnabled) {
+    if (application.remissionDecision) {
+      const latestUpdateRemissionDecisionHistory = getLatestUpdateRemissionDecionsEventHistory(req, refundFeatureEnabled);
+      const decisionRemissionEvent = [{
+        date: moment(latestUpdateRemissionDecisionHistory.createdDate).format('DD MMMM YYYY'),
+        dateObject: new Date(latestUpdateRemissionDecisionHistory.createdDate),
+        text: i18n.pages.overviewPage.timeline.feeRemissionDecision.text || null,
+        links: i18n.pages.overviewPage.timeline.feeRemissionDecision.links
+      }];
+      if (appealRemissionSection) {
+        return decisionRemissionEvent.concat(appealRemissionSection);
+      } else {
+        return decisionRemissionEvent.concat(applicationEvents, submitCQHistory, directionsHistory);
+      }
+    } else if (application.refundRequested) {
+      const latestUpdateRequestFeeRemissionHistory = getLatestRequestFeeRemissionEventHistory(req, refundFeatureEnabled);
+      const requestFeeRemissionEvent = [{
+        date: moment(latestUpdateRequestFeeRemissionHistory.createdDate).format('DD MMMM YYYY'),
+        dateObject: new Date(latestUpdateRequestFeeRemissionHistory.createdDate),
+        text: i18n.pages.overviewPage.timeline.feeRemissionRequest.text || null,
+        links: i18n.pages.overviewPage.timeline.feeRemissionRequest.links
+      }];
+      if (appealRemissionSection) {
+        return requestFeeRemissionEvent.concat(appealRemissionSection);
+      } else {
+        return requestFeeRemissionEvent.concat(applicationEvents, submitCQHistory, directionsHistory);
+      }
     }
   }
 }

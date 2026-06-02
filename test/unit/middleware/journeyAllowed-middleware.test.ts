@@ -172,6 +172,9 @@ describe('isJourneyAllowedMiddleware', () => {
       paths.common.cookies,
       paths.common.termsAndConditions,
       paths.common.privacyPolicy,
+      paths.common.casesList,
+      paths.common.createNewAppeal,
+      paths.common.deleteDraftAppeal,
       paths.common.accessibility
     ];
     it('should render forbidden to forbidden common pages for Non legal rep', () => {

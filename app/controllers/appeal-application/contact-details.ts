@@ -396,6 +396,7 @@ function postHasSponsorOrNlr(updateAppealService: UpdateAppealService) {
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...appeal,
         ...appealUpdated

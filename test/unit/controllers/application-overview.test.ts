@@ -450,17 +450,18 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
-      isNonLegalRep: true,
       showHearingRequests: false,
       showPayLaterLink: false,
-      ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
-      showNonLegalRep: false,
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
+      showNonLegalRep: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: false
+      isNonLegalRep: true,
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -1149,12 +1150,12 @@ describe('Confirmation Page Controller', () => {
   });
 
   it('should return false if not citizen', () => {
-    expect(checkEnableProvideMoreEvidenceSection(States.RESPONDENT_REVIEW.id, true, false)).to.equal(false);
-    expect(checkEnableProvideMoreEvidenceSection('preHearingOutOfCountryFeatureDisabled', true, false)).to.equal(false);
-    expect(showAppealRequestSection(States.APPEAL_SUBMITTED.id, true, false)).to.equal(false);
-    expect(showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, true, false)).to.equal(false);
+    expect(checkEnableProvideMoreEvidenceSection(States.RESPONDENT_REVIEW.id, false)).to.equal(false);
+    expect(checkEnableProvideMoreEvidenceSection('preHearingOutOfCountryFeatureDisabled', false)).to.equal(false);
+    expect(showAppealRequestSection(States.APPEAL_SUBMITTED.id, false)).to.equal(false);
+    expect(showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, false)).to.equal(false);
     expect(isAppealInProgress(States.APPEAL_SUBMITTED.id, false)).to.equal(false);
-    expect(showFtpaApplicationLink({ ...req.session.appeal, appealStatus: States.FTPA_SUBMITTED.id, ftpaAppellantApplicationDate: '2020-01-01' }, true, false)).to.equal(false);
+    expect(showFtpaApplicationLink({ ...req.session.appeal, appealStatus: States.FTPA_SUBMITTED.id, ftpaAppellantApplicationDate: '2020-01-01' }, false)).to.equal(false);
   });
 
   describe('getApplicationOverview with DLRM refund enabled paymentLink', function () {

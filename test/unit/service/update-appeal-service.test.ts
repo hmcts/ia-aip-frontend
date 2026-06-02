@@ -46,14 +46,11 @@ describe('update-appeal-service', () => {
     ccdServiceMock = sandbox.mock(ccdService);
 
     sandbox.stub(idamService, 'getUserToken').returns(userToken);
-    sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
     sandbox.stub(axios, 'post')
       .withArgs('S2S_URL/lease')
       .resolves({ data: serviceToken });
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
       .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.HEARING_BUNDLE, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.OUT_OF_COUNTRY, false).resolves(false);
     documentManagementService = new DocumentManagementService(authenticationService);
     systemAuthenticationService = new SystemAuthenticationService();
 
@@ -371,6 +368,7 @@ describe('update-appeal-service', () => {
           id: 'case1',
           appealReferenceNumber: 'PA/0001/2022',
           state: state.id,
+          isNonLegalRep: false,
           appellantGivenNames: 'John',
           appellantFamilyName: 'Smith',
           stateName: state.name

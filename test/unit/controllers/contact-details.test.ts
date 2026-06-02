@@ -10,9 +10,6 @@ import {
   getSamePerson,
   getSponsorAddress,
   getSponsorAuthorisation,
-  getHasSponsor,
-  getSponsorAddress,
-  getSponsorAuthorisation,
   getSponsorContactDetails,
   getSponsorName, getSponsorNamePreviousPage,
   postContactDetails,
@@ -21,9 +18,6 @@ import {
   postNlrContactDetails,
   postNlrName,
   postSamePerson,
-  postSponsorAddress,
-  postSponsorAuthorisation,
-  postHasSponsor,
   postSponsorAddress,
   postSponsorAuthorisation,
   postSponsorContactDetails,
@@ -631,7 +625,6 @@ describe('Contact details Controller', () => {
     });
 
     it('should render has sponsor or nlr page with errors if validation fails ooc', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.OUT_OF_COUNTRY, false).resolves(true);
       req.session.appeal.appealOutOfCountry = 'Yes';
       const expectedError = {
         hasSponsor: createStructuredError('hasSponsor', i18n.validationErrors.hasSponsor),

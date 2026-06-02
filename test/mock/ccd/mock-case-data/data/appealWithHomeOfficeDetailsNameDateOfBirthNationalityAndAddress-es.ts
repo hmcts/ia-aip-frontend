@@ -26,7 +26,7 @@ export default {
           {
             'id': '1',
             'value': {
-              'code': 'FI'
+              'code': 'Finnish'
             }
           }
         ],

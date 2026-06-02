@@ -44,7 +44,7 @@ Feature: Submit appeal
     And I check page accessibility
 
     Then I see "What is your nationality?" in title
-    And I select "Albania" from "What is your nationality?" drop-down
+    And I select "Albanian" from "What is your nationality?" drop-down
     And I click "Save and continue" button
     And I check page accessibility
 
@@ -88,7 +88,7 @@ Feature: Submit appeal
     And I check page accessibility
 
     Then I see "Do you have a sponsor" in title
-    When I select No and click continue
+    When I choose No and click continue
     And I check page accessibility
 
     Then I see "Tell us about your appeal" in title

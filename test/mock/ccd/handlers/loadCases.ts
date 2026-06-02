@@ -50,6 +50,9 @@ const usersToCaseData: Record<string, any[]> = {
   '49': [mockData.pendingPaymentSTF24W],
   '50': [mockData.submitHearingRequirementsSTF24W],
   '51': [mockData.clarifyingQuestionsSTF24W],
+  '1001': [mockData.multipleAppealCase1001],
+  '1002': [mockData.multipleAppealCase1002],
+  '1003': [mockData.multipleAppealCase1003],
 };
 
 export async function setupLoadCases(server: Mockttp) {

@@ -262,6 +262,7 @@ describe('Type of appeal Controller', () => {
       req.session.appeal.application.appealType = 'revocationOfProtection';
       appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
       appeal.application.decisionHearingFeeOption = '';
+      appeal.pcqId = 'temp';
       await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
@@ -275,6 +276,7 @@ describe('Type of appeal Controller', () => {
       appeal.application.appealType = 'refusalOfHumanRights';
       appeal.application.rpDcAppealHearingOption = '';
       appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      appeal.pcqId = 'temp';
       await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);

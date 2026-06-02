@@ -524,8 +524,6 @@ describe('Contact details Controller', () => {
       });
 
       it('should redirect out of country address page when ooc feature is enabled', async () => {
-        // ooc feature flag is enabled
-        sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(true);
 
         // appeal is out of country
         req.session.appeal.appealOutOfCountry = 'Yes';
@@ -575,9 +573,6 @@ describe('Contact details Controller', () => {
     });
 
     it('should render sponsor-details/has-sponsor-or-nlr.njk with previous page pointing to out-of-country-address endpoint', async () => {
-      // ooc feature flag is enabled
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(true);
-
       // appeal is out of country
       req.session.appeal.appealOutOfCountry = 'Yes';
       await getHasSponsorOrNlr(req as Request, res as Response, next);

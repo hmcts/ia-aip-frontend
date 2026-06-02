@@ -1415,7 +1415,6 @@ describe('timeline-utils', () => {
       ];
 
       const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
-      // expect(result.appealRemissionDecisionSection).to.deep.eq(expectedResult);
     });
 
     it('should return the correct sections when manageAFeeUpdate event is in history with remission', async () => {

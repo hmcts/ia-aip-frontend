@@ -19,6 +19,7 @@ import decided from './data/decided';
 import endedAppeal from './data/endedAppeal';
 import euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal from './data/euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal';
 import ftpaOutOfTimeApplicationStarted from './data/ftpa-out-of-time-application-started';
+import multipleAppealsES from './data/multiple-appeals-es';
 import outOfTimeDecisionGranted from './data/out-of-time-decision-granted';
 import outOfTimeDecisionInTime from './data/out-of-time-decision-in-time';
 import outOfTimeDecisionRejected from './data/out-of-time-decision-rejected';
@@ -89,5 +90,6 @@ export default {
   finalBundlingSTF24W,
   pendingPaymentSTF24W,
   submitHearingRequirementsSTF24W,
-  clarifyingQuestionsSTF24W
+  clarifyingQuestionsSTF24W,
+  multipleAppealsES
 };

@@ -129,6 +129,7 @@ describe('Deportation order Controller', function () {
     it('should validate and redirect CYA page', async () => {
       await postDeportationOrder(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.application.deportationOrderOptions).to.deep.equal('Yes');
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.taskList)).to.equal(true);
     });
 

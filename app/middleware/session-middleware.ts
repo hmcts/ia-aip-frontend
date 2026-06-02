@@ -45,6 +45,7 @@ async function startRepresentingYourself(req: Request, res: Response, next: Next
     req.session.ccdCaseId = caseId;
     req.session.appeal = appeal;
     req.session.startRepresentingYourself = undefined;
+    req.session.refreshCasesList = true;
     res.redirect(paths.common.overview);
   } catch (e) {
     next(e);
@@ -53,7 +54,8 @@ async function startRepresentingYourself(req: Request, res: Response, next: Next
 
 async function initSession(req: Request, res: Response, next: NextFunction) {
   try {
-    await updateAppealService.loadAppeal(req);
+    await updateAppealService.loadAppealsList(req);
+    req.session.refreshCasesList = false;
     next();
   } catch (e) {
     next(e);
@@ -63,7 +65,7 @@ async function initSession(req: Request, res: Response, next: NextFunction) {
 function checkSession(args: any = {}) {
   return (req: Request, res: Response, next: NextFunction) => {
     const tokenCookieName = args.tokenCookieName || '__auth-token';
-    if (req.cookies && req.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application')) {
+    if (req?.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application') && !_.has(req, 'session.casesList')) {
       res.clearCookie(tokenCookieName, { path: '/' });
       res.redirect(paths.common.login);
     } else {

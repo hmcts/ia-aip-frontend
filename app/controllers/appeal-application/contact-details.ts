@@ -76,6 +76,7 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -154,6 +155,7 @@ function postEnterAddressForOutOfCountryAppeal(updateAppealService: UpdateAppeal
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
 
       req.session.appeal = {
         ...req.session.appeal,
@@ -328,6 +330,7 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -393,6 +396,7 @@ function postHasSponsor(updateAppealService: UpdateAppealService) {
       };
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -453,6 +457,7 @@ function postSponsorName(updateAppealService: UpdateAppealService) {
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -516,6 +521,7 @@ function postSponsorAddress(updateAppealService: UpdateAppealService) {
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -579,6 +585,7 @@ function postSponsorContactDetails(updateAppealService: UpdateAppealService) {
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -637,6 +644,7 @@ function postSponsorAuthorisation(updateAppealService: UpdateAppealService) {
       };
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated

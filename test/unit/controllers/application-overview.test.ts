@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { SinonStub } from 'sinon';
 import {
   checkAppealEnded,
@@ -15,6 +15,7 @@ import {
   showFtpaApplicationLink,
   showHearingRequestSection
 } from '../../../app/controllers/application-overview';
+import { ErrorCode } from '../../../app/controllers/cases-list';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
@@ -23,6 +24,7 @@ import { CcdService } from '../../../app/service/ccd-service';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedMultipleEventsData } from '../mockData/events/expectations';
 
@@ -113,6 +115,7 @@ describe('Confirmation Page Controller', () => {
         }
       } as Partial<Appeal>,
       cookies: {},
+      query: {},
       idam: {
         userDetails: {} as Partial<IdamDetails>
       },
@@ -204,7 +207,9 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: false
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -293,7 +298,9 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: true
+      isPostDecisionState: true,
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -384,7 +391,9 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: true,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: true
+      isPostDecisionState: true,
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -447,7 +456,9 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: false
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -510,7 +521,9 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: false
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -526,6 +539,7 @@ describe('Confirmation Page Controller', () => {
     };
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
+    req.session.appeal.application.appealType = 'something';
     req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
     req.session.appeal.utAppealReferenceNumber = null;
 
@@ -586,11 +600,13 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: false
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
-  it('should render with only showAskForFeeRemission property', async function() {
+  it('should render with only showAskForFeeRemission property', async function () {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -624,6 +640,7 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
     req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
+    req.session.appeal.application.appealType = 'something';
     req.session.appeal.application.personalDetails.givenNames = 'Appellant';
     req.session.appeal.application.personalDetails.familyName = 'Name';
 
@@ -684,7 +701,9 @@ describe('Confirmation Page Controller', () => {
       showFtpaApplicationLink: false,
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
-      isPostDecisionState: false
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   });
 
@@ -1116,5 +1135,70 @@ describe('Confirmation Page Controller', () => {
         expect(stubRender.getCall(0).args[1].showPayLaterLink).to.equal(expected);
       });
     });
+  });
+
+  it('getApplicationOverview with caseId query param should call loadAppealByCaseId and render', async () => {
+    req.query = { caseId: '123' };
+    req.idam = {
+      userDetails: {
+        uid: 'anId',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer',
+        sub: 'email@test.com'
+      }
+    };
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.appealReferenceNumber = 'DRAFT';
+
+    const loadAppealByCaseIdStub = sandbox.stub().resolves();
+    updateAppealService.loadAppealByCaseId = loadAppealByCaseIdStub;
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    expect(loadAppealByCaseIdStub).to.be.calledWith('123', req);
+    expect(res.render).to.be.calledOnceWith();
+  });
+
+  it('getApplicationOverview with caseId query param should redirect to cases list and render error if loadAppealByCaseId fails', async () => {
+    req.query = { caseId: '123' };
+    req.idam = {
+      userDetails: {
+        uid: 'anId',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer',
+        sub: 'email@test.com'
+      }
+    };
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.appealReferenceNumber = 'DRAFT';
+
+    const loadAppealByCaseIdStub = sandbox.stub().rejects();
+    updateAppealService.loadAppealByCaseId = loadAppealByCaseIdStub;
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    expect(loadAppealByCaseIdStub).to.be.calledWith('123', req);
+    expect(res.render).to.not.be.calledOnceWith();
+    expect(res.redirect).to.be.calledOnceWith(`${paths.common.casesList}?errorCode=${ErrorCode.caseNotFound}&caseId=123`);
+  });
+
+  it('getApplicationOverview without caseId and no appeal in session should redirect to cases list', async () => {
+    req.query = {};
+    req.session.appeal = {} as any;
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    expect(res.redirect).to.have.been.calledWith(paths.common.casesList);
+  });
+
+  it('getApplicationOverview without caseId and no appeal at all should redirect to cases list', async () => {
+    req.query = {};
+    req.session.appeal = undefined;
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    expect(res.redirect).to.have.been.calledWith(paths.common.casesList);
   });
 });

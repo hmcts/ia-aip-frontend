@@ -99,9 +99,10 @@ class CcdService {
     return response.data;
   }
 
-  async loadCasesForUser(userId: string, headers: SecurityHeaders): Promise<ES<CcdCaseDetails>> {
+  async loadCasesListForUser(userId: string, headers: SecurityHeaders): Promise<ES<CcdCaseDetails>> {
     const query = {
       query: { match_all: {} },
+      _source: ['reference', 'data.appealReferenceNumber', 'state', 'data.appellantGivenNames', 'data.appellantFamilyName'],
       sort: [{ id: { order: 'asc' } }]
     };
     const url = `${ccdBaseUrl}/searchCases?ctid=${caseType}`;
@@ -111,6 +112,13 @@ class CcdService {
     );
 
     const response = await axios.post(url, query, options);
+    return response.data;
+  }
+
+  async loadCaseById(userId: string, caseId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
+    const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`;
+    const options = this.createOptions(userId, headers);
+    const response = await axios.get(url, options);
     return response.data;
   }
 
@@ -128,18 +136,20 @@ class CcdService {
     return response.data;
   }
 
-  async createCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
-    const startEventResponse = await this.startCreateCase(userId, headers);
+  async createCase(user: IdamDetails, headers: SecurityHeaders): Promise<CcdCaseDetails> {
+    const startEventResponse = await this.startCreateCase(user.uid, headers);
     const supplementaryDataRequest = generateSupplementaryId();
 
-    return this.submitCreateCase(userId, headers, {
+    return this.submitCreateCase(user.uid, headers, {
       event: {
         id: startEventResponse.event_id,
         summary: 'Create case AIP',
         description: 'Create case AIP'
       },
       data: {
-        journeyType: 'aip'
+        journeyType: 'aip',
+        appellantGivenNames: user.given_name,
+        appellantFamilyName: user.family_name
       },
       event_token: startEventResponse.token,
       ignore_warning: true,
@@ -164,18 +174,6 @@ class CcdService {
       ignore_warning: true,
       supplementary_data_request: supplementaryDataRequest
     });
-  }
-
-  async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
-    logger.trace('Loading or creating case', logLabel);
-    const data: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
-    if (data.total > 0) {
-      return data.cases[0];
-    } else {
-      logger.trace('Did not find a case', logLabel);
-      const newCase: CcdCaseDetails = await this.createCase(userId, headers);
-      return newCase;
-    }
   }
 
   async getCaseHistory(userId: string, caseId: string, headers: SecurityHeaders): Promise<HistoryEvent[]> {

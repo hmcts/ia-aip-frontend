@@ -1,0 +1,420 @@
+import { randomUUID } from 'node:crypto';
+import { NextFunction, Request, Response } from 'express';
+import {
+  ErrorCode,
+  getCasesList,
+  getDeleteDraftAppeal,
+  setupCasesListController
+} from '../../../app/controllers/cases-list';
+import { paths } from '../../../app/paths';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
+import i18n from '../../../locale/en.json';
+import { expect, sinon } from '../../utils/testUtils';
+
+const proxyquire = require('proxyquire').noCallThru();
+
+describe('Cases List Controller', () => {
+  let sandbox: sinon.SinonSandbox;
+  let req: Partial<Request>;
+  let res: Partial<Response>;
+  let next: NextFunction;
+  let updateAppealService: Partial<UpdateAppealService>;
+  const appealStartedCase = {
+    id: '1234',
+    appealReferenceNumber: 'PA/0001/2022',
+    state: 'appealStarted',
+    appellantGivenNames: 'John',
+    appellantFamilyName: 'Smith',
+    stateName: 'Appeal started'
+  };
+  const appealSubmittedCase = {
+    id: '1235',
+    appealReferenceNumber: 'PA/0002/2022',
+    state: 'appealSubmitted',
+    appellantGivenNames: 'Jane',
+    appellantFamilyName: 'Doe'
+  };
+  beforeEach(() => {
+    sandbox = sinon.createSandbox();
+    req = {
+      query: {},
+      session: {
+        casesList: [
+          {
+            id: '1234',
+            appealReferenceNumber: 'PA/0001/2022',
+            state: 'appealStarted',
+            appellantGivenNames: 'John',
+            appellantFamilyName: 'Smith',
+            stateName: 'Appeal started'
+          },
+          {
+            id: '1235',
+            appealReferenceNumber: 'PA/0002/2022',
+            state: 'appealSubmitted',
+            appellantGivenNames: 'Jane',
+            appellantFamilyName: 'Doe'
+          }
+        ],
+        refreshCasesList: false,
+      } as any
+    } as Partial<Request>;
+
+    res = {
+      render: sandbox.stub(),
+      redirect: sandbox.stub()
+    } as unknown as Partial<Response>;
+
+    next = sandbox.stub() as any;
+
+    updateAppealService = {
+      loadAppealsList: sandbox.stub().resolves()
+    };
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+  describe('getCasesList', () => {
+    it('should render cases-list.njk with cases from session including stateName', async () => {
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedCases = [appealStartedCase, appealSubmittedCase];
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: expectedCases,
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        errorList: null
+      });
+    });
+
+    it('should refresh cases when refreshCasesList session flag is true', async () => {
+      req.session.refreshCasesList = true;
+
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.loadAppealsList).to.have.been.calledWith(req);
+      expect(req.session.refreshCasesList).to.equal(false);
+    });
+
+    it('should render with empty array when no casesList in session', async () => {
+      req.session.casesList = undefined;
+
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: [],
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        errorList: null
+      });
+    });
+
+    it('should render cases-list.njk with correct error if errorCode query is tooManyDrafts', async () => {
+      req.query = { errorCode: ErrorCode.tooManyDrafts };
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: 'create-new-appeal',
+        text: i18n.pages.casesList.tooManyDraftsError,
+        href: '#create-new-appeal'
+      };
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: [appealStartedCase, appealSubmittedCase],
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        errorList: [expectedError]
+      });
+    });
+
+    it('should render cases-list.njk with correct error if errorCode query is deleteDraftError with Case id', async () => {
+      const caseId: string = randomUUID().toString();
+      req.query = { errorCode: ErrorCode.deleteDraftError, caseId: caseId };
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: `delete-${caseId}`,
+        text: i18n.pages.casesList.deleteDraftError.replace('{{ caseId }}', caseId),
+        href: `#delete-${caseId}`
+      };
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: [appealStartedCase, appealSubmittedCase],
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        errorList: [expectedError]
+      });
+    });
+
+    it('should render cases-list.njk with correct error if errorCode query is deleteDraftError with no Case id', async () => {
+      req.query = { errorCode: ErrorCode.deleteDraftError };
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: 'delete-undefined',
+        text: i18n.pages.casesList.deleteDraftError.replace('{{ caseId }}', 'undefined'),
+        href: '#delete-undefined'
+      };
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: [appealStartedCase, appealSubmittedCase],
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        errorList: [expectedError]
+      });
+    });
+
+    it('should render cases-list.njk with correct error if errorCode query is caseNotFound with Case id', async () => {
+      const caseId: string = randomUUID().toString();
+      req.query = { errorCode: ErrorCode.caseNotFound, caseId: caseId };
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: '',
+        text: i18n.pages.casesList.caseNotFoundError.replace('{{ caseId }}', caseId),
+        href: '#'
+      };
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: [appealStartedCase, appealSubmittedCase],
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        errorList: [expectedError]
+      });
+    });
+
+    it('should render cases-list.njk with correct error if errorCode query is caseNotFound with no Case id', async () => {
+      req.query = { errorCode: ErrorCode.caseNotFound };
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: '',
+        text: i18n.pages.casesList.caseNotFoundError.replace('{{ caseId }}', 'undefined'),
+        href: '#'
+      };
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: [appealStartedCase, appealSubmittedCase],
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        errorList: [expectedError]
+      });
+    });
+
+    it('should render cases-list.njk with correct error if errorCode query is deleteNonDraftError with Case id', async () => {
+      const caseId: string = randomUUID().toString();
+      req.query = { errorCode: ErrorCode.deleteNonDraftError, caseId: caseId };
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: `delete-${caseId}`,
+        text: i18n.pages.casesList.deleteNonDraftError.replace('{{ caseId }}', caseId),
+        href: `#delete-${caseId}`
+      };
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: [appealStartedCase, appealSubmittedCase],
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        errorList: [expectedError]
+      });
+    });
+
+    it('should render cases-list.njk with correct error if errorCode query is deleteNonDraftError with no Case id', async () => {
+      req.query = { errorCode: ErrorCode.deleteNonDraftError };
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: 'delete-undefined',
+        text: i18n.pages.casesList.deleteNonDraftError.replace('{{ caseId }}', 'undefined'),
+        href: '#delete-undefined'
+      };
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        createNewAppealUrl: paths.common.createNewAppeal,
+        cases: [appealStartedCase, appealSubmittedCase],
+        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        errorList: [expectedError]
+      });
+    });
+
+    it('should call next with error on failure', async () => {
+      const error = new Error('something went wrong');
+      res.render = sandbox.stub().throws(error);
+
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(next).to.have.been.calledWith(error);
+    });
+  });
+
+  it('should set up the controller with the correct path', () => {
+    const updateAppealService = {} as UpdateAppealService;
+    const router = setupCasesListController(updateAppealService);
+    expect(router).to.not.be.null;
+  });
+
+  describe('getCreateNewAppeal', () => {
+    let getCreateNewAppeal;
+    let configStub;
+    beforeEach(() => {
+      configStub = {
+        get: sandbox.stub().returns(5)
+      };
+      getCreateNewAppeal = proxyquire('../../../app/controllers/cases-list', { config: configStub }).getCreateNewAppeal;
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    it('should call createNewAppeal and redirect to overview', async () => {
+      const mockAppeal = { ccdCaseId: '12345' } as Appeal;
+      const updateAppealService = {
+        createNewAppeal: sandbox.stub().resolves(mockAppeal)
+      } as Partial<UpdateAppealService>;
+
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.createNewAppeal).to.have.been.calledWith(req);
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
+    });
+
+    it('should call createNewAppeal and redirect to overview if no session caseList', async () => {
+      req.session.casesList = undefined;
+      const mockAppeal = { ccdCaseId: '12345' } as Appeal;
+      const updateAppealService = {
+        createNewAppeal: sandbox.stub().resolves(mockAppeal)
+      } as Partial<UpdateAppealService>;
+
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.createNewAppeal).to.have.been.calledWith(req);
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
+    });
+
+    it('should redirect to casesList with errorCode tooManyDrafts if more than max draft cases', async () => {
+      req.session.casesList = [
+        appealStartedCase,
+        appealStartedCase,
+        appealStartedCase,
+        appealStartedCase,
+        appealStartedCase
+      ];
+      updateAppealService.createNewAppeal = sandbox.spy();
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.createNewAppeal).to.not.be.calledWith(sinon.match.any);
+      expect(res.redirect).to.not.be.calledWith(paths.common.overview);
+      expect(res.redirect).to.be.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.tooManyDrafts}`);
+    });
+
+    it('should redirect to casesList with errorCode tooManyDrafts if more than max draft cases with config env variable changed', async () => {
+      req.session.casesList = [
+        appealStartedCase
+      ];
+      updateAppealService.createNewAppeal = sandbox.spy();
+      configStub = {
+        get: sandbox.stub().returns(1)
+      };
+      getCreateNewAppeal = proxyquire('../../../app/controllers/cases-list', { config: configStub }).getCreateNewAppeal;
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.createNewAppeal).to.not.be.calledWith(sinon.match.any);
+      expect(res.redirect).to.not.be.calledWith(paths.common.overview);
+      expect(res.redirect).to.be.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.tooManyDrafts}`);
+
+    });
+
+    it('should not render error if less than max draft cases', async () => {
+      req.session.casesList = [
+        appealStartedCase,
+        appealStartedCase,
+        appealStartedCase,
+        appealSubmittedCase,
+        appealSubmittedCase,
+        appealSubmittedCase,
+        appealSubmittedCase,
+        appealSubmittedCase,
+        appealSubmittedCase,
+        appealSubmittedCase,
+        appealSubmittedCase,
+        appealStartedCase
+      ];
+      updateAppealService.createNewAppeal = sandbox.spy();
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.createNewAppeal).to.be.calledWith(sinon.match.any);
+      expect(res.redirect).to.be.calledWith(paths.common.overview);
+      expect(res.render).to.not.be.calledWith(sinon.match.any);
+    });
+
+    it('should call next with error on failure', async () => {
+      const error = new Error('create failed');
+      const updateAppealService = {
+        createNewAppeal: sandbox.stub().rejects(error)
+      } as Partial<UpdateAppealService>;
+
+      await getCreateNewAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(next).to.have.been.calledWith(error);
+    });
+  });
+
+  describe('getDeleteDraftAppeal', () => {
+    it('should call deleteDraftAppeal and redirect to casesList if req.params.id in caseList and is draft', async () => {
+      req.session.casesList = [
+        appealStartedCase
+      ];
+      const updateAppealService = {
+        deleteDraftAppeal: sandbox.stub().resolves()
+      } as Partial<UpdateAppealService>;
+      req.params = { id: appealStartedCase.id };
+      await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.deleteDraftAppeal).to.have.been.calledWith(req);
+      expect(res.redirect).to.have.been.calledWith(paths.common.casesList);
+    });
+
+    it('should redirect to casesList with error if req.params.id not in caseList', async () => {
+      req.session.casesList = [
+        appealStartedCase
+      ];
+      const updateAppealService = {
+        deleteDraftAppeal: sandbox.stub().resolves()
+      } as Partial<UpdateAppealService>;
+      req.params = { id: '2468' };
+      await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.deleteDraftAppeal).to.not.be.calledWith(req);
+      expect(res.redirect).to.have.been.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=2468`);
+    });
+
+    it('should redirect to casesList with error if req.params.id in caseList and not draft', async () => {
+      req.session.casesList = [
+        appealSubmittedCase
+      ];
+      const updateAppealService = {
+        deleteDraftAppeal: sandbox.stub().resolves()
+      } as Partial<UpdateAppealService>;
+      req.params = { id: appealSubmittedCase.id };
+      await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.deleteDraftAppeal).to.not.be.calledWith(req);
+      expect(res.redirect).to.have.been.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.deleteNonDraftError}&caseId=1235`);
+    });
+
+    it('should redirect to casesList with error with no req.params.id', async () => {
+      const updateAppealService = {
+        deleteDraftAppeal: sandbox.stub().resolves()
+      } as Partial<UpdateAppealService>;
+      await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=undefined`);
+    });
+
+    it('should redirect to casesList with error on failure with case ID', async () => {
+      req.session.casesList = [
+        appealStartedCase
+      ];
+      req.params = { id: appealStartedCase.id };
+      const error = new Error('create failed');
+      const updateAppealService = {
+        deleteDraftAppeal: sandbox.stub().rejects(error)
+      } as Partial<UpdateAppealService>;
+
+      await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=${appealStartedCase.id}`);
+    });
+  });
+});

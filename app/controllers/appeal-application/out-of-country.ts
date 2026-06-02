@@ -57,6 +57,7 @@ function postAppellantInUk(updateAppealService: UpdateAppealService) {
       };
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -116,6 +117,7 @@ function postOocHrInside(updateAppealService: UpdateAppealService) {
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -169,6 +171,7 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -222,6 +225,7 @@ function postOocHrEea(updateAppealService: UpdateAppealService) {
       };
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -283,6 +287,7 @@ function postOocProtectionDepartureDate(updateAppealService: UpdateAppealService
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated

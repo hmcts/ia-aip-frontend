@@ -196,6 +196,7 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
       await postAnythingElseQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
       expect(deleteFile.callCount).to.equal(1);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(submit.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
       expect(redirectStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList)).to.equal(true);
     });

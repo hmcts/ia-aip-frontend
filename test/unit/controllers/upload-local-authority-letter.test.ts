@@ -170,6 +170,7 @@ describe('Local authority letter', function () {
 
       expect(uploadStub.called).to.equal(true);
       expect(submitRefactoredStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.localAuthorityLetter)).to.equal(true);
     });
 
@@ -202,6 +203,7 @@ describe('Local authority letter', function () {
 
       expect(deleteStub.called).to.equal(true);
       expect(submitRefactoredStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.localAuthorityLetter)).to.equal(true);
     });
 

@@ -461,9 +461,9 @@ describe('utils', () => {
         }
       ] as HistoryEvent[];
 
-      const latesHistoryEvent = getLatestUpdateRemissionDecisionsEventHistory(req as Request, true);
-      expect(latesHistoryEvent.id).to.deep.equal('recordRemissionDecision');
-      expect(latesHistoryEvent.createdDate).to.deep.equal('2024-04-07T15:36:26.099');
+      const latestHistoryEvent = getLatestUpdateRemissionDecisionsEventHistory(req as Request, true);
+      expect(latestHistoryEvent.id).to.deep.equal('recordRemissionDecision');
+      expect(latestHistoryEvent.createdDate).to.deep.equal('2024-04-07T15:36:26.099');
     });
 
     it('getLatestRequestFeeRemissionEventHistory', () => {
@@ -484,9 +484,9 @@ describe('utils', () => {
         }
       ] as HistoryEvent[];
 
-      const latesHistoryEvent = getLatestRequestFeeRemissionEventHistory(req as Request, true);
-      expect(latesHistoryEvent.id).to.deep.equal('requestFeeRemission');
-      expect(latesHistoryEvent.createdDate).to.deep.equal('2024-04-07T15:36:26.099');
+      const latestHistoryEvent = getLatestRequestFeeRemissionEventHistory(req as Request, true);
+      expect(latestHistoryEvent.id).to.deep.equal('requestFeeRemission');
+      expect(latestHistoryEvent.createdDate).to.deep.equal('2024-04-07T15:36:26.099');
     });
   });
 

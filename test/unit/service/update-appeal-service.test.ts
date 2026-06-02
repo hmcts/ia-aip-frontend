@@ -50,7 +50,7 @@ describe('update-appeal-service', () => {
       .withArgs('S2S_URL/lease')
       .resolves({ data: serviceToken });
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
+      .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     documentManagementService = new DocumentManagementService(authenticationService);
     systemAuthenticationService = new SystemAuthenticationService();
 

@@ -352,7 +352,6 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   let manageAFeeUpdate: any[];
   const manageAFeeUpdateEvents = req.session.appeal.history.filter(event => Events.MANAGE_A_FEE_UPDATE.id.includes(event.id));
 
-  let c = appealHasRemissionOption(application);
   if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application) && application.isLateRemissionRequest) {
     const remissionEvent = getApplicationHistoryRemissionEvent(paymentDate);
     appealRemissionSection = appealArgumentSection.concat(applicationEvents, remissionEvent, submitCQHistory, directionsHistory)

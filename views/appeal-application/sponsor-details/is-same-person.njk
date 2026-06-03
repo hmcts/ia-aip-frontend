@@ -1,0 +1,59 @@
+{% set pageTitleName = question %}
+{% extends "layout.njk" %}
+{% import "components/text-components.njk" as text %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% block content %}
+
+  {% if errorList %}
+    {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: errorList
+        }) }}
+
+  {% endif %}
+
+  <form action="{{ paths.appealStarted.isSponsorSameAsNlr }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    {% call govukFieldset({
+      legend: {
+        text: question,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+
+      {{ govukRadios({
+            classes: "govuk-radios--inline",
+            name: "isSponsorSameAsNlr",
+            items: [
+                {
+                    value: "Yes",
+                    text: "Yes",
+                    checked: isSponsorSameAsNlr == "Yes"
+                },
+                {
+                    value: "No",
+                    text: "No",
+                    checked: isSponsorSameAsNlr == "No"
+                }
+            ],
+            errorMessage: {
+                text:  errors['isSponsorSameAsNlr'].text
+            } if errors['isSponsorSameAsNlr']
+        }) }}
+
+      {% if modal %}
+        <div class="overview-banner govuk-!-margin-top-0">
+          {{ modal | safe  }}
+        </div>
+      {% endif %}
+
+    {{ saveButtons() }}
+    {% endcall %}
+  </form>
+
+  {{ contactUs() }}
+{% endblock %}

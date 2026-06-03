@@ -1,4 +1,5 @@
 import axios from 'axios';
+import config from 'config';
 import { Events } from '../../../app/data/events';
 import { SecurityHeaders } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
@@ -6,7 +7,8 @@ import { expect, sinon } from '../../utils/testUtils';
 import { multipleEventsData, startAppealEventData } from '../mockData/events/data';
 import { expectedMultipleEventsData, expectedStartAppealEventData } from '../mockData/events/expectations';
 
-describe('idam-service', () => {
+describe('ccd-service', () => {
+  const ccdBaseUrl: string = config.get('ccd.apiUrl');
   const headers = {} as SecurityHeaders;
   const user: IdamDetails = {
     uid: 'userId',
@@ -30,7 +32,7 @@ describe('idam-service', () => {
 
       const submitCreateCaseStub = sinon.stub(ccdService, 'submitCreateCase');
       const expectedResult = {} as any;
-      const serviceId = { $set: { HMCTSServiceId : 'BFA1' } };
+      const serviceId = { $set: { HMCTSServiceId: 'BFA1' } };
 
       submitCreateCaseStub.withArgs(user.uid, headers, {
         event: {
@@ -67,7 +69,7 @@ describe('idam-service', () => {
 
       const submitUpdateCaseStub = sinon.stub(ccdService, 'submitUpdateAppeal');
       const caseData = { journeyType: 'AIP' } as Partial<CaseData>;
-      const serviceId = { $set: { HMCTSServiceId : 'BFA1' } };
+      const serviceId = { $set: { HMCTSServiceId: 'BFA1' } };
       submitUpdateCaseStub.withArgs(userId, caseId, headers, {
         event: {
           id: 'eventId',
@@ -171,6 +173,22 @@ describe('idam-service', () => {
       await ccdService.retrieveCaseHistoryV2(userId, caseId, headers);
 
       expect(getRequest.called).to.equal(true);
+    });
+
+    it('validateMidEvent', async () => {
+      const caseData = { journeyType: 'AIP' } as Partial<CaseData>;
+      const midEventDetails: MidEventDetails = {
+        case_reference: caseId,
+        data: caseData,
+        event_data: caseData,
+        ignore_warning: true,
+        event: Events.EDIT_APPEAL
+      };
+      const pageId: string = 'somePageId';
+      await ccdService.validateMidEvent(midEventDetails, pageId, userId, headers);
+      const expectedUrl =
+        '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
+      expect(postRequest.calledOnceWith(ccdBaseUrl + expectedUrl, midEventDetails)).to.equal(true);
     });
 
     it('loadCaseById', async () => {

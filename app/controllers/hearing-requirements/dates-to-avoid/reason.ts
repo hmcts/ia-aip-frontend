@@ -22,6 +22,16 @@ const pageContent = {
   timeExtensionAllowed: false
 };
 
+function setPageContent() {
+  pageContent.pageTitle = i18n.pages.hearingRequirements.datesToAvoidSection.reason.title;
+  pageContent.question.title = i18n.pages.hearingRequirements.datesToAvoidSection.reason.heading;
+}
+
+function setPageContentForNlr() {
+  pageContent.pageTitle = i18n.pages.hearingRequirements.datesToAvoidSection.reasonNlr.title;
+  pageContent.question.title = i18n.pages.hearingRequirements.datesToAvoidSection.reasonNlr.heading;
+}
+
 function getDatesToAvoidReasonWithId(req: Request, res: Response, next: NextFunction) {
   try {
 
@@ -33,7 +43,11 @@ function getDatesToAvoidReasonWithId(req: Request, res: Response, next: NextFunc
     const dateToAvoid: CmaDateToAvoid = datesToAvoid.dates[dateId];
 
     pageContent.question.value = dateToAvoid.reason ? dateToAvoid.reason : '';
-
+    if (req.session.appeal?.application?.hasNonLegalRep === 'Yes') {
+      setPageContentForNlr();
+    } else {
+      setPageContent();
+    }
     return res.render('templates/textarea-question-page.njk', pageContent);
   } catch (e) {
     next(e);
@@ -47,6 +61,11 @@ function getDatesToAvoidReason(req: Request, res: Response, next: NextFunction) 
 
     pageContent.question.value = last.reason ? last.reason : '';
     pageContent.formAction = formAction;
+    if (req.session.appeal?.application?.hasNonLegalRep === 'Yes') {
+      setPageContentForNlr();
+    } else {
+      setPageContent();
+    }
     return res.render('templates/textarea-question-page.njk', pageContent);
   } catch (e) {
     next(e);
@@ -74,6 +93,11 @@ function postDatesToAvoidReasonWithId(updateAppealService: UpdateAppealService) 
       };
 
       await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
+      if (req.session.appeal?.application?.hasNonLegalRep === 'Yes') {
+        setPageContentForNlr();
+      } else {
+        setPageContent();
+      }
       return getHearingRequirementsReasonHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
 
     } catch (e) {
@@ -100,6 +124,11 @@ function postDatesToAvoidReason(updateAppealService: UpdateAppealService) {
           : getConditionalRedirectUrl(req, res, paths.submitHearingRequirements.hearingDateToAvoidNew);
       };
       await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
+      if (req.session.appeal?.application?.hasNonLegalRep === 'Yes') {
+        setPageContentForNlr();
+      } else {
+        setPageContent();
+      }
       return getHearingRequirementsReasonHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
 
     } catch (e) {

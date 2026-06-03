@@ -12,7 +12,7 @@
     }) }}
   {% endif %}
 
-  <form action="{{ paths.submitHearingRequirements.hearingInterpreterTypes }}" method="post">
+  <form action="{{ formAction if formAction else paths.submitHearingRequirements.hearingInterpreterTypes }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     <input type="hidden" name="selectedWitnessesList" value="{{ selectedWitnessesList }}">
     {{ govukCheckboxes({

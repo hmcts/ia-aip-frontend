@@ -1,6 +1,5 @@
 import { Request } from 'express';
 import moment from 'moment';
-import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';
@@ -8,6 +7,7 @@ import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
+import { getI18n } from './grammarPerspectiveTransformer';
 import { appealHasRemissionOption, paymentForAppealHasBeenMade } from './remission-utils';
 import {
   getAppellantApplications,
@@ -27,7 +27,7 @@ import {
  * @param req the request containing the session to update the timeExtensionsMap
  */
 function constructEventObject(event: HistoryEvent, req: Request) {
-
+  const i18n = getI18n(req.session.isNonLegalRep);
   let eventContent = i18n.pages.overviewPage.timeline[event.id];
   if (isUploadEvidenceEventByLegalRep(req, event)) {
     eventContent = i18n.pages.overviewPage.timeline[event.id]['providedByLr'];
@@ -88,6 +88,7 @@ function getApplicationEvents(req: Request): any[] {
   const applicationEvents = isReadonlyApplicationEnabled(req)
         ? req.session.appeal.makeAnApplications
         : getAppellantApplications(req.session.appeal.makeAnApplications);
+  const i18n = getI18n(req.session.isNonLegalRep);
   const makeDirectionsFlatMap = applicationEvents ? applicationEvents.flatMap(application => {
     const makeAnApplicationContent = i18n.pages.overviewPage.timeline.makeAnApplication[getApplicant(application.value)];
     const request = {
@@ -119,12 +120,13 @@ function getApplicationEvents(req: Request): any[] {
   return makeDirectionsFlatMap;
 }
 
-function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions: Direction[]): any[] {
+function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions: Direction[], isNonLegalRep: boolean): any[] {
   const submitCQHistory = history.filter(event => event.id === Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS.id);
   const directionsFiltered = directions.filter(direction => direction.tag === 'requestClarifyingQuestions');
   if (directionsFiltered.length > submitCQHistory.length) directionsFiltered.shift();
 
   if (!submitCQHistory && !directionsFiltered) return [];
+  const i18n = getI18n(isNonLegalRep);
   return submitCQHistory.map(event => {
     return {
       date: moment(event.createdDate).format('DD MMMM YYYY'),
@@ -140,6 +142,7 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
 
 function getDirectionHistory(req: Request): any[] {
   if (isNonStandardDirectionEnabled(req)) {
+    const i18n = getI18n(req.session.isNonLegalRep);
     return (req.session.appeal.directions || [])
       .filter(direction => (
         direction.directionType === 'sendDirection' &&
@@ -199,6 +202,7 @@ function getListCaseEvent(req: Request): any[] {
       return moment(b.dateUploaded).diff(moment(a.dateUploaded));
     }
   });
+  const i18n = getI18n(req.session.isNonLegalRep);
 
   return hearingNotices
         .map(hearingNotice => {
@@ -233,6 +237,7 @@ function getAsyncStitchingEvent(req: Request): any[] {
     });
   }
 
+  const i18n = getI18n(req.session.isNonLegalRep);
   return hearingBundles
     .map(hearingBundle => {
       const textForTimeline: string = hearingBundle.tag === 'updatedHearingBundle'
@@ -264,6 +269,7 @@ function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabl
       originalTribunalDecision = (newTribunalDecision === 'allowed') ? 'dismissed' : 'allowed';
     }
 
+    const i18n = getI18n(req.session.isNonLegalRep);
     if (originalTribunalDecision === 'allowed' && newTribunalDecision === 'dismissed') {
       timelineText = i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule31.fromAllowedToDismissedText;
     } else if (originalTribunalDecision === 'dismissed' && newTribunalDecision === 'allowed') {
@@ -279,6 +285,7 @@ function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabl
     }];
   } else if (isUpdateTribunalDecideWithRule32(req, ftpaSetAsideFeatureEnabled)) {
 
+    const i18n = getI18n(req.session.isNonLegalRep);
     return [{
       date: moment(latestUpdateTribunalDecisionHistory.createdDate).format('DD MMMM YYYY'),
       dateObject: new Date(latestUpdateTribunalDecisionHistory.createdDate),
@@ -298,6 +305,7 @@ function getUpdateTribunalDecisionDocumentHistory(req: Request, ftpaSetAsideFeat
 
     const latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
 
+    const i18n = getI18n(req.session.isNonLegalRep);
     return [{
       date: moment(latestUpdateTribunalDecisionHistory.createdDate).format('DD MMMM YYYY'),
       dateObject: new Date(latestUpdateTribunalDecisionHistory.createdDate),
@@ -343,7 +351,8 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const appealDetailsSection = constructSection(eventsAndStates.appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
   const applicationEvents = getApplicationEvents(req);
-  const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
+  const isNonLegalRep: boolean = req.session.isNonLegalRep;
+  const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || [], isNonLegalRep);
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
   const directionsHistory = getDirectionHistory(req);
   let paymentEvent = [];
@@ -352,13 +361,13 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const manageAFeeUpdateEvents = req.session.appeal.history.filter(event => Events.MANAGE_A_FEE_UPDATE.id.includes(event.id));
 
   if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application) && application.isLateRemissionRequest) {
-    const remissionEvent = getApplicationHistoryRemissionEvent(paymentDate);
+    const remissionEvent = getApplicationHistoryRemissionEvent(paymentDate, isNonLegalRep);
     appealRemissionSection = appealArgumentSection.concat(applicationEvents, remissionEvent, submitCQHistory, directionsHistory)
       .sort((a: any, b: any) => b.dateObject - a.dateObject);
   } else if (paymentStatus === 'Paid' && refundFeatureEnabled && !application.isLateRemissionRequest && manageAFeeUpdateEvents.length > 0) {
-    manageAFeeUpdate = getApplicationHistoryManageAFeeUpdate(manageAFeeUpdateEvents);
+    manageAFeeUpdate = getApplicationHistoryManageAFeeUpdate(manageAFeeUpdateEvents, isNonLegalRep);
   } else if (paymentStatus === 'Paid' && paymentForAppealHasBeenMade(req)) {
-    paymentEvent = getApplicationHistoryPaymentEvent(paymentDate);
+    paymentEvent = getApplicationHistoryPaymentEvent(paymentDate, isNonLegalRep);
   }
 
   const argumentSection: any[] = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
@@ -385,7 +394,8 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   };
 }
 
-function getApplicationHistoryRemissionEvent(paymentDate: string) {
+function getApplicationHistoryRemissionEvent(paymentDate: string, isNonLegalRep: boolean) {
+  const i18n = getI18n(isNonLegalRep);
   return [{
     date: moment(paymentDate).format('DD MMMM YYYY'),
     dateObject: new Date(paymentDate),
@@ -394,7 +404,8 @@ function getApplicationHistoryRemissionEvent(paymentDate: string) {
   }];
 }
 
-function getApplicationHistoryManageAFeeUpdate(manageAFeeUpdateEvents) {
+function getApplicationHistoryManageAFeeUpdate(manageAFeeUpdateEvents, isNonLegalRep: boolean) {
+  const i18n = getI18n(isNonLegalRep);
   return [{
     date: moment(manageAFeeUpdateEvents[0].createdDate).format('DD MMMM YYYY'),
     dateObject: new Date(manageAFeeUpdateEvents[0].createdDate),
@@ -403,7 +414,8 @@ function getApplicationHistoryManageAFeeUpdate(manageAFeeUpdateEvents) {
   }];
 }
 
-function getApplicationHistoryPaymentEvent(paymentDate) {
+function getApplicationHistoryPaymentEvent(paymentDate, isNonLegalRep: boolean) {
+  const i18n = getI18n(isNonLegalRep);
   return [{
     date: moment(paymentDate).format('DD MMMM YYYY'),
     dateObject: new Date(paymentDate),
@@ -417,6 +429,7 @@ function getApplicationHistoryAppealRemissionSection(req, manageAFeeUpdate, refu
     return manageAFeeUpdate;
   } else if (refundFeatureEnabled && application.remissionDecision) {
     const latestUpdateRemissionDecisionHistory = getLatestUpdateRemissionDecionsEventHistory(req, refundFeatureEnabled);
+    const i18n = getI18n(req.session.isNonLegalRep);
     const decisionRemissionEvent = [{
       date: moment(latestUpdateRemissionDecisionHistory.createdDate).format('DD MMMM YYYY'),
       dateObject: new Date(latestUpdateRemissionDecisionHistory.createdDate),

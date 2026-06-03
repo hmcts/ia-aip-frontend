@@ -71,13 +71,21 @@ module.exports = {
     When(/^I should see the confirm create appeal popup$/, async () => {
       await I.waitForVisible(`#${i18n.pages.casesList.createAppealModal.id}`, 30);
       await I.see(i18n.pages.casesList.createAppealModal.title);
-      await I.see(i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'));
+      await I.see(i18n.pages.casesList.createAppealModal.description.replace('MAX_DRAFT_APPEALS', '5'));
       await I.see(i18n.pages.casesList.createAppealModal.confirmButton);
       await I.seeElement(`#${i18n.pages.casesList.createAppealModal.id}-cancel`);
     });
 
     When(/^I click cancel on the confirm create appeal popup$/, async () => {
       await I.click(`#${i18n.pages.casesList.createAppealModal.id}-cancel`);
+    });
+
+    When('I click the Create appeal nav link', async () => {
+      await I.click(`#${i18n.components.header.createNewAppealNavId}`);
+    });
+
+    When('I click the View appeals nav link', async () => {
+      await I.click(i18n.components.header.casesList);
     });
 
     When(/^I click confirm on the confirm create appeal popup$/, async () => {

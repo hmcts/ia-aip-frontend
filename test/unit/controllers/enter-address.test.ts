@@ -206,7 +206,7 @@ describe('Personal Details Controller', function () {
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
-      expect(redirectStub.calledWith(paths.appealStarted.hasSponsor)).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.hasSponsorOrNlr)).to.equal(true);
     });
 
     it('should catch an exception and call next()', async () => {

@@ -166,7 +166,7 @@ Scenario: Complete appeal application
   Then I click "Continue" button
   Then I see "Tell us what you will need at the hearing" in title
   Then I see "Will any witnesses come to the hearing?" item in list
-  Then I see "Will you or any witnesses need an interpreter,step-free access or a hearing loop at the hearing?" item in list
+  Then I see "Will you or any witnesses need an interpreter, step-free access or a hearing loop at the hearing?" item in list
   Then I see "Will you need anything else at the hearing?" item in list
   Then I see "Are there any dates you or any witnesses cannot go to the hearing?" item in list
   Then I see "Check and send your answers" item in list
@@ -181,7 +181,7 @@ Scenario: Complete appeal application
   Then I see "Tell us what you will need at the hearing" in title
   And I see hearing requirement section "1" saved
 
-  When I click "Will you or any witnesses need an interpreter,step-free access or a hearing loop at the hearing?" link
+  When I click "Will you or any witnesses need an interpreter, step-free access or a hearing loop at the hearing?" link
   Then I see "Access needs" in title
   Then I click "Continue" button
   Then I see "Will you or any witnesses need an interpreter at the hearing?" in title

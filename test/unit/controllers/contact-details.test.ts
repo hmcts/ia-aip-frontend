@@ -3,26 +3,36 @@ import * as _ from 'lodash';
 import { OSPlacesClient } from '../../../app/clients/OSPlacesClient';
 import {
   getContactDetails,
-  getHasSponsor,
+  getHasSponsorOrNlr,
+  getNlrAddress,
+  getNlrContactDetails,
+  getNlrName, getNlrNamePreviousPage,
+  getSamePerson,
   getSponsorAddress,
   getSponsorAuthorisation,
   getSponsorContactDetails,
-  getSponsorName,
+  getSponsorName, getSponsorNamePreviousPage,
   postContactDetails,
-  postHasSponsor,
+  postHasSponsorOrNlr,
+  postNlrAddress,
+  postNlrContactDetails,
+  postNlrName,
+  postSamePerson,
   postSponsorAddress,
   postSponsorAuthorisation,
   postSponsorContactDetails,
   postSponsorName,
   setupContactDetailsController
 } from '../../../app/controllers/appeal-application/contact-details';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
+import { createStructuredError } from '../../../app/utils/validations/fields-validations';
 import i18n from '../../../locale/en.json';
-import { expect, sinon } from '../../utils/testUtils';
+import { buildExpectedRequiredError, expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
 
@@ -45,11 +55,15 @@ describe('Contact details Controller', () => {
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
   let submit: sinon.SinonStub;
+  const error = new Error('some error message');
+  let throwStub: sinon.SinonStub;
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
+      query: {},
       session: {
         appeal: {
+          nlrDetails: {},
           application: {
             contactDetails: {}
           }
@@ -71,6 +85,7 @@ describe('Contact details Controller', () => {
       body: {}
     } as Partial<Request>;
     submit = sandbox.stub();
+    throwStub = sandbox.stub().throws(error);
     updateAppealService = {
       submitEventRefactored: submit
     };
@@ -101,6 +116,32 @@ describe('Contact details Controller', () => {
       setupContactDetailsController(middleware, deps);
       expect(routerGetStub.calledWith(paths.appealStarted.contactDetails)).to.equal(true);
       expect(routerPOSTStub.calledWith(paths.appealStarted.contactDetails)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.enterPostcode)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.enterPostcode)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.enterAddress)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.enterAddress)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.postcodeLookup)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.postcodeLookup)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.oocAddress)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.oocAddress)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.hasSponsorOrNlr)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.hasSponsorOrNlr)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.isSponsorSameAsNlr)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.isSponsorSameAsNlr)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.sponsorName)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.sponsorName)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.sponsorAddress)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.sponsorAddress)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.sponsorContactDetails)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.sponsorContactDetails)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.sponsorAuthorisation)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.sponsorAuthorisation)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.nlrName)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.nlrName)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.nlrAddress)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.nlrAddress)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.appealStarted.nlrContactDetails)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.appealStarted.nlrContactDetails)).to.equal(true);
     });
   });
 
@@ -491,126 +532,268 @@ describe('Contact details Controller', () => {
     });
   });
 
-  describe('getHasSponsor', () => {
-    afterEach(() => {
-      sandbox.restore();
-      LaunchDarklyService.close();
+  describe('getHasSponsorOrNlr', () => {
+    it('should render sponsor-details/has-sponsor-or-nlr.njk', async () => {
+      await getHasSponsorOrNlr(req as Request, res as Response, next);
+      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk')).to.equal(true);
     });
 
-    it('should render sponsor-details/has-sponsor.njk', async () => {
-      await getHasSponsor(req as Request, res as Response, next);
-      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk')).to.equal(true);
-    });
-
-    it('when called with edit should render sponsor-details/has-sponsor.njk and update session', async () => {
+    it('when called with edit should render sponsor-details/has-sponsor-or-nlr.njk and update session', async () => {
       req.query = { 'edit': '' };
-      await getHasSponsor(req as Request, res as Response, next);
+      await getHasSponsorOrNlr(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk')).to.equal(true);
+      expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk')).to.equal(true);
     });
 
-    it('should render sponsor-details/has-sponsor.njk', async () => {
-      await getHasSponsor(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk', {
-        question: 'Do you have a sponsor?',
-        description: undefined,
-        modal: undefined,
-        questionId: undefined,
+    it('should render sponsor-details/has-sponsor-or-nlr.njk', async () => {
+      await getHasSponsorOrNlr(req as Request, res as Response, next);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
+        question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.enterPostcode,
-        answer: undefined,
-        errors: undefined,
-        errorList: undefined
+        hasSponsor: undefined,
+        hasNonLegalRep: undefined
       });
     });
 
-    it('should render sponsor-details/has-sponsor.njk with previous page pointing to manual-address endpoint', async () => {
+    it('should render sponsor-details/has-sponsor-or-nlr.njk with previous page pointing to manual-address endpoint', async () => {
       _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
-      await getHasSponsor(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk', {
-        question: 'Do you have a sponsor?',
-        description: undefined,
-        modal: undefined,
-        questionId: undefined,
+      await getHasSponsorOrNlr(req as Request, res as Response, next);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
+        question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.enterAddress,
-        answer: undefined,
-        errors: undefined,
-        errorList: undefined
+        hasSponsor: undefined,
+        hasNonLegalRep: undefined
       });
     });
 
-    it('should render sponsor-details/has-sponsor.njk with previous page pointing to out-of-country-address endpoint', async () => {
+    it('should render sponsor-details/has-sponsor-or-nlr.njk with previous page pointing to out-of-country-address endpoint', async () => {
       // appeal is out of country
       req.session.appeal.appealOutOfCountry = 'Yes';
-      await getHasSponsor(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk', {
-        question: 'Do you have a sponsor?',
-        description: undefined,
-        modal: undefined,
-        questionId: undefined,
+      await getHasSponsorOrNlr(req as Request, res as Response, next);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
+        question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.oocAddress,
-        answer: undefined,
-        errors: undefined,
-        errorList: undefined
+        hasSponsor: undefined,
+        hasNonLegalRep: undefined
       });
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      await getHasSponsorOrNlr(req as Request, res as Response, next);
+
+      expect(next).calledOnceWith(error);
     });
   });
 
-  describe('postHasSponsor', () => {
-    let appeal: Appeal;
-    beforeEach(() => {
-      appeal = {
-        ...req.session.appeal,
-        application: {
-          ...req.session.appeal.application,
-          hasSponsor: 'Yes'
-        }
+  describe('postHasSponsorOrNlr', () => {
+    it('should render has sponsor or nlr page with errors if validation fails in uk no address line1', async () => {
+      const expectedError = {
+        hasSponsor: createStructuredError('hasSponsor', i18n.validationErrors.hasSponsor),
+        hasNonLegalRep: createStructuredError('hasNonLegalRep', i18n.validationErrors.hasNonLegalRep)
       };
 
-      updateAppealService.submitEventRefactored = submit.returns({
-        application: {
-          hasSponsor: 'Yes'
-        }
-      } as Appeal);
-    });
+      await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-    it('should validate and redirect to the sponsor name page', async () => {
-      req.body['answer'] = 'Yes';
-      await postHasSponsor(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
-      expect(req.session.refreshCasesList).to.equal(true);
-      expect(redirectStub.calledOnceWith(paths.appealStarted.sponsorName)).to.equal(true);
-    });
-
-    it('should fail validation and sponsor-details/has-sponsor.njk with a validation error', async () => {
-      req.body = { 'answer': undefined };
-      const expectedError: ValidationError = {
-        key: 'answer',
-        text: 'Select yes if you have a sponsor',
-        href: '#answer'
-      };
-
-      await postHasSponsor(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(submit.called).to.equal(false);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor.njk', {
-        question: 'Do you have a sponsor?',
-        description: undefined,
-        modal: undefined,
-        questionId: undefined,
+      expect(renderStub).calledWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
+        question: i18n.pages.hasSponsorOrNlr.title,
         previousPage: paths.appealStarted.enterPostcode,
-        answer: undefined,
-        errors: { answer: expectedError },
-        errorList: [expectedError]
+        hasSponsor: undefined,
+        hasNonLegalRep: undefined,
+        errors: expectedError,
+        errorList: Object.values(expectedError)
       });
     });
 
-    it('postHasSponsor should catch exception and call next with the error', async () => {
+    it('should render has sponsor or nlr page with errors if validation fails in uk with address line1', async () => {
+      _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
+      const expectedError = {
+        hasSponsor: createStructuredError('hasSponsor', i18n.validationErrors.hasSponsor),
+        hasNonLegalRep: createStructuredError('hasNonLegalRep', i18n.validationErrors.hasNonLegalRep)
+      };
+
+      await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(renderStub).calledWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
+        question: i18n.pages.hasSponsorOrNlr.title,
+        previousPage: paths.appealStarted.enterAddress,
+        hasSponsor: undefined,
+        hasNonLegalRep: undefined,
+        errors: expectedError,
+        errorList: Object.values(expectedError)
+      });
+    });
+
+    it('should render has sponsor or nlr page with errors if validation fails ooc', async () => {
+      req.session.appeal.appealOutOfCountry = 'Yes';
+      const expectedError = {
+        hasSponsor: createStructuredError('hasSponsor', i18n.validationErrors.hasSponsor),
+        hasNonLegalRep: createStructuredError('hasNonLegalRep', i18n.validationErrors.hasNonLegalRep)
+      };
+
+      await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(renderStub).calledWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
+        question: i18n.pages.hasSponsorOrNlr.title,
+        previousPage: paths.appealStarted.oocAddress,
+        hasSponsor: undefined,
+        hasNonLegalRep: undefined,
+        errors: expectedError,
+        errorList: Object.values(expectedError)
+      });
+    });
+
+    it('should redirect to isSponsorSameAsNlr if sponsor && nlr', async () => {
+      req.body['hasSponsor'] = 'Yes';
+      req.body['hasNonLegalRep'] = 'Yes';
+      expect(req.session.appeal.application.hasSponsor).to.equal(undefined);
+      expect(req.session.appeal.application.hasNonLegalRep).to.equal(undefined);
+
+      await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.refreshCasesList).to.equal(true);
+      expect(req.session.appeal.application.hasSponsor).to.equal('Yes');
+      expect(req.session.appeal.application.hasNonLegalRep).to.equal('Yes');
+      expect(submit).calledWith(Events.EDIT_APPEAL, req.session.appeal, 'idamUID', 'atoken', false);
+      expect(redirectStub).calledWith(paths.appealStarted.isSponsorSameAsNlr);
+    });
+
+    it('should redirect to sponsorName if just nlr', async () => {
+      req.body['hasSponsor'] = 'Yes';
+      req.body['hasNonLegalRep'] = 'No';
+      expect(req.session.appeal.application.hasSponsor).to.equal(undefined);
+      expect(req.session.appeal.application.hasNonLegalRep).to.equal(undefined);
+
+      await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.refreshCasesList).to.equal(true);
+      expect(req.session.appeal.application.hasSponsor).to.equal('Yes');
+      expect(req.session.appeal.application.hasNonLegalRep).to.equal('No');
+      expect(submit).calledWith(Events.EDIT_APPEAL, req.session.appeal, 'idamUID', 'atoken', false);
+      expect(redirectStub).calledWith(paths.appealStarted.sponsorName);
+    });
+
+    it('should redirect to nlrName if just nlr', async () => {
+      req.body['hasSponsor'] = 'No';
+      req.body['hasNonLegalRep'] = 'Yes';
+      expect(req.session.appeal.application.hasSponsor).to.equal(undefined);
+      expect(req.session.appeal.application.hasNonLegalRep).to.equal(undefined);
+
+      await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.refreshCasesList).to.equal(true);
+      expect(req.session.appeal.application.hasSponsor).to.equal('No');
+      expect(req.session.appeal.application.hasNonLegalRep).to.equal('Yes');
+      expect(submit).calledWith(Events.EDIT_APPEAL, req.session.appeal, 'idamUID', 'atoken', false);
+      expect(redirectStub).calledWith(paths.appealStarted.nlrName);
+    });
+
+    it('should redirect to taskList no sponsor or nlr', async () => {
+      req.body['hasSponsor'] = 'No';
+      req.body['hasNonLegalRep'] = 'No';
+      expect(req.session.appeal.application.hasSponsor).to.equal(undefined);
+      expect(req.session.appeal.application.hasNonLegalRep).to.equal(undefined);
+
+      await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.refreshCasesList).to.equal(true);
+      expect(req.session.appeal.application.hasSponsor).to.equal('No');
+      expect(req.session.appeal.application.hasNonLegalRep).to.equal('No');
+      expect(submit).calledWith(Events.EDIT_APPEAL, req.session.appeal, 'idamUID', 'atoken', false);
+      expect(redirectStub).calledWith(paths.appealStarted.taskList);
+    });
+
+    it('postHasSponsorOrNlr should catch exception and call next with the error', async () => {
       const error = new Error('an error');
-      req.body = { 'hasSponsor': undefined };
       res.render = renderStub.throws(error);
-      await postHasSponsor(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
+    });
+  });
+
+  describe('getSamePerson', () => {
+    it('should render is-same-person.njk', () => {
+      req.query.edit = '';
+      getSamePerson(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.isEdit).to.equal(true);
+      expect(renderStub).calledWith('appeal-application/sponsor-details/is-same-person.njk', {
+        question: i18n.pages.isSponsorSameAsNlr.title,
+        previousPage: paths.appealStarted.hasSponsorOrNlr,
+        isSponsorSameAsNlr: undefined
+      });
+    });
+
+    it('should render is-same-person.njk with field', () => {
+      req.session.appeal.application.isSponsorSameAsNlr = 'something';
+
+      getSamePerson(req as Request, res as Response, next);
+
+      expect(renderStub).calledWith('appeal-application/sponsor-details/is-same-person.njk', {
+        question: i18n.pages.isSponsorSameAsNlr.title,
+        previousPage: paths.appealStarted.hasSponsorOrNlr,
+        isSponsorSameAsNlr: 'something'
+      });
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      getSamePerson(req as Request, res as Response, next);
+
+      expect(next.calledWith(error)).to.equal(true);
+    });
+  });
+
+  describe('postSamePerson', () => {
+    it('should render with error if validation fails required', async () => {
+      await postSamePerson(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        'isSponsorSameAsNlr': createStructuredError('isSponsorSameAsNlr', i18n.validationErrors.isSponsorSameAsNlr)
+      };
+      expect(renderStub).calledWith('appeal-application/sponsor-details/is-same-person.njk', {
+        question: i18n.pages.isSponsorSameAsNlr.title,
+        previousPage: paths.appealStarted.hasSponsorOrNlr,
+        isSponsorSameAsNlr: undefined,
+        errors: expectedError,
+        errorList: Object.values(expectedError)
+      });
+    });
+
+    it('should update req.session.appeal and redirect to sponsorName if no', async () => {
+      req.body.isSponsorSameAsNlr = 'No';
+      expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal(undefined);
+
+      await postSamePerson(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal('No');
+      expect(redirectStub).calledWith(paths.appealStarted.sponsorName);
+    });
+
+    it('should update req.session.appeal and redirect to nlrName if yes', async () => {
+      req.body.isSponsorSameAsNlr = 'Yes';
+      expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal(undefined);
+
+      await postSamePerson(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal('Yes');
+      expect(redirectStub).calledWith(paths.appealStarted.nlrName);
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      await postSamePerson(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(next.calledWith(error)).to.equal(true);
+    });
+  });
+
+  describe('getSponsorNamePreviousPage', () => {
+    it('should return isSponsorSameAsNlr if hasNonLegalRep', function () {
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      expect(getSponsorNamePreviousPage(req as Request)).to.equal(paths.appealStarted.isSponsorSameAsNlr);
+    });
+
+    it('should return hasSponsorOrNlr if no hasNonLegalRep', function () {
+      req.session.appeal.application.hasNonLegalRep = 'No';
+      expect(getSponsorNamePreviousPage(req as Request)).to.equal(paths.appealStarted.hasSponsorOrNlr);
     });
   });
 
@@ -635,7 +818,7 @@ describe('Contact details Controller', () => {
         {
           sponsorGivenNames: 'sponsorGivenNames',
           sponsorFamilyName: 'sponsorFamilyName',
-          previousPage: paths.appealStarted.hasSponsor
+          previousPage: paths.appealStarted.hasSponsorOrNlr
         }
       );
     });
@@ -1228,13 +1411,23 @@ describe('Contact details Controller', () => {
       } as Appeal);
     });
 
-    it('should validate and redirect to the task list', async () => {
+    it('should validate and redirect to taskList', async () => {
       req.body['answer'] = 'Yes';
       await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
+    });
+
+    it('should validate and redirect to nlrName if hasNlr yes', async () => {
+      req.body['answer'] = 'Yes';
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      appeal.application.hasNonLegalRep = 'Yes';
+      await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false)).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.nlrName)).to.equal(true);
     });
 
     it('should fail validation and sponsor-details/sponsor-authorisation.njk with a validation error', async () => {
@@ -1266,6 +1459,474 @@ describe('Contact details Controller', () => {
       res.render = renderStub.throws(error);
       await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
+    });
+  });
+
+  describe('getNlrNamePreviousPage', () => {
+    it('should return isSponsorSameAsNlr if hasSponsor and isSamePerson', function () {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
+      expect(getNlrNamePreviousPage(req as Request)).to.equal(paths.appealStarted.isSponsorSameAsNlr);
+    });
+
+    it('should return sponsorAuthorisation if hasSponsor and not isSamePerson', function () {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'No';
+      expect(getNlrNamePreviousPage(req as Request)).to.equal(paths.appealStarted.sponsorAuthorisation);
+    });
+
+    it('should return hasSponsorOrNlr if no hasSponsor', function () {
+      req.session.appeal.application.hasSponsor = 'No';
+      expect(getNlrNamePreviousPage(req as Request)).to.equal(paths.appealStarted.hasSponsorOrNlr);
+    });
+  });
+
+  describe('getNlrName', () => {
+    it('should render name.njk with correct previous page if hasSponsor', () => {
+      req.query.edit = '';
+      req.session.appeal.application.hasSponsor = 'Yes';
+      getNlrName(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.isEdit).to.equal(true);
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+        postAction: paths.appealStarted.nlrName,
+        nlrGivenNames: undefined,
+        nlrFamilyName: undefined,
+        previousPage: paths.appealStarted.sponsorAuthorisation,
+        saveForLater: true
+      });
+    });
+
+    it('should render name.njk with correct previous page if no hasSponsor', () => {
+      req.session.appeal.application.hasSponsor = 'No';
+      req.session.appeal.nlrDetails = {
+        givenNames: 'someGivenNames',
+        familyName: 'someFamilyName'
+      };
+      getNlrName(req as Request, res as Response, next);
+
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+        postAction: paths.appealStarted.nlrName,
+        nlrGivenNames: 'someGivenNames',
+        nlrFamilyName: 'someFamilyName',
+        previousPage: paths.appealStarted.hasSponsorOrNlr,
+        saveForLater: true
+      });
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      getNlrName(req as Request, res as Response, next);
+
+      expect(next.calledWith(error)).to.equal(true);
+    });
+  });
+
+  describe('postNlrName', () => {
+    it('should render with error if validation fails required', async () => {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        'nlrGivenNames': buildExpectedRequiredError('nlrGivenNames'),
+        'nlrFamilyName': buildExpectedRequiredError('nlrFamilyName')
+      };
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+        postAction: paths.appealStarted.nlrName,
+        nlrGivenNames: undefined,
+        nlrFamilyName: undefined,
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.appealStarted.sponsorAuthorisation,
+        saveForLater: true
+      });
+    });
+
+    it('should render with error if validation fails one name', async () => {
+      req.body.nlrGivenNames = 'someGivenName';
+      req.body.nlrFamilyName = '';
+      await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrFamilyName)
+      };
+
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+        postAction: paths.appealStarted.nlrName,
+        nlrGivenNames: 'someGivenName',
+        nlrFamilyName: '',
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.appealStarted.hasSponsorOrNlr,
+        saveForLater: true
+      });
+    });
+
+    it('should render with error if validation fails both names', async () => {
+      req.body.nlrGivenNames = '';
+      req.body.nlrFamilyName = '';
+      await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        'nlrGivenNames': createStructuredError('nlrGivenNames', i18n.validationErrors.nlrGivenNames),
+        'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrFamilyName)
+      };
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+        postAction: paths.appealStarted.nlrName,
+        nlrGivenNames: '',
+        nlrFamilyName: '',
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.appealStarted.hasSponsorOrNlr,
+        saveForLater: true
+      });
+    });
+
+    it('should redirect to address if validation passes', async () => {
+      req.body.nlrGivenNames = 'someGivenName';
+      req.body.nlrFamilyName = 'someFamilyName';
+      expect(req.session.appeal.nlrDetails.givenNames).to.equal(undefined);
+      expect(req.session.appeal.nlrDetails.familyName).to.equal(undefined);
+
+      await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.nlrDetails.givenNames).to.equal('someGivenName');
+      expect(req.session.appeal.nlrDetails.familyName).to.equal('someFamilyName');
+      expect(redirectStub).calledWith(paths.appealStarted.nlrAddress);
+    });
+
+    it('should redirect to CYA if validation passes and isEdit true', async () => {
+      req.body.nlrGivenNames = 'someGivenName';
+      req.body.nlrFamilyName = 'someFamilyName';
+      req.session.appeal.application.isEdit = true;
+      expect(req.session.appeal.nlrDetails.givenNames).to.equal(undefined);
+      expect(req.session.appeal.nlrDetails.familyName).to.equal(undefined);
+
+      await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.nlrDetails.givenNames).to.equal('someGivenName');
+      expect(req.session.appeal.nlrDetails.familyName).to.equal('someFamilyName');
+      expect(redirectStub).calledWith(paths.appealStarted.checkAndSend);
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(next.calledWith(error)).to.equal(true);
+    });
+  });
+
+  describe('getNlrAddress', () => {
+    it('should render address.njk', () => {
+      req.query.edit = '';
+      getNlrAddress(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.isEdit).to.equal(true);
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+        postAction: paths.appealStarted.nlrAddress,
+        address: null,
+        previousPage: paths.appealStarted.nlrName,
+        saveForLater: true
+      });
+    });
+
+    it('should render address.njk with address if present', () => {
+      const expectedAddress: Address = {
+        line1: 'line1',
+        city: 'city',
+        postcode: 'postcode'
+      };
+
+      req.session.appeal.nlrDetails.address = expectedAddress;
+      getNlrAddress(req as Request, res as Response, next);
+
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+        postAction: paths.appealStarted.nlrAddress,
+        address: expectedAddress,
+        previousPage: paths.appealStarted.nlrName,
+        saveForLater: true
+      });
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      getNlrAddress(req as Request, res as Response, next);
+
+      expect(next.calledWith(error)).to.equal(true);
+    });
+  });
+
+  describe('postNlrAddress', () => {
+    it('should render with error if validation fails required', async () => {
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        'address-line-1': buildExpectedRequiredError('address-line-1'),
+        'address-town': buildExpectedRequiredError('address-town'),
+        'address-postcode': buildExpectedRequiredError('address-postcode')
+      };
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+        postAction: paths.appealStarted.nlrAddress,
+        nlrAddress: {
+          line1: undefined,
+          line2: undefined,
+          city: undefined,
+          county: undefined,
+          postcode: undefined
+        },
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.appealStarted.nlrName,
+        saveForLater: true
+      });
+    });
+
+    it('should render with error if validation fails empty', async () => {
+      req.body['address-line-1'] = '';
+      req.body['address-town'] = '';
+      req.body['address-postcode'] = '';
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        'address-line-1': createStructuredError('address-line-1', i18n.validationErrors.nlrAddress.line1Required),
+        'address-town': createStructuredError('address-town', i18n.validationErrors.nlrAddress.townCityRequired),
+        'address-postcode': createStructuredError('address-postcode', i18n.validationErrors.nlrAddress.postcodeRequired)
+      };
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+        postAction: paths.appealStarted.nlrAddress,
+        nlrAddress: {
+          line1: '',
+          line2: undefined,
+          city: '',
+          county: undefined,
+          postcode: ''
+        },
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.appealStarted.nlrName,
+        saveForLater: true
+      });
+    });
+
+    it('should render with error if postcode validation fails invalid', async () => {
+      req.body['address-line-1'] = 'line1';
+      req.body['address-town'] = 'town';
+      req.body['address-postcode'] = 'someBadPostcode';
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        'address-postcode': {
+          key: 'address-postcode',
+          text: i18n.validationErrors.postcode.invalid,
+          href: '#address-postcode'
+        }
+      };
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+        postAction: paths.appealStarted.nlrAddress,
+        nlrAddress: {
+          line1: 'line1',
+          line2: undefined,
+          city: 'town',
+          county: undefined,
+          postcode: 'someBadPostcode'
+        },
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.appealStarted.nlrName,
+        saveForLater: true
+      });
+    });
+
+    it('should update req.session.appeal and redirect to contact details if validation passes and isEdit true', async () => {
+      req.body['address-line-1'] = 'line1';
+      req.body['address-town'] = 'town';
+      req.body['address-postcode'] = 'SW1A 2AA';
+      expect(req.session.appeal.nlrDetails.address).to.equal(undefined);
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.nlrDetails.address).to.deep.equal({
+        line1: 'line1',
+        line2: undefined,
+        city: 'town',
+        county: undefined,
+        postcode: 'SW1A 2AA'
+      });
+      expect(redirectStub).calledWith(paths.appealStarted.nlrContactDetails);
+    });
+
+    it('should update req.session.appeal and redirect to CYA if validation passes and isEdit true', async () => {
+      req.body['address-line-1'] = 'line1';
+      req.body['address-line-2'] = 'line2';
+      req.body['address-town'] = 'town';
+      req.body['address-county'] = 'county';
+      req.body['address-postcode'] = 'SW1A 2AA';
+      req.session.appeal.application.isEdit = true;
+      expect(req.session.appeal.nlrDetails.address).to.equal(undefined);
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.nlrDetails.address).to.deep.equal({
+        line1: 'line1',
+        line2: 'line2',
+        city: 'town',
+        county: 'county',
+        postcode: 'SW1A 2AA'
+      });
+      expect(redirectStub).calledWith(paths.appealStarted.checkAndSend);
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(next.calledWith(error)).to.equal(true);
+    });
+  });
+
+  describe('getNlrContactDetails', () => {
+    it('should render contact-details.njk', () => {
+      req.query.edit = '';
+      getNlrContactDetails(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.isEdit).to.equal(true);
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
+        title: i18n.pages.nlrContactDetails.title,
+        hint: i18n.pages.nlrContactDetails.hint,
+        nextStep: i18n.pages.nlrContactDetails.nextStep,
+        showEmail: true,
+        postAction: paths.appealStarted.nlrContactDetails,
+        emailAddress: undefined,
+        phoneNumber: undefined,
+        previousPage: paths.appealStarted.nlrAddress,
+        saveForLater: true
+      });
+    });
+
+    it('should render contact-details.njk with contact details if present', () => {
+      req.session.appeal.nlrDetails.emailAddress = 'emailAddress';
+      req.session.appeal.nlrDetails.phoneNumber = 'phoneNumber';
+      getNlrContactDetails(req as Request, res as Response, next);
+
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
+        title: i18n.pages.nlrContactDetails.title,
+        hint: i18n.pages.nlrContactDetails.hint,
+        nextStep: i18n.pages.nlrContactDetails.nextStep,
+        showEmail: true,
+        postAction: paths.appealStarted.nlrContactDetails,
+        emailAddress: 'emailAddress',
+        phoneNumber: 'phoneNumber',
+        previousPage: paths.appealStarted.nlrAddress,
+        saveForLater: true
+      });
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      getNlrAddress(req as Request, res as Response, next);
+
+      expect(next.calledWith(error)).to.equal(true);
+    });
+  });
+
+  describe('postNlrContactDetails', () => {
+    it('should render with error if validation fails required', async () => {
+      await postNlrContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        'emailAddress': buildExpectedRequiredError('emailAddress'),
+        'phoneNumber': buildExpectedRequiredError('phoneNumber')
+      };
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
+        title: i18n.pages.nlrContactDetails.title,
+        hint: i18n.pages.nlrContactDetails.hint,
+        nextStep: i18n.pages.nlrContactDetails.nextStep,
+        showEmail: true,
+        postAction: paths.appealStarted.nlrContactDetails,
+        emailAddress: undefined,
+        phoneNumber: undefined,
+        errors: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.appealStarted.nlrAddress,
+        saveForLater: true
+      });
+    });
+
+    it('should render with error if validation fails empty', async () => {
+      req.body['emailAddress'] = '';
+      req.body['phoneNumber'] = '';
+      await postNlrContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.emailEmpty),
+        'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.phoneEmpty)
+      };
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
+        title: i18n.pages.nlrContactDetails.title,
+        hint: i18n.pages.nlrContactDetails.hint,
+        nextStep: i18n.pages.nlrContactDetails.nextStep,
+        showEmail: true,
+        postAction: paths.appealStarted.nlrContactDetails,
+        emailAddress: '',
+        phoneNumber: '',
+        errors: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.appealStarted.nlrAddress,
+        saveForLater: true
+      });
+    });
+
+    it('should render with error if validation fails invalid format', async () => {
+      req.body['emailAddress'] = 'invalid';
+      req.body['phoneNumber'] = 'invalid';
+      await postNlrContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.emailFormat),
+        'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.ukPhoneFormat)
+      };
+      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
+        title: i18n.pages.nlrContactDetails.title,
+        hint: i18n.pages.nlrContactDetails.hint,
+        nextStep: i18n.pages.nlrContactDetails.nextStep,
+        showEmail: true,
+        postAction: paths.appealStarted.nlrContactDetails,
+        emailAddress: 'invalid',
+        phoneNumber: 'invalid',
+        errors: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.appealStarted.nlrAddress,
+        saveForLater: true
+      });
+    });
+
+    it('should update req.session.appeal and redirect to taskList if validation passes', async () => {
+      req.body['emailAddress'] = 'test@test.com';
+      req.body['phoneNumber'] = '07827297000';
+      expect(req.session.appeal.nlrDetails.phoneNumber).to.equal(undefined);
+      expect(req.session.appeal.nlrDetails.emailAddress).to.equal(undefined);
+      await postNlrContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.nlrDetails.phoneNumber).to.equal('07827297000');
+      expect(req.session.appeal.nlrDetails.emailAddress).to.equal('test@test.com');
+      expect(redirectStub).calledWith(paths.appealStarted.taskList);
+    });
+
+    it('should update req.session.appeal and redirect to CYA if validation passes and isEdit', async () => {
+      req.session.appeal.application.isEdit = true;
+      req.body['emailAddress'] = 'test@test.com';
+      req.body['phoneNumber'] = '07827297000';
+      expect(req.session.appeal.nlrDetails.phoneNumber).to.equal(undefined);
+      expect(req.session.appeal.nlrDetails.emailAddress).to.equal(undefined);
+      await postNlrContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.nlrDetails.phoneNumber).to.equal('07827297000');
+      expect(req.session.appeal.nlrDetails.emailAddress).to.equal('test@test.com');
+      expect(redirectStub).calledWith(paths.appealStarted.checkAndSend);
+    });
+
+    it('should catch an error and call next with error', async () => {
+      res.render = throwStub;
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(next.calledWith(error)).to.equal(true);
     });
   });
 });

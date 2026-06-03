@@ -1,7 +1,7 @@
-import i18n from '../../locale/en.json';
 import { States } from '../data/states';
+import { getI18n } from './grammarPerspectiveTransformer';
 
-function buildProgressBarStages(state: string, paymentStatus?: string, is24WeeksTimeline?: boolean) {
+function buildProgressBarStages(state: string, isNonLegalRep: boolean, paymentStatus?: string, is24WeeksTimeline?: boolean) {
   const stages = {
     yourAppealDetails: {
       activeStatus: [
@@ -45,6 +45,7 @@ function buildProgressBarStages(state: string, paymentStatus?: string, is24Weeks
     stages.yourHearingDetails.activeStatus.push(States.LISTING.id);
   }
 
+  const i18n = getI18n(isNonLegalRep);
   const yourAppealDetailsStage = {
     title: i18n.components.progressBar.yourAppealDetails.title,
     ariaLabel: i18n.components.progressBar.yourAppealDetails.ariaLabel,

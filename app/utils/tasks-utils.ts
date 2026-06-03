@@ -50,9 +50,20 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
   const sponsorContactDetails: boolean = sponsorEmail && sponsorWantsEmail || sponsorPhone && sponsorWantsSms;
   const outUkContactDetailsComplete: boolean = (appellantContactDetails && hasSponsorNo) ||
     (appellantContactDetails && hasSponsorYes && sponsorGivenNames && sponsorFamilyName && sponsorAddress && sponsorContactDetails && sponsorAuthorisation);
+  const hasNlrNo: boolean = appeal.application.hasNonLegalRep && appeal.application.hasNonLegalRep === 'No' || false;
+  const hasNlr: boolean = !!_.get(appeal.application, 'hasNonLegalRep');
+  const nlrGivenNames: boolean = !!_.get(appeal.nlrDetails, 'givenNames');
+  const nlrFamilyName: boolean = !!_.get(appeal.nlrDetails, 'familyName');
+  const nlrPhoneNumber: boolean = !!_.get(appeal.nlrDetails, 'phoneNumber');
+  const nlrEmailAddress: boolean = !!_.get(appeal.nlrDetails, 'emailAddress');
+  const nlrLine1: boolean = !!_.get(appeal.nlrDetails, 'address.line1');
+  const nlrCity: boolean = !!_.get(appeal.nlrDetails, 'address.city');
+  const nlrPostcode: boolean = !!_.get(appeal.nlrDetails, 'address.postcode');
+  const nlrDetailsComplete: boolean = !hasNlr || hasNlrNo || (nlrGivenNames && nlrFamilyName && nlrPhoneNumber && nlrEmailAddress && nlrLine1 && nlrCity && nlrPostcode);
+  const appellantInUk: boolean = _.get(appeal.application, 'appellantInUk') === 'Yes';
   const contactDetails: Task = {
     saved: (email && wantsEmail) || (phone && wantsSms) || postcode || line1 || appellantOutOfCountryAddress,
-    completed: _.get(appeal.application, 'appellantInUk') === 'Yes' ? appellantContactDetails : outUkContactDetailsComplete,
+    completed: (appellantInUk ? appellantContactDetails : outUkContactDetailsComplete) && nlrDetailsComplete,
     active: homeOfficeDetails.completed || homeOfficeDetailsOOC.completed
   };
 
@@ -132,7 +143,7 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
 
 }
 
-function submitHearingRequirementsStatus(appeal: Appeal) {
+function submitHearingRequirementsStatus(appeal: Appeal, hasNonLegalRep: boolean) {
 
   const witnessesOnHearing: boolean = _.has(appeal, 'hearingRequirements.witnessesOnHearing');
   const witnessesOutsideUK: boolean = _.has(appeal, 'hearingRequirements.witnessesOutsideUK');
@@ -153,12 +164,28 @@ function submitHearingRequirementsStatus(appeal: Appeal) {
     completed: isHearingLoopNeeded,
     active: witnessesTask.completed
   };
+
+  const isNlrAttending: boolean = appeal?.hearingRequirements?.nlrAttending === 'Yes';
+  const isNlrOutsideUK: boolean = appeal?.hearingRequirements?.nlrOutsideUK === 'Yes';
+  const areNlrRequirementsNeeded: boolean = isNlrAttending || isNlrOutsideUK;
+  const nlrAttendingTask: Task = {
+    saved: !!_.get(appeal, 'hearingRequirements.nlrAttending'),
+    completed: areNlrRequirementsNeeded,
+    active: hasNonLegalRep && accessNeedsTask.completed
+  };
+  const nlrNeeds: boolean = !!_.get(appeal, 'hearingRequirements.nlrNeeds');
+  const nlrNeedsTask: Task = {
+    saved: nlrNeeds,
+    completed: _.has(appeal, 'hearingRequirements.nlrNeedsHearingLoop'),
+    active: areNlrRequirementsNeeded && hasNonLegalRep && nlrAttendingTask.completed
+  };
+
   const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');
 
   const otherNeedsTask: Task = {
     saved: otherNeeds,
     completed: _.has(appeal, 'hearingRequirements.otherNeeds.anythingElse'),
-    active: accessNeedsTask.completed
+    active: hasNonLegalRep ? nlrNeedsTask.completed : accessNeedsTask.completed
   };
 
   let datesToAvoidCompleted: boolean = !!_.get(appeal, 'hearingRequirements.datesToAvoid');
@@ -183,13 +210,17 @@ function submitHearingRequirementsStatus(appeal: Appeal) {
     active: datesToAvoidCompleted
   };
 
-  return {
+  const returnObject = {
     witnesses: witnessesTask,
     accessNeeds: accessNeedsTask,
+    nlrAttending: nlrAttendingTask,
     otherNeeds: otherNeedsTask,
     datesToAvoid: datesToAvoidTask,
     checkAndSend
   };
+  if (areNlrRequirementsNeeded) returnObject['nlrNeeds'] = nlrNeedsTask;
+
+  return returnObject;
 }
 
 function cmaRequirementsStatus(appeal: Appeal) {

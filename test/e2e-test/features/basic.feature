@@ -61,9 +61,9 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I check page accessibility
     And I click "Save and continue" button
-    Then I should be taken to the has sponsor page
+    Then I should be taken to the has sponsor or nlr page
     And I check page accessibility
-    When I choose No and click Continue
+    When I select "No" for sponsor and "No" for non-legal representative and click continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -139,8 +139,8 @@ Feature: Basic Appeal Submissions
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
-    Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    Then I should be taken to the has sponsor or nlr page
+    When I select "No" for sponsor and "No" for non-legal representative and click continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -208,8 +208,8 @@ Feature: Basic Appeal Submissions
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
-    Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    Then I should be taken to the has sponsor or nlr page
+    When I select "No" for sponsor and "No" for non-legal representative and click continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -275,8 +275,8 @@ Feature: Basic Appeal Submissions
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
-    Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    Then I should be taken to the has sponsor or nlr page
+    When I select "No" for sponsor and "No" for non-legal representative and click continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -350,8 +350,8 @@ Feature: Basic Appeal Submissions
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
-    Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    Then I should be taken to the has sponsor or nlr page
+    When I select "No" for sponsor and "No" for non-legal representative and click continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -408,8 +408,8 @@ Feature: Basic Appeal Submissions
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
-    Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    Then I should be taken to the has sponsor or nlr page
+    When I select "No" for sponsor and "No" for non-legal representative and click continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -466,8 +466,8 @@ Feature: Basic Appeal Submissions
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
-    Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    Then I should be taken to the has sponsor or nlr page
+    When I select "No" for sponsor and "No" for non-legal representative and click continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page

@@ -1,0 +1,73 @@
+{% set pageTitleName = title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% import "helpers/text-helpers.njk" as text %}
+
+{% block content %}
+
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  {% call govukFieldset({
+    legend: {
+      text: title,
+      classes: "govuk-fieldset__legend--xl",
+      isPageHeading: true
+    }
+  }) %}
+  <form action="{{ postAction }}" method="post" novalidate>
+    <p class="govuk-body">{{ hint }}</p>
+    {% if hint %}
+        <p class="govuk-body">{{ nextStep }}</p>
+    {% endif %}
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% if showEmail %}
+        {{ govukInput({
+          id: "emailAddress",
+          name: "emailAddress",
+          type: "email",
+          value: emailAddress,
+          classes: "govuk-!-width-one-third",
+          label: {
+            text: i18n.pages.nlrContactDetails.emailAddress
+          },
+          attributes: {
+            spellcheck: "false"
+          },
+          errorMessage: {
+            text: errors['emailAddress'].text
+          } if errors['emailAddress']
+        }) }}
+    {% endif %}
+    {{ govukInput({
+      id: "phoneNumber",
+      name: "phoneNumber",
+      type: "tel",
+      value: phoneNumber,
+      classes: "govuk-!-width-one-third",
+      label: {
+        text: i18n.pages.nlrContactDetails.phoneNumber
+      },
+      attributes: {
+        spellcheck: "false"
+      },
+      errorMessage: {
+        text: errors['phoneNumber'].text
+      } if errors['phoneNumber']
+    }) }}
+    {% if saveForLater %}
+      {{ saveButtons() }}
+    {% else %}
+      {{ saveButton() }}
+    {% endif %}
+  {% endcall %}
+  </form>
+
+  {{ contactUs() }}
+
+{% endblock %}

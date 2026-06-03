@@ -11,6 +11,7 @@
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "components/header.njk" import header with context %}
 {% from "components/timeout-modal.njk" import timeoutModal with context %}
+{% from "components/confirm-modal.njk" import confirmModal with context %}
 
 {% set serviceName = i18n.serviceName %}
 {% set serviceUrl = i18n.serviceUrl %}
@@ -39,6 +40,16 @@
       href: saveForLaterCTA,
       value: "saveForLater",
       classes: "govuk-button--secondary"
+    }) }}
+  </div>
+{% endmacro %}
+
+{% macro saveButton(button1) %}
+  <div class="save-buttons__container">
+    {{ govukButton({
+      name: button1.name if button1.name else 'saveAndContinue',
+      text: button1.text if button1.text else i18n.common.buttons.saveAndContinue,
+      classes: "govuk-!-margin-right-3"
     }) }}
   </div>
 {% endmacro %}
@@ -249,6 +260,13 @@
         ] | join() %}
 
       {{ timeoutModal() }}
+      {{ confirmModal(
+        i18n.pages.casesList.createAppealModal.id,
+        i18n.pages.casesList.createAppealModal.title,
+        i18n.pages.casesList.createAppealModal.description | replace("MAX_DRAFT_APPEALS", maxDraftAppeals) | safe,
+        i18n.pages.casesList.createAppealModal.confirmButton,
+        paths.common.createNewAppeal
+      ) }}
       {% block extraModals %}
       {% endblock %}
       {{ govukPhaseBanner({

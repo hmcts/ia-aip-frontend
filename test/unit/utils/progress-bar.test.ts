@@ -36,14 +36,14 @@ describe('progress-bar utils', () => {
   describe('should build progress bar stages using state', () => {
 
     it('appealStarted', () => {
-      const stages = buildProgressBarStages('appealStarted');
+      const stages = buildProgressBarStages('appealStarted', false);
       const expectedStages = defaultStages;
       expectedStages[0].active = true;
       expect(expectedStages).to.deep.equal(stages);
     });
 
     it('appealSubmitted', () => {
-      const stages = buildProgressBarStages('appealSubmitted');
+      const stages = buildProgressBarStages('appealSubmitted', false);
       const expectedStages = defaultStages;
       expectedStages[0].active = true;
       expectedStages[0].completed = false;
@@ -51,7 +51,7 @@ describe('progress-bar utils', () => {
     });
 
     it('appealSubmitted and not Paid', () => {
-      const stages = buildProgressBarStages('appealSubmitted', 'Payment pending');
+      const stages = buildProgressBarStages('appealSubmitted', false, 'Payment pending');
       const expectedStages = defaultStages;
       expectedStages[0].active = true;
       expectedStages[0].completed = false;
@@ -59,7 +59,7 @@ describe('progress-bar utils', () => {
     });
 
     it('appealSubmitted and Paid', () => {
-      const stages = buildProgressBarStages('appealSubmitted', 'Paid');
+      const stages = buildProgressBarStages('appealSubmitted', false, 'Paid');
       const expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
@@ -67,7 +67,7 @@ describe('progress-bar utils', () => {
     });
 
     it('awaitingRespondentEvidence', () => {
-      const stages = buildProgressBarStages('awaitingRespondentEvidence');
+      const stages = buildProgressBarStages('awaitingRespondentEvidence', false);
       const expectedStages = defaultStages;
       expectedStages[0].active = true;
       expectedStages[0].completed = false;
@@ -75,7 +75,7 @@ describe('progress-bar utils', () => {
     });
 
     it('awaitingReasonsForAppeal', () => {
-      const stages = buildProgressBarStages('awaitingReasonsForAppeal');
+      const stages = buildProgressBarStages('awaitingReasonsForAppeal', false);
       const expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
@@ -85,7 +85,7 @@ describe('progress-bar utils', () => {
     });
 
     it('reasonsForAppealSubmitted', () => {
-      const stages = buildProgressBarStages('reasonsForAppealSubmitted');
+      const stages = buildProgressBarStages('reasonsForAppealSubmitted', false);
       const expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
@@ -95,7 +95,7 @@ describe('progress-bar utils', () => {
     });
 
     it('caseUnderReview', () => {
-      const stages = buildProgressBarStages('caseUnderReview');
+      const stages = buildProgressBarStages('caseUnderReview', false);
       const expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
@@ -105,7 +105,7 @@ describe('progress-bar utils', () => {
     });
 
     it('awaitingClarifyingQuestionsAnswers', () => {
-      const stages = buildProgressBarStages('awaitingClarifyingQuestionsAnswers');
+      const stages = buildProgressBarStages('awaitingClarifyingQuestionsAnswers', false);
       const expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
@@ -115,7 +115,7 @@ describe('progress-bar utils', () => {
     });
 
     it('clarifyingQuestionsAnswersSubmitted', () => {
-      const stages = buildProgressBarStages('clarifyingQuestionsAnswersSubmitted');
+      const stages = buildProgressBarStages('clarifyingQuestionsAnswersSubmitted', false);
       const expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
@@ -125,7 +125,7 @@ describe('progress-bar utils', () => {
     });
 
     it('awaitingCmaRequirements', () => {
-      const stages = buildProgressBarStages('awaitingCmaRequirements');
+      const stages = buildProgressBarStages('awaitingCmaRequirements', false);
       const expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
@@ -135,7 +135,7 @@ describe('progress-bar utils', () => {
     });
 
     it('cmaRequirementsSubmitted', () => {
-      const stages = buildProgressBarStages('awaitingCmaRequirements');
+      const stages = buildProgressBarStages('awaitingCmaRequirements', false);
       const expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
@@ -145,7 +145,7 @@ describe('progress-bar utils', () => {
     });
 
     it('caseListedByAdminOfficer', () => {
-      const stages = buildProgressBarStages('prepareForHearing');
+      const stages = buildProgressBarStages('prepareForHearing', false);
       const expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
@@ -157,7 +157,7 @@ describe('progress-bar utils', () => {
     });
 
     it('listing', () => {
-      const stages = buildProgressBarStages('listing');
+      const stages = buildProgressBarStages('listing', false);
       const expectedStages = defaultStages;
       expectedStages[0].active = false;
       expectedStages[0].completed = true;
@@ -171,7 +171,7 @@ describe('progress-bar utils', () => {
     it('listing when stf24w is set to \'Yes\'', () => {
       const paymentStatus = 'Payment pending';
       const is24WeeksTimeline = true;
-      const stages = buildProgressBarStages('listing', paymentStatus, is24WeeksTimeline);
+      const stages = buildProgressBarStages('listing', false, paymentStatus, is24WeeksTimeline);
       const expectedStages = defaultStages;
       expectedStages[0].active = true;
       expectedStages[0].completed = false;

@@ -14,6 +14,7 @@ import {
   interpreterSupportSelectionValidation,
   interpreterTypesSelectionValidation,
   isDateInRange,
+  joinAppealValidation, nonLegalRepContactDetailsValidation, nonLegalRepPhoneValidation,
   postcodeValidation,
   reasonForAppealDecisionValidation,
   remissionOptionsValidation,
@@ -1191,5 +1192,270 @@ describe('fields-validations', () => {
       }
     };
     expect(validationResult).to.deep.equal(expectedResponse);
+  });
+
+  describe('joinAppealValidation', () => {
+    it('should validate case reference and access code', () => {
+      const object = {
+        caseReference: 'someCaseReference',
+        joinAppealAccessCode: 'someAccessCode'
+      };
+      const validationResult = joinAppealValidation(object);
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation if reference empty and return "string.empty" type', () => {
+      const object = {
+        caseReference: '',
+        joinAppealAccessCode: 'someAccessCode',
+      };
+      const validationResult = joinAppealValidation(object);
+      const expectedResponse = {
+        'caseReference': {
+          'key': 'caseReference',
+          'text': 'The Online case reference number cannot be empty',
+          'href': '#caseReference'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail validation if access code empty and return "string.empty" type', () => {
+      const object = {
+        caseReference: 'someCaseReference',
+        joinAppealAccessCode: '',
+      };
+      const validationResult = joinAppealValidation(object);
+      const expectedResponse = {
+        'joinAppealAccessCode': {
+          'key': 'joinAppealAccessCode',
+          'text': 'The access code cannot be empty',
+          'href': '#joinAppealAccessCode'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+  });
+
+  describe('emailValidation', () => {
+    it('should fail email validation and return "string.format" type', () => {
+      const object = { 'email-value': 'thisisnotanemailexample.net' };
+      const validationResult = emailValidation(object);
+
+      const expectedResponse = {
+        'email-value': {
+          'key': 'email-value',
+          'text': 'Enter an email address in the correct format, like name@example.com',
+          'href': '#email-value'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail email validation and return "string.format" type on unicode emails', () => {
+      const object = { 'email-value': 'あいうえお@domain.com' };
+      const validationResult = emailValidation(object);
+
+      const expectedResponse = {
+        'email-value': {
+          'key': 'email-value',
+          'text': 'Enter an email address in the correct format, like name@example.com',
+          'href': '#email-value'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+  });
+
+
+  describe('nonLegalRepContactDetailsValidation', () => {
+    it('should fail validation if empty', () => {
+      const validationResult = nonLegalRepContactDetailsValidation({});
+
+      const expectedResponse = {
+        'emailAddress': {
+          'key': 'emailAddress',
+          'text': '"emailAddress" is required',
+          'href': '#emailAddress'
+        },
+        'phoneNumber': {
+          'key': 'phoneNumber',
+          'text': '"phoneNumber" is required',
+          'href': '#phoneNumber'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail email validation and return "string.format" type', () => {
+      const object = { emailAddress: 'thisisnotanemailexample.net', phoneNumber: '07827297000' };
+      const validationResult = nonLegalRepContactDetailsValidation(object);
+
+      const expectedResponse = {
+        'emailAddress': {
+          'key': 'emailAddress',
+          'text': 'Enter an email address in the correct format, like name@example.com',
+          'href': '#emailAddress'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail email validation and return "string.format" type on unicode emails', () => {
+      const object = { emailAddress: 'あいうえお@domain.com', phoneNumber: '07827297000' };
+      const validationResult = nonLegalRepContactDetailsValidation(object);
+
+      const expectedResponse = {
+        'emailAddress': {
+          'key': 'emailAddress',
+          'text': 'Enter an email address in the correct format, like name@example.com',
+          'href': '#emailAddress'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail email validation and return "string.empty" type on empty emails', () => {
+      const object = { emailAddress: '', phoneNumber: '07827297000' };
+      const validationResult = nonLegalRepContactDetailsValidation(object);
+
+      const expectedResponse = {
+        'emailAddress': {
+          'key': 'emailAddress',
+          'text': 'Enter an email address',
+          'href': '#emailAddress'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail phone validation on invalid and return "mobilePhoneNumber.invalid.string" type', () => {
+      const object = { emailAddress: 'test@test.com', phoneNumber: 'test@test.com' };
+      const validationResult = nonLegalRepContactDetailsValidation(object);
+
+      const expectedResponse = {
+        'phoneNumber': {
+          'key': 'phoneNumber',
+          'text': 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982',
+          'href': '#phoneNumber'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail phone validation on international and return "mobilePhoneNumber.invalid.string" type', () => {
+      const object = { emailAddress: 'test@test.com', phoneNumber: '+64 2 9999 9999' };
+      const validationResult = nonLegalRepContactDetailsValidation(object);
+
+      const expectedResponse = {
+        'phoneNumber': {
+          'key': 'phoneNumber',
+          'text': 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982',
+          'href': '#phoneNumber'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+
+    it('should fail phone validation on landline and return "mobilePhoneNumber.invalid.string" type', () => {
+      const object = { emailAddress: 'test@test.com', phoneNumber: '0116 2601 605' };
+      const validationResult = nonLegalRepContactDetailsValidation(object);
+
+      const expectedResponse = {
+        'phoneNumber': {
+          'key': 'phoneNumber',
+          'text': 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982',
+          'href': '#phoneNumber'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail phone validation and return "string.empty" type on empty phone', () => {
+      const object = { emailAddress: 'test@test.com', phoneNumber: '' };
+      const validationResult = nonLegalRepContactDetailsValidation(object);
+
+      const expectedResponse = {
+        'phoneNumber': {
+          'key': 'phoneNumber',
+          'text': 'Enter a phone number',
+          'href': '#phoneNumber'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+  });
+
+  describe('nonLegalRepPhoneValidation', () => {
+    it('should fail validation if empty', () => {
+      const validationResult = nonLegalRepPhoneValidation({});
+
+      const expectedResponse = {
+        'phoneNumber': {
+          'key': 'phoneNumber',
+          'text': '"phoneNumber" is required',
+          'href': '#phoneNumber'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail phone validation on invalid and return "mobilePhoneNumber.invalid.string" type', () => {
+      const object = { phoneNumber: 'test@test.com' };
+      const validationResult = nonLegalRepPhoneValidation(object);
+
+      const expectedResponse = {
+        'phoneNumber': {
+          'key': 'phoneNumber',
+          'text': 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982',
+          'href': '#phoneNumber'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail phone validation on international and return "mobilePhoneNumber.invalid.string" type', () => {
+      const object = { phoneNumber: '+64 2 9999 9999' };
+      const validationResult = nonLegalRepPhoneValidation(object);
+
+      const expectedResponse = {
+        'phoneNumber': {
+          'key': 'phoneNumber',
+          'text': 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982',
+          'href': '#phoneNumber'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+
+    it('should fail phone validation on landline and return "mobilePhoneNumber.invalid.string" type', () => {
+      const object = { phoneNumber: '0116 2601 605' };
+      const validationResult = nonLegalRepPhoneValidation(object);
+
+      const expectedResponse = {
+        'phoneNumber': {
+          'key': 'phoneNumber',
+          'text': 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982',
+          'href': '#phoneNumber'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail phone validation and return "string.empty" type on empty phone', () => {
+      const object = { phoneNumber: '' };
+      const validationResult = nonLegalRepPhoneValidation(object);
+
+      const expectedResponse = {
+        'phoneNumber': {
+          'key': 'phoneNumber',
+          'text': 'Enter a phone number',
+          'href': '#phoneNumber'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
   });
 });

@@ -57,7 +57,8 @@ describe('Join appeal controllers setup', () => {
     it('should render join-appeal', () => {
       getJoinAppeal(req as Request, res as Response, next);
       expect(res.render).to.be.calledWith('non-legal-rep/join-appeal.njk', {
-        previousPage: paths.common.overview
+        previousPage: paths.common.casesList,
+        previousPageText: i18n.components.back.backToCasesList
       });
     });
 
@@ -108,7 +109,8 @@ describe('Join appeal controllers setup', () => {
         joinAppealAccessCode: 'some code',
         errorList: Object.values(expectedValidationError),
         errors: expectedValidationError,
-        previousPage: '/'
+        previousPage: paths.common.casesList,
+        previousPageText: i18n.components.back.backToCasesList
       });
     });
 
@@ -130,7 +132,8 @@ describe('Join appeal controllers setup', () => {
         joinAppealAccessCode: '',
         errorList: Object.values(expectedValidationError),
         errors: expectedValidationError,
-        previousPage: '/'
+        previousPage: paths.common.casesList,
+        previousPageText: i18n.components.back.backToCasesList
       });
     });
 

@@ -32,7 +32,16 @@ describe('Cases List Controller', () => {
     appealReferenceNumber: 'PA/0002/2022',
     state: 'appealSubmitted',
     appellantGivenNames: 'Jane',
-    appellantFamilyName: 'Doe'
+    appellantFamilyName: 'Doe',
+    isNonLegalRep: false
+  };
+  const nlrCase = {
+    id: '1236',
+    appealReferenceNumber: 'PA/0003/2022',
+    state: 'appealSubmitted',
+    appellantGivenNames: 'John',
+    appellantFamilyName: 'Smith',
+    isNonLegalRep: true
   };
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -40,21 +49,7 @@ describe('Cases List Controller', () => {
       query: {},
       session: {
         casesList: [
-          {
-            id: '1234',
-            appealReferenceNumber: 'PA/0001/2022',
-            state: 'appealStarted',
-            appellantGivenNames: 'John',
-            appellantFamilyName: 'Smith',
-            stateName: 'Appeal started'
-          },
-          {
-            id: '1235',
-            appealReferenceNumber: 'PA/0002/2022',
-            state: 'appealSubmitted',
-            appellantGivenNames: 'Jane',
-            appellantFamilyName: 'Doe'
-          }
+          appealStartedCase, appealSubmittedCase
         ],
         refreshCasesList: false,
       } as any
@@ -82,8 +77,21 @@ describe('Cases List Controller', () => {
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
-        cases: expectedCases,
-        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        appellantCases: expectedCases,
+        nlrCases: [],
+        errorList: null
+      });
+    });
+
+    it('should render cases-list.njk with regular cases and nlr cases from session including stateName', async () => {
+      req.session.casesList = [appealStartedCase, appealSubmittedCase, nlrCase];
+      await getCasesList(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedCases = [appealStartedCase, appealSubmittedCase];
+      expect(updateAppealService.loadAppealsList).to.not.have.been.called;
+      expect(res.render).to.have.been.calledWith('cases-list.njk', {
+        createNewAppealUrl: paths.common.createNewAppeal,
+        appellantCases: expectedCases,
+        nlrCases: [nlrCase],
         errorList: null
       });
     });
@@ -104,8 +112,8 @@ describe('Cases List Controller', () => {
 
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
-        cases: [],
-        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        appellantCases: [],
+        nlrCases: [],
         errorList: null
       });
     });
@@ -121,8 +129,8 @@ describe('Cases List Controller', () => {
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
-        cases: [appealStartedCase, appealSubmittedCase],
-        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        appellantCases: [appealStartedCase, appealSubmittedCase],
+        nlrCases: [],
         errorList: [expectedError]
       });
     });
@@ -139,8 +147,8 @@ describe('Cases List Controller', () => {
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
-        cases: [appealStartedCase, appealSubmittedCase],
-        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        appellantCases: [appealStartedCase, appealSubmittedCase],
+        nlrCases: [],
         errorList: [expectedError]
       });
     });
@@ -156,8 +164,8 @@ describe('Cases List Controller', () => {
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
-        cases: [appealStartedCase, appealSubmittedCase],
-        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        appellantCases: [appealStartedCase, appealSubmittedCase],
+        nlrCases: [],
         errorList: [expectedError]
       });
     });
@@ -174,8 +182,8 @@ describe('Cases List Controller', () => {
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
-        cases: [appealStartedCase, appealSubmittedCase],
-        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        appellantCases: [appealStartedCase, appealSubmittedCase],
+        nlrCases: [],
         errorList: [expectedError]
       });
     });
@@ -191,8 +199,8 @@ describe('Cases List Controller', () => {
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
-        cases: [appealStartedCase, appealSubmittedCase],
-        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        appellantCases: [appealStartedCase, appealSubmittedCase],
+        nlrCases: [],
         errorList: [expectedError]
       });
     });
@@ -209,8 +217,8 @@ describe('Cases List Controller', () => {
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
-        cases: [appealStartedCase, appealSubmittedCase],
-        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        appellantCases: [appealStartedCase, appealSubmittedCase],
+        nlrCases: [],
         errorList: [expectedError]
       });
     });
@@ -226,8 +234,8 @@ describe('Cases List Controller', () => {
       expect(updateAppealService.loadAppealsList).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
-        cases: [appealStartedCase, appealSubmittedCase],
-        createAppealModalDescription: i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'),
+        appellantCases: [appealStartedCase, appealSubmittedCase],
+        nlrCases: [],
         errorList: [expectedError]
       });
     });

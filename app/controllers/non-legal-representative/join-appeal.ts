@@ -16,7 +16,8 @@ const logLabel = getLogLabel(__filename);
 function getJoinAppeal(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('non-legal-rep/join-appeal.njk', {
-      previousPage: paths.common.overview
+      previousPage: paths.common.casesList,
+      previousPageText: i18n.components.back.backToCasesList
     });
   } catch (error) {
     next(error);
@@ -33,8 +34,8 @@ function postJoinAppeal(ccdSystemService: CcdSystemService) {
           joinAppealAccessCode: req.body['joinAppealAccessCode'],
           errorList: Object.values(validationErrors),
           errors: validationErrors,
-          // TODO - this should go back to the case list once that is implemented rather than the base page
-          previousPage: '/'
+          previousPage: paths.common.casesList,
+          previousPageText: i18n.components.back.backToCasesList
         });
       }
       const caseReferenceWithoutDashes: string = req.body['caseReference']?.replaceAll('-', '')?.replaceAll(' ', '');

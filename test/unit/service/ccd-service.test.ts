@@ -7,7 +7,7 @@ import { expect, sinon } from '../../utils/testUtils';
 import { multipleEventsData, startAppealEventData } from '../mockData/events/data';
 import { expectedMultipleEventsData, expectedStartAppealEventData } from '../mockData/events/expectations';
 
-describe('idam-service', () => {
+describe('ccd-service', () => {
   const ccdBaseUrl: string = config.get('ccd.apiUrl');
   const headers = {} as SecurityHeaders;
   const user: IdamDetails = {

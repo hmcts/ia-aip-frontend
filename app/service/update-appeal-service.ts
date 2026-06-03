@@ -124,6 +124,9 @@ export default class UpdateAppealService {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
     const ccdCase = await this._ccdService.loadCaseById(req.idam.userDetails.uid, caseId, securityHeaders);
     req.session.ccdCaseId = caseId;
+    const userId = req?.idam?.userDetails?.uid;
+    const nlrId = ccdCase.case_data?.nlrDetails?.idamId;
+    req.session.isNonLegalRep = userId && nlrId && userId === nlrId;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
     return req.session.appeal;
   }

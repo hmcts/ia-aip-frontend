@@ -3,11 +3,6 @@
 
 {% set serviceName %}{{ i18n.serviceName }}{% endset %}
 {% set serviceUrl %}{{ paths.common.casesList }}{% endset %}
-{% set navigationEndHtml %}
-  {% if authenticated %}
-  <li class="govuk-service-navigation__item govuk-service-navigation__navigation-end"><a class="govuk-service-navigation__link" href="/logout">{{ i18n.components.header.signOut }}</a></li>
-  {% endif %}
-{% endset %}
 
 {% macro header() %}
 {{ govukHeader({
@@ -15,14 +10,37 @@
   classes: "govuk-header--full-width-border",
   rebrand: true
 }) }}
-{{ govukServiceNavigation({
-  serviceName: serviceName,
-  serviceUrl: serviceUrl,
-  slots: {
-    navigationEnd: navigationEndHtml
-  },
-  rebrand: true
-}) }}
+
+  {{ govukServiceNavigation({
+    serviceName: serviceName,
+    navigation: [
+      {
+        href: paths.common.casesList,
+        text: i18n.components.header.casesList,
+        active: paths.common.casesList in currentUrl
+      },
+      {
+        href: paths.common.casesList + "#create-new-appeal",
+        text: i18n.components.header.createNewAppeal
+      },
+      {
+       href: paths.nonLegalRep.joinAppeal,
+       text: i18n.components.header.joinAppeal,
+       active: paths.nonLegalRep.joinAppeal in currentUrl
+      },
+      {
+        href: paths.common.logout,
+        text: i18n.components.header.signOut
+      }
+    ] if authenticated else [
+      {
+        href: paths.common.start,
+        text: i18n.components.header.startAppeal,
+        active: paths.common.start in currentUrl
+      }
+    ],
+    rebrand: true
+  }) }}
 {% endmacro %}
 
 

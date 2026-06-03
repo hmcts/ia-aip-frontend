@@ -36,6 +36,7 @@ interface CaseListItem {
   appellantGivenNames: string;
   appellantFamilyName: string;
   stateName?: string;
+  isNonLegalRep?: boolean;
 }
 
 interface PinInPost {

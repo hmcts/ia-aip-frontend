@@ -1027,7 +1027,9 @@
       "questions": "If you have any questions about the appeal process, call the Tribunal on<span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span> or email<a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:contactia@justice.gov.uk\"> contactia@justice.gov.uk/a>"
     },
     "casesList": {
-      "title": "Your appeals",
+      "title": "Appeal list",
+      "appealCasesTitle": "Your appeals",
+      "nlrCasesTitle": "Appeals you're representing",
       "columns": {
         "appealRef": "Appeal reference",
         "caseRef": "Case reference",
@@ -1039,6 +1041,7 @@
       "deleteLink": "Delete",
       "noCases": "You do not have any appeals.",
       "createNewAppeal": "Create a new appeal",
+      "joinAppeal": "Join an existing appeal",
       "createNewAppealId": "create-new-appeal",
       "tooManyDraftsError": "You have too many draft appeals. Please submit or delete them before creating a new appeal.",
       "deleteDraftError": "There was an error deleting your draft appeal with reference {{ caseId }}. Please try again.",
@@ -4642,7 +4645,11 @@
       "callCharges": "<a class='govuk-link' href='https://www.gov.uk/call-charges'>Find out about call charges</a>"
     },
     "header": {
-      "signOut": "Sign out"
+      "signOut": "Sign out",
+      "casesList": "View appeals",
+      "createNewAppeal": "Create appeal",
+      "joinAppeal": "Join appeal",
+      "startAppeal": "Start appeal"
     },
     "footer": {
       "items": {
@@ -4666,7 +4673,7 @@
     },
     "back": {
       "back": "Back",
-      "backToCasesList": "Back to your appeals"
+      "backToCasesList": "Back to view appeals"
     },
     "progressBar": {
       "yourAppealDetails": {

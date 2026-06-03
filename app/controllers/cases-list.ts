@@ -24,6 +24,8 @@ export enum ErrorCode {
 
 function getCasesList(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    // TODO TEMP
+    req.session.refreshCasesList = true;
     try {
       if (req.session.refreshCasesList) {
         await updateAppealService.loadAppealsList(req);
@@ -53,9 +55,13 @@ function getCasesList(updateAppealService: UpdateAppealService) {
           break;
       }
 
+      const cases: CaseListItem[] = req.session.casesList || [];
+      const appellantCases: CaseListItem[] = cases.filter(caseItem => !caseItem.isNonLegalRep);
+      const nlrCases: CaseListItem[] = cases.filter(caseItem => caseItem.isNonLegalRep);
       return res.render('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
-        cases: req.session.casesList || [],
+        appellantCases,
+        nlrCases,
         createAppealModalDescription,
         errorList: errorList
       });

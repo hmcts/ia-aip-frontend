@@ -9,8 +9,6 @@ import Logger, { getLogLabel } from '../utils/logger';
 import { createStructuredError } from '../utils/validations/fields-validations';
 
 const maxDraftAppeals: number = config.get('maxDraftAppeals');
-const createAppealModalDescription = i18n.pages.casesList.createAppealModal.description
-  .replace('{{ maxDraftAppeals }}', maxDraftAppeals.toString());
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 const useRedis: boolean = config.get('session.useRedis') === true;
@@ -62,7 +60,6 @@ function getCasesList(updateAppealService: UpdateAppealService) {
         createNewAppealUrl: paths.common.createNewAppeal,
         appellantCases,
         nlrCases,
-        createAppealModalDescription,
         errorList: errorList
       });
 

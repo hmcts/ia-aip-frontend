@@ -20,7 +20,10 @@
         active: paths.common.casesList in currentUrl
       },
       {
-        href: paths.common.casesList + "#create-new-appeal",
+        href: "#",
+        attributes: {
+          id: i18n.components.header.createNewAppealNavId
+        },
         text: i18n.components.header.createNewAppeal
       },
       {

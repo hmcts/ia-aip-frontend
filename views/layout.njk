@@ -11,6 +11,7 @@
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "components/header.njk" import header with context %}
 {% from "components/timeout-modal.njk" import timeoutModal with context %}
+{% from "components/confirm-modal.njk" import confirmModal with context %}
 
 {% set serviceName = i18n.serviceName %}
 {% set serviceUrl = i18n.serviceUrl %}
@@ -259,6 +260,13 @@
         ] | join() %}
 
       {{ timeoutModal() }}
+      {{ confirmModal(
+        i18n.pages.casesList.createAppealModal.id,
+        i18n.pages.casesList.createAppealModal.title,
+        i18n.pages.casesList.createAppealModal.description | replace("MAX_DRAFT_APPEALS", maxDraftAppeals) | safe,
+        i18n.pages.casesList.createAppealModal.confirmButton,
+        paths.common.createNewAppeal
+      ) }}
       {% block extraModals %}
       {% endblock %}
       {{ govukPhaseBanner({

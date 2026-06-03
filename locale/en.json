@@ -1050,7 +1050,7 @@
       "createAppealModal": {
         "id": "confirm-create-modal",
         "title": "Are you sure you want to create a new appeal?",
-        "description": "You can only have {{ maxDraftAppeals }} draft appeals at one time. If you have more than this, you will need to submit or delete some first.",
+        "description": "You can only have MAX_DRAFT_APPEALS draft appeals at one time. If you have more than this, you will need to submit or delete some first.",
         "confirmButton": "Create new appeal"
       },
       "deleteDraftModal": {
@@ -4648,6 +4648,7 @@
       "signOut": "Sign out",
       "casesList": "View appeals",
       "createNewAppeal": "Create appeal",
+      "createNewAppealNavId": "create-new-appeal-navigation",
       "joinAppeal": "Join appeal",
       "startAppeal": "Start appeal"
     },

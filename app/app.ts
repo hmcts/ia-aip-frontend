@@ -83,6 +83,7 @@ function createApp() {
   app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
     res.locals.currentUrl = req.originalUrl;
+    res.locals.maxDraftAppeals = config.get('maxDraftAppeals');
     res.locals.host = getUrl(req.protocol, req.hostname, '');
     next();
   });

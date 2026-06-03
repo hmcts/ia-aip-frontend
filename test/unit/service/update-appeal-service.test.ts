@@ -12,7 +12,7 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import S2SService from '../../../app/service/s2s-service';
 import { SystemAuthenticationService } from '../../../app/service/system-authentication-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
-import { expect, sinon, validateUuid } from '../../utils/testUtils';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('update-appeal-service', () => {
   let sandbox: sinon.SinonSandbox;
@@ -265,7 +265,7 @@ describe('update-appeal-service', () => {
   });
 
   describe('loadAppealByCaseId', () => {
-    it('should fetch case by id and populate session', async () => {
+    it('should fetch case by id and populate session for no NLR field', async () => {
       const mockCcdCase = {
         id: 'case123',
         state: 'appealStarted',
@@ -283,6 +283,53 @@ describe('update-appeal-service', () => {
 
       expect(req.session.ccdCaseId).to.equal('case123');
       expect(req.session.appeal).to.equal(mockAppeal);
+      expect(req.session.isNonLegalRep).to.equal(false);
+      expect(result).to.equal(mockAppeal);
+      expect(mapStub).to.have.been.calledWith(mockCcdCase);
+    });
+
+    it('should fetch case by id and populate session for non NLR', async () => {
+      const mockCcdCase = {
+        id: 'case123',
+        state: 'appealStarted',
+        case_data: { nlrDetails: { idamId: 'someOtherId' } } as CaseData
+      } as CcdCaseDetails;
+      const mockAppeal = { ccdCaseId: 'case123' } as Appeal;
+
+      ccdServiceMock.expects('loadCaseById')
+        .withArgs(userId, 'case123', { userToken, serviceToken })
+        .resolves(mockCcdCase);
+
+      const mapStub = sandbox.stub(updateAppealService, 'mapCcdCaseToAppeal').returns(mockAppeal);
+
+      const result = await updateAppealService.loadAppealByCaseId('case123', req as Request);
+
+      expect(req.session.ccdCaseId).to.equal('case123');
+      expect(req.session.appeal).to.equal(mockAppeal);
+      expect(req.session.isNonLegalRep).to.equal(false);
+      expect(result).to.equal(mockAppeal);
+      expect(mapStub).to.have.been.calledWith(mockCcdCase);
+    });
+
+    it('should fetch case by id and populate session for NLR', async () => {
+      const mockCcdCase = {
+        id: 'case123',
+        state: 'appealStarted',
+        case_data: { nlrDetails: { idamId: userId } } as CaseData
+      } as CcdCaseDetails;
+      const mockAppeal = { ccdCaseId: 'case123' } as Appeal;
+
+      ccdServiceMock.expects('loadCaseById')
+        .withArgs(userId, 'case123', { userToken, serviceToken })
+        .resolves(mockCcdCase);
+
+      const mapStub = sandbox.stub(updateAppealService, 'mapCcdCaseToAppeal').returns(mockAppeal);
+
+      const result = await updateAppealService.loadAppealByCaseId('case123', req as Request);
+
+      expect(req.session.ccdCaseId).to.equal('case123');
+      expect(req.session.appeal).to.equal(mockAppeal);
+      expect(req.session.isNonLegalRep).to.equal(true);
       expect(result).to.equal(mockAppeal);
       expect(mapStub).to.have.been.calledWith(mockCcdCase);
     });

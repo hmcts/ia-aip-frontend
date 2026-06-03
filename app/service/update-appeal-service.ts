@@ -126,7 +126,7 @@ export default class UpdateAppealService {
     req.session.ccdCaseId = caseId;
     const userId = req?.idam?.userDetails?.uid;
     const nlrId = ccdCase.case_data?.nlrDetails?.idamId;
-    req.session.isNonLegalRep = userId && nlrId && userId === nlrId;
+    req.session.isNonLegalRep = userId && nlrId ? userId === nlrId : false;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
     return req.session.appeal;
   }

@@ -22,8 +22,6 @@ export enum ErrorCode {
 
 function getCasesList(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    // TODO TEMP
-    req.session.refreshCasesList = true;
     try {
       if (req.session.refreshCasesList) {
         await updateAppealService.loadAppealsList(req);

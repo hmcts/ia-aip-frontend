@@ -39,6 +39,7 @@ interface RenderObject {
   errors?: ValidationErrors;
   errorList?: ValidationError[];
 }
+
 function getAddNonLegalRepresentative(req: Request, res: Response, next: NextFunction) {
   try {
     if (req.query?.errorCode) {
@@ -93,11 +94,24 @@ function postInviteToCreateAccount(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const validation = emailValidation(req.body);
+
       if (validation) {
         return res.render('non-legal-rep/provide-email-create-account.njk', {
           nlrEmail: req.body['email-value'],
           errors: validation,
           errorList: Object.values(validation),
+          previousPage: paths.nonLegalRep.addNonLegalRep
+        });
+      }
+
+      const currentIdamEmail = req.idam.userDetails.sub;
+      const appellantContactEmail = req.session.appeal?.application?.contactDetails?.email;
+      if (currentIdamEmail === req.body['email-value'] || appellantContactEmail === req.body['email-value']) {
+        const structuredError = createStructuredError('email-value', i18n.validationErrors.nlrDetails.nlrEmailCannotBeSameAsAppellant);
+        return res.render('non-legal-rep/provide-email-create-account.njk', {
+          nlrEmail: req.body['email-value'],
+          errors: { 'email-value': structuredError },
+          errorList: [structuredError],
           previousPage: paths.nonLegalRep.addNonLegalRep
         });
       }

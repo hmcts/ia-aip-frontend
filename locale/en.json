@@ -620,6 +620,9 @@
     },
     "addNonLegalRepresentative": {
       "title": "Add a non-legal representative",
+      "paragraphOne": "If you appoint a non-legal representative, you are giving them permission to act on your behalf in these proceedings, including making submissions to the Tribunal.",
+      "paragraphTwo": "All communications about your appeal will be sent to both you and your non-legal representative.",
+      "paragraphThree": "This arrangement can be ended at any time if you request their removal, if they withdraw, or if the Tribunal directs that they should no longer act for you.",
       "hint": "If you provided your non-legal representative's details when creating your appeal, please skip to step 3.",
       "stepOne": "Step 1: Provide the email address of your non-legal representative",
       "instructionsPartOne": "If you want to add a non-legal representative to be able to view and track your appeal, you must provide their email address. If they have not yet signed up to HMCTS services, they will be invited to create an account.",
@@ -4400,6 +4403,7 @@
       "postcodeRequired": "Enter your non-legal representative's Postcode"
     },
     "nlrDetails": {
+      "nlrEmailCannotBeSameAsAppellant": "The email address you have entered for your non-legal representative cannot be the same as your email address",
       "givenNames": "You need to provide your non-legal representative's given name or names",
       "familyName": "You need to provide your non-legal representative's family name or names",
       "phoneNumber": "You need to provide your non-legal representative's UK phone number",

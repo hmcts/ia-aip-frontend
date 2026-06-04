@@ -27,7 +27,7 @@
         </div>
       {% endif %}
     <p class="govuk-body">{{ i18n.pages.addNonLegalRepresentative.instructionsPartTwo }}</p>
-    <a id="provideNlrDetails" href="{{ paths.nonLegalRep.provideNlrName }}" class="govuk-button">{{ i18n.pages.addNonLegalRepresentative.linkPartTwo }}</a>
+    <a id="provideNlrDetails" href="{{ partTwoRedirect }}" class="govuk-button">{{ i18n.pages.addNonLegalRepresentative.linkPartTwo }}</a>
 
   <h2 class="govuk-heading-m">{{ i18n.pages.addNonLegalRepresentative.stepThree }}</h2>
   {% if shouldProvideEmailDirectionStepThreeShow %}

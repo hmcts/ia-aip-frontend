@@ -1576,28 +1576,35 @@ export default class UpdateAppealService {
 
     const {
       address,
+      addressUk,
       givenNames,
       familyName,
       emailAddress,
       phoneNumber,
       idamId
     } = nlrDetails;
+
     const appealNlrDetails: NlrDetails = {
       address: null,
+      addressUk: null,
       givenNames: null,
       familyName: null,
       emailAddress: null,
       phoneNumber: null,
       idamId: null
     };
-    if (address) {
-      appealNlrDetails.address = {
-        line1: address.AddressLine1 || null,
-        line2: address.AddressLine2 || null,
-        city: address.PostTown || null,
-        postcode: address.PostCode || null,
-        county: address.County || null
-      };
+    if (caseData.isSponsorSameAsNlr === 'Yes') {
+       if (addressUk) {
+        appealNlrDetails.addressUk = {
+          line1: addressUk.AddressLine1 || null,
+          line2: addressUk.AddressLine2 || null,
+          city: addressUk.PostTown || null,
+          postcode: addressUk.PostCode || null,
+          county: addressUk.County || null
+        };
+      }
+    } else {
+      if (address) appealNlrDetails.address = address;
     }
 
     if (givenNames) appealNlrDetails.givenNames = givenNames;
@@ -1644,6 +1651,7 @@ export default class UpdateAppealService {
     if (!nlrDetails) return;
 
     const {
+      addressUk,
       address,
       givenNames,
       familyName,
@@ -1656,15 +1664,20 @@ export default class UpdateAppealService {
       caseData.nlrDetails = {};
     }
     const target: CCDNlrDetails = caseData.nlrDetails;
-    if (address) {
-      target.address = {
-        AddressLine1: address.line1 || null,
-        AddressLine2: address.line2 || null,
-        PostTown: address.city || null,
-        County: address.county || null,
-        PostCode: address.postcode || null,
-        Country: 'United Kingdom'
-      };
+    const isSameAsSponsor = appeal.isSameAsSponsor === 'Yes' || false;
+    if (isSameAsSponsor) {
+      if (addressUk) {
+        target.addressUk = {
+          AddressLine1: addressUk.line1 || null,
+          AddressLine2: addressUk.line2 || null,
+          PostTown: addressUk.city || null,
+          County: addressUk.county || null,
+          PostCode: addressUk.postcode || null,
+          Country: 'United Kingdom'
+        };
+      }
+    } else {
+      if (address) target.address = address;
     }
 
     if (givenNames) target.givenNames = givenNames;

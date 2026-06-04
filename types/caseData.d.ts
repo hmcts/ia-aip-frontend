@@ -318,7 +318,8 @@ interface CCDNlrDetails {
   phoneNumber?: string
   givenNames?: string;
   familyName?: string;
-  address?: CCDAddress;
+  address?: string;
+  addressUk?: CCDAddress;
   idamId?: string
 }
 

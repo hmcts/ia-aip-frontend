@@ -217,7 +217,8 @@ declare global {
   interface NlrDetails {
     givenNames?: string;
     familyName?: string;
-    address?: Address;
+    addressUk?: Address;
+    address?: string;
     emailAddress?: string;
     phoneNumber?: string
     idamId?: string;
@@ -375,6 +376,24 @@ declare global {
     city?: string;
     postcode?: string;
     county?: string;
+  }
+
+  function isAddressTypeAddress(addr: string | Address | undefined): addr is Address {
+    return typeof addr === 'object' && addr !== null;
+  }
+
+  function addressToString(addr: Address) {
+    let returnString = '';
+    returnString += addr.line1;
+    if (addr.line2) {
+      returnString += '\n' + addr.line2;
+    }
+    returnString += '\n' + addr.city;
+    if (addr.county) {
+      returnString += '\n' + addr.county;
+    }
+    returnString += '\n' + addr.postcode;
+    return returnString;
   }
 
   interface AccessNeeds {

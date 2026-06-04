@@ -8,10 +8,12 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getRedirectPage } from '../../utils/utils';
 import {
   createStructuredError,
-  emailValidation, isSamePersonValidation,
+  emailValidation,
+  isSamePersonValidation,
   nlrAddressValidation,
   nlrNamesValidation,
-  nonLegalRepPhoneValidation
+  nonLegalRepPhoneValidation,
+  textAreaValidation
 } from '../../utils/validations/fields-validations';
 
 export enum ErrorCode {
@@ -32,6 +34,7 @@ function stringToErrorCode(someString: string) {
 
 interface RenderObject {
   previousPage: string;
+  partTwoRedirect: string;
   shouldProvideEmailDirectionStepTwoShow?: boolean;
   shouldProvideEmailDirectionStepThreeShow?: boolean;
   shouldNoDetailsProvidedStepThreeShow?: boolean;
@@ -42,12 +45,14 @@ interface RenderObject {
 
 function getAddNonLegalRepresentative(req: Request, res: Response, next: NextFunction) {
   try {
+    const hasSponsor = req.session.appeal?.application?.hasSponsor == 'Yes';
+    const renderObject: RenderObject = {
+      previousPage: paths.common.overview,
+      partTwoRedirect: hasSponsor ? paths.nonLegalRep.provideNlrIsSamePerson : paths.nonLegalRep.provideNlrName
+    };
     if (req.query?.errorCode) {
       const error: ErrorCode = stringToErrorCode(req.query.errorCode as string);
       let structuredError: ValidationErrors;
-      const renderObject: RenderObject = {
-        previousPage: paths.common.overview
-      };
       switch (error) {
         case ErrorCode.stepTwoNoEmailProvided:
           structuredError = { 'provideNlrDetails': createStructuredError('provideNlrDetails', i18n.pages.addNonLegalRepresentative.noEmailProvidedError) };
@@ -70,11 +75,8 @@ function getAddNonLegalRepresentative(req: Request, res: Response, next: NextFun
       }
       renderObject.errors = structuredError;
       renderObject.errorList = Object.values(structuredError);
-      return res.render('non-legal-rep/add-non-legal-representative.njk', renderObject);
     }
-    return res.render('non-legal-rep/add-non-legal-representative.njk', {
-      previousPage: paths.common.overview
-    });
+    return res.render('non-legal-rep/add-non-legal-representative.njk', renderObject);
   } catch (error) {
     next(error);
   }
@@ -153,20 +155,80 @@ function getInviteToCreateAccountConfirmation(req: Request, res: Response, next:
   }
 }
 
-function getNlrName(req: Request, res: Response, next: NextFunction) {
+function getSamePerson(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const nlrDetails = req.session?.appeal?.nlrDetails;
     if (!nlrDetails?.emailAddress) {
       return res.redirect(`${paths.nonLegalRep.addNonLegalRep}?errorCode=${ErrorCode.stepTwoNoEmailProvided}`);
     }
-    const nlrGivenNames = nlrDetails?.givenNames;
-    const nlrFamilyName = nlrDetails?.familyName;
+    const application = req.session.appeal.application;
+    const isSponsorSameAsNlr = application.isSponsorSameAsNlr;
+    return res.render('appeal-application/sponsor-details/is-same-person.njk', {
+      question: i18n.pages.isSponsorSameAsNlr.title,
+      previousPage: paths.nonLegalRep.addNonLegalRep,
+      formAction: paths.nonLegalRep.provideNlrIsSamePerson,
+      isSponsorSameAsNlr: isSponsorSameAsNlr
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function postSamePerson() {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = isSamePersonValidation(req.body);
+
+      const application = req.session.appeal.application;
+
+      if (validation) {
+        return res.render('appeal-application/sponsor-details/is-same-person.njk', {
+          question: i18n.pages.isSponsorSameAsNlr.title,
+          previousPage: paths.nonLegalRep.addNonLegalRep,
+          isSponsorSameAsNlr: application.isSponsorSameAsNlr,
+          formAction: paths.nonLegalRep.provideNlrIsSamePerson,
+          errors: validation,
+          errorList: Object.values(validation)
+        });
+      }
+
+      req.session.appeal = {
+        ...req.session.appeal,
+        application: {
+          ...application,
+          isSponsorSameAsNlr: req.body['isSponsorSameAsNlr']
+        }
+      };
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const redirectPage = getRedirectPage(editingMode, paths.nonLegalRep.provideNlrDetailsCheckAndSend, false, paths.nonLegalRep.provideNlrName);
+      return res.redirect(redirectPage);
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
+function isSponsorSameAsNlr(req: Request): boolean {
+  return req.session.appeal.application?.hasSponsor === 'Yes' && req.session.appeal.application?.isSponsorSameAsNlr === 'Yes';
+}
+
+function getNlrName(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    const isSameAsSponsor = isSponsorSameAsNlr(req);
+    const nlrDetails = req.session?.appeal?.nlrDetails;
+    if (!nlrDetails?.emailAddress) {
+      return res.redirect(`${paths.nonLegalRep.addNonLegalRep}?errorCode=${ErrorCode.stepTwoNoEmailProvided}`);
+    }
+    const nlrGivenNames = nlrDetails?.givenNames || (isSameAsSponsor ? req.session.appeal?.application?.sponsorGivenNames : '');
+    const nlrFamilyName = nlrDetails?.familyName || (isSameAsSponsor ? req.session.appeal?.application?.sponsorFamilyName : '');
     return res.render('appeal-application/non-legal-rep-details/name.njk', {
       postAction: paths.nonLegalRep.provideNlrName,
       nlrGivenNames,
       nlrFamilyName,
-      previousPage: paths.nonLegalRep.addNonLegalRep
+      previousPage: req.session.appeal.application?.hasSponsor === 'Yes'
+        ? paths.nonLegalRep.provideNlrIsSamePerson : paths.nonLegalRep.addNonLegalRep
     });
   } catch (e) {
     next(e);
@@ -184,7 +246,7 @@ function postNlrName() {
           nlrFamilyName: req.body.nlrFamilyName,
           error: validation,
           errorList: Object.values(validation),
-          previousPage: paths.nonLegalRep.addNonLegalRep
+          previousPage: isSponsorSameAsNlr(req) ? paths.nonLegalRep.provideNlrIsSamePerson : paths.nonLegalRep.addNonLegalRep
         });
       }
       req.session.appeal = {
@@ -204,15 +266,34 @@ function postNlrName() {
   };
 }
 
+function getNlrAddressRenderObject(isSameAsSponsor: boolean, req: Request): any {
+  const renderObj: any = {
+    previousPage: paths.nonLegalRep.provideNlrName,
+    formAction: paths.nonLegalRep.provideNlrAddress,
+    pageTitle: i18n.pages.nlrAddress.title
+  };
+  if (isSameAsSponsor) {
+    renderObj.address = req.session.appeal?.nlrDetails?.addressUk
+      || req.session.appeal?.application?.sponsorAddress;
+  } else {
+    renderObj.question = {
+      name: 'nlr-address',
+      title: i18n.pages.nlrAddress.title,
+      description: i18n.pages.nlrAddress.description,
+      value: req.session.appeal?.nlrDetails?.address || ''
+    };
+  }
+  return renderObj;
+}
+
 function getNlrAddress(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-    const address = req.session.appeal?.nlrDetails?.address;
-    res.render('appeal-application/non-legal-rep-details/address.njk', {
-      postAction: paths.nonLegalRep.provideNlrAddress,
-      address,
-      previousPage: paths.nonLegalRep.provideNlrName
-    });
+    const isSameAsSponsor = isSponsorSameAsNlr(req);
+    const renderPath = isSameAsSponsor ? 'appeal-application/non-legal-rep-details/address.njk'
+      : 'templates/textarea-question-page.njk';
+    const renderObj = getNlrAddressRenderObject(isSameAsSponsor, req);
+    return res.render(renderPath, renderObj);
   } catch (e) {
     next(e);
   }
@@ -221,34 +302,31 @@ function getNlrAddress(req: Request, res: Response, next: NextFunction) {
 function postNlrAddress() {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = nlrAddressValidation(req.body);
+      const isSameAsSponsor = isSponsorSameAsNlr(req);
+      const validation = isSameAsSponsor ? nlrAddressValidation(req.body)
+        : textAreaValidation(req.body['nlr-address'], 'nlr-address', i18n.validationErrors.nlrDetails.address);
       if (validation !== null) {
-        return res.render('appeal-application/non-legal-rep-details/address.njk', {
-          postAction: paths.nonLegalRep.provideNlrAddress,
-          nlrAddress: {
-            line1: req.body['address-line-1'],
-            line2: req.body['address-line-2'],
-            city: req.body['address-town'],
-            county: req.body['address-county'],
-            postcode: req.body['address-postcode']
-          },
-          error: validation,
-          errorList: Object.values(validation),
-          previousPage: paths.nonLegalRep.provideNlrName
-        });
+        const renderPath = isSameAsSponsor ? 'appeal-application/non-legal-rep-details/address.njk'
+          : 'templates/textarea-question-page.njk';
+        const renderObj = getNlrAddressRenderObject(isSameAsSponsor, req);
+        renderObj.error = validation;
+        renderObj.errorList = Object.values(validation);
+        return res.render(renderPath, renderObj);
       }
-
+      const nlrAddress = isSameAsSponsor ? {
+        addressUk: {
+          line1: req.body['address-line-1'],
+          line2: req.body['address-line-2'],
+          city: req.body['address-town'],
+          county: req.body['address-county'],
+          postcode: req.body['address-postcode']
+        }
+      } : { address: req.body['nlr-address'] };
       req.session.appeal = {
         ...req.session.appeal,
         nlrDetails: {
           ...req.session.appeal.nlrDetails,
-          address: {
-            line1: req.body['address-line-1'],
-            line2: req.body['address-line-2'],
-            city: req.body['address-town'],
-            county: req.body['address-county'],
-            postcode: req.body['address-postcode']
-          }
+          ...nlrAddress
         }
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
@@ -301,54 +379,6 @@ function postNlrPhoneNumber() {
           phoneNumber: req.body['phoneNumber']
         }
       };
-      const hasSponsor = req.session.appeal?.application?.hasSponsor == 'Yes';
-      return res.redirect(hasSponsor ? paths.nonLegalRep.provideNlrIsSamePerson : paths.nonLegalRep.provideNlrDetailsCheckAndSend);
-    } catch (error) {
-      next(error);
-    }
-  };
-}
-
-function getSamePerson(req: Request, res: Response, next: NextFunction) {
-  try {
-    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-    const application = req.session.appeal.application;
-    const isSponsorSameAsNlr = application.isSponsorSameAsNlr;
-    return res.render('appeal-application/sponsor-details/is-same-person.njk', {
-      question: i18n.pages.isSponsorSameAsNlr.title,
-      previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
-      isSponsorSameAsNlr: isSponsorSameAsNlr
-    });
-  } catch (error) {
-    next(error);
-  }
-}
-
-function postSamePerson() {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const validation = isSamePersonValidation(req.body);
-
-      const application = req.session.appeal.application;
-
-      if (validation) {
-        return res.render('appeal-application/sponsor-details/is-same-person.njk', {
-          question: i18n.pages.isSponsorSameAsNlr.title,
-          previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
-          isSponsorSameAsNlr: application.isSponsorSameAsNlr,
-          errors: validation,
-          errorList: Object.values(validation)
-        });
-      }
-
-      req.session.appeal = {
-        ...req.session.appeal,
-        application: {
-          ...application,
-          isSponsorSameAsNlr: req.body['isSponsorSameAsNlr']
-        }
-      };
-
       return res.redirect(paths.nonLegalRep.provideNlrDetailsCheckAndSend);
     } catch (error) {
       next(error);
@@ -359,13 +389,16 @@ function postSamePerson() {
 function getSummaryRows(req: Request) {
   const editParameter = '?edit';
   const nlrDetails: NlrDetails = req.session.appeal.nlrDetails;
-  const nlrAddress = nlrDetails.address ? Object.values(nlrDetails.address) : [];
+  const isSameAsSponsor = isSponsorSameAsNlr(req);
+  const nlrAddressUk = nlrDetails.addressUk ? Object.values(nlrDetails.addressUk) : [];
+  const nlrAddress: string = nlrDetails.address;
   const hasSponsor: boolean = req.session.appeal?.application?.hasSponsor == 'Yes';
+  const nlrAddressValues = isSameAsSponsor ? [...nlrAddressUk] : nlrAddress.split('\n');
   const summaryRows: SummaryRow[] = [
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
       [nlrDetails.givenNames, nlrDetails.familyName], paths.nonLegalRep.provideNlrName + editParameter, Delimiter.SPACE),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
-      [...nlrAddress], paths.nonLegalRep.provideNlrAddress + editParameter, Delimiter.BREAK_LINE),
+      nlrAddressValues, paths.nonLegalRep.provideNlrAddress + editParameter, Delimiter.BREAK_LINE),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone,
       [nlrDetails.phoneNumber], paths.nonLegalRep.provideNlrPhoneNumber + editParameter)];
   if (hasSponsor) {
@@ -377,11 +410,10 @@ function getSummaryRows(req: Request) {
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-    const hasSponsor = req.session.appeal?.application?.hasSponsor == 'Yes';
     return res.render('templates/check-and-send.njk', {
       pageTitle: i18n.pages.inviteNlrToJoinAppeal.title,
       formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
-      previousPage: hasSponsor ? paths.nonLegalRep.provideNlrIsSamePerson : paths.nonLegalRep.provideNlrPhoneNumber,
+      previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
       summaryLists: [{ summaryRows: getSummaryRows(req) }],
       noSaveForLater: true
     });
@@ -393,9 +425,20 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
 function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const nlrDetails: NlrDetails = req.session.appeal?.nlrDetails;
-      if (nlrDetails.givenNames && nlrDetails.familyName && nlrDetails.phoneNumber && nlrDetails?.address?.line1
-        && nlrDetails?.address?.city && nlrDetails?.address?.postcode) {
+      const nlrDetails = req.session.appeal?.nlrDetails;
+      const isSameAsSponsor = isSponsorSameAsNlr(req);
+      const address = nlrDetails?.address;
+      const addressUk = nlrDetails?.addressUk;
+
+      const baseValid =
+        !!nlrDetails?.givenNames &&
+        !!nlrDetails?.familyName &&
+        !!nlrDetails?.phoneNumber;
+
+      const addressValid = isSameAsSponsor ? !!addressUk?.line1 && !!addressUk?.city && !!addressUk?.postcode
+        : !!address;
+
+      if (baseValid && addressValid) {
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.PROVIDE_NON_LEGAL_REP_DETAILS,
           req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
         req.session.appeal = {
@@ -406,15 +449,20 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
       } else {
         const validationErrors = {};
 
-        const fields = [
+        const fields: { key: string, value: string | Address }[] = [
           { key: 'givenNames', value: nlrDetails.givenNames },
           { key: 'familyName', value: nlrDetails.familyName },
-          { key: 'phoneNumber', value: nlrDetails.phoneNumber },
-          { key: 'address', value: nlrDetails.address },
-          { key: 'addressLine1', value: nlrDetails.address?.line1 },
-          { key: 'addressTownCity', value: nlrDetails.address?.city },
-          { key: 'addressPostcode', value: nlrDetails.address?.postcode },
+          { key: 'phoneNumber', value: nlrDetails.phoneNumber }
         ];
+        if (isSameAsSponsor) {
+          fields.push(
+            { key: 'address', value: nlrDetails.addressUk },
+            { key: 'addressLine1', value: nlrDetails.addressUk?.line1 },
+            { key: 'addressTownCity', value: nlrDetails.addressUk?.city },
+            { key: 'addressPostcode', value: nlrDetails.addressUk?.postcode });
+        } else {
+          fields.push({ key: 'address', value: nlrDetails.address },);
+        }
 
         fields.forEach(({ key, value }) => {
           if (!value) {
@@ -425,11 +473,10 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
           }
         });
 
-        const hasSponsor = req.session.appeal?.application?.hasSponsor == 'Yes';
         return res.render('templates/check-and-send.njk', {
           pageTitle: i18n.pages.provideNlrDetails.title,
           formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
-          previousPage: hasSponsor ? paths.nonLegalRep.provideNlrIsSamePerson : paths.nonLegalRep.provideNlrPhoneNumber,
+          previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
           summaryLists: [{ summaryRows: getSummaryRows(req) }],
           errorList: Object.values(validationErrors),
           noSaveForLater: true
@@ -461,15 +508,20 @@ function postInviteToJoinAppeal(updateAppealService: UpdateAppealService) {
         return res.redirect(`${paths.nonLegalRep.addNonLegalRep}?errorCode=${ErrorCode.stepThreeNoEmailProvided}`);
       }
 
-      const missingDetails = [
+      const details = [
         nlrDetails?.givenNames,
         nlrDetails?.familyName,
         nlrDetails?.phoneNumber,
-        nlrDetails?.address,
-        nlrDetails?.address?.line1,
-        nlrDetails?.address?.city,
-        nlrDetails?.address?.postcode,
-      ].filter(value => !value);
+        nlrDetails?.address
+      ];
+      const address = nlrDetails?.address;
+      const isAddress = isAddressTypeAddress(address);
+
+      if (isAddress) {
+        details.push(address?.line1, address?.city, address?.postcode);
+      }
+
+      const missingDetails = details.filter(value => !value);
 
       if (missingDetails.length > 0) {
         return res.redirect(`${paths.nonLegalRep.addNonLegalRep}?errorCode=${ErrorCode.stepThreeNoDetailsProvided}`);

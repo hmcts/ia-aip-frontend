@@ -14,7 +14,7 @@
 
   {% endif %}
 
-  <form action="{{ paths.appealStarted.isSponsorSameAsNlr }}" method="post">
+  <form action="{{ formAction }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
     {% call govukFieldset({

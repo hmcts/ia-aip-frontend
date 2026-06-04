@@ -218,6 +218,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, isCitizen),
         showAskForFeeRemission,
         showNonLegalRep: appealInProgress,
+        updateNlrPath: hasSponsor ? paths.nonLegalRep.updateIsSamePerson : paths.nonLegalRep.updateName,
         showAskForSomethingInEndedState,
         isNonLegalRep: !isCitizen,
         isPostDecisionState: isPostDecisionState(appealStatus),

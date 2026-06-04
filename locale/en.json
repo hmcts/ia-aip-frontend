@@ -206,6 +206,8 @@
     "nlrAddress": {
       "title": "What is your non-legal representative's address?",
       "titlePersonal": "What is your address?",
+      "description": "Enter your non-legal representative's address",
+      "descriptionPersonal": "Enter your address",
       "change": "Change",
       "inputs": {
         "building": "Building and street",

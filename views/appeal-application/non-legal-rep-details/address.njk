@@ -1,4 +1,4 @@
-{% set pageTitleName = title if title else i18n.pages.nlrAddress.title %}
+{% set pageTitleName = pageTitle %}
 {% extends 'layout.njk' %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
@@ -11,7 +11,7 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form action="{{ postAction }}" method="post">
+  <form action="{{ formAction }}" method="post">
     {% call govukFieldset({
       legend: {
         text: title if title else i18n.pages.nlrAddress.title,

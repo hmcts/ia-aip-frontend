@@ -174,7 +174,7 @@ export function getLatestRequestFeeRemissionEventHistory(req: Request): HistoryE
 }
 
 export function getLatestRequestFeeRemissionEventHistoryWithRefundEnabled(req: Request): HistoryEvent {
-  return !isRemissionDecisionDecided(req, true) ? getLatestRequestFeeRemissionEventHistory(req) : null;
+  return isRemissionDecisionDecided(req, true) ? null : getLatestRequestFeeRemissionEventHistory(req);
 }
 
 export function formatWitnessName(witnessName: WitnessName) {

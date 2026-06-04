@@ -14,7 +14,7 @@ import {
   getApplicant,
   getFtpaApplicantType,
   getLatestUpdateRemissionDecisionsEventHistory,
-  getLatestRequestFeeRemissionEventHistory,
+  getLatestRequestFeeRemissionEventHistoryWithRefundEnabled,
   getLatestUpdateTribunalDecisionHistory,
   isNonStandardDirectionEnabled,
   isReadonlyApplicationEnabled,
@@ -431,7 +431,7 @@ function getApplicationHistoryAppealRemissionSection(req, manageAFeeUpdate, refu
         return decisionRemissionEvent.concat(applicationEvents, submitCQHistory, directionsHistory);
       }
     } else if (application.refundRequested) {
-      const latestUpdateRequestFeeRemissionHistory = getLatestRequestFeeRemissionEventHistory(req, refundFeatureEnabled);
+      const latestUpdateRequestFeeRemissionHistory = getLatestRequestFeeRemissionEventHistoryWithRefundEnabled(req);
       const requestFeeRemissionEvent = [{
         date: moment(latestUpdateRequestFeeRemissionHistory.createdDate).format('DD MMMM YYYY'),
         dateObject: new Date(latestUpdateRequestFeeRemissionHistory.createdDate),

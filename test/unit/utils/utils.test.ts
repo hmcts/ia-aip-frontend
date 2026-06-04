@@ -9,6 +9,7 @@ import {
   getApplicationType,
   getFtpaApplicantType,
   getLatestRequestFeeRemissionEventHistory,
+  getLatestRequestFeeRemissionEventHistoryWithRefundEnabled,
   getLatestUpdateRemissionDecisionsEventHistory,
   getLatestUpdateTribunalDecisionHistory,
   hasPendingTimeExtension,
@@ -484,9 +485,51 @@ describe('utils', () => {
         }
       ] as HistoryEvent[];
 
-      const latestHistoryEvent = getLatestRequestFeeRemissionEventHistory(req as Request, true);
+      const latestHistoryEvent = getLatestRequestFeeRemissionEventHistory(req as Request);
       expect(latestHistoryEvent.id).to.deep.equal('requestFeeRemission');
       expect(latestHistoryEvent.createdDate).to.deep.equal('2024-04-07T15:36:26.099');
+    });
+
+    it('getLatestRequestFeeRemissionEventHistoryWithRefundEnabled should return latest event if remission decision is not decided', () => {
+      const { appeal } = req.session;
+      appeal.application.refundRequested = true;
+      appeal.history = [
+        {
+          'id': 'requestFeeRemission',
+          'createdDate': '2024-03-07T15:36:26.099'
+        },
+        {
+          'id': 'requestFeeRemission',
+          'createdDate': '2024-04-07T15:36:26.099'
+        },
+        {
+          'id': 'updateTribunalDecision',
+          'createdDate': '2024-03-07T15:36:26.099'
+        }
+      ] as HistoryEvent[];
+
+      const latestHistoryEvent = getLatestRequestFeeRemissionEventHistoryWithRefundEnabled(req as Request);
+      expect(latestHistoryEvent.id).to.deep.equal('requestFeeRemission');
+      expect(latestHistoryEvent.createdDate).to.deep.equal('2024-04-07T15:36:26.099');
+    });
+
+    it('getLatestRequestFeeRemissionEventHistoryWithRefundEnabled should return null if remission decision is decided', () => {
+      const { appeal } = req.session;
+      appeal.application.refundRequested = true;
+      appeal.application.remissionDecision = 'approved';
+      appeal.history = [
+        {
+          'id': 'requestFeeRemission',
+          'createdDate': '2024-03-07T15:36:26.099'
+        },
+        {
+          'id': 'recordRemissionDecision',
+          'createdDate': '2024-04-07T15:36:26.099'
+        }
+      ] as HistoryEvent[];
+
+      const latestHistoryEvent = getLatestRequestFeeRemissionEventHistoryWithRefundEnabled(req as Request);
+      expect(latestHistoryEvent).to.deep.equal(null);
     });
   });
 

@@ -39,7 +39,7 @@ function setupSession() {
       secret: config.get('session.redis.secret'),
       resave: false,
       saveUninitialized: true,
-      cookie: { secure: false }
+      cookie: { httpOnly: true, secure: false, sameSite: 'lax' }
     });
   }
 }

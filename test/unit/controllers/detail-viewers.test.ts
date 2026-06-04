@@ -487,7 +487,7 @@ describe('DetailViewController', () => {
               month: '07',
               day: '20'
             },
-            nationality: 'Albanian',
+            nationality: 'AL',
             address: {
               line1: '60 GREAT PORTLAND STREET',
               line2: '',
@@ -1773,7 +1773,7 @@ describe('DetailViewController', () => {
               month: '07',
               day: '20'
             },
-            nationality: 'Albanian'
+            nationality: 'AL'
           },
           appellantOutOfCountryAddress: '28 Some Street, Ukraine, 23543',
           hasSponsor: 'Yes',
@@ -2002,7 +2002,7 @@ describe('DetailViewController', () => {
               month: '07',
               day: '20'
             },
-            nationality: 'Albanian'
+            nationality: 'AL'
           },
           appellantOutOfCountryAddress: '28 Some Street, Ukraine, 23543',
           hasSponsor: 'No'

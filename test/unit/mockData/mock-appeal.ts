@@ -32,7 +32,7 @@ export function createDummyAppealApplication(): Appeal {
           month: '10',
           year: '1980'
         },
-        nationality: 'Austrian',
+        nationality: 'AT',
         address: {
           line1: '60 Beautiful Street',
           line2: 'Flat 2',

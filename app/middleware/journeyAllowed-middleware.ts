@@ -15,7 +15,7 @@ function pathGetter(pathsCopy: any, req: Request): string[] {
 
 const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const currentPath: string = req.path;
-  const appealStatusPaths = pathGetter({ ...paths[req.session.appeal.appealStatus] }, req);
+  const appealStatusPaths = pathGetter({ ...paths[req.session.appeal?.appealStatus] }, req);
   const commonPaths = pathGetter({ ...paths.common }, req);
   const makeApplicationPaths = pathGetter({ ...paths.makeApplication }, req);
   const nonLegalRepPaths = pathGetter({ ...paths.nonLegalRep }, req);

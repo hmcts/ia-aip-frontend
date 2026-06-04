@@ -1255,7 +1255,7 @@ describe('timeline-utils', () => {
         {
           'date': '03 April 2024',
           'dateObject': new Date('2024-04-03T08:00:30.233Z'),
-          'text': 'You asked the Tribunal for a fee remission.',
+          'text': 'You paid for your appeal',
           'links': [
             {
               'title': 'What you sent',
@@ -1311,7 +1311,7 @@ describe('timeline-utils', () => {
         {
           'date': '03 April 2024',
           'dateObject': new Date('2024-04-03T08:00:30.233Z'),
-          'text': 'You asked the Tribunal for a fee remission.',
+          'text': 'You paid for your appeal',
           'links': [
             {
               'title': 'What you sent',

@@ -353,7 +353,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const manageAFeeUpdateEvents = req.session.appeal.history.filter(event => Events.MANAGE_A_FEE_UPDATE.id.includes(event.id));
 
   if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application) && application.isLateRemissionRequest) {
-    const remissionEvent = getApplicationHistoryRemissionEvent(paymentDate);
+    const remissionEvent = getApplicationHistoryPaymentEvent(paymentDate);
     appealRemissionSection = appealArgumentSection.concat(applicationEvents, remissionEvent, submitCQHistory, directionsHistory)
       .sort((a: any, b: any) => b.dateObject - a.dateObject);
   } else if (paymentStatus === 'Paid' && refundFeatureEnabled && !application.isLateRemissionRequest && manageAFeeUpdateEvents.length > 0) {
@@ -435,8 +435,8 @@ function getApplicationHistoryAppealRemissionSection(req, manageAFeeUpdate, refu
       const requestFeeRemissionEvent = [{
         date: moment(latestUpdateRequestFeeRemissionHistory.createdDate).format('DD MMMM YYYY'),
         dateObject: new Date(latestUpdateRequestFeeRemissionHistory.createdDate),
-        text: i18n.pages.overviewPage.timeline.feeRemissionRequest.text || null,
-        links: i18n.pages.overviewPage.timeline.feeRemissionRequest.links
+        text: i18n.pages.overviewPage.timeline.refundAppeal.text || null,
+        links: i18n.pages.overviewPage.timeline.refundAppeal.links
       }];
       if (appealRemissionSection) {
         return requestFeeRemissionEvent.concat(appealRemissionSection);

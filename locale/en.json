@@ -1852,16 +1852,6 @@
             }
           }
         },
-        "feeRemissionRequest": {
-          "text": "You asked the Tribunal for a fee remission.",
-          "links": [
-            {
-              "title": "What you sent",
-              "text": "Your appeal details",
-              "href": "{{ paths.common.appealDetailsViewer }}"
-            }
-          ]
-        },
         "feeRemissionDecision": {
           "text": "Your request for fee support was decided.",
           "links": [

@@ -3,7 +3,7 @@ import moment from 'moment';
 import i18n from '../../../locale/en.json';
 import { appealTypes } from '../../data/appeal-types';
 import { FEATURE_FLAGS } from '../../data/constants';
-import { countryList } from '../../data/country-list';
+import { nationalityList } from '../../data/nationality-list';
 import { Events } from '../../data/events';
 import { appealOutOfTimeMiddleware } from '../../middleware/outOfTime-middleware';
 import { paths } from '../../paths';
@@ -25,7 +25,7 @@ async function createSummaryRowsFrom(req: Request) {
   const appealTypeNames: string[] = application.appealType.split(',').map(appealTypeInstance => {
     return i18n.appealTypes[appealTypeInstance].name;
   });
-  const nationality = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
+  const nationality = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : nationalityList.find(country => country.value === application.personalDetails.nationality).name;
   const appealType = appealTypes.find(appeal => appeal.value === application.appealType).name;
   const editParameter = '?edit';
   const appellantInUk: boolean = (application.appellantInUk === 'Yes') || false;

@@ -4,7 +4,7 @@ import {
   postNationalityPage,
   setupHomeOfficeDetailsController
 } from '../../../app/controllers/appeal-application/home-office-details';
-import { countryList } from '../../../app/data/country-list';
+import { nationalityList } from '../../../app/data/nationality-list';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -155,7 +155,7 @@ describe('Nationality details Controller', function () {
         nationality: ''
       };
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      const nationalitiesOptions = getNationalitiesOptions(countryList, '', 'Please select a nationality');
+      const nationalitiesOptions = getNationalitiesOptions(nationalityList, '', 'Please select a nationality');
       const error = {
         href: '#nationality',
         key: 'nationality',

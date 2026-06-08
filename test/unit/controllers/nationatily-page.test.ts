@@ -4,8 +4,8 @@ import {
   postNationalityPage,
   setupHomeOfficeDetailsController
 } from '../../../app/controllers/appeal-application/home-office-details';
-import { nationalityList } from '../../../app/data/nationality-list';
 import { Events } from '../../../app/data/events';
+import { nationalityList } from '../../../app/data/nationality-list';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';

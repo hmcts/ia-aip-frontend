@@ -203,9 +203,9 @@ async function createSummaryRowsFrom(req: Request) {
         rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
           [nlrDetails.givenNames, nlrDetails.familyName], paths.appealStarted.nlrName + editParameter, Delimiter.SPACE));
       }
-      const isSameAsSponsor = req.session.appeal?.application?.isSponsorSameAsNlr === 'Yes'
+      const isSponsorSameAsNlr = req.session.appeal?.application?.isSponsorSameAsNlr === 'Yes'
         && req.session.appeal?.application?.hasSponsor === 'Yes';
-      if (isSameAsSponsor) {
+      if (isSponsorSameAsNlr) {
         if (nlrDetails?.addressUk) {
           rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
             Object.values(nlrDetails.addressUk), paths.appealStarted.nlrAddress + editParameter, Delimiter.BREAK_LINE));

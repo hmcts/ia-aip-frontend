@@ -378,10 +378,6 @@ declare global {
     county?: string;
   }
 
-  function isAddressTypeAddress(addr: string | Address | undefined): addr is Address {
-    return typeof addr === 'object' && addr !== null;
-  }
-
   function addressToString(addr: Address) {
     let returnString = '';
     returnString += addr.line1;

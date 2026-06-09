@@ -114,13 +114,13 @@ function postNlrName() {
   };
 }
 
-function getNlrAddressRenderObject(isSameAsSponsor: boolean, req: Request): any {
+function getNlrAddressRenderObject(isSponsorSameAsNlr: boolean, req: Request): any {
   const renderObj: any = {
     previousPage: paths.nonLegalRep.updateName,
     formAction: paths.nonLegalRep.updateAddress,
     pageTitle: i18n.pages.nlrAddress.titlePersonal
   };
-  if (isSameAsSponsor) {
+  if (isSponsorSameAsNlr) {
     renderObj.address = req.session.appeal?.nlrDetails?.addressUk
       || req.session.appeal?.application?.sponsorAddress;
   } else {
@@ -137,8 +137,8 @@ function getNlrAddressRenderObject(isSameAsSponsor: boolean, req: Request): any 
 function getNlrAddress(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-    const isSameAsSponsor: boolean = req.session.appeal?.application?.isSponsorSameAsNlr === 'Yes';
-    const renderObj = getNlrAddressRenderObject(isSameAsSponsor, req);
+    const isSponsorSameAsNlr: boolean = req.session.appeal?.application?.isSponsorSameAsNlr === 'Yes';
+    const renderObj = getNlrAddressRenderObject(isSponsorSameAsNlr, req);
     return res.render('appeal-application/non-legal-rep-details/address.njk', renderObj);
   } catch (e) {
     next(e);
@@ -148,16 +148,16 @@ function getNlrAddress(req: Request, res: Response, next: NextFunction) {
 function postNlrAddress() {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const isSameAsSponsor: boolean = req.session.appeal?.application?.isSponsorSameAsNlr === 'Yes';
-      const validation = isSameAsSponsor ? nlrAddressValidation(req.body)
+      const isSponsorSameAsNlr: boolean = req.session.appeal?.application?.isSponsorSameAsNlr === 'Yes';
+      const validation = isSponsorSameAsNlr ? nlrAddressValidation(req.body)
         : textAreaValidation(req.body['nlr-address'], 'nlr-address', i18n.validationErrors.nlrDetails.address);
       if (validation !== null) {
-        const renderObj = getNlrAddressRenderObject(isSameAsSponsor, req);
+        const renderObj = getNlrAddressRenderObject(isSponsorSameAsNlr, req);
         renderObj.error = validation;
         renderObj.errorList = Object.values(validation);
         return res.render('appeal-application/non-legal-rep-details/address.njk', renderObj);
       }
-      const nlrAddress = isSameAsSponsor ? {
+      const nlrAddress = isSponsorSameAsNlr ? {
         addressUk: {
           line1: req.body['address-line-1'],
           line2: req.body['address-line-2'],
@@ -273,7 +273,7 @@ function postUpdateNlrDetailsCheckAndSend(updateAppealService: UpdateAppealServi
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const nlrDetails = req.session.appeal?.nlrDetails;
-      const isSameAsSponsor = req.session.appeal.application?.isSponsorSameAsNlr === 'Yes';
+      const isSponsorSameAsNlr = req.session.appeal.application?.isSponsorSameAsNlr === 'Yes';
       const address = nlrDetails?.address;
       const addressUk = nlrDetails?.addressUk;
 
@@ -282,7 +282,7 @@ function postUpdateNlrDetailsCheckAndSend(updateAppealService: UpdateAppealServi
         !!nlrDetails?.familyName &&
         !!nlrDetails?.phoneNumber;
 
-      const addressValid = isSameAsSponsor ? !!addressUk?.line1 && !!addressUk?.city && !!addressUk?.postcode
+      const addressValid = isSponsorSameAsNlr ? !!addressUk?.line1 && !!addressUk?.city && !!addressUk?.postcode
         : !!address;
 
       if (baseValid && addressValid) {
@@ -302,7 +302,7 @@ function postUpdateNlrDetailsCheckAndSend(updateAppealService: UpdateAppealServi
           { key: 'phoneNumber', value: nlrDetails.phoneNumber },
           { key: 'emailAddress', value: nlrDetails.emailAddress }
         ];
-        if (isSameAsSponsor) {
+        if (isSponsorSameAsNlr) {
           fields.push(
             { key: 'address', value: nlrDetails.addressUk },
             { key: 'addressLine1', value: nlrDetails.addressUk?.line1 },

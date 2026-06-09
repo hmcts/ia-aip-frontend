@@ -56,10 +56,13 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
   const nlrFamilyName: boolean = !!_.get(appeal.nlrDetails, 'familyName');
   const nlrPhoneNumber: boolean = !!_.get(appeal.nlrDetails, 'phoneNumber');
   const nlrEmailAddress: boolean = !!_.get(appeal.nlrDetails, 'emailAddress');
-  const nlrLine1: boolean = !!_.get(appeal.nlrDetails, 'address.line1');
-  const nlrCity: boolean = !!_.get(appeal.nlrDetails, 'address.city');
-  const nlrPostcode: boolean = !!_.get(appeal.nlrDetails, 'address.postcode');
-  const nlrDetailsComplete: boolean = !hasNlr || hasNlrNo || (nlrGivenNames && nlrFamilyName && nlrPhoneNumber && nlrEmailAddress && nlrLine1 && nlrCity && nlrPostcode);
+  const nlrAddress: boolean = !!_.get(appeal.nlrDetails, 'address');
+  const isSponsorSameAsNlr: boolean = appeal?.application?.isSponsorSameAsNlr === 'Yes' || false;
+  const nlrLine1: boolean = !!_.get(appeal.nlrDetails, 'addressUk.line1');
+  const nlrCity: boolean = !!_.get(appeal.nlrDetails, 'addressUk.city');
+  const nlrPostcode: boolean = !!_.get(appeal.nlrDetails, 'addressUk.postcode');
+  const nlrAddressComplete: boolean = isSponsorSameAsNlr ? nlrLine1 && nlrCity && nlrPostcode : nlrAddress;
+  const nlrDetailsComplete: boolean = !hasNlr || hasNlrNo || (nlrGivenNames && nlrFamilyName && nlrPhoneNumber && nlrEmailAddress && nlrAddressComplete);
   const appellantInUk: boolean = _.get(appeal.application, 'appellantInUk') === 'Yes';
   const contactDetails: Task = {
     saved: (email && wantsEmail) || (phone && wantsSms) || postcode || line1 || appellantOutOfCountryAddress,

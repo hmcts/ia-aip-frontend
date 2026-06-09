@@ -1647,7 +1647,6 @@ export default class UpdateAppealService {
 
   mapToCCDCaseNlrDetails(appeal, caseData) {
     const nlrDetails: NlrDetails = appeal.nlrDetails;
-
     if (!nlrDetails) return;
 
     const {
@@ -1664,8 +1663,8 @@ export default class UpdateAppealService {
       caseData.nlrDetails = {};
     }
     const target: CCDNlrDetails = caseData.nlrDetails;
-    const isSameAsSponsor = appeal.isSameAsSponsor === 'Yes' || false;
-    if (isSameAsSponsor) {
+    const isSponsorSameAsNlr = appeal.application.isSponsorSameAsNlr === 'Yes' || false;
+    if (isSponsorSameAsNlr) {
       if (addressUk) {
         target.addressUk = {
           AddressLine1: addressUk.line1 || null,

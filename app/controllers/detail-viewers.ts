@@ -369,9 +369,10 @@ function getNonLegalRepDetails(req: Request, rows: any[]) {
       (nlrDetails.givenNames && nlrDetails.familyName) && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName, [nlrDetails.givenNames, nlrDetails.familyName], null, Delimiter.SPACE),
       nlrDetails.emailAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail, [nlrDetails.emailAddress]),
       nlrDetails.phoneNumber && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepPhone, [nlrDetails.phoneNumber]),
-      nlrDetails.addressUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress, [...Object.values(nlrDetails.addressUk).filter(line => line != null)], null, Delimiter.BREAK_LINE)
+      nlrDetails.addressUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress, [...Object.values(nlrDetails.addressUk).filter(line => line != null)], null, Delimiter.BREAK_LINE),
+      nlrDetails.address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress, [nlrDetails.address], null),
     );
-    if (appeal?.application?.isSponsorSameAsNlr) {
+    if (appeal?.application?.hasSponsor) {
       rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.isSponsorSameAsNlr, [appeal.application.isSponsorSameAsNlr]));
     }
   }

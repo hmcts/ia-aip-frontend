@@ -195,6 +195,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
       const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;
 
+      const hasSponsor = application?.hasSponsor === 'Yes';
       const appealInProgress = isAppealInProgress(appealStatus, isCitizen);
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,

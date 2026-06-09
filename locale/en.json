@@ -223,13 +223,13 @@
       "title": "What are your non-legal representative's contact details?",
       "titlePersonal": "What are your contact details?",
       "emailAddress": "Email address",
-      "phoneNumber": "UK Phone number",
+      "phoneNumber": "Phone number",
       "hint": "Please provide an email address and phone number for your non-legal representative. They will receive an email invitation to create an account if they do not already have an account with us.",
       "nextStep": "Once your appeal has been submitted, please click the 'Add non-legal representative' link on the right of your appeal page and enter the email address you provided here to verify their account and send them instructions to access your case."
     },
     "nlrPhoneNumber": {
-      "title": "What is your non-legal representative's UK phone number?",
-      "titlePersonal": "What is your UK phone number?",
+      "title": "What is your non-legal representative's phone number?",
+      "titlePersonal": "What is your phone number?",
       "hint": "Please provide a UK phone number for your non-legal representative. This will be used in case of urgent contact."
     },
     "provideNlrDetails": {

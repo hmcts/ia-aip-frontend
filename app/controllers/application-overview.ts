@@ -196,6 +196,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;
 
       const hasSponsor = application?.hasSponsor === 'Yes';
+      const hasNlr = application?.hasNonLegalRep === 'Yes' && req.session.appeal?.nlrDetails?.idamId != null;
       const appealInProgress = isAppealInProgress(appealStatus, isCitizen);
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -219,6 +220,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, isCitizen),
         showAskForFeeRemission,
         showNonLegalRep: appealInProgress,
+        addNonLegalRepPath: hasNlr ? paths.nonLegalRep.addAnotherNonLegalRep : paths.nonLegalRep.addNonLegalRep,
         updateNlrPath: hasSponsor ? paths.nonLegalRep.updateIsSamePerson : paths.nonLegalRep.updateName,
         showAskForSomethingInEndedState,
         isNonLegalRep: !isCitizen,

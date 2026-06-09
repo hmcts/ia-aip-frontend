@@ -11,6 +11,7 @@ import {
   emailValidation,
   isSamePersonValidation,
   nlrAddressValidation,
+  nlrAgreementValidation,
   nlrNamesValidation,
   nonLegalRepPhoneValidation,
   textAreaValidation
@@ -80,6 +81,32 @@ function getAddNonLegalRepresentative(req: Request, res: Response, next: NextFun
   } catch (error) {
     next(error);
   }
+}
+
+function getAddAnotherNonLegalRepresentative(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('non-legal-rep/add-another-non-legal-representative.njk');
+  } catch (error) {
+    next(error);
+  }
+}
+
+function postAddAnotherNonLegalRepresentative() {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = nlrAgreementValidation(req.body);
+      if (validation) {
+        return res.render('non-legal-rep/add-another-non-legal-representative.njk', {
+          errors: validation,
+          errorList: Object.values(validation)
+        });
+      }
+      req.session.appeal.nlrDetails = undefined;
+      return res.redirect(paths.nonLegalRep.addNonLegalRep);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 function getInviteToCreateAccount(req: Request, res: Response, next: NextFunction) {
@@ -530,7 +557,6 @@ function postInviteToJoinAppeal(updateAppealService: UpdateAppealService) {
         // nlrDetails?.address
       ];
 
-
       // TODO fix
       // const address = nlrDetails?.address;
       // const isAddress = isAddressTypeAddress(address);
@@ -599,6 +625,8 @@ function setupNonLegalRepresentativeControllers(middleware: Middleware[], update
   router.get(paths.nonLegalRep.provideNlrDetailsConfirmation, middleware, getProvideNlrDetailsConfirmation);
   router.post(paths.nonLegalRep.inviteToJoinAppeal, middleware, postInviteToJoinAppeal(updateAppealService));
   router.get(paths.nonLegalRep.inviteToJoinAppealConfirmation, middleware, getInviteToJoinAppealConfirmation);
+  router.get(paths.nonLegalRep.addAnotherNonLegalRep, middleware, getAddAnotherNonLegalRepresentative);
+  router.post(paths.nonLegalRep.addAnotherNonLegalRep, middleware, postAddAnotherNonLegalRepresentative());
 
   return router;
 }

@@ -38,7 +38,12 @@
       </ul>
     </div>
   {% endif %}
-  {% if backToAddNlr %}
+  {% if backToCasesList %}
+    {{ govukButton({
+      text: i18n.pages.successPage.backToCaseList,
+      href: paths.common.casesList
+    }) }}
+  {% elif backToAddNlr %}
   {{ govukButton({
     text: i18n.pages.successPage.seeNonLegalRep,
     href: paths.nonLegalRep.addNonLegalRep

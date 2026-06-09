@@ -378,6 +378,17 @@ function statementOfTruthValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function nlrAgreementValidation(obj: object): null | ValidationErrors {
+
+  const schema = Joi.object({
+    statement: Joi.required().messages({
+      'any.required': i18n.validationErrors.addAnotherNlrAgreement
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
 function addressValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     ['address-line-1']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.address.line1Required }),
@@ -769,5 +780,6 @@ export {
   nonLegalRepContactDetailsValidation,
   nonLegalRepPhoneValidation,
   isSamePersonValidation,
+  nlrAgreementValidation,
   deportationOrderOptionsValidation
 };

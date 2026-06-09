@@ -803,7 +803,6 @@ function getNlrAddressRenderObject(isSponsorSameAsNlr: boolean, req: Request): a
     formAction: paths.appealStarted.nlrAddress,
     pageTitle: i18n.pages.nlrAddress.title
   };
-  // console.log(req.session.appeal?.nlrDetails);
   if (isSponsorSameAsNlr) {
     renderObj.address = req.session.appeal?.nlrDetails?.addressUk;
   } else {

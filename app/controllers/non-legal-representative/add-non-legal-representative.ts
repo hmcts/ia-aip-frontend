@@ -209,14 +209,14 @@ function postSamePerson() {
   };
 }
 
-function isSponsorSameAsNlr(req: Request): boolean {
+function isSponsorSame(req: Request): boolean {
   return req.session.appeal.application?.hasSponsor === 'Yes' && req.session.appeal.application?.isSponsorSameAsNlr === 'Yes';
 }
 
 function getNlrName(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-    const isSponsorSameAsNlr = isSponsorSameAsNlr(req);
+    const isSponsorSameAsNlr = isSponsorSame(req);
     const nlrDetails = req.session?.appeal?.nlrDetails;
     if (!nlrDetails?.emailAddress) {
       return res.redirect(`${paths.nonLegalRep.addNonLegalRep}?errorCode=${ErrorCode.stepTwoNoEmailProvided}`);
@@ -246,7 +246,7 @@ function postNlrName() {
           nlrFamilyName: req.body.nlrFamilyName,
           error: validation,
           errorList: Object.values(validation),
-          previousPage: isSponsorSameAsNlr(req) ? paths.nonLegalRep.provideNlrIsSamePerson : paths.nonLegalRep.addNonLegalRep
+          previousPage: isSponsorSame(req) ? paths.nonLegalRep.provideNlrIsSamePerson : paths.nonLegalRep.addNonLegalRep
         });
       }
       req.session.appeal = {
@@ -289,7 +289,7 @@ function getNlrAddressRenderObject(isSponsorSameAsNlr: boolean, req: Request): a
 function getNlrAddress(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-    const isSponsorSameAsNlr = isSponsorSameAsNlr(req);
+    const isSponsorSameAsNlr = isSponsorSame(req);
     const renderPath = isSponsorSameAsNlr ? 'appeal-application/non-legal-rep-details/address.njk'
       : 'templates/textarea-question-page.njk';
     const renderObj = getNlrAddressRenderObject(isSponsorSameAsNlr, req);
@@ -302,7 +302,7 @@ function getNlrAddress(req: Request, res: Response, next: NextFunction) {
 function postNlrAddress() {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const isSponsorSameAsNlr = isSponsorSameAsNlr(req);
+      const isSponsorSameAsNlr = isSponsorSame(req);
       const validation = isSponsorSameAsNlr ? nlrAddressValidation(req.body)
         : textAreaValidation(req.body['nlr-address'], 'nlr-address', i18n.validationErrors.nlrDetails.address);
       if (validation !== null) {
@@ -389,7 +389,7 @@ function postNlrPhoneNumber() {
 function getSummaryRows(req: Request) {
   const editParameter = '?edit';
   const nlrDetails: NlrDetails = req.session.appeal.nlrDetails;
-  const isSponsorSameAsNlr = isSponsorSameAsNlr(req);
+  const isSponsorSameAsNlr = isSponsorSame(req);
   const nlrAddressUk = nlrDetails.addressUk ? Object.values(nlrDetails.addressUk) : [];
   const nlrAddress: string = nlrDetails.address;
   const hasSponsor: boolean = req.session.appeal?.application?.hasSponsor == 'Yes';
@@ -426,7 +426,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const nlrDetails = req.session.appeal?.nlrDetails;
-      const isSponsorSameAsNlr = isSponsorSameAsNlr(req);
+      const isSponsorSameAsNlr = isSponsorSame(req);
       const address = nlrDetails?.address;
       const addressUk = nlrDetails?.addressUk;
 

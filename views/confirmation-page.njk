@@ -93,12 +93,12 @@
     {% if backToCasesList %}
       {{ govukButton({
         text: i18n.pages.successPage.backToCaseList,
-        href: paths.common.overview
+        href: paths.common.casesList
       }) }}
     {% else %}
       {{ govukButton({
         text: i18n.pages.successPage.seeProgress,
-        href: paths.common.casesList
+        href: paths.common.overview
       }) }}
     {% endif %}
   {% endif %}

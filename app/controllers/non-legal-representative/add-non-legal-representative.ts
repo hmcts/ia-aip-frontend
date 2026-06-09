@@ -375,7 +375,7 @@ function postNlrPhoneNumber() {
       const appellantPhone = req.session.appeal?.application?.contactDetails?.phone;
       if (appellantPhone === req.body['phoneNumber']) {
         const structuredError = createStructuredError('phoneNumber', i18n.validationErrors.nlrDetails.nlrPhoneCannotBeSameAsAppellant);
-        return res.render('non-legal-rep/provide-email-create-account.njk', {
+        return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
           title: i18n.pages.nlrPhoneNumber.title,
           hint: i18n.pages.nlrPhoneNumber.hint,
           postAction: paths.nonLegalRep.provideNlrPhoneNumber,

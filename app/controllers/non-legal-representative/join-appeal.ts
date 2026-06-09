@@ -160,6 +160,7 @@ function postJoinAppealConfirmDetails(updateAppealService: UpdateAppealService, 
 
 function getJoinAppealConfirmation(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.refreshCasesList = true;
     res.render('templates/confirmation-page.njk', {
       title: i18n.pages.joinAppeal.confirmation.title,
       whatNextContent: i18n.pages.joinAppeal.confirmation.whatNextContent,

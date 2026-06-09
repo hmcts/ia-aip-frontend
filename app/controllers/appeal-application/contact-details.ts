@@ -933,7 +933,7 @@ function postNlrContactDetails(updateAppealService: UpdateAppealService) {
       const errorList = [];
       const errors = {};
       if (currentIdamEmail === req.body['emailAddress'] || appellantContactEmail === req.body['emailAddress']) {
-        const emailError = createStructuredError('email-value', i18n.validationErrors.nlrDetails.nlrEmailCannotBeSameAsAppellant);
+        const emailError = createStructuredError('emailAddress', i18n.validationErrors.nlrDetails.nlrEmailCannotBeSameAsAppellant);
         errors['emailAddress'] = emailError;
         errorList.push(emailError);
       }

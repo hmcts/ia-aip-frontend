@@ -45,16 +45,16 @@ describe('progress-bar utils', () => {
     it('appealSubmitted', () => {
       const stages = buildProgressBarStages('appealSubmitted');
       const expectedStages = defaultStages;
-      expectedStages[0].active = true;
-      expectedStages[0].completed = false;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
       expect(expectedStages).to.deep.equal(stages);
     });
 
     it('appealSubmitted and not Paid', () => {
       const stages = buildProgressBarStages('appealSubmitted', 'Payment pending');
       const expectedStages = defaultStages;
-      expectedStages[0].active = true;
-      expectedStages[0].completed = false;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
       expect(expectedStages).to.deep.equal(stages);
     });
 

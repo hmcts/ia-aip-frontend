@@ -77,20 +77,22 @@ export function failureCheck() {
   const testState = testStateHelper.readTestState();
   // eslint-disable-next-line no-console
   console.log('---------------------');
-  const uniqueTitles = Array.from(new Set(testState.testsRun));
+  const uniqueTitles = new Set(testState.testsRun);
   // eslint-disable-next-line no-console
-  console.log('Total scenarios run: ' + uniqueTitles.length);
-  const uniqueTitlesPassed = Array.from(new Set(testState.testsPassed));
+  console.log('Total scenarios run: ' + uniqueTitles.size);
+  const uniqueTitlesPassed = new Set(testState.testsPassed);
   // eslint-disable-next-line no-console
-  console.log('Scenarios passed: ' + uniqueTitlesPassed.length);
+  console.log('Scenarios passed: ' + uniqueTitlesPassed.size);
   // eslint-disable-next-line no-console
   console.log('---------------------');
-  if (uniqueTitles.length > 0 && uniqueTitlesPassed.length === uniqueTitles.length) {
+  if (uniqueTitles.size > 0 && uniqueTitlesPassed.size === uniqueTitles.size) {
     process.exit(0);
   } else {
-    const failedTests = uniqueTitles.filter(title => !uniqueTitlesPassed.includes(title));
+    for (const title of uniqueTitlesPassed) {
+      uniqueTitles.delete(title);
+    }
     // eslint-disable-next-line no-console
-    console.log('Scenarios failed: ', failedTests);
+    console.log('Scenarios failed: ', uniqueTitles);
     process.exit(1);
   }
 }

@@ -13,6 +13,7 @@ import { getRedirectPage } from '../../utils/utils';
 import {
   addressValidation,
   contactDetailsValidation,
+  createStructuredError,
   dropdownValidation,
   hasSponsorOrNlrValidation,
   isSamePersonValidation,
@@ -927,6 +928,36 @@ function postNlrContactDetails(updateAppealService: UpdateAppealService) {
         });
       }
 
+      const currentIdamEmail = req.idam.userDetails.sub;
+      const appellantContactEmail = req.session.appeal?.application?.contactDetails?.email;
+      const errorList = [];
+      const errors = {};
+      if (currentIdamEmail === req.body['emailAddress'] || appellantContactEmail === req.body['emailAddress']) {
+        const emailError = createStructuredError('email-value', i18n.validationErrors.nlrDetails.nlrEmailCannotBeSameAsAppellant);
+        errors['emailAddress'] = emailError;
+        errorList.push(emailError);
+      }
+      const appellantPhone = req.session.appeal?.application?.contactDetails?.phone;
+      if (appellantPhone === req.body['phoneNumber']) {
+        const phoneError = createStructuredError('phoneNumber', i18n.validationErrors.nlrDetails.nlrPhoneCannotBeSameAsAppellant);
+        errors['phoneNumber'] = phoneError;
+        errorList.push(phoneError);
+      }
+      if (errorList.length > 0) {
+        return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
+          title: i18n.pages.nlrContactDetails.title,
+          hint: i18n.pages.nlrContactDetails.hint,
+          nextStep: i18n.pages.nlrContactDetails.nextStep,
+          showEmail: true,
+          postAction: paths.appealStarted.nlrContactDetails,
+          emailAddress: req.body['emailAddress'],
+          phoneNumber: req.body['phoneNumber'],
+          errors,
+          errorList,
+          previousPage: paths.appealStarted.nlrAddress,
+          saveForLater: true
+        });
+      }
       const appeal: Appeal = {
         ...req.session.appeal,
         nlrDetails: {

@@ -221,6 +221,32 @@ function postNlrContactDetails() {
           previousPage: paths.nonLegalRep.updateAddress
         });
       }
+      const appellantContactEmail = req.session.appeal?.application?.contactDetails?.email;
+      const errorList = [];
+      const errors = {};
+      if (appellantContactEmail === req.body['emailAddress']) {
+        const emailError = createStructuredError('email-value', i18n.validationErrors.nlrDetails.nlrEmailCannotBeSameAsAppellant);
+        errors['emailAddress'] = emailError;
+        errorList.push(emailError);
+      }
+      const appellantPhone = req.session.appeal?.application?.contactDetails?.phone;
+      if (appellantPhone === req.body['phoneNumber']) {
+        const phoneError = createStructuredError('phoneNumber', i18n.validationErrors.nlrDetails.nlrPhoneCannotBeSameAsAppellant);
+        errors['phoneNumber'] = phoneError;
+        errorList.push(phoneError);
+      }
+      if (errorList.length > 0) {
+        return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
+          title: i18n.pages.nlrContactDetails.titlePersonal,
+          showEmail: true,
+          postAction: paths.nonLegalRep.updateContactDetails,
+          emailAddress: req.body['emailAddress'],
+          phoneNumber: req.body['phoneNumber'],
+          errors,
+          errorList,
+          previousPage: paths.nonLegalRep.updateAddress
+        });
+      }
 
       req.session.appeal = {
         ...req.session.appeal,

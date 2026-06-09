@@ -372,6 +372,21 @@ function postNlrPhoneNumber() {
         });
       }
 
+      const appellantPhone = req.session.appeal?.application?.contactDetails?.phone;
+      if (appellantPhone === req.body['phoneNumber']) {
+        const structuredError = createStructuredError('phoneNumber', i18n.validationErrors.nlrDetails.nlrPhoneCannotBeSameAsAppellant);
+        return res.render('non-legal-rep/provide-email-create-account.njk', {
+          title: i18n.pages.nlrPhoneNumber.title,
+          hint: i18n.pages.nlrPhoneNumber.hint,
+          postAction: paths.nonLegalRep.provideNlrPhoneNumber,
+          showEmail: false,
+          phoneNumber: req.body['phoneNumber'],
+          previousPage: paths.nonLegalRep.provideNlrAddress,
+          errors: { 'phoneNumber': structuredError },
+          errorList: [structuredError]
+        });
+      }
+
       req.session.appeal = {
         ...req.session.appeal,
         nlrDetails: {

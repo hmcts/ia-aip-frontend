@@ -4406,7 +4406,10 @@
       "postcodeRequired": "Enter your non-legal representative's Postcode"
     },
     "nlrDetails": {
-      "nlrEmailCannotBeSameAsAppellant": "The email address you have entered for your non-legal representative cannot be the same as your email address",
+      "nlrEmailCannotBeSameAsAppellant": "Your non-legal representative's email address cannot be the same as your email address",
+      "nlrPhoneCannotBeSameAsAppellant": "Your non-legal representative's phone number cannot be the same as your phone number",
+      "nlrEmailCannotBeSameAsAppellantPersonal": "Your email address cannot be the same as the appellant's email address",
+      "nlrPhoneCannotBeSameAsAppellantPersonal": "Your phone number cannot be the same as the appellant's phone number",
       "givenNames": "You need to provide your non-legal representative's given name or names",
       "familyName": "You need to provide your non-legal representative's family name or names",
       "phoneNumber": "You need to provide your non-legal representative's UK phone number",

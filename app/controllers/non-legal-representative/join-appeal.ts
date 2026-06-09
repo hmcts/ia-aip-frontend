@@ -163,7 +163,8 @@ function getJoinAppealConfirmation(req: Request, res: Response, next: NextFuncti
     res.render('templates/confirmation-page.njk', {
       title: i18n.pages.joinAppeal.confirmation.title,
       whatNextContent: i18n.pages.joinAppeal.confirmation.whatNextContent,
-      appellantName: req.session?.joinAppealPipValidation?.caseSummary?.name
+      appellantName: req.session?.joinAppealPipValidation?.caseSummary?.name,
+      backToCasesList: true
     });
   } catch (e) {
     next(e);

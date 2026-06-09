@@ -25,6 +25,7 @@
       "send": "Send",
       "cancel": "Cancel",
       "seeProgress": "See your appeal progress",
+      "backToCaseList": "Go to your appeals",
       "payNow": "Submit and continue to pay £{{ fee }} by debit or credit card",
       "confirmAndSend": "Confirm and send",
       "continueUseNewService": "Continue to use the new service",

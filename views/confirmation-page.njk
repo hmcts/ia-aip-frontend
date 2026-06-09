@@ -90,10 +90,17 @@
         <li><a class="govuk-link govuk-link--no-visited-state" href="{{ paths.common.moreHelp }}">{{ i18n.pages.successPage.findOutMore | safe }}</a></li>
       </ul>
     </div>
-    {{ govukButton({
-      text: i18n.pages.successPage.seeProgress,
-      href: paths.common.overview
-    }) }}
+    {% if backToCasesList %}
+      {{ govukButton({
+        text: i18n.pages.successPage.backToCaseList,
+        href: paths.common.overview
+      }) }}
+    {% else %}
+      {{ govukButton({
+        text: i18n.pages.successPage.seeProgress,
+        href: paths.common.casesList
+      }) }}
+    {% endif %}
   {% endif %}
 
   {{ contactUs() }}

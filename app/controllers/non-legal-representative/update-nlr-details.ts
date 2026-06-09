@@ -138,8 +138,10 @@ function getNlrAddress(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const isSponsorSameAsNlr: boolean = req.session.appeal?.application?.isSponsorSameAsNlr === 'Yes';
+    const renderPath = isSponsorSameAsNlr ? 'appeal-application/non-legal-rep-details/address.njk'
+      : 'templates/textarea-question-page.njk';
     const renderObj = getNlrAddressRenderObject(isSponsorSameAsNlr, req);
-    return res.render('appeal-application/non-legal-rep-details/address.njk', renderObj);
+    return res.render(renderPath, renderObj);
   } catch (e) {
     next(e);
   }
@@ -155,7 +157,9 @@ function postNlrAddress() {
         const renderObj = getNlrAddressRenderObject(isSponsorSameAsNlr, req);
         renderObj.error = validation;
         renderObj.errorList = Object.values(validation);
-        return res.render('appeal-application/non-legal-rep-details/address.njk', renderObj);
+        const renderPath = isSponsorSameAsNlr ? 'appeal-application/non-legal-rep-details/address.njk'
+          : 'templates/textarea-question-page.njk';
+        return res.render(renderPath, renderObj);
       }
       const nlrAddress = isSponsorSameAsNlr ? {
         addressUk: {

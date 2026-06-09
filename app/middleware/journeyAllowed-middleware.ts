@@ -58,6 +58,7 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
       paths.nonLegalRep.joinAppeal,
       paths.nonLegalRep.joinAppealConfirmation,
       paths.nonLegalRep.joinAppealConfirmDetails,
+      paths.nonLegalRep.updateIsSamePerson,
       paths.nonLegalRep.updateName,
       paths.nonLegalRep.updateAddress,
       paths.nonLegalRep.updateContactDetails,

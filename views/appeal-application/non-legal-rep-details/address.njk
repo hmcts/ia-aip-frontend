@@ -14,7 +14,7 @@
   <form action="{{ formAction }}" method="post">
     {% call govukFieldset({
       legend: {
-        text: title if title else i18n.pages.nlrAddress.title,
+        text: pageTitle if pageTitle else i18n.pages.nlrAddress.title,
         classes: "govuk-fieldset__legend--xl",
         isPageHeading: true
       }

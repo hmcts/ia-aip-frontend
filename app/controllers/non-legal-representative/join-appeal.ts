@@ -39,6 +39,18 @@ function postJoinAppeal(ccdSystemService: CcdSystemService) {
         });
       }
       const caseReferenceWithoutDashes: string = req.body['caseReference']?.replaceAll('-', '')?.replaceAll(' ', '');
+      if (req.session.casesList.map((c) => c.id.toString()).includes(caseReferenceWithoutDashes)) {
+        const error: ValidationError = createStructuredError('caseReference', i18n.pages.joinAppeal.enterCaseReference.sameError);
+
+        return res.render('non-legal-rep/join-appeal.njk', {
+          caseReference: req.body['caseReference'],
+          joinAppealAccessCode: req.body['joinAppealAccessCode'],
+          errorList: [error],
+          errors: { 'caseReference': error },
+          previousPage: paths.common.casesList,
+          previousPageText: i18n.components.back.backToCasesList
+        });
+      }
       const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(
         caseReferenceWithoutDashes,
         req.body['joinAppealAccessCode']

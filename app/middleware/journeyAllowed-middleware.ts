@@ -62,6 +62,8 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
       paths.nonLegalRep.updateName,
       paths.nonLegalRep.updateAddress,
       paths.nonLegalRep.updateContactDetails,
+      paths.nonLegalRep.removeNonLegalRep,
+      paths.nonLegalRep.removeNonLegalRepConfirmation,
       paths.nonLegalRep.updateDetailsCheckAndSend,
       paths.nonLegalRep.updateDetailsConfirmation
     ];

@@ -220,6 +220,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, isCitizen),
         showAskForFeeRemission,
         showNonLegalRep: appealInProgress,
+        hasNonLegalRep: hasNlr,
         addNonLegalRepPath: hasNlr ? paths.nonLegalRep.addAnotherNonLegalRep : paths.nonLegalRep.addNonLegalRep,
         updateNlrPath: hasSponsor ? paths.nonLegalRep.updateIsSamePerson : paths.nonLegalRep.updateName,
         showAskForSomethingInEndedState,

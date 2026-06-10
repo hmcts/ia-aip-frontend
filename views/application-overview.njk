@@ -154,8 +154,12 @@
               {% if showNonLegalRep %}
                 <p><a class="govuk-link" href='{{ addNonLegalRepPath }}'>{{ i18n.pages.overviewPage.addNlr }}</a></p>
               {% endif %}
+              {% if hasNonLegalRep and not isNonLegalRep %}
+                <p><a class="govuk-link" href='{{ paths.nonLegalRep.removeNonLegalRep }}'>{{ i18n.pages.overviewPage.removeNlrFromCase }}</a></p>
+              {% endif %}
               {% if isNonLegalRep %}
                 <p><a class="govuk-link" href='{{ updateNlrPath }}'>{{ i18n.pages.overviewPage.updateDetails }}</a></p>
+                <p><a class="govuk-link" href='{{ paths.nonLegalRep.removeNonLegalRep }}'>{{ i18n.pages.overviewPage.removeSelfAsNlr }}</a></p>
               {% endif %}
             </div>
           {% endif %}

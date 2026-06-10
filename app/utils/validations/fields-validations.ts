@@ -378,11 +378,11 @@ function statementOfTruthValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
-function nlrAgreementValidation(obj: object): null | ValidationErrors {
+function statementValidation(obj: object, errorMessage: string): null | ValidationErrors {
 
   const schema = Joi.object({
     statement: Joi.required().messages({
-      'any.required': i18n.validationErrors.addAnotherNlrAgreement
+      'any.required': errorMessage
     })
   }).unknown();
 
@@ -780,6 +780,6 @@ export {
   nonLegalRepContactDetailsValidation,
   nonLegalRepPhoneValidation,
   isSamePersonValidation,
-  nlrAgreementValidation,
+  statementValidation,
   deportationOrderOptionsValidation
 };

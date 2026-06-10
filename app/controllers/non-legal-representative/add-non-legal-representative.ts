@@ -11,7 +11,7 @@ import {
   emailValidation,
   isSamePersonValidation,
   nlrAddressValidation,
-  nlrAgreementValidation,
+  statementValidation,
   nlrNamesValidation,
   nonLegalRepPhoneValidation,
   textAreaValidation
@@ -94,7 +94,7 @@ function getAddAnotherNonLegalRepresentative(req: Request, res: Response, next: 
 function postAddAnotherNonLegalRepresentative() {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = nlrAgreementValidation(req.body);
+      const validation = statementValidation(req.body, i18n.validationErrors.addAnotherNlrAgreement);
       if (validation) {
         return res.render('non-legal-rep/add-another-non-legal-representative.njk', {
           errors: validation,
@@ -554,17 +554,16 @@ function postInviteToJoinAppeal(updateAppealService: UpdateAppealService) {
         nlrDetails?.givenNames,
         nlrDetails?.familyName,
         nlrDetails?.phoneNumber,
-        // nlrDetails?.address
+        nlrDetails?.address
       ];
 
-      // TODO fix
-      // const address = nlrDetails?.address;
-      // const isAddress = isAddressTypeAddress(address);
-      //
-      // if (isAddress) {
-      //   details.push(address?.line1, address?.city, address?.postcode);
-      // }
-      // console.log(nlrDetails)
+      // TODO test and possibly fix
+      const address = nlrDetails?.address;
+      const isAddress = isAddressTypeAddress(address);
+
+      if (isAddress) {
+        details.push(address?.line1, address?.city, address?.postcode);
+      }
       const missingDetails = details.filter(value => !value);
 
       if (missingDetails.length > 0) {

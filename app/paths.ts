@@ -333,6 +333,8 @@ const paths = {
     // Non Legal Rep endpoints
     addNonLegalRep: '/add-non-legal-rep',
     addAnotherNonLegalRep: '/add-another-non-legal-rep',
+    removeNonLegalRep: '/remove-non-legal-rep',
+    removeNonLegalRepConfirmation: '/remove-non-legal-rep/confirmation',
     inviteToCreateAccount: '/add-non-legal-rep/provide-email-create-account',
     inviteToCreateAccountConfirmation: '/add-non-legal-rep/provide-email-create-account/confirmation',
     provideNlrIsSamePerson: '/add-non-legal-rep/is-same-person-as-sponsor',

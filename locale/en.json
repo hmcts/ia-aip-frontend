@@ -230,7 +230,12 @@
     },
     "DOB": {
       "title": "What is your date of birth? ",
-      "hint": "For example, 31 3 1980"
+      "dateHint": "For example, 31 3 1980",
+      "hints": [
+        "You should enter the details exactly as they appear on the decision letter. This can often be found in the 'How to appeal' section.",
+        "Do not enter a date of birth that does not appear on the decision letter",
+        "If you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>"
+      ]
     },
     "OOC": {
       "title": "Are you currently living in the United Kingdom?",
@@ -337,7 +342,12 @@
     "name": {
       "title": "What is your name?",
       "givenNames": "Given names",
-      "familyName": "Family name"
+      "familyName": "Family name",
+      "hints": [
+        "You should enter the details exactly as they appear on the decision letter. This can often be found in the 'How to appeal' section.",
+        "Do not enter any names that do not appear on your decision letter",
+        "If you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>"
+      ]
     },
     "enterPostcode": {
       "heading": "What is your address?",
@@ -372,13 +382,13 @@
     "homeOfficePage": {
       "title": "What is your Home Office reference number?",
       "label": "How to find your Office reference number",
-      "footNote": "Call the Home Office on <strong>+44 (0)161 877 5919</strong> (9am-3pm, Monday to Friday) if you cannot find the correct number.",
       "homeOfficeReferenceNumberLabel": "Enter your Home Office reference number",
       "hints": [
-        "Your Home Office reference number is usually on the first page of your Home Office decision letter",
+        "You should enter the reference number exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section.",
         "It is usually either 9 numbers or 16 numbers with dashes, for example 123456789 or 1234-1234-1234-1234",
         "If your letter includes a reference with 8 numbers, like 98765432, add 0 to the start and enter that number, for example 098765432",
-        "<strong>Do not</strong> enter any reference that includes a letter, for example A246893521"
+        "<strong>Do not</strong> enter any reference that includes a letter, for example A246893521",
+        "If you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>"
       ]
     },
     "homeOfficeLetterSent": {

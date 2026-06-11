@@ -37,7 +37,7 @@ Feature: Personal details enter address
     And I check page accessibility
     And I should be taken to the has sponsor page
     Then I see "Do you have a sponsor?" in title
-    When I select No and click continue
+    When I choose No and click continue
     And I check page accessibility
     Then I should see the task-list page
     And I should be able to click "Decision type"

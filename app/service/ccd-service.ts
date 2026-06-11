@@ -168,7 +168,7 @@ class CcdService {
       event: {
         id: updateEventResponse.event_id,
         summary: event.summary,
-        description: event.summary
+        description: event.description
       },
       data: updatedCase.case_data,
       event_token: updateEventResponse.token,

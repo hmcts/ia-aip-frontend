@@ -1783,12 +1783,12 @@ export default class UpdateAppealService {
       this.mapToCCDLateLocalAuthorityLetters(appeal, caseData);
       caseData.refundConfirmationApplied = extendedBoolToYesNo(appeal.application.refundConfirmationApplied);
     }
+    this.assignSinglePropertyIfExists(application, 'hasNonLegalRep', caseData, 'hasNonLegalRep');
+    this.assignSinglePropertyIfExists(application, 'isSponsorSameAsNlr', caseData, 'isSponsorSameAsNlr');
 
     if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
       this.mapToCCDCaseContactDetails(appeal, caseData);
       this.assignSinglePropertyIfExists(application, 'hasSponsor', caseData, 'hasSponsor');
-      this.assignSinglePropertyIfExists(application, 'hasNonLegalRep', caseData, 'hasNonLegalRep');
-      this.assignSinglePropertyIfExists(application, 'isSponsorSameAsNlr', caseData, 'isSponsorSameAsNlr');
       this.assignSinglePropertyIfExists(application, 'sponsorGivenNames', caseData, 'sponsorGivenNames');
       this.assignSinglePropertyIfExists(application, 'sponsorFamilyName', caseData, 'sponsorFamilyName');
       this.assignSinglePropertyIfExists(application, 'sponsorNameForDisplay', caseData, 'sponsorNameForDisplay');

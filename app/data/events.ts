@@ -274,6 +274,16 @@ export const Events = {
     summary: 'NLR Joined appeal',
     description: 'Non Legal Rep joined appeal via PIP'
   },
+  REMOVE_NON_LEGAL_REP: {
+    id: 'removeNonLegalRep',
+    summary: 'NLR removed',
+    description: 'Appellant has removed their non-legal representative from the appeal'
+  },
+  REMOVE_NON_LEGAL_REP_SELF: {
+    id: 'removeNonLegalRep',
+    summary: 'NLR removed',
+    description: 'Non-legal representative has removed themselves from the appeal'
+  },
   NLR_DETAILS_UPDATED: {
     id: 'nlrDetailsUpdated',
     summary: 'NLR updated details',

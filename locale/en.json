@@ -230,7 +230,7 @@
     "nlrPhoneNumber": {
       "title": "What is your non-legal representative's phone number?",
       "titlePersonal": "What is your phone number?",
-      "hint": "Please provide a UK phone number for your non-legal representative. This will be used in case of urgent contact."
+      "hint": "Please provide a phone number for your non-legal representative. This will be used in case of urgent contact."
     },
     "provideNlrDetails": {
       "title": "Provide your non-legal representative's details",
@@ -631,13 +631,13 @@
       "instructionsPartOne": "If you want to add a non-legal representative to be able to view and track your appeal, you must provide their email address. If they have not yet signed up to HMCTS services, they will be invited to create an account.",
       "linkPartOne": "Invite to create an account",
       "stepTwo": "Step 2: Provide the rest of your non-legal representative details",
-      "instructionsPartTwo": "You must provide your non-legal representative's name, address and UK phone number. Before starting this step, make sure you have their details at hand.",
+      "instructionsPartTwo": "You must provide your non-legal representative's name, address and phone number. Before starting this step, make sure you have their details at hand.",
       "linkPartTwo": "Provide details",
       "stepThree": "Step 3: Invite your non-legal representative to join the appeal",
       "instructionsPartThree": "Once your non-legal representative has created an account, and you have provided their details, then select the below button. We will then verify their account has been created and send them instructions to access your case.",
       "linkPartThree": "Invite to join the appeal",
       "provideEmailDirection": "If you want to add a non-legal representative to be able to view and track your appeal, you will need invite them to create an account by providing their email address",
-      "provideNlrDetailsDirection": "If you want to add a non-legal representative to be able to view and track your appeal, you will need provide us with their name, address and UK phone number",
+      "provideNlrDetailsDirection": "If you want to add a non-legal representative to be able to view and track your appeal, you will need provide us with their name, address and phone number",
       "userNotExistDirection": "If you want to add a non-legal representative to be able to view and track your appeal, they will first need to sign up to HMCTS services. You may invite them again to create an account by providing their email address",
       "userNotExistsError": "The user with the email address that you have provided in Step 1 has not signed up to HMCTS services.",
       "noEmailProvidedError": "You need to provide an email address for your non-legal representative",
@@ -4445,7 +4445,7 @@
       "nlrPhoneCannotBeSameAsAppellantPersonal": "Your phone number cannot be the same as the appellant's phone number",
       "givenNames": "You need to provide your non-legal representative's given name or names",
       "familyName": "You need to provide your non-legal representative's family name or names",
-      "phoneNumber": "You need to provide your non-legal representative's UK phone number",
+      "phoneNumber": "You need to provide your non-legal representative's phone number",
       "emailAddress": "You need to provide your non-legal representative's email address",
       "address": "You need to provide your non-legal representative's address",
       "addressLine1": "You need to provide your non-legal representative's building number and street name",
@@ -4455,7 +4455,7 @@
     "nlrDetailsPersonal": {
       "givenNames": "You need to provide your updated given name or names",
       "familyName": "You need to provide your updated family name or names",
-      "phoneNumber": "You need to provide your updated UK phone number",
+      "phoneNumber": "You need to provide your updated phone number",
       "emailAddress": "You need to provide your updated email address",
       "address": "You need to provide your updated address",
       "addressLine1": "You need to provide your updated building number and street name",

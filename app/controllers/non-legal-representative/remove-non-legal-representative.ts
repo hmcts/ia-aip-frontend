@@ -32,7 +32,7 @@ function getRemoveNonLegalRepresentative(req: Request, res: Response, next: Next
   }
 }
 
-function postRemoveNonLegalRepresentative() {
+function postRemoveNonLegalRepresentative(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const isNlr = req.session.isNonLegalRep;
@@ -48,7 +48,14 @@ function postRemoveNonLegalRepresentative() {
           errorList: Object.values(validation)
         });
       }
-      // TODO REMOVE NLR ACCESS
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(
+        isNlr ? Events.REMOVE_NON_LEGAL_REP_SELF : Events.REMOVE_NON_LEGAL_REP,
+        req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       return res.redirect(paths.nonLegalRep.removeNonLegalRepConfirmation);
     } catch (error) {
       next(error);
@@ -74,7 +81,7 @@ function getRemoveNonLegalRepresentativeConfirmation(req: Request, res: Response
 function setupRemoveNonLegalRepresentativeControllers(middleware: Middleware[], updateAppealService: UpdateAppealService,): Router {
   const router = Router();
   router.get(paths.nonLegalRep.removeNonLegalRep, middleware, getRemoveNonLegalRepresentative);
-  router.post(paths.nonLegalRep.removeNonLegalRep, middleware, postRemoveNonLegalRepresentative());
+  router.post(paths.nonLegalRep.removeNonLegalRep, middleware, postRemoveNonLegalRepresentative(updateAppealService));
   router.get(paths.nonLegalRep.removeNonLegalRepConfirmation, middleware, getRemoveNonLegalRepresentativeConfirmation);
 
   return router;

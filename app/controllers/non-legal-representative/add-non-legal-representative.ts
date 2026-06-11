@@ -550,19 +550,21 @@ function postInviteToJoinAppeal(updateAppealService: UpdateAppealService) {
         return res.redirect(`${paths.nonLegalRep.addNonLegalRep}?errorCode=${ErrorCode.stepThreeNoEmailProvided}`);
       }
 
-      const details = [
+      const details: (string | Address)[] = [
         nlrDetails?.givenNames,
         nlrDetails?.familyName,
-        nlrDetails?.phoneNumber,
-        nlrDetails?.address
+        nlrDetails?.phoneNumber
       ];
 
-      // TODO test and possibly fix
-      const address = nlrDetails?.address;
-      const isAddress = isAddressTypeAddress(address);
+      const isSponsorSameAsNlr = isSponsorSame(req);
+      if (isSponsorSameAsNlr) {
+        details.push(nlrDetails.addressUk);
+        details.push(nlrDetails.addressUk.line1);
+        details.push(nlrDetails.addressUk.city);
+        details.push(nlrDetails.addressUk.postcode);
 
-      if (isAddress) {
-        details.push(address?.line1, address?.city, address?.postcode);
+      } else {
+        details.push(nlrDetails.address);
       }
       const missingDetails = details.filter(value => !value);
 
@@ -575,6 +577,7 @@ function postInviteToJoinAppeal(updateAppealService: UpdateAppealService) {
       if (midEventErrors?.length > 0) {
         return res.redirect(`${paths.nonLegalRep.addNonLegalRep}?errorCode=${ErrorCode.stepThreeUserNotExisting}`);
       }
+
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SEND_PIP_TO_NON_LEGAL_REP,
         req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
@@ -599,10 +602,6 @@ function getInviteToJoinAppealConfirmation(req: Request, res: Response, next: Ne
   } catch (e) {
     next(e);
   }
-}
-
-function isAddressTypeAddress(addr: string | Address | undefined): addr is Address {
-  return typeof addr === 'object' && addr !== null;
 }
 
 function setupNonLegalRepresentativeControllers(middleware: Middleware[], updateAppealService: UpdateAppealService,): Router {

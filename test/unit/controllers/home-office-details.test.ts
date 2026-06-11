@@ -26,6 +26,7 @@ describe('Home Office Details Controller', function () {
   const logger: Logger = new Logger();
   let submitStub: sinon.SinonStub;
   let submitRefactoredStub: sinon.SinonStub;
+  let validateMidEventStub: sinon.SinonStub;
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
   beforeEach(() => {
@@ -56,6 +57,7 @@ describe('Home Office Details Controller', function () {
 
     submitStub = sandbox.stub();
     submitRefactoredStub = sandbox.stub();
+    validateMidEventStub = sandbox.stub();
     renderStub = sandbox.stub();
     redirectStub = sandbox.stub();
 
@@ -73,7 +75,8 @@ describe('Home Office Details Controller', function () {
         case_data: {
           homeOfficeReferenceNumber: 'A1234567'
         }
-      })
+      }),
+      validateMidEvent: validateMidEventStub.returns([])
     };
   });
 
@@ -190,19 +193,23 @@ describe('Home Office Details Controller', function () {
       req.body['homeOfficeRefNumber'] = 'A1234567';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      const error = {
+      const fieldError = {
         href: '#homeOfficeRefNumber',
         key: 'homeOfficeRefNumber',
-        text: 'Enter the Home Office reference number in the correct format'
+        text: 'There is a problem'
+      };
+      const errorList = {
+        ...fieldError,
+        text: "You should enter the UAN or GWF reference exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section. The UAN is 16 digits with dashes. The GWF starts with the letters \"GWF\" and then has 9 digits. If you need help, please use the Home Office help form in the bullet points on this page."
       };
       expect(submitRefactoredStub.called).to.equal(false);
       expect(renderStub).to.be.calledWith(
         'appeal-application/home-office/details.njk',
         {
           errors: {
-            homeOfficeRefNumber: error
+            homeOfficeRefNumber: fieldError
           },
-          errorList: [error],
+          errorList: [errorList],
           homeOfficeRefNumber: 'A1234567',
           previousPage: paths.appealStarted.taskList
         });
@@ -213,19 +220,23 @@ describe('Home Office Details Controller', function () {
       req.body['saveForLater'] = 'saveForLater';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      const error = {
+      const fieldError = {
         href: '#homeOfficeRefNumber',
         key: 'homeOfficeRefNumber',
-        text: 'Enter the Home Office reference number in the correct format'
+        text: 'There is a problem'
+      };
+      const errorList = {
+        ...fieldError,
+        text: "You should enter the UAN or GWF reference exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section. The UAN is 16 digits with dashes. The GWF starts with the letters \"GWF\" and then has 9 digits. If you need help, please use the Home Office help form in the bullet points on this page."
       };
       expect(submitRefactoredStub.called).to.equal(false);
       expect(renderStub).to.be.calledWith(
         'appeal-application/home-office/details.njk',
         {
           errors: {
-            homeOfficeRefNumber: error
+            homeOfficeRefNumber: fieldError
           },
-          errorList: [error],
+          errorList: [errorList],
           homeOfficeRefNumber: 'notValid',
           previousPage: paths.appealStarted.taskList
         });
@@ -235,9 +246,13 @@ describe('Home Office Details Controller', function () {
       req.body['homeOfficeRefNumber'] = '';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      const error = {
+      const fieldError = {
         href: '#homeOfficeRefNumber',
         key: 'homeOfficeRefNumber',
+        text: 'There is a problem'
+      };
+      const errorList = {
+        ...fieldError,
         text: 'Enter the Home Office reference number'
       };
       expect(submitRefactoredStub.called).to.equal(false);
@@ -245,15 +260,15 @@ describe('Home Office Details Controller', function () {
         'appeal-application/home-office/details.njk',
         {
           errors: {
-            homeOfficeRefNumber: error
+            homeOfficeRefNumber: fieldError
           },
-          errorList: [error],
+          errorList: [errorList],
           homeOfficeRefNumber: '',
           previousPage: paths.appealStarted.taskList
         });
     });
 
-    it('should redirect to path list when save for later and home office ref numnber is blank', async () => {
+    it('should redirect to path list when save for later and home office ref number is blank', async () => {
       req.body['homeOfficeRefNumber'] = '';
       req.body['saveForLater'] = 'saveForLater';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -267,6 +282,34 @@ describe('Home Office Details Controller', function () {
       res.render = renderStub.throws(error);
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
+    });
+
+    it('should fail validateMidEvent and render home-office/details.njk with error', async () => {
+      const errorMessage = 'Please contact HMCTS for support.';
+      updateAppealService.validateMidEvent = validateMidEventStub.returns([errorMessage]);
+      req.body['homeOfficeRefNumber'] = '1212-0099-0089-1080';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const fieldError = {
+        href: '#homeOfficeRefNumber',
+        key: 'homeOfficeRefNumber',
+        text: 'There is a problem'
+      };
+      const errorList = {
+        ...fieldError,
+        text: errorMessage
+      };
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
+        'appeal-application/home-office/details.njk',
+        {
+          errors: {
+            homeOfficeRefNumber: fieldError
+          },
+          errorList: [errorList],
+          homeOfficeRefNumber: '1212-0099-0089-1080',
+          previousPage: paths.appealStarted.taskList
+      });
     });
   });
 

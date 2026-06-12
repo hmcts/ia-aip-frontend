@@ -299,7 +299,7 @@ export function handleNlrStatementValidation(req: Request, res: Response, render
   }
   req.session.appeal = {
     ...req.session.appeal,
-    hasNlrSubmitted: req.body['nlrStatement'] === 'nlr' ? 'Yes' : 'No'
+    hasNlrSubmitted: req.body['nlrStatement'] === 'nlr' ? 'Yes' : undefined
   };
   return true;
 }

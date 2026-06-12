@@ -472,3 +472,21 @@ interface Value {
   code?: string;
   label?: string;
 }
+
+interface MidEventDetails {
+  case_reference: string;
+  data: any;
+  event: CcdEvent,
+  event_data: any,
+  ignore_warning: boolean;
+}
+
+interface MidEventResponse {
+  status: number,
+  data: MidEventResponseData
+}
+
+interface MidEventResponseData {
+  status?: number,
+  callbackErrors?: string[]
+}

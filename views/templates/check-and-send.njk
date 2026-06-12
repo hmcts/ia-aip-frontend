@@ -37,10 +37,12 @@
     {% endfor %}
   {% endif %}
 
-
   {% if formAction %}
     <form method="post" action="{{ formAction }}">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {% if hasNlr %}
+          {{ nlrStatement() }}
+      {% endif %}
       {% if noSaveForLater %}
         {{ saveButton({name: 'send', text: 'Send'}) }}
       {% else %}
@@ -52,6 +54,9 @@
   {% if continuePath %}
     <form method="post" action="{{ formAction }}">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {% if hasNlr %}
+          {{ nlrStatement() }}
+      {% endif %}
       {{ govukButton({
         text: i18n.common.buttons.confirmAndSend
       }) }}

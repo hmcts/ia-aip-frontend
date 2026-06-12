@@ -8,7 +8,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { formatTextForCYA, getRedirectPage } from '../../utils/utils';
+import { formatTextForCYA, getRedirectPage, handleNlrStatementValidation, hasActiveNlr } from '../../utils/utils';
 import { askForMoreTimeValidation } from '../../utils/validations/fields-validations';
 import {
   EvidenceUploadConfig,
@@ -141,32 +141,37 @@ function postSubmitEvidence(updateAppealService: UpdateAppealService) {
   return postSupportingEvidence(updateAppealService, askForMoreTimeEvidenceUploadConfig);
 }
 
+function getCheckAndSendRenderArgs(req: Request): RenderArgs {
+  const reasonFormattingPreserved = formatTextForCYA(req.session.appeal.makeAnApplicationDetails);
+  const summaryRows = [
+    addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.askForMoreTimePage.textAreaText], null),
+    addSummaryRow(i18n.common.cya.answerRowTitle, [reasonFormattingPreserved], paths.common.askForMoreTimeReason)
+  ];
+  let previousPage = paths.common.askForMoreTimeSupportingEvidence;
+
+  if (askForMoreTimeEvidenceUploadConfig.getEvidenceFromSessionFunction(req)) {
+    const evidences: Evidence[] = askForMoreTimeEvidenceUploadConfig.getEvidenceFromSessionFunction(req);
+    const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
+    if (evidenceNames.length) {
+      const evidenceText = evidences.map((evidence) => {
+        return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+      });
+
+      summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceText, paths.common.askForMoreTimeSupportingEvidenceUpload, Delimiter.BREAK_LINE));
+      previousPage = paths.common.askForMoreTimeSupportingEvidence;
+    }
+  }
+
+  return {
+    renderPath: './ask-for-more-time/check-and-send.njk',
+    renderObj: { previousPage: previousPage, summaryRows: summaryRows, hasNlr: hasActiveNlr(req.session.appeal) }
+  };
+}
+
 function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-    const reasonFormattingPreserved = formatTextForCYA(req.session.appeal.makeAnApplicationDetails);
-    const summaryRows = [
-      addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.askForMoreTimePage.textAreaText], null),
-      addSummaryRow(i18n.common.cya.answerRowTitle, [reasonFormattingPreserved], paths.common.askForMoreTimeReason)
-    ];
-    let previousPage = paths.common.askForMoreTimeSupportingEvidence;
-
-    if (askForMoreTimeEvidenceUploadConfig.getEvidenceFromSessionFunction(req)) {
-      const evidences: Evidence[] = askForMoreTimeEvidenceUploadConfig.getEvidenceFromSessionFunction(req);
-      const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
-      if (evidenceNames.length) {
-        const evidenceText = evidences.map((evidence) => {
-          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
-        });
-
-        summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceText, paths.common.askForMoreTimeSupportingEvidenceUpload, Delimiter.BREAK_LINE));
-        previousPage = paths.common.askForMoreTimeSupportingEvidence;
-      }
-    }
-
-    res.render('./ask-for-more-time/check-and-send.njk', {
-      previousPage: previousPage,
-      summaryRows: summaryRows
-    });
+    const { renderPath, renderObj } = getCheckAndSendRenderArgs(req);
+    return res.render(renderPath, renderObj);
   } catch (e) {
     next(e);
   }
@@ -175,6 +180,12 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
 function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (hasActiveNlr(req.session.appeal)) {
+        const canContinue = handleNlrStatementValidation(req, res, getCheckAndSendRenderArgs(req));
+        if (!canContinue) {
+          return;
+        }
+      }
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.MAKE_AN_APPLICATION, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.refreshCasesList = true;
       req.session.appeal = {

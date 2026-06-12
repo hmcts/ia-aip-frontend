@@ -6,6 +6,7 @@ import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { dayMonthYearFormat } from '../../../utils/date-utils';
+import { hasActiveNlr } from '../../../utils/utils';
 import { getHearingStartDate, postHearingRequirementsYesNoHandler, setCheckedAttributeToQuestion } from '../common';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
@@ -18,7 +19,7 @@ const formAction = paths.submitHearingRequirements.hearingDatesToAvoidQuestion;
 
 function getQuestion(appeal: Appeal) {
   const present = _.has(appeal, 'hearingRequirements.datesToAvoid.isDateCannotAttend') || null;
-  const hasNonLegalRep = appeal?.application?.hasNonLegalRep === 'Yes';
+  const hasNonLegalRep = hasActiveNlr(appeal);
   const source = hasNonLegalRep ? i18n.pages.hearingRequirements.datesToAvoidSection.questionPageNlr
     : i18n.pages.hearingRequirements.datesToAvoidSection.questionPage;
   const question = {
@@ -46,7 +47,7 @@ function getDatesToAvoidQuestion(req: Request, res: Response, next: NextFunction
   try {
     return res.render('templates/radio-question-page.njk', {
       previousPage,
-      pageTitle: getPageTitle(req.session.appeal?.application?.hasNonLegalRep === 'Yes'),
+      pageTitle: getPageTitle(hasActiveNlr(req.session.appeal)),
       formAction,
       question,
       availableHearingDates,
@@ -69,7 +70,7 @@ function postDatesToAvoidQuestion(updateAppealService: UpdateAppealService) {
       const question = getQuestion(req.session.appeal);
       const pageContent = {
         previousPage,
-        pageTitle: getPageTitle(req.session.appeal?.application?.hasNonLegalRep === 'Yes'),
+        pageTitle: getPageTitle(hasActiveNlr(req.session.appeal)),
         formAction,
         question,
         availableHearingDates,

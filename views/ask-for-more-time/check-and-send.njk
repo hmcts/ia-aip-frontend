@@ -22,6 +22,9 @@
 
     <form method="post" action={{ paths.common.askForMoreTimeCheckAndSend }}>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% if hasNlr %}
+            {{ nlrStatement() }}
+        {% endif %}
         {{ govukButton({
             text: i18n.common.buttons.send,
             preventDoubleClick: true

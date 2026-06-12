@@ -6,16 +6,25 @@ import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
+import { handleNlrStatementValidation, hasActiveNlr } from '../../utils/utils';
 
+async function getCheckYourAnswersRefundRenderArgs(req: Request): Promise<RenderArgs> {
+  const summaryRows = await createSummaryRowsFrom(req);
+  return {
+    renderPath: 'ask-for-fee-remission/check-and-send.njk',
+    renderObj: {
+      previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+      summaryRows,
+      hasNlr: hasActiveNlr(req.session.appeal)
+    }
+  };
+}
 async function getCheckYourAnswersRefund(req: Request, res: Response, next: NextFunction) {
   try {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
-    const summaryRows = await createSummaryRowsFrom(req);
-    return res.render('ask-for-fee-remission/check-and-send.njk', {
-      previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
-      summaryRows
-    });
+    const { renderPath, renderObj } = await getCheckYourAnswersRefundRenderArgs(req);
+    return res.render(renderPath, renderObj);
   } catch (error) {
     next(error);
   }
@@ -26,6 +35,13 @@ function postCheckYourAnswersRefund(updateAppealService: UpdateAppealService) {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     try {
+      if (hasActiveNlr(req.session.appeal)) {
+        const renderArgs: RenderArgs = await getCheckYourAnswersRefundRenderArgs(req);
+        const canContinue = handleNlrStatementValidation(req, res, renderArgs);
+        if (!canContinue) {
+          return;
+        }
+      }
       const appeal: Appeal = {
         ...req.session.appeal,
         application: {

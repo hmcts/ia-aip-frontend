@@ -306,6 +306,11 @@
       "title": "Check your answers",
       "header": "Check your answers",
       "statement": "Statement of truth",
+      "nlr": {
+        "statement": "Non-legal representative statement of truth",
+        "isNlr": "I am the non-legal representative for this appeal and I confirm that I have consulted with the appellant and they have given me authority to submit this on their behalf",
+        "isAppellant": "I am the appellant for this appeal"
+      },
       "agreement": "I believe the information I have given is true",
       "rowTitles": {
         "appellantInUk": "In the UK",
@@ -4400,6 +4405,7 @@
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "selectAnAppealType": "Select an appeal type",
     "appellantInUk": "Select yes if you are currently living in the United Kingdom",
+    "nlrStatement": "You must select one of the options under the Non-legal representative statement of truth as you have a non-legal representative on this case",
     "oocHrEea": "Select yes if you are were living outside the United Kingdom when you made your application",
     "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",

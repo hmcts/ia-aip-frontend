@@ -3,6 +3,7 @@ import moment from 'moment';
 import i18n from '../../../../locale/en.json';
 import { paths } from '../../../paths';
 import { dayMonthYearFormat } from '../../../utils/date-utils';
+import { hasActiveNlr } from '../../../utils/utils';
 import { getHearingStartDate, postHearingRequirementsYesNoHandler } from '../common';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
@@ -27,7 +28,7 @@ function getAddAnotherDateQuestionPage(req: Request, res: Response, next: NextFu
       from: moment(startDate).format(dayMonthYearFormat),
       to: moment(startDate).add(6, 'week').format(dayMonthYearFormat)
     };
-    const hasNonLegalRep = req.session.appeal?.application?.hasNonLegalRep === 'Yes';
+    const hasNonLegalRep: boolean = hasActiveNlr(req.session.appeal);
     res.render('templates/radio-question-page.njk', {
       previousPage,
       pageTitle: getPageTitle(hasNonLegalRep),
@@ -50,7 +51,7 @@ function postAddAnotherDateQuestionPage(req: Request, res: Response, next: NextF
     to: moment(startDate).add(6, 'week').format(dayMonthYearFormat)
   };
 
-  const hasNonLegalRep = req.session.appeal?.application?.hasNonLegalRep === 'Yes';
+  const hasNonLegalRep: boolean = hasActiveNlr(req.session.appeal);
   const pageContent = {
     previousPage,
     pageTitle: getPageTitle(hasNonLegalRep),

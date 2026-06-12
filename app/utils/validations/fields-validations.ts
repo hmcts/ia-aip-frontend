@@ -422,6 +422,16 @@ function appellantInUkValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function nlrStatementValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    nlrStatement: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.nlrStatement
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
 function gwfReferenceNumberValidation(obj: object): null | ValidationErrors {
   /**
    * Validates the Global Web Form (GWF) reference number
@@ -781,5 +791,6 @@ export {
   nonLegalRepPhoneValidation,
   isSamePersonValidation,
   statementValidation,
+  nlrStatementValidation,
   deportationOrderOptionsValidation
 };

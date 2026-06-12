@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { applicationTypes } from '../../data/application-types';
@@ -7,6 +7,7 @@ import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addSummaryRow } from '../../utils/summary-list';
+import { handleNlrStatementValidation, hasActiveNlr } from '../../utils/utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
 function getProvideMakeAnApplicationDetails(req: Request, res: Response, next: NextFunction, config: any) {
@@ -169,19 +170,28 @@ function postProvideSupportingEvidence(req: Request, res: Response, next: NextFu
   }
 }
 
-function getProvideSupportingEvidenceCheckAndSend(req: Request, res: Response, next: NextFunction, config: any) {
-  try {
-    const summaryLists: SummaryList[] = buildSupportingEvidenceDocumentsSummaryList(req, config.pathToProvideSupportingEvidenceNoLeadingSlash, config.pathToMakeApplicationDetailsNoLeadingSlash);
-    const previousPage = req.session.appeal.makeAnApplicationProvideEvidence === i18n.pages.makeApplication.provideSupportingEvidenceYesOrNo.options.yes.value
-      ? config.pathToProvideSupportingEvidence
-      : config.pathToSupportingEvidence;
+function getCheckAndSendRenderArgs(req: Request): RenderArgs {
+  const summaryLists: SummaryList[] = buildSupportingEvidenceDocumentsSummaryList(req, config.pathToProvideSupportingEvidenceNoLeadingSlash, config.pathToMakeApplicationDetailsNoLeadingSlash);
+  const previousPage = req.session.appeal.makeAnApplicationProvideEvidence === i18n.pages.makeApplication.provideSupportingEvidenceYesOrNo.options.yes.value
+    ? config.pathToProvideSupportingEvidence
+    : config.pathToSupportingEvidence;
 
-    return res.render('templates/check-and-send.njk', {
+  return {
+    renderPath: 'templates/check-and-send.njk',
+    renderObj: {
       pageTitle: i18n.pages.makeApplication.checkYourAnswers.title,
       continuePath: config.pathToCheckYourAnswer,
       previousPage,
-      summaryLists
-    });
+      summaryLists,
+      hasNlr: hasActiveNlr(req.session.appeal)
+    }
+  };
+}
+
+function getProvideSupportingEvidenceCheckAndSend(req: Request, res: Response, next: NextFunction, config: any) {
+  try {
+    const { renderPath, renderObj } = getCheckAndSendRenderArgs(req);
+    return res.render(renderPath, renderObj);
   } catch (e) {
     next(e);
   }
@@ -190,6 +200,12 @@ function getProvideSupportingEvidenceCheckAndSend(req: Request, res: Response, n
 function postProvideSupportingEvidenceCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (hasActiveNlr(req.session.appeal)) {
+        const canContinue = handleNlrStatementValidation(req, res, getCheckAndSendRenderArgs(req));
+        if (!canContinue) {
+          return;
+        }
+      }
       delete (req.session.appeal.makeAnApplicationProvideEvidence);
       const appeal: Appeal = {
         ...req.session.appeal

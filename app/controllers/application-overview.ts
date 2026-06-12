@@ -18,7 +18,7 @@ import Logger, { getLogLabel } from '../utils/logger';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
-import { hasPendingTimeExtension, yesNoToBool } from '../utils/utils';
+import { hasActiveNlr, hasPendingTimeExtension, yesNoToBool } from '../utils/utils';
 import { ErrorCode } from './cases-list';
 
 const logger: Logger = new Logger();
@@ -196,7 +196,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;
 
       const hasSponsor = application?.hasSponsor === 'Yes';
-      const hasNlr = application?.hasNonLegalRep === 'Yes' && req.session.appeal?.nlrDetails?.idamId != null;
+      const hasNlr = hasActiveNlr(req.session.appeal);
       const appealInProgress = isAppealInProgress(appealStatus, isCitizen);
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,

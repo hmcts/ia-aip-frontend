@@ -113,6 +113,36 @@
   }) }}
 {% endmacro %}
 
+{% macro nlrStatement() %}
+  {{ govukRadios({
+    classes: "",
+    idPrefix: "nlrStatement",
+    name: "nlrStatement",
+    fieldset: {
+      legend: {
+        text: i18n.pages.checkYourAnswers.nlr.statement,
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--m"
+      }
+    },
+    items: [
+          {
+              value: "appellant",
+              text: i18n.pages.checkYourAnswers.nlr.isAppellant,
+              checked: nlrStatement == "appellant"
+          },
+          {
+              value: "nlr",
+              text: i18n.pages.checkYourAnswers.nlr.isNlr,
+              checked: nlrStatement == "nlr"
+          }
+      ],
+      errorMessage: {
+          text:  errors['nlrStatement'].text
+      } if errors['nlrStatement']
+  }) }}
+{% endmacro %}
+
 {% macro continueButton() %}
   {{ govukButton({
     text: "Continue"

@@ -1,21 +1,9 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { addSummaryRow, Delimiter } from '../../utils/summary-list';
-import { getRedirectPage } from '../../utils/utils';
-import {
-  createStructuredError,
-  emailValidation,
-  isSamePersonValidation,
-  nlrAddressValidation,
-  statementValidation,
-  nlrNamesValidation,
-  nonLegalRepPhoneValidation,
-  textAreaValidation
-} from '../../utils/validations/fields-validations';
+import { statementValidation } from '../../utils/validations/fields-validations';
 
 function getRemoveNonLegalRepresentative(req: Request, res: Response, next: NextFunction) {
   try {
@@ -78,7 +66,7 @@ function getRemoveNonLegalRepresentativeConfirmation(req: Request, res: Response
   }
 }
 
-function setupRemoveNonLegalRepresentativeControllers(middleware: Middleware[], updateAppealService: UpdateAppealService,): Router {
+function setupRemoveNonLegalRepresentativeControllers(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.nonLegalRep.removeNonLegalRep, middleware, getRemoveNonLegalRepresentative);
   router.post(paths.nonLegalRep.removeNonLegalRep, middleware, postRemoveNonLegalRepresentative(updateAppealService));

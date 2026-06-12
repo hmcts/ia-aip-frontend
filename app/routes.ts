@@ -185,10 +185,10 @@ import { setupMakeApplicationControllers } from './controllers/make-application/
 import {
   setupNonLegalRepresentativeControllers
 } from './controllers/non-legal-representative/add-non-legal-representative';
+import { setupJoinAppealControllers } from './controllers/non-legal-representative/join-appeal';
 import {
   setupRemoveNonLegalRepresentativeControllers
 } from './controllers/non-legal-representative/remove-non-legal-representative';
-import { setupJoinAppealControllers } from './controllers/non-legal-representative/join-appeal';
 import { setupNlrUpdatePhoneNumberControllers } from './controllers/non-legal-representative/update-nlr-details';
 import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-country/ooc-feature-toggle';
 import {
@@ -357,7 +357,7 @@ const outOfCountryController = setupOutOfCountryController(middleware, updateApp
 const makeApplicationControllers = setupMakeApplicationControllers(middleware, updateAppealService, documentManagementService);
 const changeRepresentationControllers = setupChangeRepresentationControllers(middleware);
 const nonLegalRepresentativeControllers = setupNonLegalRepresentativeControllers(middleware, updateAppealService);
-const removeNonLegalRepresentativeControllers = setupRemoveNonLegalRepresentativeControllers(middleware, updateAppealService, ccdSystemService);
+const removeNonLegalRepresentativeControllers = setupRemoveNonLegalRepresentativeControllers(middleware, updateAppealService);
 const joinAppealControllers = setupJoinAppealControllers(middleware, updateAppealService, ccdSystemService);
 const nlrUpdatePhoneNumberControllers = setupNlrUpdatePhoneNumberControllers(middleware, updateAppealService);
 const ftpaApplicationControlers = setupFtpaApplicationController(middleware, updateAppealService, documentManagementService);

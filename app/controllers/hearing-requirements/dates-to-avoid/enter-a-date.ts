@@ -8,6 +8,7 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { dayMonthYearFormat } from '../../../utils/date-utils';
 import { getNextPage, shouldValidateWhenSaveForLater } from '../../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
+import { hasActiveNlr } from '../../../utils/utils';
 import { isDateInRange } from '../../../utils/validations/fields-validations';
 import { getHearingStartDate } from '../common';
 
@@ -55,7 +56,7 @@ function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: 
       availableHearingDates,
       previousPage: previousPage,
       saveAndContinueOnly: true,
-      hasNonLegalRep: req.session.appeal?.application?.hasNonLegalRep === 'Yes'
+      hasNonLegalRep: hasActiveNlr(req.session.appeal)
     });
   }
 
@@ -82,7 +83,7 @@ function getEnterADatePageWithId(req: Request, res: Response, next: NextFunction
         availableHearingDates,
         previousPage: previousPage,
         saveAndContinueOnly: true,
-        hasNonLegalRep: req.session.appeal?.application?.hasNonLegalRep === 'Yes'
+        hasNonLegalRep: hasActiveNlr(req.session.appeal)
       });
     }
   } catch (e) {
@@ -111,7 +112,7 @@ function getEnterADatePage(req: Request, res: Response, next: NextFunction) {
       availableHearingDates,
       previousPage: previousPage,
       saveAndContinueOnly: true,
-      hasNonLegalRep: req.session.appeal?.application?.hasNonLegalRep === 'Yes'
+      hasNonLegalRep: hasActiveNlr(req.session.appeal)
     });
   } catch (e) {
     next(e);

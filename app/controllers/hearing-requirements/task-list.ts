@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../../paths';
 import { buildSectionObject, submitHearingRequirementsStatus } from '../../utils/tasks-utils';
+import { hasActiveNlr } from '../../utils/utils';
 
 function getSubmitHearingRequirementsStatus(status: ApplicationStatus, hasNonLegalRep: boolean) {
   const witnesses = buildSectionObject('witnesses', [ 'witnesses' ], status);
@@ -21,7 +22,7 @@ function getSubmitHearingRequirementsStatus(status: ApplicationStatus, hasNonLeg
 
 function getTaskList(req: Request, res: Response, next: NextFunction) {
   try {
-    const hasNonLegalRep = req.session.appeal?.application?.hasNonLegalRep === 'Yes';
+    const hasNonLegalRep = hasActiveNlr(req.session.appeal);
     const status: ApplicationStatus = submitHearingRequirementsStatus(req.session.appeal, hasNonLegalRep);
     const statusOverview = getSubmitHearingRequirementsStatus(status, hasNonLegalRep);
 

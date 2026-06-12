@@ -76,6 +76,7 @@ function getCreateNewAppeal(updateAppealService: UpdateAppealService) {
       return res.redirect(`${paths.common.casesList}?errorCode=${ErrorCode.tooManyDrafts}`);
     }
     try {
+      req.session.isNonLegalRep = false;
       await updateAppealService.createNewAppeal(req);
       return res.redirect(paths.common.overview);
     } catch (e) {

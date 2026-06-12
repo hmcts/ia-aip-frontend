@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import moment from 'moment';
 import {
   getEnterADatePage,
@@ -7,7 +7,6 @@ import {
   postEnterADatePageWithId,
   setupHearingDatesToAvoidEnterADateController
 } from '../../../../../app/controllers/hearing-requirements/dates-to-avoid/enter-a-date';
-import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { dayMonthYearFormat } from '../../../../../app/utils/date-utils';

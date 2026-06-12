@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getFileNotFoundPage, setupNotFoundController } from '../../../app/controllers/file-not-found';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';

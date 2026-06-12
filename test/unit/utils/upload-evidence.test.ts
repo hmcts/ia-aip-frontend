@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { askForMoreTimeEvidenceUploadConfig } from '../../../app/controllers/ask-for-more-time/ask-for-more-time';
 import { expect, sinon } from '../../utils/testUtils';
 

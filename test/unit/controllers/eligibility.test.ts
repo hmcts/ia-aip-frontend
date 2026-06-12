@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { eligibilityQuestionGet, eligibilityQuestionPost, getEligible, getIneligible, setupEligibilityController } from '../../../app/controllers/eligibility';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';

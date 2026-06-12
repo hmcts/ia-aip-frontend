@@ -1,16 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
-import { SinonSpy } from 'sinon';
-import { postAsylumSupport } from '../../../app/controllers/appeal-application/asylum-support';
+import { Request, Response } from 'express';
 import {
   getConfirmationPage,
   getConfirmationPaidPage,
   setConfirmationController
 } from '../../../app/controllers/appeal-application/confirmation-page';
-import { FEATURE_FLAGS } from '../../../app/data/constants';
-import { Events } from '../../../app/data/events';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
-import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { addDaysToDate } from '../../../app/utils/date-utils';
 import Logger from '../../../app/utils/logger';

@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { SinonStub } from 'sinon';
 import {
   getAddAnotherDateQuestionPage, postAddAnotherDateQuestionPage,

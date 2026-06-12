@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import session from 'express-session';
 import moment from 'moment';
-import { fn as momentProto } from 'moment';
 import {
   getDateLetterReceived,
   getDateLetterSent,

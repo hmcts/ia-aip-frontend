@@ -7287,6 +7287,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-unused-imports@npm:^4.4.1":
+  version: 4.4.1
+  resolution: "eslint-plugin-unused-imports@npm:4.4.1"
+  peerDependencies:
+    "@typescript-eslint/eslint-plugin": ^8.0.0-0 || ^7.0.0 || ^6.0.0 || ^5.0.0
+    eslint: ^10.0.0 || ^9.0.0 || ^8.0.0
+  peerDependenciesMeta:
+    "@typescript-eslint/eslint-plugin":
+      optional: true
+  checksum: 10/b420fd55c393a6fdacfdbd0d1adf4cd44bed9a6584f05245091a6716272c57f38154d04b76f253619d8bf22823c0b9d630ef6b5b09edad6e51b8a1f7aec56c22
+  languageName: node
+  linkType: hard
+
 "eslint-scope@npm:5.1.1":
   version: 5.1.1
   resolution: "eslint-scope@npm:5.1.1"
@@ -8835,6 +8848,7 @@ __metadata:
     eslint: "npm:^9.39.4"
     eslint-plugin-chai-friendly: "npm:^1.1.1"
     eslint-plugin-import: "npm:^2.32.0"
+    eslint-plugin-unused-imports: "npm:^4.4.1"
     express: "npm:^4.22.1"
     express-rate-limit: "npm:^8.3.1"
     express-session: "npm:^1.19.0"

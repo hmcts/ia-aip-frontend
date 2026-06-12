@@ -1,5 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
-import { postHealthConditionsQuestion } from '../../../../../app/controllers/cma-requirements/other-needs/health-conditions-question';
+import express, { Request, Response } from 'express';
 import {
   getPastExperiencesQuestion,
   postPastExperiencesQuestion,

@@ -25,7 +25,6 @@ import {
 } from '../../../app/controllers/ftpa/ftpa-application';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
-import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { formatDate } from '../../../app/utils/date-utils';
 import i18n from '../../../locale/en.json';

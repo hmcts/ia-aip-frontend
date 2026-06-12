@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request } from 'express';
 import session from 'express-session';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
-import { appealApplicationStatus, resetFeeSupportSectionStatusAndValues } from '../../../app/utils/tasks-utils';
+import { appealApplicationStatus } from '../../../app/utils/tasks-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('getStatus', () => {

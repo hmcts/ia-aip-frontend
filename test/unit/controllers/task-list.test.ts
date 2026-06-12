@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import { getTaskList, setupTaskListController } from '../../../app/controllers/appeal-application/task-list';
 import { FEATURE_FLAGS } from '../../../app/data/constants';

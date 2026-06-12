@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getLinkOrUnlinkAppealApplication, postLinkOrUnlinkAppealApplication } from '../../../../../app/controllers/make-application/appeal-requests/link-or-unlink-appeal-application';
 import { paths } from '../../../../../app/paths';
 import i18n from '../../../../../locale/en.json';

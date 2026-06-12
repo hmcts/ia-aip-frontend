@@ -1,7 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
-  hearingBundleFeatureMiddleware,
   hearingRequirementsMiddleware
 } from '../../../app/middleware/hearing-requirements-middleware';
 import { paths } from '../../../app/paths';

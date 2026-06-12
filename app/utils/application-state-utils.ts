@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import _ from 'lodash';
 import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';

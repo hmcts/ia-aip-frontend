@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { isUserAuthenticated } from '../../../app/middleware/is-user-authenticated';
 import { expect, sinon } from '../../utils/testUtils';
 

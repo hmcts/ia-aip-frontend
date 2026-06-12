@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import session from 'express-session';
 import { getAppellantInUk, getOocHrInside, getOocProtectionDepartureDate, postAppellantInUk, postOocHrInside, postOocProtectionDepartureDate, setupOutOfCountryController } from '../../../app/controllers/appeal-application/out-of-country';
 import { getTypeOfAppeal } from '../../../app/controllers/appeal-application/type-of-appeal';

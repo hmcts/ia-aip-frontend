@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { getConfirmationPage } from '../../../../app/controllers/cma-requirements/confirmation-page';
 import { setupHearingRequirementsConfirmationPage } from '../../../../app/controllers/hearing-requirements/confirmation-page';
 import { paths } from '../../../../app/paths';

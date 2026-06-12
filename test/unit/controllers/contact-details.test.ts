@@ -24,10 +24,8 @@ import {
   postSponsorName,
   setupContactDetailsController
 } from '../../../app/controllers/appeal-application/contact-details';
-import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
-import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { createStructuredError } from '../../../app/utils/validations/fields-validations';

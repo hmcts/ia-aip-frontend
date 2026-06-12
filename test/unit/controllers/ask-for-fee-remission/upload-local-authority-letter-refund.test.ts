@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import session from 'express-session';
 import { validate } from '../../../../app/controllers/appeal-application/upload-local-authority-letter';
 import {

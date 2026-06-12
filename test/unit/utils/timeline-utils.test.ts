@@ -19,7 +19,6 @@ import {
   getUpdateTribunalDecisionDocumentHistory,
   getUpdateTribunalDecisionHistory
 } from '../../../app/utils/timeline-utils';
-import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 

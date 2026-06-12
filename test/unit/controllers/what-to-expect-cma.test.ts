@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getCmaGuidancePage, setupcmaGuidancePageController } from '../../../app/controllers/cma-requirements/what-to-expect';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';

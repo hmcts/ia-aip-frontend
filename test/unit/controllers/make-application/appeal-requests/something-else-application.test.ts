@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getOtherAppealApplication, postOtherAppealApplication } from '../../../../../app/controllers/make-application/appeal-requests/something-else-application';
 import { paths } from '../../../../../app/paths';
 import i18n from '../../../../../locale/en.json';

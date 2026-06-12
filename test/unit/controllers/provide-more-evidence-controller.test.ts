@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   buildAddendumEvidenceDocumentsSummaryList,
   buildAdditionalEvidenceDocumentsSummaryList,
@@ -20,7 +20,6 @@ import {
   setupProvideMoreEvidenceController,
   uploadProvideMoreEvidence, validate
 } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
-import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';

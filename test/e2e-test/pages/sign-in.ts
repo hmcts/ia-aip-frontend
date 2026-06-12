@@ -2,8 +2,7 @@ import { paths } from '../../../app/paths';
 import * as progression from '../service/case-progression-service';
 import { createCaseFromThread } from '../service/ccd-service';
 import {
-  createCitizenUser,
-  setTestingSupportToken
+  createCitizenUser
 } from '../service/user-service';
 import { currentUserDetails, signInForUserFromThread } from './helper-functions';
 

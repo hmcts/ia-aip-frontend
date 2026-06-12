@@ -1,9 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
 import { paths } from '../../../app/paths';
-import UpdateAppealService from '../../../app/service/update-appeal-service';
-import Logger from '../../../app/utils/logger';
 import { getNextPage, shouldValidateWhenSaveForLater } from '../../../app/utils/save-for-later-utils';
-import { expect, sinon } from '../../utils/testUtils';
+import { expect } from '../../utils/testUtils';
 
 describe('Save for later utils', () => {
   describe('getNextPage', () => {

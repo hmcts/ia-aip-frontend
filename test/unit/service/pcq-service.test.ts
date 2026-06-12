@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import PcqService from '../../../app/service/pcq-service';
 import Logger from '../../../app/utils/logger';

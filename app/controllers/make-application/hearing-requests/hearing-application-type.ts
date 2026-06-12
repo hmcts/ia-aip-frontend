@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import _ from 'lodash';
 import i18n from '../../../../locale/en.json';
 import { applicationTypes } from '../../../data/application-types';

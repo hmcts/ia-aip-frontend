@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { SinonStub } from 'sinon';
 import {
-  enforceFileSizeLimit, fileFilter, handleFileUploadErrors, uploadConfiguration
+  enforceFileSizeLimit, fileFilter, handleFileUploadErrors
 } from '../../../app/middleware/file-upload-validation-middleware';
 import { expect, sinon } from '../../utils/testUtils';
 const multer = require('multer');

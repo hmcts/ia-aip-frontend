@@ -7,7 +7,13 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
-import { appellantInUkValidation, dateLeftUkValidation, gwfReferenceNumberValidation, oocHrEeaValidation } from '../../utils/validations/fields-validations';
+import {
+  appellantInUkValidation,
+  createStructuredError,
+  dateLeftUkValidation,
+  gwfReferenceNumberValidation,
+  oocHrEeaValidation
+} from '../../utils/validations/fields-validations';
 
 async function getAppellantInUk(req: Request, res: Response, next: NextFunction) {
   try {
@@ -143,6 +149,20 @@ function getGwfReference(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function renderGwfReferenceError(req: Request, res: Response, errorList: ValidationErrors | string[]) {
+  const fieldErrors = {
+    gwfReferenceNumber: createStructuredError('gwfReferenceNumber', i18n.validationErrors.errorSummary)
+  };
+  return res.render('appeal-application/out-of-country/gwf-reference.njk',
+      {
+        errors: fieldErrors,
+        errorList: Object.values(errorList),
+        gwfReferenceNumber: req.body.gwfReferenceNumber,
+        previousPage: paths.appealStarted.taskList
+      }
+  );
+}
+
 function postGwfReference(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -151,14 +171,7 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
       }
       const validation = gwfReferenceNumberValidation(req.body);
       if (validation) {
-        return res.render('appeal-application/out-of-country/gwf-reference.njk',
-          {
-            errors: validation,
-            errorList: Object.values(validation),
-            gwfReferenceNumber: req.body.gwfReferenceNumber,
-            previousPage: paths.appealStarted.taskList
-          }
-        );
+        return renderGwfReferenceError(req, res, validation);
       }
       const appeal: Appeal = {
         ...req.session.appeal,
@@ -167,6 +180,18 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
           gwfReferenceNumber: req.body.gwfReferenceNumber
         }
       };
+
+      const pageId: string = 'editAppealcuiGwfReferenceNumber';
+      const midEventData = { gwfReferenceNumber: req.body.gwfReferenceNumber };
+      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
+      if (midEventErrors?.length > 0) {
+        const errorListObj = {
+          gwfReferenceNumber: createStructuredError('gwfReferenceNumber', midEventErrors[0])
+        };
+        return renderGwfReferenceError(req, res, errorListObj);
+      }
+
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {

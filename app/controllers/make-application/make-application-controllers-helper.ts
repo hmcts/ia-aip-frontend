@@ -170,7 +170,7 @@ function postProvideSupportingEvidence(req: Request, res: Response, next: NextFu
   }
 }
 
-function getCheckAndSendRenderArgs(req: Request): RenderArgs {
+function getCheckAndSendRenderArgs(req: Request, config: any): RenderArgs {
   const summaryLists: SummaryList[] = buildSupportingEvidenceDocumentsSummaryList(req, config.pathToProvideSupportingEvidenceNoLeadingSlash, config.pathToMakeApplicationDetailsNoLeadingSlash);
   const previousPage = req.session.appeal.makeAnApplicationProvideEvidence === i18n.pages.makeApplication.provideSupportingEvidenceYesOrNo.options.yes.value
     ? config.pathToProvideSupportingEvidence
@@ -190,18 +190,30 @@ function getCheckAndSendRenderArgs(req: Request): RenderArgs {
 
 function getProvideSupportingEvidenceCheckAndSend(req: Request, res: Response, next: NextFunction, config: any) {
   try {
-    const { renderPath, renderObj } = getCheckAndSendRenderArgs(req);
+    const { renderPath, renderObj } = getCheckAndSendRenderArgs(req, config);
     return res.render(renderPath, renderObj);
   } catch (e) {
     next(e);
   }
 }
 
+function getProvideSupportingEvidenceConfig(req: Request) {
+  const pathToProvideSupportingEvidence = makeApplicationControllersHelper.getPath('provideSupportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code);
+  const pathToMakeApplicationDetails = makeApplicationControllersHelper.getPath('', req.session.appeal.makeAnApplicationTypes.value.code);
+  return {
+    pathToProvideSupportingEvidenceNoLeadingSlash: pathToProvideSupportingEvidence ? pathToProvideSupportingEvidence.slice(1) : '',
+    pathToMakeApplicationDetailsNoLeadingSlash: pathToMakeApplicationDetails ? pathToMakeApplicationDetails.slice(1) : '',
+    pathToProvideSupportingEvidence,
+    pathToSupportingEvidence: makeApplicationControllersHelper.getPath('supportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code),
+    pathToCheckYourAnswer: makeApplicationControllersHelper.getPath('checkAnswer', req.session.appeal.makeAnApplicationTypes.value.code)
+  };
+}
+
 function postProvideSupportingEvidenceCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (hasActiveNlr(req.session.appeal)) {
-        const canContinue = handleNlrStatementValidation(req, res, getCheckAndSendRenderArgs(req));
+        const canContinue = handleNlrStatementValidation(req, res, getCheckAndSendRenderArgs(req, getProvideSupportingEvidenceConfig(req)));
         if (!canContinue) {
           return;
         }
@@ -347,6 +359,7 @@ export const makeApplicationControllersHelper = {
   postProvideSupportingEvidenceCheckAndSend,
   uploadSupportingEvidence,
   deleteSupportingEvidence,
+  getProvideSupportingEvidenceConfig,
   buildSupportingEvidenceDocumentsSummaryList,
   getPath
 };

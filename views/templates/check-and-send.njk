@@ -49,10 +49,8 @@
         {{ saveButtons({name: 'send', text: 'Send'}) }}
       {% endif %}
     </form>
-  {% endif %}
-
-  {% if continuePath %}
-    <form method="post" action="{{ formAction }}">
+  {% elif continuePath %}
+    <form method="post" action="{{ continuePath }}">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       {% if hasNlr %}
           {{ nlrStatement() }}
@@ -60,7 +58,19 @@
       {{ govukButton({
         text: i18n.common.buttons.confirmAndSend
       }) }}
-    <a class="cancel-button" href="{{ previousPage }}">{{ i18n.common.buttons.cancel }}</a>
+      {{ cancelButton() }}
+    </form>
+  {% elif sendWithCancel %}
+    <form method="post" action={{ sendWithCancel }}>
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {% if hasNlr %}
+          {{ nlrStatement() }}
+      {% endif %}
+      {{ govukButton({
+          text: i18n.common.buttons.send,
+          preventDoubleClick: true
+      }) }}
+      <a class="govuk-!-margin-left-5" href="{{ paths.common.askForMoreTimeCancel }}">{{ i18n.common.buttons.cancel }}</a>
     </form>
   {% endif %}
 

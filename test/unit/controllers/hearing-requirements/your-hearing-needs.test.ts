@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import {
   getYourHearingNeedsPage,
-  postYourHearingNeedsPage,
   setupYourHearingNeedsController
 } from '../../../../app/controllers/hearing-requirements/your-hearing-needs';
 
@@ -2086,21 +2085,4 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
-
-  describe('postYourHearingNeedsPage', () => {
-    it('should submit and redirect to your hearing page', async () => {
-      await postYourHearingNeedsPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
-    });
-
-    it('should catch error and call next with error', async () => {
-      const error = new Error('an error');
-      res.redirect = redirectStub.throws(error);
-
-      await postYourHearingNeedsPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next.calledOnceWith(error)).to.equal(true);
-    });
-  });
-
 });

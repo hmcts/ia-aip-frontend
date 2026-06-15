@@ -150,7 +150,7 @@
 {% endmacro %}
 
 {% macro cancelButton() %}
-  <a class="cancel-button" href="{{ paths.common.overview }}">{{ i18n.common.buttons.cancel }}</a>
+  <a class="cancel-button" href="{{ previousPage }}">{{ i18n.common.buttons.cancel }}</a>
 {% endmacro %}
 
 {% macro cancelButtonWithAttributes(previousPage, errors=None) %}

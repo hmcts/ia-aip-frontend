@@ -34,8 +34,13 @@ function getCheckAndSendRenderArgs(req: Request): RenderArgs {
   }
 
   return {
-    renderPath: 'reasons-for-appeal/check-and-send-page.njk',
-    renderObj: { summaryRows, previousPage: previousPage, hasNlr: hasActiveNlr(req.session.appeal) }
+    renderPath: 'templates/check-and-send.njk',
+    renderObj: {
+      summaryRows,
+      previousPage: previousPage,
+      hasNlr: hasActiveNlr(req.session.appeal),
+      formAction: paths.awaitingReasonsForAppeal.checkAndSend
+    }
   };
 }
 

@@ -50,9 +50,9 @@
           {{ nlrStatement() }}
       {% endif %}
       {% if noSaveForLater %}
-        {{ saveButton({name: 'send', text: buttonText if buttonText else 'Send'}) }}
+        {{ saveButton({name: 'send', text: buttonText if buttonText else i18n.common.buttons.send}) }}
       {% else %}
-        {{ saveButtons({name: 'send', text: 'Send'}) }}
+        {{ saveButtons({name: 'send', text: i18n.common.buttons.send}) }}
       {% endif %}
     </form>
   {% elif continuePath %}

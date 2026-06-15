@@ -34,24 +34,6 @@ export const Events = {
     summary: 'Request respondent review',
     description: 'Request respondent review'
   },
-  // TODO: remove event once make an application is fully working
-  SUBMIT_TIME_EXTENSION: {
-    id: 'submitTimeExtension',
-    summary: 'Submit time extension AIP',
-    description: 'Submit time extensions for case AIP'
-  },
-  // TODO: remove event once make an application is fully working
-  REVIEW_TIME_EXTENSION: {
-    id: 'reviewTimeExtension',
-    summary: 'Submits review of time extension for appeal case AIP',
-    description: 'Submits review of time extension for appeal case AIP'
-  },
-  // TODO: remove event once make an application is fully working
-  EDIT_TIME_EXTENSION: {
-    id: 'editTimeExtension',
-    summary: 'Edit time extension AIP',
-    description: 'edits time extensions for case AIP'
-  },
   MAKE_AN_APPLICATION: {
     id: 'makeAnApplication',
     summary: 'Make an application',
@@ -76,11 +58,6 @@ export const Events = {
     id: 'submitCmaRequirements',
     summary: 'Submit CMA requirements',
     description: 'Submit CMA requirements'
-  },
-  SEND_DIRECTION_WITH_QUESTIONS: {
-    id: 'sendDirectionWithQuestions',
-    summary: 'Direct the appellant to answer clarifying questions',
-    description: 'Direct the appellant to answer clarifying questions'
   },
   UPDATE_TRIBUNAL_DECISION: {
     id: 'updateTribunalDecision',
@@ -146,11 +123,6 @@ export const Events = {
     id: 'uploadAddendumEvidenceHomeOffice',
     summary: 'Home office uploads addendum evidence for AIP',
     description: 'Home office uploads addendum evidence for AIP'
-  },
-  EDIT_DOCUMENTS: {
-    id: 'editDocuments',
-    summary: 'Edit additional evidence for AIP',
-    description: 'Edit additional evidence for AIP'
   },
   REQUEST_HEARING_REQUIREMENTS_FEATURE: {
     id: 'requestHearingRequirementsFeature',

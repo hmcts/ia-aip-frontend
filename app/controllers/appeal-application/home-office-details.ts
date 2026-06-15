@@ -9,9 +9,10 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { getNationalitiesOptions } from '../../utils/nationalities';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { getRedirectPage } from '../../utils/utils';
+import { getRedirectPage, toIsoDate } from '../../utils/utils';
 import {
   appellantNamesValidation,
+  createStructuredError,
   dateLetterReceivedValidation,
   dateLetterSentValidation,
   dateOfBirthValidation,
@@ -33,6 +34,20 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function renderHomeOfficeDetailsError(req: Request, res: Response, errorList: ValidationErrors | string[]) {
+  const fieldErrors = {
+    homeOfficeRefNumber: createStructuredError('homeOfficeRefNumber', i18n.validationErrors.errorSummary)
+  };
+  return res.render('appeal-application/home-office/details.njk',
+      {
+        errors: fieldErrors,
+        errorList: Object.values(errorList),
+        homeOfficeRefNumber: req.body.homeOfficeRefNumber,
+        previousPage: paths.appealStarted.taskList
+      }
+  );
+}
+
 function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -41,14 +56,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       }
       const validation = homeOfficeNumberValidation(req.body);
       if (validation) {
-        return res.render('appeal-application/home-office/details.njk',
-          {
-            errors: validation,
-            errorList: Object.values(validation),
-            homeOfficeRefNumber: req.body.homeOfficeRefNumber,
-            previousPage: paths.appealStarted.taskList
-          }
-        );
+        return renderHomeOfficeDetailsError(req, res, validation);
       }
       const appeal: Appeal = {
         ...req.session.appeal,
@@ -57,6 +65,17 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
           homeOfficeRefNumber: req.body.homeOfficeRefNumber
         }
       };
+      const pageId: string = 'editAppealcuiHomeOfficeReferenceNumber';
+      const midEventData = { homeOfficeReferenceNumber: req.body.homeOfficeRefNumber };
+      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
+      if (midEventErrors?.length > 0) {
+        const errorListObj = {
+          homeOfficeRefNumber: createStructuredError('homeOfficeRefNumber', midEventErrors[0])
+        };
+        return renderHomeOfficeDetailsError(req, res, errorListObj);
+      }
+
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
@@ -87,6 +106,20 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function renderNamePageError(req: Request, res: Response, errors: ValidationErrors, errorList: ValidationErrors | string[]) {
+  const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
+  const previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
+  return res.render('appeal-application/personal-details/name.njk', {
+    personalDetails: {
+      familyName: req.body.familyName,
+      givenNames: req.body.givenNames
+    },
+    error: errors,
+    errorList: Object.values(errorList),
+    previousPage
+  });
+}
+
 function postNamePage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
@@ -95,17 +128,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
       }
       const validation = appellantNamesValidation(req.body);
       if (validation) {
-        const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
-        const previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
-        return res.render('appeal-application/personal-details/name.njk', {
-          personalDetails: {
-            familyName: req.body.familyName,
-            givenNames: req.body.givenNames
-          },
-          error: validation,
-          errorList: Object.values(validation),
-          previousPage
-        });
+        return renderNamePageError(req, res, validation, validation);
       }
 
       const appeal: Appeal = {
@@ -119,6 +142,24 @@ function postNamePage(updateAppealService: UpdateAppealService) {
           }
         }
       };
+
+      const pageId: string = 'editAppealcuiAppellantName';
+      const midEventData = {
+        appellantGivenNames: req.body.givenNames,
+        appellantFamilyName: req.body.familyName
+      };
+      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
+      if (midEventErrors?.length > 0) {
+        const fieldErrors = {
+          givenNames: createStructuredError('givenNames', i18n.validationErrors.errorSummary),
+          familyName: createStructuredError('familyName', i18n.validationErrors.errorSummary)
+        };
+        const errorListObj = {
+          givenNames: createStructuredError('givenNames', midEventErrors[0])
+        };
+        return renderNamePageError(req, res, fieldErrors, errorListObj);
+      }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
@@ -149,6 +190,15 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function renderDateOfBirthError(req: Request, res: Response, errors: boolean | ValidationErrors, errorList: ValidationErrors | string[]) {
+  return res.render('appeal-application/personal-details/date-of-birth.njk', {
+    errors: errors,
+    errorList: Object.values(errorList),
+    dob: { ...req.body },
+    previousPage: paths.appealStarted.name
+  });
+}
+
 function postDateOfBirth(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
@@ -157,12 +207,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
       }
       const validation = dateOfBirthValidation(req.body);
       if (validation != null) {
-        return res.render('appeal-application/personal-details/date-of-birth.njk', {
-          errors: validation,
-          errorList: Object.values(validation),
-          dob: { ...req.body },
-          previousPage: paths.appealStarted.name
-        });
+        return renderDateOfBirthError(req, res, validation, validation as ValidationErrors);
       }
 
       const appeal: Appeal = {
@@ -179,6 +224,21 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
           }
         }
       };
+
+      const pageId: string = 'editAppealcuiAppellantDob';
+      const midEventData = { appellantDateOfBirth: toIsoDate(appeal.application.personalDetails.dob) };
+      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
+      if (midEventErrors?.length > 0) {
+        const fieldErrors = {
+          day: createStructuredError('day', i18n.validationErrors.errorSummary)
+        };
+        const errorListObj = {
+          day: createStructuredError('day', midEventErrors[0])
+        };
+        return renderDateOfBirthError(req, res, fieldErrors, errorListObj);
+      }
+
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {

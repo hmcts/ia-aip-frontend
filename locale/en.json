@@ -513,6 +513,10 @@
       "thingsYouCanDo": "Things you can do now",
       "readMore": "Read more about appealing an immigration or asylum decision",
       "findOutMore": "Find organisations that can help you with your appeal",
+      "submittedWithNlr": [
+        "You have submitted your appeal details with a non-legal representative. If they do not already have an account with MyHMCTS, they will be sent an email to create an account..",
+        "To continue to add your non-legal representative once they have created an account, please click the <span class='govuk-body govuk-!-font-weight-bold'>Add non-legal representative</span> link on the right of your appeal page in order to send them instructions to access your case."
+      ],
       "outOfTime": {
         "panel": "Your late appeal details have been sent",
         "askHomeOffice": "A Legal Officer will look at the reasons your appeal was late and decide if your appeal can continue",

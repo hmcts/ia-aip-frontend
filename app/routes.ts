@@ -265,7 +265,7 @@ const checkYourAnswersRefundController = setupCheckYourAnswersRefundController(m
 const confirmationRefundController = setConfirmationRefundController(middleware);
 const contactDetailsController = setupContactDetailsController(middleware, { updateAppealService, osPlacesClient });
 const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService, paymentService);
-const confirmationController = setConfirmationController(middleware, updateAppealService);
+const confirmationController = setConfirmationController(middleware);
 const outOfTimeController = setupOutOfTimeController(middleware, { updateAppealService, documentManagementService });
 const reasonsForAppealController = setupReasonsForAppealController(middleware, {
   updateAppealService,
@@ -351,7 +351,7 @@ const hearingDatesToAvoidEnterADateController = setupHearingDatesToAvoidEnterADa
 const hearingDatesToAvoidReasonsController = setupHearingDatesToAvoidReasonController(middleware, updateAppealService);
 const hearingDatesToAvoidAddAnotherDateController = setupHearingDatesToAvoidAddAnotherDateController(middleware);
 const hearingRequirementsCYAController = setupHearingRequirementsCYAController(middleware, updateAppealService);
-const yourHearingNeedsController = setupYourHearingNeedsController(middleware, updateAppealService);
+const yourHearingNeedsController = setupYourHearingNeedsController(middleware);
 const hearingRequirementConfirmationController = setupHearingRequirementsConfirmationPage(middleware);
 const outOfCountryController = setupOutOfCountryController(middleware, updateAppealService);
 const makeApplicationControllers = setupMakeApplicationControllers(middleware, updateAppealService, documentManagementService);

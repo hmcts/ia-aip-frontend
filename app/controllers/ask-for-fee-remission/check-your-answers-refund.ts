@@ -11,11 +11,14 @@ import { handleNlrStatementValidation, hasActiveNlr } from '../../utils/utils';
 async function getCheckYourAnswersRefundRenderArgs(req: Request): Promise<RenderArgs> {
   const summaryRows = await createSummaryRowsFrom(req);
   return {
-    renderPath: 'ask-for-fee-remission/check-and-send.njk',
+    renderPath: 'templates/check-and-send.njk',
     renderObj: {
       previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
       summaryRows,
-      hasNlr: hasActiveNlr(req.session.appeal)
+      hasNlr: hasActiveNlr(req.session.appeal),
+      formAction: paths.appealSubmitted.checkYourAnswersRefund,
+      noSaveForLater: true,
+      buttonText: i18n.common.buttons.submit
     }
   };
 }

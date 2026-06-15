@@ -706,6 +706,8 @@ declare global {
     formAction?: string;
     continuePath?: string;
     cancelPath?: string;
+    noSaveForLater?: boolean
+    buttonText?: string
     summaryLists?: SummaryList[];
     summarySections?: SummarySection[];
   }

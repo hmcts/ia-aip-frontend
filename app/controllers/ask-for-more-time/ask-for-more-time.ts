@@ -61,8 +61,7 @@ function getCancelAskForMoreTime(req: Request, res: Response) {
   return getConditionalRedirectUrl(req, res, nextPage);
 }
 
-// TODO: remove updateAppealService inject if not needed
-function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
+function postAskForMoreTimePage() {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const { askForMoreTime } = req.body;
@@ -163,8 +162,14 @@ function getCheckAndSendRenderArgs(req: Request): RenderArgs {
   }
 
   return {
-    renderPath: './ask-for-more-time/check-and-send.njk',
-    renderObj: { previousPage: previousPage, summaryRows: summaryRows, hasNlr: hasActiveNlr(req.session.appeal) }
+    renderPath: './templates/check-and-send.njk',
+    renderObj: {
+      previousPage: previousPage,
+      summaryRows: summaryRows,
+      hasNlr: hasActiveNlr(req.session.appeal),
+      continuePath: paths.common.askForMoreTimeCheckAndSend,
+      cancelPath: paths.common.askForMoreTimeCancel
+    }
   };
 }
 
@@ -219,7 +224,7 @@ function setupAskForMoreTimeController(middleware, deps?: any): Router {
   const router = Router();
   router.get(paths.common.askForMoreTimeReason, middleware, getAskForMoreTimePage);
   router.get(paths.common.askForMoreTimeCancel, middleware, getCancelAskForMoreTime);
-  router.post(paths.common.askForMoreTimeReason, middleware, postAskForMoreTimePage(deps.updateAppealService));
+  router.post(paths.common.askForMoreTimeReason, middleware, postAskForMoreTimePage());
   router.get(paths.common.askForMoreTimeSupportingEvidence, middleware, getAskForMoreTimeEvidence);
   router.post(paths.common.askForMoreTimeSupportingEvidence, middleware, postAdditionalSupportingEvidenceQuestionPage);
   router.get(paths.common.askForMoreTimeSupportingEvidenceUpload, middleware, getUploadEvidence);

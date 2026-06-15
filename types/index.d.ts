@@ -705,6 +705,7 @@ declare global {
     pageTitle?: string;
     formAction?: string;
     continuePath?: string;
+    cancelPath?: string;
     summaryLists?: SummaryList[];
     summarySections?: SummarySection[];
   }

@@ -9,7 +9,7 @@ import {
   getNlrNeedHearingLoop,
   getNlrNeeds,
   getNlrNeedStepFreeAccess,
-  getnlrAttendingOutsideUK,
+  getnlrAttendingOutsideUk,
   postIsNlrInterpreterRequiredPage,
   postNlrAttending,
   postNlrHearingInterpreterSignLanguageSelection,
@@ -17,7 +17,7 @@ import {
   postNlrInterpreterTypePage,
   postNlrNeedHearingLoop,
   postNlrNeedStepFreeAccess,
-  postnlrAttendingOutsideUK,
+  postnlrAttendingOutsideUk,
   setupHearingNonLegalRepNeedsController,
 } from '../../../../app/controllers/hearing-requirements/non-legal-rep';
 import { Events } from '../../../../app/data/events';
@@ -95,8 +95,8 @@ describe('Hearing requirements non legal rep controller', () => {
       setupHearingNonLegalRepNeedsController(middleware, updateAppealService as UpdateAppealService, refDataServiceObj as RefDataService);
       expect(routerGetStub).to.be.calledWith(paths.submitHearingRequirements.nlrAttending, middleware, getNlrAttending);
       expect(routerPostStub).to.be.calledWith(paths.submitHearingRequirements.nlrAttending, middleware, sinon.match.func);
-      expect(routerGetStub).to.be.calledWith(paths.submitHearingRequirements.nlrAttendingOutsideUK, middleware, getnlrAttendingOutsideUK);
-      expect(routerPostStub).to.be.calledWith(paths.submitHearingRequirements.nlrAttendingOutsideUK, middleware, sinon.match.func);
+      expect(routerGetStub).to.be.calledWith(paths.submitHearingRequirements.nlrAttendingOutsideUk, middleware, getnlrAttendingOutsideUk);
+      expect(routerPostStub).to.be.calledWith(paths.submitHearingRequirements.nlrAttendingOutsideUk, middleware, sinon.match.func);
       expect(routerGetStub).to.be.calledWith(paths.submitHearingRequirements.nlrNeeds, middleware, getNlrNeeds);
       expect(routerGetStub).to.be.calledWith(paths.submitHearingRequirements.isNlrInterpreterRequired, middleware, getIsNlrInterpreterRequiredPage);
       expect(routerPostStub).to.be.calledWith(paths.submitHearingRequirements.isNlrInterpreterRequired, middleware, sinon.match.func);
@@ -148,12 +148,12 @@ describe('Hearing requirements non legal rep controller', () => {
       expect(redirectStub).to.be.calledWith(paths.submitHearingRequirements.taskList);
     });
 
-    it('postNlrAttending should submit update and redirect to nlrAttendingOutsideUK if No', async () => {
+    it('postNlrAttending should submit update and redirect to nlrAttendingOutsideUk if No', async () => {
       req.body.answer = 'No';
       expectedAppeal.hearingRequirements.nlrAttending = 'No';
       await postNlrAttending(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(submitStub).to.be.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, expectedAppeal, userId, authToken);
-      expect(redirectStub).to.be.calledWith(paths.submitHearingRequirements.nlrAttendingOutsideUK);
+      expect(redirectStub).to.be.calledWith(paths.submitHearingRequirements.nlrAttendingOutsideUk);
     });
 
     it('postNlrAttending should catch an exception and call next()', async () => {
@@ -164,37 +164,37 @@ describe('Hearing requirements non legal rep controller', () => {
     });
   });
 
-  describe('getnlrAttendingOutsideUK', () => {
-    it('getnlrAttendingOutsideUK should nlrRadioRender correctly', () => {
-      getnlrAttendingOutsideUK(req as Request, res as Response, next);
-      expect(nlrRadioRenderStub).to.be.calledWith(req, res, next, 'nlrAttendingOutsideUK', paths.submitHearingRequirements.nlrAttending);
+  describe('getnlrAttendingOutsideUk', () => {
+    it('getnlrAttendingOutsideUk should nlrRadioRender correctly', () => {
+      getnlrAttendingOutsideUk(req as Request, res as Response, next);
+      expect(nlrRadioRenderStub).to.be.calledWith(req, res, next, 'nlrAttendingOutsideUk', paths.submitHearingRequirements.nlrAttending);
     });
 
-    it('getnlrAttendingOutsideUK should catch an exception and call next()', () => {
+    it('getnlrAttendingOutsideUk should catch an exception and call next()', () => {
       const error = new Error('the error');
       nlrRadioRenderStub.throws(error);
-      getnlrAttendingOutsideUK(req as Request, res as Response, next);
+      getnlrAttendingOutsideUk(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
-  describe('postnlrAttendingOutsideUK', () => {
-    it('postnlrAttendingOutsideUK should nlrRadioRender nlrAttendingOutsideUK if failed validation', async () => {
-      await postnlrAttendingOutsideUK(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+  describe('postnlrAttendingOutsideUk', () => {
+    it('postnlrAttendingOutsideUk should nlrRadioRender nlrAttendingOutsideUk if failed validation', async () => {
+      await postnlrAttendingOutsideUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const expectedValidation = {
         answer: {
           key: 'answer',
-          text: i18n.validationErrors.hearingRequirements.nlrNeedsSection.nlrAttendingOutsideUKRequired,
+          text: i18n.validationErrors.hearingRequirements.nlrNeedsSection.nlrAttendingOutsideUkRequired,
           href: '#answer'
         }
       };
-      expect(nlrRadioRenderStub).to.be.calledWith(req, res, next, 'nlrAttendingOutsideUK', paths.submitHearingRequirements.nlrAttending, expectedValidation);
+      expect(nlrRadioRenderStub).to.be.calledWith(req, res, next, 'nlrAttendingOutsideUk', paths.submitHearingRequirements.nlrAttending, expectedValidation);
     });
 
-    it('postnlrAttendingOutsideUK should submit update and redirect to taskList', async () => {
+    it('postnlrAttendingOutsideUk should submit update and redirect to taskList', async () => {
       req.body.answer = 'something';
-      expectedAppeal.hearingRequirements.nlrAttendingOutsideUK = 'something';
-      await postnlrAttendingOutsideUK(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expectedAppeal.hearingRequirements.nlrAttendingOutsideUk = 'something';
+      await postnlrAttendingOutsideUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(submitStub).to.be.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, expectedAppeal, userId, authToken);
       expect(redirectStub).to.be.calledWith(paths.submitHearingRequirements.taskList);
     });
@@ -202,7 +202,7 @@ describe('Hearing requirements non legal rep controller', () => {
     it('postNlrAttending should catch an exception and call next()', async () => {
       const error = new Error('the error');
       nlrRadioRenderStub.throws(error);
-      await postnlrAttendingOutsideUK(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postnlrAttendingOutsideUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
@@ -652,7 +652,7 @@ describe('Hearing requirements non legal rep controller', () => {
   });
 
   describe('postNlrNeedStepFreeAccess', () => {
-    it('postNlrNeedStepFreeAccess should nlrRadioRender nlrAttendingOutsideUK if failed validation', async () => {
+    it('postNlrNeedStepFreeAccess should nlrRadioRender nlrAttendingOutsideUk if failed validation', async () => {
       const previousPageStub = sandbox.stub(HearingUtils, 'getStepFreeAccessPreviousPage').returns('somePreviousPage');
       await postNlrNeedStepFreeAccess(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const expectedValidation = {
@@ -697,7 +697,7 @@ describe('Hearing requirements non legal rep controller', () => {
   });
 
   describe('postNlrNeedHearingLoop', () => {
-    it('postNlrNeedHearingLoop should nlrRadioRender nlrAttendingOutsideUK if failed validation', async () => {
+    it('postNlrNeedHearingLoop should nlrRadioRender nlrAttendingOutsideUk if failed validation', async () => {
       await postNlrNeedHearingLoop(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const expectedValidation = {
         answer: {

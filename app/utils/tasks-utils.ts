@@ -169,11 +169,11 @@ function submitHearingRequirementsStatus(appeal: Appeal, hasNonLegalRep: boolean
   };
 
   const isNlrAttending: boolean = appeal?.hearingRequirements?.nlrAttending === 'Yes';
-  const isnlrAttendingOutsideUK: boolean = appeal?.hearingRequirements?.nlrAttendingOutsideUK === 'Yes';
-  const areNlrRequirementsNeeded: boolean = isNlrAttending || isnlrAttendingOutsideUK;
+  const isnlrAttendingOutsideUk: boolean = appeal?.hearingRequirements?.nlrAttendingOutsideUk === 'Yes';
+  const areNlrRequirementsNeeded: boolean = isNlrAttending || isnlrAttendingOutsideUk;
   const nlrAttendingTask: Task = {
     saved: !!_.get(appeal, 'hearingRequirements.nlrAttending'),
-    completed: _.has(appeal, 'hearingRequirements.nlrAttendingOutsideUK'),
+    completed: _.has(appeal, 'hearingRequirements.nlrAttendingOutsideUk'),
     active: hasNonLegalRep && accessNeedsTask.completed
   };
 

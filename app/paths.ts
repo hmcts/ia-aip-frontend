@@ -98,7 +98,7 @@ const paths = {
     accessNeeds: '/hearing-access-needs',
     
     nlrAttending: '/hearing-non-legal-rep',
-    nlrAttendingOutsideUK: '/hearing-non-legal-rep-outside-uk',
+    nlrAttendingOutsideUk: '/hearing-non-legal-rep-outside-uk',
     nlrNeeds: '/hearing-non-legal-rep-needs',
     isNlrInterpreterRequired: '/hearing-non-legal-rep-interpreter',
     nlrHearingInterpreterTypes: '/hearing-non-legal-rep-interpreter-types',

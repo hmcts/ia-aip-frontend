@@ -47,27 +47,27 @@ function postNlrAttending(updateAppealService: UpdateAppealService) {
         ...appeal,
         ...appealUpdated
       };
-      return res.redirect(selectedValue == 'Yes' ? paths.submitHearingRequirements.taskList : paths.submitHearingRequirements.nlrAttendingOutsideUK);
+      return res.redirect(selectedValue == 'Yes' ? paths.submitHearingRequirements.taskList : paths.submitHearingRequirements.nlrAttendingOutsideUk);
     } catch (e) {
       next(e);
     }
   };
 }
 
-function getnlrAttendingOutsideUK(req: Request, res: Response, next: NextFunction) {
+function getnlrAttendingOutsideUk(req: Request, res: Response, next: NextFunction) {
   try {
-    return HearingUtils.nlrRadioRender(req, res, next, 'nlrAttendingOutsideUK', paths.submitHearingRequirements.nlrAttending);
+    return HearingUtils.nlrRadioRender(req, res, next, 'nlrAttendingOutsideUk', paths.submitHearingRequirements.nlrAttending);
   } catch (e) {
     next(e);
   }
 }
 
-function postnlrAttendingOutsideUK(updateAppealService: UpdateAppealService) {
+function postnlrAttendingOutsideUk(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = yesOrNoRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.nlrNeedsSection.nlrAttendingOutsideUKRequired);
+      const validation = yesOrNoRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.nlrNeedsSection.nlrAttendingOutsideUkRequired);
       if (validation) {
-        return HearingUtils.nlrRadioRender(req, res, next, 'nlrAttendingOutsideUK', paths.submitHearingRequirements.nlrAttending, validation);
+        return HearingUtils.nlrRadioRender(req, res, next, 'nlrAttendingOutsideUk', paths.submitHearingRequirements.nlrAttending, validation);
       }
 
       const selectedValue = req.body['answer'];
@@ -75,7 +75,7 @@ function postnlrAttendingOutsideUK(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         hearingRequirements: {
           ...req.session.appeal.hearingRequirements,
-          nlrAttendingOutsideUK: selectedValue
+          nlrAttendingOutsideUk: selectedValue
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
@@ -393,8 +393,8 @@ function setupHearingNonLegalRepNeedsController(middleware: Middleware[], update
   const router = Router();
   router.get(paths.submitHearingRequirements.nlrAttending, middleware, getNlrAttending);
   router.post(paths.submitHearingRequirements.nlrAttending, middleware, postNlrAttending(updateAppealService));
-  router.get(paths.submitHearingRequirements.nlrAttendingOutsideUK, middleware, getnlrAttendingOutsideUK);
-  router.post(paths.submitHearingRequirements.nlrAttendingOutsideUK, middleware, postnlrAttendingOutsideUK(updateAppealService));
+  router.get(paths.submitHearingRequirements.nlrAttendingOutsideUk, middleware, getnlrAttendingOutsideUk);
+  router.post(paths.submitHearingRequirements.nlrAttendingOutsideUk, middleware, postnlrAttendingOutsideUk(updateAppealService));
   router.get(paths.submitHearingRequirements.nlrNeeds, middleware, getNlrNeeds);
   router.get(paths.submitHearingRequirements.isNlrInterpreterRequired, middleware, getIsNlrInterpreterRequiredPage);
   router.post(paths.submitHearingRequirements.isNlrInterpreterRequired, middleware, postIsNlrInterpreterRequiredPage(updateAppealService));
@@ -416,8 +416,8 @@ export {
   setupHearingNonLegalRepNeedsController,
   getNlrAttending,
   postNlrAttending,
-  getnlrAttendingOutsideUK,
-  postnlrAttendingOutsideUK,
+  getnlrAttendingOutsideUk,
+  postnlrAttendingOutsideUk,
   getNlrNeeds,
   getIsNlrInterpreterRequiredPage,
   postIsNlrInterpreterRequiredPage,

@@ -172,12 +172,12 @@ describe('hearing-requirement-utils', () => {
     });
 
     it('should set checked correctly on valid page for Yes value', () => {
-      hearingRequirements.nlrAttendingOutsideUK = 'Yes';
-      const result = getNlrRadioQuestion(hearingRequirements, 'nlrAttendingOutsideUK', nextStub);
+      hearingRequirements.nlrAttendingOutsideUk = 'Yes';
+      const result = getNlrRadioQuestion(hearingRequirements, 'nlrAttendingOutsideUk', nextStub);
       expect(nextStub).to.not.be.calledWithMatch(sinon.match.any);
       expect(result.name).to.equal('answer');
-      expect(result.title).to.equal(i18n.pages.hearingRequirements.nlrNeedsSection.nlrAttendingOutsideUK.title);
-      expect(result.hint).to.equal(i18n.pages.hearingRequirements.nlrNeedsSection.nlrAttendingOutsideUK.text);
+      expect(result.title).to.equal(i18n.pages.hearingRequirements.nlrNeedsSection.nlrAttendingOutsideUk.title);
+      expect(result.hint).to.equal(i18n.pages.hearingRequirements.nlrNeedsSection.nlrAttendingOutsideUk.text);
       expect(result.options[0]).to.deep.equal({ text: 'Yes', value: 'Yes', checked: true });
       expect(result.options[1]).to.deep.equal({ text: 'No', value: 'No', checked: false });
     });
@@ -234,15 +234,15 @@ describe('hearing-requirement-utils', () => {
     });
 
     it('should render with resObject with valid page with validation', () => {
-      req.session.appeal.hearingRequirements.nlrAttendingOutsideUK = 'No';
+      req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'No';
       const validation = [{ key: 'answer', text: '"answer" is not allowed to be empty', href: '#answer' }];
-      nlrRadioRender(req as Request, res as Response, nextStub, 'nlrAttendingOutsideUK', 'somePreviousPage', validation as any);
+      nlrRadioRender(req as Request, res as Response, nextStub, 'nlrAttendingOutsideUk', 'somePreviousPage', validation as any);
       expect(nextStub).to.not.be.calledWithMatch(sinon.match.any);
       const resObject = {
         previousPage: 'somePreviousPage',
-        pageTitle: i18n.pages.hearingRequirements.nlrNeedsSection.nlrAttendingOutsideUK.title,
-        formAction: paths.submitHearingRequirements.nlrAttendingOutsideUK,
-        question: getNlrRadioQuestion(req.session.appeal.hearingRequirements, 'nlrAttendingOutsideUK', nextStub),
+        pageTitle: i18n.pages.hearingRequirements.nlrNeedsSection.nlrAttendingOutsideUk.title,
+        formAction: paths.submitHearingRequirements.nlrAttendingOutsideUk,
+        question: getNlrRadioQuestion(req.session.appeal.hearingRequirements, 'nlrAttendingOutsideUk', nextStub),
         saveAndContinue: true,
         errors: validation,
         errorList: Object.values(validation)

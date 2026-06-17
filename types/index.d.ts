@@ -517,7 +517,7 @@ declare global {
     nlrInterpreterLanguageCategory?: string[];
     nlrInterpreterSpokenLanguage?: InterpreterLanguageRefData;
     nlrInterpreterSignLanguage?: InterpreterLanguageRefData;
-    nlrAttendingOutsideUK?: string;
+    nlrAttendingOutsideUk?: string;
     nlrAttending?: string;
     nlrNeedsHearingLoop?: string;
     nlrNeedsStepFreeAccess?: string;

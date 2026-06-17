@@ -3149,7 +3149,7 @@ describe('update-appeal-service', () => {
 
     it('if hasNonLegalRep is Yes but other fields non null then map ', () => {
       caseData.hasNonLegalRep = 'Yes';
-      caseData.nlrAttendingOutsideUK = 'nlrAttendingOutsideUK';
+      caseData.nlrAttendingOutsideUk = 'nlrAttendingOutsideUk';
       caseData.nlrAttending = 'nlrAttending';
       caseData.nlrNeedsHearingLoop = 'nlrNeedsHearingLoop';
       caseData.nlrNeedsStepFreeAccess = 'nlrNeedsStepFreeAccess';
@@ -3157,7 +3157,7 @@ describe('update-appeal-service', () => {
       caseData.nlrInterpreterLanguageCategory = 'nlrInterpreterLanguageCategory';
       caseData.nlrInterpreterSpokenLanguage = 'nlrInterpreterSpokenLanguage';
       caseData.nlrInterpreterSignLanguage = 'nlrInterpreterSignLanguage';
-      expect(hearingRequirements.nlrAttendingOutsideUK).to.equal(undefined);
+      expect(hearingRequirements.nlrAttendingOutsideUk).to.equal(undefined);
       expect(hearingRequirements.nlrAttending).to.equal(undefined);
       expect(hearingRequirements.nlrNeedsHearingLoop).to.equal(undefined);
       expect(hearingRequirements.nlrNeedsStepFreeAccess).to.equal(undefined);
@@ -3166,7 +3166,7 @@ describe('update-appeal-service', () => {
       expect(hearingRequirements.nlrInterpreterSpokenLanguage).to.equal(undefined);
       expect(hearingRequirements.nlrInterpreterSignLanguage).to.equal(undefined);
       hearingRequirements = updateAppealService.mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements);
-      expect(hearingRequirements.nlrAttendingOutsideUK).to.equal('nlrAttendingOutsideUK');
+      expect(hearingRequirements.nlrAttendingOutsideUk).to.equal('nlrAttendingOutsideUk');
       expect(hearingRequirements.nlrAttending).to.equal('nlrAttending');
       expect(hearingRequirements.nlrNeedsHearingLoop).to.equal('nlrNeedsHearingLoop');
       expect(hearingRequirements.nlrNeedsStepFreeAccess).to.equal('nlrNeedsStepFreeAccess');
@@ -3203,7 +3203,7 @@ describe('update-appeal-service', () => {
 
     it('if hasNonLegalRep is Yes but other fields non null then map ', () => {
       appeal.application.hasNonLegalRep = 'Yes';
-      appeal.hearingRequirements.nlrAttendingOutsideUK = 'nlrAttendingOutsideUK';
+      appeal.hearingRequirements.nlrAttendingOutsideUk = 'nlrAttendingOutsideUk';
       appeal.hearingRequirements.nlrAttending = 'nlrAttending';
       appeal.hearingRequirements.nlrNeedsStepFreeAccess = 'nlrNeedsStepFreeAccess';
       appeal.hearingRequirements.nlrNeedsHearingLoop = 'nlrNeedsHearingLoop';
@@ -3211,7 +3211,7 @@ describe('update-appeal-service', () => {
       appeal.hearingRequirements.nlrInterpreterLanguageCategory = 'nlrInterpreterLanguageCategory';
       appeal.hearingRequirements.nlrInterpreterSpokenLanguage = 'nlrInterpreterSpokenLanguage';
       appeal.hearingRequirements.nlrInterpreterSignLanguage = 'nlrInterpreterSignLanguage';
-      expect(caseData.nlrAttendingOutsideUK).to.equal(undefined);
+      expect(caseData.nlrAttendingOutsideUk).to.equal(undefined);
       expect(caseData.nlrAttending).to.equal(undefined);
       expect(caseData.nlrNeedsStepFreeAccess).to.equal(undefined);
       expect(caseData.nlrNeedsHearingLoop).to.equal(undefined);
@@ -3220,7 +3220,7 @@ describe('update-appeal-service', () => {
       expect(caseData.nlrInterpreterSpokenLanguage).to.equal(undefined);
       expect(caseData.nlrInterpreterSignLanguage).to.equal(undefined);
       updateAppealService.mapToCCDNlrRequirements(appeal, caseData);
-      expect(caseData.nlrAttendingOutsideUK).to.equal('nlrAttendingOutsideUK');
+      expect(caseData.nlrAttendingOutsideUk).to.equal('nlrAttendingOutsideUk');
       expect(caseData.nlrAttending).to.equal('nlrAttending');
       expect(caseData.nlrNeedsStepFreeAccess).to.equal('nlrNeedsStepFreeAccess');
       expect(caseData.nlrNeedsHearingLoop).to.equal('nlrNeedsHearingLoop');

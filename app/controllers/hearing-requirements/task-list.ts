@@ -13,14 +13,12 @@ function getSubmitHearingRequirementsStatus(status: ApplicationStatus, hasNonLeg
     witnesses,
     accessNeeds
   ];
-  console.log(hasNonLegalRep);
   if (hasNonLegalRep) {
     const nlrList = status.nlrNeeds ? [ 'nlrAttending', 'nlrNeeds' ] : [ 'nlrAttending' ];
     const nlrNeeds = buildSectionObject('nlrNeeds', nlrList, status);
     sections.push(nlrNeeds);
   }
   sections.push(otherNeeds, datesToAvoid, checkAndSend);
-  console.log(sections);
   return sections;
 }
 

@@ -97,7 +97,6 @@ class CcdService {
     );
 
     const response = await axios.post(url, event, options);
-    console.log(response);
     return response.data;
   }
 

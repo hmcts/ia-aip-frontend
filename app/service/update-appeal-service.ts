@@ -1618,8 +1618,8 @@ export default class UpdateAppealService {
 
   public mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements) {
     if (caseData?.hasNonLegalRep === 'Yes') {
-      if (caseData?.nlrOutsideUK) {
-        hearingRequirements.nlrOutsideUK = caseData.nlrOutsideUK;
+      if (caseData?.nlrAttendingOutsideUK) {
+        hearingRequirements.nlrAttendingOutsideUK = caseData.nlrAttendingOutsideUK;
       }
       if (caseData?.nlrAttending) {
         hearingRequirements.nlrAttending = caseData.nlrAttending;
@@ -2011,13 +2011,13 @@ export default class UpdateAppealService {
 
   public mapToCCDNlrRequirements(appeal, caseData) {
     if (appeal?.application?.hasNonLegalRep === 'Yes') {
-      if(_.has(appeal.hearingRequirements, 'nlrOutsideUK')) {
-        caseData.nlrOutsideUK = appeal.hearingRequirements.nlrOutsideUK;
+      if(_.has(appeal.hearingRequirements, 'nlrAttendingOutsideUK')) {
+        caseData.nlrAttendingOutsideUK = appeal.hearingRequirements.nlrAttendingOutsideUK;
       }
       if(_.has(appeal.hearingRequirements, 'nlrAttending')) {
         caseData.nlrAttending = appeal.hearingRequirements.nlrAttending;
         if (appeal.hearingRequirements.nlrAttending === 'Yes') {
-          caseData.nlrOutsideUK = 'No';
+          caseData.nlrAttendingOutsideUK = 'No';
         }
       }
       if(_.has(appeal.hearingRequirements, 'nlrNeedsStepFreeAccess')) {

@@ -1523,9 +1523,9 @@ describe('Hearing Requirements Check and Send controller', () => {
         });
       });
 
-      it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrOutsideUK No ', () => {
+      it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrAttendingOutsideUK No ', () => {
         req.session.appeal.application.hasNonLegalRep = 'Yes';
-        req.session.appeal.hearingRequirements.nlrOutsideUK = 'No';
+        req.session.appeal.hearingRequirements.nlrAttendingOutsideUK = 'No';
         req.session.appeal.hearingRequirements.nlrAttending = 'No';
         getCheckAndSendPage(req as Request, res as Response, next);
         const expectedNlrSection = {
@@ -1550,7 +1550,7 @@ describe('Hearing Requirements Check and Send controller', () => {
 
       it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending Yes ', () => {
         req.session.appeal.application.hasNonLegalRep = 'Yes';
-        req.session.appeal.hearingRequirements.nlrOutsideUK = 'No';
+        req.session.appeal.hearingRequirements.nlrAttendingOutsideUK = 'No';
         req.session.appeal.hearingRequirements.nlrAttending = 'Yes';
         req.session.appeal.hearingRequirements.isNlrInterpreterRequired = 'No';
         req.session.appeal.hearingRequirements.nlrNeedsStepFreeAccess = 'No';
@@ -1586,10 +1586,10 @@ describe('Hearing Requirements Check and Send controller', () => {
         });
       });
 
-      it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrOutsideUK Yes with interpreter but undefined values', () => {
+      it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrAttendingOutsideUK Yes with interpreter but undefined values', () => {
         req.session.appeal.application.hasNonLegalRep = 'Yes';
         req.session.appeal.hearingRequirements.nlrAttending = 'No';
-        req.session.appeal.hearingRequirements.nlrOutsideUK = 'Yes';
+        req.session.appeal.hearingRequirements.nlrAttendingOutsideUK = 'Yes';
         req.session.appeal.hearingRequirements.isNlrInterpreterRequired = 'Yes';
         req.session.appeal.hearingRequirements.nlrNeedsStepFreeAccess = 'Yes';
         req.session.appeal.hearingRequirements.nlrNeedsHearingLoop = 'Yes';
@@ -1634,10 +1634,10 @@ describe('Hearing Requirements Check and Send controller', () => {
         });
       });
 
-      it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrOutsideUK Yes with interpreter but no choice', () => {
+      it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrAttendingOutsideUK Yes with interpreter but no choice', () => {
         req.session.appeal.application.hasNonLegalRep = 'Yes';
         req.session.appeal.hearingRequirements.nlrAttending = 'No';
-        req.session.appeal.hearingRequirements.nlrOutsideUK = 'Yes';
+        req.session.appeal.hearingRequirements.nlrAttendingOutsideUK = 'Yes';
         req.session.appeal.hearingRequirements.isNlrInterpreterRequired = 'Yes';
         req.session.appeal.hearingRequirements.nlrNeedsStepFreeAccess = 'Yes';
         req.session.appeal.hearingRequirements.nlrNeedsHearingLoop = 'Yes';
@@ -1685,10 +1685,10 @@ describe('Hearing Requirements Check and Send controller', () => {
       });
     });
 
-    it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrOutsideUK Yes with interpreter with both choices', () => {
+    it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrAttendingOutsideUK Yes with interpreter with both choices', () => {
       req.session.appeal.application.hasNonLegalRep = 'Yes';
       req.session.appeal.hearingRequirements.nlrAttending = 'No';
-      req.session.appeal.hearingRequirements.nlrOutsideUK = 'Yes';
+      req.session.appeal.hearingRequirements.nlrAttendingOutsideUK = 'Yes';
       req.session.appeal.hearingRequirements.isNlrInterpreterRequired = 'Yes';
       req.session.appeal.hearingRequirements.nlrNeedsStepFreeAccess = 'Yes';
       req.session.appeal.hearingRequirements.nlrNeedsHearingLoop = 'Yes';

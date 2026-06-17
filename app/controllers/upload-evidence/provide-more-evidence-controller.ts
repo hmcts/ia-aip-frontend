@@ -456,7 +456,7 @@ function getProvideAddendumEvidenceCheckAndSendRenderArgs(req: Request): RenderA
   return {
     renderPath: 'templates/check-and-send.njk', renderObj: {
       pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
-      continuePath: paths.common.provideMoreEvidenceConfirmation,
+      continuePath: paths.common.provideMoreEvidenceCheck,
       previousPage: paths.common.whyEvidenceLate,
       summaryLists: summaryList,
       hasNlr: hasActiveNlr(req.session.appeal)
@@ -480,7 +480,7 @@ function getProvideAdditionalEvidenceCheckAndSendRenderArgs(req: Request): Rende
     renderPath: 'templates/check-and-send.njk',
     renderObj: {
       pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
-      continuePath: paths.common.provideMoreEvidenceConfirmation,
+      continuePath: paths.common.provideMoreEvidenceCheck,
       previousPage: paths.common.provideMoreEvidenceForm,
       summaryLists: summaryList,
       hasNlr: hasActiveNlr(req.session.appeal)

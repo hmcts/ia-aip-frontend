@@ -6,8 +6,6 @@ import { hasActiveNlr } from '../../utils/utils';
 function getSubmitHearingRequirementsStatus(status: ApplicationStatus, hasNonLegalRep: boolean) {
   const witnesses = buildSectionObject('witnesses', [ 'witnesses' ], status);
   const accessNeeds = buildSectionObject('accessNeeds', [ 'accessNeeds' ], status);
-  const nlrList = status.nlrNeeds ? [ 'nlrAttending', 'nlrNeeds' ] : [ 'nlrAttending' ];
-  const nlrNeeds = buildSectionObject('nlrNeeds', nlrList, status);
   const otherNeeds = buildSectionObject('otherNeeds', [ 'otherNeeds' ], status);
   const datesToAvoid = buildSectionObject('datesToAvoid', [ 'datesToAvoid' ], status);
   const checkAndSend = buildSectionObject('checkAndSend', [ 'checkAndSend' ], status);
@@ -15,8 +13,14 @@ function getSubmitHearingRequirementsStatus(status: ApplicationStatus, hasNonLeg
     witnesses,
     accessNeeds
   ];
-  if (hasNonLegalRep) sections.push(nlrNeeds);
+  console.log(hasNonLegalRep);
+  if (hasNonLegalRep) {
+    const nlrList = status.nlrNeeds ? [ 'nlrAttending', 'nlrNeeds' ] : [ 'nlrAttending' ];
+    const nlrNeeds = buildSectionObject('nlrNeeds', nlrList, status);
+    sections.push(nlrNeeds);
+  }
   sections.push(otherNeeds, datesToAvoid, checkAndSend);
+  console.log(sections);
   return sections;
 }
 

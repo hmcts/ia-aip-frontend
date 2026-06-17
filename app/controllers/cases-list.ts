@@ -20,6 +20,16 @@ export enum ErrorCode {
   caseNotFound = 'caseNotFound'
 }
 
+function refreshCasesList() {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      req.session.refreshCasesList = true;
+      return res.redirect(paths.common.casesList);
+    } catch (e) {
+      next(e);
+    }
+  };
+}
 function getCasesList(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -114,6 +124,7 @@ function setupCasesListController(updateAppealService: UpdateAppealService): Rou
     : [getCreateNewAppeal(updateAppealService)];
   router.get(paths.common.createNewAppeal, createNewAppealMiddleware);
   router.get(paths.common.deleteDraftAppeal, getDeleteDraftAppeal(updateAppealService));
+  router.get(paths.common.refreshCasesList, refreshCasesList());
   return router;
 }
 

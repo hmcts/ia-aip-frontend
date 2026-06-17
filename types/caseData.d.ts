@@ -213,7 +213,7 @@ interface CaseData {
   nlrInterpreterLanguageCategory?: string[];
   nlrInterpreterSpokenLanguage?: InterpreterLanguageRefData;
   nlrInterpreterSignLanguage?: InterpreterLanguageRefData;
-  nlrOutsideUK?: string;
+  nlrAttendingOutsideUK?: string;
   nlrAttending?: string;
   nlrNeedsStepFreeAccess?: string;
   nlrNeedsHearingLoop?: string;

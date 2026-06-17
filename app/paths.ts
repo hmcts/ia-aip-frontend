@@ -98,7 +98,7 @@ const paths = {
     accessNeeds: '/hearing-access-needs',
     
     nlrAttending: '/hearing-non-legal-rep',
-    nlrOutsideUK: '/hearing-non-legal-rep-outside-uk',
+    nlrAttendingOutsideUK: '/hearing-non-legal-rep-outside-uk',
     nlrNeeds: '/hearing-non-legal-rep-needs',
     isNlrInterpreterRequired: '/hearing-non-legal-rep-interpreter',
     nlrHearingInterpreterTypes: '/hearing-non-legal-rep-interpreter-types',
@@ -222,6 +222,7 @@ const paths = {
     start: '/start-appeal',
     overview: '/appeal-overview',
     casesList: '/cases-list',
+    refreshCasesList: '/refresh-cases-list',
     createNewAppeal: '/create-new-appeal',
     deleteDraftAppeal: '/delete-draft-appeal/:id',
     fileNotFound: '/file-not-found',

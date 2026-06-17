@@ -24,6 +24,10 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">{{ i18n.pages.casesList.title }}</h1>
+        {{ govukButton({
+          text: i18n.pages.casesList.refreshButton,
+          href: paths.common.refreshCasesList
+        }) }}
         {% if (appellantCases | length) + (nlrCases | length) > 0 %}
           {% if appellantCases | length %}
             <h2 class="govuk-heading-l">{{ i18n.pages.casesList.appealCasesTitle }}</h2>

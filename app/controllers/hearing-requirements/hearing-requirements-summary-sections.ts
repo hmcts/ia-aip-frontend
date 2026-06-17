@@ -141,19 +141,19 @@ function buildNlrNeedsSummaryList(hearingRequirements: HearingRequirements, visi
     nlrNeedsRows.push(
       addSummaryRow(
         i18n.common.cya.questionRowTitle,
-        [i18n.pages.hearingRequirements.nlrNeedsSection.nlrOutsideUK.title]
+        [i18n.pages.hearingRequirements.nlrNeedsSection.nlrAttendingOutsideUK.title]
       ),
       getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
-        [hearingRequirements.nlrOutsideUK],
-        paths.submitHearingRequirements.nlrOutsideUK + editParameter)
+        [hearingRequirements.nlrAttendingOutsideUK],
+        paths.submitHearingRequirements.nlrAttendingOutsideUK + editParameter)
     );
   }
   nlrNeedsSummaryLists.push({
     title: i18n.pages.cmaRequirementsCYA.rows.nonLegalRepTitle,
     summaryRows: nlrNeedsRows
   });
-  const isNlrOutsideUk = hearingRequirements?.nlrOutsideUK === 'Yes';
-  if (!isNlrAttending && !isNlrOutsideUk) {
+  const isnlrAttendingOutsideUK = hearingRequirements?.nlrAttendingOutsideUK === 'Yes';
+  if (!isNlrAttending && !isnlrAttendingOutsideUK) {
     return nlrNeedsSummaryLists;
   }
 

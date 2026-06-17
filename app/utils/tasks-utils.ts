@@ -169,13 +169,14 @@ function submitHearingRequirementsStatus(appeal: Appeal, hasNonLegalRep: boolean
   };
 
   const isNlrAttending: boolean = appeal?.hearingRequirements?.nlrAttending === 'Yes';
-  const isNlrOutsideUK: boolean = appeal?.hearingRequirements?.nlrOutsideUK === 'Yes';
-  const areNlrRequirementsNeeded: boolean = isNlrAttending || isNlrOutsideUK;
+  const isnlrAttendingOutsideUK: boolean = appeal?.hearingRequirements?.nlrAttendingOutsideUK === 'Yes';
+  const areNlrRequirementsNeeded: boolean = isNlrAttending || isnlrAttendingOutsideUK;
   const nlrAttendingTask: Task = {
     saved: !!_.get(appeal, 'hearingRequirements.nlrAttending'),
-    completed: areNlrRequirementsNeeded,
+    completed: _.has(appeal, 'hearingRequirements.nlrAttendingOutsideUK'),
     active: hasNonLegalRep && accessNeedsTask.completed
   };
+
   const nlrNeeds: boolean = !!_.get(appeal, 'hearingRequirements.nlrNeeds');
   const nlrNeedsTask: Task = {
     saved: nlrNeeds,
@@ -188,7 +189,8 @@ function submitHearingRequirementsStatus(appeal: Appeal, hasNonLegalRep: boolean
   const otherNeedsTask: Task = {
     saved: otherNeeds,
     completed: _.has(appeal, 'hearingRequirements.otherNeeds.anythingElse'),
-    active: hasNonLegalRep ? nlrNeedsTask.completed : accessNeedsTask.completed
+    active: hasNonLegalRep ?
+      (areNlrRequirementsNeeded ? nlrNeedsTask.completed : nlrAttendingTask.completed) : accessNeedsTask.completed
   };
 
   let datesToAvoidCompleted: boolean = !!_.get(appeal, 'hearingRequirements.datesToAvoid');

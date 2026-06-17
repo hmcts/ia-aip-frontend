@@ -43,7 +43,7 @@ Feature: Sponsor details
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     And I check page accessibility
     Then I should be taken to nationality page
-    When I pick "Ukraine" from the Nationalities drop down and click continue
+    When I pick "Ukrainian" from the Nationalities drop down and click continue
     And I check page accessibility
     Then I should see letter received page
     When I enter an on time letter received date
@@ -76,7 +76,7 @@ Feature: Sponsor details
     And I check page accessibility
     And I should be taken to the has sponsor page
     Then I see "Do you have a sponsor?" in title
-    When I select Yes and click continue
+    When I choose Yes and click continue
     And I check page accessibility
     Then I should be taken to the has sponsor name page
     And I see "What is your sponsor's name?" in title
@@ -98,7 +98,7 @@ Feature: Sponsor details
     And I check page accessibility
     And I should be taken to the has sponsor authorisation page
     Then I see "Do you agree to let your sponsor have access to information about your appeal?" in title
-    When I select Yes and click continue
+    When I choose Yes and click continue
     And I check page accessibility
     Then I should see the task-list page
 

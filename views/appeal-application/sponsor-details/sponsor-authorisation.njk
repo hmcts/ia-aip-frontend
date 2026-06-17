@@ -52,12 +52,7 @@
         </div>
       {% endif %}
 
-      <div class="save-buttons__container">
-        {{ govukButton({
-                name: 'continue',
-                text: i18n.common.buttons.continue
-            }) }}
-      </div>
+   {{ saveButtons() }}
     </fieldset>
   </form>
 

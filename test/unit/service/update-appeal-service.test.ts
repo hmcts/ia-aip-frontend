@@ -1959,11 +1959,7 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.nlrDetails.emailAddress).to.equal('emailAddress');
         expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
         expect(mappedAppeal.nlrDetails.idamId).to.equal('idamId');
-        expect(mappedAppeal.nlrDetails.addressUk.line1).to.equal(null);
-        expect(mappedAppeal.nlrDetails.addressUk.line2).to.equal(null);
-        expect(mappedAppeal.nlrDetails.addressUk.city).to.equal(null);
-        expect(mappedAppeal.nlrDetails.addressUk.county).to.equal(null);
-        expect(mappedAppeal.nlrDetails.addressUk.postcode).to.equal(null);
+        expect(mappedAppeal.nlrDetails.addressUk).to.equal(null);
         expect(mappedAppeal.nlrDetails.address).to.equal('some address');
       });
     });

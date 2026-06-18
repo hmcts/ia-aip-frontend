@@ -21,7 +21,7 @@ import { createStructuredError } from '../../../../app/utils/validations/fields-
 import i18n from '../../../../locale/en.json';
 import { buildExpectedRequiredError, expect, sinon } from '../../../utils/testUtils';
 
-describe('Update phone number controllers setup', () => {
+describe('Update non-legal rep details', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;

@@ -9,9 +9,9 @@ import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../../../app/utils/summary-list';
-import { formatTextForCYA, nowIsoDate } from '../../../../app/utils/utils';
+import { formatTextForCYA, hasActiveNlr, nowIsoDate } from '../../../../app/utils/utils';
 import i18n from '../../../../locale/en.json';
-import { expect, sinon } from '../../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../../utils/testUtils';
 
 describe('Reasons For Appeal - Check and send Controller', () => {
   let sandbox: sinon.SinonSandbox;
@@ -99,11 +99,14 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       getCheckAndSend(req as Request, res as Response, next);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         summaryRows,
-        previousPage: paths.awaitingReasonsForAppeal.supportingEvidenceUpload
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidenceUpload,
+        hasNlr: false,
+        formAction: paths.awaitingReasonsForAppeal.checkAndSend
       });
     });
 
-    it('should render templates/check-and-send.njk without supporting evidences', () => {
+    it('should render templates/check-and-send.njk without supporting evidences with NLR', () => {
+      setActiveNlr(req);
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
         addSummaryRow(i18n.common.cya.answerRowTitle, [ formatTextForCYA(req.session.appeal.reasonsForAppeal.applicationReason) ], paths.awaitingReasonsForAppeal.decision + editParameter)
@@ -112,7 +115,9 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       getCheckAndSend(req as Request, res as Response, next);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         summaryRows,
-        previousPage: paths.awaitingReasonsForAppeal.supportingEvidence
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
+        hasNlr: true,
+        formAction: paths.awaitingReasonsForAppeal.checkAndSend
       });
     });
 

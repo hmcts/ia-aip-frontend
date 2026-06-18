@@ -175,6 +175,7 @@ describe('isJourneyAllowedMiddleware', () => {
       paths.common.casesList,
       paths.common.createNewAppeal,
       paths.common.deleteDraftAppeal,
+      paths.common.refreshCasesList,
       paths.common.accessibility
     ];
     it('should render forbidden to forbidden common pages for Non legal rep', () => {
@@ -237,6 +238,9 @@ describe('isJourneyAllowedMiddleware', () => {
       paths.nonLegalRep.updateAddress,
       paths.nonLegalRep.updateContactDetails,
       paths.nonLegalRep.updateDetailsCheckAndSend,
+      paths.nonLegalRep.removeNonLegalRep,
+      paths.nonLegalRep.removeNonLegalRepConfirmation,
+      paths.nonLegalRep.updateIsSamePerson,
       paths.nonLegalRep.updateDetailsConfirmation
     ];
     it('should render forbidden page for Non legal rep for nonLegalRepPaths', () => {

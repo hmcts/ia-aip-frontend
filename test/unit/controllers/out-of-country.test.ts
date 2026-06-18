@@ -1,6 +1,15 @@
 import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
-import { getAppellantInUk, getOocHrInside, getOocProtectionDepartureDate, postAppellantInUk, postOocHrInside, postOocProtectionDepartureDate, setupOutOfCountryController } from '../../../app/controllers/appeal-application/out-of-country';
+import {
+  getAppellantInUk,
+  getOocHrInside,
+  getOocProtectionDepartureDate,
+  postAppellantInUk,
+  postGwfReference,
+  postOocHrInside,
+  postOocProtectionDepartureDate,
+  setupOutOfCountryController
+} from '../../../app/controllers/appeal-application/out-of-country';
 import { getTypeOfAppeal } from '../../../app/controllers/appeal-application/type-of-appeal';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
@@ -17,6 +26,7 @@ describe('Out of Country Controller', function () {
   let next: sinon.SinonStub;
   const logger: Logger = new Logger();
   let submitRefactoredStub: sinon.SinonStub;
+  let validateMidEventStub: sinon.SinonStub;
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
   beforeEach(() => {
@@ -46,6 +56,7 @@ describe('Out of Country Controller', function () {
       } as any
     } as Partial<Request>;
     submitRefactoredStub = sandbox.stub();
+    validateMidEventStub = sandbox.stub();
     renderStub = sandbox.stub();
     redirectStub = sandbox.stub();
 
@@ -63,7 +74,8 @@ describe('Out of Country Controller', function () {
         case_data: {
           homeOfficeReferenceNumber: 'A1234567'
         }
-      })
+      }),
+      validateMidEvent: validateMidEventStub.returns([])
     };
   });
 
@@ -468,6 +480,83 @@ describe('Out of Country Controller', function () {
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
     });
+  });
+
+  describe('postGwfReference', () => {
+    it('should validate and redirect to the name page', async () => {
+      const appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          gwfReferenceNumber: 'GWF12345678'
+        }
+      };
+      req.body['gwfReferenceNumber'] = 'GWF12345678';
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.name)).to.equal(true);
+    });
+
+    it('should fail validation and render out-of-country/gwf-reference.njk with a validation error', async () => {
+      req.body['gwfReferenceNumber'] = 'GWF1234567';
+
+      const fieldError: ValidationError = {
+        href: '#gwfReferenceNumber',
+        key: 'gwfReferenceNumber',
+        text: 'There is a problem'
+      };
+      const errorList = {
+        ...fieldError,
+        text: "You should enter the UAN or GWF reference exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section. The UAN is 16 digits with dashes. The GWF starts with the letters \"GWF\" and then has 9 digits. If you need help, please use the Home Office help form in the bullet points on this page."
+      };
+
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/gwf-reference.njk', {
+        errors: { gwfReferenceNumber: fieldError },
+        errorList: [errorList],
+        gwfReferenceNumber: req.body['gwfReferenceNumber'],
+        previousPage: paths.appealStarted.taskList
+      });
+    });
+
+    it('should catch exception and call next with the error', async () => {
+      const error = new Error('an error');
+      req.body = { 'gwfReferenceNumber': undefined };
+      res.render = renderStub.throws(error);
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next.calledOnceWith(error)).to.equal(true);
+    });
+
+    it('should fail validateMidEvent and render out-of-country/gwf-reference.njk with error', async () => {
+      const errorMessage = 'Please contact HMCTS for support.';
+      updateAppealService.validateMidEvent = validateMidEventStub.returns([errorMessage]);
+      req.body['gwfReferenceNumber'] = 'GWF12345678';
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const fieldError = {
+        href: '#gwfReferenceNumber',
+        key: 'gwfReferenceNumber',
+        text: 'There is a problem'
+      };
+      const errorList = {
+        ...fieldError,
+        text: errorMessage
+      };
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
+          'appeal-application/out-of-country/gwf-reference.njk',
+          {
+            errors: {
+              gwfReferenceNumber: fieldError
+            },
+            errorList: [errorList],
+            gwfReferenceNumber: 'GWF12345678',
+            previousPage: paths.appealStarted.taskList
+          });
+      });
   });
 
 });

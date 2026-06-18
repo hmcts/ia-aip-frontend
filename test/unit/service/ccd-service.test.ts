@@ -1,4 +1,5 @@
 import axios from 'axios';
+import config from 'config';
 import { Events } from '../../../app/data/events';
 import { SecurityHeaders } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
@@ -7,6 +8,7 @@ import { multipleEventsData, startAppealEventData } from '../mockData/events/dat
 import { expectedMultipleEventsData, expectedStartAppealEventData } from '../mockData/events/expectations';
 
 describe('idam-service', () => {
+  const ccdBaseUrl: string = config.get('ccd.apiUrl');
   const headers = {} as SecurityHeaders;
   const user: IdamDetails = {
     uid: 'userId',
@@ -177,6 +179,49 @@ describe('idam-service', () => {
       await ccdService.loadCaseById(userId, caseId, headers);
 
       expect(getRequest).to.have.been.called;
+    });
+
+    it('validateMidEvent', async () => {
+      const caseData = { journeyType: 'AIP' } as Partial<CaseData>;
+      const midEventDetails: MidEventDetails = {
+        case_reference: caseId,
+        data: caseData,
+        event_data: caseData,
+        ignore_warning: true,
+        event: Events.EDIT_APPEAL
+      };
+      const pageId: string = 'somePageId';
+      await ccdService.validateMidEvent(midEventDetails, pageId, userId, headers);
+      const expectedUrl =
+          '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
+      expect(postRequest.calledOnceWith(ccdBaseUrl + expectedUrl, midEventDetails)).to.equal(true);
+    });
+
+    it('validateMidEvent returns error data', async () => {
+      const caseData = { journeyType: 'AIP' } as Partial<CaseData>;
+      const midEventDetails: MidEventDetails = {
+        case_reference: caseId,
+        data: caseData,
+        event_data: caseData,
+        ignore_warning: true,
+        event: Events.EDIT_APPEAL
+      };
+      const pageId: string = 'somePageId';
+      const error = {
+        status: 422,
+        response: {
+          data: {
+            callbackErrors: ['Please contact HMCTS for support.']
+          }
+        }
+      };
+      postRequest.rejects(error);
+      const response = await ccdService.validateMidEvent(midEventDetails, pageId, userId, headers);
+
+      const expectedUrl =
+          '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
+      expect(postRequest.calledOnceWith(ccdBaseUrl + expectedUrl, midEventDetails)).to.equal(true);
+      expect(response).to.deep.equal(error.response);
     });
   });
 

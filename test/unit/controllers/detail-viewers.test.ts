@@ -570,7 +570,7 @@ describe('DetailViewController', () => {
         },
         { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
         { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
-        { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+        { key: { text: 'Nationality' }, value: { html: 'Albanian' } },
         {
           key: { text: 'Address' },
           value: {
@@ -619,7 +619,7 @@ describe('DetailViewController', () => {
         'personalDetailsRows': [
           { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
           { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
-          { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+          { key: { text: 'Nationality' }, value: { html: 'Albanian' } },
           { key: { text: 'Address' }, value: { html: '60 GREAT PORTLAND STREET  LONDON United Kingdom W1W 7RT' } },
           { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } }
         ],
@@ -1310,7 +1310,7 @@ describe('DetailViewController', () => {
         'personalDetailsRows': [
           { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
           { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
-          { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+          { key: { text: 'Nationality' }, value: { html: 'Albanian' } },
           { key: { text: 'Address' }, value: { html: '60 GREAT PORTLAND STREET  LONDON United Kingdom W1W 7RT' } },
           { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } }
         ],
@@ -1860,7 +1860,7 @@ describe('DetailViewController', () => {
         },
         { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
         { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
-        { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+        { key: { text: 'Nationality' }, value: { html: 'Albanian' } },
         { key: { text: 'Address' }, value: { html: '28 Some Street, Ukraine, 23543' } },
         { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } },
         { key: { text: 'Sponsor' }, value: { html: 'Yes' } },
@@ -2072,7 +2072,7 @@ describe('DetailViewController', () => {
         },
         { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
         { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
-        { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+        { key: { text: 'Nationality' }, value: { html: 'Albanian' } },
         { key: { text: 'Address' }, value: { html: '28 Some Street, Ukraine, 23543' } },
         { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } },
         { key: { text: 'Sponsor' }, value: { html: 'No' } },

@@ -176,6 +176,32 @@ class CcdService {
     });
   }
 
+  async validateMidEvent(midEventDetails: MidEventDetails, pageId: string, userId: string, headers: SecurityHeaders): Promise<MidEventResponse> {
+    const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/validate?pageId=${pageId}`;
+    const options: any = this.createOptions(
+        userId,
+        headers
+    );
+
+    try {
+      return await axios.post(url, midEventDetails, options);
+    } catch (e) {
+      return e.response;
+    }
+  }
+
+  async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
+    logger.trace('Loading or creating case', logLabel);
+    const data: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
+    if (data.total > 0) {
+      return data.cases[0];
+    } else {
+      logger.trace('Did not find a case', logLabel);
+      const newCase: CcdCaseDetails = await this.createCase(userId, headers);
+      return newCase;
+    }
+  }
+
   async getCaseHistory(userId: string, caseId: string, headers: SecurityHeaders): Promise<HistoryEvent[]> {
     logger.trace(`Loading history for case with ID ${caseId}`, logLabel);
     let history = [];

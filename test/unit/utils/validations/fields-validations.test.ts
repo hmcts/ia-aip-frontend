@@ -1336,27 +1336,12 @@ describe('fields-validations', () => {
       const expectedResponse = {
         'phoneNumber': {
           'key': 'phoneNumber',
-          'text': 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982',
+          'text': 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999',
           'href': '#phoneNumber'
         }
       };
       expect(validationResult).to.deep.equal(expectedResponse);
     });
-
-    it('should fail phone validation on international and return "mobilePhoneNumber.invalid.string" type', () => {
-      const object = { emailAddress: 'test@test.com', phoneNumber: '+64 2 9999 9999' };
-      const validationResult = nonLegalRepContactDetailsValidation(object);
-
-      const expectedResponse = {
-        'phoneNumber': {
-          'key': 'phoneNumber',
-          'text': 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982',
-          'href': '#phoneNumber'
-        }
-      };
-      expect(validationResult).to.deep.equal(expectedResponse);
-    });
-
 
     it('should fail phone validation on landline and return "mobilePhoneNumber.invalid.string" type', () => {
       const object = { emailAddress: 'test@test.com', phoneNumber: '0116 2601 605' };
@@ -1365,7 +1350,7 @@ describe('fields-validations', () => {
       const expectedResponse = {
         'phoneNumber': {
           'key': 'phoneNumber',
-          'text': 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982',
+          'text': 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999',
           'href': '#phoneNumber'
         }
       };
@@ -1408,27 +1393,12 @@ describe('fields-validations', () => {
       const expectedResponse = {
         'phoneNumber': {
           'key': 'phoneNumber',
-          'text': 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982',
+          'text': 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999',
           'href': '#phoneNumber'
         }
       };
       expect(validationResult).to.deep.equal(expectedResponse);
     });
-
-    it('should fail phone validation on international and return "mobilePhoneNumber.invalid.string" type', () => {
-      const object = { phoneNumber: '+64 2 9999 9999' };
-      const validationResult = nonLegalRepPhoneValidation(object);
-
-      const expectedResponse = {
-        'phoneNumber': {
-          'key': 'phoneNumber',
-          'text': 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982',
-          'href': '#phoneNumber'
-        }
-      };
-      expect(validationResult).to.deep.equal(expectedResponse);
-    });
-
 
     it('should fail phone validation on landline and return "mobilePhoneNumber.invalid.string" type', () => {
       const object = { phoneNumber: '0116 2601 605' };
@@ -1437,7 +1407,7 @@ describe('fields-validations', () => {
       const expectedResponse = {
         'phoneNumber': {
           'key': 'phoneNumber',
-          'text': 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982',
+          'text': 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999',
           'href': '#phoneNumber'
         }
       };

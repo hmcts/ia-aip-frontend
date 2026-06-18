@@ -6,7 +6,6 @@ import {
 } from '../../../app/controllers/appeal-application/confirmation-page';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
-import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { addDaysToDate } from '../../../app/utils/date-utils';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';

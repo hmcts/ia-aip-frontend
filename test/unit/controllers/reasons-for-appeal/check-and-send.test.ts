@@ -9,7 +9,7 @@ import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../../../app/utils/summary-list';
-import { formatTextForCYA, hasActiveNlr, nowIsoDate } from '../../../../app/utils/utils';
+import { formatTextForCYA, nowIsoDate } from '../../../../app/utils/utils';
 import i18n from '../../../../locale/en.json';
 import { expect, setActiveNlr, sinon } from '../../../utils/testUtils';
 

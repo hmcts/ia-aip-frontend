@@ -1,4 +1,3 @@
-import { diff } from 'deep-diff';
 import S2SService from '../../app/service/s2s-service';
 import { expect, sinon } from '../utils/testUtils';
 const path = require('path');

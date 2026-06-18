@@ -222,8 +222,8 @@ export default class UpdateAppealService {
     const errors: string[] = [];
     const response: MidEventResponse = await this._ccdService.validateMidEvent(midEventDetails, pageId, uid, securityHeaders);
     if (response.status !== 200) {
-      if (response.status === 422 && response?.data?.callbackErrors?.length > 0) {
-        errors.push(...response.data.callbackErrors);
+      if (response.status === 422 && response?.callbackErrors?.length > 0) {
+        errors.push(...response.callbackErrors);
       } else {
         errors.push(i18n.validationErrors.errorSummary);
       }

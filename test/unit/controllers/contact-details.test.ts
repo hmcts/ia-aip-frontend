@@ -192,7 +192,7 @@ describe('Contact details Controller', () => {
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(submit.called).to.equal(false);
-        expect(renderStub.calledWith('appeal-application/contact-details.njk', expectedData)).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'appeal-application/contact-details.njk', expectedData);
       });
 
       it('should show 2 validation error both options are selected but left blank', async () => {
@@ -230,7 +230,7 @@ describe('Contact details Controller', () => {
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(submit.called).to.equal(false);
-        expect(renderStub.calledWith('appeal-application/contact-details.njk', expectedData)).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'appeal-application/contact-details.njk', expectedData);
       });
 
       it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -278,7 +278,7 @@ describe('Contact details Controller', () => {
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(submit.called).to.equal(false);
-        expect(renderStub.calledWith('appeal-application/contact-details.njk', expectedData)).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'appeal-application/contact-details.njk', expectedData);
       });
 
       it('should show email format validation error if email is selected but not a valid email', async () => {
@@ -310,7 +310,7 @@ describe('Contact details Controller', () => {
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(submit.called).to.equal(false);
-        expect(renderStub.calledWith('appeal-application/contact-details.njk', expectedData)).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'appeal-application/contact-details.njk', expectedData);
       });
 
       describe('should validate', () => {
@@ -403,7 +403,7 @@ describe('Contact details Controller', () => {
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(submit.called).to.equal(false);
-        expect(renderStub.calledWith('appeal-application/contact-details.njk', expectedData)).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'appeal-application/contact-details.njk', expectedData);
       });
 
       it('should show phone format validation error if text-message is selected but not a valid phone number', async () => {
@@ -435,7 +435,7 @@ describe('Contact details Controller', () => {
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(submit.called).to.equal(false);
-        expect(renderStub.calledWith('appeal-application/contact-details.njk', expectedData)).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'appeal-application/contact-details.njk', expectedData);
       });
 
       describe('Should Validate', () => {
@@ -1062,7 +1062,7 @@ describe('Contact details Controller', () => {
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(submit.called).to.equal(false);
-        expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData)).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData);
       });
 
       it('should show 2 validation error both options are selected but left blank', async () => {
@@ -1100,7 +1100,7 @@ describe('Contact details Controller', () => {
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(submit.called).to.equal(false);
-        expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData)).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData);
       });
 
       it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -1147,7 +1147,7 @@ describe('Contact details Controller', () => {
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(submit.called).to.equal(false);
-        expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData)).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData);
       });
 
       it('should show email format validation error if email is selected but not a valid email', async () => {
@@ -1179,7 +1179,7 @@ describe('Contact details Controller', () => {
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(submit.called).to.equal(false);
-        expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData)).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData);
       });
 
       describe('should validate', () => {
@@ -1272,7 +1272,7 @@ describe('Contact details Controller', () => {
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(submit.called).to.equal(false);
-        expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData)).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData);
       });
 
       it('should show phone format validation error if text-message is selected but not a valid phone number', async () => {
@@ -1304,7 +1304,7 @@ describe('Contact details Controller', () => {
         await postSponsorContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(submit.called).to.equal(false);
-        expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData)).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/sponsor-contact-details.njk', expectedData);
       });
 
       describe('Should Validate', () => {

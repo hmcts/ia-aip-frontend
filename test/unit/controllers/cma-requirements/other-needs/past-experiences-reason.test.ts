@@ -80,7 +80,7 @@ describe('CMA Requirements - Other Needs Section: Past Experiences Reason contro
       };
 
       getPastExperiencesReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should render template with saved answer', () => {
@@ -101,7 +101,7 @@ describe('CMA Requirements - Other Needs Section: Past Experiences Reason contro
       };
 
       getPastExperiencesReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -139,7 +139,7 @@ describe('CMA Requirements - Other Needs Section: Past Experiences Reason contro
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
 
     });
 

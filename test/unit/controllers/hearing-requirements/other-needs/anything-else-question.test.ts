@@ -122,7 +122,7 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Question con
         saveAndContinue: true
 
       };
-      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {

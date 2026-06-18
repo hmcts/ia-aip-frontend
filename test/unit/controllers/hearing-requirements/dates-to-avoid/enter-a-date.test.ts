@@ -140,7 +140,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
       };
 
       getEnterADatePageWithId(req as Request, res as Response, next);
-      expect(renderStub.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs);
     });
 
     it('should render template with previously saved answer and hasNonLegalRep', () => {
@@ -170,7 +170,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
       };
 
       getEnterADatePageWithId(req as Request, res as Response, next);
-      expect(renderStub.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs);
     });
 
     it('should do nothing template with no dates', () => {

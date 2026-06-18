@@ -96,7 +96,7 @@ describe('Hearing Requirements - Reason controller', () => {
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should render template with nlr if hasNlr', () => {
@@ -114,7 +114,7 @@ describe('Hearing Requirements - Reason controller', () => {
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -143,7 +143,7 @@ describe('Hearing Requirements - Reason controller', () => {
         timeExtensionAllowed: false
       };
       getDatesToAvoidReasonWithId(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should render template with previously saved answer for NLR if hasNlr', () => {
@@ -163,7 +163,7 @@ describe('Hearing Requirements - Reason controller', () => {
         timeExtensionAllowed: false
       };
       getDatesToAvoidReasonWithId(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -273,7 +273,7 @@ describe('Hearing Requirements - Reason controller', () => {
         timeExtensionAllowed: false
       };
 
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should fail validation and render template with errors with nlr if hasNlr', async () => {
@@ -304,7 +304,7 @@ describe('Hearing Requirements - Reason controller', () => {
         timeExtensionAllowed: false
       };
 
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to taskList page', async () => {

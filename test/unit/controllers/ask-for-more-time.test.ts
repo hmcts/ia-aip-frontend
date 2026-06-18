@@ -17,7 +17,7 @@ import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { formatTextForCYA } from '../../../app/utils/utils';
-import { expect, sinon } from '../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../utils/testUtils';
 const express = require('express');
 
 describe('Ask for more time Controller', function () {
@@ -229,6 +229,9 @@ describe('Ask for more time Controller', function () {
 
       expectRenderedCalledWithArgs(renderStub, './templates/check-and-send.njk', {
         previousPage: paths.common.askForMoreTimeSupportingEvidence,
+        hasNlr: false,
+        continuePath: paths.common.askForMoreTimeCheckAndSend,
+        cancelPath: paths.common.askForMoreTimeCancel,
         summaryRows: [{
           key: { text: 'Question' },
           value: { html: 'How much time do you need and why do you need it?' }
@@ -252,6 +255,9 @@ describe('Ask for more time Controller', function () {
 
       expectRenderedCalledWithArgs(renderStub, './templates/check-and-send.njk', {
         previousPage: paths.common.askForMoreTimeSupportingEvidence,
+        hasNlr: false,
+        continuePath: paths.common.askForMoreTimeCheckAndSend,
+        cancelPath: paths.common.askForMoreTimeCancel,
         summaryRows: [{
           key: { text: 'Question' },
           value: { html: 'How much time do you need and why do you need it?' }
@@ -263,6 +269,27 @@ describe('Ask for more time Controller', function () {
           actions: { items: [{ href: paths.common.askForMoreTimeSupportingEvidenceUpload, text: 'Change', visuallyHiddenText: 'Supporting evidence' }] },
           key: { text: 'Supporting evidence' },
           value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/fileId\'>name.txt</a>' }
+        }]
+      });
+    });
+
+    it('should render check and send page with NLR', () => {
+      setActiveNlr(req);
+      req.session.appeal.makeAnApplicationDetails = 'some reasons';
+      getCheckAndSend(req as Request, res as Response, next);
+
+      expectRenderedCalledWithArgs(renderStub, './templates/check-and-send.njk', {
+        previousPage: paths.common.askForMoreTimeSupportingEvidence,
+        hasNlr: true,
+        continuePath: paths.common.askForMoreTimeCheckAndSend,
+        cancelPath: paths.common.askForMoreTimeCancel,
+        summaryRows: [{
+          key: { text: 'Question' },
+          value: { html: 'How much time do you need and why do you need it?' }
+        }, {
+          actions: { items: [{ href: '/ask-for-more-time', text: 'Change', visuallyHiddenText: 'Answer' }] },
+          key: { text: 'Answer' },
+          value: { html: formatTextForCYA(req.session.appeal.makeAnApplicationDetails) }
         }]
       });
     });

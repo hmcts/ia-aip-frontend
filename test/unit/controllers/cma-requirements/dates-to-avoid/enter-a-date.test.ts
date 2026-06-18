@@ -112,7 +112,7 @@ describe('CMA Requirements - Enter A date controller', () => {
       };
 
       getEnterADatePageWithId(req as Request, res as Response, next);
-      expect(renderStub.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'cma-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {

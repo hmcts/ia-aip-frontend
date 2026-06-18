@@ -87,7 +87,7 @@ describe('Hearing Requirements - Other Needs Section: Health Conditions Reason c
       };
 
       getHearingHealthConditionsReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should render template with saved answer', () => {
@@ -108,7 +108,7 @@ describe('Hearing Requirements - Other Needs Section: Health Conditions Reason c
       };
 
       getHearingHealthConditionsReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -146,7 +146,7 @@ describe('Hearing Requirements - Other Needs Section: Health Conditions Reason c
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
 
     });
 

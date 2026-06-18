@@ -645,7 +645,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
     it('should render getYourHearingNeedsPage with requirements - attendance', () => {
@@ -1167,7 +1167,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       getYourHearingNeedsPage(req as Request, res as Response, next);
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
     it('should render getYourHearingNeedsPage with requirements - no attendance', () => {
@@ -1656,7 +1656,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
     it('should render getYourHearingNeedsPage with requirements if user selected no witnesses with spoken and sign language interpreter', () => {
@@ -2074,7 +2074,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
     it('should call next with error', () => {

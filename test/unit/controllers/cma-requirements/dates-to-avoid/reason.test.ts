@@ -92,7 +92,7 @@ describe('CMA Requirements - Reason controller', () => {
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -121,7 +121,7 @@ describe('CMA Requirements - Reason controller', () => {
         timeExtensionAllowed: false
       };
       getDatesToAvoidReasonWithId(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -188,7 +188,7 @@ describe('CMA Requirements - Reason controller', () => {
         timeExtensionAllowed: false
       };
 
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to CYA page', async () => {

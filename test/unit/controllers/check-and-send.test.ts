@@ -457,12 +457,13 @@ describe('createSummaryRowsFrom', () => {
       givenNames: 'GivenNames',
       familyName: 'familyNames',
       phoneNumber: 'phoneNumber',
-      address: {
+      addressUk: {
         line1: 'addressLine1',
         line2: 'addressLine2',
         city: 'city',
         postcode: 'postcode'
-      }
+      },
+      address: 'some address text \narea'
     };
 
     const rows: any[] = await createSummaryRowsFrom(req as Request);

@@ -339,7 +339,7 @@ describe('CMA Requirements Check and Send controller', () => {
 
       getCheckAndSendPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
     it('should call next with error', () => {

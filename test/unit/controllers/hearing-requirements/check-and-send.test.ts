@@ -934,7 +934,7 @@ describe('Hearing Requirements Check and Send controller', () => {
       };
       getCheckAndSendPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
     it('should render CYA template page with requirements when there is no witnesses with spoken and sign language interpreter', () => {
@@ -1496,7 +1496,7 @@ describe('Hearing Requirements Check and Send controller', () => {
       };
       getCheckAndSendPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
     describe('NLR summary section', () => {

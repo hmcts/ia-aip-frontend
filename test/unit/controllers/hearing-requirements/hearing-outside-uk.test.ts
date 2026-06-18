@@ -132,7 +132,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
         },
         saveAndContinue: true
       };
-      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', expectedArgs);
       expect(req.session.refreshCasesList).to.equal(undefined);
     });
 

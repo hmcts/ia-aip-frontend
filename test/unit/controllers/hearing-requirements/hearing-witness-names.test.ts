@@ -86,7 +86,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       };
 
       getWitnessNamesPage(req as Request, res as Response, next);
-      expect(renderStub.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/hearing-witness-names.njk', expectedArgs);
     });
 
     it('should not show the add button if the witnesses size is equal to 10', async () => {
@@ -111,7 +111,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         isShowingAddButton: false
       };
       getWitnessNamesPage(req as Request, res as Response, next);
-      expect(renderStub.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/hearing-witness-names.njk', expectedArgs);
 
     });
 
@@ -144,7 +144,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         summaryList: [ { summaryRows: [], title: 'Added witnesses' } ],
         isShowingAddButton: true
       };
-      expect(renderStub.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/hearing-witness-names.njk', expectedArgs);
 
     });
 
@@ -190,7 +190,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         summaryList: [ { summaryRows: [], title: 'Added witnesses' } ],
         isShowingAddButton: true
       };
-      expect(renderStub.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/hearing-witness-names.njk', expectedArgs);
 
     });
 

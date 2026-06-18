@@ -57,7 +57,7 @@ describe('Hearing Requirements Confirmation Controller', () => {
         }
       };
       getConfirmationPage(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/confirmation-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/confirmation-page.njk', expectedArgs);
     });
 
     it('should call next with error', () => {

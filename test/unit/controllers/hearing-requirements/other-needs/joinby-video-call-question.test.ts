@@ -128,7 +128,7 @@ describe('Hearing Requirements - Other Needs Section: Join By VideoCall Question
         saveAndContinue: true
 
       };
-      expect(renderStub.calledWith('hearing-requirements/other-needs/join-hearing-by-videocall.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/other-needs/join-hearing-by-videocall.njk', expectedArgs);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {

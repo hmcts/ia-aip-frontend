@@ -80,7 +80,7 @@ describe('Cookies Banner', () => {
       cookiesBanner.initAnalyticsCookie();
 
       expect(hideCookieBannerSpy.called).to.equal(true);
-      expect(window.gtag).to.be.calledWith('consent', 'update', {
+      expectRenderedCalledWithArgs(window.gtag, 'consent', 'update', {
         'analytics_storage': 'granted',
         'apm_storage': 'granted'
       });
@@ -92,7 +92,7 @@ describe('Cookies Banner', () => {
       cookiesBanner.initAnalyticsCookie();
 
       expect(hideCookieBannerSpy.called).to.equal(true);
-      expect(window.gtag).to.be.calledWith('consent', 'update', {
+      expectRenderedCalledWithArgs(window.gtag, 'consent', 'update', {
         'analytics_storage': 'denied',
         'apm_storage': 'denied'
       });

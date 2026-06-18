@@ -947,7 +947,7 @@ describe('Update phone number controllers setup', () => {
   describe('getUpdateNlrDetailsConfirmation', () => {
     it('should render confirmation-page.njk', () => {
       getUpdateNlrDetailsConfirmation(req as Request, res as Response, next);
-      expect(res.render).to.be.calledOnceWith('templates/confirmation-page.njk', {
+      expectRenderedCalledOnceWithArgs(res.render, 'templates/confirmation-page.njk', {
         title: i18n.pages.updateNlrDetails.confirmation.title,
         whatHappensNextContent: i18n.pages.updateNlrDetails.confirmation.whatHappensNextContent,
       });

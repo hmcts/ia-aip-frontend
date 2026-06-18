@@ -119,7 +119,7 @@ describe('DetailViewController', () => {
     it('should render detail-viewers/view-ho-details.njk with no documents', () => {
 
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('detail-viewers/view-ho-details.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'detail-viewers/view-ho-details.njk', {
         documents: [],
         previousPage: paths.common.overview
       });
@@ -136,7 +136,7 @@ describe('DetailViewController', () => {
       ];
 
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('detail-viewers/view-ho-details.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'detail-viewers/view-ho-details.njk', {
         documents: [{
           dateUploaded: '21 February 2020',
           url: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/someUUID'>evidence_file(PNG)</a>"
@@ -168,7 +168,7 @@ describe('DetailViewController', () => {
     });
     it('should render details-viewer template', () => {
       getHomeOfficeWithdrawLetter(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeWithdrawLetter.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -185,7 +185,7 @@ describe('DetailViewController', () => {
         tag: 'appealResponse'
       });
       getHomeOfficeWithdrawLetter(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeWithdrawLetter.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -215,7 +215,7 @@ describe('DetailViewController', () => {
     });
     it('should render details-viewer template', () => {
       getHomeOfficeResponse(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeResponse.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -232,7 +232,7 @@ describe('DetailViewController', () => {
         tag: 'appealResponse'
       });
       getHomeOfficeResponse(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeResponse.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -309,7 +309,7 @@ describe('DetailViewController', () => {
         'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>test.txt</a>" }
       }];
       getReasonsForAppealViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/reasons-for-appeal-details-viewer.njk', {
         previousPage: paths.common.overview,
         data: expectedSummaryRows
       });
@@ -391,7 +391,7 @@ describe('DetailViewController', () => {
       }];
 
       getLrReasonsForAppealViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/reasons-for-appeal-details-viewer.njk', {
         hint: i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.hint,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -631,7 +631,7 @@ describe('DetailViewController', () => {
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -650,7 +650,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -669,7 +669,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -714,7 +714,7 @@ describe('DetailViewController', () => {
       };
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -745,7 +745,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -802,7 +802,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -826,7 +826,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -852,7 +852,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -889,7 +889,7 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -924,7 +924,7 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -960,7 +960,7 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -991,7 +991,7 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1022,7 +1022,7 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1051,7 +1051,7 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '140';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1080,7 +1080,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1106,7 +1106,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1132,7 +1132,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.helpWithFeesReferenceNumber = 'helpWithFeesRefNumberValue';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1155,7 +1155,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1184,7 +1184,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1223,7 +1223,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1249,7 +1249,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.helpWithFeesRefNumber = 'helpWithFeesRefNumberValue';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1274,7 +1274,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1299,7 +1299,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1495,7 +1495,7 @@ describe('DetailViewController', () => {
         req.session.appeal.history = [historyEvent, historyEvent, historyEvent];
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1527,7 +1527,7 @@ describe('DetailViewController', () => {
           'feeDetailsRows': feeDetails
         };
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1572,7 +1572,7 @@ describe('DetailViewController', () => {
         req.session.appeal.history = [historyEventDayBefore, historyEvent, historyEvent, historyEvent];
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1609,7 +1609,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1646,7 +1646,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1682,7 +1682,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1719,7 +1719,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1753,7 +1753,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1789,7 +1789,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1819,7 +1819,7 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1990,7 +1990,7 @@ describe('DetailViewController', () => {
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -2009,7 +2009,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -2028,7 +2028,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -2044,7 +2044,7 @@ describe('DetailViewController', () => {
     //   req.session.appeal.application.appealType = 'deprivation';
     //   req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
     //   await getAppealDetailsViewer(req as Request, res as Response, next);
-    //   expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+    //   expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
     //     title: i18n.pages.detailViewers.appealDetails.title,
     //     previousPage: paths.common.overview,
     //     data: expectedSummaryRows
@@ -2195,7 +2195,7 @@ describe('DetailViewController', () => {
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -2214,7 +2214,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -2233,7 +2233,7 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '140';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -2249,7 +2249,7 @@ describe('DetailViewController', () => {
     //   req.session.appeal.application.appealType = 'deprivation';
     //   req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
     //   await getAppealDetailsViewer(req as Request, res as Response, next);
-    //   expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+    //   expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
     //     title: i18n.pages.detailViewers.appealDetails.title,
     //     previousPage: paths.common.overview,
     //     data: expectedSummaryRows
@@ -2298,7 +2298,7 @@ describe('DetailViewController', () => {
         dateUploaded: 'test-date'
       }];
       getMakeAnApplicationViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
         title: i18n.pages.detailViewers.makeAnApplication.appellant.title,
         whatNextTitle: i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.title,
@@ -2349,7 +2349,7 @@ describe('DetailViewController', () => {
         dateUploaded: 'test-date'
       }];
       getMakeAnApplicationViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
         title: i18n.pages.detailViewers.makeAnApplication.appellant.title,
         whatNextTitle: i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.title,
@@ -2432,7 +2432,7 @@ describe('DetailViewController', () => {
         dateUploaded: 'test-date'
       }];
       getMakeAnApplicationViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
         title: i18n.pages.detailViewers.makeAnApplication.respondent.request.title,
         description: i18n.pages.detailViewers.makeAnApplication.respondent.request.description,
@@ -2498,7 +2498,7 @@ describe('DetailViewController', () => {
         dateUploaded: 'test-date'
       }];
       getMakeAnApplicationViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
         title: i18n.pages.detailViewers.makeAnApplication.respondent.request.title,
         description: i18n.pages.detailViewers.makeAnApplication.respondent.request.description,
@@ -2673,7 +2673,7 @@ describe('DetailViewController', () => {
 
         it('should render details-viewer template', function () {
           getHearingBundle(req as Request, res as Response, next);
-          expect(renderStub).to.be.calledWith('templates/details-viewer-hearing-bundles.njk', {
+          expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer-hearing-bundles.njk', {
             title: expectedOutput[index].title,
             subtitle1: expectedOutput[index].subtitle1,
             data1: sinonArrayMatcher(expectedOutput[index].data1),
@@ -2714,7 +2714,7 @@ describe('DetailViewController', () => {
         }];
 
       getNoticeEndedAppeal(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.endedAppeal.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2753,7 +2753,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2807,7 +2807,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2877,7 +2877,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2898,7 +2898,7 @@ describe('DetailViewController', () => {
           }];
 
         getHearingNoticeViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
           title: i18n.pages.detailViewers.hearingNotice.title,
           data: expectedSummaryRows,
           previousPage: paths.common.overview
@@ -2930,7 +2930,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2953,7 +2953,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3078,7 +3078,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3148,7 +3148,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3169,7 +3169,7 @@ describe('DetailViewController', () => {
           }];
 
         getHearingNoticeViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
           title: i18n.pages.detailViewers.hearingNotice.title,
           data: expectedSummaryRows,
           previousPage: paths.common.overview
@@ -3201,7 +3201,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3224,7 +3224,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3334,7 +3334,7 @@ describe('DetailViewController', () => {
         }];
 
       getHearingAdjournmentNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingAdjournmentNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3390,7 +3390,7 @@ describe('DetailViewController', () => {
       ];
 
       getDecisionAndReasonsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.decisionsAndReasons.title,
         description: i18n.pages.detailViewers.decisionsAndReasons.description,
         data: expectedSummaryRows,
@@ -3425,7 +3425,7 @@ describe('DetailViewController', () => {
 
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getUpdatedTribunalDecisionWithRule32Viewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3928,7 +3928,7 @@ describe('DetailViewController', () => {
       req.session.appeal.history = expectedEventsWithCmaRequirements;
 
       getCmaRequirementsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/cma-requirements-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/cma-requirements-details-viewer.njk', {
         anythingElse: [{
           key: { text: 'Question' },
           value: { html: 'Will you need anything else at the appointment?' }
@@ -4347,7 +4347,7 @@ describe('DetailViewController', () => {
 
       getFtpaAppellantApplication(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -4438,7 +4438,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4502,7 +4502,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4550,7 +4550,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4594,7 +4594,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4638,7 +4638,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4704,7 +4704,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4770,7 +4770,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4837,7 +4837,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4884,7 +4884,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4930,7 +4930,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4976,7 +4976,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5042,7 +5042,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5108,7 +5108,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5176,7 +5176,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5244,7 +5244,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5292,7 +5292,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5340,7 +5340,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5408,7 +5408,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5476,7 +5476,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5524,7 +5524,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5572,7 +5572,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5647,7 +5647,7 @@ describe('DetailViewController', () => {
 
       getDirectionHistory(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('detail-viewers/direction-history-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/direction-history-viewer.njk', {
         title: i18n.pages.detailViewers.directionHistory.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -5675,7 +5675,7 @@ describe('DetailViewController', () => {
 
       getDirectionHistory(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('detail-viewers/direction-history-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/direction-history-viewer.njk', {
         title: i18n.pages.detailViewers.directionHistory.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -5830,7 +5830,7 @@ describe('DetailViewController', () => {
 
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/updated-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/updated-details-viewer.njk', {
         title: i18n.pages.detailViewers.decisionsAndReasons.title,
         originalSubTitle: i18n.pages.detailViewers.decisionsAndReasons.originalSubTitle,
         description: i18n.pages.detailViewers.decisionsAndReasons.description,
@@ -5960,7 +5960,7 @@ describe('DetailViewController', () => {
 
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/updated-details-viewer.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/updated-details-viewer.njk', {
         title: i18n.pages.detailViewers.decisionsAndReasons.title,
         originalSubTitle: i18n.pages.detailViewers.decisionsAndReasons.originalSubTitle,
         description: i18n.pages.detailViewers.decisionsAndReasons.description,
@@ -6073,7 +6073,7 @@ describe('DetailViewController', () => {
       ];
 
       await getRemittalDocumentsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer-remittal.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer-remittal.njk', {
         title: i18n.pages.detailViewers.remittalDocuments.title,
         remittalDocs: expectedSummaryList,
         previousPage: paths.common.overview

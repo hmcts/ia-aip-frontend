@@ -96,7 +96,7 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req as Request, res as Response, next, config);
 
-      expect(renderStub).to.be.calledWith('make-application/details-question-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -148,7 +148,7 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req as Request, res as Response, next, config);
 
-      expect(renderStub).to.be.calledWith('make-application/details-question-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -211,7 +211,7 @@ describe('Make application controllers helper', () => {
         saveAndContinue: false
       };
       makeApplicationControllersHelper.getProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, previousPage, formAction);
-      expect(renderStub).to.be.calledWith('make-application/radio-button-question-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -265,7 +265,7 @@ describe('Make application controllers helper', () => {
         saveAndContinue: false
       };
       makeApplicationControllersHelper.getProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, previousPage, formAction);
-      expect(renderStub).to.be.calledWith('make-application/radio-button-question-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -328,7 +328,7 @@ describe('Make application controllers helper', () => {
         formSubmitAction: config.pathToProvideSupportingEvidence
       };
       makeApplicationControllersHelper.getProvideSupportingEvidence(req as Request, res as Response, next, config);
-      expect(renderStub).to.be.calledWith('make-application/supporting-evidence-upload-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'make-application/supporting-evidence-upload-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -364,7 +364,7 @@ describe('Make application controllers helper', () => {
         formSubmitAction: config.pathToProvideSupportingEvidence
       };
       makeApplicationControllersHelper.getProvideSupportingEvidence(req as Request, res as Response, next, config);
-      expect(renderStub).to.be.calledWith('make-application/supporting-evidence-upload-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'make-application/supporting-evidence-upload-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -417,7 +417,7 @@ describe('Make application controllers helper', () => {
         summaryLists
       };
       makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
-      expect(renderStub).to.be.calledWith('templates/check-and-send.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         ...expectedRenderPayload
       });
     });
@@ -441,7 +441,7 @@ describe('Make application controllers helper', () => {
         summaryLists
       };
       makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
-      expect(renderStub).to.be.calledWith('templates/check-and-send.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         ...expectedRenderPayload
       });
     });
@@ -472,7 +472,7 @@ describe('Make application controllers helper', () => {
     it('should render', async () => {
       makeApplicationControllersHelper.getRequestSent(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('templates/confirmation-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/confirmation-page.njk', {
         title: i18n.pages.makeApplication.requestSent.title,
         whatNextContent: i18n.pages.makeApplication.requestSent.whatNextContent
       });

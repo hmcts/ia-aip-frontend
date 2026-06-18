@@ -99,7 +99,7 @@ describe('Hearing applications types controller', () => {
       };
       getHearingApplicationType(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('make-application/radio-button-question-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -123,7 +123,7 @@ describe('Hearing applications types controller', () => {
       };
       getHearingApplicationType(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('make-application/radio-button-question-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });

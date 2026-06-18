@@ -112,7 +112,7 @@ describe('Submit Hearing Requirements Task List Controller', () => {
     }];
 
     getTaskList(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledOnceWith('hearing-requirements/task-list.njk', {
+    expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/task-list.njk', {
       previousPage: paths.common.overview,
       data: mockData
     });
@@ -141,7 +141,7 @@ describe('Submit Hearing Requirements Task List Controller', () => {
     }];
 
     getTaskList(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledOnceWith('hearing-requirements/task-list.njk', {
+    expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/task-list.njk', {
       previousPage: paths.common.overview,
       data: mockData
     });
@@ -174,7 +174,7 @@ describe('Submit Hearing Requirements Task List Controller', () => {
     }];
 
     getTaskList(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledOnceWith('hearing-requirements/task-list.njk', {
+    expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/task-list.njk', {
       previousPage: paths.common.overview,
       data: mockData
     });

@@ -545,7 +545,7 @@ describe('Contact details Controller', () => {
 
     it('should render sponsor-details/has-sponsor-or-nlr.njk', async () => {
       await getHasSponsorOrNlr(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.enterPostcode,
         hasSponsor: undefined,
@@ -556,7 +556,7 @@ describe('Contact details Controller', () => {
     it('should render sponsor-details/has-sponsor-or-nlr.njk with previous page pointing to manual-address endpoint', async () => {
       _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
       await getHasSponsorOrNlr(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.enterAddress,
         hasSponsor: undefined,
@@ -568,7 +568,7 @@ describe('Contact details Controller', () => {
       // appeal is out of country
       req.session.appeal.appealOutOfCountry = 'Yes';
       await getHasSponsorOrNlr(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.oocAddress,
         hasSponsor: undefined,
@@ -908,7 +908,7 @@ describe('Contact details Controller', () => {
         ...address
       };
       getSponsorAddress(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/sponsor-address.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/sponsor-address.njk', {
         address,
         previousPage: paths.appealStarted.sponsorName
       });
@@ -1378,7 +1378,7 @@ describe('Contact details Controller', () => {
 
     it('should render sponsor-details/sponsor-authorisation.njk', async () => {
       await getSponsorAuthorisation(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/sponsor-authorisation.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/sponsor-authorisation.njk', {
         question: 'Do you agree to let your sponsor have access to information about your appeal?',
         description: undefined,
         modal: undefined,
@@ -1439,7 +1439,7 @@ describe('Contact details Controller', () => {
       await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.called).to.equal(false);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/sponsor-details/sponsor-authorisation.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/sponsor-authorisation.njk', {
         question: 'Do you agree to let your sponsor have access to information about your appeal?',
         description: undefined,
         modal: undefined,

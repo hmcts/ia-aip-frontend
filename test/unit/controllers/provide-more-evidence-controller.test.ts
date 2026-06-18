@@ -405,7 +405,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.additionalEvidenceDocuments = [];
       getAdditionalEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('templates/check-and-send.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
         previousPage: paths.common.overview,
         summaryLists: summaryList
@@ -419,7 +419,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.additionalEvidenceDocuments = [];
       getLrAdditionalEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
         description: i18n.pages.provideMoreEvidence.yourEvidence.description,
         previousPage: paths.common.overview,
@@ -434,7 +434,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.addendumEvidenceDocuments = [];
       getAddendumEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.newEvidence.title,
         description: i18n.pages.provideMoreEvidence.newEvidence.description,
         previousPage: paths.common.overview,
@@ -449,7 +449,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.addendumEvidenceDocuments = [];
       getAppellantAddendumEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.yourAddendumEvidence.title,
         description: i18n.pages.provideMoreEvidence.yourAddendumEvidence.description,
         previousPage: paths.common.overview,
@@ -522,7 +522,7 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.addendumEvidenceDocuments = [];
       getHomeOfficeEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.homeOfficeEvidence.title,
         description: i18n.pages.provideMoreEvidence.homeOfficeEvidence.description,
         previousPage: paths.common.overview,

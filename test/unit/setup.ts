@@ -1,3 +1,4 @@
+import { diff } from 'deep-diff';
 import S2SService from '../../app/service/s2s-service';
 import { expect, sinon } from '../utils/testUtils';
 const path = require('path');
@@ -34,12 +35,34 @@ function expectRenderedCalledWithArgs(
   templatePath: string,
   expectedViewModel: any
 ) {
-  expect(resRenderStub.calledOnce).to.equal(true);
+  try {
+    expect(resRenderStub).calledOnceWith(templatePath, expectedViewModel);
+  } catch (error) {
+    expect(resRenderStub.calledOnce).to.equal(true);
 
-  const [template, actualViewModel] = resRenderStub.firstCall.args;
+    const [template, actualViewModel] = resRenderStub.firstCall.args;
 
-  expect(template).to.equal(templatePath);
-  expect(actualViewModel).to.deep.equal(expectedViewModel);
+    expect(template).to.equal(templatePath);
+    expect(actualViewModel).to.deep.equal(expectedViewModel);
+  }
 }
 
+function expectRenderedCalledOnceWithArgs(
+  resRenderStub: sinon.SinonStub,
+  templatePath: string,
+  expectedViewModel: any
+) {
+  try {
+    expect(resRenderStub).calledWith(templatePath, expectedViewModel);
+  } catch (error) {
+    expect(resRenderStub.called).to.equal(true);
+
+    const [template, actualViewModel] = resRenderStub.firstCall.args;
+
+    expect(template).to.equal(templatePath);
+    expect(actualViewModel).to.deep.equal(expectedViewModel);
+  }
+}
+
+(global as any).expectRenderedCalledOnceWithArgs = expectRenderedCalledOnceWithArgs;
 (global as any).expectRenderedCalledWithArgs = expectRenderedCalledWithArgs;

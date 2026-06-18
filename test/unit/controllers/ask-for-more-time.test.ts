@@ -129,7 +129,7 @@ describe('Ask for more time Controller', function () {
       const error = new Error('the error');
       res.render = renderStub.throws(error);
       getAskForMoreTimePage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('./ask-for-more-time/ask-for-more-time.njk', {
+      expectRenderedCalledWithArgs(renderStub, './ask-for-more-time/ask-for-more-time.njk', {
         previousPage: paths.common.overview,
         askForMoreTime: undefined
       });
@@ -140,7 +140,7 @@ describe('Ask for more time Controller', function () {
       res.render = renderStub.throws(error);
       req.session.appeal.makeAnApplicationDetails = 'ask for more time';
       getAskForMoreTimePage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('./ask-for-more-time/ask-for-more-time.njk', {
+      expectRenderedCalledWithArgs(renderStub, './ask-for-more-time/ask-for-more-time.njk', {
         previousPage: paths.common.overview,
         askForMoreTime: 'ask for more time'
       });
@@ -177,8 +177,8 @@ describe('Ask for more time Controller', function () {
     });
     it('should fail validation and render reasons-for-appeal/reason-for-appeal-page.njk with error', async () => {
       req.body.askForMoreTime = '';
-      await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('./ask-for-more-time/ask-for-more-time.njk', {
+      await postAskForMoreTimePage()(req as Request, res as Response, next);
+      expectRenderedCalledWithArgs(renderStub, './ask-for-more-time/ask-for-more-time.njk', {
         askForMoreTime: '',
         errorList: [{
           'key': 'askForMoreTime',
@@ -198,7 +198,7 @@ describe('Ask for more time Controller', function () {
 
     it('should pass validation and render reasons-for-appeal/reason-for-appeal-page.njk without error', async () => {
       req.body.askForMoreTime = askForMoreReason;
-      await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postAskForMoreTimePage()(req as Request, res as Response, next);
       expect(redirectStub.calledWith(paths.common.askForMoreTimeSupportingEvidence)).to.equal(true);
     });
 
@@ -206,7 +206,7 @@ describe('Ask for more time Controller', function () {
       const error = new Error('an error');
       res.redirect = redirectStub.throws(error);
       req.body.askForMoreTime = askForMoreReason;
-      await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postAskForMoreTimePage()(req as Request, res as Response, next);
 
       expect(next.calledWith(error)).to.equal(true);
     });
@@ -215,7 +215,7 @@ describe('Ask for more time Controller', function () {
     // it('should setup ask for more time in session', async () => {
     //   req.session.appeal.appealStatus = 'current State';
     //   req.body.askForMoreTime = askForMoreReason;
-    //   await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    //   await postAskForMoreTimePage()(req as Request, res as Response, next);
     //   expect(req.session.appeal.askForMoreTime).to.deep.equal({
     //     reason: askForMoreReason
     //   });
@@ -227,7 +227,7 @@ describe('Ask for more time Controller', function () {
       req.session.appeal.makeAnApplicationDetails = 'some reasons';
       getCheckAndSend(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('./templates/check-and-send.njk', {
+      expectRenderedCalledWithArgs(renderStub, './templates/check-and-send.njk', {
         previousPage: paths.common.askForMoreTimeSupportingEvidence,
         summaryRows: [{
           key: { text: 'Question' },
@@ -250,7 +250,7 @@ describe('Ask for more time Controller', function () {
       ];
       getCheckAndSend(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('./templates/check-and-send.njk', {
+      expectRenderedCalledWithArgs(renderStub, './templates/check-and-send.njk', {
         previousPage: paths.common.askForMoreTimeSupportingEvidence,
         summaryRows: [{
           key: { text: 'Question' },
@@ -318,7 +318,7 @@ describe('Ask for more time Controller', function () {
   describe('getConfirmation', () => {
     it('renders page with afmt query', () => {
       getConfirmation(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('./ask-for-more-time/confirmation.njk', {
+      expectRenderedCalledWithArgs(renderStub, './ask-for-more-time/confirmation.njk', {
         saveAndAskForMoreTime: '?ask-for-more-time'
       });
     });
@@ -326,7 +326,7 @@ describe('Ask for more time Controller', function () {
     it('renders page with save and afmt query', () => {
       req.session.appeal.application.saveAndAskForTime = true;
       getConfirmation(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('./ask-for-more-time/confirmation.njk', {
+      expectRenderedCalledWithArgs(renderStub, './ask-for-more-time/confirmation.njk', {
         saveAndAskForMoreTime: '?save-and-ask-for-more-time'
       });
     });

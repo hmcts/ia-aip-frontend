@@ -59,7 +59,7 @@ describe('Type of appeal Controller', () => {
       req.session.eligibility = {};
       await eligibilityQuestionGet(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'eligibility/eligibility-question.njk', {
         question: i18n.eligibilityOOCFlag[0].question,
         description: i18n.eligibilityOOCFlag[0].description,
         modal: i18n.eligibilityOOCFlag[0].modal,

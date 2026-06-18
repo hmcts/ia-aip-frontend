@@ -142,7 +142,7 @@ describe('Pay now Controller @payNow', () => {
     it('should render radio-question-page.njk template with payments feature flag ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       await getPayNow(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/radio-question-page.njk', {
         previousPage: paths.appealStarted.decisionType,
         pageTitle: i18n.pages.payNow.title,
         formAction: paths.appealStarted.payNow,

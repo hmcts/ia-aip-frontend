@@ -63,7 +63,7 @@ describe('Appeal application controllers setup', () => {
 
       getChangeDetailsApplication(req as Request, res as Response, next);
 
-      expect(res.render).to.be.calledWith('make-application/details-question-page.njk', {
+      expectRenderedCalledWithArgs(res.render, 'make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
     });

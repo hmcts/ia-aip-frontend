@@ -94,7 +94,7 @@ describe('Add non-legal representative controllers setup', () => {
   describe('getAddNonLegalRepresentative', () => {
     it('should render add-non-legal-representative with no error code', () => {
       getAddNonLegalRepresentative(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/add-non-legal-representative.njk', {
+      expectRenderedCalledWithArgs(res.render, 'non-legal-rep/add-non-legal-representative.njk', {
         previousPage: paths.common.overview
       });
     });
@@ -109,7 +109,7 @@ describe('Add non-legal representative controllers setup', () => {
         }
       };
       getAddNonLegalRepresentative(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/add-non-legal-representative.njk', {
+      expectRenderedCalledWithArgs(res.render, 'non-legal-rep/add-non-legal-representative.njk', {
         previousPage: paths.common.overview,
         shouldProvideEmailDirectionStepTwoShow: true,
         errors: expectedError,
@@ -127,7 +127,7 @@ describe('Add non-legal representative controllers setup', () => {
         }
       };
       getAddNonLegalRepresentative(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/add-non-legal-representative.njk', {
+      expectRenderedCalledWithArgs(res.render, 'non-legal-rep/add-non-legal-representative.njk', {
         previousPage: paths.common.overview,
         shouldProvideEmailDirectionStepThreeShow: true,
         errors: expectedError,
@@ -145,7 +145,7 @@ describe('Add non-legal representative controllers setup', () => {
         }
       };
       getAddNonLegalRepresentative(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/add-non-legal-representative.njk', {
+      expectRenderedCalledWithArgs(res.render, 'non-legal-rep/add-non-legal-representative.njk', {
         previousPage: paths.common.overview,
         shouldNoDetailsProvidedStepThreeShow: true,
         errors: expectedError,
@@ -163,7 +163,7 @@ describe('Add non-legal representative controllers setup', () => {
         }
       };
       getAddNonLegalRepresentative(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/add-non-legal-representative.njk', {
+      expectRenderedCalledWithArgs(res.render, 'non-legal-rep/add-non-legal-representative.njk', {
         previousPage: paths.common.overview,
         shouldUserNotExistStepThreeShow: true,
         errors: expectedError,
@@ -181,7 +181,7 @@ describe('Add non-legal representative controllers setup', () => {
         }
       };
       getAddNonLegalRepresentative(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/add-non-legal-representative.njk', {
+      expectRenderedCalledWithArgs(res.render, 'non-legal-rep/add-non-legal-representative.njk', {
         previousPage: paths.common.overview,
         errors: expectedError,
         errorList: Object.values(expectedError)
@@ -199,7 +199,7 @@ describe('Add non-legal representative controllers setup', () => {
   describe('getInviteToCreateAccount', () => {
     it('should render provide-email-create-account', () => {
       getInviteToCreateAccount(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/provide-email-create-account.njk', {
+      expectRenderedCalledWithArgs(res.render, 'non-legal-rep/provide-email-create-account.njk', {
         previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
@@ -225,7 +225,7 @@ describe('Add non-legal representative controllers setup', () => {
         }
       };
       await postInviteToCreateAccount(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/provide-email-create-account.njk', {
+      expectRenderedCalledWithArgs(res.render, 'non-legal-rep/provide-email-create-account.njk', {
         nlrEmail: '',
         errors: expectedValidationError,
         errorList: Object.values(expectedValidationError),
@@ -245,7 +245,7 @@ describe('Add non-legal representative controllers setup', () => {
         }
       };
       await postInviteToCreateAccount(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('non-legal-rep/provide-email-create-account.njk', {
+      expectRenderedCalledWithArgs(res.render, 'non-legal-rep/provide-email-create-account.njk', {
         nlrEmail: 'something that is not an email',
         errors: expectedValidationError,
         errorList: Object.values(expectedValidationError),
@@ -288,7 +288,7 @@ describe('Add non-legal representative controllers setup', () => {
   describe('getInviteToCreateAccountConfirmation', () => {
     it('should render confirmation-page', () => {
       getInviteToCreateAccountConfirmation(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('templates/confirmation-page.njk', {
+      expectRenderedCalledWithArgs(res.render, 'templates/confirmation-page.njk', {
         title: i18n.pages.inviteNlrToCreateAccount.confirmation.title,
         whatNextListItems: i18n.pages.inviteNlrToCreateAccount.confirmation.whatNextListItems,
         nlrEmail: undefined,
@@ -299,7 +299,7 @@ describe('Add non-legal representative controllers setup', () => {
     it('should render confirmation-page with nlrEmail', () => {
       req.session.appeal.nlrDetails.emailAddress = 'someEmail';
       getInviteToCreateAccountConfirmation(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('templates/confirmation-page.njk', {
+      expectRenderedCalledWithArgs(res.render, 'templates/confirmation-page.njk', {
         title: i18n.pages.inviteNlrToCreateAccount.confirmation.title,
         whatNextListItems: i18n.pages.inviteNlrToCreateAccount.confirmation.whatNextListItems,
         nlrEmail: 'someEmail',
@@ -1128,7 +1128,7 @@ describe('Add non-legal representative controllers setup', () => {
   describe('getProvideNlrDetailsConfirmation', () => {
     it('should render confirmation-page.njk', () => {
       getProvideNlrDetailsConfirmation(req as Request, res as Response, next);
-      expect(res.render).to.be.calledOnceWith('templates/confirmation-page.njk', {
+      expectRenderedCalledOnceWithArgs(res.render, 'templates/confirmation-page.njk', {
         title: i18n.pages.provideNlrDetails.confirmation.title,
         whatNextContent: i18n.pages.provideNlrDetails.confirmation.whatNextContent,
         backToAddNlr: true
@@ -1207,7 +1207,7 @@ describe('Add non-legal representative controllers setup', () => {
   describe('getInviteToJoinAppealConfirmation', () => {
     it('should render confirmation-page', () => {
       getInviteToJoinAppealConfirmation(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('templates/confirmation-page.njk', {
+      expectRenderedCalledWithArgs(res.render, 'templates/confirmation-page.njk', {
         title: i18n.pages.inviteNlrToJoinAppeal.confirmation.title,
         whatNextListItems: i18n.pages.inviteNlrToJoinAppeal.confirmation.whatNextListItems,
         nlrEmail: undefined
@@ -1221,7 +1221,7 @@ describe('Add non-legal representative controllers setup', () => {
         } as Appeal
       } as any;
       getInviteToJoinAppealConfirmation(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('templates/confirmation-page.njk', {
+      expectRenderedCalledWithArgs(res.render, 'templates/confirmation-page.njk', {
         title: i18n.pages.inviteNlrToJoinAppeal.confirmation.title,
         whatNextListItems: i18n.pages.inviteNlrToJoinAppeal.confirmation.whatNextListItems,
         nlrEmail: 'someEmail'

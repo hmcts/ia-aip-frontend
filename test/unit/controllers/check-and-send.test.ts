@@ -605,7 +605,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeWithHearing = '80';
       req.session.appeal.feeWithoutHearing = '140';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList
       });
@@ -619,7 +619,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeWithHearing = '80';
       req.session.appeal.feeWithoutHearing = '140';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         fee: '80',
@@ -637,7 +637,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeWithoutHearing = '140';
 
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         fee: '140',
@@ -653,7 +653,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeWithHearing = '80';
       req.session.appeal.feeWithoutHearing = '140';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         fee: '140',
@@ -667,7 +667,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         dlrmFeeRemissionFlag: true,
@@ -679,7 +679,7 @@ describe('Check and Send Controller', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         dlrmFeeRemissionFlag: true
@@ -712,7 +712,7 @@ describe('Check and Send Controller', () => {
       };
 
       const summaryRows = getMockedSummaryRows();
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         error: expectedError,
         errorList: Object.values(expectedError),
         summaryRows: summaryRows,
@@ -731,7 +731,7 @@ describe('Check and Send Controller', () => {
 
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         error: sinon.match.any,
         errorList: sinon.match.any,

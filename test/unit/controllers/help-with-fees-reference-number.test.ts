@@ -94,7 +94,7 @@ describe('Help with fees reference number Controller', function () {
     it('should render appeal-application/fee-support/help-with-fees-reference-number.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await getHelpWithFeesRefNumber(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/help-with-fees-reference-number.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk', {
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         formAction: paths.appealStarted.helpWithFeesReferenceNumber,
         helpWithFeesReferenceNumber: null,

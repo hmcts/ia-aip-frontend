@@ -65,7 +65,7 @@ describe('Confirmation Page Controller', () => {
 
   it('getConfirmationPage should render confirmation.njk', () => {
     getHearingRequirementsConfirmationPage(req as Request, res as Response, next);
-    expect(res.render).to.be.calledOnceWith('templates/confirmation-page.njk', {
+    expectRenderedCalledOnceWithArgs(res.render, 'templates/confirmation-page.njk', {
       title: i18n.pages.hearingRequirements.confirmation.title,
       whatNextListItems: i18n.pages.hearingRequirements.confirmation.whatNextListItems,
       info: i18n.pages.hearingRequirements.confirmation.info,

@@ -163,7 +163,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.witnessesOnHearing = false;
 
       getAccessNeeds(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/access-needs.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/access-needs.njk', {
         previousPage: previousPage,
         link: paths.submitHearingRequirements.hearingInterpreter
       });
@@ -173,7 +173,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.witnessesOnHearing = true;
 
       getAccessNeeds(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/access-needs.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/access-needs.njk', {
         previousPage: previousPage,
         link: paths.submitHearingRequirements.hearingInterpreterSupportAppellantWitnesses
       });
@@ -186,7 +186,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = undefined;
 
       getInterpreterSupportAppellantWitnesses(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-support-appellant-witnesses.njk', {
         previousPage: previousPage,
         isInterpreterServicesNeeded: false,
         isAnyWitnessInterpreterRequired: false,
@@ -199,7 +199,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = true;
 
       getInterpreterSupportAppellantWitnesses(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-support-appellant-witnesses.njk', {
         previousPage: previousPage,
         isInterpreterServicesNeeded: true,
         isAnyWitnessInterpreterRequired: true,
@@ -212,7 +212,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = false;
 
       getInterpreterSupportAppellantWitnesses(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-support-appellant-witnesses.njk', {
         previousPage: previousPage,
         isInterpreterServicesNeeded: false,
         isAnyWitnessInterpreterRequired: false,
@@ -224,7 +224,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.selections = '';
 
       await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-support-appellant-witnesses.njk', {
         previousPage: previousPage,
         errorList: [
           {
@@ -287,7 +287,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.witnessNames = [witness1];
 
       getWitnessesInterpreterNeeds(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/witnesses-interpreter-needs.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/witnesses-interpreter-needs.njk', {
         previousPage: previousPage,
         witnessesNameList: [{ value: 0, text: 'witness 1', checked: false }]
       });
@@ -299,7 +299,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.witnessListElement2 = { value: [], list_items: [{ code: 'witness 2', label: 'witness 2' }] };
 
       getWitnessesInterpreterNeeds(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/witnesses-interpreter-needs.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/witnesses-interpreter-needs.njk', {
         previousPage: previousPage,
         witnessesNameList: [
           { value: 0, text: 'witness 1', checked: true },
@@ -313,7 +313,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.selections = '';
 
       await postWitnessesInterpreterNeeds(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/witnesses-interpreter-needs.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/witnesses-interpreter-needs.njk', {
         previousPage: previousPage,
         witnessesNameList: [{ value: 0, text: 'witness 1', checked: false }],
         errorList: [
@@ -341,7 +341,7 @@ describe('Hearing requirements access needs controller', () => {
     it('getNeedInterpreterPage should render getNeedInterpreterPage', () => {
       req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = null;
       getNeedInterpreterPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/radio-question-page.njk', {
         previousPage: previousPage,
         formAction: '/hearing-interpreter',
         pageTitle: 'Will you need an interpreter at the hearing?',
@@ -363,7 +363,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.answer = '';
       req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = null;
       await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', {
         errorList: [{ key: 'answer', text: '"answer" is not allowed to be empty', href: '#answer' }],
         error: { 'answer': { key: 'answer', text: '"answer" is not allowed to be empty', href: '#answer' } },
         previousPage: previousPage,
@@ -392,7 +392,7 @@ describe('Hearing requirements access needs controller', () => {
     it('getInterpreterTypePage should render getInterpreterTypePage for appellant', () => {
       req.query = { selectedWitnesses: null };
       getInterpreterTypePage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-types.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-types.njk', {
         previousPage: previousPage,
         pageQuestion: 'What kind of interpreter do you need to request?',
         checkboxHintText: 'Select all that apply',
@@ -406,7 +406,7 @@ describe('Hearing requirements access needs controller', () => {
       req.query = { selectedWitnesses: '0' };
       req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       getInterpreterTypePage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-types.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-types.njk', {
         previousPage: previousPage,
         pageQuestion: 'What kind of interpreter will Witness 1 need?',
         checkboxHintText: '',
@@ -420,7 +420,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
       req.query = { selectedWitnesses: null };
       getInterpreterTypePage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-types.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-types.njk', {
         previousPage: previousPage,
         pageQuestion: 'What kind of interpreter do you need to request?',
         checkboxHintText: 'Select all that apply',
@@ -435,7 +435,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
       getInterpreterTypePage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-types.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-types.njk', {
         previousPage: previousPage,
         pageQuestion: 'What kind of interpreter will Witness 1 need?',
         checkboxHintText: '',
@@ -448,7 +448,7 @@ describe('Hearing requirements access needs controller', () => {
     it('postInterpreterTypePage should show validation error if appellant did not select interpreter language', async () => {
       req.body.selections = '';
       await postInterpreterTypePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-types.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-types.njk', {
         previousPage: previousPage,
         pageQuestion: 'What kind of interpreter do you need to request?',
         checkboxHintText: 'Select all that apply',
@@ -462,7 +462,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       req.body.selections = '';
       await postInterpreterTypePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-types.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-types.njk', {
         previousPage: previousPage,
         pageQuestion: 'What kind of interpreter will Witness 1 need?',
         checkboxHintText: '',
@@ -495,7 +495,7 @@ describe('Hearing requirements access needs controller', () => {
       req.query = { selectedWitnesses: null };
       await getInterpreterSpokenLanguagePage(refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-language-selection.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', {
         previousPage: previousPage,
         formAction: '/hearing-interpreter-spoken-language-selection',
         pageTitle: 'Tell us about your language requirements',
@@ -519,7 +519,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       await getInterpreterSpokenLanguagePage(refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-language-selection.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', {
         previousPage: previousPage,
         formAction: '/hearing-interpreter-spoken-language-selection',
         pageTitle: 'Which spoken language interpreter does Witness 1 need?',
@@ -541,7 +541,7 @@ describe('Hearing requirements access needs controller', () => {
 
       await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-language-selection.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', {
         previousPage: previousPage,
         formAction: '/hearing-interpreter-spoken-language-selection',
         pageTitle: 'Tell us about your language requirements',
@@ -579,7 +579,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-language-selection.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', {
         previousPage: previousPage,
         formAction: '/hearing-interpreter-spoken-language-selection',
         pageTitle: 'Which spoken language interpreter does Witness 1 need?',
@@ -676,7 +676,7 @@ describe('Hearing requirements access needs controller', () => {
       req.query = { selectedWitnesses: null };
       await getInterpreterSignLanguagePage(refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-language-selection.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', {
         previousPage: previousPage,
         formAction: '/hearing-interpreter-sign-language-selection',
         pageTitle: 'Tell us about your sign language requirements',
@@ -700,7 +700,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       await getInterpreterSignLanguagePage(refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-language-selection.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', {
         previousPage: previousPage,
         formAction: '/hearing-interpreter-sign-language-selection',
         pageTitle: 'Which sign language interpreter does Witness 1 need?',
@@ -722,7 +722,7 @@ describe('Hearing requirements access needs controller', () => {
 
       await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-language-selection.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', {
         previousPage: previousPage,
         formAction: '/hearing-interpreter-sign-language-selection',
         pageTitle: 'Tell us about your sign language requirements',
@@ -760,7 +760,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/interpreter-language-selection.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', {
         previousPage: previousPage,
         formAction: '/hearing-interpreter-sign-language-selection',
         pageTitle: 'Which sign language interpreter does Witness 1 need?',
@@ -853,7 +853,7 @@ describe('Hearing requirements access needs controller', () => {
 
     it('getAdditionalLanguage should getAdditionalLanguage.njk', () => {
       getAdditionalLanguage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('hearing-requirements/language-details.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/language-details.njk', {
         items: isoLanguages,
         previousPage: previousPage,
         summaryList: [{ 'summaryRows': [], 'title': 'Languages' }],
@@ -874,7 +874,7 @@ describe('Hearing requirements access needs controller', () => {
 
       await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('hearing-requirements/language-details.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/language-details.njk', {
         items: isoLanguages,
         error: { language: { key: 'language', text: 'Select language and add dialect', href: '#language' } },
         errorList: [{ key: 'language', text: 'Select language and add dialect', href: '#language' }],
@@ -972,7 +972,7 @@ describe('Hearing requirements access needs controller', () => {
 
     it('getStepFreeAccessPage should render getStepFreeAccessPage', () => {
       getStepFreeAccessPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/radio-question-page.njk', {
         previousPage: previousPage,
         formAction: '/hearing-step-free-access',
         pageTitle: 'Will you or any witnesses need step-free access?',
@@ -990,7 +990,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.answer = '';
       req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = null;
       await postStepFreeAccessPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', {
         errorList: [{ key: 'answer', text: '"answer" is not allowed to be empty', href: '#answer' }],
         error: { 'answer': { key: 'answer', text: '"answer" is not allowed to be empty', href: '#answer' } },
         previousPage: previousPage,
@@ -1020,7 +1020,7 @@ describe('Hearing requirements access needs controller', () => {
     it('getHearingLoop should render get-hearing-loop.njk with no option loaded', () => {
       req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = null;
       getHearingLoopPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/radio-question-page.njk', {
         previousPage: previousPage,
         formAction: '/hearing-hearing-loop',
         pageTitle: 'Will you or any witnesses need a hearing loop?',
@@ -1038,7 +1038,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.answer = '';
       req.session.appeal.hearingRequirements.isHearingLoopNeeded = null;
       await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', {
         errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
         error: { 'answer': { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
         previousPage: previousPage,

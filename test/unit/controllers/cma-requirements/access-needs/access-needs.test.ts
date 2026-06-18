@@ -77,7 +77,7 @@ describe('case management appointment controller', () => {
   describe('getAdditionalLanguage', () => {
     it('getAdditionalLanguage should getAdditionalLanguage.njk', () => {
       getAdditionalLanguage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('case-management-appointment/additional-language.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'case-management-appointment/additional-language.njk', {
         items: isoLanguages,
         previousPage: paths.awaitingCmaRequirements.accessNeedsInterpreter
       });
@@ -88,7 +88,7 @@ describe('case management appointment controller', () => {
     it('getHearingLoop should renderStub get-hearing-loop.njk with no option loaded', () => {
       req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = null;
       getHearingLoopPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/radio-question-page.njk', {
         previousPage: paths.awaitingCmaRequirements.accessNeedsStepFreeAccess,
         formAction: '/appointment-hearing-loop',
         pageTitle: 'Will you or anyone coming with you need a hearing loop?',
@@ -104,7 +104,7 @@ describe('case management appointment controller', () => {
 
     it('getHearingLoop should renderStub get-hearing-loop.njk', () => {
       getHearingLoopPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/radio-question-page.njk', {
         previousPage: paths.awaitingCmaRequirements.accessNeedsStepFreeAccess,
         formAction: '/appointment-hearing-loop',
         pageTitle: 'Will you or anyone coming with you need a hearing loop?',
@@ -122,7 +122,7 @@ describe('case management appointment controller', () => {
   describe('getNeedInterpreterPage', () => {
     it('getNeedInterpreterPage should renderStub getNeedInterpreterPage', () => {
       getNeedInterpreterPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/radio-question-page.njk', {
         formAction: '/appointment-interpreter',
         pageTitle: 'Will you or anyone coming with you need an interpreter?',
         previousPage: '/appointment-access-needs',
@@ -138,7 +138,7 @@ describe('case management appointment controller', () => {
   describe('getStepFreeAccessPage', () => {
     it('getStepFreeAccessPage should renderStub getStepFreeAccessPage', () => {
       getStepFreeAccessPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/radio-question-page.njk', {
         formAction: '/appointment-step-free-access',
         previousPage: paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage,
         pageTitle: 'Will you or anyone coming with you need step-free access?',
@@ -156,7 +156,7 @@ describe('case management appointment controller', () => {
   describe('getAccessNeeds', () => {
     it('getAccessNeeds should renderStub get access needs.njk', () => {
       getAccessNeeds(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('case-management-appointment/access-needs-page.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'case-management-appointment/access-needs-page.njk', {
         previousPage: paths.common.overview
       });
     });
@@ -169,7 +169,7 @@ describe('case management appointment controller', () => {
 
         await postStepFreeAccessPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
           error: { answer: { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
           previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
@@ -197,7 +197,7 @@ describe('case management appointment controller', () => {
         req.body.answer = '';
         req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = null;
         await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
           error: {  'answer': { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
           formAction: '/appointment-interpreter',
@@ -230,7 +230,7 @@ describe('case management appointment controller', () => {
         req.body.answer = '';
 
         await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' }],
           error: { 'answer': { href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' } },
           previousPage: paths.awaitingCmaRequirements.accessNeedsStepFreeAccess,
@@ -251,7 +251,7 @@ describe('case management appointment controller', () => {
 
         await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(renderStub).to.be.calledWith('case-management-appointment/additional-language.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'case-management-appointment/additional-language.njk', {
           errorList: [{ href: '#language', key: 'language', text: 'Select language and add dialect' }],
           errors: {  'language': { href: '#language', key: 'language', text: 'Select language and add dialect' } },
           previousPage: paths.appealStarted.taskList,
@@ -313,7 +313,7 @@ describe('case management appointment controller', () => {
       req.body.answer = 'yes';
       req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = false;
       getStepFreeAccessPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', {
         formAction: '/appointment-step-free-access',
         pageTitle: 'Will you or anyone coming with you need step-free access?',
         previousPage: '/appointment-interpreter',

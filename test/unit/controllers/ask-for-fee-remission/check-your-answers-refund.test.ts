@@ -186,7 +186,7 @@ describe('CYA Refund Controller', function () {
         }
       }];
       await getCheckYourAnswersRefund(req as Request, res as Response, next);
-      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/check-and-send.njk', {
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         summaryRows,
         buttonText: 'Submit',
@@ -209,7 +209,7 @@ describe('CYA Refund Controller', function () {
         }
       }];
       await getCheckYourAnswersRefund(req as Request, res as Response, next);
-      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/check-and-send.njk', {
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         summaryRows,
         buttonText: 'Submit',

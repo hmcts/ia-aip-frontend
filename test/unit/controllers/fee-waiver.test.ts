@@ -91,7 +91,7 @@ describe('Fee waiver Controller', function () {
     it('should render fee-waiver.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await getFeeWaiver(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/fee-waiver.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/fee-waiver.njk', {
         previousPage: paths.appealStarted.feeSupport,
         saveAndContinue: true
       });

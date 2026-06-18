@@ -67,7 +67,7 @@ describe('Appeal application controllers setup', () => {
 
       getWithdrawAppealApplication(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('make-application/details-question-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
     });

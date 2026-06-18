@@ -92,7 +92,7 @@ describe('Deportation order Controller', function () {
   describe('getDeportationOrder', () => {
     it('should render templates/deportation-order.njk', async () => {
       await getDeportationOrder(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('templates/deportation-order.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/deportation-order.njk', {
         previousPage: paths.appealStarted.homeOfficeDecisionLetter,
         formAction: paths.appealStarted.deportationOrder,
         question: sinon.match.any

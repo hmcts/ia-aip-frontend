@@ -253,7 +253,7 @@ describe('Out of time controller', () => {
       req.session.appeal.appealOutOfCountry = 'Yes';
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/appeal-late.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/home-office/appeal-late.njk', {
         appealLateReason: 'My explanation why am late',
         evidence: evidenceExample,
         error: { uploadFile: expectedError },
@@ -274,7 +274,7 @@ describe('Out of time controller', () => {
       req.session.appeal.appealOutOfCountry = 'Yes';
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/appeal-late.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/home-office/appeal-late.njk', {
         appealLateReason: 'My explanation why am late',
         evidence: null,
         error: { uploadFile: expectedError },
@@ -309,7 +309,7 @@ describe('Out of time controller', () => {
       await postAppealLateDeleteFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(deleteStub.calledWith(req, evidenceExample.fileId)).to.equal(true);
       expect(req.session.appeal.application.lateAppeal.evidence).to.equal(undefined);
-      expect(renderStub).to.be.calledWith('appeal-application/home-office/appeal-late.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/appeal-late.njk', {
         appealLateReason: undefined,
         error: { 'appeal-late': expectedError },
         errorList: [ expectedError ],

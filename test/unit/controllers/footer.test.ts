@@ -42,7 +42,7 @@ describe('footer controller', () => {
   it('should render cookies page', () => {
     getCookiesPage(req as Request, res as Response, next);
 
-    expect(res.render).to.be.calledWith('footer/cookies.njk', {
+    expectRenderedCalledWithArgs(res.render, 'footer/cookies.njk', {
       previousPage: {
         attributes: { onclick: 'history.go(-1); return false;' }
       }
@@ -52,7 +52,7 @@ describe('footer controller', () => {
   it('should render privacy policy', () => {
     getPrivacyPolicyPage(req as Request, res as Response, next);
 
-    expect(res.render).to.be.calledWith('footer/privacy-policy.njk', {
+    expectRenderedCalledWithArgs(res.render, 'footer/privacy-policy.njk', {
       previousPage: {
         attributes: { onclick: 'history.go(-1); return false;' }
       }
@@ -62,7 +62,7 @@ describe('footer controller', () => {
   it('should render terms and conditions page', () => {
     getTermsAndConditionsPage(req as Request, res as Response, next);
 
-    expect(res.render).to.be.calledWith('footer/terms-and-conditions.njk', {
+    expectRenderedCalledWithArgs(res.render, 'footer/terms-and-conditions.njk', {
       previousPage: {
         attributes: { onclick: 'history.go(-1); return false;' }
       }
@@ -72,7 +72,7 @@ describe('footer controller', () => {
   it('should render accessibility page', () => {
     getAccessibilityPage(req as Request, res as Response, next);
 
-    expect(res.render).to.be.calledWith('footer/accessibility-statement.njk', {
+    expectRenderedCalledWithArgs(res.render, 'footer/accessibility-statement.njk', {
       previousPage: {
         attributes: { onclick: 'history.go(-1); return false;' }
       }

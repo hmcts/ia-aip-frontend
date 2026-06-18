@@ -137,7 +137,7 @@ describe('Help with fees refund Controller', () => {
     it('should render help-with-fees.njk template', async () => {
       await getHelpWithFees(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/help-with-fees.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees.njk', {
         previousPage: paths.appealSubmitted.feeSupportRefund,
         formAction: paths.appealSubmitted.helpWithFeesRefund,
         question: sinon.match.any,

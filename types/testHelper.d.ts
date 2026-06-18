@@ -8,6 +8,12 @@ declare global {
     templatePath: string,
     expectedViewModel: any
   ): void;
+
+  function expectRenderedCalledOnceWithArgs(
+    resRenderStub: sinon.SinonStub,
+    templatePath: string,
+    expectedViewModel: any
+  ): void;
 }
 
 export {};

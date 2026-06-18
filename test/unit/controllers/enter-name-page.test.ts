@@ -228,8 +228,7 @@ describe('Home Office Details Controller', function () {
       };
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/name.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/name.njk',
         {
           error: {
             givenNames: givenNameErrors,
@@ -259,8 +258,7 @@ describe('Home Office Details Controller', function () {
       };
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/name.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/name.njk',
         {
           error: {
             givenNames: givenNameErrors,

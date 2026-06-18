@@ -73,7 +73,7 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
         saveAndContinue: true
 
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         expectedArgs
       );
     });

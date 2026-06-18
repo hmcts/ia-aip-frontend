@@ -55,7 +55,7 @@ describe('CMA Requirements - Other Needs Section: Start controller', () => {
         previousPage: '/appointment-needs'
       };
 
-      expect(renderStub).to.be.calledWith('cma-requirements/other-needs/other-needs-section.njk',
+      expectRenderedCalledWithArgs(renderStub, 'cma-requirements/other-needs/other-needs-section.njk',
         expectedArgs
       );
     });

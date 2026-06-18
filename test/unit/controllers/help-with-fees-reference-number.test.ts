@@ -216,8 +216,7 @@ describe('Help with fees reference number Controller', function () {
         href: '#helpWithFeesRefNumber'
       };
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/help-with-fees-reference-number.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk',
         {
           errors: {
             helpWithFeesRefNumber: error
@@ -242,8 +241,7 @@ describe('Help with fees reference number Controller', function () {
         href: '#helpWithFeesRefNumber'
       };
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/help-with-fees-reference-number.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk',
         {
           errors: {
             helpWithFeesRefNumber: error

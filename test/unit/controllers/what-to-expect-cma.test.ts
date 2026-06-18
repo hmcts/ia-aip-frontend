@@ -56,7 +56,7 @@ describe('CMA Guidance Controller', function() {
   describe('getWhatToExpectPage', () => {
     it('getCmaGuidancePage should render to guidance  page', function() {
       getCmaGuidancePage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('case-management-appointment/what-to-expect.njk',{
+      expectRenderedCalledWithArgs(renderStub, 'case-management-appointment/what-to-expect.njk',{
         previousPage : { attributes: { onclick: 'history.go(-1); return false;' } }
       });
     });

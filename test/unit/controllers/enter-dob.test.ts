@@ -196,8 +196,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/date-of-birth.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/date-of-birth.njk',
         {
           dob: { day: 0 },
           errors: {
@@ -216,8 +215,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/date-of-birth.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/date-of-birth.njk',
         {
           dob: { ...req.body },
           errors: {
@@ -237,8 +235,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/date-of-birth.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/date-of-birth.njk',
         {
           dob: { ...req.body },
           errors: {
@@ -258,8 +255,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/date-of-birth.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/date-of-birth.njk',
         {
           dob: { ...req.body },
           errors: {

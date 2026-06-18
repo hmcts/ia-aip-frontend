@@ -4,7 +4,7 @@ import { paths } from '../../../../app/paths';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import i18n from '../../../../locale/en.json';
-import { expect, sinon } from '../../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../../utils/testUtils';
 
 describe('Make application controllers helper', () => {
   let sandbox: sinon.SinonSandbox;
@@ -410,19 +410,18 @@ describe('Make application controllers helper', () => {
       const previousPage = config.pathToProvideSupportingEvidence;
       const summaryLists: SummaryList[] = [{ summaryRows: [] }];
 
-      const expectedRenderPayload = {
+      makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.makeApplication.checkYourAnswers.title,
         continuePath: config.pathToCheckYourAnswer,
         previousPage,
+        hasNlr: false,
         summaryLists
-      };
-      makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
-      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        ...expectedRenderPayload
       });
     });
 
-    it('should render when no supporting evidence', () => {
+    it('should render when no supporting evidence with NLR', () => {
+      setActiveNlr(req);
       req.session.appeal.makeAnApplicationProvideEvidence = 'no';
       req.session.appeal.makeAnApplications = [];
       const config = {
@@ -434,15 +433,13 @@ describe('Make application controllers helper', () => {
       const previousPage = config.pathToSupportingEvidence;
       const summaryLists: SummaryList[] = [{ summaryRows: [] }];
 
-      const expectedRenderPayload = {
+      makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.makeApplication.checkYourAnswers.title,
         continuePath: config.pathToCheckYourAnswer,
         previousPage,
+        hasNlr: true,
         summaryLists
-      };
-      makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
-      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        ...expectedRenderPayload
       });
     });
   });

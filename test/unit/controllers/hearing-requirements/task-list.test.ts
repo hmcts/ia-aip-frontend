@@ -6,7 +6,7 @@ import {
 } from '../../../../app/controllers/hearing-requirements/task-list';
 import { paths } from '../../../../app/paths';
 import Logger from '../../../../app/utils/logger';
-import { expect, sinon } from '../../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../../utils/testUtils';
 
 const express = require('express');
 
@@ -119,7 +119,7 @@ describe('Submit Hearing Requirements Task List Controller', () => {
   });
 
   it('getTaskList should render task-list.njk with status data for nlr', () => {
-    req.session.appeal.application.hasNonLegalRep = 'Yes';
+    setActiveNlr(req);
     const mockData = [{
       'sectionId': 'witnesses',
       'tasks': [{ 'id': 'witnesses', 'saved': false, 'completed': false, 'active': true }]
@@ -147,8 +147,8 @@ describe('Submit Hearing Requirements Task List Controller', () => {
     });
   });
 
-  it('getTaskList should render task-list.njk with status data for nlr if areNlrRequirementsNeeded true', () => {
-    req.session.appeal.application.hasNonLegalRep = 'Yes';
+  it('getTaskList should render task-list.njk with status data for nlr if areNlrRequirementsNeeded true if nlrAttending', () => {
+    setActiveNlr(req);
     req.session.appeal.hearingRequirements.nlrAttending = 'Yes';
     const mockData = [{
       'sectionId': 'witnesses',
@@ -161,6 +161,73 @@ describe('Submit Hearing Requirements Task List Controller', () => {
       'tasks': [
         { 'id': 'nlrAttending', 'saved': true, 'completed': true, 'active': false },
         { 'id': 'nlrNeeds', 'saved': false, 'completed': false, 'active': true }
+      ]
+    }, {
+      'sectionId': 'otherNeeds',
+      'tasks': [{ 'id': 'otherNeeds', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'datesToAvoid',
+      'tasks': [{ 'id': 'datesToAvoid', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'checkAndSend',
+      'tasks': [{ 'id': 'checkAndSend', 'saved': false, 'completed': false, 'active': false }]
+    }];
+
+    getTaskList(req as Request, res as Response, next);
+    expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/task-list.njk', {
+      previousPage: paths.common.overview,
+      data: mockData
+    });
+  });
+
+  it('getTaskList should render task-list.njk with status data for nlr if areNlrRequirementsNeeded true if not nlrAttending', () => {
+    setActiveNlr(req);
+    req.session.appeal.hearingRequirements.nlrAttending = 'No';
+    req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'Yes';
+    const mockData = [{
+      'sectionId': 'witnesses',
+      'tasks': [{ 'id': 'witnesses', 'saved': false, 'completed': false, 'active': true }]
+    }, {
+      'sectionId': 'accessNeeds',
+      'tasks': [{ 'id': 'accessNeeds', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'nlrNeeds',
+      'tasks': [
+        { 'id': 'nlrAttending', 'saved': true, 'completed': true, 'active': false },
+        { 'id': 'nlrNeeds', 'saved': false, 'completed': false, 'active': true }
+      ]
+    }, {
+      'sectionId': 'otherNeeds',
+      'tasks': [{ 'id': 'otherNeeds', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'datesToAvoid',
+      'tasks': [{ 'id': 'datesToAvoid', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'checkAndSend',
+      'tasks': [{ 'id': 'checkAndSend', 'saved': false, 'completed': false, 'active': false }]
+    }];
+
+    getTaskList(req as Request, res as Response, next);
+    expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/task-list.njk', {
+      previousPage: paths.common.overview,
+      data: mockData
+    });
+  });
+
+  it('getTaskList should render task-list.njk with status data for nlr if areNlrRequirementsNeeded true if not nlrAttending incomplete', () => {
+    setActiveNlr(req);
+    req.session.appeal.hearingRequirements.nlrAttending = 'No';
+    req.session.appeal.hearingRequirements.isHearingLoopNeeded = false;
+    const mockData = [{
+      'sectionId': 'witnesses',
+      'tasks': [{ 'id': 'witnesses', 'saved': false, 'completed': false, 'active': true }]
+    }, {
+      'sectionId': 'accessNeeds',
+      'tasks': [{ 'id': 'accessNeeds', 'saved': true, 'completed': true, 'active': false }]
+    }, {
+      'sectionId': 'nlrNeeds',
+      'tasks': [
+        { 'id': 'nlrAttending', 'saved': true, 'completed': false, 'active': true }
       ]
     }, {
       'sectionId': 'otherNeeds',

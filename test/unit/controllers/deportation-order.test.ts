@@ -150,8 +150,7 @@ describe('Deportation order Controller', function () {
 
     await postDeportationOrder(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     const deportationOptions = getDeportationOrderOptionsQuestion(req.session.appeal);
-    expect(renderStub).to.be.calledWith(
-      'templates/deportation-order.njk',
+    expectRenderedCalledWithArgs(renderStub, 'templates/deportation-order.njk',
       {
         errors: {
           answer: error

@@ -36,9 +36,9 @@ function expectRenderedCalledWithArgs(
   expectedViewModel: any
 ) {
   try {
-    expect(resRenderStub).calledOnceWith(templatePath, expectedViewModel);
+    expect(resRenderStub).calledWith(templatePath, expectedViewModel);
   } catch (error) {
-    expect(resRenderStub.calledOnce).to.equal(true);
+    expect(resRenderStub.called).to.equal(true);
 
     const [template, actualViewModel] = resRenderStub.firstCall.args;
 
@@ -53,9 +53,9 @@ function expectRenderedCalledOnceWithArgs(
   expectedViewModel: any
 ) {
   try {
-    expect(resRenderStub).calledWith(templatePath, expectedViewModel);
+    expect(resRenderStub).calledOnceWith(templatePath, expectedViewModel);
   } catch (error) {
-    expect(resRenderStub.called).to.equal(true);
+    expect(resRenderStub.calledOnce).to.equal(true);
 
     const [template, actualViewModel] = resRenderStub.firstCall.args;
 

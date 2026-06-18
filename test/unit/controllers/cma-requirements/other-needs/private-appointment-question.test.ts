@@ -80,7 +80,7 @@ describe('CMA Requirements - Other Needs Section: Private Appointment Question c
         saveAndContinue: true
 
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         expectedArgs
       );
     });

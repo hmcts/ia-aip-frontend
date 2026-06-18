@@ -55,7 +55,7 @@ describe('Hearing Requirements - Other Needs Section: Start controller', () => {
         previousPage: '/hearing-needs'
       };
 
-      expect(renderStub).to.be.calledWith('hearing-requirements/other-needs/other-needs-section.njk',
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/other-needs/other-needs-section.njk',
         expectedArgs
       );
     });

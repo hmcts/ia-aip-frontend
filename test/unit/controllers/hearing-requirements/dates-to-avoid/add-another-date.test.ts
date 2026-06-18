@@ -76,7 +76,7 @@ describe('Hearing Requirements - Add Another Date Question controller', () => {
         availableHearingDates: { from: availableHearingDates.from, to: availableHearingDates.to },
         saveAndContinueOnly: true
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         expectedArgs
       );
     });

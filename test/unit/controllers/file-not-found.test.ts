@@ -44,7 +44,7 @@ describe('File not found Controller', function() {
   describe('getFileNotFound', () => {
     it('getFileNotFound should render to file not found page', function() {
       getFileNotFoundPage(req as Request, res as Response, next);
-      expect(res.render).to.be.calledWith('./errors/file-not-found.njk',{
+      expectRenderedCalledWithArgs(res.render, './errors/file-not-found.njk',{
         previousPage: {
           attributes: { onclick: 'history.go(-1); return false;' }
         }

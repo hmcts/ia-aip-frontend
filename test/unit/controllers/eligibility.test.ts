@@ -107,7 +107,7 @@ describe('Type of appeal Controller', () => {
       req.session.eligibility = {};
 
       getEligible(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('eligibility/eligible-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'eligibility/eligible-page.njk',
         {
           previousPage: `${paths.common.questions}?id=123`
         }

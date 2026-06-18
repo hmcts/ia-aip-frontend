@@ -126,8 +126,7 @@ describe('Help with fees reference number refund Controller', function () {
         href: '#helpWithFeesRefNumber'
       };
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/help-with-fees-reference-number.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk',
         {
           errors: {
             helpWithFeesRefNumber: error
@@ -149,8 +148,7 @@ describe('Help with fees reference number refund Controller', function () {
         href: '#helpWithFeesRefNumber'
       };
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/help-with-fees-reference-number.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk',
         {
           errors: {
             helpWithFeesRefNumber: error

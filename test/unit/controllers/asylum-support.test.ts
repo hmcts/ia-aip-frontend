@@ -217,8 +217,7 @@ describe('Asylum support Controller', function () {
         href: '#asylumSupportRefNumber'
       };
       expect(submit.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/asylum-support.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/asylum-support.njk',
         {
           errors: {
             asylumSupportRefNumber: error

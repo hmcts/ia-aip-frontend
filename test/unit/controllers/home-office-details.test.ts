@@ -203,8 +203,7 @@ describe('Home Office Details Controller', function () {
         text: 'Enter the Home Office reference number in the correct format'
       };
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/home-office/details.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/details.njk',
         {
           errors: {
             homeOfficeRefNumber: error
@@ -226,8 +225,7 @@ describe('Home Office Details Controller', function () {
         text: 'Enter the Home Office reference number in the correct format'
       };
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/home-office/details.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/details.njk',
         {
           errors: {
             homeOfficeRefNumber: error
@@ -248,8 +246,7 @@ describe('Home Office Details Controller', function () {
         text: 'Enter the Home Office reference number'
       };
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/home-office/details.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/details.njk',
         {
           errors: {
             homeOfficeRefNumber: error
@@ -527,7 +524,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith('appeal-application/home-office/letter-sent.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/letter-sent.njk',
         {
           error,
           errorList,
@@ -567,7 +564,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith('appeal-application/home-office/letter-sent.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/letter-sent.njk',
         {
           error,
           errorList,
@@ -598,7 +595,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith('appeal-application/home-office/letter-sent.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/letter-sent.njk',
         {
           error,
           errorList,
@@ -629,7 +626,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith('appeal-application/home-office/letter-sent.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/letter-sent.njk',
         {
           error,
           errorList,

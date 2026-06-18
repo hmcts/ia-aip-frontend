@@ -9,7 +9,7 @@ import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { dayMonthYearFormat } from '../../../../../app/utils/date-utils';
 import i18n from '../../../../../locale/en.json';
-import { expect, sinon } from '../../../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../../../utils/testUtils';
 
 describe('Hearing Requirements - Question controller', () => {
   let sandbox: sinon.SinonSandbox;
@@ -86,7 +86,7 @@ describe('Hearing Requirements - Question controller', () => {
         availableHearingDates,
         saveAndContinue: true
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         expectedArgs
       );
     });
@@ -173,7 +173,7 @@ describe('Hearing Requirements - Question controller', () => {
 
   describe('getQuestion', () => {
     it('should return correct question if hasNonLegalRep Yes without isDateCannotAttend', () => {
-      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      setActiveNlr(req);
       const question = getQuestion(req.session.appeal);
       expect(question).to.deep.equal(
         {

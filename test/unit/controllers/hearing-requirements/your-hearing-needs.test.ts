@@ -116,9 +116,8 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupYourHearingNeedsController(middleware, updateAppealService as UpdateAppealService);
+      setupYourHearingNeedsController(middleware);
       expect(routerGetStub.calledWith(paths.submitHearingRequirements.yourHearingNeeds)).to.equal(true);
-      expect(routerPostStub.calledWith(paths.submitHearingRequirements.yourHearingNeeds)).to.equal(true);
     });
   });
 

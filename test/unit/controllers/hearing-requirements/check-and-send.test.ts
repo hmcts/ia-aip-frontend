@@ -8,7 +8,7 @@ import {
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import Logger from '../../../../app/utils/logger';
-import { expect, sinon } from '../../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../../utils/testUtils';
 
 describe('Hearing Requirements Check and Send controller', () => {
   let sandbox: sinon.SinonSandbox;
@@ -146,6 +146,7 @@ describe('Hearing Requirements Check and Send controller', () => {
         pageTitle: 'Check your answers',
         formAction: paths.submitHearingRequirements.checkAndSend,
         previousPage: paths.submitHearingRequirements.taskList,
+        hasNlr: false,
         summarySections: [{
           'title': '1. Witnesses',
           'summaryLists': [{
@@ -937,12 +938,12 @@ describe('Hearing Requirements Check and Send controller', () => {
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
-    it('should render CYA template page with requirements when there is no witnesses with spoken and sign language interpreter', () => {
-
+    it('should render CYA template page with requirements when there is no witnesses with spoken and sign language interpreter and with a Nlr', () => {
       const expectedArgs = {
         pageTitle: 'Check your answers',
         formAction: paths.submitHearingRequirements.checkAndSend,
         previousPage: paths.submitHearingRequirements.taskList,
+        hasNlr: false,
         summarySections: [{
           'title': '1. Witnesses',
           'summaryLists': [{
@@ -1501,7 +1502,7 @@ describe('Hearing Requirements Check and Send controller', () => {
 
     describe('NLR summary section', () => {
       it('should render CYA template page with nlr fields if hasNlr but empty nlr fields', () => {
-        req.session.appeal.application.hasNonLegalRep = 'Yes';
+        setActiveNlr(req);
         getCheckAndSendPage(req as Request, res as Response, next);
         const expectedNlrSection = {
           title: '3. Non-legal representative', summaryLists: [
@@ -1517,6 +1518,7 @@ describe('Hearing Requirements Check and Send controller', () => {
         };
         expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
+          hasNlr: true,
           formAction: paths.submitHearingRequirements.checkAndSend,
           previousPage: paths.submitHearingRequirements.taskList,
           summarySections: [sinon.match.object, sinon.match.object, expectedNlrSection, sinon.match.object, sinon.match.object]
@@ -1524,7 +1526,7 @@ describe('Hearing Requirements Check and Send controller', () => {
       });
 
       it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrAttendingOutsideUk No ', () => {
-        req.session.appeal.application.hasNonLegalRep = 'Yes';
+        setActiveNlr(req);
         req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'No';
         req.session.appeal.hearingRequirements.nlrAttending = 'No';
         getCheckAndSendPage(req as Request, res as Response, next);
@@ -1542,6 +1544,7 @@ describe('Hearing Requirements Check and Send controller', () => {
         };
         expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
+          hasNlr: true,
           formAction: paths.submitHearingRequirements.checkAndSend,
           previousPage: paths.submitHearingRequirements.taskList,
           summarySections: [sinon.match.object, sinon.match.object, expectedNlrSection, sinon.match.object, sinon.match.object]
@@ -1549,7 +1552,7 @@ describe('Hearing Requirements Check and Send controller', () => {
       });
 
       it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending Yes ', () => {
-        req.session.appeal.application.hasNonLegalRep = 'Yes';
+        setActiveNlr(req);
         req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'No';
         req.session.appeal.hearingRequirements.nlrAttending = 'Yes';
         req.session.appeal.hearingRequirements.isNlrInterpreterRequired = 'No';
@@ -1580,6 +1583,7 @@ describe('Hearing Requirements Check and Send controller', () => {
         };
         expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
+          hasNlr: true,
           formAction: paths.submitHearingRequirements.checkAndSend,
           previousPage: paths.submitHearingRequirements.taskList,
           summarySections: [sinon.match.object, sinon.match.object, expectedNlrSection, sinon.match.object, sinon.match.object]
@@ -1587,7 +1591,7 @@ describe('Hearing Requirements Check and Send controller', () => {
       });
 
       it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrAttendingOutsideUk Yes with interpreter but undefined values', () => {
-        req.session.appeal.application.hasNonLegalRep = 'Yes';
+        setActiveNlr(req);
         req.session.appeal.hearingRequirements.nlrAttending = 'No';
         req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'Yes';
         req.session.appeal.hearingRequirements.isNlrInterpreterRequired = 'Yes';
@@ -1628,6 +1632,7 @@ describe('Hearing Requirements Check and Send controller', () => {
 
         expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
+          hasNlr: true,
           formAction: paths.submitHearingRequirements.checkAndSend,
           previousPage: paths.submitHearingRequirements.taskList,
           summarySections: [sinon.match.object, sinon.match.object, expectedNlrSection, sinon.match.object, sinon.match.object]
@@ -1635,7 +1640,7 @@ describe('Hearing Requirements Check and Send controller', () => {
       });
 
       it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrAttendingOutsideUk Yes with interpreter but no choice', () => {
-        req.session.appeal.application.hasNonLegalRep = 'Yes';
+        setActiveNlr(req);
         req.session.appeal.hearingRequirements.nlrAttending = 'No';
         req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'Yes';
         req.session.appeal.hearingRequirements.isNlrInterpreterRequired = 'Yes';
@@ -1678,6 +1683,7 @@ describe('Hearing Requirements Check and Send controller', () => {
 
         expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
+          hasNlr: true,
           formAction: paths.submitHearingRequirements.checkAndSend,
           previousPage: paths.submitHearingRequirements.taskList,
           summarySections: [sinon.match.object, sinon.match.object, expectedNlrSection, sinon.match.object, sinon.match.object]
@@ -1686,7 +1692,7 @@ describe('Hearing Requirements Check and Send controller', () => {
     });
 
     it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrAttendingOutsideUk Yes with interpreter with both choices', () => {
-      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      setActiveNlr(req);
       req.session.appeal.hearingRequirements.nlrAttending = 'No';
       req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'Yes';
       req.session.appeal.hearingRequirements.isNlrInterpreterRequired = 'Yes';
@@ -1733,6 +1739,7 @@ describe('Hearing Requirements Check and Send controller', () => {
 
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: 'Check your answers',
+        hasNlr: true,
         formAction: paths.submitHearingRequirements.checkAndSend,
         previousPage: paths.submitHearingRequirements.taskList,
         summarySections: [sinon.match.object, sinon.match.object, expectedNlrSection, sinon.match.object, sinon.match.object]

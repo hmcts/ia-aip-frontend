@@ -97,8 +97,7 @@ describe('Reasons for Appeal Controller', function () {
       req.body.applicationReason = '';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith(
-        'reasons-for-appeal/reason-for-appeal-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'reasons-for-appeal/reason-for-appeal-page.njk',
         {
           error: {
             applicationReason: {
@@ -170,8 +169,7 @@ describe('Reasons for Appeal Controller', function () {
       req.session.appeal.reasonsForAppeal.evidences = undefined;
       await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith(
-        'reasons-for-appeal/supporting-evidence-upload-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-upload-page.njk',
         {
           error: [ { href: '#file-upload', text: 'Select a file', value: '#file-upload' } ],
           errorList: [ { 'href': '#file-upload', 'text': 'Select a file', 'value': '#file-upload' } ],

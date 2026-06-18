@@ -230,7 +230,7 @@ describe('hearing-requirement-utils', () => {
         question: getNlrRadioQuestion(req.session.appeal.hearingRequirements, 'nlrAttending', nextStub),
         saveAndContinue: true
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', resObject);
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', resObject);
     });
 
     it('should render with resObject with valid page with validation', () => {
@@ -247,7 +247,7 @@ describe('hearing-requirement-utils', () => {
         errors: validation,
         errorList: Object.values(validation)
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk', resObject);
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', resObject);
     });
   });
 });

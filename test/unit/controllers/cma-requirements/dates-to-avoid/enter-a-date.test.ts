@@ -166,7 +166,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk',
+      expectRenderedCalledWithArgs(renderStub, 'cma-requirements/dates-to-avoid/enter-a-date.njk',
         expectedArgs);
     });
 
@@ -227,7 +227,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk',
+      expectRenderedCalledWithArgs(renderStub, 'cma-requirements/dates-to-avoid/enter-a-date.njk',
         expectedArgs);
     });
 

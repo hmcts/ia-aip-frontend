@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): ApplicationStatus {
+function appealApplicationStatus(appeal: Appeal, drlmSetAsideFlag: Boolean): ApplicationStatus {
   const appealOutOfCountry: boolean = !!_.get(appeal.application, 'appealOutOfCountry');
   const appealType: boolean = !!_.get(appeal.application, 'appealType');
   const typeOfAppeal: Task = {
@@ -173,7 +173,7 @@ function submitHearingRequirementsStatus(appeal: Appeal, hasNonLegalRep: boolean
   const areNlrRequirementsNeeded: boolean = isNlrAttending || isnlrAttendingOutsideUk;
   const nlrAttendingTask: Task = {
     saved: !!_.get(appeal, 'hearingRequirements.nlrAttending'),
-    completed: _.has(appeal, 'hearingRequirements.nlrAttendingOutsideUk'),
+    completed: _.has(appeal, isNlrAttending ? 'hearingRequirements.nlrAttending' : 'hearingRequirements.nlrAttendingOutsideUk'),
     active: hasNonLegalRep && accessNeedsTask.completed
   };
 

@@ -1880,15 +1880,16 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.nlrDetails).to.equal(null);
       });
 
-      it('map correctly if full details present with full address', () => {
+      it('map correctly if full details present with full addressUk isSponsorSameAsNlr', () => {
         const caseData: Partial<CaseData> = {
+          isSponsorSameAsNlr: 'Yes',
           nlrDetails: {
             givenNames: 'givenNames',
             familyName: 'familyName',
             emailAddress: 'emailAddress',
             phoneNumber: 'phoneNumber',
             idamId: 'idamId',
-            address: {
+            addressUk: {
               AddressLine1: 'AddressLine1',
               AddressLine2: 'AddressLine2',
               PostTown: 'PostTown',
@@ -1905,19 +1906,21 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.nlrDetails.emailAddress).to.equal('emailAddress');
         expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
         expect(mappedAppeal.nlrDetails.idamId).to.equal('idamId');
-        expect(mappedAppeal.nlrDetails.address.line1).to.equal('AddressLine1');
-        expect(mappedAppeal.nlrDetails.address.line2).to.equal('AddressLine2');
-        expect(mappedAppeal.nlrDetails.address.city).to.equal('PostTown');
-        expect(mappedAppeal.nlrDetails.address.county).to.equal('County');
-        expect(mappedAppeal.nlrDetails.address.postcode).to.equal('PostCode');
+        expect(mappedAppeal.nlrDetails.addressUk.line1).to.equal('AddressLine1');
+        expect(mappedAppeal.nlrDetails.addressUk.line2).to.equal('AddressLine2');
+        expect(mappedAppeal.nlrDetails.addressUk.city).to.equal('PostTown');
+        expect(mappedAppeal.nlrDetails.addressUk.county).to.equal('County');
+        expect(mappedAppeal.nlrDetails.addressUk.postcode).to.equal('PostCode');
+        expect(mappedAppeal.nlrDetails.address).to.equal(null);
       });
 
-      it('map correctly if partial details present with partial address', () => {
+      it('map correctly if partial details present with partial addressUk', () => {
         const caseData: Partial<CaseData> = {
+          isSponsorSameAsNlr: 'Yes',
           nlrDetails: {
             emailAddress: 'emailAddress',
             phoneNumber: 'phoneNumber',
-            address: {
+            addressUk: {
               Country: 'Country'
             },
           }
@@ -1929,11 +1932,39 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.nlrDetails.emailAddress).to.equal('emailAddress');
         expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
         expect(mappedAppeal.nlrDetails.idamId).to.equal(null);
-        expect(mappedAppeal.nlrDetails.address.line1).to.equal(null);
-        expect(mappedAppeal.nlrDetails.address.line2).to.equal(null);
-        expect(mappedAppeal.nlrDetails.address.city).to.equal(null);
-        expect(mappedAppeal.nlrDetails.address.county).to.equal(null);
-        expect(mappedAppeal.nlrDetails.address.postcode).to.equal(null);
+        expect(mappedAppeal.nlrDetails.addressUk.line1).to.equal(null);
+        expect(mappedAppeal.nlrDetails.addressUk.line2).to.equal(null);
+        expect(mappedAppeal.nlrDetails.addressUk.city).to.equal(null);
+        expect(mappedAppeal.nlrDetails.addressUk.county).to.equal(null);
+        expect(mappedAppeal.nlrDetails.addressUk.postcode).to.equal(null);
+        expect(mappedAppeal.nlrDetails.address).to.equal(null);
+      });
+
+      it('map correctly if full details present with address text area for no isSponsorSameAsNlr', () => {
+        const caseData: Partial<CaseData> = {
+          isSponsorSameAsNlr: 'No',
+          nlrDetails: {
+            givenNames: 'givenNames',
+            familyName: 'familyName',
+            emailAddress: 'emailAddress',
+            phoneNumber: 'phoneNumber',
+            idamId: 'idamId',
+            address: 'some address'
+          }
+        };
+        const mappedAppeal = getMappedAppeal(caseData);
+
+        expect(mappedAppeal.nlrDetails.givenNames).to.equal('givenNames');
+        expect(mappedAppeal.nlrDetails.familyName).to.equal('familyName');
+        expect(mappedAppeal.nlrDetails.emailAddress).to.equal('emailAddress');
+        expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
+        expect(mappedAppeal.nlrDetails.idamId).to.equal('idamId');
+        expect(mappedAppeal.nlrDetails.addressUk.line1).to.equal(null);
+        expect(mappedAppeal.nlrDetails.addressUk.line2).to.equal(null);
+        expect(mappedAppeal.nlrDetails.addressUk.city).to.equal(null);
+        expect(mappedAppeal.nlrDetails.addressUk.county).to.equal(null);
+        expect(mappedAppeal.nlrDetails.addressUk.postcode).to.equal(null);
+        expect(mappedAppeal.nlrDetails.address).to.equal('some address');
       });
     });
   });
@@ -3070,13 +3101,16 @@ describe('update-appeal-service', () => {
         emailAddress: 'emailAddress',
         phoneNumber: 'phoneNumber',
         idamId: 'idamId',
-        address: {
+        addressUk: {
           line1: 'line1',
           line2: 'line2',
           city: 'city',
           postcode: 'postcode',
           county: 'county'
         },
+      };
+      appeal.application = {
+        isSponsorSameAsNlr: 'Yes',
       };
       updateAppealService.mapToCCDCaseNlrDetails(appeal, caseData);
       expect(caseData).to.deep.equal({
@@ -3086,7 +3120,7 @@ describe('update-appeal-service', () => {
           emailAddress: 'emailAddress',
           phoneNumber: 'phoneNumber',
           idamId: 'idamId',
-          address: {
+          addressUk: {
             AddressLine1: 'line1',
             AddressLine2: 'line2',
             PostTown: 'city',
@@ -3098,18 +3132,46 @@ describe('update-appeal-service', () => {
       });
     });
 
+    it('if appeal full nlr details then map full sponsor not same', () => {
+      appeal['nlrDetails'] = {
+        givenNames: 'givenNames',
+        familyName: 'familyName',
+        emailAddress: 'emailAddress',
+        phoneNumber: 'phoneNumber',
+        idamId: 'idamId',
+        address: 'some address'
+      };
+      appeal.application = {
+        isSponsorSameAsNlr: 'No',
+      };
+      updateAppealService.mapToCCDCaseNlrDetails(appeal, caseData);
+      expect(caseData).to.deep.equal({
+        nlrDetails: {
+          givenNames: 'givenNames',
+          familyName: 'familyName',
+          emailAddress: 'emailAddress',
+          phoneNumber: 'phoneNumber',
+          idamId: 'idamId',
+          address: 'some address'
+        }
+      });
+    });
+
     it('if appeal partial nlr details then map partial', () => {
       appeal['nlrDetails'] = {
         emailAddress: 'emailAddress',
         phoneNumber: 'phoneNumber',
-        address: {},
+        addressUk: {},
+      };
+      appeal.application = {
+        isSponsorSameAsNlr: 'Yes',
       };
       updateAppealService.mapToCCDCaseNlrDetails(appeal, caseData);
       expect(caseData).to.deep.equal({
         nlrDetails: {
           emailAddress: 'emailAddress',
           phoneNumber: 'phoneNumber',
-          address: {
+          addressUk: {
             AddressLine1: null,
             AddressLine2: null,
             PostTown: null,
@@ -3120,7 +3182,6 @@ describe('update-appeal-service', () => {
         }
       });
     });
-
   });
 
   describe('mapCcdNlrRequirementsToAppeal', () => {

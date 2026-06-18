@@ -413,7 +413,7 @@ describe('Hearing requirements non legal rep controller', () => {
       await getNlrHearingInterpreterSpokenLanguageSelection(refDataServiceObj as RefDataService)(req as Request, res as Response, next);
       expect(retrieveInterpreterDlStub.called).to.equal(false);
       expect(getRenderObjectStub).to.be.calledWith(nlrInterpreterSpokenLanguage, 'someObject', true, paths.submitHearingRequirements.nlrHearingInterpreterTypes);
-      expect(renderStub).to.be.calledWith('hearing-requirements/interpreter-language-selection.njk', 'renderObject');
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', 'renderObject');
     });
 
     it('getNlrHearingInterpreterSpokenLanguageSelection should render with DL if no nlrInterpreterSpokenLanguage.languageRefData', async () => {
@@ -424,7 +424,7 @@ describe('Hearing requirements non legal rep controller', () => {
       await getNlrHearingInterpreterSpokenLanguageSelection(refDataServiceObj as RefDataService)(req as Request, res as Response, next);
       expect(retrieveInterpreterDlStub.called).to.equal(true);
       expect(getRenderObjectStub).to.be.calledWith(nlrInterpreterSpokenLanguage, 'someObject', true, paths.submitHearingRequirements.nlrHearingInterpreterTypes);
-      expect(renderStub).to.be.calledWith('hearing-requirements/interpreter-language-selection.njk', 'renderObject');
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', 'renderObject');
     });
 
     it('getNlrHearingInterpreterSpokenLanguageSelection should render with DL if no nlrInterpreterSpokenLanguage', async () => {
@@ -433,7 +433,7 @@ describe('Hearing requirements non legal rep controller', () => {
       await getNlrHearingInterpreterSpokenLanguageSelection(refDataServiceObj as RefDataService)(req as Request, res as Response, next);
       expect(retrieveInterpreterDlStub.called).to.equal(true);
       expect(getRenderObjectStub).to.be.calledWith(undefined, 'someObject', true, paths.submitHearingRequirements.nlrHearingInterpreterTypes);
-      expect(renderStub).to.be.calledWith('hearing-requirements/interpreter-language-selection.njk', 'renderObject');
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', 'renderObject');
     });
 
     it('getNlrHearingInterpreterSpokenLanguageSelection should catch an exception and call next()', async () => {
@@ -465,7 +465,7 @@ describe('Hearing requirements non legal rep controller', () => {
       await postNlrHearingInterpreterSpokenLanguageSelection(updateAppealService as UpdateAppealService, refDataServiceObj as RefDataService)(req as Request, res as Response, next);
       expect(retrieveInterpreterDlStub.called).to.equal(false);
       expect(getRenderObjectStub).to.be.calledWith(nlrInterpreterSpokenLanguage, 'someObject', true, paths.submitHearingRequirements.nlrHearingInterpreterTypes);
-      expect(renderStub).to.be.calledWith('hearing-requirements/interpreter-language-selection.njk', 'renderObject');
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', 'renderObject');
     });
 
     it('postNlrHearingInterpreterSpokenLanguageSelection should render with DL if no nlrInterpreterSpokenLanguage.languageRefData if validation fails', async () => {
@@ -476,7 +476,7 @@ describe('Hearing requirements non legal rep controller', () => {
       await postNlrHearingInterpreterSpokenLanguageSelection(updateAppealService as UpdateAppealService, refDataServiceObj as RefDataService)(req as Request, res as Response, next);
       expect(retrieveInterpreterDlStub.called).to.equal(true);
       expect(getRenderObjectStub).to.be.calledWith(nlrInterpreterSpokenLanguage, 'someObject', true, paths.submitHearingRequirements.nlrHearingInterpreterTypes);
-      expect(renderStub).to.be.calledWith('hearing-requirements/interpreter-language-selection.njk', 'renderObject');
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', 'renderObject');
     });
 
     it('postNlrHearingInterpreterSpokenLanguageSelection should render with DL if no nlrInterpreterSpokenLanguage if validation fails', async () => {
@@ -485,7 +485,7 @@ describe('Hearing requirements non legal rep controller', () => {
       await postNlrHearingInterpreterSpokenLanguageSelection(updateAppealService as UpdateAppealService, refDataServiceObj as RefDataService)(req as Request, res as Response, next);
       expect(retrieveInterpreterDlStub.called).to.equal(true);
       expect(getRenderObjectStub).to.be.calledWith(undefined, 'someObject', true, paths.submitHearingRequirements.nlrHearingInterpreterTypes);
-      expect(renderStub).to.be.calledWith('hearing-requirements/interpreter-language-selection.njk', 'renderObject');
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', 'renderObject');
     });
 
     it('postNlrHearingInterpreterSpokenLanguageSelection should submit update and redirect to nlrHearingInterpreterSignLanguageSelection if signLanguageInterpreterString', async () => {
@@ -536,7 +536,7 @@ describe('Hearing requirements non legal rep controller', () => {
       await getNlrHearingInterpreterSignLanguageSelection(refDataServiceObj as RefDataService)(req as Request, res as Response, next);
       expect(retrieveInterpreterDlStub.called).to.equal(false);
       expect(getRenderObjectStub).to.be.calledWith(nlrInterpreterSignLanguage, 'someObject', false, paths.submitHearingRequirements.nlrHearingInterpreterTypes);
-      expect(renderStub).to.be.calledWith('hearing-requirements/interpreter-language-selection.njk', 'renderObject');
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', 'renderObject');
     });
 
     it('getNlrHearingInterpreterSignLanguageSelection should render with DL if no nlrInterpreterSignLanguage.languageRefData', async () => {
@@ -547,7 +547,7 @@ describe('Hearing requirements non legal rep controller', () => {
       await getNlrHearingInterpreterSignLanguageSelection(refDataServiceObj as RefDataService)(req as Request, res as Response, next);
       expect(retrieveInterpreterDlStub.called).to.equal(true);
       expect(getRenderObjectStub).to.be.calledWith(nlrInterpreterSignLanguage, 'someObject', false, paths.submitHearingRequirements.nlrHearingInterpreterTypes);
-      expect(renderStub).to.be.calledWith('hearing-requirements/interpreter-language-selection.njk', 'renderObject');
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', 'renderObject');
     });
 
     it('getNlrHearingInterpreterSignLanguageSelection should render with DL if no nlrInterpreterSignLanguage', async () => {
@@ -556,7 +556,7 @@ describe('Hearing requirements non legal rep controller', () => {
       await getNlrHearingInterpreterSignLanguageSelection(refDataServiceObj as RefDataService)(req as Request, res as Response, next);
       expect(retrieveInterpreterDlStub.called).to.equal(true);
       expect(getRenderObjectStub).to.be.calledWith(undefined, 'someObject', false, paths.submitHearingRequirements.nlrHearingInterpreterTypes);
-      expect(renderStub).to.be.calledWith('hearing-requirements/interpreter-language-selection.njk', 'renderObject');
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', 'renderObject');
     });
 
     it('getNlrHearingInterpreterSignLanguageSelection should catch an exception and call next()', async () => {
@@ -588,7 +588,7 @@ describe('Hearing requirements non legal rep controller', () => {
       await postNlrHearingInterpreterSignLanguageSelection(updateAppealService as UpdateAppealService, refDataServiceObj as RefDataService)(req as Request, res as Response, next);
       expect(retrieveInterpreterDlStub.called).to.equal(false);
       expect(getRenderObjectStub).to.be.calledWith(nlrInterpreterSignLanguage, 'someObject', false, paths.submitHearingRequirements.nlrHearingInterpreterTypes);
-      expect(renderStub).to.be.calledWith('hearing-requirements/interpreter-language-selection.njk', 'renderObject');
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', 'renderObject');
     });
 
     it('postNlrHearingInterpreterSignLanguageSelection should render with DL if no nlrInterpreterSignLanguage.languageRefData if validation fails', async () => {
@@ -599,7 +599,7 @@ describe('Hearing requirements non legal rep controller', () => {
       await postNlrHearingInterpreterSignLanguageSelection(updateAppealService as UpdateAppealService, refDataServiceObj as RefDataService)(req as Request, res as Response, next);
       expect(retrieveInterpreterDlStub.called).to.equal(true);
       expect(getRenderObjectStub).to.be.calledWith(nlrInterpreterSignLanguage, 'someObject', false, paths.submitHearingRequirements.nlrHearingInterpreterTypes);
-      expect(renderStub).to.be.calledWith('hearing-requirements/interpreter-language-selection.njk', 'renderObject');
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', 'renderObject');
     });
 
     it('postNlrHearingInterpreterSignLanguageSelection should render with DL if no nlrInterpreterSignLanguage if validation fails', async () => {
@@ -608,7 +608,7 @@ describe('Hearing requirements non legal rep controller', () => {
       await postNlrHearingInterpreterSignLanguageSelection(updateAppealService as UpdateAppealService, refDataServiceObj as RefDataService)(req as Request, res as Response, next);
       expect(retrieveInterpreterDlStub.called).to.equal(true);
       expect(getRenderObjectStub).to.be.calledWith(undefined, 'someObject', false, paths.submitHearingRequirements.nlrHearingInterpreterTypes);
-      expect(renderStub).to.be.calledWith('hearing-requirements/interpreter-language-selection.njk', 'renderObject');
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-language-selection.njk', 'renderObject');
     });
 
     it('postNlrHearingInterpreterSignLanguageSelection should submit update and redirect to nlrNeedsStepFreeAccess', async () => {

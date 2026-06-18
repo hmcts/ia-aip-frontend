@@ -165,7 +165,7 @@ describe('Nationality details Controller', function () {
       };
 
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith('appeal-application/personal-details/nationality.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/nationality.njk',
         {
           errorList: [ error ],
           errors: { nationality: error },

@@ -28,7 +28,7 @@ import { DocumentManagementService } from '../../../app/service/document-managem
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { formatDate } from '../../../app/utils/date-utils';
 import i18n from '../../../locale/en.json';
-import { expect, sinon } from '../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../utils/testUtils';
 
 describe('Ftpa application controllers setup', () => {
   let sandbox: sinon.SinonSandbox;
@@ -751,34 +751,30 @@ describe('Ftpa application controllers setup', () => {
       const previousPage = paths.ftpa.ftpaEvidence;
       const summaryLists: SummaryList[] = [{ summaryRows: [] }];
 
-      const expectedRenderPayload = {
+      getFtpaCheckAndSend(req as Request, res as Response, next);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.ftpaApplication.checkYourAnswers.title,
         continuePath: paths.ftpa.ftpaCheckAndSend,
         previousPage,
-        summaryLists
-      };
-      getFtpaCheckAndSend(req as Request, res as Response, next);
-      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        ...expectedRenderPayload
+        summaryLists,
+        hasNlr: false
       });
     });
 
-    it('should render when no supporting evidence', () => {
-
+    it('should render when no supporting evidence with NLR', () => {
+      setActiveNlr(req);
       req.session.appeal.ftpaProvideEvidence = 'No';
 
       const previousPage = paths.ftpa.ftpaEvidenceQuestion;
       const summaryLists: SummaryList[] = [{ summaryRows: [] }];
 
-      const expectedRenderPayload = {
+      getFtpaCheckAndSend(req as Request, res as Response, next);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.ftpaApplication.checkYourAnswers.title,
         continuePath: paths.ftpa.ftpaCheckAndSend,
         previousPage,
-        summaryLists
-      };
-      getFtpaCheckAndSend(req as Request, res as Response, next);
-      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        ...expectedRenderPayload
+        summaryLists,
+        hasNlr: true
       });
     });
   });

@@ -10,7 +10,7 @@ import {
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { dayMonthYearFormat } from '../../../../../app/utils/date-utils';
-import { expect, sinon } from '../../../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../../../utils/testUtils';
 
 describe('Hearing Requirements - Enter A date controller', () => {
   let sandbox: sinon.SinonSandbox;
@@ -85,11 +85,11 @@ describe('Hearing Requirements - Enter A date controller', () => {
       };
 
       getEnterADatePage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs);
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs);
     });
 
-    it('should render template with hasNonLegalRep', () => {
-      req.session.appeal.application.hasNonLegalRep = 'Yes';
+    it('should render template with hasActiveNlr', () => {
+      setActiveNlr(req);
       const expectedArgs = {
         date: null,
         availableHearingDates: { from: '20 March 2025', to: '01 May 2025' },
@@ -100,7 +100,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
       };
 
       getEnterADatePage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs);
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -145,8 +145,8 @@ describe('Hearing Requirements - Enter A date controller', () => {
 
     it('should render template with previously saved answer and hasNonLegalRep', () => {
 
+      setActiveNlr(req);
       req.params.id = '0';
-      req.session.appeal.application.hasNonLegalRep = 'Yes';
       req.session.appeal.hearingRequirements.datesToAvoid.dates = [{
         date: {
           day: '20',
@@ -230,13 +230,13 @@ describe('Hearing Requirements - Enter A date controller', () => {
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk',
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/dates-to-avoid/enter-a-date.njk',
         expectedArgs);
     });
 
     it('should fail validation and render template with errors and hasNonLegalRep', async () => {
       const invalidDate = moment().add(-1, 'week');
-      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      setActiveNlr(req);
       req.body['day'] = invalidDate.date();
       req.body['month'] = invalidDate.month() + 1;
       req.body['year'] = invalidDate.year();
@@ -268,7 +268,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk',
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/dates-to-avoid/enter-a-date.njk',
         expectedArgs);
     });
 
@@ -318,7 +318,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
 
       await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk',
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/dates-to-avoid/enter-a-date.njk',
         expectedArgs);
     });
 

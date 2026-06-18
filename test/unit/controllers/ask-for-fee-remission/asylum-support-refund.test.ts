@@ -124,8 +124,7 @@ describe('Asylum support refund Controller', function () {
         href: '#asylumSupportRefNumber'
       };
       await postAsylumSupport()(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/asylum-support.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/asylum-support.njk',
         {
           errors: {
             asylumSupportRefNumber: error

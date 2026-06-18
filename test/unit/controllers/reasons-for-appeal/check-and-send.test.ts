@@ -77,7 +77,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
   });
 
   describe('getCheckAndSend', () => {
-    it('should render reasons-for-appeal/check-and-send-page.njk with supporting evidences', () => {
+    it('should render templates/check-and-send.njk with supporting evidences', () => {
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
         addSummaryRow(i18n.common.cya.answerRowTitle, [ formatTextForCYA(req.session.appeal.reasonsForAppeal.applicationReason) ], paths.awaitingReasonsForAppeal.decision + editParameter),
@@ -97,20 +97,20 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       ];
 
       getCheckAndSend(req as Request, res as Response, next);
-      expectRenderedCalledWithArgs(renderStub, 'reasons-for-appeal/check-and-send-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         summaryRows,
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidenceUpload
       });
     });
 
-    it('should render reasons-for-appeal/check-and-send-page.njk without supporting evidences', () => {
+    it('should render templates/check-and-send.njk without supporting evidences', () => {
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
         addSummaryRow(i18n.common.cya.answerRowTitle, [ formatTextForCYA(req.session.appeal.reasonsForAppeal.applicationReason) ], paths.awaitingReasonsForAppeal.decision + editParameter)
       ];
 
       getCheckAndSend(req as Request, res as Response, next);
-      expectRenderedCalledWithArgs(renderStub, 'reasons-for-appeal/check-and-send-page.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         summaryRows,
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence
       });

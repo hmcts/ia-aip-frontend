@@ -88,7 +88,7 @@ describe('Hearing Requirements - Other Needs Section: Single sex appointment Que
         },
         saveAndContinue: true
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         expectedArgs
       );
     });

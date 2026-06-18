@@ -87,7 +87,7 @@ describe('Hearing Requirements - Other Needs Section: Join By VideoCall Question
         },
         saveAndContinue: true
       };
-      expect(renderStub).to.be.calledWith('hearing-requirements/other-needs/join-hearing-by-videocall.njk',
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/other-needs/join-hearing-by-videocall.njk',
         expectedArgs
       );
     });

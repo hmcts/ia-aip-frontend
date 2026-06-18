@@ -434,7 +434,7 @@ describe('DetailViewController', () => {
     });
   });
 
-  describe('getAppealDetailsViewer', () => {
+  describe('getAppealDetailsViewer inUk', () => {
     let expectedSummaryRows;
     let expectedSummaryRowsWithDlrmFeeRemission;
 
@@ -683,7 +683,8 @@ describe('DetailViewController', () => {
         { key: { text: 'Non-legal representative\'s name' }, value: { html: 'some name' } },
         { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
         { key: { text: 'Non-legal representative\'s phone number' }, value: { html: 'some phone' } },
-        { key: { text: 'Non-legal representative\'s address' }, value: { html: 'some line1<br>some city<br>some postcode' } }
+        { key: { text: 'Non-legal representative\'s address' }, value: { html: 'some line1<br>some city<br>some postcode' } },
+        { key: { text: 'Non-legal representative\'s address' }, value: { html: 'someAddress' } }
       );
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
@@ -706,11 +707,12 @@ describe('DetailViewController', () => {
         givenNames: 'some',
         familyName: 'name',
         phoneNumber: 'some phone',
-        address: {
+        addressUk: {
           line1: 'some line1',
           city: 'some city',
           postcode: 'some postcode'
-        }
+        },
+        address: 'someAddress'
       };
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
@@ -724,7 +726,8 @@ describe('DetailViewController', () => {
       });
     });
 
-    it('should add NLR details if present non DLRM', async () => {
+    it('should add NLR details and no sponsor details if present non DLRM with sponsor same', async () => {
+      expectedSummaryRows.splice(9, 0, { key: { text: 'Sponsor' }, value: { html: 'Yes' } });
       expectedSummaryRows.push(
         { key: { text: 'Non-legal representative\'s name' }, value: { html: 'some name' } },
         { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
@@ -737,12 +740,48 @@ describe('DetailViewController', () => {
         givenNames: 'some',
         familyName: 'name',
         phoneNumber: 'some phone',
-        address: {
+        addressUk: {
           line1: 'some line1'
         }
       };
       req.session.appeal.application.hasNonLegalRep = 'Yes';
       req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
+      req.session.appeal.application.hasSponsor = 'Yes';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRows
+      });
+    });
+
+
+    it('should add NLR details with sponsor details if present non DLRM with sponsor not same', async () => {
+      expectedSummaryRows.splice(9, 0, { key: { text: 'Sponsor' }, value: { html: 'Yes' } });
+      expectedSummaryRows.splice(10, 0, { key: { text: 'Sponsor\'s name' }, value: { html: 'NAME' } });
+      expectedSummaryRows.splice(11, 0, { key: { text: 'Sponsor has access to information' }, value: { html: 'No' } });
+      expectedSummaryRows.push(
+        { key: { text: 'Non-legal representative\'s name' }, value: { html: 'some name' } },
+        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
+        { key: { text: 'Non-legal representative\'s phone number' }, value: { html: 'some phone' } },
+        { key: { text: 'Non-legal representative\'s address' }, value: { html: 'some line1' } },
+        { key: { text: 'Is your sponsor the same as your non-legal representative?' }, value: { html: 'No' } },
+      );
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        givenNames: 'some',
+        familyName: 'name',
+        phoneNumber: 'some phone',
+        addressUk: {
+          line1: 'some line1'
+        }
+      };
+      req.session.appeal.application.sponsorNameForDisplay = 'NAME';
+      req.session.appeal.application.sponsorAuthorisation = 'No';
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'No';
+      req.session.appeal.application.hasSponsor = 'Yes';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
@@ -1830,7 +1869,7 @@ describe('DetailViewController', () => {
     });
   });
 
-  describe('getAppealDetailsViewer', () => {
+  describe('getAppealDetailsViewer ooc has sponsor', () => {
     let expectedSummaryRows;
 
     beforeEach(() => {
@@ -1989,6 +2028,7 @@ describe('DetailViewController', () => {
 
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
+      expectedSummaryRows.splice(2, 1, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' } });
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
@@ -2007,6 +2047,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       req.session.appeal.feeWithHearing = '140';
+      expectedSummaryRows.splice(2, 1, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' } });
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
@@ -2026,6 +2067,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       req.session.appeal.feeWithHearing = '140';
+      expectedSummaryRows.splice(2, 1, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' } });
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
@@ -2060,7 +2102,7 @@ describe('DetailViewController', () => {
     });
   });
 
-  describe('getAppealDetailsViewer', () => {
+  describe('getAppealDetailsViewer ooc no sponsor', () => {
     let expectedSummaryRows;
 
     beforeEach(() => {
@@ -2194,6 +2236,8 @@ describe('DetailViewController', () => {
 
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
+      expectedSummaryRows.splice(2, 1, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' } });
+      expectedSummaryRows.splice(9, 1);
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
@@ -2204,6 +2248,8 @@ describe('DetailViewController', () => {
 
     it('should render detail-viewers/appeal-details-viewer.njk payments NOW flag ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      expectedSummaryRows.splice(2, 1, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' } });
+      expectedSummaryRows.splice(9, 1);
       expectedSummaryRows.push(
         { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
         { key: { text: 'Fee amount' }, value: { html: '£140' } }
@@ -2223,6 +2269,8 @@ describe('DetailViewController', () => {
 
     it('should render detail-viewers/appeal-details-viewer.njk payments LATER flag ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      expectedSummaryRows.splice(2, 1, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' } });
+      expectedSummaryRows.splice(9, 1);
       expectedSummaryRows.push(
         { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
         { key: { text: 'Payment type' }, value: { html: 'Pay later' } }
@@ -5688,11 +5736,11 @@ describe('DetailViewController', () => {
 
       getDirectionHistory(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('detail-viewers/direction-history-viewer.njk', sinon.match({
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/direction-history-viewer.njk', {
         title: i18n.pages.detailViewers.directionHistory.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
-      }));
+      });
     });
 
     it('should render respondent direction when ID includes "-respondent" suffix', () => {
@@ -5701,11 +5749,11 @@ describe('DetailViewController', () => {
 
       getDirectionHistory(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('detail-viewers/direction-history-viewer.njk', sinon.match({
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/direction-history-viewer.njk', {
         title: i18n.pages.detailViewers.directionHistory.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
-      }));
+      });
     });
 
     it('should catch error and call next with it', () => {

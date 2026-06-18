@@ -9,7 +9,7 @@ import {
 import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
-import { expect, sinon } from '../../../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../../../utils/testUtils';
 
 describe('Hearing Requirements - Reason controller', () => {
   let sandbox: sinon.SinonSandbox;
@@ -100,7 +100,8 @@ describe('Hearing Requirements - Reason controller', () => {
     });
 
     it('should render template with nlr if hasNlr', () => {
-      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      setActiveNlr(req);
+
       getDatesToAvoidReason(req as Request, res as Response, next);
       const expectedArgs = {
         formAction: '/hearing-dates-avoid-reasons',
@@ -149,7 +150,8 @@ describe('Hearing Requirements - Reason controller', () => {
     it('should render template with previously saved answer for NLR if hasNlr', () => {
       req.params.id = '0';
       req.session.appeal.hearingRequirements.datesToAvoid.dates[0].reason = 'Previously saved reason';
-      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      setActiveNlr(req);
+
       const expectedArgs = {
         formAction: '/hearing-dates-avoid-reasons/0',
         pageTitle: 'Why can you, your non-legal representative or any witnesses not go to the hearing on this date?',
@@ -204,7 +206,8 @@ describe('Hearing Requirements - Reason controller', () => {
     });
 
     it('should fail validation and render template with errors for nlr with hasNlr', async () => {
-      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      setActiveNlr(req);
+
       await postDatesToAvoidReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const expectedError = {
         key: 'reason',
@@ -278,7 +281,7 @@ describe('Hearing Requirements - Reason controller', () => {
 
     it('should fail validation and render template with errors with nlr if hasNlr', async () => {
       req.params.id = '0';
-      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      setActiveNlr(req);
 
       await postDatesToAvoidReasonWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 

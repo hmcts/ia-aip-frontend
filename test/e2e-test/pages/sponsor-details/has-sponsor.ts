@@ -30,5 +30,17 @@ module.exports = {
     When('I should be taken to the is sponsor and nlr the same person page', async () => {
       I.waitInUrl(testUrl + paths.appealStarted.isSponsorSameAsNlr, 10);
     });
+
+    When('I choose No and click continue', async () => {
+      await I.checkOption('#answer-2');
+      I.wait(3);
+      await I.click('Save and continue');
+    });
+
+    When('I choose Yes and click continue', async () => {
+      await I.checkOption('#answer');
+      I.wait(3);
+      await I.click('Save and continue');
+    });
   }
 };

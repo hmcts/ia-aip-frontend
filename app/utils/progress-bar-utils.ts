@@ -46,11 +46,13 @@ function buildProgressBarStages(state: string, isNonLegalRep: boolean, paymentSt
   }
 
   const i18n = getI18n(isNonLegalRep);
+  const appealSubmitted = state === States.APPEAL_SUBMITTED.id;
+
   const yourAppealDetailsStage = {
     title: i18n.components.progressBar.yourAppealDetails.title,
     ariaLabel: i18n.components.progressBar.yourAppealDetails.ariaLabel,
-    active: stages.yourAppealDetails.activeStatus.includes(state) && paymentStatus !== 'Paid',
-    completed: !stages.yourAppealDetails.activeStatus.includes(state) || paymentStatus === 'Paid'
+    active: !appealSubmitted && stages.yourAppealDetails.activeStatus.includes(state) && paymentStatus !== 'Paid',
+    completed: appealSubmitted || !stages.yourAppealDetails.activeStatus.includes(state) || paymentStatus === 'Paid'
   };
 
   const yourAppealArgumentStage = {

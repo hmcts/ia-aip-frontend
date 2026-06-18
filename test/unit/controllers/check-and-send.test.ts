@@ -72,7 +72,7 @@ function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
     actions: { items: [{ href: '/date-birth?edit', text: 'Change', visuallyHiddenText: 'Date of birth' }] }
   }, {
     key: { text: 'Nationality' },
-    value: { html: 'Austria' },
+    value: { html: 'Austrian' },
     actions: { items: [{ href: '/nationality?edit', text: 'Change', visuallyHiddenText: 'Nationality' }] }
   }, {
     key: { text: 'Date letter received' },
@@ -124,10 +124,6 @@ function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
         visuallyHiddenText: 'Sponsor has access to information'
       }]
     }
-  }, {
-    key: { text: 'Appeal type' },
-    value: { html: i18n.appealTypes[appealType].name },
-    actions: { items: [{ href: '/appeal-type?edit', text: 'Change', visuallyHiddenText: 'Appeal type' }] }
   }, {
     key: { text: 'Home Office decision letter' },
     value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/anId\'>name</a>' },
@@ -190,7 +186,7 @@ function getMockedSummaryRowsPayment(appealType = 'protection'): SummaryRow[] {
     actions: { items: [{ href: '/date-birth?edit', text: 'Change', visuallyHiddenText: 'Date of birth' }] }
   }, {
     key: { text: 'Nationality' },
-    value: { html: 'Austria' },
+    value: { html: 'Austrian' },
     actions: { items: [{ href: '/nationality?edit', text: 'Change', visuallyHiddenText: 'Nationality' }] }
   }, {
     key: { text: 'Date letter received' },
@@ -242,10 +238,6 @@ function getMockedSummaryRowsPayment(appealType = 'protection'): SummaryRow[] {
         visuallyHiddenText: 'Sponsor has access to information'
       }]
     }
-  }, {
-    key: { text: 'Appeal type' },
-    value: { html: 'Deprivation of Citizenship' },
-    actions: { items: [{ href: '/appeal-type?edit', text: 'Change', visuallyHiddenText: 'Appeal type' }] }
   }, {
     key: { text: 'Home Office decision letter' },
     value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/anId\'>name</a>' },

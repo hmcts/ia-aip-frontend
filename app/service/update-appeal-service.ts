@@ -207,7 +207,7 @@ export default class UpdateAppealService {
     return this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders, true);
   }
 
-  async validateMidEvent(event, pageIds: string[], appeal: Appeal, midEventData: any, uid: string, userToken: string): Promise<string[]> {
+  async validateMidEvent(event, pageId: string, appeal: Appeal, midEventData: any, uid: string, userToken: string): Promise<string[]> {
     const securityHeaders: SecurityHeaders = {
       userToken: `Bearer ${userToken}`,
       serviceToken: await this._s2sService.getServiceToken()
@@ -220,17 +220,14 @@ export default class UpdateAppealService {
       ignore_warning: false
     };
     const errors: string[] = [];
-    for (const pageId of pageIds) {
-      const response: MidEventResponse = await this._ccdService.validateMidEvent(midEventDetails, pageId, uid, securityHeaders);
-      if (response.status === 422) {
-        if (response?.callbackErrors?.length > 0) {
-          errors.push(...response.callbackErrors);
-        } else {
-          errors.push(...(response?.details?.field_errors || [])
-            .map(error => `${error.id}: ${error.message}`));
-        }
-        logger.exception(`midEventValidation for ${event.id} failed with errors: ${errors}`, logLabel);
+    const response: MidEventResponse = await this._ccdService.validateMidEvent(midEventDetails, pageId, uid, securityHeaders);
+    if (response.status !== 200) {
+      if (response.status === 422 && response?.data?.callbackErrors?.length > 0) {
+        errors.push(...response.data.callbackErrors);
+      } else {
+        errors.push(i18n.validationErrors.errorSummary);
       }
+      logger.exception(`midEventValidation for ${event.id} failed with errors: ${errors}`, logLabel);
     }
     return errors;
   }

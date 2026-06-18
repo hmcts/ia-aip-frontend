@@ -522,11 +522,16 @@ interface MidEventResponse {
   status?: number,
   callbackErrors?: string[]
   details?: MidEventResponseDetails
-  data?: any
+  data?: MidEventResponseData
 }
 
 interface MidEventResponseDetails {
   field_errors?: FieldError[]
+}
+
+interface MidEventResponseData {
+  status?: number,
+  callbackErrors?: string[]
 }
 
 interface FieldError {

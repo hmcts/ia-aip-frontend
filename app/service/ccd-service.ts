@@ -188,6 +188,20 @@ class CcdService {
     return response.data;
   }
 
+  async validateMidEvent(midEventDetails: MidEventDetails, pageId: string, userId: string, headers: SecurityHeaders): Promise<MidEventResponse> {
+    const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/validate?pageId=${pageId}`;
+    const options: any = this.createOptions(
+        userId,
+        headers
+    );
+
+    try {
+      return await axios.post(url, midEventDetails, options);
+    } catch (e) {
+      return e.response;
+    }
+  }
+
   async getCaseHistory(userId: string, caseId: string, headers: SecurityHeaders): Promise<HistoryEvent[]> {
     logger.trace(`Loading history for case with ID ${caseId}`, logLabel);
     let history = [];

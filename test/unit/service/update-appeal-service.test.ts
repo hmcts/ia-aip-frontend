@@ -2990,6 +2990,7 @@ describe('update-appeal-service', () => {
       });
     expect(errors.length).to.equal(2);
     expect(errors.includes(error1)).to.equal(true);
+    expect(errors.includes(error2)).to.equal(true);
   });
 
   describe('mapToCCDCaseNlrDetails', () => {

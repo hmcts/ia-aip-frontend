@@ -59,7 +59,7 @@ describe('Confirmation Page Controller', () => {
   const expectedHistory = {
     appealArgumentSection: [{
       'date': '27 February 2020',
-      'dateObject': sinon.match.any,
+      'dateObject': new Date('2020-02-27T16:46:50.355Z'),
       'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
       'links': [
         {
@@ -79,7 +79,7 @@ describe('Confirmation Page Controller', () => {
     ],
     appealDetailsSection: [{
       'date': '27 February 2020',
-      'dateObject': sinon.match.any,
+      'dateObject': new Date('2020-02-27T14:18:54.605Z'),
       'text': 'You sent your appeal details to the Tribunal.',
       'links': [
         {
@@ -187,8 +187,11 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: false
     }];
+    expect(resRenderStub.calledOnce).to.equal(true);
 
-    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
+    const [template, actualViewModel] = resRenderStub.firstCall.args;
+    expect(template).to.equal('application-overview.njk');
+    expect(actualViewModel).to.deep.equal({
       name: 'Alex Developer',
       appealRefNumber: null,
       applicationNextStep: expectedNextStep,
@@ -212,13 +215,16 @@ describe('Confirmation Page Controller', () => {
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
       isNonLegalRep: false,
+      hasNonLegalRep: false,
       isPostDecisionState: false,
       previousPage: paths.common.casesList,
+      updateNlrPath: paths.nonLegalRep.updateName,
+      addNonLegalRepPath: paths.nonLegalRep.addNonLegalRep,
       previousPageText: i18n.components.back.backToCasesList
     });
   });
 
-  it('getApplicationOverview should render application-overview.njk with isPostDecisionState', async () => {
+  it('getApplicationOverview should render application-overview.njk with isPostDecisionState and hasSponsor', async () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
@@ -240,6 +246,7 @@ describe('Confirmation Page Controller', () => {
         dateUploaded: '2024-02-28'
       }
     ];
+    req.session.appeal.application.hasSponsor = 'Yes';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -280,8 +287,11 @@ describe('Confirmation Page Controller', () => {
       allowedAskForMoreTime: false,
       deadline: '13 March 2024'
     };
+    expect(resRenderStub.calledOnce).to.equal(true);
 
-    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
+    const [template, actualViewModel] = resRenderStub.firstCall.args;
+    expect(template).to.equal('application-overview.njk');
+    expect(actualViewModel).to.deep.equal({
       name: 'Alex Developer',
       appealRefNumber: 'PA/12345/2025',
       applicationNextStep: appNextStep,
@@ -304,9 +314,12 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showNonLegalRep: true,
       isNonLegalRep: false,
+      hasNonLegalRep: false,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: true,
       previousPage: paths.common.casesList,
+      updateNlrPath: paths.nonLegalRep.updateIsSamePerson,
+      addNonLegalRepPath: paths.nonLegalRep.addNonLegalRep,
       previousPageText: i18n.components.back.backToCasesList
     });
   });
@@ -375,8 +388,11 @@ describe('Confirmation Page Controller', () => {
       allowedAskForMoreTime: false,
       deadline: '13 March 2024'
     };
+    expect(resRenderStub.calledOnce).to.equal(true);
 
-    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
+    const [template, actualViewModel] = resRenderStub.firstCall.args;
+    expect(template).to.equal('application-overview.njk');
+    expect(actualViewModel).to.deep.equal({
       name: 'Alex Developer',
       appealRefNumber: 'PA/12345/2025',
       applicationNextStep: appNextStep,
@@ -397,11 +413,14 @@ describe('Confirmation Page Controller', () => {
       showChangeRepresentation: true,
       showNonLegalRep: true,
       isNonLegalRep: false,
+      hasNonLegalRep: false,
       showFtpaApplicationLink: false,
       showAskForFeeRemission: true,
       showAskForSomethingInEndedState: false,
       isPostDecisionState: true,
       previousPage: paths.common.casesList,
+      updateNlrPath: paths.nonLegalRep.updateName,
+      addNonLegalRepPath: paths.nonLegalRep.addNonLegalRep,
       previousPageText: i18n.components.back.backToCasesList
     });
   });
@@ -431,8 +450,11 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: true
     }];
+    expect(resRenderStub.calledOnce).to.equal(true);
 
-    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
+    const [template, actualViewModel] = resRenderStub.firstCall.args;
+    expect(template).to.equal('application-overview.njk');
+    expect(actualViewModel).to.deep.equal({
       name: undefined,
       appealRefNumber: undefined,
       applicationNextStep: {
@@ -459,8 +481,80 @@ describe('Confirmation Page Controller', () => {
       showNonLegalRep: false,
       showAskForSomethingInEndedState: false,
       isNonLegalRep: true,
+      hasNonLegalRep: false,
       isPostDecisionState: false,
       previousPage: paths.common.casesList,
+      updateNlrPath: paths.nonLegalRep.updateName,
+      addNonLegalRepPath: paths.nonLegalRep.addNonLegalRep,
+      previousPageText: i18n.components.back.backToCasesList
+    });
+  });
+
+  it('getApplicationOverview should pass hasNonLegalRep and paths if hasActiveNlr', async () => {
+    req.session.appeal.application.hasNonLegalRep = 'Yes';
+    req.session.appeal.nlrDetails = {
+      idamId: 'someId',
+    };
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    const expectedStages = [{
+      title: 'Your appeal<br/> details',
+      ariaLabel: 'Your appeal details stage',
+      active: false,
+      completed: true
+    }, {
+      title: 'Your appeal<br/> argument',
+      ariaLabel: 'Your appeal argument stage',
+      active: false,
+      completed: true
+    }, {
+      title: 'Your hearing<br/> details',
+      ariaLabel: 'Your hearing details stage',
+      active: false,
+      completed: true
+    }, {
+      title: 'Your appeal<br/> decision',
+      ariaLabel: 'Your appeal decision stage',
+      active: false,
+      completed: true
+    }];
+    expect(resRenderStub.calledOnce).to.equal(true);
+
+    const [template, actualViewModel] = resRenderStub.firstCall.args;
+    expect(template).to.equal('application-overview.njk');
+    expect(actualViewModel).to.deep.equal({
+      name: undefined,
+      appealRefNumber: undefined,
+      applicationNextStep: {
+        descriptionParagraphs: ['Nothing to do next'],
+        deadline: 'TBC'
+      },
+      history: expectedHistory,
+      stages: expectedStages,
+      saved: false,
+      ended: undefined,
+      transferredToUt: false,
+      askForMoreTimeInFlight: false,
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false,
+      showAppealRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
+      showHearingRequests: false,
+      showPayLaterLink: false,
+      hearingDetails: null,
+      showChangeRepresentation: true,
+      showFtpaApplicationLink: false,
+      showAskForFeeRemission: false,
+      showNonLegalRep: true,
+      showAskForSomethingInEndedState: false,
+      isNonLegalRep: false,
+      hasNonLegalRep: true,
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList,
+      updateNlrPath: paths.nonLegalRep.updateName,
+      addNonLegalRepPath: paths.nonLegalRep.addAnotherNonLegalRep,
       previousPageText: i18n.components.back.backToCasesList
     });
   });
@@ -501,8 +595,11 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: false
     }];
+    expect(resRenderStub.calledOnce).to.equal(true);
 
-    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
+    const [template, actualViewModel] = resRenderStub.firstCall.args;
+    expect(template).to.equal('application-overview.njk');
+    expect(actualViewModel).to.deep.equal({
       name: 'Alex Developer',
       appealRefNumber: 'appealNumber',
       applicationNextStep: expectedNextStep,
@@ -526,8 +623,11 @@ describe('Confirmation Page Controller', () => {
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
       isNonLegalRep: false,
+      hasNonLegalRep: false,
       isPostDecisionState: false,
       previousPage: paths.common.casesList,
+      updateNlrPath: paths.nonLegalRep.updateName,
+      addNonLegalRepPath: paths.nonLegalRep.addNonLegalRep,
       previousPageText: i18n.components.back.backToCasesList
     });
   });
@@ -568,8 +668,11 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: false
     }];
+    expect(resRenderStub.calledOnce).to.equal(true);
 
-    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
+    const [template, actualViewModel] = resRenderStub.firstCall.args;
+    expect(template).to.equal('application-overview.njk');
+    expect(actualViewModel).to.deep.equal({
       name: 'Alex Developer',
       appealRefNumber: 'appealNumber',
       applicationNextStep: expectedNextStep,
@@ -593,8 +696,11 @@ describe('Confirmation Page Controller', () => {
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
       isNonLegalRep: false,
+      hasNonLegalRep: false,
       isPostDecisionState: false,
       previousPage: paths.common.casesList,
+      updateNlrPath: paths.nonLegalRep.updateName,
+      addNonLegalRepPath: paths.nonLegalRep.addNonLegalRep,
       previousPageText: i18n.components.back.backToCasesList
     });
   });
@@ -649,8 +755,11 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: false
     }];
+    expect(resRenderStub.calledOnce).to.equal(true);
 
-    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
+    const [template, actualViewModel] = resRenderStub.firstCall.args;
+    expect(template).to.equal('application-overview.njk');
+    expect(actualViewModel).to.deep.equal({
       name: 'Alex Developer',
       appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,
@@ -674,8 +783,11 @@ describe('Confirmation Page Controller', () => {
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
       isNonLegalRep: false,
+      hasNonLegalRep: false,
       isPostDecisionState: false,
       previousPage: paths.common.casesList,
+      updateNlrPath: paths.nonLegalRep.updateName,
+      addNonLegalRepPath: paths.nonLegalRep.addNonLegalRep,
       previousPageText: i18n.components.back.backToCasesList
     });
   });
@@ -752,8 +864,11 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: false
     }];
+    expect(resRenderStub.calledOnce).to.equal(true);
 
-    expect(resRenderStub).to.be.calledOnceWith('application-overview.njk', {
+    const [template, actualViewModel] = resRenderStub.firstCall.args;
+    expect(template).to.equal('application-overview.njk');
+    expect(actualViewModel).to.deep.equal({
       name: 'Appellant Name',
       appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,
@@ -777,8 +892,11 @@ describe('Confirmation Page Controller', () => {
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
       isNonLegalRep: false,
+      hasNonLegalRep: false,
       isPostDecisionState: false,
       previousPage: paths.common.casesList,
+      updateNlrPath: paths.nonLegalRep.updateName,
+      addNonLegalRepPath: paths.nonLegalRep.addNonLegalRep,
       previousPageText: i18n.components.back.backToCasesList
     });
   });

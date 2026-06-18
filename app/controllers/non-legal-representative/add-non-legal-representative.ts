@@ -251,7 +251,7 @@ function getNlrName(req: Request, res: Response, next: NextFunction) {
     const nlrGivenNames = nlrDetails?.givenNames || (isSponsorSameAsNlr ? req.session.appeal?.application?.sponsorGivenNames : '');
     const nlrFamilyName = nlrDetails?.familyName || (isSponsorSameAsNlr ? req.session.appeal?.application?.sponsorFamilyName : '');
     return res.render('appeal-application/non-legal-rep-details/name.njk', {
-      postAction: paths.nonLegalRep.provideNlrName,
+      formAction: paths.nonLegalRep.provideNlrName,
       nlrGivenNames,
       nlrFamilyName,
       previousPage: req.session.appeal.application?.hasSponsor === 'Yes'
@@ -268,7 +268,7 @@ function postNlrName() {
       const validation = nlrNamesValidation(req.body);
       if (validation) {
         return res.render('appeal-application/non-legal-rep-details/name.njk', {
-          postAction: paths.nonLegalRep.provideNlrName,
+          formAction: paths.nonLegalRep.provideNlrName,
           nlrGivenNames: req.body.nlrGivenNames,
           nlrFamilyName: req.body.nlrFamilyName,
           error: validation,
@@ -372,7 +372,7 @@ function getNlrPhoneNumber(req: Request, res: Response, next: NextFunction) {
     return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
       title: i18n.pages.nlrPhoneNumber.title,
       hint: i18n.pages.nlrPhoneNumber.hint,
-      postAction: paths.nonLegalRep.provideNlrPhoneNumber,
+      formAction: paths.nonLegalRep.provideNlrPhoneNumber,
       showEmail: false,
       phoneNumber,
       previousPage: paths.nonLegalRep.provideNlrAddress
@@ -390,7 +390,7 @@ function postNlrPhoneNumber() {
         return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
           title: i18n.pages.nlrPhoneNumber.title,
           hint: i18n.pages.nlrPhoneNumber.hint,
-          postAction: paths.nonLegalRep.provideNlrPhoneNumber,
+          formAction: paths.nonLegalRep.provideNlrPhoneNumber,
           showEmail: false,
           phoneNumber: req.body['phoneNumber'],
           errors: validation,
@@ -405,7 +405,7 @@ function postNlrPhoneNumber() {
         return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
           title: i18n.pages.nlrPhoneNumber.title,
           hint: i18n.pages.nlrPhoneNumber.hint,
-          postAction: paths.nonLegalRep.provideNlrPhoneNumber,
+          formAction: paths.nonLegalRep.provideNlrPhoneNumber,
           showEmail: false,
           phoneNumber: req.body['phoneNumber'],
           previousPage: paths.nonLegalRep.provideNlrAddress,

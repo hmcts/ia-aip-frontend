@@ -10,7 +10,7 @@
     }) }}
   {% endif %}
 
-  <form method="post" action="{{ postAction }}" type="submit">
+  <form method="post" action="{{ formAction }}" type="submit">
     {% call govukFieldset({
       legend: {
         text: title if title else i18n.pages.nlrName.title,

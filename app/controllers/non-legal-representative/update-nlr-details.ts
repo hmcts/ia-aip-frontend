@@ -71,7 +71,7 @@ function getNlrName(req: Request, res: Response, next: NextFunction) {
     const hasSponsor = req.session.appeal?.application?.hasSponsor === 'Yes';
     return res.render('appeal-application/non-legal-rep-details/name.njk', {
       title: i18n.pages.nlrName.titlePersonal,
-      postAction: paths.nonLegalRep.updateName,
+      formAction: paths.nonLegalRep.updateName,
       nlrGivenNames,
       nlrFamilyName,
       previousPage: hasSponsor ? paths.nonLegalRep.updateIsSamePerson : paths.common.overview
@@ -89,7 +89,7 @@ function postNlrName() {
         const hasSponsor = req.session.appeal?.application?.hasSponsor === 'Yes';
         return res.render('appeal-application/non-legal-rep-details/name.njk', {
           title: i18n.pages.nlrName.titlePersonal,
-          postAction: paths.nonLegalRep.updateName,
+          formAction: paths.nonLegalRep.updateName,
           nlrGivenNames: req.body.nlrGivenNames,
           nlrFamilyName: req.body.nlrFamilyName,
           error: validation,
@@ -194,7 +194,7 @@ function getNlrContactDetails(req: Request, res: Response, next: NextFunction) {
     return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
       title: i18n.pages.nlrContactDetails.titlePersonal,
       showEmail: true,
-      postAction: paths.nonLegalRep.updateContactDetails,
+      formAction: paths.nonLegalRep.updateContactDetails,
       emailAddress,
       phoneNumber,
       previousPage: paths.nonLegalRep.updateAddress,
@@ -213,7 +213,7 @@ function postNlrContactDetails() {
         return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
           title: i18n.pages.nlrContactDetails.titlePersonal,
           showEmail: true,
-          postAction: paths.nonLegalRep.updateContactDetails,
+          formAction: paths.nonLegalRep.updateContactDetails,
           emailAddress: req.body['emailAddress'],
           phoneNumber: req.body['phoneNumber'],
           errors: validation,
@@ -239,7 +239,7 @@ function postNlrContactDetails() {
         return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
           title: i18n.pages.nlrContactDetails.titlePersonal,
           showEmail: true,
-          postAction: paths.nonLegalRep.updateContactDetails,
+          formAction: paths.nonLegalRep.updateContactDetails,
           emailAddress: req.body['emailAddress'],
           phoneNumber: req.body['phoneNumber'],
           errors,

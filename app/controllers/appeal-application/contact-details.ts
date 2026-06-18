@@ -746,7 +746,7 @@ function getNlrName(req: Request, res: Response, next: NextFunction) {
     const nlrGivenNames = req.session?.appeal?.nlrDetails?.givenNames;
     const nlrFamilyName = req.session?.appeal?.nlrDetails?.familyName;
     return res.render('appeal-application/non-legal-rep-details/name.njk', {
-      postAction: paths.appealStarted.nlrName,
+      formAction: paths.appealStarted.nlrName,
       nlrGivenNames,
       nlrFamilyName,
       previousPage: getNlrNamePreviousPage(req),
@@ -763,7 +763,7 @@ function postNlrName(updateAppealService: UpdateAppealService) {
       const validation = nlrNamesValidation(req.body);
       if (validation) {
         return res.render('appeal-application/non-legal-rep-details/name.njk', {
-          postAction: paths.appealStarted.nlrName,
+          formAction: paths.appealStarted.nlrName,
           nlrGivenNames: req.body.nlrGivenNames,
           nlrFamilyName: req.body.nlrFamilyName,
           error: validation,
@@ -798,32 +798,27 @@ function postNlrName(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getNlrAddressRenderObject(isSponsorSameAsNlr: boolean, req: Request): any {
-  const renderObj: any = {
-    previousPage: paths.appealStarted.nlrName,
-    formAction: paths.appealStarted.nlrAddress,
-    pageTitle: i18n.pages.nlrAddress.title
-  };
-  if (isSponsorSameAsNlr) {
-    renderObj.address = req.session.appeal?.nlrDetails?.addressUk;
-  } else {
-    renderObj.question = {
-      name: 'nlr-address',
-      title: i18n.pages.nlrAddress.title,
-      description: i18n.pages.nlrAddress.description,
-      value: req.session.appeal?.nlrDetails?.address || ''
-    };
-  }
-  return renderObj;
-}
-
 function getNlrAddress(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const isSponsorSameAsNlr = isSponsorSame(req);
     const renderPath = isSponsorSameAsNlr ? 'appeal-application/non-legal-rep-details/address.njk'
       : 'templates/textarea-question-page.njk';
-    const renderObj = getNlrAddressRenderObject(isSponsorSameAsNlr, req);
+    const renderObj: any = {
+      previousPage: paths.appealStarted.nlrName,
+      formAction: paths.appealStarted.nlrAddress,
+      pageTitle: i18n.pages.nlrAddress.title
+    };
+    if (isSponsorSameAsNlr) {
+      renderObj.address = req.session.appeal?.nlrDetails?.addressUk;
+    } else {
+      renderObj.question = {
+        name: 'nlr-address',
+        title: i18n.pages.nlrAddress.title,
+        description: i18n.pages.nlrAddress.description,
+        value: req.session.appeal?.nlrDetails?.address || ''
+      };
+    }
     return res.render(renderPath, renderObj);
   } catch (e) {
     next(e);
@@ -849,7 +844,27 @@ function postNlrAddress(updateAppealService: UpdateAppealService) {
         const previousPage = req.session.previousPage ? req.session.previousPage : paths.appealStarted.nlrName;
         const renderPath = isSponsorSameAsNlr ? 'appeal-application/non-legal-rep-details/address.njk'
           : 'templates/textarea-question-page.njk';
-        const renderObj = getNlrAddressRenderObject(isSponsorSameAsNlr, req);
+        const renderObj: any = {
+          previousPage: paths.appealStarted.nlrName,
+          formAction: paths.appealStarted.nlrAddress,
+          pageTitle: i18n.pages.nlrAddress.title
+        };
+        if (isSponsorSameAsNlr) {
+          renderObj.address = {
+            line1: req.body['address-line-1'],
+            line2: req.body['address-line-2'],
+            city: req.body['address-town'],
+            county: req.body['address-county'],
+            postcode: req.body['address-postcode']
+          };
+        } else {
+          renderObj.question = {
+            name: 'nlr-address',
+            title: i18n.pages.nlrAddress.title,
+            description: i18n.pages.nlrAddress.description,
+            value: req.body['nlr-address'] || ''
+          };
+        }
         renderObj.error = validation;
         renderObj.errorList = Object.values(validation);
         renderObj.previousPage = previousPage;
@@ -897,7 +912,7 @@ function getNlrContactDetails(req: Request, res: Response, next: NextFunction) {
       hint: i18n.pages.nlrContactDetails.hint,
       nextStep: i18n.pages.nlrContactDetails.nextStep,
       showEmail: true,
-      postAction: paths.appealStarted.nlrContactDetails,
+      formAction: paths.appealStarted.nlrContactDetails,
       emailAddress,
       phoneNumber,
       previousPage: paths.appealStarted.nlrAddress,
@@ -918,7 +933,7 @@ function postNlrContactDetails(updateAppealService: UpdateAppealService) {
           hint: i18n.pages.nlrContactDetails.hint,
           nextStep: i18n.pages.nlrContactDetails.nextStep,
           showEmail: true,
-          postAction: paths.appealStarted.nlrContactDetails,
+          formAction: paths.appealStarted.nlrContactDetails,
           emailAddress: req.body['emailAddress'],
           phoneNumber: req.body['phoneNumber'],
           errors: validation,
@@ -949,7 +964,7 @@ function postNlrContactDetails(updateAppealService: UpdateAppealService) {
           hint: i18n.pages.nlrContactDetails.hint,
           nextStep: i18n.pages.nlrContactDetails.nextStep,
           showEmail: true,
-          postAction: paths.appealStarted.nlrContactDetails,
+          formAction: paths.appealStarted.nlrContactDetails,
           emailAddress: req.body['emailAddress'],
           phoneNumber: req.body['phoneNumber'],
           errors,

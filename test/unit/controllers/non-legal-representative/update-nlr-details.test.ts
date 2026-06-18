@@ -74,9 +74,9 @@ describe('Update phone number controllers setup', () => {
       getNlrName(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/name.njk', {
         title: i18n.pages.nlrName.titlePersonal,
-        postAction: paths.nonLegalRep.updateName,
+        formAction: paths.nonLegalRep.updateName,
         nlrGivenNames: undefined,
         nlrFamilyName: undefined,
         previousPage: paths.common.overview
@@ -90,7 +90,7 @@ describe('Update phone number controllers setup', () => {
 
       expect(renderStub.calledWith('appeal-application/non-legal-rep-details/name.njk', {
         title: i18n.pages.nlrName.titlePersonal,
-        postAction: paths.nonLegalRep.updateName,
+        formAction: paths.nonLegalRep.updateName,
         nlrGivenNames: 'someGivenName',
         nlrFamilyName: 'someFamilyName',
         previousPage: paths.common.overview
@@ -113,9 +113,9 @@ describe('Update phone number controllers setup', () => {
         'nlrGivenNames': buildExpectedRequiredError('nlrGivenNames'),
         'nlrFamilyName': buildExpectedRequiredError('nlrFamilyName')
       };
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/name.njk', {
         title: i18n.pages.nlrName.titlePersonal,
-        postAction: paths.nonLegalRep.updateName,
+        formAction: paths.nonLegalRep.updateName,
         nlrGivenNames: undefined,
         nlrFamilyName: undefined,
         error: expectedError,
@@ -133,9 +133,9 @@ describe('Update phone number controllers setup', () => {
         'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrFamilyName)
       };
 
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/name.njk', {
         title: i18n.pages.nlrName.titlePersonal,
-        postAction: paths.nonLegalRep.updateName,
+        formAction: paths.nonLegalRep.updateName,
         nlrGivenNames: 'someGivenName',
         nlrFamilyName: '',
         error: expectedError,
@@ -153,9 +153,9 @@ describe('Update phone number controllers setup', () => {
         'nlrGivenNames': createStructuredError('nlrGivenNames', i18n.validationErrors.nlrGivenNames),
         'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrFamilyName)
       };
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/name.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/name.njk', {
         title: i18n.pages.nlrName.titlePersonal,
-        postAction: paths.nonLegalRep.updateName,
+        formAction: paths.nonLegalRep.updateName,
         nlrGivenNames: '',
         nlrFamilyName: '',
         error: expectedError,
@@ -203,9 +203,9 @@ describe('Update phone number controllers setup', () => {
       getNlrAddress(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
         title: i18n.pages.nlrAddress.titlePersonal,
-        postAction: paths.nonLegalRep.updateAddress,
+        formAction: paths.nonLegalRep.updateAddress,
         address: undefined,
         previousPage: paths.nonLegalRep.updateName
       });
@@ -221,9 +221,9 @@ describe('Update phone number controllers setup', () => {
       req.session.appeal.nlrDetails.address = expectedAddress;
       getNlrAddress(req as Request, res as Response, next);
 
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
         title: i18n.pages.nlrAddress.titlePersonal,
-        postAction: paths.nonLegalRep.updateAddress,
+        formAction: paths.nonLegalRep.updateAddress,
         address: expectedAddress,
         previousPage: paths.nonLegalRep.updateName
       });
@@ -246,9 +246,9 @@ describe('Update phone number controllers setup', () => {
         'address-town': buildExpectedRequiredError('address-town'),
         'address-postcode': buildExpectedRequiredError('address-postcode')
       };
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
         title: i18n.pages.nlrAddress.titlePersonal,
-        postAction: paths.nonLegalRep.updateAddress,
+        formAction: paths.nonLegalRep.updateAddress,
         nlrAddress: {
           line1: undefined,
           line2: undefined,
@@ -273,9 +273,9 @@ describe('Update phone number controllers setup', () => {
         'address-town': createStructuredError('address-town', i18n.validationErrors.nlrAddress.townCityRequired),
         'address-postcode': createStructuredError('address-postcode', i18n.validationErrors.nlrAddress.postcodeRequired)
       };
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
         title: i18n.pages.nlrAddress.titlePersonal,
-        postAction: paths.nonLegalRep.updateAddress,
+        formAction: paths.nonLegalRep.updateAddress,
         nlrAddress: {
           line1: '',
           line2: undefined,
@@ -302,9 +302,9 @@ describe('Update phone number controllers setup', () => {
           href: '#address-postcode'
         }
       };
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/address.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
         title: i18n.pages.nlrAddress.titlePersonal,
-        postAction: paths.nonLegalRep.updateAddress,
+        formAction: paths.nonLegalRep.updateAddress,
         nlrAddress: {
           line1: 'line1',
           line2: undefined,
@@ -369,10 +369,10 @@ describe('Update phone number controllers setup', () => {
       getNlrContactDetails(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrContactDetails.titlePersonal,
         showEmail: true,
-        postAction: paths.nonLegalRep.updateContactDetails,
+        formAction: paths.nonLegalRep.updateContactDetails,
         emailAddress: undefined,
         phoneNumber: undefined,
         previousPage: paths.nonLegalRep.updateAddress,
@@ -385,10 +385,10 @@ describe('Update phone number controllers setup', () => {
       req.session.appeal.nlrDetails.phoneNumber = 'phoneNumber';
       getNlrContactDetails(req as Request, res as Response, next);
 
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrContactDetails.titlePersonal,
         showEmail: true,
-        postAction: paths.nonLegalRep.updateContactDetails,
+        formAction: paths.nonLegalRep.updateContactDetails,
         emailAddress: 'emailAddress',
         phoneNumber: 'phoneNumber',
         previousPage: paths.nonLegalRep.updateAddress,
@@ -412,10 +412,10 @@ describe('Update phone number controllers setup', () => {
         'emailAddress': buildExpectedRequiredError('emailAddress'),
         'phoneNumber': buildExpectedRequiredError('phoneNumber')
       };
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrContactDetails.titlePersonal,
         showEmail: true,
-        postAction: paths.nonLegalRep.updateContactDetails,
+        formAction: paths.nonLegalRep.updateContactDetails,
         emailAddress: undefined,
         phoneNumber: undefined,
         errors: expectedError,
@@ -433,10 +433,10 @@ describe('Update phone number controllers setup', () => {
         'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.emailEmpty),
         'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.phoneEmpty)
       };
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrContactDetails.titlePersonal,
         showEmail: true,
-        postAction: paths.nonLegalRep.updateContactDetails,
+        formAction: paths.nonLegalRep.updateContactDetails,
         emailAddress: '',
         phoneNumber: '',
         errors: expectedError,
@@ -454,10 +454,10 @@ describe('Update phone number controllers setup', () => {
         'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.emailFormat),
         'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.ukPhoneFormat)
       };
-      expect(renderStub).calledWith('appeal-application/non-legal-rep-details/contact-details.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrContactDetails.titlePersonal,
         showEmail: true,
-        postAction: paths.nonLegalRep.updateContactDetails,
+        formAction: paths.nonLegalRep.updateContactDetails,
         emailAddress: 'invalid',
         phoneNumber: 'invalid',
         errors: expectedError,
@@ -505,7 +505,7 @@ describe('Update phone number controllers setup', () => {
       getSamePerson(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
-      expect(renderStub).calledWith('appeal-application/sponsor-details/is-same-person.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/is-same-person.njk', {
         question: i18n.pages.isSponsorSameAsNlr.titlePersonal,
         previousPage: paths.nonLegalRep.updateContactDetails,
         isSponsorSameAsNlr: undefined
@@ -517,7 +517,7 @@ describe('Update phone number controllers setup', () => {
 
       getSamePerson(req as Request, res as Response, next);
 
-      expect(renderStub).calledWith('appeal-application/sponsor-details/is-same-person.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/is-same-person.njk', {
         question: i18n.pages.isSponsorSameAsNlr.titlePersonal,
         previousPage: paths.nonLegalRep.updateContactDetails,
         isSponsorSameAsNlr: 'something'
@@ -539,7 +539,7 @@ describe('Update phone number controllers setup', () => {
       const expectedError = {
         'isSponsorSameAsNlr': createStructuredError('isSponsorSameAsNlr', i18n.validationErrors.isSponsorSameAsNlr)
       };
-      expect(renderStub).calledWith('appeal-application/sponsor-details/is-same-person.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/is-same-person.njk', {
         question: i18n.pages.isSponsorSameAsNlr.titlePersonal,
         previousPage: paths.nonLegalRep.updateContactDetails,
         isSponsorSameAsNlr: undefined,
@@ -569,7 +569,7 @@ describe('Update phone number controllers setup', () => {
     it('should render check and send page without evidence', () => {
       getUpdateNlrDetailsCheckAndSend(req as Request, res as Response, next);
 
-      expect(renderStub).calledWith('templates/check-and-send.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.updateNlrDetails.title,
         formAction: paths.nonLegalRep.updateDetailsCheckAndSend,
         previousPage: paths.nonLegalRep.updateContactDetails,
@@ -637,7 +637,7 @@ describe('Update phone number controllers setup', () => {
 
       getUpdateNlrDetailsCheckAndSend(req as Request, res as Response, next);
 
-      expect(renderStub).calledWith('templates/check-and-send.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.updateNlrDetails.title,
         formAction: paths.nonLegalRep.updateDetailsCheckAndSend,
         previousPage: paths.nonLegalRep.updateContactDetails,
@@ -707,7 +707,7 @@ describe('Update phone number controllers setup', () => {
 
       getUpdateNlrDetailsCheckAndSend(req as Request, res as Response, next);
 
-      expect(renderStub).calledWith('templates/check-and-send.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.updateNlrDetails.title,
         formAction: paths.nonLegalRep.updateDetailsCheckAndSend,
         previousPage: paths.nonLegalRep.updateContactDetails,
@@ -791,7 +791,7 @@ describe('Update phone number controllers setup', () => {
         'addressPostcode': createStructuredError('addressPostcode', i18n.validationErrors.nlrDetailsPersonal.addressPostcode)
       };
 
-      expect(renderStub).calledWith('templates/check-and-send.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.updateNlrDetails.title,
         formAction: paths.nonLegalRep.updateDetailsCheckAndSend,
         previousPage: paths.nonLegalRep.updateContactDetails,
@@ -860,7 +860,7 @@ describe('Update phone number controllers setup', () => {
         'addressPostcode': createStructuredError('addressPostcode', i18n.validationErrors.nlrDetailsPersonal.addressPostcode)
       };
 
-      expect(renderStub).calledWith('templates/check-and-send.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.updateNlrDetails.title,
         formAction: paths.nonLegalRep.updateDetailsCheckAndSend,
         previousPage: paths.nonLegalRep.updateContactDetails,

@@ -1515,7 +1515,7 @@ describe('Hearing Requirements Check and Send controller', () => {
             }
           ]
         };
-        expect(renderStub).calledWith('templates/check-and-send.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
           formAction: paths.submitHearingRequirements.checkAndSend,
           previousPage: paths.submitHearingRequirements.taskList,
@@ -1540,7 +1540,7 @@ describe('Hearing Requirements Check and Send controller', () => {
             }
           ]
         };
-        expect(renderStub).calledWith('templates/check-and-send.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
           formAction: paths.submitHearingRequirements.checkAndSend,
           previousPage: paths.submitHearingRequirements.taskList,
@@ -1578,7 +1578,7 @@ describe('Hearing Requirements Check and Send controller', () => {
             },
           ]
         };
-        expect(renderStub).calledWith('templates/check-and-send.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
           formAction: paths.submitHearingRequirements.checkAndSend,
           previousPage: paths.submitHearingRequirements.taskList,
@@ -1626,7 +1626,7 @@ describe('Hearing Requirements Check and Send controller', () => {
           ]
         };
 
-        expect(renderStub).calledWith('templates/check-and-send.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
           formAction: paths.submitHearingRequirements.checkAndSend,
           previousPage: paths.submitHearingRequirements.taskList,
@@ -1676,7 +1676,7 @@ describe('Hearing Requirements Check and Send controller', () => {
           ]
         };
 
-        expect(renderStub).calledWith('templates/check-and-send.njk', {
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
           formAction: paths.submitHearingRequirements.checkAndSend,
           previousPage: paths.submitHearingRequirements.taskList,
@@ -1731,7 +1731,7 @@ describe('Hearing Requirements Check and Send controller', () => {
         ]
       };
 
-      expect(renderStub).calledWith('templates/check-and-send.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: 'Check your answers',
         formAction: paths.submitHearingRequirements.checkAndSend,
         previousPage: paths.submitHearingRequirements.taskList,

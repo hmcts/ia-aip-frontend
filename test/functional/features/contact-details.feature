@@ -38,7 +38,7 @@ Feature: Contact details
     And I click "Save and continue" button
     And I check page accessibility
     Then I should be taken to the has sponsor page
-    Then I choose No and click Continue
+    Then I choose No and click continue
     And I check page accessibility
     Then I should see the task-list page
     And I should be able to click "Decision type"

@@ -2,8 +2,8 @@ import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
-import { countryList } from '../../data/country-list';
 import { Events } from '../../data/events';
+import { nationalityList } from '../../data/nationality-list';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getNationalitiesOptions } from '../../utils/nationalities';
@@ -260,7 +260,7 @@ function getNationalityPage(req: Request, res: Response, next: NextFunction) {
     const { application } = req.session.appeal;
     const stateless = application.personalDetails.stateless;
     const nationality = application.personalDetails && application.personalDetails.nationality || null;
-    const nationalitiesOptions = getNationalitiesOptions(countryList, nationality, i18n.pages.nationality.defaultNationality);
+    const nationalitiesOptions = getNationalitiesOptions(nationalityList, nationality, i18n.pages.nationality.defaultNationality);
     return res.render('appeal-application/personal-details/nationality.njk', {
       stateless,
       nationalitiesOptions,
@@ -280,7 +280,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
       const validation = nationalityValidation(req.body);
       if (validation) {
         const nationality = req.body.nationality;
-        const nationalitiesOptions = getNationalitiesOptions(countryList, nationality, i18n.pages.nationality.defaultNationality);
+        const nationalitiesOptions = getNationalitiesOptions(nationalityList, nationality, i18n.pages.nationality.defaultNationality);
         return res.render('appeal-application/personal-details/nationality.njk', {
           nationalitiesOptions,
           errors: validation,

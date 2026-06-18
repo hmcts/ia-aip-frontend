@@ -1,5 +1,5 @@
 import S2SService from '../../app/service/s2s-service';
-import { sinon } from '../utils/testUtils';
+import { expect, sinon } from '../utils/testUtils';
 const path = require('path');
 
 let sandbox: sinon.SinonSandbox;
@@ -28,3 +28,18 @@ export const mochaHooks = {
     sandbox.restore();
   }
 };
+
+function expectRenderedCalledWithArgs(
+  resRenderStub: sinon.SinonStub,
+  templatePath: string,
+  expectedViewModel: any
+) {
+  expect(resRenderStub.calledOnce).to.equal(true);
+
+  const [template, actualViewModel] = resRenderStub.firstCall.args;
+
+  expect(template).to.equal(templatePath);
+  expect(actualViewModel).to.deep.equal(expectedViewModel);
+}
+
+(global as any).expectRenderedCalledWithArgs = expectRenderedCalledWithArgs;

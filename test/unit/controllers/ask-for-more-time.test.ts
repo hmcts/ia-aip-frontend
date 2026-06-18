@@ -227,7 +227,7 @@ describe('Ask for more time Controller', function () {
       req.session.appeal.makeAnApplicationDetails = 'some reasons';
       getCheckAndSend(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('./ask-for-more-time/check-and-send.njk', {
+      expect(renderStub).to.be.calledWith('./templates/check-and-send.njk', {
         previousPage: paths.common.askForMoreTimeSupportingEvidence,
         summaryRows: [{
           key: { text: 'Question' },
@@ -250,7 +250,7 @@ describe('Ask for more time Controller', function () {
       ];
       getCheckAndSend(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('./ask-for-more-time/check-and-send.njk', {
+      expect(renderStub).to.be.calledWith('./templates/check-and-send.njk', {
         previousPage: paths.common.askForMoreTimeSupportingEvidence,
         summaryRows: [{
           key: { text: 'Question' },

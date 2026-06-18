@@ -15,7 +15,7 @@ import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import Logger from '../../../../app/utils/logger';
 import { addSummaryRow } from '../../../../app/utils/summary-list';
 import i18n from '../../../../locale/en.json';
-import { expect, sinon } from '../../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../../utils/testUtils';
 
 const express = require('express');
 
@@ -186,9 +186,36 @@ describe('CYA Refund Controller', function () {
         }
       }];
       await getCheckYourAnswersRefund(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('ask-for-fee-remission/check-and-send.njk', {
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
-        summaryRows
+        summaryRows,
+        buttonText: 'Submit',
+        formAction: '/check-your-answers-refund',
+        hasNlr: false,
+        noSaveForLater: true
+      });
+    });
+
+    it('should render check-and-send.njk with activeNlr', async () => {
+      setActiveNlr(req);
+      req.session.appeal.application.lateRemissionOption = 'feeWaiverFromHo';
+      const summaryRows = [{
+        key: { text: 'Fee statement' },
+        value: { html: 'I got a fee waiver from the Home Office for my application to stay in the UK' },
+        actions: {
+          items: [
+            { href: '/fee-support-refund?edit', text: 'Change', 'visuallyHiddenText': 'Fee statement' }
+          ]
+        }
+      }];
+      await getCheckYourAnswersRefund(req as Request, res as Response, next);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        summaryRows,
+        buttonText: 'Submit',
+        formAction: '/check-your-answers-refund',
+        hasNlr: true,
+        noSaveForLater: true
       });
     });
 

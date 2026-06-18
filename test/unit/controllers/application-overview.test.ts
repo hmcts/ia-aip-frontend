@@ -26,7 +26,7 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
-import { expect, sinon } from '../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../utils/testUtils';
 import { expectedMultipleEventsData } from '../mockData/events/expectations';
 
 const express = require('express');
@@ -187,11 +187,8 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: false
     }];
-    expect(resRenderStub.calledOnce).to.equal(true);
 
-    const [template, actualViewModel] = resRenderStub.firstCall.args;
-    expect(template).to.equal('application-overview.njk');
-    expect(actualViewModel).to.deep.equal({
+    expectRenderedCalledWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: null,
       applicationNextStep: expectedNextStep,
@@ -287,11 +284,8 @@ describe('Confirmation Page Controller', () => {
       allowedAskForMoreTime: false,
       deadline: '13 March 2024'
     };
-    expect(resRenderStub.calledOnce).to.equal(true);
 
-    const [template, actualViewModel] = resRenderStub.firstCall.args;
-    expect(template).to.equal('application-overview.njk');
-    expect(actualViewModel).to.deep.equal({
+    expectRenderedCalledWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'PA/12345/2025',
       applicationNextStep: appNextStep,
@@ -388,11 +382,8 @@ describe('Confirmation Page Controller', () => {
       allowedAskForMoreTime: false,
       deadline: '13 March 2024'
     };
-    expect(resRenderStub.calledOnce).to.equal(true);
 
-    const [template, actualViewModel] = resRenderStub.firstCall.args;
-    expect(template).to.equal('application-overview.njk');
-    expect(actualViewModel).to.deep.equal({
+    expectRenderedCalledWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'PA/12345/2025',
       applicationNextStep: appNextStep,
@@ -450,11 +441,8 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: true
     }];
-    expect(resRenderStub.calledOnce).to.equal(true);
 
-    const [template, actualViewModel] = resRenderStub.firstCall.args;
-    expect(template).to.equal('application-overview.njk');
-    expect(actualViewModel).to.deep.equal({
+    expectRenderedCalledWithArgs(resRenderStub, 'application-overview.njk', {
       name: undefined,
       appealRefNumber: undefined,
       applicationNextStep: {
@@ -491,11 +479,7 @@ describe('Confirmation Page Controller', () => {
   });
 
   it('getApplicationOverview should pass hasNonLegalRep and paths if hasActiveNlr', async () => {
-    req.session.appeal.application.hasNonLegalRep = 'Yes';
-    req.session.appeal.nlrDetails = {
-      idamId: 'someId',
-    };
-
+    setActiveNlr(req);
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     const expectedStages = [{
@@ -519,11 +503,8 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: true
     }];
-    expect(resRenderStub.calledOnce).to.equal(true);
 
-    const [template, actualViewModel] = resRenderStub.firstCall.args;
-    expect(template).to.equal('application-overview.njk');
-    expect(actualViewModel).to.deep.equal({
+    expectRenderedCalledWithArgs(resRenderStub, 'application-overview.njk', {
       name: undefined,
       appealRefNumber: undefined,
       applicationNextStep: {
@@ -595,11 +576,8 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: false
     }];
-    expect(resRenderStub.calledOnce).to.equal(true);
 
-    const [template, actualViewModel] = resRenderStub.firstCall.args;
-    expect(template).to.equal('application-overview.njk');
-    expect(actualViewModel).to.deep.equal({
+    expectRenderedCalledWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'appealNumber',
       applicationNextStep: expectedNextStep,
@@ -668,11 +646,8 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: false
     }];
-    expect(resRenderStub.calledOnce).to.equal(true);
 
-    const [template, actualViewModel] = resRenderStub.firstCall.args;
-    expect(template).to.equal('application-overview.njk');
-    expect(actualViewModel).to.deep.equal({
+    expectRenderedCalledWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'appealNumber',
       applicationNextStep: expectedNextStep,
@@ -755,11 +730,8 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: false
     }];
-    expect(resRenderStub.calledOnce).to.equal(true);
 
-    const [template, actualViewModel] = resRenderStub.firstCall.args;
-    expect(template).to.equal('application-overview.njk');
-    expect(actualViewModel).to.deep.equal({
+    expectRenderedCalledWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,
@@ -864,11 +836,8 @@ describe('Confirmation Page Controller', () => {
       active: false,
       completed: false
     }];
-    expect(resRenderStub.calledOnce).to.equal(true);
 
-    const [template, actualViewModel] = resRenderStub.firstCall.args;
-    expect(template).to.equal('application-overview.njk');
-    expect(actualViewModel).to.deep.equal({
+    expectRenderedCalledWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Appellant Name',
       appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,

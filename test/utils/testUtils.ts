@@ -18,9 +18,27 @@ function buildExpectedRequiredError(key: string) {
   };
 }
 
+function setActiveNlr(req: any) {
+  req.session = {
+    ...req.session,
+    appeal: {
+      ...req.session.appeal,
+      application: {
+        ...req.session.appeal.application,
+        hasNonLegalRep: 'Yes'
+      },
+      nlrDetails: {
+        ...req.session.appeal.nlrDetails,
+        idamId: 'someId'
+      }
+    }
+  };
+}
+
 export {
   expect,
   sinon,
   validateUuid,
-  buildExpectedRequiredError
+  buildExpectedRequiredError,
+  setActiveNlr
 };

@@ -114,34 +114,32 @@ function postNlrName() {
   };
 }
 
-function getNlrAddressRenderObject(isSponsorSameAsNlr: boolean, req: Request): any {
-  const renderObj: any = {
-    previousPage: paths.nonLegalRep.updateName,
-    formAction: paths.nonLegalRep.updateAddress,
-    pageTitle: i18n.pages.nlrAddress.titlePersonal
-  };
-  if (isSponsorSameAsNlr) {
-    renderObj.address = req.session.appeal?.nlrDetails?.addressUk
-      || req.session.appeal?.application?.sponsorAddress;
-  } else {
-    renderObj.question = {
-      name: 'nlr-address',
-      title: i18n.pages.nlrAddress.title,
-      description: i18n.pages.nlrAddress.description,
-      value: req.session.appeal?.nlrDetails?.address || ''
-    };
-  }
-  return renderObj;
-}
-
 function getNlrAddress(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const isSponsorSameAsNlr: boolean = req.session.appeal?.application?.isSponsorSameAsNlr === 'Yes';
-    const renderPath = isSponsorSameAsNlr ? 'appeal-application/non-legal-rep-details/address.njk'
-      : 'templates/textarea-question-page.njk';
-    const renderObj = getNlrAddressRenderObject(isSponsorSameAsNlr, req);
-    return res.render(renderPath, renderObj);
+    const renderObj: any = {
+      previousPage: paths.nonLegalRep.updateName,
+      formAction: paths.nonLegalRep.updateAddress,
+      pageTitle: i18n.pages.nlrAddress.titlePersonal
+    };
+    if (isSponsorSameAsNlr) {
+      return res.render('appeal-application/non-legal-rep-details/address.njk', {
+        ...renderObj,
+        address: req.session.appeal?.nlrDetails?.addressUk
+          || req.session.appeal?.application?.sponsorAddress
+      });
+    } else {
+      return res.render('templates/textarea-question-page.njk', {
+        ...renderObj,
+        question: {
+          name: 'nlr-address',
+          title: i18n.pages.nlrAddress.title,
+          description: i18n.pages.nlrAddress.description,
+          value: req.session.appeal?.nlrDetails?.address || ''
+        }
+      });
+    }
   } catch (e) {
     next(e);
   }
@@ -154,12 +152,35 @@ function postNlrAddress() {
       const validation = isSponsorSameAsNlr ? nlrAddressValidation(req.body)
         : textAreaValidation(req.body['nlr-address'], 'nlr-address', i18n.validationErrors.nlrDetails.address);
       if (validation !== null) {
-        const renderObj = getNlrAddressRenderObject(isSponsorSameAsNlr, req);
-        renderObj.error = validation;
-        renderObj.errorList = Object.values(validation);
-        const renderPath = isSponsorSameAsNlr ? 'appeal-application/non-legal-rep-details/address.njk'
-          : 'templates/textarea-question-page.njk';
-        return res.render(renderPath, renderObj);
+        const renderObj: any = {
+          previousPage: paths.nonLegalRep.updateName,
+          formAction: paths.nonLegalRep.updateAddress,
+          pageTitle: i18n.pages.nlrAddress.titlePersonal,
+          error: validation,
+          errorList: Object.values(validation)
+        };
+        if (isSponsorSameAsNlr) {
+          return res.render('appeal-application/non-legal-rep-details/address.njk', {
+            ...renderObj,
+            address: {
+              line1: req.body['address-line-1'],
+              line2: req.body['address-line-2'],
+              city: req.body['address-town'],
+              county: req.body['address-county'],
+              postcode: req.body['address-postcode']
+            }
+          });
+        } else {
+          return res.render('templates/textarea-question-page.njk', {
+            ...renderObj,
+            question: {
+              name: 'nlr-address',
+              title: i18n.pages.nlrAddress.title,
+              description: i18n.pages.nlrAddress.description,
+              value: req.body['nlr-address']
+            }
+          });
+        }
       }
       const nlrAddress = isSponsorSameAsNlr ? {
         addressUk: {
@@ -266,7 +287,11 @@ function postNlrContactDetails() {
 function getSummaryRows(req) {
   const editParameter = '?edit';
   const nlrDetails: NlrDetails = req.session.appeal.nlrDetails;
-  const addressValues = nlrDetails.addressUk ? Object.values(nlrDetails.addressUk) : [];
+  const nlrAddressUk = nlrDetails.addressUk ? Object.values(nlrDetails.addressUk) : [];
+  const nlrAddress: string = nlrDetails.address;
+  const isSponsorSameAsNlr = req.session.appeal.application?.hasSponsor === 'Yes'
+    && req.session.appeal.application?.isSponsorSameAsNlr === 'Yes';
+  const addressValues = isSponsorSameAsNlr ? [...nlrAddressUk] : nlrAddress?.split('\n') || [];
   const summaryRows: SummaryRow[] = [
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepNamePersonal,
       [nlrDetails?.givenNames, nlrDetails?.familyName], paths.nonLegalRep.updateName + editParameter, Delimiter.SPACE),

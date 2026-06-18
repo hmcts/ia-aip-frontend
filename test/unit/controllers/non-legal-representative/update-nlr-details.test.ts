@@ -83,6 +83,21 @@ describe('Update non-legal rep details', () => {
       });
     });
 
+    it('should render name.njk with sponsor', () => {
+      req.query.edit = '';
+      req.session.appeal.application.hasSponsor = 'Yes';
+      getNlrName(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.isEdit).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/name.njk', {
+        title: i18n.pages.nlrName.titlePersonal,
+        formAction: paths.nonLegalRep.updateName,
+        nlrGivenNames: undefined,
+        nlrFamilyName: undefined,
+        previousPage: paths.nonLegalRep.updateIsSamePerson
+      });
+    });
+
     it('should render name.njk with names if present', () => {
       req.session.appeal.nlrDetails.givenNames = 'someGivenName';
       req.session.appeal.nlrDetails.familyName = 'someFamilyName';
@@ -198,33 +213,74 @@ describe('Update non-legal rep details', () => {
   });
 
   describe('getNlrAddress', () => {
-    it('should render address.njk', () => {
+    it('should render address.njk with sponsor same', () => {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
       req.query.edit = '';
       getNlrAddress(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
-        title: i18n.pages.nlrAddress.titlePersonal,
+        pageTitle: i18n.pages.nlrAddress.titlePersonal,
         formAction: paths.nonLegalRep.updateAddress,
         address: undefined,
         previousPage: paths.nonLegalRep.updateName
       });
     });
 
-    it('should render address.njk with address if present', () => {
+    it('should render address.njk with sponsor same with address if present', () => {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
       const expectedAddress: Address = {
         line1: 'line1',
         city: 'city',
         postcode: 'postcode'
       };
 
-      req.session.appeal.nlrDetails.address = expectedAddress;
+      req.session.appeal.nlrDetails.addressUk = expectedAddress;
       getNlrAddress(req as Request, res as Response, next);
 
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
-        title: i18n.pages.nlrAddress.titlePersonal,
+        pageTitle: i18n.pages.nlrAddress.titlePersonal,
         formAction: paths.nonLegalRep.updateAddress,
         address: expectedAddress,
+        previousPage: paths.nonLegalRep.updateName
+      });
+    });
+
+    it('should render address.njk', () => {
+      req.query.edit = '';
+      getNlrAddress(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.isEdit).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', {
+        pageTitle: i18n.pages.nlrAddress.titlePersonal,
+        formAction: paths.nonLegalRep.updateAddress,
+        question: {
+          name: 'nlr-address',
+          title: i18n.pages.nlrAddress.title,
+          description: i18n.pages.nlrAddress.description,
+          value: ''
+        },
+        previousPage: paths.nonLegalRep.updateName
+      });
+    });
+
+    it('should render address.njk with address if present', () => {
+      const expectedAddress: string = 'line1\nline2\ncity\ncounty\npostcode';
+
+      req.session.appeal.nlrDetails.address = expectedAddress;
+      getNlrAddress(req as Request, res as Response, next);
+
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', {
+        pageTitle: i18n.pages.nlrAddress.titlePersonal,
+        formAction: paths.nonLegalRep.updateAddress,
+        question: {
+          name: 'nlr-address',
+          title: i18n.pages.nlrAddress.title,
+          description: i18n.pages.nlrAddress.description,
+          value: expectedAddress
+        },
         previousPage: paths.nonLegalRep.updateName
       });
     });
@@ -238,7 +294,9 @@ describe('Update non-legal rep details', () => {
   });
 
   describe('postNlrAddress', () => {
-    it('should render with error if validation fails required', async () => {
+    it('should render with error if validation fails required if sponsor same', async () => {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
       await postNlrAddress()(req as Request, res as Response, next);
 
       const expectedError = {
@@ -247,9 +305,9 @@ describe('Update non-legal rep details', () => {
         'address-postcode': buildExpectedRequiredError('address-postcode')
       };
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
-        title: i18n.pages.nlrAddress.titlePersonal,
+        pageTitle: i18n.pages.nlrAddress.titlePersonal,
         formAction: paths.nonLegalRep.updateAddress,
-        nlrAddress: {
+        address: {
           line1: undefined,
           line2: undefined,
           city: undefined,
@@ -262,7 +320,9 @@ describe('Update non-legal rep details', () => {
       });
     });
 
-    it('should render with error if validation fails empty', async () => {
+    it('should render with error if validation fails empty if sponsor same', async () => {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
       req.body['address-line-1'] = '';
       req.body['address-town'] = '';
       req.body['address-postcode'] = '';
@@ -274,9 +334,9 @@ describe('Update non-legal rep details', () => {
         'address-postcode': createStructuredError('address-postcode', i18n.validationErrors.nlrAddress.postcodeRequired)
       };
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
-        title: i18n.pages.nlrAddress.titlePersonal,
+        pageTitle: i18n.pages.nlrAddress.titlePersonal,
         formAction: paths.nonLegalRep.updateAddress,
-        nlrAddress: {
+        address: {
           line1: '',
           line2: undefined,
           city: '',
@@ -289,7 +349,9 @@ describe('Update non-legal rep details', () => {
       });
     });
 
-    it('should render with error if postcode validation fails invalid', async () => {
+    it('should render with error if postcode validation fails invalid if sponsor same', async () => {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
       req.body['address-line-1'] = 'line1';
       req.body['address-town'] = 'town';
       req.body['address-postcode'] = 'someBadPostcode';
@@ -303,9 +365,9 @@ describe('Update non-legal rep details', () => {
         }
       };
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
-        title: i18n.pages.nlrAddress.titlePersonal,
+        pageTitle: i18n.pages.nlrAddress.titlePersonal,
         formAction: paths.nonLegalRep.updateAddress,
-        nlrAddress: {
+        address: {
           line1: 'line1',
           line2: undefined,
           city: 'town',
@@ -318,14 +380,16 @@ describe('Update non-legal rep details', () => {
       });
     });
 
-    it('should update req.session.appeal and redirect to contact details if validation passes and isEdit true', async () => {
+    it('should update req.session.appeal and redirect to contact details if sponsor same if validation passes and isEdit true', async () => {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
       req.body['address-line-1'] = 'line1';
       req.body['address-town'] = 'town';
       req.body['address-postcode'] = 'SW1A 2AA';
-      expect(req.session.appeal.nlrDetails.address).to.equal(undefined);
+      expect(req.session.appeal.nlrDetails.addressUk).to.equal(undefined);
       await postNlrAddress()(req as Request, res as Response, next);
 
-      expect(req.session.appeal.nlrDetails.address).to.deep.equal({
+      expect(req.session.appeal.nlrDetails.addressUk).to.deep.equal({
         line1: 'line1',
         line2: undefined,
         city: 'town',
@@ -335,23 +399,99 @@ describe('Update non-legal rep details', () => {
       expect(redirectStub).calledWith(paths.nonLegalRep.updateContactDetails);
     });
 
-    it('should update req.session.appeal and redirect to CYA if validation passes and isEdit true', async () => {
+    it('should update req.session.appeal and redirect to CYA if sponsor same if validation passes and isEdit true', async () => {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
       req.body['address-line-1'] = 'line1';
       req.body['address-line-2'] = 'line2';
       req.body['address-town'] = 'town';
       req.body['address-county'] = 'county';
       req.body['address-postcode'] = 'SW1A 2AA';
       req.session.appeal.application.isEdit = true;
-      expect(req.session.appeal.nlrDetails.address).to.equal(undefined);
+      expect(req.session.appeal.nlrDetails.addressUk).to.equal(undefined);
       await postNlrAddress()(req as Request, res as Response, next);
 
-      expect(req.session.appeal.nlrDetails.address).to.deep.equal({
+      expect(req.session.appeal.nlrDetails.addressUk).to.deep.equal({
         line1: 'line1',
         line2: 'line2',
         city: 'town',
         county: 'county',
         postcode: 'SW1A 2AA'
       });
+      expect(redirectStub).calledWith(paths.nonLegalRep.updateDetailsCheckAndSend);
+    });
+
+
+
+
+
+    it('should render with error if validation fails required', async () => {
+      await postNlrAddress()(req as Request, res as Response, next);
+
+      const expectedError = {
+        'nlr-address': {
+          href: '#nlr-address',
+          key: 'nlr-address',
+          text: i18n.validationErrors.nlrDetails.address
+        }
+      };
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', {
+        pageTitle: i18n.pages.nlrAddress.titlePersonal,
+        formAction: paths.nonLegalRep.updateAddress,
+        question: {
+          name: 'nlr-address',
+          title: i18n.pages.nlrAddress.title,
+          description: i18n.pages.nlrAddress.description,
+          value: undefined
+        },
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.nonLegalRep.updateName
+      });
+    });
+
+    it('should render with error if validation fails empty', async () => {
+      req.body['nlr-address'] = '';
+      await postNlrAddress()(req as Request, res as Response, next);
+
+      const expectedError = {
+        'nlr-address': {
+          href: '#nlr-address',
+          key: 'nlr-address',
+          text: i18n.validationErrors.nlrDetails.address
+        }
+      };
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', {
+        pageTitle: i18n.pages.nlrAddress.titlePersonal,
+        formAction: paths.nonLegalRep.updateAddress,
+        question: {
+          name: 'nlr-address',
+          title: i18n.pages.nlrAddress.title,
+          description: i18n.pages.nlrAddress.description,
+          value: ''
+        },
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.nonLegalRep.updateName
+      });
+    });
+
+    it('should update req.session.appeal and redirect to contact details if validation passes and isEdit true', async () => {
+      req.body['nlr-address'] = 'some address';
+      expect(req.session.appeal.nlrDetails.address).to.equal(undefined);
+      await postNlrAddress()(req as Request, res as Response, next);
+
+      expect(req.session.appeal.nlrDetails.address).to.equal('some address');
+      expect(redirectStub).calledWith(paths.nonLegalRep.updateContactDetails);
+    });
+
+    it('should update req.session.appeal and redirect to CYA if validation passes and isEdit true', async () => {
+      req.body['nlr-address'] = 'some address';
+      req.session.appeal.application.isEdit = true;
+      expect(req.session.appeal.nlrDetails.address).to.equal(undefined);
+      await postNlrAddress()(req as Request, res as Response, next);
+
+      expect(req.session.appeal.nlrDetails.address).to.equal('some address');
       expect(redirectStub).calledWith(paths.nonLegalRep.updateDetailsCheckAndSend);
     });
 
@@ -452,7 +592,7 @@ describe('Update non-legal rep details', () => {
 
       const expectedError = {
         'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.emailFormat),
-        'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.ukPhoneFormat)
+        'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.phoneFormat)
       };
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrContactDetails.titlePersonal,
@@ -478,19 +618,6 @@ describe('Update non-legal rep details', () => {
       expect(redirectStub).calledWith(paths.nonLegalRep.updateDetailsCheckAndSend);
     });
 
-    it('should update req.session.appeal and redirect to updateIsSamePerson if validation passes and has sponsor', async () => {
-      req.session.appeal.application.hasSponsor = 'Yes';
-      req.body['emailAddress'] = 'test@test.com';
-      req.body['phoneNumber'] = '07827297000';
-      expect(req.session.appeal.nlrDetails.phoneNumber).to.equal(undefined);
-      expect(req.session.appeal.nlrDetails.emailAddress).to.equal(undefined);
-      await postNlrContactDetails()(req as Request, res as Response, next);
-
-      expect(req.session.appeal.nlrDetails.phoneNumber).to.equal('07827297000');
-      expect(req.session.appeal.nlrDetails.emailAddress).to.equal('test@test.com');
-      expect(redirectStub).calledWith(paths.nonLegalRep.updateIsSamePerson);
-    });
-
     it('should catch an error and call next with error', async () => {
       res.render = throwStub;
       await postNlrAddress()(req as Request, res as Response, next);
@@ -507,7 +634,7 @@ describe('Update non-legal rep details', () => {
       expect(req.session.appeal.application.isEdit).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/is-same-person.njk', {
         question: i18n.pages.isSponsorSameAsNlr.titlePersonal,
-        previousPage: paths.nonLegalRep.updateContactDetails,
+        previousPage: paths.common.overview,
         isSponsorSameAsNlr: undefined
       });
     });
@@ -519,7 +646,7 @@ describe('Update non-legal rep details', () => {
 
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/is-same-person.njk', {
         question: i18n.pages.isSponsorSameAsNlr.titlePersonal,
-        previousPage: paths.nonLegalRep.updateContactDetails,
+        previousPage: paths.common.overview,
         isSponsorSameAsNlr: 'something'
       });
     });
@@ -541,7 +668,7 @@ describe('Update non-legal rep details', () => {
       };
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/is-same-person.njk', {
         question: i18n.pages.isSponsorSameAsNlr.titlePersonal,
-        previousPage: paths.nonLegalRep.updateContactDetails,
+        previousPage: paths.common.overview,
         isSponsorSameAsNlr: undefined,
         errors: expectedError,
         errorList: Object.values(expectedError)
@@ -554,7 +681,7 @@ describe('Update non-legal rep details', () => {
 
       await postSamePerson()(req as Request, res as Response, next);
       expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal('No');
-      expect(redirectStub).calledWith(paths.nonLegalRep.updateDetailsCheckAndSend);
+      expect(redirectStub).calledWith(paths.nonLegalRep.updateName);
     });
 
     it('should catch an error and call next with error', async () => {
@@ -626,13 +753,7 @@ describe('Update non-legal rep details', () => {
         familyName: 'someFamilyName',
         phoneNumber: 'somePhoneNumber',
         emailAddress: 'someEmailAddress',
-        address: {
-          line1: 'someLine1',
-          line2: 'someLine2',
-          city: 'someCity',
-          county: 'someCounty',
-          postcode: 'somePostcode',
-        }
+        address: 'someLine1\nsomeLine2\nsomeCity\nsomeCounty\nsomePostcode',
       };
 
       getUpdateNlrDetailsCheckAndSend(req as Request, res as Response, next);
@@ -694,7 +815,7 @@ describe('Update non-legal rep details', () => {
         familyName: 'someFamilyName',
         phoneNumber: 'somePhoneNumber',
         emailAddress: 'someEmailAddress',
-        address: {
+        addressUk: {
           line1: 'someLine1',
           line2: 'someLine2',
           city: 'someCity',
@@ -786,9 +907,6 @@ describe('Update non-legal rep details', () => {
         'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.nlrDetailsPersonal.phoneNumber),
         'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.nlrDetailsPersonal.emailAddress),
         'address': createStructuredError('address', i18n.validationErrors.nlrDetailsPersonal.address),
-        'addressLine1': createStructuredError('addressLine1', i18n.validationErrors.nlrDetailsPersonal.addressLine1),
-        'addressTownCity': createStructuredError('addressTownCity', i18n.validationErrors.nlrDetailsPersonal.addressTownCity),
-        'addressPostcode': createStructuredError('addressPostcode', i18n.validationErrors.nlrDetailsPersonal.addressPostcode)
       };
 
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
@@ -843,13 +961,15 @@ describe('Update non-legal rep details', () => {
       });
     });
 
-    it('should render check and send page with error if missing address fields', async () => {
+    it('should render check and send page with error if missing address fields with isSponsorSameAsNlr if hasSponsor', async () => {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
       req.session.appeal.nlrDetails = {
         givenNames: 'givenNames',
         familyName: 'familyName',
         phoneNumber: 'phoneNumber',
         emailAddress: 'emailAddress',
-        address: {}
+        addressUk: {}
       };
 
       await postUpdateNlrDetailsCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -905,6 +1025,16 @@ describe('Update non-legal rep details', () => {
                 'visuallyHiddenText': 'Your phone number'
               }]
             }
+          }, {
+            'key': { 'text': 'Are you also acting as the sponsor on this appeal?' },
+            'value': { 'html': 'Yes' },
+            'actions': {
+              'items': [{
+                'href': '/update-nlr-details/is-same-person-as-sponsor?edit',
+                'text': 'Change',
+                'visuallyHiddenText': 'Are you also acting as the sponsor on this appeal?'
+              }]
+            }
           }]
         }],
         errorList: Object.values(expectedError),
@@ -918,13 +1048,7 @@ describe('Update non-legal rep details', () => {
         familyName: 'someFamilyName',
         phoneNumber: 'somePhoneNumber',
         emailAddress: 'someEmailAddress',
-        address: {
-          line1: 'someLine1',
-          line2: 'someLine2',
-          city: 'someCity',
-          county: 'someCounty',
-          postcode: 'somePostcode',
-        }
+        address: 'someAddress'
       };
       const submitStub = sandbox.stub().resolves();
       updateAppealService = {
@@ -947,7 +1071,7 @@ describe('Update non-legal rep details', () => {
   describe('getUpdateNlrDetailsConfirmation', () => {
     it('should render confirmation-page.njk', () => {
       getUpdateNlrDetailsConfirmation(req as Request, res as Response, next);
-      expectRenderedCalledOnceWithArgs(res.render, 'templates/confirmation-page.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/confirmation-page.njk', {
         title: i18n.pages.updateNlrDetails.confirmation.title,
         whatHappensNextContent: i18n.pages.updateNlrDetails.confirmation.whatHappensNextContent,
       });

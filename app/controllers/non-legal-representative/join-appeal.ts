@@ -39,7 +39,7 @@ function postJoinAppeal(ccdSystemService: CcdSystemService) {
         });
       }
       const caseReferenceWithoutDashes: string = req.body['caseReference']?.replaceAll('-', '')?.replaceAll(' ', '');
-      if (req.session.casesList.map((c) => c.id.toString()).includes(caseReferenceWithoutDashes)) {
+      if ((req.session?.casesList || []).map((c) => c.id.toString()).includes(caseReferenceWithoutDashes)) {
         const error: ValidationError = createStructuredError('caseReference', i18n.pages.joinAppeal.enterCaseReference.sameError);
 
         return res.render('non-legal-rep/join-appeal.njk', {

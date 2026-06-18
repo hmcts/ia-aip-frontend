@@ -1494,7 +1494,7 @@ describe('Add non-legal representative controllers setup', () => {
       };
       updateAppealService.validateMidEvent = validateMidEventStub.returns(['some issue']);
       await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(validateMidEventStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, ['sendPipToNonLegalRepsendPipToNonLegalRep'], req.session.appeal, sinon.match.any, 'idamUID', 'atoken');
+      expect(validateMidEventStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, 'sendPipToNonLegalRepsendPipToNonLegalRep', req.session.appeal, sinon.match.any, 'idamUID', 'atoken');
       expect(redirectStub).calledWithMatch(ErrorCode.stepThreeUserNotExisting);
     });
 
@@ -1516,7 +1516,7 @@ describe('Add non-legal representative controllers setup', () => {
       };
       updateAppealService.validateMidEvent = validateMidEventStub.returns([]);
       await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(validateMidEventStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, ['sendPipToNonLegalRepsendPipToNonLegalRep'], req.session.appeal, sinon.match.any, 'idamUID', 'atoken');
+      expect(validateMidEventStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, 'sendPipToNonLegalRepsendPipToNonLegalRep', req.session.appeal, sinon.match.any, 'idamUID', 'atoken');
       expect(submitEventRefactoredStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, req.session.appeal, 'idamUID', 'atoken');
       expect(redirectStub).calledWith(paths.nonLegalRep.inviteToJoinAppealConfirmation);
     });
@@ -1531,7 +1531,7 @@ describe('Add non-legal representative controllers setup', () => {
       };
       updateAppealService.validateMidEvent = validateMidEventStub.returns(['some issue']);
       await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(validateMidEventStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, ['sendPipToNonLegalRepsendPipToNonLegalRep'], req.session.appeal, sinon.match.any, 'idamUID', 'atoken');
+      expect(validateMidEventStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, 'sendPipToNonLegalRepsendPipToNonLegalRep', req.session.appeal, sinon.match.any, 'idamUID', 'atoken');
       expect(redirectStub).calledWithMatch(ErrorCode.stepThreeUserNotExisting);
     });
 
@@ -1545,7 +1545,7 @@ describe('Add non-legal representative controllers setup', () => {
       };
       updateAppealService.validateMidEvent = validateMidEventStub.returns([]);
       await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(validateMidEventStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, ['sendPipToNonLegalRepsendPipToNonLegalRep'], req.session.appeal, sinon.match.any, 'idamUID', 'atoken');
+      expect(validateMidEventStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, 'sendPipToNonLegalRepsendPipToNonLegalRep', req.session.appeal, sinon.match.any, 'idamUID', 'atoken');
       expect(submitEventRefactoredStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, req.session.appeal, 'idamUID', 'atoken');
       expect(redirectStub).calledWith(paths.nonLegalRep.inviteToJoinAppealConfirmation);
     });

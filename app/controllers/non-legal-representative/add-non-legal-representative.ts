@@ -592,9 +592,10 @@ function postInviteToJoinAppeal(updateAppealService: UpdateAppealService) {
       if (missingDetails.length > 0) {
         return res.redirect(`${paths.nonLegalRep.addNonLegalRep}?errorCode=${ErrorCode.stepThreeNoDetailsProvided}`);
       }
-      const pageIds: string[] = ['sendPipToNonLegalRepsendPipToNonLegalRep'];
       const midEventData = updateAppealService.mapToCCDCaseNlrDetails(req.session.appeal, {});
-      const midEventErrors = await updateAppealService.validateMidEvent(Events.SEND_PIP_TO_NON_LEGAL_REP, pageIds, req.session.appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const midEventErrors = await updateAppealService.validateMidEvent(Events.SEND_PIP_TO_NON_LEGAL_REP,
+        'sendPipToNonLegalRepsendPipToNonLegalRep', req.session.appeal, midEventData, req.idam.userDetails.uid,
+        req.cookies['__auth-token']);
       if (midEventErrors?.length > 0) {
         return res.redirect(`${paths.nonLegalRep.addNonLegalRep}?errorCode=${ErrorCode.stepThreeUserNotExisting}`);
       }

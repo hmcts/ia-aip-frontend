@@ -11,9 +11,9 @@ import {
   emailValidation,
   isSamePersonValidation,
   nlrAddressValidation,
-  statementValidation,
   nlrNamesValidation,
   nonLegalRepPhoneValidation,
+  statementValidation,
   textAreaValidation
 } from '../../utils/validations/fields-validations';
 
@@ -293,34 +293,32 @@ function postNlrName() {
   };
 }
 
-function getNlrAddressRenderObject(isSponsorSameAsNlr: boolean, req: Request): any {
-  const renderObj: any = {
-    previousPage: paths.nonLegalRep.provideNlrName,
-    formAction: paths.nonLegalRep.provideNlrAddress,
-    pageTitle: i18n.pages.nlrAddress.title
-  };
-  if (isSponsorSameAsNlr) {
-    renderObj.address = req.session.appeal?.nlrDetails?.addressUk
-      || req.session.appeal?.application?.sponsorAddress;
-  } else {
-    renderObj.question = {
-      name: 'nlr-address',
-      title: i18n.pages.nlrAddress.title,
-      description: i18n.pages.nlrAddress.description,
-      value: req.session.appeal?.nlrDetails?.address || ''
-    };
-  }
-  return renderObj;
-}
-
 function getNlrAddress(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const isSponsorSameAsNlr = isSponsorSame(req);
-    const renderPath = isSponsorSameAsNlr ? 'appeal-application/non-legal-rep-details/address.njk'
-      : 'templates/textarea-question-page.njk';
-    const renderObj = getNlrAddressRenderObject(isSponsorSameAsNlr, req);
-    return res.render(renderPath, renderObj);
+    const renderObj: any = {
+      previousPage: paths.nonLegalRep.provideNlrName,
+      formAction: paths.nonLegalRep.provideNlrAddress,
+      pageTitle: i18n.pages.nlrAddress.title
+    };
+    if (isSponsorSameAsNlr) {
+      return res.render('appeal-application/non-legal-rep-details/address.njk', {
+        ...renderObj,
+        address: req.session.appeal?.nlrDetails?.addressUk
+          || req.session.appeal?.application?.sponsorAddress
+      });
+    } else {
+      return res.render('templates/textarea-question-page.njk', {
+        ...renderObj,
+        question: {
+          name: 'nlr-address',
+          title: i18n.pages.nlrAddress.title,
+          description: i18n.pages.nlrAddress.description,
+          value: req.session.appeal?.nlrDetails?.address || ''
+        }
+      });
+    }
   } catch (e) {
     next(e);
   }
@@ -333,12 +331,35 @@ function postNlrAddress() {
       const validation = isSponsorSameAsNlr ? nlrAddressValidation(req.body)
         : textAreaValidation(req.body['nlr-address'], 'nlr-address', i18n.validationErrors.nlrDetails.address);
       if (validation !== null) {
-        const renderPath = isSponsorSameAsNlr ? 'appeal-application/non-legal-rep-details/address.njk'
-          : 'templates/textarea-question-page.njk';
-        const renderObj = getNlrAddressRenderObject(isSponsorSameAsNlr, req);
-        renderObj.error = validation;
-        renderObj.errorList = Object.values(validation);
-        return res.render(renderPath, renderObj);
+        const renderObj: any = {
+          previousPage: paths.nonLegalRep.provideNlrName,
+          formAction: paths.nonLegalRep.provideNlrAddress,
+          pageTitle: i18n.pages.nlrAddress.title,
+          error: validation,
+          errorList: Object.values(validation)
+        };
+        if (isSponsorSameAsNlr) {
+          return res.render('appeal-application/non-legal-rep-details/address.njk', {
+            ...renderObj,
+            address: {
+              line1: req.body['address-line-1'],
+              line2: req.body['address-line-2'],
+              city: req.body['address-town'],
+              county: req.body['address-county'],
+              postcode: req.body['address-postcode']
+            }
+          });
+        } else {
+          return res.render('templates/textarea-question-page.njk', {
+            ...renderObj,
+            question: {
+              name: 'nlr-address',
+              title: i18n.pages.nlrAddress.title,
+              description: i18n.pages.nlrAddress.description,
+              value: req.body['nlr-address'] || ''
+            }
+          });
+        }
       }
       const nlrAddress = isSponsorSameAsNlr ? {
         addressUk: {
@@ -435,7 +456,7 @@ function getSummaryRows(req: Request) {
   const nlrAddressUk = nlrDetails.addressUk ? Object.values(nlrDetails.addressUk) : [];
   const nlrAddress: string = nlrDetails.address;
   const hasSponsor: boolean = req.session.appeal?.application?.hasSponsor == 'Yes';
-  const nlrAddressValues = isSponsorSameAsNlr ? [...nlrAddressUk] : nlrAddress.split('\n');
+  const nlrAddressValues = isSponsorSameAsNlr ? [...nlrAddressUk] : nlrAddress?.split('\n') || [];
   const summaryRows: SummaryRow[] = [
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepName,
       [nlrDetails.givenNames, nlrDetails.familyName], paths.nonLegalRep.provideNlrName + editParameter, Delimiter.SPACE),

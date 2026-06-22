@@ -1,7 +1,3 @@
-const config = require('config');
-
-const testUrl = config.get('testUrl');
-
 module.exports = {
   pcqQuestions(I) {
 

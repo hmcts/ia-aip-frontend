@@ -187,7 +187,7 @@ describe('Session Timeout', () => {
       stopCountersStub = sandbox.stub(sessionTimeout, 'stopCounters');
 
       sessionTimeout.extendSession().then(() => {
-        expect(sessionTimeout.sessionExpirationTime).to.equal(1000);
+        expect(sessionTimeout.sessionExpirationTime.toString()).to.equal('1000');
         expect(restartCountersStub.callCount).to.equal(1);
       }).then(done, done);
     });

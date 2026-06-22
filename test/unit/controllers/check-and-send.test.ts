@@ -18,7 +18,7 @@ import Logger from '../../../app/utils/logger';
 import { addSummaryRow } from '../../../app/utils/summary-list';
 import { formatTextForCYA } from '../../../app/utils/utils';
 import i18n from '../../../locale/en.json';
-import { expect, setActiveNlr, sinon } from '../../utils/testUtils';
+import { expect, sinon } from '../../utils/testUtils';
 import { createDummyAppealApplication } from '../mockData/mock-appeal';
 
 const express = require('express');

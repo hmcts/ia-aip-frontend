@@ -669,4 +669,47 @@ describe('Make application controllers helper', () => {
       expect(actualPath).to.equal(expectedPath);
     });
   });
+
+  describe('nlrStatementValidation', () => {
+    it('should render error if fails validation', async () => {
+      setActiveNlr(req);
+      const evidence: Evidence[] = [];
+      req.session.appeal.makeAnApplicationDetails = 'makeAnAppealDetails';
+      req.session.appeal.makeAnApplicationEvidence = evidence;
+      req.session.appeal.makeAnApplicationTypes = {
+        value: {
+          code: 'expedite',
+          label: 'Expedite'
+        }
+      };
+      await makeApplicationControllersHelper.postProvideSupportingEvidenceCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(renderStub.calledOnce).to.equal(true);
+      const expectedError = {
+        'key': 'nlrStatement',
+        'text': i18n.validationErrors.nlrStatement,
+        'href': '#nlrStatement'
+      };
+      const renderArgs = renderStub.getCall(0).args;
+      expect(renderArgs[0]).to.equal('templates/check-and-send.njk');
+      expect(renderArgs[1].errors).to.deep.equal({ nlrStatement: expectedError });
+      expect(renderArgs[1].errorList).to.deep.equal([expectedError]);
+    });
+
+    it('should continue if passes validation', async () => {
+      setActiveNlr(req);
+      const evidence: Evidence[] = [];
+      req.session.appeal.makeAnApplicationDetails = 'makeAnAppealDetails';
+      req.session.appeal.makeAnApplicationEvidence = evidence;
+      req.session.appeal.makeAnApplicationTypes = {
+        value: {
+          code: 'expedite',
+          label: 'Expedite'
+        }
+      };
+      req.body = { nlrStatement: 'nlr' };
+      await makeApplicationControllersHelper.postProvideSupportingEvidenceCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(false);
+    });
+  });
 });

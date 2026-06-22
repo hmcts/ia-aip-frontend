@@ -4,7 +4,7 @@ import { paths } from '../../../app/paths';
 import RefDataService from '../../../app/service/ref-data-service';
 import {
   convertCommonRefDataToValueList,
-  convertDynamicListToSelectItemList, getNlrRadioQuestion, nlrRadioRender,
+  convertDynamicListToSelectItemList, getNlrRadioQuestion, getStepFreeAccessPreviousPage, nlrRadioRender,
   preparePostInterpreterLanguageSubmissionObj,
   retrieveInterpreterDynamicListByDataType
 } from '../../../app/utils/hearing-requirements-utils';
@@ -248,6 +248,31 @@ describe('hearing-requirement-utils', () => {
         errorList: Object.values(validation)
       };
       expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', resObject);
+    });
+  });
+
+  describe('getStepFreeAccessPreviousPage', () => {
+    let req: Partial<Request>;
+    beforeEach(() => {
+      req = { session: { appeal: { hearingRequirements: {} } } } as Partial<Request>;
+    });
+    it('should return correct previous page for stepFreeAccess when sign', () => {
+      req.session.appeal.hearingRequirements.nlrInterpreterLanguageCategory = ['signLanguageInterpreter', 'spokenLanguageInterpreter'];
+      const previousPage = getStepFreeAccessPreviousPage(req as Request);
+      expect(previousPage).to.equal(paths.submitHearingRequirements.nlrHearingInterpreterSignLanguageSelection);
+    });
+
+    it('should return correct previous page for stepFreeAccess when not sign with spoken', () => {
+      req.session.appeal.hearingRequirements.nlrInterpreterLanguageCategory = ['null', 'spokenLanguageInterpreter'];
+      const previousPage = getStepFreeAccessPreviousPage(req as Request);
+      expect(previousPage).to.equal(paths.submitHearingRequirements.nlrHearingInterpreterSpokenLanguageSelection);
+    });
+
+
+    it('should return correct previous page for stepFreeAccess when not sign or spoken', () => {
+      req.session.appeal.hearingRequirements.nlrInterpreterLanguageCategory = ['null', 'null'];
+      const previousPage = getStepFreeAccessPreviousPage(req as Request);
+      expect(previousPage).to.equal(paths.submitHearingRequirements.isNlrInterpreterRequired);
     });
   });
 });

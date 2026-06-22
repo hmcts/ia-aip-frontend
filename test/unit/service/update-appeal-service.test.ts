@@ -273,9 +273,13 @@ describe('update-appeal-service', () => {
       'appellantFamilyName': '',
       'stateName': 'Appeal started'
     }];
-    it('should submit event and remove case from casesList when present', async () => {
-      const startUpdateAppealStub: sinon.SinonStub = sinon.stub();
-      const submitUpdateAppealStub: sinon.SinonStub = sinon.stub();
+    let startUpdateAppealStub: sinon.SinonStub;
+    let submitUpdateAppealStub: sinon.SinonStub;
+    let microSandbox: sinon.SinonSandbox;
+    beforeEach(() => {
+      microSandbox = sinon.createSandbox();
+      startUpdateAppealStub = microSandbox.stub();
+      submitUpdateAppealStub = microSandbox.stub();
       ccdService = {
         startUpdateAppeal: startUpdateAppealStub.resolves({
           event_id: Events.DELETE_DRAFT_APPEAL.id,
@@ -284,48 +288,40 @@ describe('update-appeal-service', () => {
         submitUpdateAppeal: submitUpdateAppealStub.resolves(),
       };
       updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
+    });
 
+    afterEach(() => {
+      microSandbox.restore();
+    });
+    it('should submit event and remove case from casesList when present', async () => {
       req.session.casesList = caseList;
       req.params = { id: caseId };
       await updateAppealService.deleteDraftAppeal(req as Request);
 
       expect(startUpdateAppealStub).to.be.calledOnceWith(userId, caseId, Events.DELETE_DRAFT_APPEAL.id, sinon.match.any);
       expect(submitUpdateAppealStub).to.be.calledOnceWith(userId, caseId, sinon.match.any, sinon.match.any);
-      expect(req.session.casesList.length).to.equal(0);
+      expect(req.session.casesList).to.deep.equal([]);
     });
 
     it('should submit event and do nothing to casesList when not present', async () => {
-      const startUpdateAppealStub: sinon.SinonStub = sinon.stub();
-      const submitUpdateAppealStub: sinon.SinonStub = sinon.stub();
-      ccdService = {
-        startUpdateAppeal: startUpdateAppealStub.resolves(),
-        submitUpdateAppeal: submitUpdateAppealStub.resolves(),
-      };
-      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
-
+      const caseIdNotInList = 'caseIdNotInList';
+      req.params = { id: caseIdNotInList };
       req.session.casesList = caseList;
       await updateAppealService.deleteDraftAppeal(req as Request);
 
-      expect(startUpdateAppealStub).to.be.calledOnceWith(userId, caseId, Events.DELETE_DRAFT_APPEAL.id, sinon.match.any);
-      expect(submitUpdateAppealStub).to.be.calledOnceWith(userId, caseId, sinon.match.any, sinon.match.any);
-      expect(req.session.casesList).to.equal(caseList);
+      expect(startUpdateAppealStub).to.be.calledOnceWith(userId, caseIdNotInList, Events.DELETE_DRAFT_APPEAL.id, sinon.match.any);
+      expect(submitUpdateAppealStub).to.be.calledOnceWith(userId, caseIdNotInList, sinon.match.any, sinon.match.any);
+      expect(req.session.casesList).to.deep.equal(caseList);
     });
 
     it('should submit event and do nothing to casesList when casesList undefined', async () => {
-      const startUpdateAppealStub: sinon.SinonStub = sinon.stub();
-      const submitUpdateAppealStub: sinon.SinonStub = sinon.stub();
-      ccdService = {
-        startUpdateAppeal: startUpdateAppealStub.resolves(),
-        submitUpdateAppeal: submitUpdateAppealStub.resolves(),
-      };
-      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
-
+      req.params = { id: caseId };
       req.session.casesList = undefined;
       await updateAppealService.deleteDraftAppeal(req as Request);
 
       expect(startUpdateAppealStub).to.be.calledOnceWith(userId, caseId, Events.DELETE_DRAFT_APPEAL.id, sinon.match.any);
       expect(submitUpdateAppealStub).to.be.calledOnceWith(userId, caseId, sinon.match.any, sinon.match.any);
-      expect(req.session.casesList.length).to.equal(0);
+      expect(req.session.casesList).to.deep.equal([]);
     });
   });
 

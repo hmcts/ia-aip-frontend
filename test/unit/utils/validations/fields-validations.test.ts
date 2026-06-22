@@ -14,14 +14,14 @@ import {
   interpreterSupportSelectionValidation,
   interpreterTypesSelectionValidation,
   isDateInRange,
-  joinAppealValidation, nonLegalRepContactDetailsValidation, nonLegalRepPhoneValidation,
+  joinAppealValidation, nlrStatementValidation, nonLegalRepContactDetailsValidation, nonLegalRepPhoneValidation,
   postcodeValidation,
   reasonForAppealDecisionValidation,
   remissionOptionsValidation,
   selectedRequiredValidation,
   selectedRequiredValidationDialect,
   sponsorContactDetailsValidation,
-  statementOfTruthValidation,
+  statementOfTruthValidation, statementValidation,
   textAreaValidation,
   witenessesInterpreterNeedsValidation,
   yesOrNoRequiredValidation
@@ -354,6 +354,48 @@ describe('fields-validations', () => {
       expect(validationResult).to.deep.equal(expectedResponse);
     });
 
+  });
+
+  describe('statementValidation', () => {
+    it('should validate if statement present', () => {
+      const object = { 'statement': 'acceptance' };
+      const validationResult = statementValidation(object, 'error message');
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation and return "any.required" type', () => {
+      const object = {};
+      const validationResult = statementValidation(object, 'error message');
+      const expectedResponse = {
+        statement: {
+          href: '#statement',
+          key: 'statement',
+          text: 'error message'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+  });
+
+  describe('nlrStatementValidation', () => {
+    it('should validate if statement present', () => {
+      const object = { 'nlrStatement': 'acceptance' };
+      const validationResult = nlrStatementValidation(object);
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation and return "any.required" type', () => {
+      const object = {};
+      const validationResult = nlrStatementValidation(object);
+      const expectedResponse = {
+        nlrStatement: {
+          href: '#nlrStatement',
+          key: 'nlrStatement',
+          text: i18n.validationErrors.nlrStatement
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
   });
 
   describe('contactDetailsValidation', () => {

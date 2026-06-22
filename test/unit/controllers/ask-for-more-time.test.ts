@@ -17,6 +17,7 @@ import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { formatTextForCYA } from '../../../app/utils/utils';
+import i18n from '../../../locale/en.json';
 import { expect, setActiveNlr, sinon } from '../../utils/testUtils';
 const express = require('express');
 
@@ -372,6 +373,32 @@ describe('Ask for more time Controller', function () {
       getConfirmation(req as Request, res as Response, next);
 
       expect(next.calledOnceWith(error)).to.equal(true);
+    });
+  });
+
+  describe('nlrStatementValidation', () => {
+    it('should render error if fails validation', async () => {
+      setActiveNlr(req);
+      req.session.appeal.makeAnApplicationDetails = 'ask for more time';
+      await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(renderStub.calledOnce).to.equal(true);
+      const expectedError = {
+        'key': 'nlrStatement',
+        'text': i18n.validationErrors.nlrStatement,
+        'href': '#nlrStatement'
+      };
+      const renderArgs = renderStub.getCall(0).args;
+      expect(renderArgs[0]).to.equal('./templates/check-and-send.njk');
+      expect(renderArgs[1].errors).to.deep.equal({ nlrStatement: expectedError });
+      expect(renderArgs[1].errorList).to.deep.equal([expectedError]);
+    });
+
+    it('should continue if passes validation', async () => {
+      setActiveNlr(req);
+      req.body = { nlrStatement: 'nlr' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(false);
     });
   });
 });

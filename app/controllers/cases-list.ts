@@ -132,5 +132,6 @@ export {
   setupCasesListController,
   getCasesList,
   getCreateNewAppeal,
-  getDeleteDraftAppeal
+  getDeleteDraftAppeal,
+  refreshCasesList
 };

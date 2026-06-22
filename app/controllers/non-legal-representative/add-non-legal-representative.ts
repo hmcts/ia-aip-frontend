@@ -665,5 +665,7 @@ export {
   getProvideNlrDetailsConfirmation,
   postInviteToJoinAppeal,
   getInviteToJoinAppealConfirmation,
+  getAddAnotherNonLegalRepresentative,
+  postAddAnotherNonLegalRepresentative,
   setupNonLegalRepresentativeControllers
 };

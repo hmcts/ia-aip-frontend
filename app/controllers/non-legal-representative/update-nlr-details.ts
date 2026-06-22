@@ -246,13 +246,13 @@ function postNlrContactDetails() {
       const errorList = [];
       const errors = {};
       if (appellantContactEmail === req.body['emailAddress']) {
-        const emailError = createStructuredError('emailAddress', i18n.validationErrors.nlrDetails.nlrEmailCannotBeSameAsAppellant);
+        const emailError = createStructuredError('emailAddress', i18n.validationErrors.nlrDetails.nlrEmailCannotBeSameAsAppellantPersonal);
         errors['emailAddress'] = emailError;
         errorList.push(emailError);
       }
       const appellantPhone = req.session.appeal?.application?.contactDetails?.phone;
       if (appellantPhone === req.body['phoneNumber']) {
-        const phoneError = createStructuredError('phoneNumber', i18n.validationErrors.nlrDetails.nlrPhoneCannotBeSameAsAppellant);
+        const phoneError = createStructuredError('phoneNumber', i18n.validationErrors.nlrDetails.nlrPhoneCannotBeSameAsAppellantPersonal);
         errors['phoneNumber'] = phoneError;
         errorList.push(phoneError);
       }
@@ -402,7 +402,7 @@ function getUpdateNlrDetailsConfirmation(req: Request, res: Response, next: Next
   }
 }
 
-function setupNlrUpdatePhoneNumberControllers(middleware: Middleware[], updateAppealService: UpdateAppealService,): Router {
+function setupUpdateNlrDetailsControllers(middleware: Middleware[], updateAppealService: UpdateAppealService,): Router {
   const router = Router();
   router.get(paths.nonLegalRep.updateName, middleware, getNlrName);
   router.post(paths.nonLegalRep.updateName, middleware, postNlrName());
@@ -419,7 +419,7 @@ function setupNlrUpdatePhoneNumberControllers(middleware: Middleware[], updateAp
 }
 
 export {
-  setupNlrUpdatePhoneNumberControllers,
+  setupUpdateNlrDetailsControllers,
   getNlrName,
   postNlrName,
   getNlrAddress,

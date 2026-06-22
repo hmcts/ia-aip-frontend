@@ -141,6 +141,40 @@ describe('Join appeal controllers setup', () => {
         previousPageText: i18n.components.back.backToCasesList
       });
     });
+    
+    it('should render join-appeal with correct errors if user already has access to case ref', async () => {
+      req.body = {
+        caseReference: '1234-5678 9012-3456',
+        joinAppealAccessCode: 'someAccessCode'
+      };
+      const expectedValidationError = {
+        caseReference: {
+          key: 'caseReference',
+          href: '#caseReference',
+          text: i18n.pages.joinAppeal.enterCaseReference.sameError
+        }
+      };
+      req.session.casesList = [
+        {
+          id: '1234567890123456',
+          appealReferenceNumber: 'PA/0001/2022',
+          state: 'appealStarted',
+          appellantGivenNames: 'John',
+          appellantFamilyName: 'Smith',
+          stateName: 'Appeal started'
+        }
+      ];
+      await postJoinAppeal(ccdSystemService as CcdSystemService)(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/join-appeal.njk', {
+        caseReference: '1234-5678 9012-3456',
+        joinAppealAccessCode: 'someAccessCode',
+        errorList: Object.values(expectedValidationError),
+        errors: expectedValidationError,
+        previousPage: paths.common.casesList,
+        previousPageText: i18n.components.back.backToCasesList
+      });
+    });
 
     it('should redirect to joinAppealConfirmDetails if validation succeeds and pip is validated', async () => {
       req.body = {

@@ -11,7 +11,7 @@ import {
   postNlrName,
   postSamePerson,
   postUpdateNlrDetailsCheckAndSend,
-  setupNlrUpdatePhoneNumberControllers,
+  setupUpdateNlrDetailsControllers,
 } from '../../../../app/controllers/non-legal-representative/update-nlr-details';
 import { Events } from '../../../../app/data/events';
 import { isJourneyAllowedMiddleware } from '../../../../app/middleware/journeyAllowed-middleware';
@@ -625,6 +625,32 @@ describe('Update non-legal rep details', () => {
       });
     });
 
+    it('should render with error if validation fails contact details are same as appellant', async () => {
+      req.body['emailAddress'] = 'some@test.com';
+      req.body['phoneNumber'] = '07827292000';
+      req.session.appeal.application.contactDetails = {
+        email: 'some@test.com',
+        phone: '07827292000'
+      };
+      await postNlrContactDetails()(req as Request, res as Response, next);
+
+      const expectedError = {
+        'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.nlrDetails.nlrEmailCannotBeSameAsAppellantPersonal),
+        'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.nlrDetails.nlrPhoneCannotBeSameAsAppellantPersonal)
+      };
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
+        title: i18n.pages.nlrContactDetails.titlePersonal,
+        showEmail: true,
+        formAction: paths.nonLegalRep.updateContactDetails,
+        emailAddress: 'some@test.com',
+        phoneNumber: '07827292000',
+        errors: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.nonLegalRep.updateAddress
+      });
+    });
+
     it('should update req.session.appeal and redirect to CYA if validation passes', async () => {
       req.body['emailAddress'] = 'test@test.com';
       req.body['phoneNumber'] = '07827297000';
@@ -1113,14 +1139,14 @@ describe('Update non-legal rep details', () => {
     });
   });
 
-  describe('setupNlrUpdatePhoneNumberControllers', () => {
+  describe('setupUpdateNlrDetailsControllers', () => {
     it('should return the correct routers', () => {
       const express = require('express');
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [isJourneyAllowedMiddleware];
 
-      setupNlrUpdatePhoneNumberControllers(middleware, updateAppealService as UpdateAppealService);
+      setupUpdateNlrDetailsControllers(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub.calledWith(paths.nonLegalRep.updateName, middleware, getNlrName)).to.equal(true);
       expect(routerPostStub.calledWith(paths.nonLegalRep.updateName, middleware, sinon.match.any)).to.equal(true);
       expect(routerGetStub.calledWith(paths.nonLegalRep.updateAddress, middleware, getNlrAddress)).to.equal(true);

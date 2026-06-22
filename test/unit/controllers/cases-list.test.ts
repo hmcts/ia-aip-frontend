@@ -1,9 +1,9 @@
 import { randomUUID } from 'node:crypto';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import {
   ErrorCode,
   getCasesList,
-  getDeleteDraftAppeal,
+  getDeleteDraftAppeal, refreshCasesList,
   setupCasesListController
 } from '../../../app/controllers/cases-list';
 import { paths } from '../../../app/paths';
@@ -17,7 +17,7 @@ describe('Cases List Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
-  let next: NextFunction;
+  let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   const appealStartedCase = {
     id: '1234',
@@ -60,7 +60,7 @@ describe('Cases List Controller', () => {
       redirect: sandbox.stub()
     } as unknown as Partial<Response>;
 
-    next = sandbox.stub() as any;
+    next = sandbox.stub();
 
     updateAppealService = {
       loadAppealsList: sandbox.stub().resolves()
@@ -423,6 +423,22 @@ describe('Cases List Controller', () => {
       await getDeleteDraftAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(`${paths.common.casesList}?errorCode=${ErrorCode.deleteDraftError}&caseId=${appealStartedCase.id}`);
+    });
+  });
+
+  describe('refreshCasesList', () => {
+    it('should set refreshCasesList session flag to true and redirect to casesList', async () => {
+      expect(req.session.refreshCasesList).to.equal(false);
+      await refreshCasesList()(req as Request, res as Response, next);
+      expect(req.session.refreshCasesList).to.equal(true);
+      expect(res.redirect).calledWith(paths.common.casesList);
+    });
+
+    it('should call next with error on failure', async () => {
+      const error = new Error('something went wrong');
+      res.redirect = sandbox.stub().throws(error);
+      await refreshCasesList()(req as Request, res as Response, next);
+      expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 });

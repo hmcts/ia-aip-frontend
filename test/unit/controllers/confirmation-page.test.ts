@@ -84,7 +84,6 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-
   it('getConfirmationPage should render confirmation.njk for an appeal with NLR', () => {
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
@@ -254,6 +253,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
+
   it('getConfirmationPaidPage should render confirmation.njk for a paPayNow in-time appeal paid immediately after submission', async () => {
     req.session.payingImmediately = true;
     const { appeal } = req.session;
@@ -261,6 +261,26 @@ describe('Confirmation Page Controller', () => {
     appeal.appealStatus = States.APPEAL_SUBMITTED.id;
     appeal.application.appealType = 'protection';
     appeal.paAppealTypeAipPaymentOption = 'payNow';
+
+    getConfirmationPaidPage(req as Request, res as Response, next);
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'templates/confirmation-page.njk', {
+      date: addDaysToDate(5),
+      title: i18n.pages.successPage.inTime.panel,
+      whatNextListItems: i18n.pages.confirmationPaid.content,
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
+      appealWithRemissionOption: false
+    });
+  });
+
+  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow with NLR', async () => {
+    req.session.payingImmediately = true;
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = false;
+    appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+    appeal.application.hasNonLegalRep = 'Yes';
 
     getConfirmationPaidPage(req as Request, res as Response, next);
     expect(renderStub.calledOnce).to.equal(true);
@@ -336,6 +356,26 @@ describe('Confirmation Page Controller', () => {
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.APPEAL_SUBMITTED.id;
     appeal.application.appealType = 'refusalOfEu';
+
+    getConfirmationPaidPage(req as Request, res as Response, next);
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'templates/confirmation-page.njk', {
+      date: addDaysToDate(5),
+      title: i18n.pages.successPage.inTime.panel,
+      whatNextListItems: i18n.pages.confirmationPaid.content,
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
+      appealWithRemissionOption: false
+    });
+  });
+
+
+  it('getConfirmationPaidPage should render confirmation.njk for on time EA appeal with NLR', async () => {
+    req.session.payingImmediately = false;
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = false;
+    appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+    appeal.application.appealType = 'refusalOfEu';
+    appeal.application.hasNonLegalRep = 'Yes';
 
     getConfirmationPaidPage(req as Request, res as Response, next);
     expect(renderStub.calledOnce).to.equal(true);

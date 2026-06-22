@@ -401,10 +401,10 @@ describe('Hearing requirements non legal rep controller', () => {
       expect(redirectStub).to.be.calledWith(paths.submitHearingRequirements.nlrHearingInterpreterSignLanguageSelection);
     });
 
-    it('postIsNlrInterpreterRequiredPage should catch an exception and call next()', async () => {
+    it('postNlrInterpreterTypePage should catch an exception and call next()', async () => {
       const error = new Error('the error');
-      nlrRadioRenderStub.throws(error);
-      await postIsNlrInterpreterRequiredPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      renderStub.throws(error);
+      await postNlrInterpreterTypePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
     });
   });

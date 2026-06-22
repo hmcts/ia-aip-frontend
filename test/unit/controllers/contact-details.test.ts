@@ -2064,6 +2064,60 @@ describe('Contact details Controller', () => {
       });
     });
 
+    it('should render with error if validation fails nlr contact details are same as appellants', async () => {
+      req.body['emailAddress'] = 'some@test.com';
+      req.body['phoneNumber'] = '07827292000';
+      req.session.appeal.application.contactDetails = {
+        email: 'some@test.com',
+        phone: '07827292000'
+      };
+      await postNlrContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.nlrDetails.nlrEmailCannotBeSameAsAppellant),
+        'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.nlrDetails.nlrPhoneCannotBeSameAsAppellant)
+      };
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
+        title: i18n.pages.nlrContactDetails.title,
+        hint: i18n.pages.nlrContactDetails.hint,
+        nextStep: i18n.pages.nlrContactDetails.nextStep,
+        showEmail: true,
+        formAction: paths.appealStarted.nlrContactDetails,
+        emailAddress: 'some@test.com',
+        phoneNumber: '07827292000',
+        errors: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.appealStarted.nlrAddress,
+        saveForLater: true
+      });
+    });
+
+    it('should render with error if validation fails nlr contact details are same as current logged in', async () => {
+      req.idam.userDetails.sub = 'some@test.com';
+      req.body['emailAddress'] = 'some@test.com';
+      req.body['phoneNumber'] = '07827297000';
+      await postNlrContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.nlrDetails.nlrEmailCannotBeSameAsAppellant)
+      };
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
+        title: i18n.pages.nlrContactDetails.title,
+        hint: i18n.pages.nlrContactDetails.hint,
+        nextStep: i18n.pages.nlrContactDetails.nextStep,
+        showEmail: true,
+        formAction: paths.appealStarted.nlrContactDetails,
+        emailAddress: 'some@test.com',
+        phoneNumber: '07827297000',
+        errors: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: paths.appealStarted.nlrAddress,
+        saveForLater: true
+      });
+    });
+
     it('should update req.session.appeal and redirect to taskList if validation passes', async () => {
       req.body['emailAddress'] = 'test@test.com';
       req.body['phoneNumber'] = '07827297000';

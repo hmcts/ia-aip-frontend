@@ -32,6 +32,7 @@ function postRemoveNonLegalRepresentative(updateAppealService: UpdateAppealServi
           paragraphOne: isNlr ? i18n.pages.removeNonLegalRepresentative.paragraphOnePersonal
             : i18n.pages.removeNonLegalRepresentative.paragraphOne,
           paragraphTwo: isNlr ? null : i18n.pages.removeNonLegalRepresentative.paragraphTwo,
+          agreement: isNlr ? i18n.pages.removeNonLegalRepresentative.agreementPersonal : i18n.pages.removeNonLegalRepresentative.agreement,
           errors: validation,
           errorList: Object.values(validation)
         });

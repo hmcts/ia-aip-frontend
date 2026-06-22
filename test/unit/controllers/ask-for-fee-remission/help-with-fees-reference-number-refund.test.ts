@@ -85,6 +85,7 @@ describe('Help with fees reference number refund Controller', function () {
     it('should render appeal-application/fee-support/help-with-fees-reference-number.njk', async () => {
       await getHelpWithFeesRefNumber(req as Request, res as Response, next);
       const helpWithFeesReferenceNumber = null;
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk', {
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         formAction: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,

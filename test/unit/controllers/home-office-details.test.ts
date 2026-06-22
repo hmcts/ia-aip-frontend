@@ -701,6 +701,7 @@ describe('Home Office Details Controller', function () {
         year: '2022'
       };
       getDateLetterSent(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/home-office/letter-sent.njk', {
         dateLetterSent: req.session.appeal.application.dateLetterSent,
         previousPage: paths.appealStarted.nationality
@@ -769,6 +770,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/home-office/letter-sent.njk', {
         error: { day: expectedError },
         errorList: [expectedError],
@@ -800,6 +802,7 @@ describe('Home Office Details Controller', function () {
         year: '2022'
       };
       getDateLetterReceived(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/home-office/letter-received.njk', {
         decisionLetterReceivedDate: req.session.appeal.application.decisionLetterReceivedDate,
         previousPage: paths.appealStarted.nationality
@@ -868,6 +871,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterReceived(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/home-office/letter-received.njk', {
         error: { day: expectedError },
         errorList: [expectedError],

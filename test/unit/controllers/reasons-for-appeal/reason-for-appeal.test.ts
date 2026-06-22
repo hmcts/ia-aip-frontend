@@ -75,6 +75,7 @@ describe('Reasons for Appeal Controller', function () {
   describe('getReasonForAppeal', () => {
     it('should render reasons-for-appeal/reason-for-appeal.njk', function () {
       getReasonForAppeal(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/reason-for-appeal-page.njk', {
         previousPage: paths.common.overview,
         applicationReason: undefined,

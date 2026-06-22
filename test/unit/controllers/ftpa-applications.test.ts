@@ -169,6 +169,7 @@ describe('Ftpa application controllers setup', () => {
 
       await getFtpaReason(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'ftpa-application/reason-page.njk', {
         ...expectedRenderPayload
       });
@@ -194,6 +195,7 @@ describe('Ftpa application controllers setup', () => {
 
       await getFtpaReason(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'ftpa-application/reason-page.njk', {
         ...expectedRenderPayload
       });
@@ -220,6 +222,7 @@ describe('Ftpa application controllers setup', () => {
 
       await getFtpaReason(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'ftpa-application/reason-page.njk', {
         ...expectedRenderPayload
       });
@@ -255,6 +258,7 @@ describe('Ftpa application controllers setup', () => {
 
       await getFtpaOutOfTimeReason(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'ftpa-application/reason-page.njk', {
         ...expectedRenderPayload
       });
@@ -366,6 +370,7 @@ describe('Ftpa application controllers setup', () => {
 
       getProvideFtpaEvidenceQuestion(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'ftpa-application/evidence-question-page.njk', {
         ...expectedRenderPayload
       });
@@ -415,6 +420,7 @@ describe('Ftpa application controllers setup', () => {
 
       getProvideFtpaOutOfTimeEvidenceQuestion(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'ftpa-application/evidence-question-page.njk', {
         ...expectedRenderPayload
       });
@@ -544,6 +550,7 @@ describe('Ftpa application controllers setup', () => {
         formSubmitAction: paths.ftpa.ftpaEvidence
       };
       getProvideDocument(req as Request, res as Response, next, config);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'ftpa-application/document-upload-page.njk', {
         ...expectedRenderPayload
       });
@@ -566,6 +573,7 @@ describe('Ftpa application controllers setup', () => {
 
       getProvideEvidenceDocument(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'ftpa-application/document-upload-page.njk', {
         ...expectedRenderPayload
       });
@@ -598,6 +606,7 @@ describe('Ftpa application controllers setup', () => {
 
       getProvideOutOfTimeEvidenceDocument(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'ftpa-application/document-upload-page.njk', {
         ...expectedRenderPayload
       });
@@ -752,6 +761,7 @@ describe('Ftpa application controllers setup', () => {
       const summaryLists: SummaryList[] = [{ summaryRows: [] }];
 
       getFtpaCheckAndSend(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.ftpaApplication.checkYourAnswers.title,
         continuePath: paths.ftpa.ftpaCheckAndSend,
@@ -769,6 +779,7 @@ describe('Ftpa application controllers setup', () => {
       const summaryLists: SummaryList[] = [{ summaryRows: [] }];
 
       getFtpaCheckAndSend(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.ftpaApplication.checkYourAnswers.title,
         continuePath: paths.ftpa.ftpaCheckAndSend,
@@ -809,6 +820,7 @@ describe('Ftpa application controllers setup', () => {
 
       getConfirmation(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/confirmation-page.njk', {
         title: i18n.pages.ftpaApplication.ftpaConfirmation.title,
         whatNextListItems: i18n.pages.ftpaApplication.ftpaConfirmation.whatNextListItems

@@ -166,6 +166,7 @@ describe('Fee support refund Controller', () => {
     it('should render fee-support.njk template', async () => {
       await getFeeSupport(req as Request, res as Response, next);
 
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'ask-for-fee-remission/fee-support-refund.njk', {
         previousPage: paths.common.overview,
         pageTitle: i18n.pages.remissionOptionPage.refundTitle,

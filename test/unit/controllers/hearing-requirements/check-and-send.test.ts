@@ -1516,6 +1516,7 @@ describe('Hearing Requirements Check and Send controller', () => {
             }
           ]
         };
+        expect(renderStub.called).to.equal(true);
         expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
           hasNlr: true,
@@ -1542,6 +1543,7 @@ describe('Hearing Requirements Check and Send controller', () => {
             }
           ]
         };
+        expect(renderStub.called).to.equal(true);
         expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
           hasNlr: true,
@@ -1581,6 +1583,7 @@ describe('Hearing Requirements Check and Send controller', () => {
             },
           ]
         };
+        expect(renderStub.called).to.equal(true);
         expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
           hasNlr: true,
@@ -1630,6 +1633,7 @@ describe('Hearing Requirements Check and Send controller', () => {
           ]
         };
 
+        expect(renderStub.called).to.equal(true);
         expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
           hasNlr: true,
@@ -1681,6 +1685,7 @@ describe('Hearing Requirements Check and Send controller', () => {
           ]
         };
 
+        expect(renderStub.called).to.equal(true);
         expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
           pageTitle: 'Check your answers',
           hasNlr: true,
@@ -1737,6 +1742,7 @@ describe('Hearing Requirements Check and Send controller', () => {
         ]
       };
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: 'Check your answers',
         hasNlr: true,

@@ -91,6 +91,7 @@ describe('Steps to help with fees Controller', function () {
     it('should render steps-to-help-with-fees.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await getStepsToHelpWithFees(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/steps-to-help-with-fees.njk', {
         previousPage: paths.appealStarted.helpWithFees,
         saveAndContinueOnly: true

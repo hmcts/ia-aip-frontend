@@ -188,6 +188,7 @@ describe('Confirmation Page Controller', () => {
       completed: false
     }];
 
+    expect(resRenderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: null,
@@ -285,6 +286,7 @@ describe('Confirmation Page Controller', () => {
       deadline: '13 March 2024'
     };
 
+    expect(resRenderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'PA/12345/2025',
@@ -383,6 +385,7 @@ describe('Confirmation Page Controller', () => {
       deadline: '13 March 2024'
     };
 
+    expect(resRenderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'PA/12345/2025',
@@ -442,6 +445,7 @@ describe('Confirmation Page Controller', () => {
       completed: true
     }];
 
+    expect(resRenderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(resRenderStub, 'application-overview.njk', {
       name: undefined,
       appealRefNumber: undefined,
@@ -504,6 +508,7 @@ describe('Confirmation Page Controller', () => {
       completed: true
     }];
 
+    expect(resRenderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(resRenderStub, 'application-overview.njk', {
       name: undefined,
       appealRefNumber: undefined,
@@ -577,6 +582,7 @@ describe('Confirmation Page Controller', () => {
       completed: false
     }];
 
+    expect(resRenderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'appealNumber',
@@ -647,6 +653,7 @@ describe('Confirmation Page Controller', () => {
       completed: false
     }];
 
+    expect(resRenderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'appealNumber',
@@ -731,6 +738,7 @@ describe('Confirmation Page Controller', () => {
       completed: false
     }];
 
+    expect(resRenderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'RP/50004/2020',
@@ -837,6 +845,7 @@ describe('Confirmation Page Controller', () => {
       completed: false
     }];
 
+    expect(resRenderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(resRenderStub, 'application-overview.njk', {
       name: 'Appellant Name',
       appealRefNumber: 'RP/50004/2020',

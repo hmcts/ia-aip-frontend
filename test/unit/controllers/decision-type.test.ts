@@ -171,6 +171,7 @@ describe('Type of appeal Controller', () => {
     it('should render radio-question-page.njk template with payments feature flag ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       await getDecisionType(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'templates/radio-question-page.njk', {
         previousPage: paths.appealStarted.taskList,
         pageTitle: i18n.pages.decisionTypePage.title,

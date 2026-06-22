@@ -59,6 +59,7 @@ describe('Type of appeal Controller', () => {
       req.session.eligibility = {};
       await eligibilityQuestionGet(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'eligibility/eligibility-question.njk', {
         question: i18n.eligibilityOOCFlag[0].question,
         description: i18n.eligibilityOOCFlag[0].description,

@@ -545,6 +545,7 @@ describe('Contact details Controller', () => {
 
     it('should render sponsor-details/has-sponsor-or-nlr.njk', async () => {
       await getHasSponsorOrNlr(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.enterPostcode,
@@ -556,6 +557,7 @@ describe('Contact details Controller', () => {
     it('should render sponsor-details/has-sponsor-or-nlr.njk with previous page pointing to manual-address endpoint', async () => {
       _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
       await getHasSponsorOrNlr(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.enterAddress,
@@ -568,6 +570,7 @@ describe('Contact details Controller', () => {
       // appeal is out of country
       req.session.appeal.appealOutOfCountry = 'Yes';
       await getHasSponsorOrNlr(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: 'Do you have a sponsor or a non-legal representative?',
         previousPage: paths.appealStarted.oocAddress,
@@ -593,6 +596,7 @@ describe('Contact details Controller', () => {
 
       await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: i18n.pages.hasSponsorOrNlr.title,
         previousPage: paths.appealStarted.enterPostcode,
@@ -612,6 +616,7 @@ describe('Contact details Controller', () => {
 
       await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: i18n.pages.hasSponsorOrNlr.title,
         previousPage: paths.appealStarted.enterAddress,
@@ -631,6 +636,7 @@ describe('Contact details Controller', () => {
 
       await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
         question: i18n.pages.hasSponsorOrNlr.title,
         previousPage: paths.appealStarted.oocAddress,
@@ -714,6 +720,7 @@ describe('Contact details Controller', () => {
       getSamePerson(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/is-same-person.njk', {
         question: i18n.pages.isSponsorSameAsNlr.title,
         previousPage: paths.appealStarted.hasSponsorOrNlr,
@@ -727,6 +734,7 @@ describe('Contact details Controller', () => {
 
       getSamePerson(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/is-same-person.njk', {
         question: i18n.pages.isSponsorSameAsNlr.title,
         formAction: paths.appealStarted.isSponsorSameAsNlr,
@@ -750,6 +758,7 @@ describe('Contact details Controller', () => {
       const expectedError = {
         'isSponsorSameAsNlr': createStructuredError('isSponsorSameAsNlr', i18n.validationErrors.isSponsorSameAsNlr)
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/is-same-person.njk', {
         question: i18n.pages.isSponsorSameAsNlr.title,
         previousPage: paths.appealStarted.hasSponsorOrNlr,
@@ -911,6 +920,7 @@ describe('Contact details Controller', () => {
         ...address
       };
       getSponsorAddress(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/sponsor-address.njk', {
         address,
         previousPage: paths.appealStarted.sponsorName
@@ -1381,6 +1391,7 @@ describe('Contact details Controller', () => {
 
     it('should render sponsor-details/sponsor-authorisation.njk', async () => {
       await getSponsorAuthorisation(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/sponsor-authorisation.njk', {
         question: 'Do you agree to let your sponsor have access to information about your appeal?',
         description: undefined,
@@ -1442,6 +1453,7 @@ describe('Contact details Controller', () => {
       await postSponsorAuthorisation(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.called).to.equal(false);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/sponsor-authorisation.njk', {
         question: 'Do you agree to let your sponsor have access to information about your appeal?',
         description: undefined,
@@ -1489,6 +1501,7 @@ describe('Contact details Controller', () => {
       getNlrName(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/name.njk', {
         formAction: paths.appealStarted.nlrName,
         nlrGivenNames: undefined,
@@ -1506,6 +1519,7 @@ describe('Contact details Controller', () => {
       };
       getNlrName(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/name.njk', {
         formAction: paths.appealStarted.nlrName,
         nlrGivenNames: 'someGivenNames',
@@ -1532,6 +1546,7 @@ describe('Contact details Controller', () => {
         'nlrGivenNames': buildExpectedRequiredError('nlrGivenNames'),
         'nlrFamilyName': buildExpectedRequiredError('nlrFamilyName')
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/name.njk', {
         formAction: paths.appealStarted.nlrName,
         nlrGivenNames: undefined,
@@ -1552,6 +1567,7 @@ describe('Contact details Controller', () => {
         'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrFamilyName)
       };
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/name.njk', {
         formAction: paths.appealStarted.nlrName,
         nlrGivenNames: 'someGivenName',
@@ -1572,6 +1588,7 @@ describe('Contact details Controller', () => {
         'nlrGivenNames': createStructuredError('nlrGivenNames', i18n.validationErrors.nlrGivenNames),
         'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrFamilyName)
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/name.njk', {
         formAction: paths.appealStarted.nlrName,
         nlrGivenNames: '',
@@ -1624,6 +1641,7 @@ describe('Contact details Controller', () => {
       getNlrAddress(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
         formAction: paths.appealStarted.nlrAddress,
         address: undefined,
@@ -1644,6 +1662,7 @@ describe('Contact details Controller', () => {
       req.session.appeal.nlrDetails.addressUk = expectedAddress;
       getNlrAddress(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
         formAction: paths.appealStarted.nlrAddress,
         address: expectedAddress,
@@ -1659,6 +1678,7 @@ describe('Contact details Controller', () => {
       getNlrAddress(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', {
         formAction: paths.appealStarted.nlrAddress,
         previousPage: paths.appealStarted.nlrName,
@@ -1678,6 +1698,7 @@ describe('Contact details Controller', () => {
       req.session.appeal.nlrDetails.address = expectedAddress;
       getNlrAddress(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', {
         formAction: paths.appealStarted.nlrAddress,
         pageTitle: i18n.pages.nlrAddress.title,
@@ -1710,6 +1731,7 @@ describe('Contact details Controller', () => {
         'address-town': buildExpectedRequiredError('address-town'),
         'address-postcode': buildExpectedRequiredError('address-postcode')
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
         formAction: paths.appealStarted.nlrAddress,
         pageTitle: i18n.pages.nlrAddress.title,
@@ -1740,6 +1762,7 @@ describe('Contact details Controller', () => {
         'address-town': createStructuredError('address-town', i18n.validationErrors.nlrAddress.townCityRequired),
         'address-postcode': createStructuredError('address-postcode', i18n.validationErrors.nlrAddress.postcodeRequired)
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
         formAction: paths.appealStarted.nlrAddress,
         pageTitle: i18n.pages.nlrAddress.title,
@@ -1772,6 +1795,7 @@ describe('Contact details Controller', () => {
           href: '#address-postcode'
         }
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
         formAction: paths.appealStarted.nlrAddress,
         pageTitle: i18n.pages.nlrAddress.title,
@@ -1842,6 +1866,7 @@ describe('Contact details Controller', () => {
           text: i18n.validationErrors.nlrDetails.address
         }
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', {
         formAction: paths.appealStarted.nlrAddress,
         pageTitle: i18n.pages.nlrAddress.title,
@@ -1871,6 +1896,7 @@ describe('Contact details Controller', () => {
           text: i18n.validationErrors.nlrDetails.address
         }
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', {
         formAction: paths.appealStarted.nlrAddress,
         pageTitle: i18n.pages.nlrAddress.title,
@@ -1923,6 +1949,7 @@ describe('Contact details Controller', () => {
       getNlrContactDetails(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.equal(true);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrContactDetails.title,
         hint: i18n.pages.nlrContactDetails.hint,
@@ -1941,6 +1968,7 @@ describe('Contact details Controller', () => {
       req.session.appeal.nlrDetails.phoneNumber = 'phoneNumber';
       getNlrContactDetails(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrContactDetails.title,
         hint: i18n.pages.nlrContactDetails.hint,
@@ -1970,6 +1998,7 @@ describe('Contact details Controller', () => {
         'emailAddress': buildExpectedRequiredError('emailAddress'),
         'phoneNumber': buildExpectedRequiredError('phoneNumber')
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrContactDetails.title,
         hint: i18n.pages.nlrContactDetails.hint,
@@ -1994,6 +2023,7 @@ describe('Contact details Controller', () => {
         'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.emailEmpty),
         'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.phoneEmpty)
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrContactDetails.title,
         hint: i18n.pages.nlrContactDetails.hint,
@@ -2018,6 +2048,7 @@ describe('Contact details Controller', () => {
         'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.emailFormat),
         'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.phoneFormat)
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/contact-details.njk', {
         title: i18n.pages.nlrContactDetails.title,
         hint: i18n.pages.nlrContactDetails.hint,

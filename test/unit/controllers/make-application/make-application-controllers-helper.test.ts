@@ -96,6 +96,7 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req as Request, res as Response, next, config);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
@@ -148,6 +149,7 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req as Request, res as Response, next, config);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
@@ -211,6 +213,7 @@ describe('Make application controllers helper', () => {
         saveAndContinue: false
       };
       makeApplicationControllersHelper.getProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, previousPage, formAction);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
@@ -265,6 +268,7 @@ describe('Make application controllers helper', () => {
         saveAndContinue: false
       };
       makeApplicationControllersHelper.getProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, previousPage, formAction);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
@@ -328,6 +332,7 @@ describe('Make application controllers helper', () => {
         formSubmitAction: config.pathToProvideSupportingEvidence
       };
       makeApplicationControllersHelper.getProvideSupportingEvidence(req as Request, res as Response, next, config);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'make-application/supporting-evidence-upload-page.njk', {
         ...expectedRenderPayload
       });
@@ -364,6 +369,7 @@ describe('Make application controllers helper', () => {
         formSubmitAction: config.pathToProvideSupportingEvidence
       };
       makeApplicationControllersHelper.getProvideSupportingEvidence(req as Request, res as Response, next, config);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'make-application/supporting-evidence-upload-page.njk', {
         ...expectedRenderPayload
       });
@@ -411,6 +417,7 @@ describe('Make application controllers helper', () => {
       const summaryLists: SummaryList[] = [{ summaryRows: [] }];
 
       makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.makeApplication.checkYourAnswers.title,
         continuePath: config.pathToCheckYourAnswer,
@@ -434,6 +441,7 @@ describe('Make application controllers helper', () => {
       const summaryLists: SummaryList[] = [{ summaryRows: [] }];
 
       makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.makeApplication.checkYourAnswers.title,
         continuePath: config.pathToCheckYourAnswer,
@@ -469,6 +477,7 @@ describe('Make application controllers helper', () => {
     it('should render', async () => {
       makeApplicationControllersHelper.getRequestSent(req as Request, res as Response, next);
 
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/confirmation-page.njk', {
         title: i18n.pages.makeApplication.requestSent.title,
         whatNextContent: i18n.pages.makeApplication.requestSent.whatNextContent

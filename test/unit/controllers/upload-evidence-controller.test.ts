@@ -87,6 +87,7 @@ describe('upload evidence controller', () => {
   it('getEvidenceYesNo', () => {
     getEvidenceYesNo('previousPage', { extra: 'model' }, res as Response, next);
 
+    expect(renderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(renderStub, 'ask-for-more-time/supporting-evidence-yes-or-no.njk', {
       previousPage: 'previousPage',
       extra: 'model'
@@ -103,6 +104,7 @@ describe('upload evidence controller', () => {
         text: 'Select Yes if you want to provide supporting evidence'
       };
 
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'ask-for-more-time/supporting-evidence-yes-or-no.njk', {
         errorList: [ expectedError ],
         error: { answer: expectedError },
@@ -145,6 +147,7 @@ describe('upload evidence controller', () => {
   it('getUploadPage', () => {
     getUploadPage(uploadEvidenceConfig as EvidenceUploadConfig, req as Request, res as Response, next);
 
+    expect(renderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(renderStub, 'upload-evidence/evidence-upload-page.njk', {
       evidences: evidence,
       evidenceCTA: 'evidenceDeletePath',
@@ -165,6 +168,7 @@ describe('upload evidence controller', () => {
       };
 
       await postUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'upload-evidence/evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [expectedError],
@@ -188,6 +192,7 @@ describe('upload evidence controller', () => {
       res.locals.errorCode = 'incorrectFormat';
 
       await postUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'upload-evidence/evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
@@ -213,6 +218,7 @@ describe('upload evidence controller', () => {
       res.locals.errorCode = 'fileTooLarge';
 
       await postUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'upload-evidence/evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],

@@ -91,6 +91,7 @@ describe('Type of appeal Controller', () => {
     it('should render type-of-appeal.njk with payments feature flag OFF', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getTypeOfAppeal(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/type-of-appeal.njk', {
         types: appealTypes.filter(type => type.value === 'protection' || type.value === 'revocationOfProtection'),
         previousPage: paths.appealStarted.appealOutOfCountry
@@ -100,6 +101,7 @@ describe('Type of appeal Controller', () => {
     it('should render type-of-appeal.njk with payments feature flag ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       await getTypeOfAppeal(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/type-of-appeal.njk', {
         types: appealTypes,
         previousPage: paths.appealStarted.appealOutOfCountry
@@ -112,6 +114,7 @@ describe('Type of appeal Controller', () => {
       await getTypeOfAppeal(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/type-of-appeal.njk', {
         types: appealTypes,
         previousPage: paths.appealStarted.appealOutOfCountry
@@ -176,6 +179,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/type-of-appeal.njk', {
         types: sinon.match.any,
         errors: { appealType: expectedError },

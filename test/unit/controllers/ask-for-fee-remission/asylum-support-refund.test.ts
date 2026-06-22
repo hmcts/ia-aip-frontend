@@ -84,6 +84,7 @@ describe('Asylum support refund Controller', function () {
     it('should render appeal-application/fee-support/asylum-support.njk', async () => {
       await getAsylumSupport(req as Request, res as Response, next);
       const asylumSupportRefNumber = null;
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/asylum-support.njk', {
         previousPage: paths.appealSubmitted.feeSupportRefund,
         formAction: paths.appealSubmitted.asylumSupportRefund,

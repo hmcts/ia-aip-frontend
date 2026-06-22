@@ -97,6 +97,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       ];
 
       getCheckAndSend(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         summaryRows,
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidenceUpload,
@@ -113,6 +114,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       ];
 
       getCheckAndSend(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         summaryRows,
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,

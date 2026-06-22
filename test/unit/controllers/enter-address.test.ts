@@ -98,6 +98,7 @@ describe('Personal Details Controller', function () {
         ...address
       };
       getManualEnterAddressPage(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/personal-details/enter-address.njk', {
         address,
         previousPage: paths.appealStarted.contactDetails
@@ -110,6 +111,7 @@ describe('Personal Details Controller', function () {
       };
       req.session.previousPage = '/lastpage';
       getManualEnterAddressPage(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/personal-details/enter-address.njk', {
         address,
         previousPage: '/lastpage'
@@ -122,6 +124,7 @@ describe('Personal Details Controller', function () {
         ...address
       };
       getManualEnterAddressPage(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/personal-details/enter-address.njk', {
         address,
         previousPage: paths.appealStarted.contactDetails
@@ -134,6 +137,7 @@ describe('Personal Details Controller', function () {
       req.session.appeal.application.addressLookup = {};
       _.set(req.session.appeal.application, 'personalDetails.address', { ...address });
       getManualEnterAddressPage(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/personal-details/enter-address.njk', {
         address,
         previousPage: paths.appealStarted.contactDetails

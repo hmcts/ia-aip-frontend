@@ -111,6 +111,7 @@ describe('Out of Country Controller', function () {
     it('should render appeal-out-of-country.njk with payments feature flag OFF', async () => {
       req.session.appeal.appealOutOfCountry = 'No';
       await getAppellantInUk(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/appeal-out-of-country.njk', {
         question: 'Are you currently living in the United Kingdom?',
         description: undefined,
@@ -169,6 +170,7 @@ describe('Out of Country Controller', function () {
       await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/appeal-out-of-country.njk', {
         question: 'Are you currently living in the United Kingdom?',
         description: undefined,
@@ -202,6 +204,7 @@ describe('Out of Country Controller', function () {
         year: '2022'
       };
       getOocHrInside(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/hr-inside.njk', {
         dateClientLeaveUk: req.session.appeal.application.dateClientLeaveUk,
         previousPage: paths.appealStarted.oocHrEea
@@ -269,6 +272,7 @@ describe('Out of Country Controller', function () {
       await postOocHrInside(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/hr-inside.njk', {
         error: { day: expectedError },
         errorList: [expectedError],
@@ -300,6 +304,7 @@ describe('Out of Country Controller', function () {
         year: '2022'
       };
       getOocProtectionDepartureDate(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/ooc-protection-departure-date.njk', {
         dateClientLeaveUk: req.session.appeal.application.dateClientLeaveUk,
         previousPage: paths.appealStarted.typeOfAppeal
@@ -367,6 +372,7 @@ describe('Out of Country Controller', function () {
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/ooc-protection-departure-date.njk', {
         error: { day: expectedError },
         errorList: [expectedError],
@@ -405,6 +411,7 @@ describe('Out of Country Controller', function () {
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/ooc-protection-departure-date.njk', {
         error: { [expectedError.key]: expectedError },
         errorList: [expectedError],
@@ -434,6 +441,7 @@ describe('Out of Country Controller', function () {
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/ooc-protection-departure-date.njk', {
         error: { day: expectedError },
         errorList: [expectedError],
@@ -463,6 +471,7 @@ describe('Out of Country Controller', function () {
       await postOocProtectionDepartureDate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/ooc-protection-departure-date.njk', {
         error: { day: expectedError },
         errorList: [expectedError],

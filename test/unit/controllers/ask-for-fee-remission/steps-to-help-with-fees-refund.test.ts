@@ -83,6 +83,7 @@ describe('Steps to help with fees Refund Controller', function () {
 
     it('should render steps-to-help-with-fees.njk', async () => {
       await getStepsToHelpWithFees(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/steps-to-help-with-fees.njk', {
         previousPage: paths.appealSubmitted.helpWithFeesRefund,
         refundJourney: true

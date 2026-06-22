@@ -93,6 +93,7 @@ describe('Asylum support Controller', function () {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await getAsylumSupport(req as Request, res as Response, next);
       const asylumSupportRefNumber = null;
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/asylum-support.njk', {
         previousPage: paths.appealStarted.feeSupport,
         formAction: paths.appealStarted.asylumSupport,

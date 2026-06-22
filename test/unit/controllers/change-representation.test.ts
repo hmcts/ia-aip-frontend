@@ -66,6 +66,7 @@ describe('Change Representation Controller', () => {
   describe('getChangeRepresentation', () => {
     it('should render change-representation.njk', () => {
       getChangeRepresentation()(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'change-representation.njk', {
         previousPage: paths.common.overview,
         onlineCaseReferenceNumber: '5827-8410-0185-6205',
@@ -78,6 +79,7 @@ describe('Change Representation Controller', () => {
     it('display reference number even if it is not 16 characters', () => {
       req.session.appeal.ccdCaseId = '582784100185620';
       getChangeRepresentation()(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'change-representation.njk', {
         previousPage: paths.common.overview,
         onlineCaseReferenceNumber: '582784100185620',

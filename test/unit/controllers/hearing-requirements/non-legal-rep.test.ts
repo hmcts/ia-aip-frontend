@@ -210,6 +210,7 @@ describe('Hearing requirements non legal rep controller', () => {
   describe('getNlrNeeds', () => {
     it('getNlrNeeds should nlrRadioRender correctly', () => {
       getNlrNeeds(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/nlr-needs.njk', {
         previousPage: paths.submitHearingRequirements.taskList
       });
@@ -277,6 +278,7 @@ describe('Hearing requirements non legal rep controller', () => {
   describe('getNlrInterpreterTypePage', () => {
     it('getNlrInterpreterTypePage should render interpreter-types.njk with empty nlrInterpreterLanguageCategory', () => {
       getNlrInterpreterTypePage(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-types.njk', {
         previousPage: paths.submitHearingRequirements.isNlrInterpreterRequired,
         formAction: paths.submitHearingRequirements.nlrHearingInterpreterTypes,
@@ -290,6 +292,7 @@ describe('Hearing requirements non legal rep controller', () => {
     it('getNlrInterpreterTypePage should render interpreter-types.njk with non-empty nlrInterpreterLanguageCategory none included', () => {
       req.session.appeal.hearingRequirements.nlrInterpreterLanguageCategory = ['something'];
       getNlrInterpreterTypePage(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-types.njk', {
         previousPage: paths.submitHearingRequirements.isNlrInterpreterRequired,
         formAction: paths.submitHearingRequirements.nlrHearingInterpreterTypes,
@@ -303,6 +306,7 @@ describe('Hearing requirements non legal rep controller', () => {
     it('getNlrInterpreterTypePage should render interpreter-types.njk with non-empty nlrInterpreterLanguageCategory both included', () => {
       req.session.appeal.hearingRequirements.nlrInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
       getNlrInterpreterTypePage(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-types.njk', {
         previousPage: paths.submitHearingRequirements.isNlrInterpreterRequired,
         formAction: paths.submitHearingRequirements.nlrHearingInterpreterTypes,
@@ -339,6 +343,7 @@ describe('Hearing requirements non legal rep controller', () => {
 
     it('postNlrInterpreterTypePage should render interpreter-types.njk with empty nlrInterpreterLanguageCategory when validation fails', async () => {
       await postNlrInterpreterTypePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-types.njk', {
         previousPage: paths.submitHearingRequirements.isNlrInterpreterRequired,
         formAction: paths.submitHearingRequirements.nlrHearingInterpreterTypes,
@@ -353,6 +358,7 @@ describe('Hearing requirements non legal rep controller', () => {
     it('postNlrInterpreterTypePage should render interpreter-types.njk with non-empty nlrInterpreterLanguageCategory none included when validation fails', async () => {
       req.session.appeal.hearingRequirements.nlrInterpreterLanguageCategory = ['something'];
       await postNlrInterpreterTypePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-types.njk', {
         previousPage: paths.submitHearingRequirements.isNlrInterpreterRequired,
         formAction: paths.submitHearingRequirements.nlrHearingInterpreterTypes,
@@ -367,6 +373,7 @@ describe('Hearing requirements non legal rep controller', () => {
     it('postNlrInterpreterTypePage should render interpreter-types.njk with non-empty nlrInterpreterLanguageCategory both included when validation fails', async () => {
       req.session.appeal.hearingRequirements.nlrInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
       await postNlrInterpreterTypePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/interpreter-types.njk', {
         previousPage: paths.submitHearingRequirements.isNlrInterpreterRequired,
         formAction: paths.submitHearingRequirements.nlrHearingInterpreterTypes,

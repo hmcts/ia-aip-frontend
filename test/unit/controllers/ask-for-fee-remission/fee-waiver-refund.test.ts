@@ -84,6 +84,7 @@ describe('Fee waiver Refund Controller', function () {
 
     it('should render fee-waiver.njk', async () => {
       await getFeeWaiver(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/fee-waiver.njk', {
         previousPage: paths.appealSubmitted.feeSupportRefund,
         refundJourney: true

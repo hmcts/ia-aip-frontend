@@ -104,6 +104,7 @@ describe('Cma Requirements Task List Controller', () => {
     } ];
 
     getTaskList(req as Request, res as Response, next);
+    expect(renderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(renderStub, 'cma-requirements/task-list.njk', {
       previousPage: paths.common.overview,
       data: mockData

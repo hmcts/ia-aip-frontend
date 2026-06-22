@@ -114,6 +114,7 @@ describe('Task List Controller', () => {
       } ];
 
     await getTaskList(req as Request, res as Response, next);
+    expect(renderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/task-list.njk', { data: mockData });
   });
 
@@ -137,6 +138,7 @@ describe('Task List Controller', () => {
       } ];
 
     await getTaskList(req as Request, res as Response, next);
+    expect(renderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/task-list.njk', { data: mockData });
   });
 
@@ -165,6 +167,7 @@ describe('Task List Controller', () => {
     req.session.appeal.application.appealType = 'protection';
     req.session.appeal.application.decisionHearingFeeOption = 'someThing';
     await getTaskList(req as Request, res as Response, next);
+    expect(renderStub.calledOnce).to.equal(true);
     expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/task-list.njk', { data: mockData });
   });
 

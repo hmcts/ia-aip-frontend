@@ -99,6 +99,7 @@ describe('Supporting Evidence Upload Controller', () => {
 
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
 
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: Object.values(evidences),
         evidenceCTA: paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile,
@@ -111,6 +112,7 @@ describe('Supporting Evidence Upload Controller', () => {
       req.session.appeal.reasonsForAppeal.evidences = someEvidences;
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
 
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: someEvidences,
         evidenceCTA: paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile,
@@ -137,6 +139,7 @@ describe('Supporting Evidence Upload Controller', () => {
       };
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
@@ -156,6 +159,7 @@ describe('Supporting Evidence Upload Controller', () => {
       res.locals.errorCode = 'incorrectFormat';
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
@@ -177,6 +181,7 @@ describe('Supporting Evidence Upload Controller', () => {
       res.locals.errorCode = 'fileTooLarge';
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],

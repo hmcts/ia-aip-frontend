@@ -193,6 +193,7 @@ describe('Fee support Controller', () => {
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       await getFeeSupport(req as Request, res as Response, next);
 
+      expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/fee-support.njk', {
         previousPage: paths.appealStarted.taskList,
         pageTitle: i18n.pages.remissionOptionPage.title,

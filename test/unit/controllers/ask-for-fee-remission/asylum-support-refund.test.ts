@@ -106,7 +106,7 @@ describe('Asylum support refund Controller', function () {
       await postAsylumSupport()(req as Request, res as Response, next);
       expect(req.session.appeal.application.lateAsylumSupportRefNumber).to.deep.equal('12345');
       expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {
@@ -156,9 +156,9 @@ describe('Asylum support refund Controller', function () {
       application.lateLocalAuthorityLetters = [];
 
       await postAsylumSupport()(req as Request, res as Response, next);
-      expect(application.lateHelpWithFeesOption).to.equal(null);
-      expect(application.lateHelpWithFeesRefNumber).to.equal(null);
-      expect(application.lateLocalAuthorityLetters).to.equal(null);
+      expect(application.lateHelpWithFeesOption).to.be.null;
+      expect(application.lateHelpWithFeesRefNumber).to.be.null;
+      expect(application.lateLocalAuthorityLetters).to.be.null;
     });
   });
 

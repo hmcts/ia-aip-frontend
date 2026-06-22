@@ -217,7 +217,7 @@ describe('Type of appeal Controller', () => {
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
 
     it('postTypeOfAppeal when clicked on save-and-continue with multiple selections should redirect to the next page', async () => {
@@ -238,7 +238,7 @@ describe('Type of appeal Controller', () => {
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
 
     it('postTypeOfAppeal should catch exception and call next with the error', async () => {

@@ -99,7 +99,7 @@ describe('Steps to help with fees Refund Controller', function () {
       req.query = { 'edit': '' };
       await postStepsToHelpWithFees()(req as Request, res as Response, next);
       expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.helpWithFeesReferenceNumberRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {

@@ -260,7 +260,7 @@ export function clearWitnessCachedData(hearingRequirements: HearingRequirements)
 export function fileNameFormatter(fileName: string): string {
   const extension = path.extname(fileName);
   const baseName = path.basename(fileName, extension);
-  const extName = extension.split('.').join('').toUpperCase();
+  const extName = extension.replaceAll('.', '').toUpperCase();
   return `${baseName}(${extName})`;
 }
 

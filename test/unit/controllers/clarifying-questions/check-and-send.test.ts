@@ -162,7 +162,7 @@ describe('Clarifying Questions Check and Send controller', () => {
       expect(submitStub.calledWith(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.clarifyingQuestionsAnswers).to.deep.equal(clarifyingQuestions);
-      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.equal(undefined);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.be.undefined;
       expect(req.session.appeal.appealStatus).to.equal('newState');
       expect(redirectStub.calledWith(paths.common.clarifyingQuestionsAnswersSentConfirmation)).to.equal(true);
     });

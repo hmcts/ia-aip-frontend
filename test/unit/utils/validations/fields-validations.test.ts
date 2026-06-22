@@ -43,17 +43,17 @@ describe('fields-validations', () => {
   describe('homeOfficeNumberValidation', () => {
     it('should validate a UAN', () => {
       const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: '1212-0099-0089-1080' });
-      expect(validations).to.equal(null);
+      expect(validations).to.be.null;
     });
 
     it('should validate a 9 digit CID reference', () => {
       const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: '121210801' });
-      expect(validations).to.equal(null);
+      expect(validations).to.be.null;
     });
 
     it('should validate an 8 digit CID reference', () => {
       const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: '12121080' });
-      expect(validations).to.equal(null);
+      expect(validations).to.be.null;
     });
 
     it('should fail validation and return empty warning message', () => {
@@ -233,7 +233,7 @@ describe('fields-validations', () => {
   describe('appellantNameValidation', () => {
     it('should validate a name', () => {
       const validationResult = appellantNamesValidation({ givenNames: 'givenNames', familyName: 'familyName' });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validation when given names is blank', () => {
@@ -263,7 +263,7 @@ describe('fields-validations', () => {
     it('should validate an email Address', () => {
       const object = { 'email-value': 'alejandro@exmple.net' };
       const validationResult = emailValidation(object);
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail email validation and return "string.empty" type', () => {
@@ -314,7 +314,7 @@ describe('fields-validations', () => {
       const key: string = 'aKey';
       const validations = textAreaValidation(text, key);
 
-      expect(validations).to.equal(null);
+      expect(validations).to.be.null;
     });
 
     it('should fail validation', () => {
@@ -338,7 +338,7 @@ describe('fields-validations', () => {
     it('should validate if statement present', () => {
       const object = { 'statement': 'acceptance' };
       const validationResult = statementOfTruthValidation(object);
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validation and return "any.required" type', () => {
@@ -360,7 +360,7 @@ describe('fields-validations', () => {
     it('should validate if statement present', () => {
       const object = { 'statement': 'acceptance' };
       const validationResult = statementValidation(object, 'error message');
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validation and return "any.required" type', () => {
@@ -381,7 +381,7 @@ describe('fields-validations', () => {
     it('should validate if statement present', () => {
       const object = { 'nlrStatement': 'acceptance' };
       const validationResult = nlrStatementValidation(object);
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validation and return "any.required" type', () => {
@@ -432,7 +432,7 @@ describe('fields-validations', () => {
 
     it('should pass validation when an email is entered', () => {
       const validationResult = contactDetailsValidation({ contactDetails: 'email', 'email-value': 'foo@bar.com' });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validation if no mobile phone number entered entered', () => {
@@ -461,7 +461,7 @@ describe('fields-validations', () => {
         contactDetails: 'text-message',
         'text-message-value': '07899999999'
       });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should pass validation when an international mobile phone number is entered', () => {
@@ -497,7 +497,7 @@ describe('fields-validations', () => {
           contactDetails: 'text-message',
           'text-message-value': phoneNumber
         });
-        expect(validationResult, `${phoneNumber} failed validation`).to.equal(null);
+        expect(validationResult, `${phoneNumber} failed validation`).to.be.null;
       });
     });
 
@@ -507,7 +507,7 @@ describe('fields-validations', () => {
         'email-value': 'foo@bar.com',
         'text-message-value': '07899999999'
       });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should pass validation when an invalid email entered but only text-message selected', () => {
@@ -516,7 +516,7 @@ describe('fields-validations', () => {
         'email-value': 'invalid',
         'text-message-value': '07899999999'
       });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should pass validation when an invalid mobile number entered but only email selected', () => {
@@ -525,7 +525,7 @@ describe('fields-validations', () => {
         'email-value': 'foo@bar.com',
         'text-message-value': 'invalid'
       });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validation when an email and mobile phone number are not entered', () => {
@@ -573,7 +573,7 @@ describe('fields-validations', () => {
       const validPostcodes = ['SW1A 1AA', 'M1 1AE', 'B33 8TH', 'CR2 6XH', 'M300HB', 'DN551PT'];
       validPostcodes.forEach(postcode => {
         const result = postcodeValidation({ postcode });
-        expect(result).to.equal(null);
+        expect(result).to.be.null;
       });
     });
 
@@ -581,14 +581,14 @@ describe('fields-validations', () => {
       const invalidPostcodes = ['123', 'ABCDE', 'SW1A 1A', 'M1 1', 'M300HNT'];
       invalidPostcodes.forEach(postcode => {
         const result = postcodeValidation({ postcode });
-        expect(result).not.to.equal(null);
+        expect(result).not.to.be.null;
         expect(result.postcode.text).to.equal('Enter a valid postcode');
       });
     });
 
     it('should return an error if postcode is empty', () => {
       const result = postcodeValidation({ postcode: '' });
-      expect(result).not.to.equal(null);
+      expect(result).not.to.be.null;
       expect(result.postcode.text).to.equal('Enter your postcode');
     });
 
@@ -596,7 +596,7 @@ describe('fields-validations', () => {
       const validPostcodes = ['GX11 1AA', 'WC2H 7LT'];
       validPostcodes.forEach(postcode => {
         const result = postcodeValidation({ postcode });
-        expect(result).to.equal(null);
+        expect(result).to.be.null;
       });
     });
 
@@ -604,7 +604,7 @@ describe('fields-validations', () => {
       const validPostcodes = [' SW1A 1AA ', ' M1 1AE ', ' B33 8TH ', ' CR2 6XH ', ' DN55 1PT '];
       validPostcodes.forEach(postcode => {
         const result = postcodeValidation({ postcode });
-        expect(result).to.equal(null);
+        expect(result).to.be.null;
       });
     });
 
@@ -612,7 +612,7 @@ describe('fields-validations', () => {
       const validPostcodes = ['sw1a 1aa', 'M1 1AE', 'b33 8th', 'Cr2 6xH', 'dn55 1Pt'];
       validPostcodes.forEach(postcode => {
         const result = postcodeValidation({ postcode });
-        expect(result).to.equal(null);
+        expect(result).to.be.null;
       });
     });
   });
@@ -654,7 +654,7 @@ describe('fields-validations', () => {
         sponsorContactDetails: 'email',
         'email-value': 'foo@bar.com'
       });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validation if no mobile phone number entered entered', () => {
@@ -704,7 +704,7 @@ describe('fields-validations', () => {
         sponsorContactDetails: 'text-message',
         'text-message-value': '07899999999'
       });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validation when an international mobile phone number is entered', () => {
@@ -748,7 +748,7 @@ describe('fields-validations', () => {
         'email-value': 'foo@bar.com',
         'text-message-value': '07899999999'
       });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should pass validation when an invalid email entered but only text-message selected', () => {
@@ -757,7 +757,7 @@ describe('fields-validations', () => {
         'email-value': 'invalid',
         'text-message-value': '07899999999'
       });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should pass validation when an invalid mobile number entered but only email selected', () => {
@@ -766,7 +766,7 @@ describe('fields-validations', () => {
         'email-value': 'foo@bar.com',
         'text-message-value': 'invalid'
       });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validation when an email and mobile phone number are not entered', () => {
@@ -827,7 +827,7 @@ describe('fields-validations', () => {
     it('should validate if statement present', () => {
       const object = { 'applicationReason': 'some reason text here' };
       const validationResult = reasonForAppealDecisionValidation(object);
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validation and return "string.empty" type', () => {
@@ -1002,7 +1002,7 @@ describe('fields-validations', () => {
     it('should validate if remission option present', () => {
       const object = { 'answer': 'asylumSupportFromHo' };
       const validationResult = remissionOptionsValidation(object);
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validation and return "string.empty if remission option is not selected" ', () => {
@@ -1116,7 +1116,7 @@ describe('fields-validations', () => {
   describe('interpreterSupportSelectionValidation', () => {
     it('should validate interpreter support selection', () => {
       const validationResult = interpreterSupportSelectionValidation({ selections: 'isInterpreterServicesNeeded' });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validate when selection is blank', () => {
@@ -1134,7 +1134,7 @@ describe('fields-validations', () => {
   describe('witenessesInterpreterNeedsValidation', () => {
     it('should validate witness selection', () => {
       const validationResult = witenessesInterpreterNeedsValidation({ selections: 'witness 1' });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validate when selection is blank', () => {
@@ -1152,7 +1152,7 @@ describe('fields-validations', () => {
   describe('interpreterTypesSelectionValidation', () => {
     it('should validate interpreter type selection', () => {
       const validationResult = interpreterTypesSelectionValidation({ selections: 'spokenLanguageInterpreter' });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validate when selection is blank', () => {
@@ -1219,7 +1219,7 @@ describe('fields-validations', () => {
         languageManualEntryDescription: 'language',
         languageRefData: ''
       });
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
   });
 
@@ -1243,7 +1243,7 @@ describe('fields-validations', () => {
         joinAppealAccessCode: 'someAccessCode'
       };
       const validationResult = joinAppealValidation(object);
-      expect(validationResult).to.equal(null);
+      expect(validationResult).to.be.null;
     });
 
     it('should fail validation if reference empty and return "string.empty" type', () => {

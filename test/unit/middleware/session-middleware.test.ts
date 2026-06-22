@@ -161,7 +161,7 @@ describe('session-middleware', () => {
     expect(givenAppellantAccessStub.callCount).to.equal(1);
     expect(submitSimpleEventStub.callCount).to.equal(1);
     expect(next).to.have.been.callCount(0);
-    expect(req.session.startRepresentingYourself).to.equal(undefined);
+    expect(req.session.startRepresentingYourself).to.be.undefined;
     expect(req.session.ccdCaseId).to.deep.equal('1234123412341234');
     expect(req.session.appeal).to.equal(appeal);
     expect(req.session.refreshCasesList).to.equal(true);

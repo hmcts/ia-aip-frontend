@@ -83,8 +83,8 @@ describe('ConfirmModal', () => {
 
       confirmModal.openModal();
 
-      expect(modalElement.getAttribute('aria-hidden')).to.equal(null);
-      expect(overlayElement.getAttribute('aria-hidden')).to.equal(null);
+      expect(modalElement.getAttribute('aria-hidden')).to.be.null;
+      expect(overlayElement.getAttribute('aria-hidden')).to.be.null;
       expect(focusStub.calledOnce).to.equal(true);
       expect(disableScrollStub.calledOnce).to.equal(true);
       expect(bodyListenerStub.calledOnce).to.equal(true);

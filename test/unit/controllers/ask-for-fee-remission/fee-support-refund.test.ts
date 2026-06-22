@@ -189,7 +189,7 @@ describe('Fee support refund Controller', () => {
       await postFeeSupport()(req as Request, res as Response, next);
       expect(req.session.appeal.application.lateRemissionOption).to.deep.equal('asylumSupportFromHo');
       expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.asylumSupportRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
 
     it('when called with edit param should render fee-support-refund.njk and update session', async () => {

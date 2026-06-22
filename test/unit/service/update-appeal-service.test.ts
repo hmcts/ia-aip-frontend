@@ -1510,7 +1510,7 @@ describe('update-appeal-service', () => {
 
         expect(mappedAppeal.hearingRequirements.otherNeeds.multimediaEvidence).to.equal(true);
         expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment).to.equal(true);
-        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).to.equal(undefined);
+        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).to.be.undefined;
       });
     });
 
@@ -1938,7 +1938,7 @@ describe('update-appeal-service', () => {
         const caseData: Partial<CaseData> = {};
         const mappedAppeal = getMappedAppeal(caseData);
 
-        expect(mappedAppeal.nlrDetails).to.equal(null);
+        expect(mappedAppeal.nlrDetails).to.be.null;
       });
 
       it('map correctly if full details present with full addressUk isSponsorSameAsNlr', () => {
@@ -1972,7 +1972,7 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.nlrDetails.addressUk.city).to.equal('PostTown');
         expect(mappedAppeal.nlrDetails.addressUk.county).to.equal('County');
         expect(mappedAppeal.nlrDetails.addressUk.postcode).to.equal('PostCode');
-        expect(mappedAppeal.nlrDetails.address).to.equal(null);
+        expect(mappedAppeal.nlrDetails.address).to.be.null;
       });
 
       it('map correctly if partial details present with partial addressUk', () => {
@@ -1988,17 +1988,17 @@ describe('update-appeal-service', () => {
         };
         const mappedAppeal = getMappedAppeal(caseData);
 
-        expect(mappedAppeal.nlrDetails.givenNames).to.equal(null);
-        expect(mappedAppeal.nlrDetails.familyName).to.equal(null);
+        expect(mappedAppeal.nlrDetails.givenNames).to.be.null;
+        expect(mappedAppeal.nlrDetails.familyName).to.be.null;
         expect(mappedAppeal.nlrDetails.emailAddress).to.equal('emailAddress');
         expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
-        expect(mappedAppeal.nlrDetails.idamId).to.equal(null);
-        expect(mappedAppeal.nlrDetails.addressUk.line1).to.equal(null);
-        expect(mappedAppeal.nlrDetails.addressUk.line2).to.equal(null);
-        expect(mappedAppeal.nlrDetails.addressUk.city).to.equal(null);
-        expect(mappedAppeal.nlrDetails.addressUk.county).to.equal(null);
-        expect(mappedAppeal.nlrDetails.addressUk.postcode).to.equal(null);
-        expect(mappedAppeal.nlrDetails.address).to.equal(null);
+        expect(mappedAppeal.nlrDetails.idamId).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.line1).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.line2).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.city).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.county).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.postcode).to.be.null;
+        expect(mappedAppeal.nlrDetails.address).to.be.null;
       });
 
       it('map correctly if full details present with address text area for no isSponsorSameAsNlr', () => {
@@ -2020,7 +2020,7 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.nlrDetails.emailAddress).to.equal('emailAddress');
         expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
         expect(mappedAppeal.nlrDetails.idamId).to.equal('idamId');
-        expect(mappedAppeal.nlrDetails.addressUk).to.equal(null);
+        expect(mappedAppeal.nlrDetails.addressUk).to.be.null;
         expect(mappedAppeal.nlrDetails.address).to.equal('some address');
       });
     });
@@ -3190,14 +3190,14 @@ describe('update-appeal-service', () => {
       caseData.nlrInterpreterLanguageCategory = 'nlrInterpreterLanguageCategory';
       caseData.nlrInterpreterSpokenLanguage = 'nlrInterpreterSpokenLanguage';
       caseData.nlrInterpreterSignLanguage = 'nlrInterpreterSignLanguage';
-      expect(hearingRequirements.nlrAttendingOutsideUk).to.equal(undefined);
-      expect(hearingRequirements.nlrAttending).to.equal(undefined);
-      expect(hearingRequirements.nlrNeedsHearingLoop).to.equal(undefined);
-      expect(hearingRequirements.nlrNeedsStepFreeAccess).to.equal(undefined);
-      expect(hearingRequirements.isNlrInterpreterRequired).to.equal(undefined);
-      expect(hearingRequirements.nlrInterpreterLanguageCategory).to.equal(undefined);
-      expect(hearingRequirements.nlrInterpreterSpokenLanguage).to.equal(undefined);
-      expect(hearingRequirements.nlrInterpreterSignLanguage).to.equal(undefined);
+      expect(hearingRequirements.nlrAttendingOutsideUk).to.be.undefined;
+      expect(hearingRequirements.nlrAttending).to.be.undefined;
+      expect(hearingRequirements.nlrNeedsHearingLoop).to.be.undefined;
+      expect(hearingRequirements.nlrNeedsStepFreeAccess).to.be.undefined;
+      expect(hearingRequirements.isNlrInterpreterRequired).to.be.undefined;
+      expect(hearingRequirements.nlrInterpreterLanguageCategory).to.be.undefined;
+      expect(hearingRequirements.nlrInterpreterSpokenLanguage).to.be.undefined;
+      expect(hearingRequirements.nlrInterpreterSignLanguage).to.be.undefined;
       hearingRequirements = updateAppealService.mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements);
       expect(hearingRequirements.nlrAttendingOutsideUk).to.equal('nlrAttendingOutsideUk');
       expect(hearingRequirements.nlrAttending).to.equal('nlrAttending');
@@ -3244,14 +3244,14 @@ describe('update-appeal-service', () => {
       appeal.hearingRequirements.nlrInterpreterLanguageCategory = 'nlrInterpreterLanguageCategory';
       appeal.hearingRequirements.nlrInterpreterSpokenLanguage = 'nlrInterpreterSpokenLanguage';
       appeal.hearingRequirements.nlrInterpreterSignLanguage = 'nlrInterpreterSignLanguage';
-      expect(caseData.nlrAttendingOutsideUk).to.equal(undefined);
-      expect(caseData.nlrAttending).to.equal(undefined);
-      expect(caseData.nlrNeedsStepFreeAccess).to.equal(undefined);
-      expect(caseData.nlrNeedsHearingLoop).to.equal(undefined);
-      expect(caseData.isNlrInterpreterRequired).to.equal(undefined);
-      expect(caseData.nlrInterpreterLanguageCategory).to.equal(undefined);
-      expect(caseData.nlrInterpreterSpokenLanguage).to.equal(undefined);
-      expect(caseData.nlrInterpreterSignLanguage).to.equal(undefined);
+      expect(caseData.nlrAttendingOutsideUk).to.be.undefined;
+      expect(caseData.nlrAttending).to.be.undefined;
+      expect(caseData.nlrNeedsStepFreeAccess).to.be.undefined;
+      expect(caseData.nlrNeedsHearingLoop).to.be.undefined;
+      expect(caseData.isNlrInterpreterRequired).to.be.undefined;
+      expect(caseData.nlrInterpreterLanguageCategory).to.be.undefined;
+      expect(caseData.nlrInterpreterSpokenLanguage).to.be.undefined;
+      expect(caseData.nlrInterpreterSignLanguage).to.be.undefined;
       updateAppealService.mapToCCDNlrRequirements(appeal, caseData);
       expect(caseData.nlrAttendingOutsideUk).to.equal('nlrAttendingOutsideUk');
       expect(caseData.nlrAttending).to.equal('nlrAttending');

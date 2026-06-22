@@ -3085,7 +3085,7 @@ describe('DetailViewController', () => {
         { value: { reheardHearingDocs: [{ fileId: '123' }] } }
       ];
       const result = findDocumentInReheardHearingDocCollection(collections, '456');
-      expect(result).to.equal(undefined);
+      expect(result).to.be.undefined;
     });
 
     it('should handle collections with undefined values', () => {
@@ -3100,7 +3100,7 @@ describe('DetailViewController', () => {
     it('should handle empty collections', () => {
       const collections: any[] = [];
       const result = findDocumentInReheardHearingDocCollection(collections, '123');
-      expect(result).to.equal(undefined);
+      expect(result).to.be.undefined;
     });
   });
 
@@ -3361,7 +3361,7 @@ describe('DetailViewController', () => {
         { value: { reheardHearingDocs: [{ fileId: '123' }] } }
       ];
       const result = findDocumentInReheardHearingDocCollection(collections, '456');
-      expect(result).to.equal(undefined);
+      expect(result).to.be.undefined;
     });
 
     it('should handle collections with undefined values', () => {
@@ -3376,7 +3376,7 @@ describe('DetailViewController', () => {
     it('should handle empty collections', () => {
       const collections: any[] = [];
       const result = findDocumentInReheardHearingDocCollection(collections, '123');
-      expect(result).to.equal(undefined);
+      expect(result).to.be.undefined;
     });
   });
 
@@ -3567,7 +3567,7 @@ describe('DetailViewController', () => {
     });
 
     it('return undefined for invalid application types', () => {
-      expect(getApplicationTitle('INVALID', false)).to.equal(undefined);
+      expect(getApplicationTitle('INVALID', false)).to.be.undefined;
     });
   });
 

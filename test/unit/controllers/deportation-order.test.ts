@@ -138,7 +138,7 @@ describe('Deportation order Controller', function () {
       req.session.appeal.application.isEdit = true;
       await postDeportationOrder(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealStarted.checkAndSend}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
   });
 

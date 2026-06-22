@@ -223,7 +223,7 @@ describe('Join appeal controllers setup', () => {
         };
         await postJoinAppeal(ccdSystemService as CcdSystemService)(req as Request, res as Response, next);
         expect(joinAppealPipValidationStub).to.be.calledOnceWith('1234567890123456', accessCode);
-        expect(req.session.joinAppealPipValidation).to.equal(undefined);
+        expect(req.session.joinAppealPipValidation).to.be.undefined;
         expect(renderStub.calledOnce).to.equal(true);
         expectRenderedCalledOnceWithArgs(renderStub, 'non-legal-rep/join-appeal.njk', {
           caseReference: caseId,
@@ -246,7 +246,7 @@ describe('Join appeal controllers setup', () => {
         };
         await postJoinAppeal(ccdSystemService as CcdSystemService)(req as Request, res as Response, next);
         expect(joinAppealPipValidationStub).to.be.calledOnceWith('1234567890123456', accessCode);
-        expect(req.session.joinAppealPipValidation).to.equal(undefined);
+        expect(req.session.joinAppealPipValidation).to.be.undefined;
         expect(renderStub.calledOnce).to.equal(true);
         expectRenderedCalledOnceWithArgs(renderStub, 'non-legal-rep/join-appeal.njk', {
           caseReference: caseId,
@@ -269,7 +269,7 @@ describe('Join appeal controllers setup', () => {
         };
         await postJoinAppeal(ccdSystemService as CcdSystemService)(req as Request, res as Response, next);
         expect(joinAppealPipValidationStub).to.be.calledOnceWith('1234567890123456', accessCode);
-        expect(req.session.joinAppealPipValidation).to.equal(undefined);
+        expect(req.session.joinAppealPipValidation).to.be.undefined;
         expect(renderStub.calledOnce).to.equal(true);
         expectRenderedCalledOnceWithArgs(renderStub, 'non-legal-rep/join-appeal.njk', {
           caseReference: caseId,
@@ -292,7 +292,7 @@ describe('Join appeal controllers setup', () => {
         };
         await postJoinAppeal(ccdSystemService as CcdSystemService)(req as Request, res as Response, next);
         expect(joinAppealPipValidationStub).to.be.calledOnceWith('1234567890123456', accessCode);
-        expect(req.session.joinAppealPipValidation).to.equal(undefined);
+        expect(req.session.joinAppealPipValidation).to.be.undefined;
         expect(renderStub.calledOnce).to.equal(true);
         expectRenderedCalledOnceWithArgs(renderStub, 'non-legal-rep/join-appeal.njk', {
           caseReference: caseId,
@@ -315,7 +315,7 @@ describe('Join appeal controllers setup', () => {
         };
         await postJoinAppeal(ccdSystemService as CcdSystemService)(req as Request, res as Response, next);
         expect(joinAppealPipValidationStub).to.be.calledOnceWith('1234567890123456', accessCode);
-        expect(req.session.joinAppealPipValidation).to.equal(undefined);
+        expect(req.session.joinAppealPipValidation).to.be.undefined;
         expect(renderStub.calledOnce).to.equal(true);
         expectRenderedCalledOnceWithArgs(renderStub, 'non-legal-rep/join-appeal.njk', {
           caseReference: caseId,
@@ -337,7 +337,7 @@ describe('Join appeal controllers setup', () => {
         };
         await postJoinAppeal(ccdSystemService as CcdSystemService)(req as Request, res as Response, next);
         expect(joinAppealPipValidationStub).to.be.calledOnceWith('1234567890123456', accessCode);
-        expect(req.session.joinAppealPipValidation).to.equal(undefined);
+        expect(req.session.joinAppealPipValidation).to.be.undefined;
         expect(renderStub.calledOnce).to.equal(true);
         expectRenderedCalledOnceWithArgs(renderStub, 'non-legal-rep/join-appeal.njk', {
           caseReference: caseId,

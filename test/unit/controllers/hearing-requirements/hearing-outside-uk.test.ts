@@ -133,7 +133,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
         saveAndContinue: true
       };
       expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', expectedArgs);
-      expect(req.session.refreshCasesList).to.equal(undefined);
+      expect(req.session.refreshCasesList).to.be.undefined;
     });
 
     it('should validate and redirect to task list page if answer yes', async () => {

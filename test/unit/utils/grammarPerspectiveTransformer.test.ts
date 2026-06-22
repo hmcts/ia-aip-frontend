@@ -4,11 +4,11 @@ import { expect } from '../../utils/testUtils';
 describe('transformPerspective', () => {
   describe('primitive values', () => {
     it('returns null unchanged', () => {
-      expect(transformPerspective(null, true)).to.equal(null);
+      expect(transformPerspective(null, true)).to.be.null;
     });
 
     it('returns undefined unchanged', () => {
-      expect(transformPerspective(undefined, true)).to.equal(undefined);
+      expect(transformPerspective(undefined, true)).to.be.undefined;
     });
 
     it('returns numbers unchanged', () => {

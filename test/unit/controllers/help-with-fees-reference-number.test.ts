@@ -202,7 +202,7 @@ describe('Help with fees reference number Controller', function () {
       expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.helpWithFeesRefNumber).to.deep.equal('HWF12345');
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
 
     it('should fail validation if value is empty and render appeal-application/fee-support/help-with-fees-reference-number.njk with error', async () => {

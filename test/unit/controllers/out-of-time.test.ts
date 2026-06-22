@@ -237,7 +237,7 @@ describe('Out of time controller', () => {
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
     it('Should display validation error LIMIT_FILE_SIZE and render appeal-application/home-office/appeal-late.njk', async () => {
       // Because the file size is being overriden on the development config for testing purposes
@@ -310,7 +310,7 @@ describe('Out of time controller', () => {
 
       await postAppealLateDeleteFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(deleteStub.calledWith(req, evidenceExample.fileId)).to.equal(true);
-      expect(req.session.appeal.application.lateAppeal.evidence).to.equal(undefined);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.undefined;
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/appeal-late.njk', {
         appealLateReason: undefined,
@@ -347,7 +347,7 @@ describe('Out of time controller', () => {
       expect(deleteStub.calledWith(req, evidenceExample.fileId)).to.equal(true);
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
-      expect(req.session.appeal.application.lateAppeal.evidence).to.equal(undefined);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.undefined;
       expect(redirectStub.called).to.equal(true);
     });
 

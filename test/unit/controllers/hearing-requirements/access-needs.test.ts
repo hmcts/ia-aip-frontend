@@ -283,8 +283,8 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
 
       await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(req.session.appeal.hearingRequirements.witnessListElement1).to.equal(null);
-      expect(req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory).to.equal(null);
+      expect(req.session.appeal.hearingRequirements.witnessListElement1).to.be.null;
+      expect(req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory).to.be.null;
     });
   });
 

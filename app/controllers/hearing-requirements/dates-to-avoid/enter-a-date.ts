@@ -126,7 +126,7 @@ function postEnterADatePage(updateAppealService: UpdateAppealService) {
       const onSuccess = async () => {
         const datesToAvoid: CmaDateToAvoid[] = [...(_.get(req.session.appeal.hearingRequirements, 'datesToAvoid.dates', []))];
 
-        const find = datesToAvoid.find((saved) =>
+        const find = datesToAvoid.some((saved) =>
           saved.date.day === req.body.day &&
           saved.date.month === req.body.month &&
           saved.date.year === req.body.year

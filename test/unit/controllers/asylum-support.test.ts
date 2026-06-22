@@ -203,7 +203,7 @@ describe('Asylum support Controller', function () {
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
       expect(req.session.appeal.application.asylumSupportRefNumber).to.deep.equal('1212-0099-0089-1080');
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
 
     it('should fail validation and render appeal-application/fee-support/asylum-support.njk with error', async () => {

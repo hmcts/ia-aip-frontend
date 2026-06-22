@@ -60,6 +60,6 @@ describe('system-authentication-service', () => {
 
     const uuid1 = await authenticationService.getCaseworkSystemUUID(token);
 
-    expect(uuid1).to.equal(undefined);
+    expect(uuid1).to.be.undefined;
   });
 });

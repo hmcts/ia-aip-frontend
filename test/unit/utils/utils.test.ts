@@ -244,7 +244,7 @@ describe('utils', () => {
     });
 
     it('Invalid type', () => {
-      expect(getApplicationType('INVALID')).to.equal(undefined);
+      expect(getApplicationType('INVALID')).to.be.undefined;
     });
   });
 
@@ -596,7 +596,7 @@ describe('utils', () => {
       req.body = { nlrStatement: 'appellant' };
       const result = handleNlrStatementValidation(req as Request, res as Response, renderArgs);
       expect(renderStub.called).to.equal(false);
-      expect(req.session.appeal.hasNlrSubmitted).to.equal(undefined);
+      expect(req.session.appeal.hasNlrSubmitted).to.be.undefined;
       expect(result).to.equal(true);
     });
 
@@ -613,7 +613,7 @@ describe('utils', () => {
         errorList: [expectedError]
       });
       expect(result).to.equal(false);
-      expect(req.session.appeal.hasNlrSubmitted).to.equal(undefined);
+      expect(req.session.appeal.hasNlrSubmitted).to.be.undefined;
     });
   });
 });

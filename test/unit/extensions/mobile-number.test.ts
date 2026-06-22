@@ -51,10 +51,10 @@ describe('Joi MobilePhoneNumber Extension', () => {
       });
 
       validationResults.forEach(result => {
-        expect(result).to.equal(undefined);
+        expect(result).to.be.undefined;
       });
 
-      expect(schema.validate(undefined).error).to.equal(undefined);
+      expect(schema.validate(undefined).error).to.be.undefined;
 
     });
   });

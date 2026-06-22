@@ -543,7 +543,7 @@ describe('utils', () => {
       ] as HistoryEvent[];
 
       const latestHistoryEvent = getLatestRequestFeeRemissionEventHistoryWithRefundEnabled(req as Request);
-      expect(latestHistoryEvent).to.be.null
+      expect(latestHistoryEvent).to.be.null;
       expect(latestHistoryEvent || 'none').to.equal('none');
     });
   });

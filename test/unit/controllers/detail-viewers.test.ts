@@ -3086,6 +3086,7 @@ describe('DetailViewController', () => {
       ];
       const result = findDocumentInReheardHearingDocCollection(collections, '456');
       expect(result).to.be.undefined;
+      expect(result || 'none').to.equal('none');
     });
 
     it('should handle collections with undefined values', () => {
@@ -3101,6 +3102,7 @@ describe('DetailViewController', () => {
       const collections: any[] = [];
       const result = findDocumentInReheardHearingDocCollection(collections, '123');
       expect(result).to.be.undefined;
+      expect(result || 'none').to.equal('none');
     });
   });
 
@@ -3362,6 +3364,7 @@ describe('DetailViewController', () => {
       ];
       const result = findDocumentInReheardHearingDocCollection(collections, '456');
       expect(result).to.be.undefined;
+      expect(result || 'none').to.equal('none');
     });
 
     it('should handle collections with undefined values', () => {
@@ -3377,6 +3380,7 @@ describe('DetailViewController', () => {
       const collections: any[] = [];
       const result = findDocumentInReheardHearingDocCollection(collections, '123');
       expect(result).to.be.undefined;
+      expect(result || 'none').to.equal('none');
     });
   });
 
@@ -3568,6 +3572,7 @@ describe('DetailViewController', () => {
 
     it('return undefined for invalid application types', () => {
       expect(getApplicationTitle('INVALID', false)).to.be.undefined;
+      expect(getApplicationTitle('INVALID', false) || 'none').to.equal('none');
     });
   });
 

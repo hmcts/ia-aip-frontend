@@ -99,7 +99,9 @@ describe('hearing-requirement-utils', () => {
         ], value: expectedValue
       });
       expect(result.languageManualEntry).to.be.undefined;
+      expect(result.languageManualEntry || 'none').to.equal('none');
       expect(result.languageManualEntryDescription).to.be.undefined;
+      expect(result.languageManualEntryDescription || 'none').to.equal('none');
     });
 
     it('set manual fields if languageManualEntry Yes in req.body with no languageManualEntryDescription', () => {
@@ -108,8 +110,10 @@ describe('hearing-requirement-utils', () => {
       } as Request;
       const result = preparePostInterpreterLanguageSubmissionObj(req, {} as DynamicList);
       expect(result.languageRefData).to.be.undefined;
+      expect(result.languageRefData || 'none').to.equal('none');
       expect(result.languageManualEntry).to.deep.equal(['Yes']);
       expect(result.languageManualEntryDescription).to.be.undefined;
+      expect(result.languageManualEntryDescription || 'none').to.equal('none');
     });
 
     it('set manual fields if languageManualEntry Yes in req.body with languageManualEntryDescription', () => {
@@ -118,6 +122,7 @@ describe('hearing-requirement-utils', () => {
       } as Request;
       const result = preparePostInterpreterLanguageSubmissionObj(req, {} as DynamicList);
       expect(result.languageRefData).to.be.undefined;
+      expect(result.languageRefData || 'none').to.equal('none');
       expect(result.languageManualEntry).to.deep.equal(['Yes']);
       expect(result.languageManualEntryDescription).to.equal('Some description');
     });
@@ -128,16 +133,20 @@ describe('hearing-requirement-utils', () => {
       } as Request;
       const result = preparePostInterpreterLanguageSubmissionObj(req, {} as DynamicList);
       expect(result.languageRefData).to.be.undefined;
-      expect(result.languageManualEntry).to.deep.equal(undefined);
+      expect(result.languageRefData || 'none').to.equal('none');
+      expect(result.languageManualEntry).to.be.undefined;
       expect(result.languageManualEntryDescription).to.be.undefined;
+      expect(result.languageManualEntryDescription || 'none').to.equal('none');
     });
 
     it('set no fields if empty req.body', () => {
       const req = { body: {} } as Request;
       const result = preparePostInterpreterLanguageSubmissionObj(req, {} as DynamicList);
       expect(result.languageRefData).to.be.undefined;
-      expect(result.languageManualEntry).to.deep.equal(undefined);
+      expect(result.languageRefData || 'none').to.equal('none');
+      expect(result.languageManualEntry).to.be.undefined;
       expect(result.languageManualEntryDescription).to.be.undefined;
+      expect(result.languageManualEntryDescription || 'none').to.equal('none');
     });
   });
 
@@ -167,6 +176,7 @@ describe('hearing-requirement-utils', () => {
       expect(result.name).to.equal('answer');
       expect(result.title).to.equal(i18n.pages.hearingRequirements.nlrNeedsSection.nlrAttending.title);
       expect(result.hint).to.be.undefined;
+      expect(result.hint || 'none').to.equal('none');
       expect(result.options[0]).to.deep.equal({ text: 'Yes', value: 'Yes', checked: false });
       expect(result.options[1]).to.deep.equal({ text: 'No', value: 'No', checked: false });
     });

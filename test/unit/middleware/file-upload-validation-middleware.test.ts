@@ -81,7 +81,8 @@ describe('#enforceFileSizeLimit middleware', () => {
 
     enforceFileSizeLimit(req, res, next);
 
-    expect(req.file).to.be.undefined; // File should be deleted
+    expect(req.file).to.be.undefined;
+    expect(req.file || 'none').to.equal('none'); // File should be deleted
     expect(next.calledOnceWith(sinon.match.instanceOf(multer.MulterError))).to.equal(true);
     expect(next.args[0][0].code).to.equal('LIMIT_FILE_SIZE'); // Ensure the correct error code
   });
@@ -127,8 +128,8 @@ describe('fileSize limit middleware', () => {
     enforceFileSizeLimit(req, res, next);
 
     expect(next.callCount).to.equal(1);
-    expect(req.file).to.not.equal(null); // File should not be deleted
-    expect(req.file).to.not.equal(undefined); // File should not be deleted
+    expect(req.file).to.not.be.null; // File should not be deleted
+    expect(req.file).to.not.be.undefined; // File should not be deleted
   });
 
   it('should reject files exceeding the size limit', () => {
@@ -136,7 +137,8 @@ describe('fileSize limit middleware', () => {
 
     enforceFileSizeLimit(req, res, next);
 
-    expect(req.file).to.be.undefined; // File should be deleted
+    expect(req.file).to.be.undefined;
+    expect(req.file || 'none').to.equal('none'); // File should be deleted
     expect(next.calledOnceWith(sinon.match.instanceOf(multer.MulterError))).to.equal(true);
     expect(next.args[0][0].code).to.equal('LIMIT_FILE_SIZE'); // Ensure the correct error code
   });

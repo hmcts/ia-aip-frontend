@@ -958,6 +958,7 @@ describe('Confirmation Page Controller', () => {
     const { appealReferenceNumber } = req.session.appeal;
     const result = getAppealRefNumber(appealReferenceNumber);
     expect(result).to.be.null;
+    expect(result || 'none').to.equal('none');
   });
 
   it('checkAppealEnded with ended case ', () => {
@@ -1126,6 +1127,7 @@ describe('Confirmation Page Controller', () => {
   it('getAppealRefNumber should return null for DRAFT reference', () => {
     const result = getAppealRefNumber('DRAFT');
     expect(result).to.be.null;
+    expect(result || 'none').to.equal('none');
   });
 
   it('getAppealRefNumber should return the appeal reference number', () => {
@@ -1159,6 +1161,7 @@ describe('Confirmation Page Controller', () => {
   it('getHearingDetails should return null if no hearing details', () => {
     const result = getHearingDetails(req as Request);
     expect(result).to.be.null;
+    expect(result || 'none').to.equal('none');
   });
 
   it('getHearingDetails should return hearing details if present', () => {

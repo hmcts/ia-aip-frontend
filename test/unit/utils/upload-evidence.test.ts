@@ -33,12 +33,12 @@ afterEach(() => {
 describe('askForMoreTimeEvidenceUploadConfig', () => {
   it('should add a new makeAnApplicationEvidence', () => {
     askForMoreTimeEvidenceUploadConfig.addEvidenceToSessionFunction(evidence, req as Request);
-    expect(req.session.appeal.makeAnApplicationEvidence.length).to.equal(1);
+    expect(req.session.appeal.makeAnApplicationEvidence).to.have.lengthOf(1);
   });
 
   it('should add a new makeAnApplicationEvidence then remove by fieldId', () => {
     askForMoreTimeEvidenceUploadConfig.addEvidenceToSessionFunction(evidence, req as Request);
     askForMoreTimeEvidenceUploadConfig.removeEvidenceFromSessionFunction('id', req as Request);
-    expect(req.session.appeal.makeAnApplicationEvidence.length).to.equal(0);
+    expect(req.session.appeal.makeAnApplicationEvidence).to.have.lengthOf(0);
   });
 });

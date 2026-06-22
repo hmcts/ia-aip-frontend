@@ -192,6 +192,7 @@ describe('Home Office Details Controller', function () {
       expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('1212-0099-0089-1080');
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('should fail validation and render home-office/details.njk with error', async () => {
@@ -409,6 +410,7 @@ describe('Home Office Details Controller', function () {
         expect(dateLetterSent.year).to.deep.equal(year);
         expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
         expect(req.session.appeal.application.isEdit).to.be.undefined;
+        expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
         expect(req.session.appeal.application.isAppealLate).to.equal(false);
       });
     });
@@ -481,6 +483,7 @@ describe('Home Office Details Controller', function () {
         expect(dateLetterSent.year).to.deep.equal(year);
         expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
         expect(req.session.appeal.application.isEdit).to.be.undefined;
+        expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
         expect(req.session.appeal.application.isAppealLate).to.equal(true);
       });
 
@@ -525,6 +528,7 @@ describe('Home Office Details Controller', function () {
         expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
         expect(req.session.appeal.application.isAppealLate).to.equal(true);
         expect(req.session.appeal.application.isEdit).to.be.undefined;
+        expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
       });
 
     });

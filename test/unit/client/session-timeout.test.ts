@@ -156,7 +156,9 @@ describe('Session Timeout', () => {
       const overlayAriaHiddenAttr = modalOverlayElement.getAttribute('aria-hidden');
 
       expect(modalAriaHiddenAttr).to.be.null;
+      expect(modalAriaHiddenAttr || 'none').to.equal('none');
       expect(overlayAriaHiddenAttr).to.be.null;
+      expect(overlayAriaHiddenAttr || 'none').to.equal('none');
       expect(focusStub.callCount).to.equal(1);
       expect(disableScrollStub.callCount).to.equal(1);
       expect(bodyEventListenerStub.callCount).to.equal(1);

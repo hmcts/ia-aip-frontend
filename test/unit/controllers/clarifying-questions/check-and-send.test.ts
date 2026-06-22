@@ -163,6 +163,7 @@ describe('Clarifying Questions Check and Send controller', () => {
       expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.clarifyingQuestionsAnswers).to.deep.equal(clarifyingQuestions);
       expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.be.undefined;
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers || 'none').to.equal('none');
       expect(req.session.appeal.appealStatus).to.equal('newState');
       expect(redirectStub.calledWith(paths.common.clarifyingQuestionsAnswersSentConfirmation)).to.equal(true);
     });

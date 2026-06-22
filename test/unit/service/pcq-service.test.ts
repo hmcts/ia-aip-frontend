@@ -99,8 +99,8 @@ describe('PCQ service', () => {
     it('should return pcqId', async () => {
       const pcqService = new PcqService();
       const pcqId = pcqService.getPcqId();
-      expect(pcqId).to.not.equal(null);
-      expect(pcqId).to.not.equal(undefined);
+      expect(pcqId).to.not.be.null;
+      expect(pcqId).to.not.be.undefined;
       expect(pcqId).to.not.equal('');
     });
   });

@@ -48,5 +48,6 @@ describe('is-user-authenticated middleware', () => {
     isUserAuthenticated(req as Request, res as Response, next);
 
     expect(req.session.redirectUrl).to.be.undefined;
+    expect(req.session.redirectUrl || 'none').to.equal('none');
   });
 });

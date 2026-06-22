@@ -1511,6 +1511,7 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.hearingRequirements.otherNeeds.multimediaEvidence).to.equal(true);
         expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment).to.equal(true);
         expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).to.be.undefined;
+        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason || 'none').to.equal('none');
       });
     });
 
@@ -1939,6 +1940,7 @@ describe('update-appeal-service', () => {
         const mappedAppeal = getMappedAppeal(caseData);
 
         expect(mappedAppeal.nlrDetails).to.be.null;
+        expect(mappedAppeal.nlrDetails || 'none').to.equal('none');
       });
 
       it('map correctly if full details present with full addressUk isSponsorSameAsNlr', () => {
@@ -1973,6 +1975,7 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.nlrDetails.addressUk.county).to.equal('County');
         expect(mappedAppeal.nlrDetails.addressUk.postcode).to.equal('PostCode');
         expect(mappedAppeal.nlrDetails.address).to.be.null;
+        expect(mappedAppeal.nlrDetails.address || 'none').to.equal('none');
       });
 
       it('map correctly if partial details present with partial addressUk', () => {
@@ -1989,16 +1992,25 @@ describe('update-appeal-service', () => {
         const mappedAppeal = getMappedAppeal(caseData);
 
         expect(mappedAppeal.nlrDetails.givenNames).to.be.null;
+        expect(mappedAppeal.nlrDetails.givenNames || 'none').to.equal('none');
         expect(mappedAppeal.nlrDetails.familyName).to.be.null;
+        expect(mappedAppeal.nlrDetails.familyName || 'none').to.equal('none');
         expect(mappedAppeal.nlrDetails.emailAddress).to.equal('emailAddress');
         expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
         expect(mappedAppeal.nlrDetails.idamId).to.be.null;
+        expect(mappedAppeal.nlrDetails.idamId || 'none').to.equal('none');
         expect(mappedAppeal.nlrDetails.addressUk.line1).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.line1 || 'none').to.equal('none');
         expect(mappedAppeal.nlrDetails.addressUk.line2).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.line2 || 'none').to.equal('none');
         expect(mappedAppeal.nlrDetails.addressUk.city).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.city || 'none').to.equal('none');
         expect(mappedAppeal.nlrDetails.addressUk.county).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.county || 'none').to.equal('none');
         expect(mappedAppeal.nlrDetails.addressUk.postcode).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.postcode || 'none').to.equal('none');
         expect(mappedAppeal.nlrDetails.address).to.be.null;
+        expect(mappedAppeal.nlrDetails.address || 'none').to.equal('none');
       });
 
       it('map correctly if full details present with address text area for no isSponsorSameAsNlr', () => {
@@ -2021,6 +2033,7 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
         expect(mappedAppeal.nlrDetails.idamId).to.equal('idamId');
         expect(mappedAppeal.nlrDetails.addressUk).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk || 'none').to.equal('none');
         expect(mappedAppeal.nlrDetails.address).to.equal('some address');
       });
     });
@@ -3013,7 +3026,7 @@ describe('update-appeal-service', () => {
         userToken: `Bearer ${userToken}`,
         serviceToken
       });
-    expect(errors.length).to.equal(0);
+    expect(errors).to.have.lengthOf(0);
   });
 
   it('validateMidEvent should return error list of errors', async () => {
@@ -3049,7 +3062,7 @@ describe('update-appeal-service', () => {
         userToken: `Bearer ${userToken}`,
         serviceToken
       });
-    expect(errors.length).to.equal(2);
+    expect(errors).to.have.lengthOf(2);
     expect(errors.includes(error1)).to.equal(true);
     expect(errors.includes(error2)).to.equal(true);
   });
@@ -3191,13 +3204,21 @@ describe('update-appeal-service', () => {
       caseData.nlrInterpreterSpokenLanguage = 'nlrInterpreterSpokenLanguage';
       caseData.nlrInterpreterSignLanguage = 'nlrInterpreterSignLanguage';
       expect(hearingRequirements.nlrAttendingOutsideUk).to.be.undefined;
+      expect(hearingRequirements.nlrAttendingOutsideUk || 'none').to.equal('none');
       expect(hearingRequirements.nlrAttending).to.be.undefined;
+      expect(hearingRequirements.nlrAttending || 'none').to.equal('none');
       expect(hearingRequirements.nlrNeedsHearingLoop).to.be.undefined;
+      expect(hearingRequirements.nlrNeedsHearingLoop || 'none').to.equal('none');
       expect(hearingRequirements.nlrNeedsStepFreeAccess).to.be.undefined;
+      expect(hearingRequirements.nlrNeedsStepFreeAccess || 'none').to.equal('none');
       expect(hearingRequirements.isNlrInterpreterRequired).to.be.undefined;
+      expect(hearingRequirements.isNlrInterpreterRequired || 'none').to.equal('none');
       expect(hearingRequirements.nlrInterpreterLanguageCategory).to.be.undefined;
+      expect(hearingRequirements.nlrInterpreterLanguageCategory || 'none').to.equal('none');
       expect(hearingRequirements.nlrInterpreterSpokenLanguage).to.be.undefined;
+      expect(hearingRequirements.nlrInterpreterSpokenLanguage || 'none').to.equal('none');
       expect(hearingRequirements.nlrInterpreterSignLanguage).to.be.undefined;
+      expect(hearingRequirements.nlrInterpreterSignLanguage || 'none').to.equal('none');
       hearingRequirements = updateAppealService.mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements);
       expect(hearingRequirements.nlrAttendingOutsideUk).to.equal('nlrAttendingOutsideUk');
       expect(hearingRequirements.nlrAttending).to.equal('nlrAttending');
@@ -3245,13 +3266,21 @@ describe('update-appeal-service', () => {
       appeal.hearingRequirements.nlrInterpreterSpokenLanguage = 'nlrInterpreterSpokenLanguage';
       appeal.hearingRequirements.nlrInterpreterSignLanguage = 'nlrInterpreterSignLanguage';
       expect(caseData.nlrAttendingOutsideUk).to.be.undefined;
+      expect(caseData.nlrAttendingOutsideUk || 'none').to.equal('none');
       expect(caseData.nlrAttending).to.be.undefined;
+      expect(caseData.nlrAttending || 'none').to.equal('none');
       expect(caseData.nlrNeedsStepFreeAccess).to.be.undefined;
+      expect(caseData.nlrNeedsStepFreeAccess || 'none').to.equal('none');
       expect(caseData.nlrNeedsHearingLoop).to.be.undefined;
+      expect(caseData.nlrNeedsHearingLoop || 'none').to.equal('none');
       expect(caseData.isNlrInterpreterRequired).to.be.undefined;
+      expect(caseData.isNlrInterpreterRequired || 'none').to.equal('none');
       expect(caseData.nlrInterpreterLanguageCategory).to.be.undefined;
+      expect(caseData.nlrInterpreterLanguageCategory || 'none').to.equal('none');
       expect(caseData.nlrInterpreterSpokenLanguage).to.be.undefined;
+      expect(caseData.nlrInterpreterSpokenLanguage || 'none').to.equal('none');
       expect(caseData.nlrInterpreterSignLanguage).to.be.undefined;
+      expect(caseData.nlrInterpreterSignLanguage || 'none').to.equal('none');
       updateAppealService.mapToCCDNlrRequirements(appeal, caseData);
       expect(caseData.nlrAttendingOutsideUk).to.equal('nlrAttendingOutsideUk');
       expect(caseData.nlrAttending).to.equal('nlrAttending');
@@ -3296,7 +3325,7 @@ describe('update-appeal-service', () => {
           userToken: `Bearer ${userToken}`,
           serviceToken
         });
-      expect(errors.length).to.equal(0);
+      expect(errors).to.have.lengthOf(0);
     });
 
     it('validateMidEvent should return list of errors', async () => {
@@ -3332,7 +3361,7 @@ describe('update-appeal-service', () => {
           userToken: `Bearer ${userToken}`,
           serviceToken
         });
-      expect(errors.length).to.equal(2);
+      expect(errors).to.have.lengthOf(2);
       expect(errors.includes(error1)).to.equal(true);
       expect(errors.includes(error2)).to.equal(true);
     });
@@ -3368,7 +3397,7 @@ describe('update-appeal-service', () => {
           userToken: `Bearer ${userToken}`,
           serviceToken
         });
-      expect(errors.length).to.equal(1);
+      expect(errors).to.have.lengthOf(1);
       expect(errors.includes('There is a problem')).to.equal(true);
     });
   });

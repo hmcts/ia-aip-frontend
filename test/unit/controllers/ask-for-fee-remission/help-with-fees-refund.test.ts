@@ -162,6 +162,7 @@ describe('Help with fees refund Controller', () => {
       expect(req.session.appeal.application.lateHelpWithFeesOption).to.deep.equal('wantToApply');
       expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund}(?!.*\\bedit\\b)`));
       expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('when called with edit param should render help-with-fees.njk and update session', async () => {

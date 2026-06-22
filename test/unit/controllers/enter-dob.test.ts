@@ -152,6 +152,7 @@ describe('Personal Details Controller', function () {
       expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {

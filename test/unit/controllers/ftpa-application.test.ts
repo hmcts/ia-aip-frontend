@@ -746,8 +746,8 @@ describe('Ftpa application controllers setup', () => {
         'ftpaEvidence',
         'ftpaAppellantEvidenceDocuments')(req as Request, res as Response, next);
 
-      expect(req.session.appeal.ftpaAppellantEvidenceDocuments.length).to.eq(0);
-      expect(req.session.appeal.documentMap.length).to.eq(0);
+      expect(req.session.appeal.ftpaAppellantEvidenceDocuments).to.have.lengthOf(0);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(0);
       expect(redirectStub.calledWith(paths.ftpa.ftpaEvidence)).to.equal(true);
     });
   });
@@ -810,8 +810,8 @@ describe('Ftpa application controllers setup', () => {
 
       expect(redirectStub.calledWith(paths.ftpa.ftpaConfirmation)).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
-      expect(req.session.appeal.ftpaProvideEvidence).to.eq(undefined);
-      expect(req.session.appeal.ftpaOutOfTimeProvideEvidence).to.eq(undefined);
+      expect(req.session.appeal.ftpaProvideEvidence).to.be.undefined;
+      expect(req.session.appeal.ftpaOutOfTimeProvideEvidence).to.be.undefined;
     });
   });
 

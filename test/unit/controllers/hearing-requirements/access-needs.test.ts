@@ -284,7 +284,9 @@ describe('Hearing requirements access needs controller', () => {
 
       await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.hearingRequirements.witnessListElement1).to.be.null;
+      expect(req.session.appeal.hearingRequirements.witnessListElement1 || 'none').to.equal('none');
       expect(req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory).to.be.null;
+      expect(req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory || 'none').to.equal('none');
     });
   });
 
@@ -340,7 +342,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.selections = '0';
 
       await postWitnessesInterpreterNeeds(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(req.session.appeal.hearingRequirements.witnessListElement1).to.not.equal(null);
+      expect(req.session.appeal.hearingRequirements.witnessListElement1).to.not.be.null;
       expect(req.session.appeal.hearingRequirements.witnessListElement1).to.deep.eq(
         { value: [{ code: 'witness 1', label: 'witness 1' }], list_items: [{ code: 'witness 1', label: 'witness 1' }] });
     });

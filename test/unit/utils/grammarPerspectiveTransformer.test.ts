@@ -5,10 +5,12 @@ describe('transformPerspective', () => {
   describe('primitive values', () => {
     it('returns null unchanged', () => {
       expect(transformPerspective(null, true)).to.be.null;
+      expect(transformPerspective(null, true) || 'none').to.equal('none');
     });
 
     it('returns undefined unchanged', () => {
       expect(transformPerspective(undefined, true)).to.be.undefined;
+      expect(transformPerspective(undefined, true) || 'none').to.equal('none');
     });
 
     it('returns numbers unchanged', () => {

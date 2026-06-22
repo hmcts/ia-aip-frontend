@@ -369,6 +369,7 @@ describe('Contact details Controller', () => {
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
           expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
           expect(req.session.appeal.application.isEdit).to.be.undefined;
+          expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
         });
       });
     });
@@ -489,6 +490,7 @@ describe('Contact details Controller', () => {
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
           expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
           expect(req.session.appeal.application.isEdit).to.be.undefined;
+          expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
         });
       });
     });
@@ -651,7 +653,9 @@ describe('Contact details Controller', () => {
       req.body['hasSponsor'] = 'Yes';
       req.body['hasNonLegalRep'] = 'Yes';
       expect(req.session.appeal.application.hasSponsor).to.be.undefined;
+      expect(req.session.appeal.application.hasSponsor || 'none').to.equal('none');
       expect(req.session.appeal.application.hasNonLegalRep).to.be.undefined;
+      expect(req.session.appeal.application.hasNonLegalRep || 'none').to.equal('none');
 
       await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.refreshCasesList).to.equal(true);
@@ -665,7 +669,9 @@ describe('Contact details Controller', () => {
       req.body['hasSponsor'] = 'Yes';
       req.body['hasNonLegalRep'] = 'No';
       expect(req.session.appeal.application.hasSponsor).to.be.undefined;
+      expect(req.session.appeal.application.hasSponsor || 'none').to.equal('none');
       expect(req.session.appeal.application.hasNonLegalRep).to.be.undefined;
+      expect(req.session.appeal.application.hasNonLegalRep || 'none').to.equal('none');
 
       await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -680,7 +686,9 @@ describe('Contact details Controller', () => {
       req.body['hasSponsor'] = 'No';
       req.body['hasNonLegalRep'] = 'Yes';
       expect(req.session.appeal.application.hasSponsor).to.be.undefined;
+      expect(req.session.appeal.application.hasSponsor || 'none').to.equal('none');
       expect(req.session.appeal.application.hasNonLegalRep).to.be.undefined;
+      expect(req.session.appeal.application.hasNonLegalRep || 'none').to.equal('none');
 
       await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -695,7 +703,9 @@ describe('Contact details Controller', () => {
       req.body['hasSponsor'] = 'No';
       req.body['hasNonLegalRep'] = 'No';
       expect(req.session.appeal.application.hasSponsor).to.be.undefined;
+      expect(req.session.appeal.application.hasSponsor || 'none').to.equal('none');
       expect(req.session.appeal.application.hasNonLegalRep).to.be.undefined;
+      expect(req.session.appeal.application.hasNonLegalRep || 'none').to.equal('none');
 
       await postHasSponsorOrNlr(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -772,6 +782,7 @@ describe('Contact details Controller', () => {
     it('should update req.session.appeal and redirect to sponsorName if no', async () => {
       req.body.isSponsorSameAsNlr = 'No';
       expect(req.session.appeal.application.isSponsorSameAsNlr).to.be.undefined;
+      expect(req.session.appeal.application.isSponsorSameAsNlr || 'none').to.equal('none');
 
       await postSamePerson(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal('No');
@@ -781,6 +792,7 @@ describe('Contact details Controller', () => {
     it('should update req.session.appeal and redirect to nlrName if yes', async () => {
       req.body.isSponsorSameAsNlr = 'Yes';
       expect(req.session.appeal.application.isSponsorSameAsNlr).to.be.undefined;
+      expect(req.session.appeal.application.isSponsorSameAsNlr || 'none').to.equal('none');
 
       await postSamePerson(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal('Yes');
@@ -872,6 +884,7 @@ describe('Contact details Controller', () => {
       expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -993,6 +1006,7 @@ describe('Contact details Controller', () => {
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 
@@ -1251,6 +1265,7 @@ describe('Contact details Controller', () => {
           expect(req.session.appeal.application.sponsorContactDetails).to.deep.equal(sponsorContactDetails);
           expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
           expect(req.session.appeal.application.isEdit).to.be.undefined;
+          expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
         });
       });
     });
@@ -1371,6 +1386,7 @@ describe('Contact details Controller', () => {
           expect(req.session.appeal.application.sponsorContactDetails).to.deep.equal(sponsorContactDetails);
           expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
           expect(req.session.appeal.application.isEdit).to.be.undefined;
+          expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
         });
       });
     });
@@ -1604,7 +1620,9 @@ describe('Contact details Controller', () => {
       req.body.nlrGivenNames = 'someGivenName';
       req.body.nlrFamilyName = 'someFamilyName';
       expect(req.session.appeal.nlrDetails.givenNames).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.givenNames || 'none').to.equal('none');
       expect(req.session.appeal.nlrDetails.familyName).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.familyName || 'none').to.equal('none');
 
       await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.nlrDetails.givenNames).to.equal('someGivenName');
@@ -1617,7 +1635,9 @@ describe('Contact details Controller', () => {
       req.body.nlrFamilyName = 'someFamilyName';
       req.session.appeal.application.isEdit = true;
       expect(req.session.appeal.nlrDetails.givenNames).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.givenNames || 'none').to.equal('none');
       expect(req.session.appeal.nlrDetails.familyName).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.familyName || 'none').to.equal('none');
 
       await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.nlrDetails.givenNames).to.equal('someGivenName');
@@ -1820,6 +1840,7 @@ describe('Contact details Controller', () => {
       req.body['address-town'] = 'town';
       req.body['address-postcode'] = 'SW1A 2AA';
       expect(req.session.appeal.nlrDetails.addressUk).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.addressUk || 'none').to.equal('none');
       await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.addressUk).to.deep.equal({
@@ -1842,6 +1863,7 @@ describe('Contact details Controller', () => {
       req.body['address-postcode'] = 'SW1A 2AA';
       req.session.appeal.application.isEdit = true;
       expect(req.session.appeal.nlrDetails.addressUk).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.addressUk || 'none').to.equal('none');
       await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.addressUk).to.deep.equal({
@@ -1918,6 +1940,7 @@ describe('Contact details Controller', () => {
       req.body['nlr-address'] = expectedAddress;
 
       expect(req.session.appeal.nlrDetails.address).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.address || 'none').to.equal('none');
       await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.address).to.equal(expectedAddress);
@@ -1929,6 +1952,7 @@ describe('Contact details Controller', () => {
       req.body['nlr-address'] = expectedAddress;
       req.session.appeal.application.isEdit = true;
       expect(req.session.appeal.nlrDetails.address).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.address || 'none').to.equal('none');
       await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.address).to.equal(expectedAddress);
@@ -2122,7 +2146,9 @@ describe('Contact details Controller', () => {
       req.body['emailAddress'] = 'test@test.com';
       req.body['phoneNumber'] = '07827297000';
       expect(req.session.appeal.nlrDetails.phoneNumber).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.phoneNumber || 'none').to.equal('none');
       expect(req.session.appeal.nlrDetails.emailAddress).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.emailAddress || 'none').to.equal('none');
       await postNlrContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.phoneNumber).to.equal('07827297000');
@@ -2135,7 +2161,9 @@ describe('Contact details Controller', () => {
       req.body['emailAddress'] = 'test@test.com';
       req.body['phoneNumber'] = '07827297000';
       expect(req.session.appeal.nlrDetails.phoneNumber).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.phoneNumber || 'none').to.equal('none');
       expect(req.session.appeal.nlrDetails.emailAddress).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.emailAddress || 'none').to.equal('none');
       await postNlrContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.phoneNumber).to.equal('07827297000');

@@ -257,6 +257,7 @@ describe('Add non-legal representative controllers setup', () => {
       expect(renderStub.called).to.equal(false);
       expect(redirectStub).calledWith(paths.nonLegalRep.addNonLegalRep);
       expect(req.session.appeal.nlrDetails).to.be.undefined;
+      expect(req.session.appeal.nlrDetails || 'none').to.equal('none');
     });
 
     it('should catch an error and redirect with error', async () => {
@@ -534,7 +535,9 @@ describe('Add non-legal representative controllers setup', () => {
       req.body.nlrGivenNames = 'someGivenName';
       req.body.nlrFamilyName = 'someFamilyName';
       expect(req.session.appeal.nlrDetails.givenNames).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.givenNames || 'none').to.equal('none');
       expect(req.session.appeal.nlrDetails.familyName).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.familyName || 'none').to.equal('none');
 
       await postNlrName()(req as Request, res as Response, next);
       expect(req.session.appeal.nlrDetails.givenNames).to.equal('someGivenName');
@@ -547,7 +550,9 @@ describe('Add non-legal representative controllers setup', () => {
       req.body.nlrFamilyName = 'someFamilyName';
       req.session.appeal.application.isEdit = true;
       expect(req.session.appeal.nlrDetails.givenNames).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.givenNames || 'none').to.equal('none');
       expect(req.session.appeal.nlrDetails.familyName).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.familyName || 'none').to.equal('none');
 
       await postNlrName()(req as Request, res as Response, next);
       expect(req.session.appeal.nlrDetails.givenNames).to.equal('someGivenName');
@@ -745,6 +750,7 @@ describe('Add non-legal representative controllers setup', () => {
       req.body['address-town'] = 'town';
       req.body['address-postcode'] = 'SW1A 2AA';
       expect(req.session.appeal.nlrDetails.addressUk).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.addressUk || 'none').to.equal('none');
       await postNlrAddress()(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.addressUk).to.deep.equal({
@@ -767,6 +773,7 @@ describe('Add non-legal representative controllers setup', () => {
       req.body['address-postcode'] = 'SW1A 2AA';
       req.session.appeal.application.isEdit = true;
       expect(req.session.appeal.nlrDetails.addressUk).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.addressUk || 'none').to.equal('none');
       await postNlrAddress()(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.addressUk).to.deep.equal({
@@ -838,6 +845,7 @@ describe('Add non-legal representative controllers setup', () => {
     it('should update req.session.appeal and redirect to contact details if validation passes and isEdit true', async () => {
       req.body['nlr-address'] = 'some address';
       expect(req.session.appeal.nlrDetails.address).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.address || 'none').to.equal('none');
       await postNlrAddress()(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.address).to.equal('some address');
@@ -848,6 +856,7 @@ describe('Add non-legal representative controllers setup', () => {
       req.session.appeal.application.isEdit = true;
       req.body['nlr-address'] = 'some address';
       expect(req.session.appeal.nlrDetails.address).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.address || 'none').to.equal('none');
       await postNlrAddress()(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.address).to.equal('some address');
@@ -989,6 +998,7 @@ describe('Add non-legal representative controllers setup', () => {
     it('should update req.session.appeal and redirect to CYA if validation passes', async () => {
       req.body['phoneNumber'] = '07827297000';
       expect(req.session.appeal.nlrDetails.phoneNumber).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.phoneNumber || 'none').to.equal('none');
       await postNlrPhoneNumber()(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.phoneNumber).to.equal('07827297000');
@@ -999,6 +1009,7 @@ describe('Add non-legal representative controllers setup', () => {
       req.body['phoneNumber'] = '07827297000';
       req.session.appeal.application.hasSponsor = 'Yes';
       expect(req.session.appeal.nlrDetails.phoneNumber).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.phoneNumber || 'none').to.equal('none');
       await postNlrPhoneNumber()(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.phoneNumber).to.equal('07827297000');
@@ -1078,6 +1089,7 @@ describe('Add non-legal representative controllers setup', () => {
     it('should update req.session.appeal and redirect to provideNlrDetailsCheckAndSend', async () => {
       req.body.isSponsorSameAsNlr = 'No';
       expect(req.session.appeal.application.isSponsorSameAsNlr).to.be.undefined;
+      expect(req.session.appeal.application.isSponsorSameAsNlr || 'none').to.equal('none');
 
       await postSamePerson()(req as Request, res as Response, next);
       expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal('No');

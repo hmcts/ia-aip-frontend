@@ -117,6 +117,7 @@ describe('event-deadline-date-finder', () => {
       const result = getDeadline(currentAppealStatus, req as Request);
 
       expect(result).to.be.null;
+      expect(result || 'none').to.equal('none');
     });
 
     it('appealSubmitted should return a formatted date with 5 days offset from the appealSubmission date', () => {
@@ -529,6 +530,7 @@ describe('event-deadline-date-finder', () => {
 
       const result = getDueDateForAppellantToRespondToJudgeDecision(req as Request, true);
       expect(result).to.be.null;
+      expect(result || 'none').to.equal('none');
     });
 
     it('getDueDateForAppellantToRespondToJudgeDecision should return due date from finalDecisionAndReasonsPdf tag when the flag of DLRM set aside is off', () => {

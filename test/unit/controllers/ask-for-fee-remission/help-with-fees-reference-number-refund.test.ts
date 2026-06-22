@@ -109,6 +109,7 @@ describe('Help with fees reference number refund Controller', function () {
       expect(req.session.appeal.application.lateHelpWithFeesRefNumber).to.deep.equal('HWF-111');
       expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
       expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {
@@ -180,7 +181,9 @@ describe('Help with fees reference number refund Controller', function () {
 
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
       expect(application.lateAsylumSupportRefNumber).to.be.null;
+      expect(application.lateAsylumSupportRefNumber || 'none').to.equal('none');
       expect(application.lateLocalAuthorityLetters).to.be.null;
+      expect(application.lateLocalAuthorityLetters || 'none').to.equal('none');
     });
   });
 

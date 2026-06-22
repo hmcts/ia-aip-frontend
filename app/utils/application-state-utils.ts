@@ -768,7 +768,7 @@ function getRemissionDecisionParagraphs(req: Request, is24WeeksTimeline: boolean
       };
       doThisNextSection.feeLeftToPay = convertToAmountOfMoneyDividedBy100(req.session.appeal.application.amountLeftToPay);
       doThisNextSection.remissionRejectedDatePlus14days = req.session.appeal.application.remissionRejectedDatePlus14days;
-      doThisNextSection.ccdReferenceNumber = req.session.appeal.ccdReferenceNumber.split(' ').join('-');
+      doThisNextSection.ccdReferenceNumber = req.session.appeal.ccdReferenceNumber.replaceAll(' ', '-');
       break;
     case 'rejected':
       doThisNextSection = {

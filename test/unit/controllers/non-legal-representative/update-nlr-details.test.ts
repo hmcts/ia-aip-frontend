@@ -188,7 +188,9 @@ describe('Update non-legal rep details', () => {
       req.body.nlrGivenNames = 'someGivenName';
       req.body.nlrFamilyName = 'someFamilyName';
       expect(req.session.appeal.nlrDetails.givenNames).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.givenNames || 'none').to.equal('none');
       expect(req.session.appeal.nlrDetails.familyName).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.familyName || 'none').to.equal('none');
 
       await postNlrName()(req as Request, res as Response, next);
       expect(req.session.appeal.nlrDetails.givenNames).to.equal('someGivenName');
@@ -201,7 +203,9 @@ describe('Update non-legal rep details', () => {
       req.body.nlrFamilyName = 'someFamilyName';
       req.session.appeal.application.isEdit = true;
       expect(req.session.appeal.nlrDetails.givenNames).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.givenNames || 'none').to.equal('none');
       expect(req.session.appeal.nlrDetails.familyName).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.familyName || 'none').to.equal('none');
 
       await postNlrName()(req as Request, res as Response, next);
       expect(req.session.appeal.nlrDetails.givenNames).to.equal('someGivenName');
@@ -399,6 +403,7 @@ describe('Update non-legal rep details', () => {
       req.body['address-town'] = 'town';
       req.body['address-postcode'] = 'SW1A 2AA';
       expect(req.session.appeal.nlrDetails.addressUk).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.addressUk || 'none').to.equal('none');
       await postNlrAddress()(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.addressUk).to.deep.equal({
@@ -421,6 +426,7 @@ describe('Update non-legal rep details', () => {
       req.body['address-postcode'] = 'SW1A 2AA';
       req.session.appeal.application.isEdit = true;
       expect(req.session.appeal.nlrDetails.addressUk).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.addressUk || 'none').to.equal('none');
       await postNlrAddress()(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.addressUk).to.deep.equal({
@@ -493,6 +499,7 @@ describe('Update non-legal rep details', () => {
     it('should update req.session.appeal and redirect to contact details if validation passes and isEdit true', async () => {
       req.body['nlr-address'] = 'some address';
       expect(req.session.appeal.nlrDetails.address).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.address || 'none').to.equal('none');
       await postNlrAddress()(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.address).to.equal('some address');
@@ -503,6 +510,7 @@ describe('Update non-legal rep details', () => {
       req.body['nlr-address'] = 'some address';
       req.session.appeal.application.isEdit = true;
       expect(req.session.appeal.nlrDetails.address).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.address || 'none').to.equal('none');
       await postNlrAddress()(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.address).to.equal('some address');
@@ -655,7 +663,9 @@ describe('Update non-legal rep details', () => {
       req.body['emailAddress'] = 'test@test.com';
       req.body['phoneNumber'] = '07827297000';
       expect(req.session.appeal.nlrDetails.phoneNumber).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.phoneNumber || 'none').to.equal('none');
       expect(req.session.appeal.nlrDetails.emailAddress).to.be.undefined;
+      expect(req.session.appeal.nlrDetails.emailAddress || 'none').to.equal('none');
       await postNlrContactDetails()(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.phoneNumber).to.equal('07827297000');
@@ -726,6 +736,7 @@ describe('Update non-legal rep details', () => {
     it('should update req.session.appeal and redirect to updateDetailsCheckAndSend', async () => {
       req.body.isSponsorSameAsNlr = 'No';
       expect(req.session.appeal.application.isSponsorSameAsNlr).to.be.undefined;
+      expect(req.session.appeal.application.isSponsorSameAsNlr || 'none').to.equal('none');
 
       await postSamePerson()(req as Request, res as Response, next);
       expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal('No');

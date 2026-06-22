@@ -329,10 +329,15 @@ describe('getStatus', () => {
     appealApplicationStatus(appeal, true);
 
     expect(appeal.application.remissionOption).to.be.null;
+    expect(appeal.application.remissionOption || 'none').to.equal('none');
     expect(appeal.application.asylumSupportRefNumber).to.be.null;
+    expect(appeal.application.asylumSupportRefNumber || 'none').to.equal('none');
     expect(appeal.application.helpWithFeesOption).to.be.null;
+    expect(appeal.application.helpWithFeesOption || 'none').to.equal('none');
     expect(appeal.application.helpWithFeesRefNumber).to.be.null;
+    expect(appeal.application.helpWithFeesRefNumber || 'none').to.equal('none');
     expect(appeal.application.localAuthorityLetters).to.be.null;
+    expect(appeal.application.localAuthorityLetters || 'none').to.equal('none');
     expect(appeal.application.feeSupportPersisted).to.equal(false);
   });
 

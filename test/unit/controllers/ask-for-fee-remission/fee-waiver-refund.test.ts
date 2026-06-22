@@ -101,6 +101,7 @@ describe('Fee waiver Refund Controller', function () {
       await postFeeWaiver()(req as Request, res as Response, next);
       expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
       expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {
@@ -121,8 +122,11 @@ describe('Fee waiver Refund Controller', function () {
       await postFeeWaiver()(req as Request, res as Response, next);
       expect(application.lateRemissionOption).to.equal('test value');
       expect(application.lateHelpWithFeesOption).to.be.null;
+      expect(application.lateHelpWithFeesOption || 'none').to.equal('none');
       expect(application.lateHelpWithFeesRefNumber).to.be.null;
+      expect(application.lateHelpWithFeesRefNumber || 'none').to.equal('none');
       expect(application.lateLocalAuthorityLetters).to.be.null;
+      expect(application.lateLocalAuthorityLetters || 'none').to.equal('none');
     });
   });
 

@@ -466,10 +466,10 @@ describe('Make application controllers helper', () => {
       await makeApplicationControllersHelper.postProvideSupportingEvidenceCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(redirectStub.calledWith(paths.makeApplication.requestSent)).to.equal(true);
-      expect(req.session.appeal.makeAnApplicationEvidence.length).to.eq(0);
-      expect(req.session.appeal.makeAnApplicationDetails).to.eq(undefined);
-      expect(req.session.appeal.makeAnApplicationTypes).to.eq(undefined);
-      expect(req.session.appeal.makeAnApplicationProvideEvidence).to.eq(undefined);
+      expect(req.session.appeal.makeAnApplicationEvidence).to.have.lengthOf(0);
+      expect(req.session.appeal.makeAnApplicationDetails).to.be.undefined;
+      expect(req.session.appeal.makeAnApplicationTypes).to.be.undefined;
+      expect(req.session.appeal.makeAnApplicationProvideEvidence).to.be.undefined;
     });
   });
 
@@ -555,8 +555,8 @@ describe('Make application controllers helper', () => {
 
       await makeApplicationControllersHelper.deleteSupportingEvidence(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.makeAnApplicationEvidence.length).to.eq(0);
-      expect(req.session.appeal.documentMap.length).to.eq(0);
+      expect(req.session.appeal.makeAnApplicationEvidence).to.have.lengthOf(0);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(0);
       expect(redirectStub.calledWith(redirectTo)).to.equal(true);
     });
   });

@@ -346,8 +346,8 @@ describe('Provide more evidence controller', () => {
 
       await deleteProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.additionalEvidence.length).to.eq(0);
-      expect(req.session.appeal.documentMap.length).to.eq(0);
+      expect(req.session.appeal.additionalEvidence).to.have.lengthOf(0);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(0);
     });
 
     it('should delete an addendum document', async () => {
@@ -364,8 +364,8 @@ describe('Provide more evidence controller', () => {
 
       await deleteProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.addendumEvidence.length).to.eq(0);
-      expect(req.session.appeal.documentMap.length).to.eq(0);
+      expect(req.session.appeal.addendumEvidence).to.have.lengthOf(0);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(0);
     });
 
     it('should not delete any document if no query id', async () => {
@@ -380,8 +380,8 @@ describe('Provide more evidence controller', () => {
 
       await deleteProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.additionalEvidence.length).to.eq(1);
-      expect(req.session.appeal.documentMap.length).to.eq(1);
+      expect(req.session.appeal.additionalEvidence).to.have.lengthOf(1);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(1);
       expect(redirectStub.calledWith(paths.common.provideMoreEvidenceForm)).to.equal(true);
     });
   });

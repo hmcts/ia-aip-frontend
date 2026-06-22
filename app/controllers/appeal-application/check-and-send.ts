@@ -204,11 +204,9 @@ async function createSummaryRowsFrom(req: Request) {
           rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
             Object.values(nlrDetails.addressUk), paths.appealStarted.nlrAddress + editParameter, Delimiter.BREAK_LINE));
         }
-      } else {
-        if (nlrDetails?.address) {
-          rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
-            nlrDetails.address.split('\n'), paths.appealStarted.nlrAddress + editParameter, Delimiter.BREAK_LINE));
-        }
+      } else if (nlrDetails?.address) {
+        rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepAddress,
+          nlrDetails.address.split('\n'), paths.appealStarted.nlrAddress + editParameter, Delimiter.BREAK_LINE));
       }
       if (nlrDetails?.emailAddress) {
         rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail,

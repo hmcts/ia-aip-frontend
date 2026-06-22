@@ -57,13 +57,13 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
   rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles[referenceNumber], [application[referenceNumber]], null));
   let letterDateRow;
   let addressRow;
-  if (!appellantInUk) {
-    letterDateRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterReceived, [formatDate(toIsoDate(application.decisionLetterReceivedDate))], null);
-    addressRow = application.appellantOutOfCountryAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantOutOfCountryAddress, [application.appellantOutOfCountryAddress], null);
-  } else {
+  if (appellantInUk) {
     letterDateRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [formatDate(toIsoDate(application.dateLetterSent))], null);
     const address = application.personalDetails.address && !_.isEmpty(application.personalDetails.address) ? application.personalDetails.address : null;
-    addressRow = address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [...Object.values(application.personalDetails.address)], null, Delimiter.BREAK_LINE);
+    addressRow = address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails, Object.values(application.personalDetails.address), null, Delimiter.BREAK_LINE);
+  } else {
+    letterDateRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterReceived, [formatDate(toIsoDate(application.decisionLetterReceivedDate))], null);
+    addressRow = application.appellantOutOfCountryAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantOutOfCountryAddress, [application.appellantOutOfCountryAddress], null);
   }
   rows.push(
     letterDateRow,
@@ -79,15 +79,15 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
 
     const isSponsorSameAsNlr = application?.hasNonLegalRep === 'Yes' && application?.isSponsorSameAsNlr === 'Yes';
     if (!isSponsorSameAsNlr) {
-      rows.push(...[
-        addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay, [application.sponsorNameForDisplay], null),
+
+      rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay, [application.sponsorNameForDisplay], null),
         application.sponsorAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails, [...Object.values(application.sponsorAddress)], null, Delimiter.BREAK_LINE),
         application.sponsorContactDetails && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails, [
           ...(application.sponsorContactDetails.wantsEmail ? [application.sponsorContactDetails.email] : []),
           ...(application.sponsorContactDetails.wantsSms ? [application.sponsorContactDetails.phone] : [])
         ], null, Delimiter.BREAK_LINE),
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAuthorisation, [application.sponsorAuthorisation], null),
-      ]);
+      );
     }
   }
   rows.push(

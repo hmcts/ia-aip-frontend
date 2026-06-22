@@ -186,11 +186,11 @@ function submitHearingRequirementsStatus(appeal: Appeal, hasNonLegalRep: boolean
 
   const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');
 
+  const otherNeedsNonLegalRep: boolean = areNlrRequirementsNeeded ? nlrNeedsTask.completed : nlrAttendingTask.completed;
   const otherNeedsTask: Task = {
     saved: otherNeeds,
     completed: _.has(appeal, 'hearingRequirements.otherNeeds.anythingElse'),
-    active: hasNonLegalRep ?
-      (areNlrRequirementsNeeded ? nlrNeedsTask.completed : nlrAttendingTask.completed) : accessNeedsTask.completed
+    active: hasNonLegalRep ? otherNeedsNonLegalRep : accessNeedsTask.completed
   };
 
   let datesToAvoidCompleted: boolean = !!_.get(appeal, 'hearingRequirements.datesToAvoid');

@@ -825,50 +825,52 @@ function getNlrAddress(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function handlePostNlrAddressValidation(req: Request, isSponsorSameAsNlr: boolean, validation: ValidationErrors): RenderArgs {
+  const previousPage = req.session.previousPage ? req.session.previousPage : paths.appealStarted.nlrName;
+  const renderObj: any = {
+    previousPage: paths.appealStarted.nlrName,
+    formAction: paths.appealStarted.nlrAddress,
+    pageTitle: i18n.pages.nlrAddress.title
+  };
+  let renderPath: string;
+  if (isSponsorSameAsNlr) {
+    renderObj.address = {
+      line1: req.body['address-line-1'],
+      line2: req.body['address-line-2'],
+      city: req.body['address-town'],
+      county: req.body['address-county'],
+      postcode: req.body['address-postcode']
+    };
+    renderPath = 'appeal-application/non-legal-rep-details/address.njk';
+  } else {
+    renderObj.question = {
+      name: 'nlr-address',
+      title: i18n.pages.nlrAddress.title,
+      description: i18n.pages.nlrAddress.description,
+      value: req.body['nlr-address'] || ''
+    };
+    renderPath = 'templates/textarea-question-page.njk';
+  }
+  renderObj.error = validation;
+  renderObj.errorList = Object.values(validation);
+  renderObj.previousPage = previousPage;
+  renderObj.saveForLater = true;
+  return { renderPath, renderObj };
+}
+
 function postNlrAddress(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const isSponsorSameAsNlr = isSponsorSame(req);
-      if (isSponsorSameAsNlr) {
-        if (!shouldValidateWhenSaveForLater(req.body, 'address-line-1', 'address-line-2', 'address-town', 'address-county', 'address-postcode')) {
-          return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
-        }
-      } else {
-        if (!shouldValidateWhenSaveForLater(req.body, 'nlr-address')) {
-          return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
-        }
+      if (isSponsorSameAsNlr && !shouldValidateWhenSaveForLater(req.body, 'address-line-1', 'address-line-2', 'address-town', 'address-county', 'address-postcode')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      } else if (!shouldValidateWhenSaveForLater(req.body, 'nlr-address')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       const validation = isSponsorSameAsNlr ? nlrAddressValidation(req.body)
         : textAreaValidation(req.body['nlr-address'], 'nlr-address', i18n.validationErrors.nlrDetails.address);
       if (validation !== null) {
-        const previousPage = req.session.previousPage ? req.session.previousPage : paths.appealStarted.nlrName;
-        const renderPath = isSponsorSameAsNlr ? 'appeal-application/non-legal-rep-details/address.njk'
-          : 'templates/textarea-question-page.njk';
-        const renderObj: any = {
-          previousPage: paths.appealStarted.nlrName,
-          formAction: paths.appealStarted.nlrAddress,
-          pageTitle: i18n.pages.nlrAddress.title
-        };
-        if (isSponsorSameAsNlr) {
-          renderObj.address = {
-            line1: req.body['address-line-1'],
-            line2: req.body['address-line-2'],
-            city: req.body['address-town'],
-            county: req.body['address-county'],
-            postcode: req.body['address-postcode']
-          };
-        } else {
-          renderObj.question = {
-            name: 'nlr-address',
-            title: i18n.pages.nlrAddress.title,
-            description: i18n.pages.nlrAddress.description,
-            value: req.body['nlr-address'] || ''
-          };
-        }
-        renderObj.error = validation;
-        renderObj.errorList = Object.values(validation);
-        renderObj.previousPage = previousPage;
-        renderObj.saveForLater = true;
+        const { renderPath, renderObj } = handlePostNlrAddressValidation(req, isSponsorSameAsNlr, validation);
         return res.render(renderPath, renderObj);
       }
       const nlrAddress = isSponsorSameAsNlr ? {

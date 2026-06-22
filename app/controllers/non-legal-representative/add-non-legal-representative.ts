@@ -579,11 +579,7 @@ function postInviteToJoinAppeal(updateAppealService: UpdateAppealService) {
 
       const isSponsorSameAsNlr = isSponsorSame(req);
       if (isSponsorSameAsNlr) {
-        details.push(nlrDetails.addressUk);
-        details.push(nlrDetails.addressUk.line1);
-        details.push(nlrDetails.addressUk.city);
-        details.push(nlrDetails.addressUk.postcode);
-
+        details.push(nlrDetails.addressUk, nlrDetails.addressUk.line1, nlrDetails.addressUk.city, nlrDetails.addressUk.postcode);
       } else {
         details.push(nlrDetails.address);
       }

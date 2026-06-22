@@ -99,7 +99,6 @@ export default class UpdateAppealService {
     return req.session.appeal;
   }
 
-
   async deleteDraftAppeal(req: Request): Promise<void> {
     const caseId = req.params.id;
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
@@ -1594,7 +1593,7 @@ export default class UpdateAppealService {
       idamId: null
     };
     if (caseData.isSponsorSameAsNlr === 'Yes') {
-       if (addressUk) {
+      if (addressUk) {
         appealNlrDetails.addressUk = {
           line1: addressUk.AddressLine1 || null,
           line2: addressUk.AddressLine2 || null,
@@ -1603,8 +1602,8 @@ export default class UpdateAppealService {
           county: addressUk.County || null
         };
       }
-    } else {
-      if (address) appealNlrDetails.address = address;
+    } else if (address) {
+      appealNlrDetails.address = address;
     }
 
     if (givenNames) appealNlrDetails.givenNames = givenNames;
@@ -1629,18 +1628,23 @@ export default class UpdateAppealService {
       if (caseData?.nlrNeedsHearingLoop) {
         hearingRequirements.nlrNeedsHearingLoop = caseData.nlrNeedsHearingLoop;
       }
-      if (caseData?.isNlrInterpreterRequired) {
-        hearingRequirements.isNlrInterpreterRequired = caseData.isNlrInterpreterRequired;
-      }
-      if (caseData?.nlrInterpreterLanguageCategory) {
-        hearingRequirements.nlrInterpreterLanguageCategory = caseData.nlrInterpreterLanguageCategory;
-      }
-      if (caseData?.nlrInterpreterSpokenLanguage) {
-        hearingRequirements.nlrInterpreterSpokenLanguage = caseData.nlrInterpreterSpokenLanguage;
-      }
-      if (caseData?.nlrInterpreterSignLanguage) {
-        hearingRequirements.nlrInterpreterSignLanguage = caseData.nlrInterpreterSignLanguage;
-      }
+      hearingRequirements = this.mapCcdNlrInterpretersToAppeal(caseData, hearingRequirements);
+    }
+    return hearingRequirements;
+  }
+
+  private mapCcdNlrInterpretersToAppeal(caseData, hearingRequirements) {
+    if (caseData?.isNlrInterpreterRequired) {
+      hearingRequirements.isNlrInterpreterRequired = caseData.isNlrInterpreterRequired;
+    }
+    if (caseData?.nlrInterpreterLanguageCategory) {
+      hearingRequirements.nlrInterpreterLanguageCategory = caseData.nlrInterpreterLanguageCategory;
+    }
+    if (caseData?.nlrInterpreterSpokenLanguage) {
+      hearingRequirements.nlrInterpreterSpokenLanguage = caseData.nlrInterpreterSpokenLanguage;
+    }
+    if (caseData?.nlrInterpreterSignLanguage) {
+      hearingRequirements.nlrInterpreterSignLanguage = caseData.nlrInterpreterSignLanguage;
     }
     return hearingRequirements;
   }
@@ -2010,19 +2014,19 @@ export default class UpdateAppealService {
 
   public mapToCCDNlrRequirements(appeal, caseData) {
     if (appeal?.application?.hasNonLegalRep === 'Yes') {
-      if(_.has(appeal.hearingRequirements, 'nlrAttendingOutsideUk')) {
+      if (_.has(appeal.hearingRequirements, 'nlrAttendingOutsideUk')) {
         caseData.nlrAttendingOutsideUk = appeal.hearingRequirements.nlrAttendingOutsideUk;
       }
-      if(_.has(appeal.hearingRequirements, 'nlrAttending')) {
+      if (_.has(appeal.hearingRequirements, 'nlrAttending')) {
         caseData.nlrAttending = appeal.hearingRequirements.nlrAttending;
         if (appeal.hearingRequirements.nlrAttending === 'Yes') {
           caseData.nlrAttendingOutsideUk = 'No';
         }
       }
-      if(_.has(appeal.hearingRequirements, 'nlrNeedsStepFreeAccess')) {
+      if (_.has(appeal.hearingRequirements, 'nlrNeedsStepFreeAccess')) {
         caseData.nlrNeedsStepFreeAccess = appeal.hearingRequirements.nlrNeedsStepFreeAccess;
       }
-      if(_.has(appeal.hearingRequirements, 'nlrNeedsHearingLoop')) {
+      if (_.has(appeal.hearingRequirements, 'nlrNeedsHearingLoop')) {
         caseData.nlrNeedsHearingLoop = appeal.hearingRequirements.nlrNeedsHearingLoop;
       }
       if (_.has(appeal.hearingRequirements, 'isNlrInterpreterRequired')) {
@@ -2039,6 +2043,7 @@ export default class UpdateAppealService {
       }
     }
   }
+
   private mapToCCDInterpreterRequirements(appeal, caseData) {
     if (_.has(appeal.hearingRequirements, 'isInterpreterServicesNeeded')) {
       caseData.isInterpreterServicesNeeded = boolToYesNo(appeal.hearingRequirements.isInterpreterServicesNeeded);

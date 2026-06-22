@@ -14,7 +14,7 @@ function convertDynamicListToSelectItemList(obj: DynamicList) {
       return {
         text: language.label,
         value: language.code,
-        selected: (obj.value && obj.value.code === language.code)
+        selected: obj?.value?.code === language.code
       };
     });
     selectItemList.unshift({ text: 'Select language', value: '' });

@@ -76,9 +76,9 @@ function getAppealStatus(req: Request) {
     }
     return appeal.appealStatus;
   } else if (appeal.appealStatus === States.APPEAL_STARTED.id) {
-    return appeal?.application?.appealType != null ? `${appeal.appealStatus}Partial` : appeal.appealStatus;
+    return appeal?.application?.appealType == null ? appeal.appealStatus : `${appeal.appealStatus}Partial`;
   } else if (appeal.appealStatus === States.AWAITING_REASONS_FOR_APPEAL.id) {
-    return appeal?.reasonsForAppeal?.applicationReason != null ? `${appeal.appealStatus}Partial` : appeal.appealStatus;
+    return appeal?.reasonsForAppeal?.applicationReason == null ? appeal.appealStatus : `${appeal.appealStatus}Partial`;
   } else if (appeal.appealStatus === States.RESPONDENT_REVIEW.id) {
     if (appeal.history.find(event => event.id === Events.REQUEST_RESPONSE_REVIEW.id)) {
       return appeal.appealReviewOutcome;

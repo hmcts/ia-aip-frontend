@@ -189,9 +189,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
       const application = req.session.appeal.application;
 
-      const showAskForFeeRemission = refundFeatureEnabled
-        && ((paAppealTypeAipPaymentOption === 'payLater' && application.appealType === 'protection') || 'Paid' === paymentStatus)
-        && (!application.refundRequested || application.refundRequested && !!application.remissionDecision);
+      const showAskForFeeRemission = getShowAskForFeeRemission(refundFeatureEnabled, paAppealTypeAipPaymentOption, application, paymentStatus);
 
       const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;
 
@@ -233,6 +231,12 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       next(e);
     }
   };
+}
+
+function getShowAskForFeeRemission(refundFeatureEnabled: any, paAppealTypeAipPaymentOption: string, application: AppealApplication, paymentStatus: string) {
+  return refundFeatureEnabled
+    && ((paAppealTypeAipPaymentOption === 'payLater' && application.appealType === 'protection') || 'Paid' === paymentStatus)
+    && (!application.refundRequested || application.refundRequested && !!application.remissionDecision);
 }
 
 function isPostDecisionState(appealStatus: string) {

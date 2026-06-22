@@ -87,7 +87,7 @@ describe('fields-validations', () => {
     it('should validate', () => {
       const validDate = { day: '1', month: '1', year: '2000' };
       const validations = dateValidation(validDate, errors);
-      expect(validations).to.be.null
+      expect(validations).to.be.null;
       expect(validations || 'none').to.equal('none');
     });
 
@@ -220,7 +220,7 @@ describe('fields-validations', () => {
     it('can have fields that are not part of date', () => {
       const validDate = { day: '1', month: '1', year: '2000', saveAndContiune: 'saveAndContiune' };
       const validations = dateValidation(validDate, errors);
-      expect(validations).to.be.null
+      expect(validations).to.be.null;
       expect(validations || 'none').to.equal('none');
     });
 
@@ -834,7 +834,7 @@ describe('fields-validations', () => {
     it('no error if yes selected', () => {
       const validationResult = yesOrNoRequiredValidation({ answer: 'yes' }, 'error message');
 
-      expect(validationResult).to.be.null
+      expect(validationResult).to.be.null;
       expect(validationResult || 'none').to.equal('none');
     });
 
@@ -922,7 +922,7 @@ describe('fields-validations', () => {
     it('should validate', () => {
       const validDate = { day: '1', month: '1', year: '2020' };
       const validations = isDateInRange('1-1-2019', '1-1-2021', validDate, dateMissingErrorMsg);
-      expect(validations).to.be.null
+      expect(validations).to.be.null;
       expect(validations || 'none').to.equal('none');
     });
 
@@ -1022,7 +1022,7 @@ describe('fields-validations', () => {
       const validDate = { day: '1', month: '6', year: '2020' };
       validations = isDateInRange('1-1-2019', '1-1-2021', validDate, dateMissingErrorMsg);
 
-      expect(validations).to.be.null
+      expect(validations).to.be.null;
       expect(validations || 'none').to.equal('none');
 
     });
@@ -1072,7 +1072,7 @@ describe('fields-validations', () => {
           text: 'Enter your asylum support reference number'
         }
       };
-      expect(validationResult).to.be.null
+      expect(validationResult).to.be.null;
       expect(validationResult || 'none').to.equal('none');
     });
 

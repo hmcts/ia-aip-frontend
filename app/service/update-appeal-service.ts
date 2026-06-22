@@ -1679,8 +1679,8 @@ export default class UpdateAppealService {
           Country: 'United Kingdom'
         };
       }
-    } else {
-      if (address) target.address = address;
+    } else if (address) {
+      target.address = address;
     }
 
     if (givenNames) target.givenNames = givenNames;
@@ -2029,18 +2029,22 @@ export default class UpdateAppealService {
       if (_.has(appeal.hearingRequirements, 'nlrNeedsHearingLoop')) {
         caseData.nlrNeedsHearingLoop = appeal.hearingRequirements.nlrNeedsHearingLoop;
       }
-      if (_.has(appeal.hearingRequirements, 'isNlrInterpreterRequired')) {
-        caseData.isNlrInterpreterRequired = appeal.hearingRequirements.isNlrInterpreterRequired;
-      }
-      if (_.has(appeal.hearingRequirements, 'nlrInterpreterLanguageCategory')) {
-        caseData.nlrInterpreterLanguageCategory = appeal.hearingRequirements.nlrInterpreterLanguageCategory;
-      }
-      if (_.has(appeal.hearingRequirements, 'nlrInterpreterSpokenLanguage')) {
-        caseData.nlrInterpreterSpokenLanguage = appeal.hearingRequirements.nlrInterpreterSpokenLanguage;
-      }
-      if (_.has(appeal.hearingRequirements, 'nlrInterpreterSignLanguage')) {
-        caseData.nlrInterpreterSignLanguage = appeal.hearingRequirements.nlrInterpreterSignLanguage;
-      }
+      this.mapToCCDNlrInterpreterRequirements(appeal, caseData);
+    }
+  }
+
+  private mapToCCDNlrInterpreterRequirements(appeal, caseData) {
+    if (_.has(appeal.hearingRequirements, 'isNlrInterpreterRequired')) {
+      caseData.isNlrInterpreterRequired = appeal.hearingRequirements.isNlrInterpreterRequired;
+    }
+    if (_.has(appeal.hearingRequirements, 'nlrInterpreterLanguageCategory')) {
+      caseData.nlrInterpreterLanguageCategory = appeal.hearingRequirements.nlrInterpreterLanguageCategory;
+    }
+    if (_.has(appeal.hearingRequirements, 'nlrInterpreterSpokenLanguage')) {
+      caseData.nlrInterpreterSpokenLanguage = appeal.hearingRequirements.nlrInterpreterSpokenLanguage;
+    }
+    if (_.has(appeal.hearingRequirements, 'nlrInterpreterSignLanguage')) {
+      caseData.nlrInterpreterSignLanguage = appeal.hearingRequirements.nlrInterpreterSignLanguage;
     }
   }
 

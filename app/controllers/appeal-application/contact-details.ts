@@ -862,9 +862,8 @@ function postNlrAddress(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const isSponsorSameAsNlr = isSponsorSame(req);
-      if (isSponsorSameAsNlr && !shouldValidateWhenSaveForLater(req.body, 'address-line-1', 'address-line-2', 'address-town', 'address-county', 'address-postcode')) {
-        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
-      } else if (!shouldValidateWhenSaveForLater(req.body, 'nlr-address')) {
+      if ((isSponsorSameAsNlr && !shouldValidateWhenSaveForLater(req.body, 'address-line-1', 'address-line-2', 'address-town', 'address-county', 'address-postcode'))
+        || !shouldValidateWhenSaveForLater(req.body, 'nlr-address')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       const validation = isSponsorSameAsNlr ? nlrAddressValidation(req.body)

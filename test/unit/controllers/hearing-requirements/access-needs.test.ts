@@ -951,6 +951,7 @@ describe('Hearing requirements access needs controller', () => {
         summaryList: [{ summaryRows: [], title: 'Languages' }],
         languageAction: '/hearing-language-details'
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/language-details.njk', expectedArgs);
 
     });
@@ -980,6 +981,7 @@ describe('Hearing requirements access needs controller', () => {
         summaryList: [{ summaryRows: [], title: 'Languages' }],
         languageAction: '/hearing-language-details'
       };
+      expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/language-details.njk', expectedArgs);
 
     });

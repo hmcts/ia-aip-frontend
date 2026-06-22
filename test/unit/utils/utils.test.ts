@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import {
@@ -13,6 +13,7 @@ import {
   getLatestUpdateRemissionDecisionsEventHistory,
   getLatestUpdateTribunalDecisionHistory,
   getStateName,
+  handleNlrStatementValidation,
   hasPendingTimeExtension,
   isRemissionDecisionDecided,
   isUpdateTribunalDecide,
@@ -27,10 +28,19 @@ describe('utils', () => {
 
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
+  let res: Partial<Response>;
+  let renderStub: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    const redirectStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    res = {
+      redirect: redirectStub,
+      render: renderStub,
+      send: sandbox.stub()
+    } as Partial<Response>;
     req = {
       body: {},
       cookies: {},
@@ -569,4 +579,41 @@ describe('utils', () => {
     });
   });
 
+  describe('handleNlrStatementValidation', () => {
+    const renderArgs: RenderArgs = {
+      renderPath: 'some-template',
+      renderObj: {}
+    };
+    it('should return true if statement is valid as nlr', () => {
+      req.body = { nlrStatement: 'nlr' };
+      const result = handleNlrStatementValidation(req as Request, res as Response, renderArgs);
+      expect(renderStub.called).to.equal(false);
+      expect(req.session.appeal.hasNlrSubmitted).to.equal('Yes');
+      expect(result).to.equal(true);
+    });
+
+    it('should return true if statement is valid as appellant', () => {
+      req.body = { nlrStatement: 'appellant' };
+      const result = handleNlrStatementValidation(req as Request, res as Response, renderArgs);
+      expect(renderStub.called).to.equal(false);
+      expect(req.session.appeal.hasNlrSubmitted).to.equal(undefined);
+      expect(result).to.equal(true);
+    });
+
+    it('should return false and render page with error if statement is invalid', () => {
+      const result = handleNlrStatementValidation(req as Request, res as Response, renderArgs);
+      expect(renderStub.calledOnce).to.equal(true);
+      const expectedError = {
+        'href': '#nlrStatement',
+        'key': 'nlrStatement',
+        'text': 'You must select one of the options under the Non-legal representative statement of truth as you have a non-legal representative on this case'
+      };
+      expectRenderedCalledWithArgs(renderStub, 'some-template', {
+        errors: { nlrStatement: expectedError },
+        errorList: [expectedError]
+      });
+      expect(result).to.equal(false);
+      expect(req.session.appeal.hasNlrSubmitted).to.equal(undefined);
+    });
+  });
 });

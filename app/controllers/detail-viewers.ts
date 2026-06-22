@@ -81,7 +81,7 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     if (!isSponsorSameAsNlr) {
 
       rows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay, [application.sponsorNameForDisplay], null),
-        application.sponsorAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails, [...Object.values(application.sponsorAddress)], null, Delimiter.BREAK_LINE),
+        application.sponsorAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails, Object.values(application.sponsorAddress), null, Delimiter.BREAK_LINE),
         application.sponsorContactDetails && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails, [
           ...(application.sponsorContactDetails.wantsEmail ? [application.sponsorContactDetails.email] : []),
           ...(application.sponsorContactDetails.wantsSms ? [application.sponsorContactDetails.phone] : [])

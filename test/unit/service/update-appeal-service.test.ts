@@ -264,6 +264,71 @@ describe('update-appeal-service', () => {
     });
   });
 
+  describe('deleteDraftAppeal', () => {
+    const caseList = [{
+      'id': caseId,
+      'appealReferenceNumber': '',
+      'state': 'appealStarted',
+      'appellantGivenNames': '',
+      'appellantFamilyName': '',
+      'stateName': 'Appeal started'
+    }];
+    it('should submit event and remove case from casesList when present', async () => {
+      const startUpdateAppealStub: sinon.SinonStub = sinon.stub();
+      const submitUpdateAppealStub: sinon.SinonStub = sinon.stub();
+      ccdService = {
+        startUpdateAppeal: startUpdateAppealStub.resolves({
+          event_id: Events.DELETE_DRAFT_APPEAL.id,
+          token: userToken
+        }),
+        submitUpdateAppeal: submitUpdateAppealStub.resolves(),
+      };
+      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
+
+      req.session.casesList = caseList;
+      req.params = { id: caseId };
+      await updateAppealService.deleteDraftAppeal(req as Request);
+
+      expect(startUpdateAppealStub).to.be.calledOnceWith(userId, caseId, Events.DELETE_DRAFT_APPEAL.id, sinon.match.any);
+      expect(submitUpdateAppealStub).to.be.calledOnceWith(userId, caseId, sinon.match.any, sinon.match.any);
+      expect(req.session.casesList.length).to.equal(0);
+    });
+
+    it('should submit event and do nothing to casesList when not present', async () => {
+      const startUpdateAppealStub: sinon.SinonStub = sinon.stub();
+      const submitUpdateAppealStub: sinon.SinonStub = sinon.stub();
+      ccdService = {
+        startUpdateAppeal: startUpdateAppealStub.resolves(),
+        submitUpdateAppeal: submitUpdateAppealStub.resolves(),
+      };
+      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
+
+      req.session.casesList = caseList;
+      await updateAppealService.deleteDraftAppeal(req as Request);
+
+      expect(startUpdateAppealStub).to.be.calledOnceWith(userId, caseId, Events.DELETE_DRAFT_APPEAL.id, sinon.match.any);
+      expect(submitUpdateAppealStub).to.be.calledOnceWith(userId, caseId, sinon.match.any, sinon.match.any);
+      expect(req.session.casesList).to.equal(caseList);
+    });
+
+    it('should submit event and do nothing to casesList when casesList undefined', async () => {
+      const startUpdateAppealStub: sinon.SinonStub = sinon.stub();
+      const submitUpdateAppealStub: sinon.SinonStub = sinon.stub();
+      ccdService = {
+        startUpdateAppeal: startUpdateAppealStub.resolves(),
+        submitUpdateAppeal: submitUpdateAppealStub.resolves(),
+      };
+      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
+
+      req.session.casesList = undefined;
+      await updateAppealService.deleteDraftAppeal(req as Request);
+
+      expect(startUpdateAppealStub).to.be.calledOnceWith(userId, caseId, Events.DELETE_DRAFT_APPEAL.id, sinon.match.any);
+      expect(submitUpdateAppealStub).to.be.calledOnceWith(userId, caseId, sinon.match.any, sinon.match.any);
+      expect(req.session.casesList.length).to.equal(0);
+    });
+  });
+
   describe('loadAppealByCaseId', () => {
     it('should fetch case by id and populate session for no NLR field', async () => {
       const mockCcdCase = {
@@ -3216,25 +3281,25 @@ describe('update-appeal-service', () => {
       const pageId = 'pageId1';
       updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
       sandbox.stub(ccdService, 'validateMidEvent')
-          .withArgs(
-              sinon.match.any,
-              pageId,
-              userId,
-              sinon.match.any)
-          .resolves({ status: 200, data: {} });
+        .withArgs(
+          sinon.match.any,
+          pageId,
+          userId,
+          sinon.match.any)
+        .resolves({ status: 200, data: {} });
       const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
       expect(ccdService.validateMidEvent).to.be.calledOnceWith(
-          {
-            case_reference: caseId,
-            data: {},
-            event_data: {},
-            event: event,
-            ignore_warning: false
-          }, pageId, userId,
-          {
-            userToken: `Bearer ${userToken}`,
-            serviceToken
-          });
+        {
+          case_reference: caseId,
+          data: {},
+          event_data: {},
+          event: event,
+          ignore_warning: false
+        }, pageId, userId,
+        {
+          userToken: `Bearer ${userToken}`,
+          serviceToken
+        });
       expect(errors.length).to.equal(0);
     });
 
@@ -3252,25 +3317,25 @@ describe('update-appeal-service', () => {
       const error1 = 'error 1';
       const error2 = 'error 2';
       sandbox.stub(ccdService, 'validateMidEvent')
-          .withArgs(
-              sinon.match.any,
-              sinon.match.string,
-              userId,
-              sinon.match.any)
-          .resolves({ status: 422, data: { callbackErrors: [error1, error2] }});
+        .withArgs(
+          sinon.match.any,
+          sinon.match.string,
+          userId,
+          sinon.match.any)
+        .resolves({ status: 422, data: { callbackErrors: [error1, error2] } });
       const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
       expect(ccdService.validateMidEvent).to.be.calledOnceWith(
-          {
-            case_reference: caseId,
-            data: {},
-            event_data: {},
-            event: event,
-            ignore_warning: false
-          }, pageId, userId,
-          {
-            userToken: `Bearer ${userToken}`,
-            serviceToken
-          });
+        {
+          case_reference: caseId,
+          data: {},
+          event_data: {},
+          event: event,
+          ignore_warning: false
+        }, pageId, userId,
+        {
+          userToken: `Bearer ${userToken}`,
+          serviceToken
+        });
       expect(errors.length).to.equal(2);
       expect(errors.includes(error1)).to.equal(true);
       expect(errors.includes(error2)).to.equal(true);
@@ -3288,25 +3353,25 @@ describe('update-appeal-service', () => {
       const pageId = 'pageId1';
       updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
       sandbox.stub(ccdService, 'validateMidEvent')
-          .withArgs(
-              sinon.match.any,
-              sinon.match.string,
-              userId,
-              sinon.match.any)
-          .resolves({ status: 401, data: { callbackErrors: ['error'] }});
+        .withArgs(
+          sinon.match.any,
+          sinon.match.string,
+          userId,
+          sinon.match.any)
+        .resolves({ status: 401, data: { callbackErrors: ['error'] } });
       const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
       expect(ccdService.validateMidEvent).to.be.calledOnceWith(
-          {
-            case_reference: caseId,
-            data: {},
-            event_data: {},
-            event: event,
-            ignore_warning: false
-          }, pageId, userId,
-          {
-            userToken: `Bearer ${userToken}`,
-            serviceToken
-          });
+        {
+          case_reference: caseId,
+          data: {},
+          event_data: {},
+          event: event,
+          ignore_warning: false
+        }, pageId, userId,
+        {
+          userToken: `Bearer ${userToken}`,
+          serviceToken
+        });
       expect(errors.length).to.equal(1);
       expect(errors.includes('There is a problem')).to.equal(true);
     });

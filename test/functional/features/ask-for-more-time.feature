@@ -35,7 +35,7 @@ Feature: Ask for more time page
     And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click send
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
@@ -56,7 +56,7 @@ Feature: Ask for more time page
     And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click send
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
@@ -77,7 +77,7 @@ Feature: Ask for more time page
     And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click send
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
@@ -115,7 +115,7 @@ Feature: Ask for more time page
     And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click send
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
@@ -136,7 +136,7 @@ Feature: Ask for more time page
     And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click send
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
@@ -174,7 +174,7 @@ Feature: Ask for more time page
     And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click send
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button

@@ -98,7 +98,7 @@ Feature: Sponsor details
     And I check page accessibility
     And I should be taken to the has sponsor authorisation page
     Then I see "Do you agree to let your sponsor have access to information about your appeal?" in title
-    When I choose Yes and click continue
+    When I choose Yes and click Save and continue
     And I check page accessibility
     Then I should see the task-list page
 
@@ -110,7 +110,7 @@ Feature: Sponsor details
     When I select "No" for same person and save and continue
     Then I should be taken to the has sponsor name page
     When I go to the has sponsor authorisation page
-    When I select Yes and click continue
+    When I choose Yes and click Save and continue
     Then I should be taken to the non legal rep name page
     When I click the back button
     Then I should be taken to the has sponsor authorisation page

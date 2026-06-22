@@ -37,7 +37,7 @@ module.exports = {
       await I.click('Save and continue');
     });
 
-    When('I choose Yes and click continue', async () => {
+    When('I choose Yes and click Save and continue', async () => {
       await I.checkOption('#answer');
       I.wait(3);
       await I.click('Save and continue');

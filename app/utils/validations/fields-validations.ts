@@ -210,10 +210,10 @@ function sponsorNamesValidation(obj: object) {
   return validate(obj, schema);
 }
 
-function nlrNamesValidation(obj: object) {
+function nlrNamesValidation(obj: object, isPersonal = false) {
   const schema = Joi.object({
-    nlrGivenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.nlrGivenNames }),
-    nlrFamilyName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.nlrFamilyName })
+    nlrGivenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors[isPersonal ? 'nlrDetailsPersonal' : 'nlrDetails'].givenNames }),
+    nlrFamilyName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors[isPersonal ? 'nlrDetailsPersonal' : 'nlrDetails'].familyName })
 
   }).unknown();
   return validate(obj, schema);
@@ -528,10 +528,10 @@ function hasSponsorOrNlrValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
-function isSamePersonValidation(obj: object): null | ValidationErrors {
+function isSamePersonValidation(obj: object, isPersonal = false): null | ValidationErrors {
   const schema = Joi.object({
     isSponsorSameAsNlr: Joi.string().required().messages({
-      'any.required': i18n.validationErrors.isSponsorSameAsNlr
+      'any.required': isPersonal ? i18n.validationErrors.isSponsorSameAsNlrPersonal : i18n.validationErrors.isSponsorSameAsNlr
     })
   }).unknown();
 
@@ -552,15 +552,16 @@ function sponsorAddressValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
-function nlrAddressValidation(obj: object): null | ValidationErrors {
+function nlrAddressValidation(obj: object, isPersonal = false): null | ValidationErrors {
+
   const schema = Joi.object({
-    ['address-line-1']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.nlrAddress.line1Required }),
-    ['address-town']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.nlrAddress.townCityRequired }),
+    ['address-line-1']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors[isPersonal ? 'nlrDetailsPersonal' : 'nlrDetails'].addressLine1 }),
+    ['address-town']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors[isPersonal ? 'nlrDetailsPersonal' : 'nlrDetails'].addressTownCity }),
     ['address-county']: Joi.string().optional().empty(''),
     ['address-line-2']: Joi.string().optional().empty(''),
     ['address-postcode']: Joi.string().required().regex(postcodeRegex).messages({
       'string.pattern.base': i18n.validationErrors.postcode.invalid,
-      'string.empty': i18n.validationErrors.nlrAddress.postcodeRequired
+      'string.empty': i18n.validationErrors[isPersonal ? 'nlrDetailsPersonal' : 'nlrDetails'].addressPostcode
     })
   }).unknown();
   return validate(obj, schema);

@@ -264,7 +264,7 @@ describe('Hearing requirements non legal rep controller', () => {
       expectedAppeal.hearingRequirements.isNlrInterpreterRequired = 'No';
       await postIsNlrInterpreterRequiredPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(submitStub).to.be.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, expectedAppeal, userId, authToken);
-      expect(redirectStub).to.be.calledWith(paths.submitHearingRequirements.nlrNeedsHearingLoop);
+      expect(redirectStub).to.be.calledWith(paths.submitHearingRequirements.nlrNeedsStepFreeAccess);
     });
 
     it('postIsNlrInterpreterRequiredPage should catch an exception and call next()', async () => {

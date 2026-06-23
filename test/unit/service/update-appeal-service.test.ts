@@ -3105,6 +3105,7 @@ describe('update-appeal-service', () => {
           emailAddress: 'emailAddress',
           phoneNumber: 'phoneNumber',
           idamId: 'idamId',
+          sameAsSponsor: 'Yes',
           addressUk: {
             AddressLine1: 'line1',
             AddressLine2: 'line2',
@@ -3136,6 +3137,7 @@ describe('update-appeal-service', () => {
           familyName: 'familyName',
           emailAddress: 'emailAddress',
           phoneNumber: 'phoneNumber',
+          sameAsSponsor: 'No',
           idamId: 'idamId',
           address: 'some address'
         }
@@ -3156,6 +3158,7 @@ describe('update-appeal-service', () => {
         nlrDetails: {
           emailAddress: 'emailAddress',
           phoneNumber: 'phoneNumber',
+          sameAsSponsor: 'Yes',
           addressUk: {
             AddressLine1: null,
             AddressLine2: null,

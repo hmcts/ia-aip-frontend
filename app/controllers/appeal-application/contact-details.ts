@@ -391,10 +391,13 @@ function postHasSponsorOrNlr(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         application: {
           ...application,
-          hasSponsor: req.body['hasSponsor'],
-          hasNonLegalRep: req.body['hasNonLegalRep']
+          hasSponsor: hasSponsor,
+          hasNonLegalRep: hasNonLegalRep
         }
       };
+      if (hasSponsor !== 'Yes' || hasNonLegalRep !== 'Yes') {
+        appeal.application.isSponsorSameAsNlr = null;
+      }
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
       req.session.refreshCasesList = true;
       req.session.appeal = {

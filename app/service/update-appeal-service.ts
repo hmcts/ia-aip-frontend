@@ -1667,6 +1667,7 @@ export default class UpdateAppealService {
       caseData.nlrDetails = {};
     }
     const target: CCDNlrDetails = caseData.nlrDetails;
+    target.sameAsSponsor = appeal?.application?.isSponsorSameAsNlr;
     const isSponsorSameAsNlr = appeal?.application?.isSponsorSameAsNlr === 'Yes' || false;
     if (isSponsorSameAsNlr) {
       if (addressUk) {

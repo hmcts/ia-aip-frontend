@@ -33,7 +33,7 @@ function getSamePerson(req: Request, res: Response, next: NextFunction) {
 function postSamePerson() {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = isSamePersonValidation(req.body);
+      const validation = isSamePersonValidation(req.body, true);
 
       const application = req.session.appeal.application;
 
@@ -84,7 +84,7 @@ function getNlrName(req: Request, res: Response, next: NextFunction) {
 function postNlrName() {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      const validation = nlrNamesValidation(req.body);
+      const validation = nlrNamesValidation(req.body, true);
       if (validation) {
         const hasSponsor = req.session.appeal?.application?.hasSponsor === 'Yes';
         return res.render('appeal-application/non-legal-rep-details/name.njk', {
@@ -134,8 +134,8 @@ function getNlrAddress(req: Request, res: Response, next: NextFunction) {
         ...renderObj,
         question: {
           name: 'nlr-address',
-          title: i18n.pages.nlrAddress.title,
-          description: i18n.pages.nlrAddress.description,
+          title: i18n.pages.nlrAddress.titlePersonal,
+          description: i18n.pages.nlrAddress.descriptionPersonal,
           value: req.session.appeal?.nlrDetails?.address || ''
         }
       });
@@ -149,8 +149,8 @@ function postNlrAddress() {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const isSponsorSameAsNlr: boolean = req.session.appeal?.application?.isSponsorSameAsNlr === 'Yes';
-      const validation = isSponsorSameAsNlr ? nlrAddressValidation(req.body)
-        : textAreaValidation(req.body['nlr-address'], 'nlr-address', i18n.validationErrors.nlrDetails.address);
+      const validation = isSponsorSameAsNlr ? nlrAddressValidation(req.body, true)
+        : textAreaValidation(req.body['nlr-address'], 'nlr-address', i18n.validationErrors.nlrDetailsPersonal.address);
       if (validation !== null) {
         const renderObj: any = {
           previousPage: paths.nonLegalRep.updateName,
@@ -175,8 +175,8 @@ function postNlrAddress() {
             ...renderObj,
             question: {
               name: 'nlr-address',
-              title: i18n.pages.nlrAddress.title,
-              description: i18n.pages.nlrAddress.description,
+              title: i18n.pages.nlrAddress.titlePersonal,
+              description: i18n.pages.nlrAddress.descriptionPersonal,
               value: req.body['nlr-address']
             }
           });
@@ -395,7 +395,8 @@ function getUpdateNlrDetailsConfirmation(req: Request, res: Response, next: Next
   try {
     res.render('templates/confirmation-page.njk', {
       title: i18n.pages.updateNlrDetails.confirmation.title,
-      whatHappensNextContent: i18n.pages.updateNlrDetails.confirmation.whatHappensNextContent,
+      whatNextContent: i18n.pages.updateNlrDetails.confirmation.whatHappensNextContent,
+      isNlr: req.session.isNonLegalRep
     });
   } catch (e) {
     next(e);

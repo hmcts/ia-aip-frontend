@@ -131,7 +131,7 @@ function postIsNlrInterpreterRequiredPage(updateAppealService: UpdateAppealServi
       };
 
       return res.redirect(selectedValue === 'Yes' ? paths.submitHearingRequirements.nlrHearingInterpreterTypes
-        : paths.submitHearingRequirements.nlrNeedsHearingLoop);
+        : paths.submitHearingRequirements.nlrNeedsStepFreeAccess);
     } catch (e) {
       next(e);
     }

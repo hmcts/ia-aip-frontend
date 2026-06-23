@@ -503,6 +503,7 @@
       "title": "Your appeal details have been sent",
       "payNowTitle": "Your appeal has been submitted",
       "seeProgress": "See your appeal progress",
+      "seeProgressNlr": "Return to appeal",
       "seeNonLegalRep": "Back to add non-legal representative",
       "whatHappensNext": "What happens next",
       "backToCaseList": "Go to your appeals",
@@ -754,7 +755,9 @@
       "title": "Update your details",
       "confirmation": {
         "title": "You have updated your details attached to this appeal",
-        "whatHappensNextContent": "You will receive an email confirming you have successfully updated your details."
+        "whatHappensNextContent": [
+          "You will receive an email confirming you have successfully updated your details."
+        ]
       }
     },
     "startRepresentingYourself": {
@@ -4428,6 +4431,7 @@
     "hasSponsor": "Select yes if you have a sponsor",
     "hasNonLegalRep": "Select yes if you have a non-legal representative",
     "isSponsorSameAsNlr": "Select yes if your sponsor and non-legal representative are the same person",
+    "isSponsorSameAsNlrPersonal": "Select yes if you are also acting as the sponsor on this appeal",
     "sponsorGivenNames": "Enter your sponsor's given name or names",
     "sponsorFamilyName": "Enter your sponsor's family name or names",
     "sponsorAddress": {
@@ -4440,14 +4444,6 @@
       "selectOneOption": "Select at least one of the contact options"
     },
     "sponsorAuthorisation": "Select yes if you agree to let your sponsor have access to information about your appeal",
-    "nlrGivenNames": "Enter your non-legal representative's given name or names",
-    "nlrFamilyName": "Enter your non-legal representative's family name or names",
-    "nlrAddress": {
-      "required": "Select your address",
-      "line1Required": "Enter your non-legal representative's building number and street name",
-      "townCityRequired": "Enter your non-legal representative's Town or City",
-      "postcodeRequired": "Enter your non-legal representative's Postcode"
-    },
     "nlrDetails": {
       "nlrEmailCannotBeSameAsAppellant": "Your non-legal representative's email address cannot be the same as your email address",
       "nlrPhoneCannotBeSameAsAppellant": "Your non-legal representative's phone number cannot be the same as your phone number",

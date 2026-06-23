@@ -50,7 +50,7 @@
   }) }}
   {% else %}
   {{ govukButton({
-    text: i18n.pages.successPage.seeProgress,
+    text: i18n.pages.successPage.seeProgressNlr if isNlr else i18n.pages.successPage.seeProgress,
     href: paths.common.overview
   }) }}
   {% endif %}

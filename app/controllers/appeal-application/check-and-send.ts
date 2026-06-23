@@ -155,7 +155,7 @@ async function createSummaryRowsFrom(req: Request) {
       if (application?.isSponsorSameAsNlr === 'Yes') {
         const isSponsorSameAsNlrRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.isSponsorSameAsNlr,
           [application.isSponsorSameAsNlr],
-          paths.nonLegalRep.provideNlrIsSamePerson + editParameter);
+          paths.appealStarted.isSponsorSameAsNlr + editParameter);
         rows.push(isSponsorSameAsNlrRow);
       } else {
         const hasSponsorName = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay,

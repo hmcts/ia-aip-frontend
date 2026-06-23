@@ -1580,7 +1580,7 @@ describe('Contact details Controller', () => {
       await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
-        'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrFamilyName)
+        'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrDetails.familyName)
       };
 
       expect(renderStub.called).to.equal(true);
@@ -1601,8 +1601,8 @@ describe('Contact details Controller', () => {
       await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
-        'nlrGivenNames': createStructuredError('nlrGivenNames', i18n.validationErrors.nlrGivenNames),
-        'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrFamilyName)
+        'nlrGivenNames': createStructuredError('nlrGivenNames', i18n.validationErrors.nlrDetails.givenNames),
+        'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrDetails.familyName)
       };
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/name.njk', {
@@ -1778,9 +1778,9 @@ describe('Contact details Controller', () => {
       await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
-        'address-line-1': createStructuredError('address-line-1', i18n.validationErrors.nlrAddress.line1Required),
-        'address-town': createStructuredError('address-town', i18n.validationErrors.nlrAddress.townCityRequired),
-        'address-postcode': createStructuredError('address-postcode', i18n.validationErrors.nlrAddress.postcodeRequired)
+        'address-line-1': createStructuredError('address-line-1', i18n.validationErrors.nlrDetails.addressLine1),
+        'address-town': createStructuredError('address-town', i18n.validationErrors.nlrDetails.addressTownCity),
+        'address-postcode': createStructuredError('address-postcode', i18n.validationErrors.nlrDetails.addressPostcode)
       };
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {

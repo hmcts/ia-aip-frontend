@@ -322,6 +322,7 @@ interface CCDNlrDetails {
   address?: string;
   addressUk?: CCDAddress;
   idamId?: string
+  sameAsSponsor?: string
 }
 
 interface Application<T> {

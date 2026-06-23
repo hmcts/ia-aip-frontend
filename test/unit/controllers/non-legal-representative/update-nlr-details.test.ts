@@ -148,7 +148,7 @@ describe('Update non-legal rep details', () => {
       await postNlrName()(req as Request, res as Response, next);
 
       const expectedError = {
-        'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrFamilyName)
+        'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrDetailsPersonal.familyName)
       };
 
       expect(renderStub.called).to.equal(true);
@@ -169,8 +169,8 @@ describe('Update non-legal rep details', () => {
       await postNlrName()(req as Request, res as Response, next);
 
       const expectedError = {
-        'nlrGivenNames': createStructuredError('nlrGivenNames', i18n.validationErrors.nlrGivenNames),
-        'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrFamilyName)
+        'nlrGivenNames': createStructuredError('nlrGivenNames', i18n.validationErrors.nlrDetailsPersonal.givenNames),
+        'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrDetailsPersonal.familyName)
       };
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/name.njk', {
@@ -270,8 +270,8 @@ describe('Update non-legal rep details', () => {
         formAction: paths.nonLegalRep.updateAddress,
         question: {
           name: 'nlr-address',
-          title: i18n.pages.nlrAddress.title,
-          description: i18n.pages.nlrAddress.description,
+          title: i18n.pages.nlrAddress.titlePersonal,
+          description: i18n.pages.nlrAddress.descriptionPersonal,
           value: ''
         },
         previousPage: paths.nonLegalRep.updateName
@@ -290,8 +290,8 @@ describe('Update non-legal rep details', () => {
         formAction: paths.nonLegalRep.updateAddress,
         question: {
           name: 'nlr-address',
-          title: i18n.pages.nlrAddress.title,
-          description: i18n.pages.nlrAddress.description,
+          title: i18n.pages.nlrAddress.titlePersonal,
+          description: i18n.pages.nlrAddress.descriptionPersonal,
           value: expectedAddress
         },
         previousPage: paths.nonLegalRep.updateName
@@ -343,9 +343,9 @@ describe('Update non-legal rep details', () => {
       await postNlrAddress()(req as Request, res as Response, next);
 
       const expectedError = {
-        'address-line-1': createStructuredError('address-line-1', i18n.validationErrors.nlrAddress.line1Required),
-        'address-town': createStructuredError('address-town', i18n.validationErrors.nlrAddress.townCityRequired),
-        'address-postcode': createStructuredError('address-postcode', i18n.validationErrors.nlrAddress.postcodeRequired)
+        'address-line-1': createStructuredError('address-line-1', i18n.validationErrors.nlrDetailsPersonal.addressLine1),
+        'address-town': createStructuredError('address-town', i18n.validationErrors.nlrDetailsPersonal.addressTownCity),
+        'address-postcode': createStructuredError('address-postcode', i18n.validationErrors.nlrDetailsPersonal.addressPostcode)
       };
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
@@ -450,7 +450,7 @@ describe('Update non-legal rep details', () => {
         'nlr-address': {
           href: '#nlr-address',
           key: 'nlr-address',
-          text: i18n.validationErrors.nlrDetails.address
+          text: i18n.validationErrors.nlrDetailsPersonal.address
         }
       };
       expect(renderStub.called).to.equal(true);
@@ -459,8 +459,8 @@ describe('Update non-legal rep details', () => {
         formAction: paths.nonLegalRep.updateAddress,
         question: {
           name: 'nlr-address',
-          title: i18n.pages.nlrAddress.title,
-          description: i18n.pages.nlrAddress.description,
+          title: i18n.pages.nlrAddress.titlePersonal,
+          description: i18n.pages.nlrAddress.descriptionPersonal,
           value: undefined
         },
         error: expectedError,
@@ -477,7 +477,7 @@ describe('Update non-legal rep details', () => {
         'nlr-address': {
           href: '#nlr-address',
           key: 'nlr-address',
-          text: i18n.validationErrors.nlrDetails.address
+          text: i18n.validationErrors.nlrDetailsPersonal.address
         }
       };
       expect(renderStub.called).to.equal(true);
@@ -486,8 +486,8 @@ describe('Update non-legal rep details', () => {
         formAction: paths.nonLegalRep.updateAddress,
         question: {
           name: 'nlr-address',
-          title: i18n.pages.nlrAddress.title,
-          description: i18n.pages.nlrAddress.description,
+          title: i18n.pages.nlrAddress.titlePersonal,
+          description: i18n.pages.nlrAddress.descriptionPersonal,
           value: ''
         },
         error: expectedError,
@@ -721,7 +721,7 @@ describe('Update non-legal rep details', () => {
       await postSamePerson()(req as Request, res as Response, next);
 
       const expectedError = {
-        'isSponsorSameAsNlr': createStructuredError('isSponsorSameAsNlr', i18n.validationErrors.isSponsorSameAsNlr)
+        'isSponsorSameAsNlr': createStructuredError('isSponsorSameAsNlr', i18n.validationErrors.isSponsorSameAsNlrPersonal)
       };
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/sponsor-details/is-same-person.njk', {
@@ -1138,7 +1138,8 @@ describe('Update non-legal rep details', () => {
       expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'templates/confirmation-page.njk', {
         title: i18n.pages.updateNlrDetails.confirmation.title,
-        whatHappensNextContent: i18n.pages.updateNlrDetails.confirmation.whatHappensNextContent,
+        whatNextContent: i18n.pages.updateNlrDetails.confirmation.whatHappensNextContent,
+        isNlr: undefined
       });
     });
 

@@ -31,8 +31,8 @@ async function navigateFromCasesListToOverview(I) {
 async function navigateFromCasesListToOverviewWithId(I, id: string) {
   await I.waitInUrl(paths.common.casesList, 30);
   await I.click('Refresh');
-  const refLocator = new Locator('td.govuk-table__cell').withText(id);
-  const rowLocator = new Locator('.govuk-table__row').withChild(refLocator);
+  const refLocator = locate('td.govuk-table__cell').withText(id);
+  const rowLocator = locate('.govuk-table__row').withChild(refLocator);
   const viewLinkLocator = rowLocator.find('a.govuk-link').withText('View');
   await I.click(viewLinkLocator);
   await I.waitInUrl(paths.common.overview, 30);

@@ -54,7 +54,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
-YarnBuilder builder = new YarnBuilder(this)
+YarnBuilder yarnBuilder = new YarnBuilder(this)
 
 withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
@@ -102,7 +102,7 @@ withNightlyPipeline(type, product, component) {
       }
     }
     afterAlways('fullFunctionalTest') {
-        builder.yarn('generate-report --clean')
+        yarnBuilder.yarn('generate-report --clean')
         publishHTML([
                 allowMissing         : true,
                 alwaysLinkToLastBuild: true,

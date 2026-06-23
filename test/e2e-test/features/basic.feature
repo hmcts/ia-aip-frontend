@@ -35,7 +35,7 @@ Feature: Basic Appeal Submissions
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
     And I check page accessibility
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     And I check page accessibility
     When I enter an on time letter sent date
@@ -120,7 +120,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -189,7 +189,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -256,7 +256,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -330,7 +330,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -389,7 +389,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -447,7 +447,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button

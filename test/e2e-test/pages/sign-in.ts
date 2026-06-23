@@ -1,4 +1,5 @@
 import { paths } from '../../../app/paths';
+import Logger, { getLogLabel } from '../../../app/utils/logger';
 import * as progression from '../service/case-progression-service';
 import { createCaseFromThread } from '../service/ccd-service';
 import {
@@ -9,10 +10,14 @@ import { currentUserDetails, signInForUserFromThread } from './helper-functions'
 const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
 const { signInForUser } = require('./helper-functions');
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 
 async function navigateFromCasesListToOverview(I) {
   await I.waitInUrl(paths.common.casesList, 30);
+  await I.click('Refresh');
   const hasCases = await I.grabNumberOfVisibleElements('.govuk-table__body');
+  logger.trace(`Found ${hasCases} cases on appeal list`, logLabel);
   if (hasCases > 0) {
     await I.click('View', '.govuk-table__body');
   } else {
@@ -244,7 +249,7 @@ module.exports = {
       I.amOnPage(testUrl + paths.common.login);
       await createCitizenUser();
       await signInForUserFromThread();
-      await I.seeInTitle(`Your appeals - ${i18n.serviceName} - ${i18n.provider}`);
+      await I.seeInTitle(`Appeal list - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given('I have logged back in for the e2e', async () => {

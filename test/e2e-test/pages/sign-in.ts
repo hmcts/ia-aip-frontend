@@ -28,6 +28,15 @@ async function navigateFromCasesListToOverview(I) {
   await I.waitInUrl(paths.common.overview, 30);
 }
 
+async function navigateFromCasesListToOverviewNoCreate(I) {
+  await I.amOnPage(paths.common.casesList, 30);
+  await I.click('Refresh');
+  const hasCases = await I.grabNumberOfVisibleElements('.govuk-table__body');
+  logger.trace(`Found ${hasCases} cases on appeal list`, logLabel);
+  await I.click('View', '.govuk-table__body');
+  await I.waitInUrl(paths.common.overview, 30);
+}
+
 module.exports = {
   signIn(I) {
     Given('I am on home page', () => {
@@ -110,118 +119,147 @@ module.exports = {
         }
         case 'Saved appealStarted': {
           signInForUser('has-case@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'appealSubmitted': {
           signInForUser('appeal-submitted@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'awaitingReasonsForAppeal': {
           signInForUser('awaiting-reasons-for-appeal@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'Saved awaitingReasonsForAppeal': {
           signInForUser('partial-awaiting-reasons-for-appeal@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'awaitingReasonsForAppeal with time extensions': {
           signInForUser('awaitingReasonsForAppeal-with-time_extension@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'awaitingClarifyingQuestionsAnswers with time extensions': {
           signInForUser('awaitingClarifyingQuestions-with-time_extension@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'awaitingClarifyingQuestionsAnswers': {
           signInForUser('clarifying-questions@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'awaitingCmaRequirements': {
           signInForUser('awaitingCmaRequirements@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'awaitingCmaRequirements with time extensions': {
           signInForUser('awaitingCmaRequirements-with-time_extension@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'cmaRequirementsSubmitted': {
           signInForUser('cmaRequirementsSubmitted@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'cmaListed': {
           signInForUser('cmaListed@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'preHearing': {
           signInForUser('preHearing@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'decided': {
           signInForUser('decided@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'ftpaOutOfTimeApplicationStarted': {
           signInForUser('ftpa-out-of-time-application-started@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'appealSubmitted with stf24w': {
           signInForUser('appeal-submitted-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'lateAppealSubmitted with stf24w': {
           signInForUser('late-appeal-submitted-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'awaitingRespondentEvidence with stf24w': {
           signInForUser('awaiting-respondent-evidence-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'listing with stf24w': {
           signInForUser('listing-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'awaitingReasonsForAppeal with stf24w': {
           signInForUser('awaiting-reasons-for-appeal-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'reasonsForAppealSubmitted with stf24w': {
           signInForUser('reasons-for-appeal-submitted-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'caseUnderReview with stf24w': {
           signInForUser('case-under-review-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'respondentReview with stf24w': {
           signInForUser('respondent-review-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'decisionMaintained with stf24w': {
           signInForUser('decision-maintained-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'awaitingReasonsForAppealPartial with stf24w': {
           signInForUser('awaiting-reasons-for-appeal-partial-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'prepareForHearing with stf24w': {
           signInForUser('prepare-for-hearing-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'finalBundling with stf24w': {
           signInForUser('final-bundling-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'pendingPayment with stf24w': {
           signInForUser('pending-payment-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'submitHearingRequirements with stf24w': {
           signInForUser('submit-hearing-requirements-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         case 'awaitingClarifyingQuestionsAnswers with stf24w': {
           signInForUser('awaiting-clarifying-questions-answers-stf24w@example.com');
+          await navigateFromCasesListToOverviewNoCreate(I);
           break;
         }
         default:

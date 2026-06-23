@@ -60,7 +60,7 @@ Feature: Cases list page
     Then I should see the cases list page
     And I should see a table with 3 appeals
 
-  Scenario: User can navigate back to cases list from overview
+  Scenario: User can navigate back to cases list from overview nav link
     Given I have logged in as a user with multiple appeals
     Then I should see the cases list page
     When I click "View" link for appeal "PA/50100/2024"

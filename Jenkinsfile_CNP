@@ -1,18 +1,20 @@
 #!groovy
+
 properties([
-    parameters([
-        booleanParam(name: 'runFunctional', defaultValue: true, description: 'Tick the checkbox to run regular functionals'),
-        booleanParam(name: 'runFullFunctionalTests', defaultValue: true, description: 'Tick the checkbox to run Full Functional Tests against aat or preview'),
-        string(name: 'iaCaseApiPrNumber', defaultValue: '', description: 'PR number of ia-case-api if wanting to run fullfunctional against ia-case-api env'),
-    ]),
-    [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend'],
-    pipelineTriggers([[$class: 'GitHubPushTrigger']])
+    [
+        $class       : 'GithubProjectProperty',
+        displayName  : 'AIP Frontend',
+        projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend/'
+    ]
 ])
 
 @Library("Infrastructure")
+import uk.gov.hmcts.contino.YarnBuilder
 
-def product = "ia"
+def type      = "nodejs"
+def product   = "ia"
 def component = "aip-frontend"
+def channel   = "#aip-tech"
 
 def secrets = [
     'ia-${env}': [
@@ -52,14 +54,14 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
-def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+YarnBuilder builder = new YarnBuilder(this)
 
 withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
 
-    env.TEST_URL = "https://ia-case-api-pr-${params.iaCaseApiPrNumber}-aip-frontend.preview.platform.hmcts.net"
-    env.CCD_API_URL = "https://ccd-data-store-api-ia-case-api-pr-${params.iaCaseApiPrNumber}.preview.platform.hmcts.net"
-    env.EXUI_URL = "https://xui-ia-case-api-pr-${params.iaCaseApiPrNumber}.preview.platform.hmcts.net"
+    env.TEST_URL = 'https://ia-case-api-pr-3042-aip-frontend.preview.platform.hmcts.net'
+    env.EXUI_URL = 'https://xui-ia-case-api-pr-3042.preview.platform.hmcts.net'
+    env.CCD_API_URL = 'https://ccd-data-store-api-ia-case-api-pr-3042.preview.platform.hmcts.net'
     env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
     env.PAYMENTS_API_URL = 'http://payment-api-aat.service.core-compute-aat.internal'
@@ -69,41 +71,36 @@ withNightlyPipeline(type, product, component) {
     env.IDAM_WEB_URL = 'https://idam-web-public.aat.platform.hmcts.net'
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
     env.PCQ_URL = 'https://pcq.aat.platform.hmcts.net'
-    env.PCQ_RETURN_URL = env.TEST_URL + '/about-appeal'
+    env.PCQ_RETURN_URL = 'https://ia-case-api-pr-3042-aip-frontend.preview.platform.hmcts.net/about-appeal'
     env.IDAM_TESTING_SUPPORT_URL = 'https://idam-testing-support-api.aat.platform.hmcts.net'
     env.PUPPETEER_SKIP_DOWNLOAD = 'true'
     env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'true'
     env.APPLICATIONINSIGHTS_NO_DIAGNOSTIC_CHANNEL = 'true'
 
-    if (params.runFullFunctionalTests) {
-        enableFullFunctionalTest(180)
-    }
+    enableFullFunctionalTest(180)
 
     before('fullFunctionalTest') {
-        if (params.runFunctional) {
-            stage('Functional Tests') {
-                try {
-                    yarnBuilder.yarn('test:functional')
-                } catch (Error) {
-                    unstable(message: "${STAGE_NAME} is unstable: " + Error.toString());
-                } finally {
-                    yarnBuilder.yarn('generate-report --clean')
-                    publishHTML([
-                            allowMissing         : true,
-                            alwaysLinkToLastBuild: true,
-                            keepAll              : true,
-                            reportDir            : "allure-report",
-                            reportFiles          : 'index.html',
-                            reportName           : 'Functional E2E Tests'
-                    ])
-                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-report/**/*'
-                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-results/*'
-                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
-                }
-            }
+      stage('Functional Tests') {
+        try {
+          yarnBuilder.yarn('test:functional')
+        } catch (Error) {
+          unstable(message: "${STAGE_NAME} is unstable: " + Error.toString());
+        } finally {
+          yarnBuilder.yarn('generate-report --clean')
+          publishHTML([
+                  allowMissing         : true,
+                  alwaysLinkToLastBuild: true,
+                  keepAll              : true,
+                  reportDir            : "allure-report",
+                  reportFiles          : 'index.html',
+                  reportName           : 'Functional E2E Tests'
+          ])
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-report/**/*'
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-results/*'
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/functional-output/**/*'
         }
+      }
     }
-
     afterAlways('fullFunctionalTest') {
         builder.yarn('generate-report --clean')
         publishHTML([
@@ -120,4 +117,3 @@ withNightlyPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'accessibility-issues.json'
     }
 }
-

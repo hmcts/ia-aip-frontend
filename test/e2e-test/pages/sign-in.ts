@@ -35,6 +35,7 @@ async function navigateFromCasesListToOverviewWithId(I, id: string) {
     const refLocator = locate('td.govuk-table__cell').withText(id);
     const rowLocator = locate('.govuk-table__row').withChild(refLocator);
     const viewLinkLocator = rowLocator.find('a.govuk-link').withText('View');
+    await I.see(viewLinkLocator);
     await I.click(viewLinkLocator);
     await I.waitInUrl(paths.common.overview, 30);
   } catch (error) {

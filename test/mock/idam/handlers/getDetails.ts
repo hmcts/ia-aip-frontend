@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import cache from '../../cache';
 
 const defaultUserId = '1';
-const emailToUserId: Record<string, string> = {
+export const emailToUserId: Record<string, string> = {
   'no-cases@example.com': '1',
   'has-case@example.com': '2',
   'appeal-submitted@example.com': '3',

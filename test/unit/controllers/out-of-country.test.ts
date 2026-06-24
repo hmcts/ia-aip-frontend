@@ -505,7 +505,7 @@ describe('Out of Country Controller', function () {
       };
       const errorList = {
         ...fieldError,
-        text: "Enter the GWF reference number in the correct format"
+        text: 'Enter the GWF reference number in the correct format'
       };
 
       await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

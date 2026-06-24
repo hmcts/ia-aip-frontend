@@ -200,7 +200,7 @@ describe('Home Office Details Controller', function () {
       };
       const errorList = {
         ...fieldError,
-        text: "Enter the Home Office reference number in the correct format"
+        text: 'Enter the Home Office reference number in the correct format'
       };
       expect(submitRefactoredStub.called).to.equal(false);
       expect(renderStub).to.be.calledWith(
@@ -227,7 +227,7 @@ describe('Home Office Details Controller', function () {
       };
       const errorList = {
         ...fieldError,
-        text: "Enter the Home Office reference number in the correct format"
+        text: 'Enter the Home Office reference number in the correct format'
       };
       expect(submitRefactoredStub.called).to.equal(false);
       expect(renderStub).to.be.calledWith(

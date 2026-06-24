@@ -63,7 +63,7 @@ Feature: Basic Appeal Submissions
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
     And I check page accessibility
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -140,7 +140,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -209,7 +209,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -276,7 +276,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -351,7 +351,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -409,7 +409,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -467,7 +467,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page

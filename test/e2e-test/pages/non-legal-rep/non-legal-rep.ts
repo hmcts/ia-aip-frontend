@@ -17,8 +17,18 @@ module.exports = {
       await I.waitInUrl(testUrl + paths.appealStarted.nlrContactDetails, 10);
     });
 
-    Given('I enter a non legal rep name', async () => {
+    Given('I enter a full non legal rep name', async () => {
       await I.fillField('#nlrGivenNames', 'nlrForename');
+      await I.fillField('#nlrFamilyName', 'nlrSurname');
+    });
+
+    Given('I enter a non legal rep given name', async () => {
+      await I.fillField('#nlrGivenNames', 'nlrForename');
+      await I.fillField('#nlrFamilyName', '');
+    });
+
+    Given('I enter a non legal rep family name', async () => {
+      await I.fillField('#nlrGivenNames', '');
       await I.fillField('#nlrFamilyName', 'nlrSurname');
     });
 
@@ -39,6 +49,10 @@ module.exports = {
       await I.fillField('#address-postcode', 'CM15 9BN');
     });
 
+    Given('I enter a valid non legal rep address in the text area', async () => {
+      await I.fillField('#nlr-address', 'Some line 1\nSome town city\nSome country');
+    });
+
     Given('I enter an invalid non legal rep email', async () => {
       await I.fillField('#emailAddress', 'invalid-email');
     });
@@ -53,6 +67,14 @@ module.exports = {
 
     Given('I enter a valid non legal rep phone number', async () => {
       await I.fillField('#phoneNumber', '07827297000');
+    });
+
+    Given(/^I enter the non legal rep email same as appellant$/, async () => {
+      await I.fillField('#emailAddress', 'citizen@test.com');
+    });
+
+    Given(/^I enter the non legal rep phone number same as appellant$/, async () => {
+      await I.fillField('#phoneNumber', '07899999999');
     });
 
     Given('I enter a valid non legal rep email', async () => {

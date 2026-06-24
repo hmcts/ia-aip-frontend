@@ -36,8 +36,7 @@ function appealApplicationStatus(appeal: Appeal, drlmSetAsideFlag: Boolean): App
   const appellantOutOfCountryAddress: boolean = !!_.get(appeal.application, 'appellantOutOfCountryAddress');
   const postcode: boolean = !!_.get(appeal.application, 'personalDetails.address.postcode');
   const line1: boolean = !!_.get(appeal.application, 'personalDetails.address.line1');
-  const hasSponsorNo: boolean = appeal.application.hasSponsor && appeal.application.hasSponsor === 'No' || false;
-  const hasSponsorYes: boolean = appeal.application.hasSponsor && appeal.application.hasSponsor === 'Yes' || false;
+  const hasSponsor: boolean = appeal.application.hasSponsor === 'Yes';
   const sponsorEmail: boolean = !!_.get(appeal.application, 'sponsorContactDetails.email');
   const sponsorWantsEmail: boolean = !!_.get(appeal.application, 'sponsorContactDetails.wantsEmail');
   const sponsorPhone: boolean = !!_.get(appeal.application, 'sponsorContactDetails.phone');
@@ -48,25 +47,30 @@ function appealApplicationStatus(appeal: Appeal, drlmSetAsideFlag: Boolean): App
   const sponsorAuthorisation: boolean = !!_.get(appeal.application, 'sponsorAuthorisation');
   const appellantContactDetails: boolean = (email && wantsEmail || phone && wantsSms) && (line1 || appellantOutOfCountryAddress);
   const sponsorContactDetails: boolean = sponsorEmail && sponsorWantsEmail || sponsorPhone && sponsorWantsSms;
-  const outUkContactDetailsComplete: boolean = (appellantContactDetails && hasSponsorNo) ||
-    (appellantContactDetails && hasSponsorYes && sponsorGivenNames && sponsorFamilyName && sponsorAddress && sponsorContactDetails && sponsorAuthorisation);
-  const hasNlrNo: boolean = appeal.application.hasNonLegalRep && appeal.application.hasNonLegalRep === 'No' || false;
-  const hasNlr: boolean = !!_.get(appeal.application, 'hasNonLegalRep');
+  const sponsorDetailsComplete: boolean = sponsorGivenNames && sponsorFamilyName && sponsorAddress && sponsorContactDetails && sponsorAuthorisation;
+  const hasSponsorOrNlrComplete: boolean = !!_.get(appeal.application, 'hasNonLegalRep') && !!_.get(appeal.application, 'hasSponsor');
+  const hasNlr: boolean = appeal.application.hasNonLegalRep === 'Yes';
   const nlrGivenNames: boolean = !!_.get(appeal.nlrDetails, 'givenNames');
   const nlrFamilyName: boolean = !!_.get(appeal.nlrDetails, 'familyName');
   const nlrPhoneNumber: boolean = !!_.get(appeal.nlrDetails, 'phoneNumber');
   const nlrEmailAddress: boolean = !!_.get(appeal.nlrDetails, 'emailAddress');
   const nlrAddress: boolean = !!_.get(appeal.nlrDetails, 'address');
-  const isSponsorSameAsNlr: boolean = appeal?.application?.isSponsorSameAsNlr === 'Yes' || false;
+  const isSponsorSameAsNlrYes: boolean = appeal?.application?.isSponsorSameAsNlr === 'Yes' || false;
+  const isSponsorSameAsNlrNo: boolean = appeal?.application?.isSponsorSameAsNlr === 'No' || false;
   const nlrLine1: boolean = !!_.get(appeal.nlrDetails, 'addressUk.line1');
   const nlrCity: boolean = !!_.get(appeal.nlrDetails, 'addressUk.city');
   const nlrPostcode: boolean = !!_.get(appeal.nlrDetails, 'addressUk.postcode');
-  const nlrAddressComplete: boolean = isSponsorSameAsNlr ? nlrLine1 && nlrCity && nlrPostcode : nlrAddress;
-  const nlrDetailsComplete: boolean = !hasNlr || hasNlrNo || (nlrGivenNames && nlrFamilyName && nlrPhoneNumber && nlrEmailAddress && nlrAddressComplete);
-  const appellantInUk: boolean = _.get(appeal.application, 'appellantInUk') === 'Yes';
+  const nlrAddressComplete: boolean = isSponsorSameAsNlrYes ? nlrLine1 && nlrCity && nlrPostcode : nlrAddress;
+  const nlrDetailsComplete: boolean = nlrGivenNames && nlrFamilyName && nlrPhoneNumber && nlrEmailAddress && nlrAddressComplete;
+
+  const sponsorDetailsRequired = hasSponsor && (!hasNlr || isSponsorSameAsNlrNo);
+  const sponsorNlrDetailsComplete =
+    (!sponsorDetailsRequired || sponsorDetailsComplete) &&
+    (!hasNlr || nlrDetailsComplete);
+
   const contactDetails: Task = {
     saved: (email && wantsEmail) || (phone && wantsSms) || postcode || line1 || appellantOutOfCountryAddress,
-    completed: (appellantInUk ? appellantContactDetails : outUkContactDetailsComplete) && nlrDetailsComplete,
+    completed: appellantContactDetails && hasSponsorOrNlrComplete && sponsorNlrDetailsComplete,
     active: homeOfficeDetails.completed || homeOfficeDetailsOOC.completed
   };
 

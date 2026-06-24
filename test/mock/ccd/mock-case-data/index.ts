@@ -8,6 +8,7 @@ import appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForA
 import appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress from './data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress';
 import appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal from './data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal';
 import appealWithHomeOfficeReference from './data/appealWithHomeOfficeReference';
+import startAppealUpToHasSponsorOrNlr from './data/appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr';
 import awaitingCmaRequirements from './data/awaiting-cma-requirements';
 import awaitingCmaRequirementsWithTimeExtensions from './data/awaiting-cma-requirements-with-time-extensions';
 import awaitingReasonsForAppealCaseData from './data/awaiting-reasons-for-appeal';
@@ -94,6 +95,7 @@ export default {
   pendingPaymentSTF24W,
   submitHearingRequirementsSTF24W,
   clarifyingQuestionsSTF24W,
+  startAppealUpToHasSponsorOrNlr,
   multipleAppealsES,
   multipleAppealCase1001,
   multipleAppealCase1002,

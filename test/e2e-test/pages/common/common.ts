@@ -39,6 +39,16 @@ module.exports = {
       await I.seeInTitle('Error: ');
     });
 
+    Then(/^I should see error "([^"]*)"$/, async (error: string) => {
+      await I.seeElement(locate('.govuk-error-summary').withDescendant('a').withText(error));
+      await I.seeElement(locate('.govuk-error-message').withText(error));
+      await I.seeInTitle('Error: ');
+    });
+
+    Then(/^I should not see error "([^"]*)"$/, async (error: string) => {
+      await I.dontSee(error);
+    });
+
     Then(/^I shouldnt see error summary$/, async () => {
       I.dontSeeElementInDOM('.govuk-error-summary');
     });

@@ -51,6 +51,7 @@ export const emailToUserId: Record<string, string> = {
   'pending-payment-stf24w@example.com': '49',
   'submit-hearing-requirements-stf24w@example.com': '50',
   'awaiting-clarifying-questions-answers-stf24w@example.com': '51',
+  'appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr@example.com': '52',
   'multiple-appeals@example.com': '100',
   'setupcase@example.com': '999'
 };

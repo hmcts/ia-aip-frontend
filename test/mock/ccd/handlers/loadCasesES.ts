@@ -57,6 +57,7 @@ const usersToCaseData: Record<string, any> = {
   '49': dataToES(mockData.pendingPaymentSTF24W),
   '50': dataToES(mockData.submitHearingRequirementsSTF24W),
   '51': dataToES(mockData.clarifyingQuestionsSTF24W),
+  '52': dataToES(mockData.startAppealUpToHasSponsorOrNlr),
   '100': mockData.multipleAppealsES,
 };
 

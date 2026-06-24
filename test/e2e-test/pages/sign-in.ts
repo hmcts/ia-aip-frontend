@@ -26,6 +26,14 @@ async function navigateFromCasesListToOverview(I) {
   await I.waitInUrl(paths.common.overview, 30);
 }
 
+async function createAppeal(I) {
+  await I.waitInUrl(paths.common.casesList, 30);
+  await I.click(i18n.pages.casesList.createNewAppeal);
+  await I.waitForVisible(`#${i18n.pages.casesList.createAppealModal.id}`, 30);
+  await I.click(`#${i18n.pages.casesList.createAppealModal.id}-confirm`);
+  await I.waitInUrl(paths.common.overview, 30);
+}
+
 async function navigateFromCasesListToOverviewWithId(I, id: string) {
   await I.waitInUrl(paths.common.casesList, 30);
   const refLocator = locate('td.govuk-table__cell').withText(id);
@@ -240,7 +248,11 @@ module.exports = {
           break;
       }
 
-      await navigateFromCasesListToOverviewWithId(I, id);
+      if (id === '1') {
+        await createAppeal(I);
+      } else {
+        await navigateFromCasesListToOverviewWithId(I, id);
+      }
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 

@@ -91,7 +91,7 @@
   },
   "devDependencies": {
     "@axe-core/puppeteer": "^4.11.1",
-    "@babel/core": "^7.29.0",
+    "@babel/core": "^7.29.6",
     "@babel/preset-env": "^7.29.0",
     "@eslint/js": "^9.39.3",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",

@@ -79,7 +79,7 @@ withNightlyPipeline(type, product, component) {
 
     enableFullFunctionalTest(180)
 
-    before('fullFunctionalTest') {
+    afterAlways('build') {
       stage('Functional Tests') {
         try {
           yarnBuilder.yarn('test:functional')

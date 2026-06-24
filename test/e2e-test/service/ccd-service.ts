@@ -32,6 +32,7 @@ function generateSupplementaryId(): Record<string, Record<string, string>> {
 
 function createOptions(headers: SecurityHeaders) {
   return {
+    validateStatus: () => true,
     headers: {
       Authorization: headers.userToken,
       ServiceAuthorization: headers.serviceToken,
@@ -135,7 +136,9 @@ async function createCase(user: UserInfo): Promise<void> {
       description: 'Create case AIP'
     },
     data: {
-      journeyType: 'aip'
+      journeyType: 'aip',
+      appellantGivenNames: user.forename,
+      appellantFamilyName: user.surname
     },
     event_token: startEventResponse.token,
     ignore_warning: true,

@@ -9,7 +9,7 @@ module.exports = {
       I.amOnPage(testUrl + paths.appealStarted.hasSponsor);
     });
 
-    When('I choose No and click continue', async () => {
+    When('I choose No, wait 3 seconds and click Save and continue', async () => {
       await I.checkOption('#answer-2');
       I.wait(3);
       await I.click('Save and continue');

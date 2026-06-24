@@ -35,7 +35,7 @@ Feature: Basic Appeal Submissions
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
     And I check page accessibility
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     And I check page accessibility
     When I enter an on time letter sent date
@@ -63,7 +63,7 @@ Feature: Basic Appeal Submissions
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
     And I check page accessibility
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -120,7 +120,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -140,7 +140,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -189,7 +189,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -209,7 +209,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -256,7 +256,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -276,7 +276,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -330,7 +330,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -351,7 +351,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -389,7 +389,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -409,7 +409,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
@@ -447,7 +447,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should see letter sent page
     When I enter an on time letter sent date
     And I click "Save and continue" button
@@ -467,7 +467,7 @@ Feature: Basic Appeal Submissions
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
     Then I should be taken to the has sponsor page
-    When I choose No and click Continue
+    When I choose No and click save and continue
     Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page

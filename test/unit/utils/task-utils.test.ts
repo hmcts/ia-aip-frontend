@@ -71,7 +71,7 @@ describe('getStatus', () => {
                 month: '1',
                 year: '1980'
               },
-              nationality: 'Angola',
+              nationality: 'Angolan',
               address: {
                 line1: '60 GPS London United Kingdom  W1W 7RT60 GPS London United Kingdom  W1W 7RT',
                 postcode: 'W1W 7RT'

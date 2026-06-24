@@ -53,6 +53,10 @@ const emailToUserId: Record<string, string> = {
   'submit-hearing-requirements-stf24w@example.com': '50',
   'awaiting-clarifying-questions-answers-stf24w@example.com': '51',
   'appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr@example.com': '52',
+  'appeal-submitted-with-nlr-email-without-sponsor@example.com': '53',
+  'appeal-submitted-with-nlr-email-with-sponsor@example.com': '54',
+  'appeal-submitted-with-nlr-details-fail@example.com': '55',
+  'appeal-submitted-with-nlr-details@example.com': '56',
   'setupcase@example.com': '999'
 };
 

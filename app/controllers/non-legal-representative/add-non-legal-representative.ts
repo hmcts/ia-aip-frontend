@@ -474,7 +474,7 @@ function getSummaryRows(req: Request) {
 function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('templates/check-and-send.njk', {
-      pageTitle: i18n.pages.inviteNlrToJoinAppeal.title,
+      pageTitle: i18n.pages.provideNlrDetails.title,
       formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
       previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
       summaryLists: [{ summaryRows: getSummaryRows(req) }],

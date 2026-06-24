@@ -4,7 +4,7 @@ const config = require('config');
 const testUrl = config.get('testUrl');
 
 module.exports = {
-  nonLegalRep(I) {
+  nonLegalRepDetails(I) {
     Given('I should be taken to the non legal rep name page', async () => {
       await I.waitInUrl(testUrl + paths.appealStarted.nlrName, 10);
     });
@@ -88,6 +88,18 @@ module.exports = {
         await I.checkOption('#isSponsorSameAsNlr-2');
       }
       await I.click('Save and continue');
+    });
+
+    Given('I should see the nlr address text area', async () => {
+      await I.seeElement('#nlr-address');
+    });
+
+    Given('I should see the nlr address UK address', async () => {
+      await I.seeElement('#address-line-1');
+      await I.seeElement('#address-line-2');
+      await I.seeElement('#address-town');
+      await I.seeElement('#address-county');
+      await I.seeElement('#address-postcode');
     });
   }
 };

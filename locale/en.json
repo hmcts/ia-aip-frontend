@@ -696,11 +696,6 @@
       }
     },
     "inviteNlrToJoinAppeal": {
-      "title": "Invite a non-legal representative to join your appeal",
-      "enterEmail": "Enter the email address of your non-legal representative",
-      "userNotExistsError": "The user with the email address that you have provided in Step 1 has not signed up to HMCTS services.",
-      "advice": "If you want to add a non-legal representative to be able to view and track your appeal, you will need invite them to create an account by providing their email address",
-      "adviceLink": "<a class=\"govuk-link\" href=\"{{ paths.nonLegalRep.inviteToCreateAccount }}\">here</a>",
       "confirmation": {
         "title": "You have invited a non-legal representative to join your appeal",
         "whatNextListItems": [

@@ -1110,7 +1110,7 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        pageTitle: i18n.pages.inviteNlrToJoinAppeal.title,
+        pageTitle: i18n.pages.provideNlrDetails.title,
         formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
         previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
         summaryLists: [{
@@ -1169,7 +1169,7 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        pageTitle: i18n.pages.inviteNlrToJoinAppeal.title,
+        pageTitle: i18n.pages.provideNlrDetails.title,
         formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
         previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
         summaryLists: [{
@@ -1231,7 +1231,7 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        pageTitle: i18n.pages.inviteNlrToJoinAppeal.title,
+        pageTitle: i18n.pages.provideNlrDetails.title,
         formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
         previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
         summaryLists: [{
@@ -1303,7 +1303,7 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        pageTitle: i18n.pages.inviteNlrToJoinAppeal.title,
+        pageTitle: i18n.pages.provideNlrDetails.title,
         formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
         previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
         summaryLists: [{

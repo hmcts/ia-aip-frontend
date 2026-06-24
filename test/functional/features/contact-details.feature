@@ -30,7 +30,7 @@ Feature: Contact details
     Then I click continue
     And I check page accessibility
     Then I should see the task-list page
-    And I should be able to click "Decision type"
+    And I shouldnt be able to click "Decision type"
     And I check page accessibility
 
     Given I am on the contact details page

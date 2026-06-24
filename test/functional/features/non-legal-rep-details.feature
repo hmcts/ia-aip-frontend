@@ -3,7 +3,7 @@ Feature: Non-legal representative details
   As a citizen
   I want be able to capture my Non-legal representative's details with the correct validation
 
-  Scenario: Sponsor Yes NLR Yes Same Person Yes @testy-test
+  Scenario: Sponsor Yes NLR Yes Same Person Yes
     Given I have logged in as an appellant with email "appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr@example.com"
     Then I click continue
     And I go to the has sponsor or nlr page
@@ -37,6 +37,7 @@ Feature: Non-legal representative details
     Then I should be taken to the non legal rep address page
     And I check page accessibility
     And I see "What is your non-legal representative's address?" in title
+    And I should see the nlr address UK address
     And I click save and continue
     Then I should see error "You need to provide your non-legal representative's building number and street name"
     And I should see error "You need to provide your non-legal representative's Town or City"
@@ -89,7 +90,7 @@ Feature: Non-legal representative details
     And I should be able to click "Decision type"
     And I check page accessibility
 
-  Scenario: Sponsor Yes NLR Yes Same Person No @testy-test
+  Scenario: Sponsor Yes NLR Yes Same Person No
     Given I have logged in as an appellant with email "appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr@example.com"
     Then I click continue
     And I go to the has sponsor or nlr page
@@ -125,6 +126,7 @@ Feature: Non-legal representative details
     Then I should be taken to the non legal rep address page
     And I check page accessibility
     And I see "What is your non-legal representative's address?" in title
+    And I should see the nlr address text area
     And I click save and continue
     Then I should see error "You need to provide your non-legal representative's address"
 
@@ -140,7 +142,7 @@ Feature: Non-legal representative details
     Then I should see the task-list page
     And I should be able to click "Decision type"
 
-  Scenario: Sponsor Yes NLR No @testy-test
+  Scenario: Sponsor Yes NLR No
     Given I have logged in as an appellant with email "appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr@example.com"
     Then I click continue
     And I go to the has sponsor or nlr page
@@ -169,7 +171,7 @@ Feature: Non-legal representative details
     Then I should see the task-list page
     And I should be able to click "Decision type"
 
-  Scenario: Sponsor No NLR Yes @testy-test
+  Scenario: Sponsor No NLR Yes
     Given I have logged in as an appellant with email "appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr@example.com"
     Then I click continue
     And I go to the has sponsor or nlr page
@@ -186,6 +188,7 @@ Feature: Non-legal representative details
     Then I should be taken to the non legal rep address page
     And I check page accessibility
     And I see "What is your non-legal representative's address?" in title
+    And I should see the nlr address text area
 
     When I enter a valid non legal rep address in the text area
     And I click save and continue

@@ -48,6 +48,13 @@ function getNextState(body: EventSubmitBody): string {
     case 'residentJudgeFtpaDecision':
     case 'leadershipJudgeFtpaDecision':
       return 'ftpaDecided';
+    case 'sendInviteToNonLegalRep':
+    case 'provideNonLegalRepDetails':
+    case 'sendPipToNonLegalRep':
+    case 'joinAppealConfirmation':
+    case 'removeNonLegalRep':
+    case 'nlrDetailsUpdated':
+      return null;
     default:
       throw new Error(`Event type ${eventId} no next state set`);
   }

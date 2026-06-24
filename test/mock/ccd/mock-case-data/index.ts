@@ -1,4 +1,7 @@
 import appealSubmittedCaseData from './data/appeal-submitted';
+import appealSubmittedWithNlrDetails from './data/appealSubmittedWithNlrDetails';
+import appealSubmittedWithNlrEmailWithoutSponsor from './data/appealSubmittedWithNlrEmailWithoutSponsor';
+import appealSubmittedWithNlrEmailWithSponsor from './data/appealSubmittedWithNlrEmailWithSponsor';
 import appealUpToFeeChoice from './data/appealUpToFeeChoice';
 import appealWithHomeOfficeDetails from './data/appealWithHomeOfficeDetails';
 import appealWithHomeOfficeDetailsAndName from './data/appealWithHomeOfficeDetailsAndName';
@@ -97,6 +100,9 @@ export default {
   clarifyingQuestionsSTF24W,
   startAppealUpToHasSponsorOrNlr,
   multipleAppealsES,
+  appealSubmittedWithNlrEmailWithoutSponsor,
+  appealSubmittedWithNlrEmailWithSponsor,
+  appealSubmittedWithNlrDetails,
   multipleAppealCase1001,
   multipleAppealCase1002,
   multipleAppealCase1003

@@ -1,3 +1,4 @@
+import workerThreads from 'node:worker_threads';
 import { Mockttp } from 'mockttp';
 import cache from '../../cache';
 
@@ -66,7 +67,8 @@ export const emailToUserId: Record<string, string> = {
 
 export async function setupGetDetails(server: Mockttp) {
   await server.forGet('/details').thenCallback(async () => {
-    const email = cache.get('email');
+    const workerThread = workerThreads.threadId === 0 ? 0 : workerThreads.threadId - 1;
+    const email = cache.get(`email-${workerThread}`);
     const uid = emailToUserId[email] || defaultUserId;
     return {
       statusCode: 200,

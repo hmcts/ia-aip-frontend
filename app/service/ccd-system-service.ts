@@ -101,6 +101,9 @@ export function validateJoinAppealAccessCodeExists(caseDetails: CaseData): boole
 }
 
 export function validateJoinAppealNlrEmailMatchesCase(idamEmail: string, caseDetails: CaseData): boolean {
+  logger.traceWorker(JSON.stringify(caseDetails?.nlrDetails), 'ploop-ccd-system-validate');
+  logger.traceWorker(idamEmail, 'ploop-ccd-system-validate');
+  logger.traceWorker(caseDetails?.nlrDetails?.emailAddress, 'ploop-ccd-system-validate');
   return caseDetails?.nlrDetails?.emailAddress === idamEmail;
 }
 
@@ -190,7 +193,7 @@ export default class CcdSystemService {
     const userToken = await this._authenticationService.getCaseworkSystemToken();
     const userId = await this._authenticationService.getCaseworkSystemUUID(userToken);
     const headers = await this.getHeaders(userToken);
-
+    logger.traceWorker(`${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`, 'ploop-ccd-system');
     return axios.get(
       `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`, {
         headers: headers

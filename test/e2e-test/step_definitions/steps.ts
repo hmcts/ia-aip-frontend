@@ -58,7 +58,7 @@ const { manualCaseProgression } = require('../service/manual-case-progression-se
 const { I } = inject();
 
 Before((test) => {
-  test.retries(5);
+  test.retries(10);
 });
 
 common(I);

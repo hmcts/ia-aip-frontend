@@ -72,6 +72,7 @@ export async function setupGetDetails(server: Mockttp) {
       json: {
         uid,
         email,
+        sub: email,
         forename: 'John',
         surname: 'Smith'
       }

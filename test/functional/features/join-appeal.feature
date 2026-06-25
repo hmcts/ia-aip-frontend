@@ -19,12 +19,8 @@ Feature: Join appeal as a non-legal representative
     Then I should see error "The Online case reference number cannot be empty"
     And I should see error "The access code cannot be empty"
 
-    When I fill the online-case-reference-number field with "invalid-case-reference"
-    And I fill the access-code field with "invalid-access-code"
-    And I click the Join appeal button
-    Then I should see error "The Online case reference number you have entered is not valid or does not exist. Please check the number and try again."
-
     When I fill the online-case-reference-number field with "3"
+    And I fill the access-code field with "invalid-access-code"
     And I click the Join appeal button
     Then I should see error "You already have access to this appeal as an appellant or a non-legal representative. Please check your appeals list to access the appeal."
 

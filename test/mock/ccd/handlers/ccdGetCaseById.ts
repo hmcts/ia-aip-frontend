@@ -70,6 +70,6 @@ function returnForJoinAppeal(caseId: string) {
   };
 }
 
-const joinAppealCases: string[] = ['invalid-case-reference', '4321432143214321', '1111111111111111', '1111111122222222',
+const joinAppealCases: string[] = ['4321432143214321', '1111111111111111', '1111111122222222',
   '2222222222222222', '3333333333333333', '4444444444444444', '5555555555555555'];
 

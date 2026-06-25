@@ -4,7 +4,7 @@ Feature: Non-legal representative details
   I want be able to capture my Non-legal representative's details with the correct validation
 
   Scenario: Sponsor Yes NLR Yes Same Person Yes
-    Given I have logged in as an appellant with email "appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr@example.com"
+    Given I have logged in as an appellant with email "appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-1@example.com"
     Then I click continue
     And I go to the has sponsor or nlr page
     Then I should be taken to the has sponsor or nlr page
@@ -91,7 +91,7 @@ Feature: Non-legal representative details
     And I check page accessibility
 
   Scenario: Sponsor Yes NLR Yes Same Person No
-    Given I have logged in as an appellant with email "appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr@example.com"
+    Given I have logged in as an appellant with email "appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-2@example.com"
     Then I click continue
     And I go to the has sponsor or nlr page
     Then I should be taken to the has sponsor or nlr page
@@ -143,7 +143,7 @@ Feature: Non-legal representative details
     And I should be able to click "Decision type"
 
   Scenario: Sponsor Yes NLR No
-    Given I have logged in as an appellant with email "appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr@example.com"
+    Given I have logged in as an appellant with email "appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-3@example.com"
     Then I click continue
     And I go to the has sponsor or nlr page
     Then I should be taken to the has sponsor or nlr page

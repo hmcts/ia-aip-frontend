@@ -4,7 +4,7 @@ Feature: Add another non-legal representative
   I want be able to add a new non-legal representative to my appeal
 
   Scenario: Add a new non-legal representative with active NLR
-    Given I have logged in as an appellant with email "appeal-submitted-with-active-nlr@example.com"
+    Given I have logged in as an appellant with email "appeal-submitted-with-active-nlr-1@example.com"
     And I click "Add a non-legal representative" link
     Then I should be taken to the add another non legal representative page
     When I click continue

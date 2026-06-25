@@ -4,7 +4,7 @@ Feature: Remove self as non-legal representative
   I want be able to remove myself as non-legal representative on an appeal
 
   Scenario: Remove self as non-legal representative from an appeal
-    Given I have logged in as an appellant with email "nlr-login-with-repped-case@example.com"
+    Given I have logged in as an appellant with email "nlr-login-with-repped-case-3@example.com"
     Then I should see the Remove myself as non-legal representative link in the appeal overview page
     When I click "Remove myself as non-legal representative" link
     Then I should see Remove yourself as non-legal representative page

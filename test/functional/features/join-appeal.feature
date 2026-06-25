@@ -50,8 +50,6 @@ Feature: Join appeal as a non-legal representative @testy-test
     And I click the Join appeal button
     Then I should see error "Your details are not attached to the case with the reference 1111 1111 2222 2222. Please ask the appellant to invite you to join the appeal."
 
-
-
   Scenario: Join appeal succeed
     Given I have logged in as an appellant with email "appeal-submitted@example.com"
     And I visit the cases list page

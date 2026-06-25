@@ -4,7 +4,7 @@ Feature: Add a non-legal representative
   I want be able to update my details
 
   Scenario: Update nlr details without sponsor on case
-    Given I have logged in as an appellant with email "nlr-login-with-repped-case@example.com"
+    Given I have logged in as an appellant with email "nlr-login-with-repped-case-2@example.com"
     Then I should see the Update my details link in the appeal overview page
     And I click "Update my details" link
 
@@ -84,7 +84,7 @@ Feature: Add a non-legal representative
     Then I should see the appeal overview page
 
   Scenario: Update nlr details with sponsor on case not same person
-    Given I have logged in as an appellant with email "nlr-login-with-repped-case-and-sponsor@example.com"
+    Given I have logged in as an appellant with email "nlr-login-with-repped-case-and-sponsor-1@example.com"
     Then I should see the Update my details link in the appeal overview page
     And I click "Update my details" link
 
@@ -122,7 +122,7 @@ Feature: Add a non-legal representative
     Then I should see the appeal overview page
 
   Scenario: Update nlr details with sponsor on case same person
-    Given I have logged in as an appellant with email "nlr-login-with-repped-case-and-sponsor@example.com"
+    Given I have logged in as an appellant with email "nlr-login-with-repped-case-and-sponsor-2@example.com"
     Then I should see the Update my details link in the appeal overview page
     And I click "Update my details" link
 

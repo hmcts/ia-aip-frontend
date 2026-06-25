@@ -1,6 +1,9 @@
 import appealSubmittedCaseData from './data/appeal-submitted';
 import appealSubmittedWithNlrId from './data/appeal-submitted-with-nlr-id';
+import appealSubmittedWithNlrId2 from './data/appeal-submitted-with-nlr-id-2';
+import appealSubmittedWithNlrId3 from './data/appeal-submitted-with-nlr-id-3';
 import appealSubmittedWithNlrIdWithSponsor from './data/appeal-submitted-with-nlr-id-with-sponsor';
+import appealSubmittedWithNlrIdWithSponsor2 from './data/appeal-submitted-with-nlr-id-with-sponsor-2';
 import appealSubmittedWithNlrDetails from './data/appealSubmittedWithNlrDetails';
 import appealSubmittedWithNlrEmailWithoutSponsor from './data/appealSubmittedWithNlrEmailWithoutSponsor';
 import appealSubmittedWithNlrEmailWithSponsor from './data/appealSubmittedWithNlrEmailWithSponsor';
@@ -108,7 +111,10 @@ export default {
   appealSubmittedWithNlrEmailWithSponsor,
   appealSubmittedWithNlrDetails,
   appealSubmittedWithNlrId,
+  appealSubmittedWithNlrId2,
+  appealSubmittedWithNlrId3,
   appealSubmittedWithNlrIdWithSponsor,
+  appealSubmittedWithNlrIdWithSponsor2,
   multipleAppealCase1001,
   multipleAppealCase1002,
   multipleAppealCase1003

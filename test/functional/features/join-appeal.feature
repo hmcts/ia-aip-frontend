@@ -28,7 +28,7 @@ Feature: Join appeal as a non-legal representative
     And I click the Join appeal button
     Then I should see error "You already have access to this appeal as an appellant or a non-legal representative. Please check your appeals list to access the appeal."
 
-    When I fill the online-case-reference-number field with "1234-1234-1234-1234"
+    When I fill the online-case-reference-number field with "4321-4321-4321-4321"
     And I click the Join appeal button
     Then I should see error "The Online case reference number you have entered is not valid or does not exist. Please check the number and try again."
 

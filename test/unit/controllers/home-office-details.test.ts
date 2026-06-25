@@ -208,7 +208,7 @@ describe('Home Office Details Controller', function () {
       };
       const errorList = {
         ...fieldError,
-        text: "You should enter the UAN or GWF reference exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section. The UAN is 16 digits with dashes. The GWF starts with the letters \"GWF\" and then has 9 digits. If you need help, please use the Home Office help form in the bullet points on this page."
+        text: 'Enter the Home Office reference number in the correct format'
       };
       expect(submitRefactoredStub.called).to.equal(false);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/details.njk',
@@ -234,7 +234,7 @@ describe('Home Office Details Controller', function () {
       };
       const errorList = {
         ...fieldError,
-        text: "You should enter the UAN or GWF reference exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section. The UAN is 16 digits with dashes. The GWF starts with the letters \"GWF\" and then has 9 digits. If you need help, please use the Home Office help form in the bullet points on this page."
+        text: 'Enter the Home Office reference number in the correct format'
       };
       expect(submitRefactoredStub.called).to.equal(false);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/details.njk',

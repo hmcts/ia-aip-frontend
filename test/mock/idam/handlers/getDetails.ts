@@ -58,6 +58,7 @@ export const emailToUserId: Record<string, string> = {
   'appeal-submitted-with-nlr-details@example.com': '56',
   'nlr-login-with-repped-case@example.com': '57',
   'appeal-submitted-with-active-nlr@example.com': '58',
+  'nlr-login-with-repped-case-and-sponsor@example.com': '59',
   'multiple-appeals@example.com': '100',
   'multiple-appeals-nlr@example.com': '101',
   'setupcase@example.com': '999'

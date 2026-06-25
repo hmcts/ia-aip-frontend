@@ -1,10 +1,56 @@
 import { paths } from '../../../../app/paths';
+import i18n from '../../../../locale/en.json';
+
 const config = require('config');
 
 const testUrl = config.get('testUrl');
 
 module.exports = {
   nonLegalRepDetails(I) {
+    Given('I should be taken to the non legal rep name page', async () => {
+      await I.waitInUrl(testUrl + paths.appealStarted.nlrName, 10);
+    });
+
+    Given('I should be taken to the update non legal rep name page', async () => {
+      await I.waitInUrl(testUrl + paths.nonLegalRep.updateName, 10);
+    });
+
+    Given('I should be taken to the update non legal rep address page', async () => {
+      await I.waitInUrl(testUrl + paths.nonLegalRep.updateAddress, 10);
+    });
+
+    Given('I should be taken to the update non legal rep contact details page', async () => {
+      await I.waitInUrl(testUrl + paths.nonLegalRep.updateContactDetails, 10);
+    });
+
+    Given('I should be taken to the update non legal rep is same person page', async () => {
+      await I.waitInUrl(testUrl + paths.nonLegalRep.updateIsSamePerson, 10);
+    });
+
+    Given('I should be taken to the update nlr details CYA page', async () => {
+      await I.waitInUrl(testUrl + paths.nonLegalRep.updateDetailsCheckAndSend, 10);
+    });
+
+    Given('I should be taken to the update nlr details confirmation page', async () => {
+      await I.waitInUrl(testUrl + paths.nonLegalRep.updateDetailsConfirmation, 10);
+    });
+
+    Given(/^I should see "([^"]*)" in the "([^"]*)" (input|textarea)$/, async (text: string, label: string, type: string) => {
+      const labelLocator = locate('label').withText(label);
+      const inputLocator = locate('div.govuk-form-group').withChild(labelLocator).find(type);
+      await I.seeInField(inputLocator, text);
+    });
+
+    Given(/^I enter "([^"]*)" in the "([^"]*)" (input|textarea)$/, async (text: string, label: string, type: string) => {
+      const labelLocator = locate('label').withText(label);
+      const inputLocator = locate('div.govuk-form-group').withChild(labelLocator).find(type);
+      await I.fillField(inputLocator, text);
+    });
+
+    Given('I should see the Update my details link in the appeal overview page', async () => {
+      await I.see(i18n.pages.overviewPage.updateDetails, 'a.govuk-link');
+    });
+
     Given('I should be taken to the non legal rep name page', async () => {
       await I.waitInUrl(testUrl + paths.appealStarted.nlrName, 10);
     });

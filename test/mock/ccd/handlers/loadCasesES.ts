@@ -64,6 +64,7 @@ const usersToCaseData: Record<string, any> = {
   '56': dataToES(mockData.appealSubmittedWithNlrDetails),
   '57': dataToES(mockData.appealSubmittedWithNlrId),
   '58': dataToES(mockData.appealSubmittedWithNlrId),
+  '59': dataToES(mockData.appealSubmittedWithNlrIdWithSponsor),
   '100': mockData.multipleAppealsES,
   '101': mockData.multipleAppealsNlrES,
 };

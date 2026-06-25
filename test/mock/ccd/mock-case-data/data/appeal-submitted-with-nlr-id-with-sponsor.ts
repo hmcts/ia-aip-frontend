@@ -2,11 +2,11 @@ import appealSubmittedCaseData from './appeal-submitted';
 
 export default {
   ...appealSubmittedCaseData,
-  'id': 57,
+  'id': 59,
   'case_data': {
     ...appealSubmittedCaseData.case_data,
     hasNonLegalRep: 'Yes',
-    hasSponsor: 'No',
+    hasSponsor: 'Yes',
     appealReferenceNumber: 'PA/12345/2026',
     'subscriptions': [{
       'id': 'ce208f30-0aae-41a1-95a6-8b79333fa274',
@@ -17,8 +17,8 @@ export default {
       givenNames: 'John',
       familyName: 'Doe',
       address: 'some address',
-      phoneNumber: '1234567890',
-      idamId: '57'
+      phoneNumber: '07827297000',
+      idamId: '59'
     }
   }
 };

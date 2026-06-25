@@ -57,6 +57,7 @@ const usersToCaseData: Record<string, any[]> = {
   '56': [mockData.appealSubmittedWithNlrDetails],
   '57': [mockData.appealSubmittedWithNlrId],
   '58': [mockData.appealSubmittedWithNlrId],
+  '59': [mockData.appealSubmittedWithNlrIdWithSponsor],
   '1001': [mockData.multipleAppealCase1001],
   '1002': [mockData.multipleAppealCase1002],
   '1003': [mockData.multipleAppealCase1003],

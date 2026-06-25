@@ -1,5 +1,6 @@
 import appealSubmittedCaseData from './data/appeal-submitted';
 import appealSubmittedWithNlrId from './data/appeal-submitted-with-nlr-id';
+import appealSubmittedWithNlrIdWithSponsor from './data/appeal-submitted-with-nlr-id-with-sponsor';
 import appealSubmittedWithNlrDetails from './data/appealSubmittedWithNlrDetails';
 import appealSubmittedWithNlrEmailWithoutSponsor from './data/appealSubmittedWithNlrEmailWithoutSponsor';
 import appealSubmittedWithNlrEmailWithSponsor from './data/appealSubmittedWithNlrEmailWithSponsor';
@@ -107,6 +108,7 @@ export default {
   appealSubmittedWithNlrEmailWithSponsor,
   appealSubmittedWithNlrDetails,
   appealSubmittedWithNlrId,
+  appealSubmittedWithNlrIdWithSponsor,
   multipleAppealCase1001,
   multipleAppealCase1002,
   multipleAppealCase1003

@@ -27,6 +27,7 @@ const { makeHearingApplication } = require('../pages/make-application/make-heari
 const { addNonLegalRep } = require('../pages/non-legal-rep/add-non-legal-rep');
 const { joinAppeal } = require('../pages/non-legal-rep/join-appeal');
 const { nonLegalRepDetails } = require('../pages/non-legal-rep/non-legal-rep-details');
+const { removeNonLegalRep } = require('../pages/non-legal-rep/remove-non-legal-rep');
 const { oocProtectionDepartureDate } = require('../pages/ooc-details/out-of-country');
 const { outOfTimeAppeal } = require('../pages/out-of-time-appeal/out-of-time');
 const { overviewPage } = require('../pages/overview-page/overview-page');
@@ -79,6 +80,7 @@ oocAddress(I);
 contactDetails(I);
 hasSponsor(I);
 addNonLegalRep(I);
+removeNonLegalRep(I);
 joinAppeal(I);
 nonLegalRepDetails(I);
 sponsorName(I);

@@ -29,7 +29,7 @@ module.exports = {
     });
     Given('I have logged in as a user with one repped appeal', async () => {
       await I.amOnPage(testUrl + paths.common.login);
-      signInForUser('oneNlrCase@example.com');
+      signInForUser('nlr-login-with-repped-case@example.com');
       await I.waitInUrl(paths.common.casesList, 30);
     });
 

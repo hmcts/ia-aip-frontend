@@ -1,4 +1,5 @@
 import { paths } from '../../../../app/paths';
+
 const config = require('config');
 const i18n = require('../../../../locale/en.json');
 const testUrl = config.get('testUrl');
@@ -20,26 +21,39 @@ module.exports = {
     });
 
     Given('I should see the add non legal representative page content', async () => {
-        await I.see(i18n.pages.addNonLegalRepresentative.title, 'h1');
-        await I.see(i18n.pages.addNonLegalRepresentative.paragraphOne, 'p');
-        await I.see(i18n.pages.addNonLegalRepresentative.paragraphTwo, 'p');
-        await I.see(i18n.pages.addNonLegalRepresentative.paragraphThree, 'p');
-        await I.see(i18n.pages.addNonLegalRepresentative.hint, 'div.govuk-inset-text');
-        await I.see(i18n.pages.addNonLegalRepresentative.stepOne, 'h2');
-        await I.see(i18n.pages.addNonLegalRepresentative.instructionsPartOne, 'p');
-        await I.see(i18n.pages.addNonLegalRepresentative.linkPartOne, 'a.govuk-button');
-        await I.see(i18n.pages.addNonLegalRepresentative.stepTwo, 'h2');
-        await I.see(i18n.pages.addNonLegalRepresentative.instructionsPartTwo, 'p');
-        await I.see(i18n.pages.addNonLegalRepresentative.linkPartTwo, 'a.govuk-button');
-        await I.see(i18n.pages.addNonLegalRepresentative.stepThree, 'h2');
-        await I.see(i18n.pages.addNonLegalRepresentative.instructionsPartThree, 'p');
-        await I.see(i18n.pages.addNonLegalRepresentative.linkPartThree, 'button');
-        await I.dontSee(i18n.pages.addNonLegalRepresentative.noEmailProvidedError);
-        await I.dontSee(i18n.pages.addNonLegalRepresentative.provideEmailDirection);
-        await I.dontSee(i18n.pages.addNonLegalRepresentative.noDetailsProvidedError);
-        await I.dontSee(i18n.pages.addNonLegalRepresentative.provideNlrDetailsDirection);
-        await I.dontSee(i18n.pages.addNonLegalRepresentative.userNotExistsError);
-        await I.dontSee(i18n.pages.addNonLegalRepresentative.userNotExistDirection);
+      await I.see(i18n.pages.addNonLegalRepresentative.title, 'h1');
+      await I.see(i18n.pages.addNonLegalRepresentative.paragraphOne, 'p');
+      await I.see(i18n.pages.addNonLegalRepresentative.paragraphTwo, 'p');
+      await I.see(i18n.pages.addNonLegalRepresentative.paragraphThree, 'p');
+      await I.see(i18n.pages.addNonLegalRepresentative.hint, 'div.govuk-inset-text');
+      await I.see(i18n.pages.addNonLegalRepresentative.stepOne, 'h2');
+      await I.see(i18n.pages.addNonLegalRepresentative.instructionsPartOne, 'p');
+      await I.see(i18n.pages.addNonLegalRepresentative.linkPartOne, 'a.govuk-button');
+      await I.see(i18n.pages.addNonLegalRepresentative.stepTwo, 'h2');
+      await I.see(i18n.pages.addNonLegalRepresentative.instructionsPartTwo, 'p');
+      await I.see(i18n.pages.addNonLegalRepresentative.linkPartTwo, 'a.govuk-button');
+      await I.see(i18n.pages.addNonLegalRepresentative.stepThree, 'h2');
+      await I.see(i18n.pages.addNonLegalRepresentative.instructionsPartThree, 'p');
+      await I.see(i18n.pages.addNonLegalRepresentative.linkPartThree, 'button');
+      await I.dontSee(i18n.pages.addNonLegalRepresentative.noEmailProvidedError);
+      await I.dontSee(i18n.pages.addNonLegalRepresentative.provideEmailDirection);
+      await I.dontSee(i18n.pages.addNonLegalRepresentative.noDetailsProvidedError);
+      await I.dontSee(i18n.pages.addNonLegalRepresentative.provideNlrDetailsDirection);
+      await I.dontSee(i18n.pages.addNonLegalRepresentative.userNotExistsError);
+      await I.dontSee(i18n.pages.addNonLegalRepresentative.userNotExistDirection);
+    });
+
+    Given('I should be taken to the add another non legal representative page', async () => {
+      await I.waitInUrl(testUrl + paths.nonLegalRep.addAnotherNonLegalRep, 10);
+
+      await I.see(i18n.pages.addNonLegalRepresentative.title, 'h1');
+      await I.see(i18n.pages.addNonLegalRepresentative.paragraphOne, 'p');
+      await I.see(i18n.pages.addNonLegalRepresentative.paragraphTwo, 'p');
+      await I.see(i18n.pages.addNonLegalRepresentative.paragraphThree, 'p');
+      await I.see(i18n.pages.addNonLegalRepresentative.another.hint, '.govuk-inset-text');
+      await I.see(i18n.pages.addNonLegalRepresentative.another.statement, 'legend');
+      await I.see(i18n.pages.addNonLegalRepresentative.another.agreement, 'label');
+      await I.dontSee(i18n.validationErrors.addAnotherNlrAgreement);
     });
 
     When('I should see the stepTwoNoEmailProvided error', async () => {
@@ -103,7 +117,6 @@ module.exports = {
       await I.see(i18n.pages.inviteNlrToJoinAppeal.confirmation.whatNextListItems[2], 'li');
       await I.see(i18n.pages.successPage.seeProgress, 'a.govuk-button');
     });
-
 
     When(/^I fill email-value field with "([^"]*)"$/, async (email) => {
       await I.fillField('#email-value', email);

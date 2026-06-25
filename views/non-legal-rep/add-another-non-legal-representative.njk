@@ -37,8 +37,8 @@
         }
       ],
       errorMessage: {
-        text: i18n.validationErrors.addAnotherNlrAgreement
-      } if error['statement']
+        text: errors['statement'].text
+      } if errors['statement']
     }) }}
     {{ govukButton({
       id: 'addAnotherNonLegalRep',

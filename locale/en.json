@@ -656,8 +656,7 @@
         "hint": "You may only have one non-legal representative. Please only continue if you want to add a new non-legal representative, or re-send the invite to join the appeal.",
         "statement": "Continue to add a new non-legal representative",
         "agreement": "I understand that adding another non-legal representative will remove the current non-legal representative's access to my case and they will no longer be able to view or track my appeal.",
-        "button": "Continue",
-        "areYouSure": "Are you sure you want to add another non-legal representative? Once you invite a new non-legal representative to join your appeal, it will remove the current non-legal representative's access to your case and they will no longer be able to view or track your appeal."
+        "button": "Continue"
       }
     },
     "removeNonLegalRepresentative": {

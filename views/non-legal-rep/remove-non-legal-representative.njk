@@ -35,8 +35,8 @@
         }
       ],
       errorMessage: {
-        text: error['statement']
-      } if error['statement']
+        text: errors['statement'].text
+      } if errors['statement']
     }) }}
     {{ govukButton({
       id: 'removeNonLegalRep',

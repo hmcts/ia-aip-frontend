@@ -83,7 +83,7 @@ Feature: Add a non-legal representative
     When I click the "Return to appeal" button
     Then I should see the appeal overview page
 
-  Scenario: Update nlr details with sponsor on case not same person @testy-test
+  Scenario: Update nlr details with sponsor on case not same person
     Given I have logged in as an appellant with email "nlr-login-with-repped-case-and-sponsor@example.com"
     Then I should see the Update my details link in the appeal overview page
     And I click "Update my details" link
@@ -121,7 +121,7 @@ Feature: Add a non-legal representative
     When I click the "Return to appeal" button
     Then I should see the appeal overview page
 
-  Scenario: Update nlr details with sponsor on case same person @testy-test
+  Scenario: Update nlr details with sponsor on case same person
     Given I have logged in as an appellant with email "nlr-login-with-repped-case-and-sponsor@example.com"
     Then I should see the Update my details link in the appeal overview page
     And I click "Update my details" link

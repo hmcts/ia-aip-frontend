@@ -1,4 +1,5 @@
 import appealSubmittedCaseData from './data/appeal-submitted';
+import appealSubmittedWithNlrId from './data/appeal-submitted-with-nlr-id';
 import appealSubmittedWithNlrDetails from './data/appealSubmittedWithNlrDetails';
 import appealSubmittedWithNlrEmailWithoutSponsor from './data/appealSubmittedWithNlrEmailWithoutSponsor';
 import appealSubmittedWithNlrEmailWithSponsor from './data/appealSubmittedWithNlrEmailWithSponsor';
@@ -27,6 +28,7 @@ import { multipleAppealCase1001 } from './data/multiple-appeals';
 import { multipleAppealCase1002 } from './data/multiple-appeals';
 import { multipleAppealCase1003 } from './data/multiple-appeals';
 import multipleAppealsES from './data/multiple-appeals-es';
+import multipleAppealsNlrES from './data/multiple-appeals-nlr-es';
 import outOfTimeDecisionGranted from './data/out-of-time-decision-granted';
 import outOfTimeDecisionInTime from './data/out-of-time-decision-in-time';
 import outOfTimeDecisionRejected from './data/out-of-time-decision-rejected';
@@ -100,9 +102,11 @@ export default {
   clarifyingQuestionsSTF24W,
   startAppealUpToHasSponsorOrNlr,
   multipleAppealsES,
+  multipleAppealsNlrES,
   appealSubmittedWithNlrEmailWithoutSponsor,
   appealSubmittedWithNlrEmailWithSponsor,
   appealSubmittedWithNlrDetails,
+  appealSubmittedWithNlrId,
   multipleAppealCase1001,
   multipleAppealCase1002,
   multipleAppealCase1003

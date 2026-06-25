@@ -3,7 +3,7 @@ Feature: Join appeal as a non-legal representative
   As a non-legal representative
   I want be able to join an ongoing appeal
 
-  Scenario: Join appeal @testy-test
+  Scenario: Join appeal
     Given I have logged in as an appellant with email "appeal-submitted@example.com"
     And I visit the cases list page
     When I click the Join appeal nav link

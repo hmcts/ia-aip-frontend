@@ -22,6 +22,17 @@ module.exports = {
       await I.waitInUrl(paths.common.casesList, 30);
     });
 
+    Given('I have logged in as a user with multiple appeals both repped and unrepped', async () => {
+      await I.amOnPage(testUrl + paths.common.login);
+      signInForUser('multiple-appeals-nlr@example.com');
+      await I.waitInUrl(paths.common.casesList, 30);
+    });
+    Given('I have logged in as a user with one repped appeal', async () => {
+      await I.amOnPage(testUrl + paths.common.login);
+      signInForUser('oneNlrCase@example.com');
+      await I.waitInUrl(paths.common.casesList, 30);
+    });
+
     When('I visit the cases list page', async () => {
       await I.amOnPage(testUrl + paths.common.casesList);
     });
@@ -44,6 +55,32 @@ module.exports = {
       await I.seeElement('.govuk-table');
       const rowCount: number = await I.grabNumberOfVisibleElements('.govuk-table__body tr');
       expect(rowCount).to.equal(parseInt(count, 10), `Expected ${count} appeals but found ${rowCount}`);
+    });
+
+    Then(/^I should see (\d+) tables?$/, async (count: string) => {
+      const tableCount: number = await I.grabNumberOfVisibleElements('.govuk-table');
+      expect(tableCount).to.equal(parseInt(count, 10), `Expected ${count} tables but found ${tableCount}`);
+    });
+
+    Then(/^I should see (\d+) appeals? in table (\d+)$/, async (appealCount: string, tableIndex: string) => {
+      const table = locate('.govuk-table').at(parseInt(tableIndex, 10));
+      await I.seeElement(table);
+      const rowCount: number = await I.grabNumberOfVisibleElements(table.find('.govuk-table__body tr'));
+      expect(rowCount).to.equal(parseInt(appealCount, 10), `Expected ${appealCount} appeals in table ${tableIndex} but found ${rowCount}`);
+    });
+
+    Then(/^I should see appeal reference "([^"]*)" in table (\d+)$/, async (reference: string, tableIndex: string) => {
+      const table = locate('.govuk-table').at(parseInt(tableIndex, 10));
+      await I.seeElement(table);
+      await I.see(reference, table.find('.govuk-table__body'));
+    });
+
+    Then(/^I should (see|not see) the "([^"]*)" h2 heading?$/, async (see: string, heading: string) => {
+      if (see === 'see') {
+        await I.see(heading, 'h2');
+      } else {
+        await I.dontSee(heading, 'h2');
+      }
     });
 
     Then(/^I should see "View" link for the appeal$/, async () => {

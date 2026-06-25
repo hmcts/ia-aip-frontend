@@ -36,7 +36,6 @@ const emailToUserId: Record<string, string> = {
   'outOfTimeRejectedDecisionAppeal@example.com': '34',
   'outOfTimeInTimeDecisionAppeal@example.com': '35',
   'appealUpToFeeChoice@example.com': '36',
-  'multiple-appeals@example.com': '100',
   'appeal-submitted-stf24w@example.com': '37',
   'late-appeal-submitted-stf24w@example.com': '38',
   'awaiting-respondent-evidence-stf24w@example.com': '39',
@@ -57,6 +56,9 @@ const emailToUserId: Record<string, string> = {
   'appeal-submitted-with-nlr-email-with-sponsor@example.com': '54',
   'appeal-submitted-with-nlr-details-fail@example.com': '55',
   'appeal-submitted-with-nlr-details@example.com': '56',
+  'oneNlrCase@example.com': '57',
+  'multiple-appeals@example.com': '100',
+  'multiple-appeals-nlr@example.com': '101',
   'setupcase@example.com': '999'
 };
 

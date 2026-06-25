@@ -62,7 +62,9 @@ const usersToCaseData: Record<string, any> = {
   '54': dataToES(mockData.appealSubmittedWithNlrEmailWithSponsor),
   '55': dataToES(mockData.appealSubmittedWithNlrDetails),
   '56': dataToES(mockData.appealSubmittedWithNlrDetails),
+  '57': dataToES(mockData.appealSubmittedWithNlrId),
   '100': mockData.multipleAppealsES,
+  '101': mockData.multipleAppealsNlrES,
 };
 
 export async function setupLoadCasesES(server: Mockttp) {

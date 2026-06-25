@@ -88,6 +88,10 @@ module.exports = {
       await I.click(i18n.components.header.casesList);
     });
 
+    When('I click the Join appeal nav link', async () => {
+      await I.click(i18n.components.header.joinAppeal);
+    });
+
     When(/^I click confirm on the confirm create appeal popup$/, async () => {
       await I.click(`#${i18n.pages.casesList.createAppealModal.id}-confirm`);
     });
@@ -125,7 +129,7 @@ module.exports = {
       await I.see(status, `//tr[contains(., "${reference}")]`);
     });
 
-    When('I click the "Back to cases list" link', async () => {
+    When('I click the "Back to view appeals" link', async () => {
       await I.click(i18n.components.back.backToCasesList);
     });
 

@@ -16,6 +16,7 @@ export interface PipValidation {
   caseIdValid?: boolean;
   doesPinExist?: boolean;
   pinValid?: boolean;
+  nlrEmailValid?: boolean;
   codeUnused?: boolean;
   codeNotExpired?: boolean;
   caseSummary?: PipCaseSummary;
@@ -35,19 +36,27 @@ const CASE_ID_VALIDATION_FAILED: PipValidation = {
   caseIdValid: false
 };
 
+const NLR_EMAIL_INCORRECT_VALIDATION_FAILED: PipValidation = {
+  caseIdValid: true,
+  nlrEmailValid: false
+};
+
 const PIP_EXISTS_VALIDATION_FAILED: PipValidation = {
   doesPinExist: false,
+  nlrEmailValid: true,
   caseIdValid: true
 };
 
 const PIP_PIN_VALIDATION_FAILED: PipValidation = {
   pinValid: false,
+  nlrEmailValid: true,
   caseIdValid: true,
   doesPinExist: true
 };
 
 const PIP_USED_VALIDATION_FAILED: PipValidation = {
   codeUnused: false,
+  nlrEmailValid: true,
   caseIdValid: true,
   doesPinExist: true,
   pinValid: true
@@ -56,6 +65,7 @@ const PIP_USED_VALIDATION_FAILED: PipValidation = {
 const PIP_EXPIRY_VALIDATION_FAILED: PipValidation = {
   codeNotExpired: false,
   caseIdValid: true,
+  nlrEmailValid: true,
   doesPinExist: true,
   pinValid: true,
   codeUnused: true
@@ -90,7 +100,14 @@ export function validateJoinAppealAccessCodeExists(caseDetails: CaseData): boole
   return caseDetails.joinAppealPin !== undefined && caseDetails.joinAppealPin !== null;
 }
 
-function validateJoinAppealPin(caseData, accessCode: string, caseId: string): PipValidation {
+export function validateJoinAppealNlrEmailMatchesCase(idamEmail: string, caseDetails: CaseData): boolean {
+  return caseDetails?.nlrDetails?.emailAddress === idamEmail;
+}
+
+function validateJoinAppealPin(caseData, accessCode: string, caseId: string, idamEmail: string): PipValidation {
+  if (!validateJoinAppealNlrEmailMatchesCase(idamEmail, caseData)) {
+    return NLR_EMAIL_INCORRECT_VALIDATION_FAILED;
+  }
   if (!validateJoinAppealAccessCodeExists(caseData)) {
     return PIP_EXISTS_VALIDATION_FAILED;
   }
@@ -159,10 +176,10 @@ export default class CcdSystemService {
     });
   }
 
-  async joinAppealPipValidation(caseId: string, accessCode: string): Promise<PipValidation> {
+  async joinAppealPipValidation(caseId: string, accessCode: string, idamEmail: string): Promise<PipValidation> {
     return this.getCaseById(caseId)
       .then(function (response) {
-      return validateJoinAppealPin(response.data.case_data, accessCode, caseId);
+      return validateJoinAppealPin(response.data.case_data, accessCode, caseId, idamEmail);
     }).catch(function (error) {
       logger.exception(`Join Appeal case validation failed for case id - '${caseId}'', error - '${error}'`, logLabel);
       return CASE_ID_VALIDATION_FAILED;

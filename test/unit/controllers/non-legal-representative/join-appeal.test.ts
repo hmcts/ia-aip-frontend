@@ -205,6 +205,7 @@ describe('Join appeal controllers setup', () => {
           accessValidated: false,
           caseIdValid: true,
           doesPinExist: true,
+          nlrEmailValid: true,
           pinValid: true,
           codeUnused: true,
           codeNotExpired: true
@@ -219,6 +220,30 @@ describe('Join appeal controllers setup', () => {
             key: 'caseReference',
             href: '#caseReference',
             text: i18n.pages.joinAppeal.enterCaseReference.error
+          }
+        };
+        await postJoinAppeal(ccdSystemService as CcdSystemService)(req as Request, res as Response, next);
+        expect(joinAppealPipValidationStub).to.be.calledOnceWith('1234567890123456', accessCode);
+        expect(req.session.joinAppealPipValidation).to.be.undefined;
+        expect(req.session.joinAppealPipValidation || 'none').to.equal('none');
+        expect(renderStub.calledOnce).to.equal(true);
+        expectRenderedCalledOnceWithArgs(renderStub, 'non-legal-rep/join-appeal.njk', {
+          caseReference: caseId,
+          joinAppealAccessCode: accessCode,
+          errors: expectedError,
+          errorList: Object.values(expectedError),
+          previousPage: paths.common.overview
+        });
+      });
+
+      it('nlrEmailValid false', async () => {
+        pipValidation.nlrEmailValid = false;
+        joinAppealPipValidationStub.resolves(pipValidation);
+        const expectedError = {
+          caseReference: {
+            key: 'caseReference',
+            href: '#caseReference',
+            text: i18n.pages.joinAppeal.enterCaseReference.badNlrEmail.replace('{{ caseReference }}', caseId)
           }
         };
         await postJoinAppeal(ccdSystemService as CcdSystemService)(req as Request, res as Response, next);

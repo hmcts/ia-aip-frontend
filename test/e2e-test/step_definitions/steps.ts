@@ -25,6 +25,7 @@ const { legalRepCreateCase } = require('../pages/legal-rep-create-case/legal-rep
 const { makeAppealApplication } = require('../pages/make-application/make-appeal-application');
 const { makeHearingApplication } = require('../pages/make-application/make-hearing-application');
 const { addNonLegalRep } = require('../pages/non-legal-rep/add-non-legal-rep');
+const { joinAppeal } = require('../pages/non-legal-rep/join-appeal');
 const { nonLegalRepDetails } = require('../pages/non-legal-rep/non-legal-rep-details');
 const { oocProtectionDepartureDate } = require('../pages/ooc-details/out-of-country');
 const { outOfTimeAppeal } = require('../pages/out-of-time-appeal/out-of-time');
@@ -78,6 +79,7 @@ oocAddress(I);
 contactDetails(I);
 hasSponsor(I);
 addNonLegalRep(I);
+joinAppeal(I);
 nonLegalRepDetails(I);
 sponsorName(I);
 sponsorAddress(I);

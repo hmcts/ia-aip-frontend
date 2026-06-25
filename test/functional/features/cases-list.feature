@@ -56,7 +56,7 @@ Feature: Cases list page
     Then I should see the cases list page
     When I click "View" link for appeal "PA/50100/2024"
     Then I should see the appeal overview page
-    When I click the "Back to cases list" link
+    When I click the "Back to view appeals" link
     Then I should see the cases list page
     And I should see a table with 3 appeals
 

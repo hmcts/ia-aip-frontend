@@ -51,8 +51,6 @@ function postJoinAppeal(ccdSystemService: CcdSystemService) {
           previousPageText: i18n.components.back.backToCasesList
         });
       }
-      logger.traceWorker(req.idam.userDetails.sub, 'ploop-join-appeal');
-      logger.traceWorker(JSON.stringify(req.idam), 'ploop-join-appeal');
       const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(
         caseReferenceWithoutDashes,
         req.body['joinAppealAccessCode'],

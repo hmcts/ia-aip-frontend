@@ -71,7 +71,6 @@ const PIP_EXPIRY_VALIDATION_FAILED: PipValidation = {
   codeUnused: true
 };
 
-
 export function validateAccessCode(caseDetails, accessCode: string): boolean {
   if (caseDetails.appellantPinInPost) {
     const expiryDate: Date = new Date(caseDetails.appellantPinInPost.expiryDate);
@@ -101,16 +100,10 @@ export function validateJoinAppealAccessCodeExists(caseDetails: CaseData): boole
 }
 
 export function validateJoinAppealNlrEmailMatchesCase(idamEmail: string, caseDetails: CaseData): boolean {
-  logger.traceWorker(JSON.stringify(caseDetails?.nlrDetails), 'ploop-ccd-system-validate');
-  logger.traceWorker(idamEmail, 'ploop-ccd-system-validate');
-  logger.traceWorker(caseDetails?.nlrDetails?.emailAddress, 'ploop-ccd-system-validate');
   return caseDetails?.nlrDetails?.emailAddress === idamEmail;
 }
 
 function validateJoinAppealPin(caseData, accessCode: string, caseId: string, idamEmail: string): PipValidation {
-  if (!validateJoinAppealNlrEmailMatchesCase(idamEmail, caseData)) {
-    return NLR_EMAIL_INCORRECT_VALIDATION_FAILED;
-  }
   if (!validateJoinAppealAccessCodeExists(caseData)) {
     return PIP_EXISTS_VALIDATION_FAILED;
   }
@@ -123,6 +116,9 @@ function validateJoinAppealPin(caseData, accessCode: string, caseId: string, ida
   }
   if (!validateJoinAppealAccessCodeExpiryDate(joinAppealPin)) {
     return PIP_EXPIRY_VALIDATION_FAILED;
+  }
+  if (!validateJoinAppealNlrEmailMatchesCase(idamEmail, caseData)) {
+    return NLR_EMAIL_INCORRECT_VALIDATION_FAILED;
   }
   logger.trace(`Join Appeal Pin in Post validation successful for case id - '${caseId}'`, logLabel);
   return getJoinAppealPipValidationSuccess(caseId, caseData);
@@ -182,18 +178,17 @@ export default class CcdSystemService {
   async joinAppealPipValidation(caseId: string, accessCode: string, idamEmail: string): Promise<PipValidation> {
     return this.getCaseById(caseId)
       .then(function (response) {
-      return validateJoinAppealPin(response.data.case_data, accessCode, caseId, idamEmail);
-    }).catch(function (error) {
-      logger.exception(`Join Appeal case validation failed for case id - '${caseId}'', error - '${error}'`, logLabel);
-      return CASE_ID_VALIDATION_FAILED;
-    });
+        return validateJoinAppealPin(response.data.case_data, accessCode, caseId, idamEmail);
+      }).catch(function (error) {
+        logger.exception(`Join Appeal case validation failed for case id - '${caseId}'', error - '${error}'`, logLabel);
+        return CASE_ID_VALIDATION_FAILED;
+      });
   }
 
   async getCaseById(caseId: string): Promise<any> {
     const userToken = await this._authenticationService.getCaseworkSystemToken();
     const userId = await this._authenticationService.getCaseworkSystemUUID(userToken);
     const headers = await this.getHeaders(userToken);
-    logger.traceWorker(`${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`, 'ploop-ccd-system');
     return axios.get(
       `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`, {
         headers: headers

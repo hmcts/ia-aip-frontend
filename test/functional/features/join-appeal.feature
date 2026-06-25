@@ -1,9 +1,9 @@
-Feature: Join appeal as a non-legal representative
+Feature: Join appeal as a non-legal representative @testy-test
   In order to achieve my goals
   As a non-legal representative
   I want be able to join an ongoing appeal
 
-  Scenario: Join appeal
+  Scenario: Join appeal error messages
     Given I have logged in as an appellant with email "appeal-submitted@example.com"
     And I visit the cases list page
     When I click the Join appeal nav link
@@ -32,10 +32,6 @@ Feature: Join appeal as a non-legal representative
     And I click the Join appeal button
     Then I should see error "There is no access code for the case with the reference 1111-1111-1111-1111. Please ask the appellant to invite you to join the appeal."
 
-    When I fill the online-case-reference-number field with "1111 1111 2222 2222"
-    And I click the Join appeal button
-    Then I should see error "Your details are not attached to the case with the reference 1111 1111 2222 2222. Please ask the appellant to invite you to join the appeal."
-
     When I fill the online-case-reference-number field with "2222 2222 2222 2222"
     And I click the Join appeal button
     Then I should see error "The access code provided is not valid for the case with the reference 2222 2222 2222 2222. Please try entering it again."
@@ -49,7 +45,27 @@ Feature: Join appeal as a non-legal representative
     And I click the Join appeal button
     Then I should see error "The access code provided for the case with the reference 44 44-4444-4 444-4444 has expired. Please ask the appellant to invite you to join the appeal again."
 
+    When I fill the online-case-reference-number field with "1111 1111 2222 2222"
+    And I fill the access-code field with "valid-access-code"
+    And I click the Join appeal button
+    Then I should see error "Your details are not attached to the case with the reference 1111 1111 2222 2222. Please ask the appellant to invite you to join the appeal."
+
+
+
+  Scenario: Join appeal succeed
+    Given I have logged in as an appellant with email "appeal-submitted@example.com"
+    And I visit the cases list page
+    When I click the Join appeal nav link
+    Then I should be taken to the join appeal page
+    And I check page accessibility
+    When I click the "Back to view appeals" link
+    Then I should see the cases list page
+    When I click the "Join an existing appeal" button
+    Then I should be taken to the join appeal page
+    And I should see the join appeal page content
+
     When I fill the online-case-reference-number field with "5555-55555555-5555"
+    And I fill the access-code field with "valid-access-code"
     And I click the Join appeal button
 
     Then I should be taken to the join appeal confirm details page

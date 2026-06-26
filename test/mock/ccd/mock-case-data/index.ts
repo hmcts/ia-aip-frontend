@@ -4,7 +4,9 @@ import appealSubmittedWithNlrId2 from './data/appeal-submitted-with-nlr-id-2';
 import appealSubmittedWithNlrId3 from './data/appeal-submitted-with-nlr-id-3';
 import appealSubmittedWithNlrIdWithSponsor from './data/appeal-submitted-with-nlr-id-with-sponsor';
 import appealSubmittedWithNlrIdWithSponsor2 from './data/appeal-submitted-with-nlr-id-with-sponsor-2';
+import appealSubmittedWithNoNlrDetails from './data/appeal-submitted-with-no-nlr-details';
 import appealSubmittedWithNlrDetails from './data/appealSubmittedWithNlrDetails';
+import appealSubmittedWithNlrDetails2 from './data/appealSubmittedWithNlrDetails-2';
 import appealSubmittedWithNlrEmailWithoutSponsor from './data/appealSubmittedWithNlrEmailWithoutSponsor';
 import appealSubmittedWithNlrEmailWithSponsor from './data/appealSubmittedWithNlrEmailWithSponsor';
 import appealUpToFeeChoice from './data/appealUpToFeeChoice';
@@ -17,6 +19,9 @@ import appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress from './d
 import appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal from './data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal';
 import appealWithHomeOfficeReference from './data/appealWithHomeOfficeReference';
 import startAppealUpToHasSponsorOrNlr from './data/appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr';
+import startAppealUpToHasSponsorOrNlr2 from './data/appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-2';
+import startAppealUpToHasSponsorOrNlr3 from './data/appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-3';
+import startAppealUpToHasSponsorOrNlr4 from './data/appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-4';
 import awaitingCmaRequirements from './data/awaiting-cma-requirements';
 import awaitingCmaRequirementsWithTimeExtensions from './data/awaiting-cma-requirements-with-time-extensions';
 import awaitingReasonsForAppealCaseData from './data/awaiting-reasons-for-appeal';
@@ -34,8 +39,11 @@ import { multipleAppealCase1003 } from './data/multiple-appeals';
 import multipleAppealsES from './data/multiple-appeals-es';
 import multipleAppealsNlrES from './data/multiple-appeals-nlr-es';
 import outOfTimeDecisionGranted from './data/out-of-time-decision-granted';
+import outOfTimeDecisionGranted2 from './data/out-of-time-decision-granted-2';
 import outOfTimeDecisionInTime from './data/out-of-time-decision-in-time';
+import outOfTimeDecisionInTime2 from './data/out-of-time-decision-in-time-2';
 import outOfTimeDecisionRejected from './data/out-of-time-decision-rejected';
+import outOfTimeDecisionRejected2 from './data/out-of-time-decision-rejected-2';
 import outOfTimeAppealWithReasonForBeingLateAnEvidence from './data/outOfTimeAppealWithReasonForBeingLateAnEvidence';
 import partialAppealStartedCaseData from './data/partial-appeal-started';
 import partialAwaitingReasonsForAppealCaseData from './data/partial-awaiting-reasons-for-appeal';
@@ -61,6 +69,7 @@ import uploadAddendumEvidence from './data/upload-addendum-evidence';
 export default {
   partialAppealStartedCaseData,
   appealSubmittedCaseData,
+  appealSubmittedWithNoNlrDetails,
   awaitingReasonsForAppealCaseData,
   awaitingReasonsForAppealCaseDataWithTimeExtension,
   partialAwaitingReasonsForAppealCaseData,
@@ -115,6 +124,13 @@ export default {
   appealSubmittedWithNlrId3,
   appealSubmittedWithNlrIdWithSponsor,
   appealSubmittedWithNlrIdWithSponsor2,
+  appealSubmittedWithNlrDetails2,
+  startAppealUpToHasSponsorOrNlr2,
+  startAppealUpToHasSponsorOrNlr3,
+  startAppealUpToHasSponsorOrNlr4,
+  outOfTimeDecisionGranted2,
+  outOfTimeDecisionInTime2,
+  outOfTimeDecisionRejected2,
   multipleAppealCase1001,
   multipleAppealCase1002,
   multipleAppealCase1003

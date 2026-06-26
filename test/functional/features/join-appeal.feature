@@ -1,4 +1,4 @@
-Feature: Join appeal as a non-legal representative @testy-test
+Feature: Join appeal as a non-legal representative
   In order to achieve my goals
   As a non-legal representative
   I want be able to join an ongoing appeal

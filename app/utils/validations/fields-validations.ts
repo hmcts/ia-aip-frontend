@@ -98,6 +98,38 @@ function homeOfficeNumberValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function updatedHomeOfficeNumberValidation(obj: object) {
+  /**
+   * Validates whether the Home Office reference number
+   * Home Office reference accepts either UANs or GWF reference.
+   * UAN has the format of xxxx-xxxx-xxxx-xxxx.
+   * GWF reference has the format of GWFxxxxxxxxx
+   */
+
+  const schema = Joi.object({
+    homeOfficeRefNumber: Joi.string().required().regex(/^(([0-9]{4}\-[0-9]{4}\-[0-9]{4}\-[0-9]{4})|(GWF[0-9]{9}))$/).messages({
+      'string.empty': i18n.validationErrors.homeOfficeReference.required,
+      'string.pattern.base': i18n.validationErrors.homeOfficeReference.updatedInvalid
+    })
+  }).unknown();
+  return validate(obj, schema);
+}
+
+function updatedGwfReferenceNumberValidation(obj: object): null | ValidationErrors {
+  /**
+   * Validates the Global Web Form (GWF) reference number
+   * GWF reference has the format of GWF12345678
+   */
+
+  const schema = Joi.object({
+    gwfReferenceNumber: Joi.string().required().regex(/^GWF[0-9]{9}$/).messages({
+      'string.empty': i18n.validationErrors.gwfReference.required,
+      'string.pattern.base': i18n.validationErrors.homeOfficeReference.updatedInvalid
+    })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 function dateLetterSentValidation(obj: object): boolean | ValidationErrors {
   return dateValidation(obj, i18n.validationErrors.dateLetterSent);
 }
@@ -683,5 +715,7 @@ export {
   asylumSupportValidation,
   helpWithFeesValidation,
   helpWithFeesRefNumberValidation,
-  deportationOrderOptionsValidation
+  deportationOrderOptionsValidation,
+  updatedHomeOfficeNumberValidation,
+  updatedGwfReferenceNumberValidation,
 };

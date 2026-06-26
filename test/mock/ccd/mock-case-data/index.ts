@@ -39,11 +39,8 @@ import { multipleAppealCase1003 } from './data/multiple-appeals';
 import multipleAppealsES from './data/multiple-appeals-es';
 import multipleAppealsNlrES from './data/multiple-appeals-nlr-es';
 import outOfTimeDecisionGranted from './data/out-of-time-decision-granted';
-import outOfTimeDecisionGranted2 from './data/out-of-time-decision-granted-2';
 import outOfTimeDecisionInTime from './data/out-of-time-decision-in-time';
-import outOfTimeDecisionInTime2 from './data/out-of-time-decision-in-time-2';
 import outOfTimeDecisionRejected from './data/out-of-time-decision-rejected';
-import outOfTimeDecisionRejected2 from './data/out-of-time-decision-rejected-2';
 import outOfTimeAppealWithReasonForBeingLateAnEvidence from './data/outOfTimeAppealWithReasonForBeingLateAnEvidence';
 import partialAppealStartedCaseData from './data/partial-appeal-started';
 import partialAwaitingReasonsForAppealCaseData from './data/partial-awaiting-reasons-for-appeal';
@@ -128,9 +125,6 @@ export default {
   startAppealUpToHasSponsorOrNlr2,
   startAppealUpToHasSponsorOrNlr3,
   startAppealUpToHasSponsorOrNlr4,
-  outOfTimeDecisionGranted2,
-  outOfTimeDecisionInTime2,
-  outOfTimeDecisionRejected2,
   multipleAppealCase1001,
   multipleAppealCase1002,
   multipleAppealCase1003

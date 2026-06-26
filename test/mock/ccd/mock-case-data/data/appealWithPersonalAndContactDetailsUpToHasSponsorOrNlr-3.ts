@@ -1,9 +1,6 @@
-import caseData from './appealSubmittedWithNlrDetails';
+import caseData from './appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr';
 
 export default {
   ...caseData,
-  'id': 66,
-  'case_data': {
-    ...caseData.case_data,
-  }
+  'id': 66
 };

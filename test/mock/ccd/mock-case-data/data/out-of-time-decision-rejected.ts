@@ -1,8 +1,8 @@
 export default {
-  'id': 15,
+  'id': 34,
   'jurisdiction': 'IA',
   'state': 'ended',
-  'version': 35,
+  'version': 34,
   'case_type_id': 'Asylum',
   'created_date': '2021-06-09T13:53:13.395876',
   'last_modified': '2021-06-10T11:30:55.584447',

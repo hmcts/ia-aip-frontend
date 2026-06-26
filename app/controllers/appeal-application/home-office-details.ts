@@ -1,7 +1,7 @@
+import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
-import config from 'config';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { nationalityList } from '../../data/nationality-list';

@@ -90,7 +90,7 @@ describe('fields-validations', () => {
           text: 'Enter the GWF reference number'
         }
       });
-    })
+    });
 
     it('should fail validation and return invalid message', () => {
       const validations = gwfReferenceNumberValidation({ gwfReferenceNumber: '123456789' });
@@ -157,7 +157,7 @@ describe('fields-validations', () => {
           text: 'Enter the GWF reference number'
         }
       });
-    })
+    });
 
     it('should fail validation and return invalid message', () => {
       const validations = updatedGwfReferenceNumberValidation({ gwfReferenceNumber: '123456789' });

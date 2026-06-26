@@ -1,6 +1,6 @@
+import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
-import config from 'config';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';

@@ -36,27 +36,19 @@ const CASE_ID_VALIDATION_FAILED: PipValidation = {
   caseIdValid: false
 };
 
-const NLR_EMAIL_INCORRECT_VALIDATION_FAILED: PipValidation = {
-  caseIdValid: true,
-  nlrEmailValid: false
-};
-
 const PIP_EXISTS_VALIDATION_FAILED: PipValidation = {
   doesPinExist: false,
-  nlrEmailValid: true,
   caseIdValid: true
 };
 
 const PIP_PIN_VALIDATION_FAILED: PipValidation = {
   pinValid: false,
-  nlrEmailValid: true,
   caseIdValid: true,
   doesPinExist: true
 };
 
 const PIP_USED_VALIDATION_FAILED: PipValidation = {
   codeUnused: false,
-  nlrEmailValid: true,
   caseIdValid: true,
   doesPinExist: true,
   pinValid: true
@@ -65,10 +57,18 @@ const PIP_USED_VALIDATION_FAILED: PipValidation = {
 const PIP_EXPIRY_VALIDATION_FAILED: PipValidation = {
   codeNotExpired: false,
   caseIdValid: true,
-  nlrEmailValid: true,
   doesPinExist: true,
   pinValid: true,
   codeUnused: true
+};
+
+const NLR_EMAIL_INCORRECT_VALIDATION_FAILED: PipValidation = {
+  codeNotExpired: true,
+  caseIdValid: true,
+  doesPinExist: true,
+  pinValid: true,
+  codeUnused: true,
+  nlrEmailValid: false
 };
 
 export function validateAccessCode(caseDetails, accessCode: string): boolean {

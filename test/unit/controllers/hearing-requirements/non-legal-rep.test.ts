@@ -3,21 +3,21 @@ import { SinonStub } from 'sinon';
 import {
   getIsNlrInterpreterRequiredPage,
   getNlrAttending,
+  getnlrAttendingOutsideUk,
   getNlrHearingInterpreterSignLanguageSelection,
   getNlrHearingInterpreterSpokenLanguageSelection,
   getNlrInterpreterTypePage,
   getNlrNeedHearingLoop,
   getNlrNeeds,
   getNlrNeedStepFreeAccess,
-  getnlrAttendingOutsideUk,
   postIsNlrInterpreterRequiredPage,
   postNlrAttending,
+  postnlrAttendingOutsideUk,
   postNlrHearingInterpreterSignLanguageSelection,
   postNlrHearingInterpreterSpokenLanguageSelection,
   postNlrInterpreterTypePage,
   postNlrNeedHearingLoop,
   postNlrNeedStepFreeAccess,
-  postnlrAttendingOutsideUk,
   setupHearingNonLegalRepNeedsController,
 } from '../../../../app/controllers/hearing-requirements/non-legal-rep';
 import { Events } from '../../../../app/data/events';
@@ -326,13 +326,14 @@ describe('Hearing requirements non legal rep controller', () => {
   });
 
   describe('postNlrInterpreterTypePage', () => {
-    const errorList = [
-      {
-        key: 'selections',
-        text: 'You must select at least one kind of interpreter',
-        href: '#selections'
+    const error = {
+      'selections': {
+        'href': '#interpreterType',
+        'key': 'interpreterType',
+        'text': 'You must select at least one kind of interpreter'
       }
-    ];
+    };
+    const errorList = Object.values(error);
 
     it('postNlrInterpreterTypePage should getConditionalRedirectUrl if shouldValidateWhenSaveForLater false', async () => {
       req.body.saveForLater = true;
@@ -351,7 +352,8 @@ describe('Hearing requirements non legal rep controller', () => {
         checkboxHintText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.hint,
         interpreterSpokenLanguage: false,
         interpreterSignLanguage: false,
-        errorList
+        errorList,
+        error
       });
     });
 
@@ -366,7 +368,8 @@ describe('Hearing requirements non legal rep controller', () => {
         checkboxHintText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.hint,
         interpreterSpokenLanguage: false,
         interpreterSignLanguage: false,
-        errorList
+        errorList,
+        error
       });
     });
 
@@ -381,7 +384,8 @@ describe('Hearing requirements non legal rep controller', () => {
         checkboxHintText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.hint,
         interpreterSpokenLanguage: true,
         interpreterSignLanguage: true,
-        errorList
+        errorList,
+        error
       });
     });
 

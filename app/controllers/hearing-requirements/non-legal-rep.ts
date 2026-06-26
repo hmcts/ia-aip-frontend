@@ -9,6 +9,7 @@ import * as HearingUtils from '../../utils/hearing-requirements-utils';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import {
+  createStructuredError,
   interpreterLanguageSelectionValidation,
   interpreterTypesSelectionValidation,
   yesOrNoRequiredValidation
@@ -169,13 +170,7 @@ function postNlrInterpreterTypePage(updateAppealService: UpdateAppealService) {
       const validation = interpreterTypesSelectionValidation(req.body);
       if (validation) {
         const nlrInterpreterLanguageCategory: string[] = req.session.appeal?.hearingRequirements?.nlrInterpreterLanguageCategory || [];
-        const errorList = Object.values(validation).map(e => {
-          return {
-            'key': 'interpreterType',
-            'text': e.text,
-            'href': '#interpreterType'
-          };
-        });
+        const error = createStructuredError('interpreterType', i18n.validationErrors.hearingRequirements.interpreterType.selectOneOption);
         return res.render('hearing-requirements/interpreter-types.njk', {
           previousPage: paths.submitHearingRequirements.isNlrInterpreterRequired,
           formAction: paths.submitHearingRequirements.nlrHearingInterpreterTypes,
@@ -183,8 +178,8 @@ function postNlrInterpreterTypePage(updateAppealService: UpdateAppealService) {
           checkboxHintText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.hint,
           interpreterSpokenLanguage: nlrInterpreterLanguageCategory.includes(spokenLanguageInterpreterString),
           interpreterSignLanguage: nlrInterpreterLanguageCategory.includes(signLanguageInterpreterString),
-          errorList: errorList,
-          error: validation
+          errorList: [error],
+          error: { 'selections': error }
         });
       }
 
@@ -217,7 +212,6 @@ function postNlrInterpreterTypePage(updateAppealService: UpdateAppealService) {
 function getNlrHearingInterpreterSpokenLanguageSelection(refDataServiceObj: RefDataService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await HearingUtils.retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSignLanguageDataType);
       const interpreterLanguageType: InterpreterLanguageRefData = req.session.appeal?.hearingRequirements?.nlrInterpreterSpokenLanguage;
       const interpreterSpokenSignLanguageDynamicList: DynamicList = interpreterLanguageType?.languageRefData ||
         await HearingUtils.retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSpokenLanguageDataType);
@@ -241,8 +235,10 @@ function postNlrHearingInterpreterSpokenLanguageSelection(updateAppealService: U
         await HearingUtils.retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSpokenLanguageDataType);
       const validation = interpreterLanguageSelectionValidation(req.body);
       if (validation) {
-        const isManualEntry = req.body.languageManualEntry === 'Yes';
-        interpreterSpokenSignLanguageDynamicList.value = req.body.languageRefData ? {code: req.body.languageRefData} : null;
+        const isManualEntry = req.body?.languageManualEntry === 'Yes';
+        if (interpreterSpokenSignLanguageDynamicList && req.body.languageRefData) {
+          interpreterSpokenSignLanguageDynamicList.value = { code: req.body.languageRefData };
+        }
         return res.render('hearing-requirements/interpreter-language-selection.njk',
           HearingUtils.getInterpreterRenderObject(interpreterLanguageType, interpreterSpokenSignLanguageDynamicList, true,
             paths.submitHearingRequirements.nlrHearingInterpreterTypes, isManualEntry, validation));
@@ -303,8 +299,10 @@ function postNlrHearingInterpreterSignLanguageSelection(updateAppealService: Upd
         const category = req.session.appeal?.hearingRequirements?.nlrInterpreterLanguageCategory || [];
         const previousPage = category.includes(spokenLanguageInterpreterString) ? paths.submitHearingRequirements.nlrHearingInterpreterSpokenLanguageSelection
           : paths.submitHearingRequirements.nlrHearingInterpreterTypes;
-        const isManualEntry = req.body.languageManualEntry === 'Yes';
-        interpreterSpokenSignLanguageDynamicList.value = req.body.languageRefData ? {code: req.body.languageRefData} : null;
+        const isManualEntry = req.body?.languageManualEntry === 'Yes';
+        if (interpreterSpokenSignLanguageDynamicList && req.body.languageRefData) {
+          interpreterSpokenSignLanguageDynamicList.value = { code: req.body.languageRefData };
+        }
         return res.render('hearing-requirements/interpreter-language-selection.njk',
           HearingUtils.getInterpreterRenderObject(interpreterLanguageType, interpreterSpokenSignLanguageDynamicList, false, previousPage, isManualEntry, validation));
       }

@@ -245,7 +245,7 @@ describe('hearing-requirement-utils', () => {
 
     it('should render with resObject with valid page with validation', () => {
       req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'No';
-      const validation = [{ key: 'answer', text: '"answer" is not allowed to be empty', href: '#answer' }];
+      const validation = { 'answer': { key: 'answer', text: '"answer" is not allowed to be empty', href: '#answer' } };
       nlrRadioRender(req as Request, res as Response, nextStub, 'nlrAttendingOutsideUk', 'somePreviousPage', validation as any);
       expect(nextStub).to.not.be.calledWithMatch(sinon.match.any);
       const resObject = {
@@ -254,7 +254,7 @@ describe('hearing-requirement-utils', () => {
         formAction: paths.submitHearingRequirements.nlrAttendingOutsideUk,
         question: getNlrRadioQuestion(req.session.appeal.hearingRequirements, 'nlrAttendingOutsideUk', nextStub),
         saveAndContinue: true,
-        errors: validation,
+        error: validation,
         errorList: Object.values(validation)
       };
       expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', resObject);

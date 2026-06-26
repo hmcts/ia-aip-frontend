@@ -319,68 +319,70 @@ describe('ccd-system-service', () => {
         expect(pipValidation.caseIdValid).to.equal(false);
       });
 
-
-      it('joinAppealPipValidation should return nlrEmailValid false if getCaseById valid but nlr email not on case', async () => {
-        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
-        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
-        expect(pipValidation.caseIdValid).to.equal(true);
-        expect(pipValidation.nlrEmailValid).to.equal(false);
-      });
-
-      it('joinAppealPipValidation should return nlrEmailValid false if getCaseById valid but current idam email not matching nlr email on case', async () => {
-        caseData.nlrDetails = { emailAddress: 'someOtherEmail@test.com'};
-        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
-        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
-        expect(pipValidation.caseIdValid).to.equal(true);
-        expect(pipValidation.nlrEmailValid).to.equal(false);
-      });
-
       it('joinAppealPipValidation should return doesPinExist false if getCaseById valid but no existing pin', async () => {
-        caseData.nlrDetails = { emailAddress: someIdamEmail};
         getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
         const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
         expect(pipValidation.caseIdValid).to.equal(true);
-        expect(pipValidation.nlrEmailValid).to.equal(true);
         expect(pipValidation.doesPinExist).to.equal(false);
       });
 
       it('joinAppealPipValidation should return pinValid false if doesPinExist true but invalid pin', async () => {
-        caseData.nlrDetails = { emailAddress: someIdamEmail};
         pinInPost.accessCode = invalidCode;
         caseData.joinAppealPin = pinInPost;
         getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
         const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
         expect(pipValidation.caseIdValid).to.equal(true);
-        expect(pipValidation.nlrEmailValid).to.equal(true);
         expect(pipValidation.doesPinExist).to.equal(true);
         expect(pipValidation.pinValid).to.equal(false);
       });
 
       it('joinAppealPipValidation should return codeUnused false if pinValid true but pin used', async () => {
-        caseData.nlrDetails = { emailAddress: someIdamEmail};
         pinInPost.pinUsed = 'Yes';
         caseData.joinAppealPin = pinInPost;
         getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
         const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
         expect(pipValidation.caseIdValid).to.equal(true);
-        expect(pipValidation.nlrEmailValid).to.equal(true);
         expect(pipValidation.doesPinExist).to.equal(true);
         expect(pipValidation.pinValid).to.equal(true);
         expect(pipValidation.codeUnused).to.equal(false);
       });
 
       it('joinAppealPipValidation should return codeNotExpired false if codeUnused true but pin expired', async () => {
-        caseData.nlrDetails = { emailAddress: someIdamEmail};
         pinInPost.expiryDate = alterDateByDays(todayDate, -1);
         caseData.joinAppealPin = pinInPost;
         getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
         const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
         expect(pipValidation.caseIdValid).to.equal(true);
-        expect(pipValidation.nlrEmailValid).to.equal(true);
         expect(pipValidation.doesPinExist).to.equal(true);
         expect(pipValidation.pinValid).to.equal(true);
         expect(pipValidation.codeUnused).to.equal(true);
         expect(pipValidation.codeNotExpired).to.equal(false);
+      });
+
+
+      it('joinAppealPipValidation should return nlrEmailValid false if getCaseById valid but nlr email not on case', async () => {
+        caseData.joinAppealPin = pinInPost;
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
+        expect(pipValidation.caseIdValid).to.equal(true);
+        expect(pipValidation.doesPinExist).to.equal(true);
+        expect(pipValidation.pinValid).to.equal(true);
+        expect(pipValidation.codeUnused).to.equal(true);
+        expect(pipValidation.codeNotExpired).to.equal(true);
+        expect(pipValidation.nlrEmailValid).to.equal(false);
+      });
+
+      it('joinAppealPipValidation should return nlrEmailValid false if getCaseById valid but current idam email not matching nlr email on case', async () => {
+        caseData.nlrDetails = { emailAddress: 'someOtherEmail@test.com'};
+        caseData.joinAppealPin = pinInPost;
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
+        expect(pipValidation.caseIdValid).to.equal(true);
+        expect(pipValidation.doesPinExist).to.equal(true);
+        expect(pipValidation.pinValid).to.equal(true);
+        expect(pipValidation.codeUnused).to.equal(true);
+        expect(pipValidation.codeNotExpired).to.equal(true);
+        expect(pipValidation.nlrEmailValid).to.equal(false);
       });
 
       it('joinAppealPipValidation should return success object if all validation passes', async () => {

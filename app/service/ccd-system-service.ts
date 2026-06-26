@@ -82,42 +82,42 @@ export function validateAccessCode(caseDetails, accessCode: string): boolean {
   return false;
 }
 
-export function validateJoinAppealAccessCodeExpiryDate(joinAppealPin: PinInPost): boolean {
+export function isJoinAppealAccessCodeNotExpired(joinAppealPin: PinInPost): boolean {
   const expiryDate: Date = new Date(joinAppealPin.expiryDate);
   return new Date(Date.now()) <= expiryDate;
 }
 
-export function validateJoinAppealAccessCodeUsed(joinAppealPin: PinInPost): boolean {
+export function isJoinAppealAccessCodeUnused(joinAppealPin: PinInPost): boolean {
   return joinAppealPin.pinUsed === 'No';
 }
 
-export function validateJoinAppealAccessCode(joinAppealPin: PinInPost, accessCode: string): boolean {
+export function isJoinAppealAccessCodeCorrect(joinAppealPin: PinInPost, accessCode: string): boolean {
   return joinAppealPin.accessCode === accessCode;
 }
 
-export function validateJoinAppealAccessCodeExists(caseDetails: CaseData): boolean {
+export function doesJoinAppealAccessCodeExist(caseDetails: CaseData): boolean {
   return caseDetails.joinAppealPin !== undefined && caseDetails.joinAppealPin !== null;
 }
 
-export function validateJoinAppealNlrEmailMatchesCase(idamEmail: string, caseDetails: CaseData): boolean {
+export function doesLoggedInEmailMatchCaseNlrEmail(idamEmail: string, caseDetails: CaseData): boolean {
   return caseDetails?.nlrDetails?.emailAddress === idamEmail;
 }
 
 function validateJoinAppealPin(caseData, accessCode: string, caseId: string, idamEmail: string): PipValidation {
-  if (!validateJoinAppealAccessCodeExists(caseData)) {
+  if (!doesJoinAppealAccessCodeExist(caseData)) {
     return PIP_EXISTS_VALIDATION_FAILED;
   }
   const joinAppealPin = caseData.joinAppealPin;
-  if (!validateJoinAppealAccessCode(joinAppealPin, accessCode)) {
+  if (!isJoinAppealAccessCodeCorrect(joinAppealPin, accessCode)) {
     return PIP_PIN_VALIDATION_FAILED;
   }
-  if (!validateJoinAppealAccessCodeUsed(joinAppealPin)) {
+  if (!isJoinAppealAccessCodeUnused(joinAppealPin)) {
     return PIP_USED_VALIDATION_FAILED;
   }
-  if (!validateJoinAppealAccessCodeExpiryDate(joinAppealPin)) {
+  if (!isJoinAppealAccessCodeNotExpired(joinAppealPin)) {
     return PIP_EXPIRY_VALIDATION_FAILED;
   }
-  if (!validateJoinAppealNlrEmailMatchesCase(idamEmail, caseData)) {
+  if (!doesLoggedInEmailMatchCaseNlrEmail(idamEmail, caseData)) {
     return NLR_EMAIL_INCORRECT_VALIDATION_FAILED;
   }
   logger.trace(`Join Appeal Pin in Post validation successful for case id - '${caseId}'`, logLabel);

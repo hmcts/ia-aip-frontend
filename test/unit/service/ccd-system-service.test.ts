@@ -4,10 +4,10 @@ import CcdSystemService, {
   getJoinAppealPipValidationSuccess,
   getPipValidationSuccess, PipValidation,
   validateAccessCode,
-  validateJoinAppealAccessCode,
-  validateJoinAppealAccessCodeExists,
-  validateJoinAppealAccessCodeExpiryDate,
-  validateJoinAppealAccessCodeUsed
+  isJoinAppealAccessCodeCorrect,
+  doesJoinAppealAccessCodeExist,
+  isJoinAppealAccessCodeNotExpired,
+  isJoinAppealAccessCodeUnused, doesLoggedInEmailMatchCaseNlrEmail
 } from '../../../app/service/ccd-system-service';
 import S2SService from '../../../app/service/s2s-service';
 import { SystemAuthenticationService } from '../../../app/service/system-authentication-service';
@@ -217,37 +217,47 @@ describe('ccd-system-service', () => {
       caseData = {} as CaseData;
     });
 
-    it('validateJoinAppealAccessCode functions should return true if has not expired, has not been used and is correct', async () => {
-      expect(validateJoinAppealAccessCodeExpiryDate(pinInPost)).to.equal(true);
-      expect(validateJoinAppealAccessCodeUsed(pinInPost)).to.equal(true);
-      expect(validateJoinAppealAccessCode(pinInPost, accessCode)).to.equal(true);
+    it('isJoinAppealAccessCodeCorrect functions should return true if has not expired, has not been used and is correct', async () => {
+      expect(isJoinAppealAccessCodeNotExpired(pinInPost)).to.equal(true);
+      expect(isJoinAppealAccessCodeUnused(pinInPost)).to.equal(true);
+      expect(isJoinAppealAccessCodeCorrect(pinInPost, accessCode)).to.equal(true);
     });
 
-    it('validateJoinAppealAccessCodeExpiryDate should return false if pin has expired', async () => {
+    it('isJoinAppealAccessCodeNotExpired should return false if pin has expired', async () => {
       pinInPost.expiryDate = alterDateByDays(todayDate, -1);
-      expect(validateJoinAppealAccessCodeExpiryDate(pinInPost)).to.equal(false);
+      expect(isJoinAppealAccessCodeNotExpired(pinInPost)).to.equal(false);
     });
 
-    it('validateJoinAppealAccessCodeUsed should return false if pin has been used', async () => {
+    it('doesLoggedInEmailMatchCaseNlrEmail functions should return true if nlr is on case', async () => {
+      caseData.nlrDetails = { emailAddress: 'idamEmail' };
+      expect(doesLoggedInEmailMatchCaseNlrEmail('idamEmail', caseData)).to.equal(true);
+    });
+
+    it('doesLoggedInEmailMatchCaseNlrEmail should return false if nlr does not match case', async () => {
+      caseData.nlrDetails = { emailAddress: 'idamEmail' };
+      expect(doesLoggedInEmailMatchCaseNlrEmail('differentIdamEmail', caseData)).to.equal(false);
+    });
+
+    it('isJoinAppealAccessCodeUnused should return false if pin has been used', async () => {
       pinInPost.pinUsed = 'Yes';
-      expect(validateJoinAppealAccessCodeUsed(pinInPost)).to.equal(false);
+      expect(isJoinAppealAccessCodeUnused(pinInPost)).to.equal(false);
     });
 
-    it('validateJoinAppealAccessCode should return false if pin is incorrect', async () => {
-      expect(validateJoinAppealAccessCode(pinInPost, invalidCode)).to.equal(false);
+    it('isJoinAppealAccessCodeCorrect should return false if pin is incorrect', async () => {
+      expect(isJoinAppealAccessCodeCorrect(pinInPost, invalidCode)).to.equal(false);
     });
 
-    it('validateJoinAppealAccessCodeExists should return false if joinAppealPin is undefined, null or empty', async () => {
-      expect(validateJoinAppealAccessCodeExists(caseData)).to.equal(false);
+    it('doesJoinAppealAccessCodeExist should return false if joinAppealPin is undefined, null or empty', async () => {
+      expect(doesJoinAppealAccessCodeExist(caseData)).to.equal(false);
       caseData.joinAppealPin = undefined;
-      expect(validateJoinAppealAccessCodeExists(caseData)).to.equal(false);
+      expect(doesJoinAppealAccessCodeExist(caseData)).to.equal(false);
       caseData.joinAppealPin = null;
-      expect(validateJoinAppealAccessCodeExists(caseData)).to.equal(false);
+      expect(doesJoinAppealAccessCodeExist(caseData)).to.equal(false);
     });
 
-    it('validateJoinAppealAccessCodeExists should return true if pin exists', async () => {
+    it('doesJoinAppealAccessCodeExist should return true if pin exists', async () => {
       caseData = { joinAppealPin: pinInPost } as CaseData;
-      expect(validateJoinAppealAccessCodeExists(caseData)).to.equal(true);
+      expect(doesJoinAppealAccessCodeExist(caseData)).to.equal(true);
     });
 
     it('getJoinAppealPipValidationSuccess should return case summary with accessValidated set to true', async () => {

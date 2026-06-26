@@ -82,23 +82,23 @@ function createStructuredErrorWithReference(id: string, message: string, caseRef
 }
 
 function getPipError(pipValidation: PipValidation, caseReferenceGiven: string): ValidationError {
-  if (!pipValidation.caseIdValid) {
+  if (pipValidation.caseIdValid === false) {
     return createStructuredError('caseReference', i18n.pages.joinAppeal.enterCaseReference.error);
   }
-  if (!pipValidation.nlrEmailValid) {
-    return createStructuredErrorWithReference('caseReference', i18n.pages.joinAppeal.enterCaseReference.badNlrEmail, caseReferenceGiven);
-  }
-  if (!pipValidation.doesPinExist) {
+  if (pipValidation.doesPinExist === false) {
     return createStructuredErrorWithReference('joinAppealAccessCode', i18n.pages.joinAppeal.enterAccessCode.pinNotExistError, caseReferenceGiven);
   }
-  if (!pipValidation.pinValid) {
+  if (pipValidation.pinValid === false) {
     return createStructuredErrorWithReference('joinAppealAccessCode', i18n.pages.joinAppeal.enterAccessCode.pinInvalidError, caseReferenceGiven);
   }
-  if (!pipValidation.codeUnused) {
+  if (pipValidation.codeUnused === false) {
     return createStructuredErrorWithReference('joinAppealAccessCode', i18n.pages.joinAppeal.enterAccessCode.pinUsedError, caseReferenceGiven);
   }
-  if (!pipValidation.codeNotExpired) {
+  if (pipValidation.codeNotExpired === false) {
     return createStructuredErrorWithReference('joinAppealAccessCode', i18n.pages.joinAppeal.enterAccessCode.pinExpiredError, caseReferenceGiven);
+  }
+  if (pipValidation.nlrEmailValid === false) {
+    return createStructuredErrorWithReference('caseReference', i18n.pages.joinAppeal.enterCaseReference.badNlrEmail, caseReferenceGiven);
   }
   return createStructuredErrorWithReference('joinAppealAccessCode', i18n.pages.joinAppeal.enterAccessCode.pinGenericError, caseReferenceGiven);
 }

@@ -1,4 +1,4 @@
-Feature: NLR needs @testy-test
+Feature: NLR needs
   In order to submit my hearing requirements
   As a citizen
   I want to be able to fill in my non-legal representative's needs
@@ -66,7 +66,6 @@ Feature: NLR needs @testy-test
     And I should see the "Will your non-legal representative attend the hearing?" task in "Saved" state
     And I should see the "Will your non-legal representative need an interpreter, step-free access or a hearing loop at the hearing?" task in "To do" state
     And I should see the "Will you need anything else at the hearing?" task in "Cannot start yet" state
-
 
   Scenario: Navigate non-legal representative needs second section
     Given I have logged in as an appellant with email "submitHearingRequirementsAccessNeedsCompletedWithNlrAttending@example.com"

@@ -107,9 +107,18 @@ module.exports = {
       await I.see(title, 'h1');
     });
 
+    Then(/^I see "([^"]*)" as a "([^"]*)" element$/, async (text: string, element: string) => {
+      await I.see(text, element);
+    });
+
     Then(/^I see "([^"]*)" in subheading$/, async (title: string) => {
       await I.see(title, ['h2', 'h3', 'h4']);
     });
+
+    Then(/^I see "([^"]*)" as hint text$/, async (text: string) => {
+      await I.see(text, '.govuk-hint');
+    });
+
 
     Then(/^I see "([^"]*)" in timeline$/, async (title: string) => {
       await I.see(title, '.timeline-event');
@@ -143,8 +152,12 @@ module.exports = {
       await I.selectOption(dropdown, option);
     });
 
-    Then(/^I check "([^"]*)" option$/, async (option) => {
-      await I.checkOption(option);
+    Then(/^I (check|uncheck) "([^"]*)" option$/, async (choice, option) => {
+      if (choice === 'check') {
+        await I.checkOption(option);
+      } else {
+        await I.uncheckOption(option);
+      }
     });
 
     Then(/^I click "([^"]*)" change link$/, async (text) => {
@@ -166,6 +179,10 @@ module.exports = {
 
     When('I select from the drop-down', async () => {
       await I.selectOption('#language', 'Afar');
+    });
+
+    When(/^I select "([^"]*)" from the "([^"]*)" drop-down$/, async (option, dropdown) => {
+      await I.selectOption(`#${dropdown}`, option);
     });
 
     Then('I should see the date time and hearing centre in do this next', async () => {

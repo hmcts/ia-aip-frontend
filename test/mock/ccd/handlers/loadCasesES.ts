@@ -70,6 +70,9 @@ const usersToCaseData: Record<string, any> = {
   '65': dataToES(mockData.startAppealUpToHasSponsorOrNlr2),
   '66': dataToES(mockData.startAppealUpToHasSponsorOrNlr3),
   '67': dataToES(mockData.startAppealUpToHasSponsorOrNlr4),
+  '68': dataToES(mockData.submitHearingRequirementsAccessNeedsCompleted),
+  '69': dataToES(mockData.submitHearingRequirementsAccessNeedsCompletedNlrAttending),
+  '70': dataToES(mockData.submitHearingRequirementsAccessNeedsCompletedNoActiveNlr),
   '100': mockData.multipleAppealsES,
   '101': mockData.multipleAppealsNlrES,
 };

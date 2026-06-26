@@ -86,7 +86,7 @@ function nlrRadioRender(req: Request, res: Response, next: NextFunction, page: s
     };
 
     if (validation) {
-      resObject['errors'] = validation;
+      resObject['error'] = validation;
       resObject['errorList'] = Object.values(validation);
     }
     return res.render('templates/radio-question-page.njk', resObject);
@@ -100,10 +100,10 @@ function getInterpreterRenderObject(interpreterLanguageType: InterpreterLanguage
                                     interpreterSpokenSignLanguageDynamicList: DynamicList,
                                     spokenLanguage: boolean,
                                     previousPage: string,
+                                    isManualEntry?: boolean,
                                     validation?: ValidationErrors) {
   const source = spokenLanguage ? i18n.pages.hearingRequirements.nlrNeedsSection.interpreterSpokenLanguageSelection
     : i18n.pages.hearingRequirements.nlrNeedsSection.interpreterSignLanguageSelection;
-
   const renderObject = {
     previousPage: previousPage,
     formAction: spokenLanguage ? paths.submitHearingRequirements.nlrHearingInterpreterSpokenLanguageSelection
@@ -113,7 +113,7 @@ function getInterpreterRenderObject(interpreterLanguageType: InterpreterLanguage
     dropdownListText: source.dropdownListText,
     checkBoxText: source.checkBoxText,
     languageManuallyText: source.languageManuallyText,
-    languageManualEntry: interpreterLanguageType?.languageManualEntry?.includes('Yes') || false,
+    languageManualEntry: interpreterLanguageType?.languageManualEntry?.includes('Yes') || isManualEntry || false,
     languageManualEntryDescription: interpreterLanguageType?.languageManualEntryDescription || '',
     items: convertDynamicListToSelectItemList(interpreterSpokenSignLanguageDynamicList)
   };

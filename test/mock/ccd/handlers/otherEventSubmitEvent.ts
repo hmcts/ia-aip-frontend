@@ -43,6 +43,8 @@ function getNextState(body: EventSubmitBody): string {
       return 'cmaListed';
     case 'uploadAddendumEvidenceLegalRep':
       return 'preHearing';
+    case 'editAipHearingRequirements':
+      return 'submitHearingRequirements';
     case 'applyForFTPAAppellant':
       return 'ftpaSubmitted';
     case 'residentJudgeFtpaDecision':

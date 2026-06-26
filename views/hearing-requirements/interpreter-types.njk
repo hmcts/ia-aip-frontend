@@ -18,6 +18,9 @@
     {{ govukCheckboxes({
         idPrefix: "interpreterType",
         name: "selections",
+        errorMessage: null if not errorList else {
+          text: errorList[0].text
+        },
         fieldset: {
             legend: {
             text: pageQuestion,

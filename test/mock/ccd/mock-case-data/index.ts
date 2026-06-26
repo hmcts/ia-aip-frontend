@@ -60,6 +60,9 @@ import prepareForHearingSTF24W from './data/statutory-timeframe-24-weeks/prepare
 import reasonsForAppealSubmittedSTF24W from './data/statutory-timeframe-24-weeks/reasons-for-appeal-submitted';
 import respondentReviewSTF24W from './data/statutory-timeframe-24-weeks/respondent-review';
 import submitHearingRequirementsSTF24W from './data/statutory-timeframe-24-weeks/submit-hearing-requirements';
+import submitHearingRequirementsAccessNeedsCompleted from './data/submit-hearing-requirements-access-needs-complete';
+import submitHearingRequirementsAccessNeedsCompletedNlrAttending from './data/submit-hearing-requirements-access-needs-complete-nlr-attending';
+import submitHearingRequirementsAccessNeedsCompletedNoActiveNlr from './data/submit-hearing-requirements-access-needs-complete-no-active-nlr';
 import submittedCmaRequirements from './data/submitted-cma-requirements';
 import uploadAddendumEvidence from './data/upload-addendum-evidence';
 
@@ -125,6 +128,9 @@ export default {
   startAppealUpToHasSponsorOrNlr2,
   startAppealUpToHasSponsorOrNlr3,
   startAppealUpToHasSponsorOrNlr4,
+  submitHearingRequirementsAccessNeedsCompleted,
+  submitHearingRequirementsAccessNeedsCompletedNlrAttending,
+  submitHearingRequirementsAccessNeedsCompletedNoActiveNlr,
   multipleAppealCase1001,
   multipleAppealCase1002,
   multipleAppealCase1003

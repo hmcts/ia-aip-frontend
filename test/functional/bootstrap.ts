@@ -12,6 +12,8 @@ import dmHandlers from '../mock/document-management-store/handlers';
 import idamHandlers from '../mock/idam/handlers';
 import { setupPcqHealth } from '../mock/pcq/handlers/health';
 import { setupPostcodeLookup } from '../mock/postcode-lookup/handlers/postcodeLookup';
+import { setupSignLanguage } from '../mock/refdata/handlers/sign-language';
+import { setupInterpreterLanguage } from '../mock/refdata/handlers/spoken-language';
 import { setupLease } from '../mock/s2s/handlers/lease';
 
 // Your main app
@@ -43,6 +45,7 @@ export async function bootstrap() {
   await startMockServer(20003, dmHandlers);
   await startMockServer(20004, [ setupLease ]);
   await startMockServer(20005, [ setupPcqHealth ]);
+  await startMockServer(20006, [ setupInterpreterLanguage, setupSignLanguage ]);
   logger.trace('servers set up', logLabel);
 
   // Start main app

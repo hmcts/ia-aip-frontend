@@ -16,6 +16,8 @@ function getCurrentState(eventType: string): string {
       return 'awaitingClarifyingQuestionsAnswers';
     case 'editCmaRequirements':
       return 'awaitingCmaRequirements';
+    case 'editAipHearingRequirements':
+      return 'submitHearingRequirements';
     case 'submitClarifyingQuestionAnswers':
       return 'clarifyingQuestionsAnswersSubmitted';
     case 'submitCmaRequirements':

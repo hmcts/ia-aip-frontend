@@ -65,6 +65,9 @@ export const emailToUserId: Record<string, string> = {
   'appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-1@example.com': '65',
   'appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-2@example.com': '66',
   'appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-3@example.com': '67',
+  'submitHearingRequirementsAccessNeedsCompleted@example.com': '68',
+  'submitHearingRequirementsAccessNeedsCompletedWithNlrAttending@example.com': '69',
+  'submitHearingRequirementsAccessNeedsCompletedWithNoActiveNlr@example.com': '70',
   'multiple-appeals@example.com': '100',
   'multiple-appeals-nlr@example.com': '101',
   'setupcase@example.com': '999'

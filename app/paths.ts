@@ -343,7 +343,6 @@ const paths = {
     provideNlrAddress: '/add-non-legal-rep/provide-address',
     provideNlrPhoneNumber: '/add-non-legal-rep/provide-phone-number',
     provideNlrDetailsCheckAndSend: '/add-non-legal-rep/confirm-provide-details',
-    provideNlrDetailsConfirmation: '/add-non-legal-rep/confirmation',
     inviteToJoinAppeal: '/add-non-legal-rep/invite-non-legal-rep',
     inviteToJoinAppealConfirmation: '/add-non-legal-rep/invite-non-legal-rep/confirm',
     joinAppeal: '/join-appeal',

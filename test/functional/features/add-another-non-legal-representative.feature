@@ -12,7 +12,7 @@ Feature: Add another non-legal representative
     When I check the "I understand that adding another non-legal representative will remove the current non-legal representative's access to my case and they will no longer be able to view or track my appeal." option
     And I click continue
     Then I should be taken to the add non legal representative page
-    And I should see the add non legal representative page content
+    And I should see the add non legal representative page content without sponsor
 
 
 

@@ -7,16 +7,15 @@ Feature: Add a non-legal representative
     Given I have logged in as an appellant with email "appeal-submitted-with-no-nlr-details@example.com"
     And I click "Add a non-legal representative" link
     Then I should be taken to the add non legal representative page
-    And I should see the add non legal representative page content
+    And I should see the add non legal representative page content without sponsor
     And I check page accessibility
+    And I should see the add nlr task list page with "What is your non-legal representative's email address?" marked as "To do"
+    And I should see the add nlr task list page with "What is your non-legal representative's name?" marked as "Cannot start yet"
+    And I should see the add nlr task list page with "What is your non-legal representative's address?" marked as "Cannot start yet"
+    And I should see the add nlr task list page with "What is your non-legal representative's phone number?" marked as "Cannot start yet"
+    And I should see the add nlr task list page with "Check details and send invite" marked as "Cannot start yet"
 
-    When I click the "Provide details" button
-    Then I should see the stepTwoNoEmailProvided error
-
-    When I click the "Invite to join the appeal" button
-    Then I should see the stepThreeNoEmailProvided error
-
-    When I click the "Invite to create an account" button
+    When I click "What is your non-legal representative's email address?" link
     Then I should be taken to the invite nlr to create an account page
     And I check page accessibility
 
@@ -37,18 +36,26 @@ Feature: Add a non-legal representative
     Then I should see the invited nlr to create an account confirmation page
     When I click the "Back to add non-legal representative" button
     Then I should be taken to the add non legal representative page
+    And I should see the add nlr task list page with "What is your non-legal representative's email address?" marked as "Saved"
+    And I should see the add nlr task list page with "What is your non-legal representative's name?" marked as "To do"
+    And I should see the add nlr task list page with "What is your non-legal representative's address?" marked as "To do"
+    And I should see the add nlr task list page with "What is your non-legal representative's phone number?" marked as "To do"
+    And I should see the add nlr task list page with "Check details and send invite" marked as "Cannot start yet"
+
 
   Scenario: NLR email provided without sponsor
     Given I have logged in as an appellant with email "appeal-submitted-with-nlr-email-without-sponsor@example.com"
     And I click "Add a non-legal representative" link
     Then I should be taken to the add non legal representative page
-    And I should see the add non legal representative page content
+    And I should see the add non legal representative page content without sponsor
     And I check page accessibility
+    And I should see the add nlr task list page with "What is your non-legal representative's email address?" marked as "Saved"
+    And I should see the add nlr task list page with "What is your non-legal representative's name?" marked as "To do"
+    And I should see the add nlr task list page with "What is your non-legal representative's address?" marked as "To do"
+    And I should see the add nlr task list page with "What is your non-legal representative's phone number?" marked as "To do"
+    And I should see the add nlr task list page with "Check details and send invite" marked as "Cannot start yet"
 
-    When I click the "Invite to join the appeal" button
-    Then I should see the stepThreeNoDetailsProvided error
-
-    When I click the "Provide details" button
+    When I click "What is your non-legal representative's name?" link
     Then I should be taken to the provide non legal rep name page
     And I check page accessibility
 
@@ -67,8 +74,11 @@ Feature: Add a non-legal representative
     And I should not see error "You need to provide your non-legal representative's family name or names"
     When I enter a full non legal rep name
     And I click save and continue
-    And I check page accessibility
 
+    Then I should be taken to the add non legal representative page
+    And I should see the add nlr task list page with "What is your non-legal representative's name?" marked as "Saved"
+
+    When I click "What is your non-legal representative's address?" link
     Then I should be taken to the provide non legal rep address page
     And I check page accessibility
     And I see "What is your non-legal representative's address?" in title
@@ -79,6 +89,10 @@ Feature: Add a non-legal representative
     When I enter a valid non legal rep address in the text area
     And I click save and continue
 
+    Then I should be taken to the add non legal representative page
+    And I should see the add nlr task list page with "What is your non-legal representative's address?" marked as "Saved"
+
+    When I click "What is your non-legal representative's phone number?" link
     Then I should be taken to the provide non legal rep phone number page
     And I see "What is your non-legal representative's phone number?" in title
     And I click save and continue
@@ -97,22 +111,23 @@ Feature: Add a non-legal representative
     When I enter a valid non legal rep phone number
     And I click save and continue
 
-    Then I should be taken to the provide nlr details CYA page
-    And I check page accessibility
-
-    When I click the "Send" button
-    Then I should be taken to the provide nlr details confirmation page
-
-    When I click the "Back to add non-legal representative" button
     Then I should be taken to the add non legal representative page
+    And I should see the add nlr task list page with "What is your non-legal representative's phone number?" marked as "Saved"
 
   Scenario: NLR email provided with sponsor
     Given I have logged in as an appellant with email "appeal-submitted-with-nlr-email-with-sponsor@example.com"
     And I click "Add a non-legal representative" link
     Then I should be taken to the add non legal representative page
-    And I should see the add non legal representative page content
+    And I should see the add non legal representative page content with sponsor
+    And I check page accessibility
+    And I should see the add nlr task list page with "What is your non-legal representative's email address?" marked as "Saved"
+    And I should see the add nlr task list page with "Is your non-legal representative the same person as your sponsor?" marked as "To do"
+    And I should see the add nlr task list page with "What is your non-legal representative's name?" marked as "To do"
+    And I should see the add nlr task list page with "What is your non-legal representative's address?" marked as "To do"
+    And I should see the add nlr task list page with "What is your non-legal representative's phone number?" marked as "To do"
+    And I should see the add nlr task list page with "Check details and send invite" marked as "Cannot start yet"
 
-    When I click the "Provide details" button
+    When I click "Is your non-legal representative the same person as your sponsor?" link
     Then I should be taken to the provide non legal rep is same person page
     And I check page accessibility
     And I see "Are your sponsor and non-legal representative the same person?" in title
@@ -120,23 +135,23 @@ Feature: Add a non-legal representative
     Then I should see error "Select yes if your sponsor and non-legal representative are the same person"
 
     When I select "No" for same person and save and continue
-    Then I should be taken to the provide non legal rep name page
+    Then I should be taken to the add non legal representative page
+    And I should see the add nlr task list page with "Is your non-legal representative the same person as your sponsor?" marked as "Saved"
 
-    And I see "What is your non-legal representative's name?" in title
-    When I enter a full non legal rep name
-    And I click save and continue
-
+    When I click "What is your non-legal representative's address?" link
     Then I should be taken to the provide non legal rep address page
     And I should see the nlr address text area
 
     When I click the back button
-    Then I should be taken to the provide non legal rep name page
-    When I click the back button
-    Then I should be taken to the provide non legal rep is same person page
-    When I select "Yes" for same person and save and continue
+    Then I should be taken to the add non legal representative page
 
-    Then I should be taken to the provide non legal rep name page
-    And I click save and continue
+    When I click "Is your non-legal representative the same person as your sponsor?" link
+    Then I should be taken to the provide non legal rep is same person page
+
+    When I select "Yes" for same person and save and continue
+    Then I should be taken to the add non legal representative page
+
+    When I click "What is your non-legal representative's address?" link
     Then I should be taken to the provide non legal rep address page
     And I check page accessibility
     And I see "What is your non-legal representative's address?" in title
@@ -163,36 +178,33 @@ Feature: Add a non-legal representative
     When I enter a valid non legal rep address
     And I click save and continue
 
-    Then I should be taken to the provide non legal rep phone number page
-    And I see "What is your non-legal representative's phone number?" in title
-    When I enter a valid non legal rep phone number
-    And I click save and continue
-
-    Then I should be taken to the provide nlr details CYA page
-    And I check page accessibility
-
-    When I click the "Send" button
-    Then I should be taken to the provide nlr details confirmation page
-
-    When I click the "Back to add non-legal representative" button
     Then I should be taken to the add non legal representative page
+    And I should see the add nlr task list page with "What is your non-legal representative's address?" marked as "Saved"
 
   Scenario: NLR details provided NLR not signed up
     Given I have logged in as an appellant with email "appeal-submitted-with-nlr-details-fail@example.com"
     And I click "Add a non-legal representative" link
     Then I should be taken to the add non legal representative page
-    And I should see the add non legal representative page content
-    And I check page accessibility
+
+    And I should see the add nlr task list page with "What is your non-legal representative's email address?" marked as "Saved"
+    And I should see the add nlr task list page with "What is your non-legal representative's name?" marked as "Saved"
+    And I should see the add nlr task list page with "What is your non-legal representative's address?" marked as "Saved"
+    And I should see the add nlr task list page with "What is your non-legal representative's phone number?" marked as "Saved"
+    And I should see the add nlr task list page with "Check details and send invite" marked as "To do"
+
+    When I click "Check details and send invite" link
+    Then I should be taken to the check details and send invite page
 
     When I click the "Invite to join the appeal" button
-    Then I should see the stepThreeUserNotExisting error
+    Then I should see the userNotExisting error
 
   Scenario: NLR details provided NLR signed up
     Given I have logged in as an appellant with email "appeal-submitted-with-nlr-details@example.com"
     And I click "Add a non-legal representative" link
     Then I should be taken to the add non legal representative page
-    And I should see the add non legal representative page content
-    And I check page accessibility
+
+    When I click "Check details and send invite" link
+    Then I should be taken to the check details and send invite page
 
     When I click the "Invite to join the appeal" button
     Then I should be taken to the invite nlr to join appeal confirmation page

@@ -68,6 +68,7 @@ function postAddAnotherNonLegalRepresentative(updateAppealService: UpdateAppealS
         });
       }
       req.session.appeal.nlrDetails = undefined;
+      req.session.appeal.application.isSponsorSameAsNlr = undefined;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.REMOVE_NON_LEGAL_REP,
         req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.refreshCasesList = true;

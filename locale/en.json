@@ -635,51 +635,8 @@
       "paragraphOne": "If you appoint a non-legal representative, you are giving them permission to act on your behalf in these proceedings, including making submissions to the Tribunal.",
       "paragraphTwo": "All communications about your appeal will be sent to both you and your non-legal representative.",
       "paragraphThree": "This arrangement can be ended at any time if you request their removal, if they withdraw, or if the Tribunal directs that they should no longer act for you.",
-      "hint": "If you provided your non-legal representative's details when creating your appeal, please skip to step 3.",
-      "stepOne": "Step 1: Provide the email address of your non-legal representative",
       "instructionsPartOne": "If you want to add a non-legal representative to be able to view and track your appeal, you must provide their email address. If they have not yet signed up to HMCTS services, they will be invited to create an account.",
       "cyaButton": "Invite to join the appeal",
-      "sectionsAndTasks": {
-        "stepOne": {
-          "title": "Invite your non-legal representative to create an account",
-          "tasks": {
-            "provideNlrEmail": {
-              "title": "What is your non-legal representative's email address?",
-              "path": "/add-non-legal-rep/provide-email-create-account"
-            }
-          }
-        },
-        "stepTwo": {
-          "title": "Provide non-legal representative details",
-          "tasks": {
-            "isNlrSameAsSponsor": {
-              "title": "Is your non-legal representative the same person as your sponsor",
-              "path": "/add-non-legal-rep/is-same-person-as-sponsor"
-            },
-            "provideNlrName": {
-              "title": "What is your non-legal representative's name",
-              "path": "/add-non-legal-rep/provide-name"
-            },
-            "provideNlrAddress": {
-              "title": "What is your non-legal representative's address",
-              "path": "/add-non-legal-rep/provide-address"
-            },
-            "provideNlrPhone": {
-              "title": "What is your non-legal representative's phone number",
-              "path": "/add-non-legal-rep/provide-phone-number"
-            }
-          }
-        },
-        "stepThree": {
-          "title": "Invite your non-legal representative to join your appeal",
-          "tasks": {
-            "checkAndSend": {
-              "title": "Check details and send invite",
-              "path": "/add-non-legal-rep/confirm-provide-details"
-            }
-          }
-        }
-      },
       "sections": {
         "stepOne": "Invite your non-legal representative to create an account",
         "stepTwo": "Provide non-legal representative details",
@@ -691,19 +648,19 @@
           "path": "/add-non-legal-rep/provide-email-create-account"
         },
         "isNlrSameAsSponsor": {
-          "title": "Is your non-legal representative the same person as your sponsor",
+          "title": "Is your non-legal representative the same person as your sponsor?",
           "path": "/add-non-legal-rep/is-same-person-as-sponsor"
         },
         "provideNlrName": {
-          "title": "What is your non-legal representative's name",
+          "title": "What is your non-legal representative's name?",
           "path": "/add-non-legal-rep/provide-name"
         },
         "provideNlrAddress": {
-          "title": "What is your non-legal representative's address",
+          "title": "What is your non-legal representative's address?",
           "path": "/add-non-legal-rep/provide-address"
         },
         "provideNlrPhone": {
-          "title": "What is your non-legal representative's phone number",
+          "title": "What is your non-legal representative's phone number?",
           "path": "/add-non-legal-rep/provide-phone-number"
         },
         "checkAndSend": {
@@ -711,20 +668,8 @@
           "path": "/add-non-legal-rep/confirm-provide-details"
         }
       },
-      "linkPartOne": "Invite to create an account",
-      "stepTwo": "Step 2: Provide the rest of your non-legal representative details",
       "instructionsPartTwo": "You must provide your non-legal representative's name, address and phone number. Before starting this step, make sure you have their details at hand.",
-      "linkPartTwo": "Provide details",
-      "stepThree": "Step 3: Invite your non-legal representative to join the appeal",
-      "instructionsPartThree": "Once your non-legal representative has created an account, and you have provided their details, then select the below button. We will then verify their account has been created and send them instructions to access your case.",
-      "linkPartThree": "Invite to join the appeal",
-      "provideEmailDirection": "If you want to add a non-legal representative to be able to view and track your appeal, you will need invite them to create an account by providing their email address",
-      "provideNlrDetailsDirection": "If you want to add a non-legal representative to be able to view and track your appeal, you will need provide us with their name, address and phone number",
-      "userNotExistDirection": "If you want to add a non-legal representative to be able to view and track your appeal, they will first need to sign up to HMCTS services. You may invite them again to create an account by providing their email address",
       "userNotExistsError": "The user with the email address that you have provided in Step 1 has not signed up to HMCTS services.",
-      "noEmailProvidedError": "You need to provide an email address for your non-legal representative",
-      "noDetailsProvidedError": "You need to provide your non-legal representative's details",
-      "unknownError": "Unknown error code",
       "another": {
         "hint": "You may only have one non-legal representative. Please only continue if you want to add a new non-legal representative, or re-send the invite to join the appeal.",
         "statement": "Continue to add a new non-legal representative",

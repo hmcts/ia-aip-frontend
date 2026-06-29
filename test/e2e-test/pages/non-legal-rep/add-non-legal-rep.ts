@@ -20,27 +20,24 @@ module.exports = {
       await I.see(i18n.pages.successPage.seeNonLegalRep, 'a.govuk-button');
     });
 
-    Given('I should see the add non legal representative page content', async () => {
+    Given(/^I should see the add non legal representative page content (with|without) sponsor$/, async (choice: string) => {
       await I.see(i18n.pages.addNonLegalRepresentative.title, 'h1');
       await I.see(i18n.pages.addNonLegalRepresentative.paragraphOne, 'p');
       await I.see(i18n.pages.addNonLegalRepresentative.paragraphTwo, 'p');
       await I.see(i18n.pages.addNonLegalRepresentative.paragraphThree, 'p');
-      await I.see(i18n.pages.addNonLegalRepresentative.hint, 'div.govuk-inset-text');
-      await I.see(i18n.pages.addNonLegalRepresentative.stepOne, 'h2');
-      await I.see(i18n.pages.addNonLegalRepresentative.instructionsPartOne, 'p');
-      await I.see(i18n.pages.addNonLegalRepresentative.linkPartOne, 'a.govuk-button');
-      await I.see(i18n.pages.addNonLegalRepresentative.stepTwo, 'h2');
-      await I.see(i18n.pages.addNonLegalRepresentative.instructionsPartTwo, 'p');
-      await I.see(i18n.pages.addNonLegalRepresentative.linkPartTwo, 'a.govuk-button');
-      await I.see(i18n.pages.addNonLegalRepresentative.stepThree, 'h2');
-      await I.see(i18n.pages.addNonLegalRepresentative.instructionsPartThree, 'p');
-      await I.see(i18n.pages.addNonLegalRepresentative.linkPartThree, 'button');
-      await I.dontSee(i18n.pages.addNonLegalRepresentative.noEmailProvidedError);
-      await I.dontSee(i18n.pages.addNonLegalRepresentative.provideEmailDirection);
-      await I.dontSee(i18n.pages.addNonLegalRepresentative.noDetailsProvidedError);
-      await I.dontSee(i18n.pages.addNonLegalRepresentative.provideNlrDetailsDirection);
-      await I.dontSee(i18n.pages.addNonLegalRepresentative.userNotExistsError);
-      await I.dontSee(i18n.pages.addNonLegalRepresentative.userNotExistDirection);
+      await I.see(i18n.pages.addNonLegalRepresentative.sections.stepOne, 'h2');
+      await I.see(i18n.pages.addNonLegalRepresentative.tasks.provideNlrEmail.title, 'li');
+      await I.see(i18n.pages.addNonLegalRepresentative.sections.stepTwo, 'h2');
+      if (choice === 'with') {
+        await I.see(i18n.pages.addNonLegalRepresentative.tasks.isNlrSameAsSponsor.title, 'li');
+      } else {
+        await I.dontSee(i18n.pages.addNonLegalRepresentative.tasks.isNlrSameAsSponsor.title, 'li');
+      }
+      await I.see(i18n.pages.addNonLegalRepresentative.tasks.provideNlrName.title, 'li');
+      await I.see(i18n.pages.addNonLegalRepresentative.tasks.provideNlrAddress.title, 'li');
+      await I.see(i18n.pages.addNonLegalRepresentative.tasks.provideNlrPhone.title, 'li');
+      await I.see(i18n.pages.addNonLegalRepresentative.sections.stepThree, 'h2');
+      await I.see(i18n.pages.addNonLegalRepresentative.tasks.checkAndSend.title, 'li');
     });
 
     Given('I should be taken to the add another non legal representative page', async () => {
@@ -56,28 +53,14 @@ module.exports = {
       await I.dontSee(i18n.validationErrors.addAnotherNlrAgreement);
     });
 
-    When('I should see the stepTwoNoEmailProvided error', async () => {
-      await I.see(i18n.pages.addNonLegalRepresentative.noEmailProvidedError, 'div.govuk-error-summary a');
-      await I.see(i18n.pages.addNonLegalRepresentative.provideEmailDirection, 'div.govuk-inset-text > p');
-    });
-
-    When('I should see the stepThreeNoEmailProvided error', async () => {
-      await I.see(i18n.pages.addNonLegalRepresentative.noEmailProvidedError, 'div.govuk-error-summary a');
-      await I.see(i18n.pages.addNonLegalRepresentative.provideEmailDirection, 'div.govuk-inset-text > p');
-    });
-
-    When('I should see the stepThreeNoDetailsProvided error', async () => {
-      await I.see(i18n.pages.addNonLegalRepresentative.noDetailsProvidedError, 'div.govuk-error-summary a');
-      await I.see(i18n.pages.addNonLegalRepresentative.provideNlrDetailsDirection, 'div.govuk-inset-text > p');
-    });
-
-    When('I should see the stepThreeUserNotExisting error', async () => {
+    When('I should see the userNotExisting error', async () => {
       await I.see(i18n.pages.addNonLegalRepresentative.userNotExistsError, 'div.govuk-error-summary a');
-      await I.see(i18n.pages.addNonLegalRepresentative.userNotExistDirection, 'div.govuk-inset-text > p');
     });
 
     When('I should be taken to the invite nlr to create an account page', async () => {
       await I.waitInUrl(testUrl + paths.nonLegalRep.inviteToCreateAccount, 10);
+      await I.see(i18n.pages.inviteNlrToCreateAccount.title, 'h1');
+      await I.see(i18n.pages.addNonLegalRepresentative.instructionsPartOne, 'p.govuk-inset-text');
     });
 
     When('I should be taken to the provide non legal rep name page', async () => {
@@ -100,8 +83,8 @@ module.exports = {
       await I.waitInUrl(testUrl + paths.nonLegalRep.provideNlrDetailsCheckAndSend, 10);
     });
 
-    Given('I should be taken to the provide nlr details confirmation page', async () => {
-      await I.waitInUrl(testUrl + paths.nonLegalRep.provideNlrDetailsConfirmation, 10);
+    Given('I should be taken to the invite to join appeal confirmation page', async () => {
+      await I.waitInUrl(testUrl + paths.nonLegalRep.inviteToJoinAppealConfirmation, 10);
       await I.see(i18n.pages.provideNlrDetails.confirmation.title, 'h1');
       await I.see(i18n.pages.successPage.whatHappensNext, 'h2');
       await I.see(i18n.pages.provideNlrDetails.confirmation.whatNextContent[0]);
@@ -120,6 +103,22 @@ module.exports = {
 
     When(/^I fill email-value field with "([^"]*)"$/, async (email) => {
       await I.fillField('#email-value', email);
+    });
+
+    Given(/^I should see the add nlr task list page with "([^"]*)" marked as "(To do|Saved|Cannot start yet)"$/, async (taskTitle: string, status: string) => {
+      let taskLocator: Locator;
+      if (status === 'Cannot start yet') {
+        taskLocator = locate('li.task-list__item').withText(taskTitle);
+      } else {
+        taskLocator = locate('li.task-list__item').withChild('a').withText(taskTitle);
+      }
+      await I.seeElement(taskLocator);
+      const tag: Locator = taskLocator.find('.govuk-tag');
+      await I.see(status, tag);
+    });
+
+    Given('I should be taken to the check details and send invite page', async () => {
+      await I.waitInUrl(testUrl + paths.nonLegalRep.provideNlrDetailsCheckAndSend, 10);
     });
   }
 };

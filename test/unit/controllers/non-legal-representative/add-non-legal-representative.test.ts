@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import {
-  ErrorCode,
   getAddAnotherNonLegalRepresentative,
-  getAddNonLegalRepresentative,
   getCheckAndSend,
   getInviteToCreateAccount,
   getInviteToCreateAccountConfirmation,
@@ -10,12 +8,11 @@ import {
   getNlrAddress,
   getNlrName,
   getNlrPhoneNumber,
-  getProvideNlrDetailsConfirmation,
   getSamePerson,
+  getTaskList,
   postAddAnotherNonLegalRepresentative,
   postCheckAndSend,
   postInviteToCreateAccount,
-  postInviteToJoinAppeal,
   postNlrAddress,
   postNlrName,
   postNlrPhoneNumber,
@@ -37,6 +34,7 @@ describe('Add non-legal representative controllers setup', () => {
   let next: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let submitEventRefactoredStub: sinon.SinonStub;
+  let mapStub: sinon.SinonStub;
   let validateMidEventStub: sinon.SinonStub;
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
@@ -72,10 +70,11 @@ describe('Add non-legal representative controllers setup', () => {
     next = sandbox.stub();
     throwStub = sandbox.stub().throws(error);
     submitEventRefactoredStub = sandbox.stub();
+    mapStub = sandbox.stub();
     validateMidEventStub = sandbox.stub();
     updateAppealService = {
       submitEventRefactored: submitEventRefactoredStub,
-      mapToCCDCaseNlrDetails: sandbox.stub(),
+      mapToCCDCaseNlrDetails: mapStub,
       validateMidEvent: validateMidEventStub
     };
 
@@ -93,129 +92,376 @@ describe('Add non-legal representative controllers setup', () => {
     sandbox.restore();
   });
 
-  describe('getAddNonLegalRepresentative', () => {
-    it('should render add-non-legal-representative with no error code', () => {
-      getAddNonLegalRepresentative(req as Request, res as Response, next);
+  describe('getTaskList', () => {
+    it('should render add-non-legal-representative task list correctly empty', () => {
+      getTaskList(req as Request, res as Response, next);
       expect(renderStub.called).to.equal(true);
-      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/add-non-legal-representative.njk', {
-        partTwoRedirect: paths.nonLegalRep.provideNlrName,
-        previousPage: paths.common.overview
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', true, false)]),
+        createSection('stepTwo', [
+          createTask('provideNlrName', false, false),
+          createTask('provideNlrAddress', false, false),
+          createTask('provideNlrPhone', false, false),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
+        previousPage: paths.common.overview,
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
       });
     });
 
-    it('should render add-non-legal-representative with no error code with sponsor', () => {
+    it('should render add-non-legal-representative task list correctly with email', () => {
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail'
+      };
+      getTaskList(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', false, true)]),
+        createSection('stepTwo', [
+          createTask('provideNlrName', true, false),
+          createTask('provideNlrAddress', true, false),
+          createTask('provideNlrPhone', true, false),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
+        previousPage: paths.common.overview,
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
+      });
+    });
+
+    it('should render add-non-legal-representative task list correctly with names', () => {
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        givenNames: 'someEmail',
+        familyName: 'familyName'
+      };
+      getTaskList(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', false, true)]),
+        createSection('stepTwo', [
+          createTask('provideNlrName', false, true),
+          createTask('provideNlrAddress', true, false),
+          createTask('provideNlrPhone', true, false),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
+        previousPage: paths.common.overview,
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
+      });
+    });
+
+    it('should render add-non-legal-representative task list correctly with address', () => {
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        address: 'something'
+      };
+      getTaskList(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', false, true)]),
+        createSection('stepTwo', [
+          createTask('provideNlrName', true, false),
+          createTask('provideNlrAddress', false, true),
+          createTask('provideNlrPhone', true, false),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
+        previousPage: paths.common.overview,
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
+      });
+    });
+
+    it('should render add-non-legal-representative task list correctly with addressUK no sponsor', () => {
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        addressUk: { line1: 'line1', city: 'city', postcode: 'postcode' },
+      };
+      getTaskList(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', false, true)]),
+        createSection('stepTwo', [
+          createTask('provideNlrName', true, false),
+          createTask('provideNlrAddress', true, false),
+          createTask('provideNlrPhone', true, false),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
+        previousPage: paths.common.overview,
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
+      });
+    });
+
+    it('should render add-non-legal-representative task list correctly with phone', () => {
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        phoneNumber: 'something'
+      };
+      getTaskList(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', false, true)]),
+        createSection('stepTwo', [
+          createTask('provideNlrName', true, false),
+          createTask('provideNlrAddress', true, false),
+          createTask('provideNlrPhone', false, true),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
+        previousPage: paths.common.overview,
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
+      });
+    });
+
+    it('should render add-non-legal-representative task list correctly with all details', () => {
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        givenNames: 'someGivenName',
+        familyName: 'someFamilyName',
+        address: 'someAddress',
+        phoneNumber: 'something'
+      };
+      getTaskList(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', false, true)]),
+        createSection('stepTwo', [
+          createTask('provideNlrName', false, true),
+          createTask('provideNlrAddress', false, true),
+          createTask('provideNlrPhone', false, true),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', true, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
+        previousPage: paths.common.overview,
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
+      });
+    });
+    it('should render add-non-legal-representative task list correctly with idam id', () => {
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        givenNames: 'someGivenName',
+        familyName: 'someFamilyName',
+        address: 'someAddress',
+        phoneNumber: 'something',
+        idamId: 'someId',
+      };
+      getTaskList(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', false, true)]),
+        createSection('stepTwo', [
+          createTask('provideNlrName', false, true),
+          createTask('provideNlrAddress', false, true),
+          createTask('provideNlrPhone', false, true),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, true)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
+        previousPage: paths.common.overview,
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
+      });
+    });
+
+    it('should render add-non-legal-representative task list correctly empty with sponsor', () => {
       req.session.appeal.application.hasSponsor = 'Yes';
-      getAddNonLegalRepresentative(req as Request, res as Response, next);
+      getTaskList(req as Request, res as Response, next);
       expect(renderStub.called).to.equal(true);
-      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/add-non-legal-representative.njk', {
-        partTwoRedirect: paths.nonLegalRep.provideNlrIsSamePerson,
-        previousPage: paths.common.overview
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', true, false)]),
+        createSection('stepTwo', [
+          createTask('isNlrSameAsSponsor', false, false),
+          createTask('provideNlrName', false, false),
+          createTask('provideNlrAddress', false, false),
+          createTask('provideNlrPhone', false, false),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
+        previousPage: paths.common.overview,
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
       });
     });
 
-    it('should render add-non-legal-representative with error for stepTwoNoEmailProvided', () => {
-      req.query.errorCode = ErrorCode.stepTwoNoEmailProvided;
-      const expectedError = {
-        'provideNlrDetails': {
-          key: 'provideNlrDetails',
-          text: i18n.pages.addNonLegalRepresentative.noEmailProvidedError,
-          href: '#provideNlrDetails'
-        }
+    it('should render add-non-legal-representative task list correctly with email with sponsor', () => {
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
       };
-      getAddNonLegalRepresentative(req as Request, res as Response, next);
+      req.session.appeal.application.hasSponsor = 'Yes';
+      getTaskList(req as Request, res as Response, next);
       expect(renderStub.called).to.equal(true);
-      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/add-non-legal-representative.njk', {
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', false, true)]),
+        createSection('stepTwo', [
+          createTask('isNlrSameAsSponsor', true, false),
+          createTask('provideNlrName', true, false),
+          createTask('provideNlrAddress', true, false),
+          createTask('provideNlrPhone', true, false),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
         previousPage: paths.common.overview,
-        partTwoRedirect: paths.nonLegalRep.provideNlrName,
-        shouldProvideEmailDirectionStepTwoShow: true,
-        errors: expectedError,
-        errorList: Object.values(expectedError)
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
       });
     });
 
-    it('should render add-non-legal-representative with error for stepThreeNoEmailProvided', () => {
-      req.query.errorCode = ErrorCode.stepThreeNoEmailProvided;
-      const expectedError = {
-        'inviteJoinAppeal': {
-          key: 'inviteJoinAppeal',
-          text: i18n.pages.addNonLegalRepresentative.noEmailProvidedError,
-          href: '#inviteJoinAppeal'
-        }
+    it('should render add-non-legal-representative task list correctly with same as sponsor', () => {
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
       };
-      getAddNonLegalRepresentative(req as Request, res as Response, next);
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
+      getTaskList(req as Request, res as Response, next);
       expect(renderStub.called).to.equal(true);
-      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/add-non-legal-representative.njk', {
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', false, true)]),
+        createSection('stepTwo', [
+          createTask('isNlrSameAsSponsor', false, true),
+          createTask('provideNlrName', true, false),
+          createTask('provideNlrAddress', true, false),
+          createTask('provideNlrPhone', true, false),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
         previousPage: paths.common.overview,
-        partTwoRedirect: paths.nonLegalRep.provideNlrName,
-        shouldProvideEmailDirectionStepThreeShow: true,
-        errors: expectedError,
-        errorList: Object.values(expectedError)
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
       });
     });
 
-    it('should render add-non-legal-representative with error for stepThreeNoDetailsProvided', () => {
-      req.query.errorCode = ErrorCode.stepThreeNoDetailsProvided;
-      const expectedError = {
-        'inviteJoinAppeal': {
-          key: 'inviteJoinAppeal',
-          text: i18n.pages.addNonLegalRepresentative.noDetailsProvidedError,
-          href: '#inviteJoinAppeal'
-        }
+    it('should render add-non-legal-representative task list correctly with addressUk with sponsor same', () => {
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        addressUk: { line1: 'line1', city: 'city', postcode: 'postcode' }
       };
-      getAddNonLegalRepresentative(req as Request, res as Response, next);
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
+      req.session.appeal.application.hasSponsor = 'Yes';
+      getTaskList(req as Request, res as Response, next);
       expect(renderStub.called).to.equal(true);
-      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/add-non-legal-representative.njk', {
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', false, true)]),
+        createSection('stepTwo', [
+          createTask('isNlrSameAsSponsor', false, true),
+          createTask('provideNlrName', true, false),
+          createTask('provideNlrAddress', false, true),
+          createTask('provideNlrPhone', true, false),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
         previousPage: paths.common.overview,
-        partTwoRedirect: paths.nonLegalRep.provideNlrName,
-        shouldNoDetailsProvidedStepThreeShow: true,
-        errors: expectedError,
-        errorList: Object.values(expectedError)
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
       });
     });
 
-    it('should render add-non-legal-representative with error for stepThreeUserNotExisting', () => {
-      req.query.errorCode = ErrorCode.stepThreeUserNotExisting;
-      const expectedError = {
-        'inviteJoinAppeal': {
-          key: 'inviteJoinAppeal',
-          text: i18n.pages.addNonLegalRepresentative.userNotExistsError,
-          href: '#inviteJoinAppeal'
-        }
+    it('should render add-non-legal-representative task list correctly with address with sponsor same', () => {
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        address: 'something'
       };
-      getAddNonLegalRepresentative(req as Request, res as Response, next);
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
+      req.session.appeal.application.hasSponsor = 'Yes';
+      getTaskList(req as Request, res as Response, next);
       expect(renderStub.called).to.equal(true);
-      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/add-non-legal-representative.njk', {
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', false, true)]),
+        createSection('stepTwo', [
+          createTask('isNlrSameAsSponsor', false, true),
+          createTask('provideNlrName', true, false),
+          createTask('provideNlrAddress', true, false),
+          createTask('provideNlrPhone', true, false),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
         previousPage: paths.common.overview,
-        partTwoRedirect: paths.nonLegalRep.provideNlrName,
-        shouldUserNotExistStepThreeShow: true,
-        errors: expectedError,
-        errorList: Object.values(expectedError)
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
       });
     });
 
-    it('should render add-non-legal-representative with error for stepTwoNoEmailProvided', () => {
-      req.query.errorCode = 'someRandomErrorCode';
-      const expectedError = {
-        'provideNlrDetails': {
-          key: 'provideNlrDetails',
-          text: i18n.pages.addNonLegalRepresentative.unknownError,
-          href: '#provideNlrDetails'
-        }
+    it('should render add-non-legal-representative task list correctly with all details except same as sponsor', () => {
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        givenNames: 'someGivenName',
+        familyName: 'someFamilyName',
+        addressUk: { line1: 'line1', city: 'city', postcode: 'postcode' },
+        address: 'something',
+        phoneNumber: 'something'
       };
-      getAddNonLegalRepresentative(req as Request, res as Response, next);
+      req.session.appeal.application.hasSponsor = 'Yes';
+      getTaskList(req as Request, res as Response, next);
       expect(renderStub.called).to.equal(true);
-      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/add-non-legal-representative.njk', {
-        partTwoRedirect: paths.nonLegalRep.provideNlrName,
+      const expectedData = [
+        createSection('stepOne', [createTask('provideNlrEmail', false, true)]),
+        createSection('stepTwo', [
+          createTask('isNlrSameAsSponsor', true, false),
+          createTask('provideNlrName', false, true),
+          createTask('provideNlrAddress', false, true),
+          createTask('provideNlrPhone', false, true),
+        ]),
+        createSection('stepThree', [createTask('checkAndSend', false, false)]),
+      ];
+      expectRenderedCalledWithArgs(renderStub, 'non-legal-rep/task-list.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
         previousPage: paths.common.overview,
-        errors: expectedError,
-        errorList: Object.values(expectedError)
+        sections: i18n.pages.addNonLegalRepresentative.sections,
+        tasks: i18n.pages.addNonLegalRepresentative.tasks,
+        data: expectedData
       });
     });
 
     it('should catch an error and redirect with error', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
-      getAddNonLegalRepresentative(req as Request, res as Response, next);
+      getTaskList(req as Request, res as Response, next);
       expect(next.calledWith(error)).to.equal(true);
     });
   });
@@ -237,7 +483,7 @@ describe('Add non-legal representative controllers setup', () => {
 
   describe('postAddAnotherNonLegalRepresentative', () => {
     it('should render add-another-non-legal-representative if validation fails', async () => {
-      await postAddAnotherNonLegalRepresentative()(req as Request, res as Response, next);
+      await postAddAnotherNonLegalRepresentative(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(renderStub.called).to.equal(true);
       const expectedError = {
         key: 'statement',
@@ -253,17 +499,18 @@ describe('Add non-legal representative controllers setup', () => {
     it('should redirect and wipe nlrDetails from session if validation passes', async () => {
       req.body['statement'] = 'valid';
       req.session.appeal.nlrDetails = {};
-      await postAddAnotherNonLegalRepresentative()(req as Request, res as Response, next);
+      await postAddAnotherNonLegalRepresentative(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(renderStub.called).to.equal(false);
       expect(redirectStub).calledWith(paths.nonLegalRep.addNonLegalRep);
       expect(req.session.appeal.nlrDetails).to.be.undefined;
-      expect(req.session.appeal.nlrDetails || 'none').to.equal('none');
+      expect(submitEventRefactoredStub).calledWith(Events.REMOVE_NON_LEGAL_REP,
+        req.session.appeal, 'idamUID', 'atoken');
     });
 
     it('should catch an error and redirect with error', async () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
-      await postAddAnotherNonLegalRepresentative()(req as Request, res as Response, next);
+      await postAddAnotherNonLegalRepresentative(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledWith(error)).to.equal(true);
     });
   });
@@ -327,7 +574,6 @@ describe('Add non-legal representative controllers setup', () => {
         previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
-
 
     it('should render with error if validation fails nlr email is same as appellants', async () => {
       req.body['email-value'] = 'some@test.com';
@@ -430,11 +676,6 @@ describe('Add non-legal representative controllers setup', () => {
   });
 
   describe('getNlrName', () => {
-    it('should redirect to add nlr with errorCode if no email', () => {
-      getNlrName(req as Request, res as Response, next);
-      expect(res.redirect).to.be.calledWithMatch(ErrorCode.stepTwoNoEmailProvided);
-    });
-
     it('should render name.njk', () => {
       req.query.edit = '';
       req.session.appeal.nlrDetails.emailAddress = 'someEmail';
@@ -465,7 +706,7 @@ describe('Add non-legal representative controllers setup', () => {
     });
 
     it('should catch an error and call next with error', async () => {
-      res.redirect = throwStub;
+      res.render = throwStub;
       getNlrName(req as Request, res as Response, next);
 
       expect(next.calledWith(error)).to.equal(true);
@@ -474,7 +715,7 @@ describe('Add non-legal representative controllers setup', () => {
 
   describe('postNlrName', () => {
     it('should render with error if validation fails required', async () => {
-      await postNlrName()(req as Request, res as Response, next);
+      await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'nlrGivenNames': buildExpectedRequiredError('nlrGivenNames'),
@@ -494,7 +735,7 @@ describe('Add non-legal representative controllers setup', () => {
     it('should render with error if validation fails one name', async () => {
       req.body.nlrGivenNames = 'someGivenName';
       req.body.nlrFamilyName = '';
-      await postNlrName()(req as Request, res as Response, next);
+      await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'nlrFamilyName': createStructuredError('nlrFamilyName', i18n.validationErrors.nlrDetails.familyName)
@@ -514,7 +755,7 @@ describe('Add non-legal representative controllers setup', () => {
     it('should render with error if validation fails both names', async () => {
       req.body.nlrGivenNames = '';
       req.body.nlrFamilyName = '';
-      await postNlrName()(req as Request, res as Response, next);
+      await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'nlrGivenNames': createStructuredError('nlrGivenNames', i18n.validationErrors.nlrDetails.givenNames),
@@ -539,10 +780,10 @@ describe('Add non-legal representative controllers setup', () => {
       expect(req.session.appeal.nlrDetails.familyName).to.be.undefined;
       expect(req.session.appeal.nlrDetails.familyName || 'none').to.equal('none');
 
-      await postNlrName()(req as Request, res as Response, next);
+      await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.nlrDetails.givenNames).to.equal('someGivenName');
       expect(req.session.appeal.nlrDetails.familyName).to.equal('someFamilyName');
-      expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrAddress);
+      expect(redirectStub).calledWith(paths.nonLegalRep.addNonLegalRep);
     });
 
     it('should redirect to CYA if validation passes and isEdit true', async () => {
@@ -554,7 +795,7 @@ describe('Add non-legal representative controllers setup', () => {
       expect(req.session.appeal.nlrDetails.familyName).to.be.undefined;
       expect(req.session.appeal.nlrDetails.familyName || 'none').to.equal('none');
 
-      await postNlrName()(req as Request, res as Response, next);
+      await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.nlrDetails.givenNames).to.equal('someGivenName');
       expect(req.session.appeal.nlrDetails.familyName).to.equal('someFamilyName');
       expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrDetailsCheckAndSend);
@@ -562,7 +803,7 @@ describe('Add non-legal representative controllers setup', () => {
 
     it('should catch an error and call next with error', async () => {
       res.render = throwStub;
-      await postNlrName()(req as Request, res as Response, next);
+      await postNlrName(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(next.calledWith(error)).to.equal(true);
     });
@@ -578,7 +819,7 @@ describe('Add non-legal representative controllers setup', () => {
       expect(req.session.appeal.application.isEdit).to.equal(true);
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
-        previousPage: paths.nonLegalRep.provideNlrName,
+        previousPage: paths.nonLegalRep.addNonLegalRep,
         formAction: paths.nonLegalRep.provideNlrAddress,
         pageTitle: i18n.pages.nlrAddress.title,
         address: undefined
@@ -598,7 +839,7 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'appeal-application/non-legal-rep-details/address.njk', {
-        previousPage: paths.nonLegalRep.provideNlrName,
+        previousPage: paths.nonLegalRep.addNonLegalRep,
         formAction: paths.nonLegalRep.provideNlrAddress,
         pageTitle: i18n.pages.nlrAddress.title,
         address: expectedAddress
@@ -614,7 +855,7 @@ describe('Add non-legal representative controllers setup', () => {
       expect(req.session.appeal.application.isEdit).to.equal(true);
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', {
-        previousPage: paths.nonLegalRep.provideNlrName,
+        previousPage: paths.nonLegalRep.addNonLegalRep,
         formAction: paths.nonLegalRep.provideNlrAddress,
         pageTitle: i18n.pages.nlrAddress.title,
         question: {
@@ -633,7 +874,7 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', {
-        previousPage: paths.nonLegalRep.provideNlrName,
+        previousPage: paths.nonLegalRep.addNonLegalRep,
         formAction: paths.nonLegalRep.provideNlrAddress,
         pageTitle: i18n.pages.nlrAddress.title,
         question: {
@@ -657,7 +898,7 @@ describe('Add non-legal representative controllers setup', () => {
     it('should render with error if validation fails required', async () => {
       req.session.appeal.application.hasSponsor = 'Yes';
       req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
-      await postNlrAddress()(req as Request, res as Response, next);
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'address-line-1': buildExpectedRequiredError('address-line-1'),
@@ -677,7 +918,7 @@ describe('Add non-legal representative controllers setup', () => {
         error: expectedError,
         pageTitle: i18n.pages.nlrAddress.title,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.provideNlrName
+        previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
 
@@ -687,7 +928,7 @@ describe('Add non-legal representative controllers setup', () => {
       req.body['address-line-1'] = '';
       req.body['address-town'] = '';
       req.body['address-postcode'] = '';
-      await postNlrAddress()(req as Request, res as Response, next);
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'address-line-1': createStructuredError('address-line-1', i18n.validationErrors.nlrDetails.addressLine1),
@@ -707,7 +948,7 @@ describe('Add non-legal representative controllers setup', () => {
         pageTitle: i18n.pages.nlrAddress.title,
         error: expectedError,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.provideNlrName
+        previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
 
@@ -717,7 +958,7 @@ describe('Add non-legal representative controllers setup', () => {
       req.body['address-line-1'] = 'line1';
       req.body['address-town'] = 'town';
       req.body['address-postcode'] = 'someBadPostcode';
-      await postNlrAddress()(req as Request, res as Response, next);
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'address-postcode': {
@@ -739,7 +980,7 @@ describe('Add non-legal representative controllers setup', () => {
         error: expectedError,
         pageTitle: i18n.pages.nlrAddress.title,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.provideNlrName
+        previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
 
@@ -751,7 +992,7 @@ describe('Add non-legal representative controllers setup', () => {
       req.body['address-postcode'] = 'SW1A 2AA';
       expect(req.session.appeal.nlrDetails.addressUk).to.be.undefined;
       expect(req.session.appeal.nlrDetails.addressUk || 'none').to.equal('none');
-      await postNlrAddress()(req as Request, res as Response, next);
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.addressUk).to.deep.equal({
         line1: 'line1',
@@ -760,7 +1001,7 @@ describe('Add non-legal representative controllers setup', () => {
         county: undefined,
         postcode: 'SW1A 2AA'
       });
-      expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrPhoneNumber);
+      expect(redirectStub).calledWith(paths.nonLegalRep.addNonLegalRep);
     });
 
     it('should update req.session.appeal and redirect to CYA if validation passes and isEdit true', async () => {
@@ -774,7 +1015,7 @@ describe('Add non-legal representative controllers setup', () => {
       req.session.appeal.application.isEdit = true;
       expect(req.session.appeal.nlrDetails.addressUk).to.be.undefined;
       expect(req.session.appeal.nlrDetails.addressUk || 'none').to.equal('none');
-      await postNlrAddress()(req as Request, res as Response, next);
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.addressUk).to.deep.equal({
         line1: 'line1',
@@ -789,7 +1030,7 @@ describe('Add non-legal representative controllers setup', () => {
     it('should render with error if validation fails required if no sponsor', async () => {
       req.session.appeal.application.hasSponsor = 'Yes';
       req.session.appeal.application.isSponsorSameAsNlr = 'No';
-      await postNlrAddress()(req as Request, res as Response, next);
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'nlr-address': {
@@ -810,14 +1051,14 @@ describe('Add non-legal representative controllers setup', () => {
         error: expectedError,
         pageTitle: i18n.pages.nlrAddress.title,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.provideNlrName
+        previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
 
     it('should render with error if validation fails empty', async () => {
       req.session.appeal.application.hasSponsor = 'No';
       req.body['nlr-address'] = '';
-      await postNlrAddress()(req as Request, res as Response, next);
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'nlr-address': {
@@ -838,7 +1079,7 @@ describe('Add non-legal representative controllers setup', () => {
         error: expectedError,
         pageTitle: i18n.pages.nlrAddress.title,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.provideNlrName
+        previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
 
@@ -846,10 +1087,10 @@ describe('Add non-legal representative controllers setup', () => {
       req.body['nlr-address'] = 'some address';
       expect(req.session.appeal.nlrDetails.address).to.be.undefined;
       expect(req.session.appeal.nlrDetails.address || 'none').to.equal('none');
-      await postNlrAddress()(req as Request, res as Response, next);
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.address).to.equal('some address');
-      expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrPhoneNumber);
+      expect(redirectStub).calledWith(paths.nonLegalRep.addNonLegalRep);
     });
 
     it('should update req.session.appeal and redirect to CYA if validation passes and isEdit true', async () => {
@@ -857,7 +1098,7 @@ describe('Add non-legal representative controllers setup', () => {
       req.body['nlr-address'] = 'some address';
       expect(req.session.appeal.nlrDetails.address).to.be.undefined;
       expect(req.session.appeal.nlrDetails.address || 'none').to.equal('none');
-      await postNlrAddress()(req as Request, res as Response, next);
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.address).to.equal('some address');
       expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrDetailsCheckAndSend);
@@ -865,7 +1106,7 @@ describe('Add non-legal representative controllers setup', () => {
 
     it('should catch an error and call next with error', async () => {
       res.render = throwStub;
-      await postNlrAddress()(req as Request, res as Response, next);
+      await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(next.calledWith(error)).to.equal(true);
     });
@@ -884,7 +1125,7 @@ describe('Add non-legal representative controllers setup', () => {
         showEmail: false,
         formAction: paths.nonLegalRep.provideNlrPhoneNumber,
         phoneNumber: undefined,
-        previousPage: paths.nonLegalRep.provideNlrAddress
+        previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
 
@@ -900,7 +1141,7 @@ describe('Add non-legal representative controllers setup', () => {
         showEmail: false,
         formAction: paths.nonLegalRep.provideNlrPhoneNumber,
         phoneNumber: 'phoneNumber',
-        previousPage: paths.nonLegalRep.provideNlrAddress
+        previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
 
@@ -914,7 +1155,7 @@ describe('Add non-legal representative controllers setup', () => {
 
   describe('postNlrPhoneNumber', () => {
     it('should render with error if validation fails required', async () => {
-      await postNlrPhoneNumber()(req as Request, res as Response, next);
+      await postNlrPhoneNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'phoneNumber': buildExpectedRequiredError('phoneNumber')
@@ -928,13 +1169,13 @@ describe('Add non-legal representative controllers setup', () => {
         phoneNumber: undefined,
         errors: expectedError,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.provideNlrAddress
+        previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
 
     it('should render with error if validation fails empty', async () => {
       req.body['phoneNumber'] = '';
-      await postNlrPhoneNumber()(req as Request, res as Response, next);
+      await postNlrPhoneNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.phoneEmpty)
@@ -948,13 +1189,13 @@ describe('Add non-legal representative controllers setup', () => {
         phoneNumber: '',
         errors: expectedError,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.provideNlrAddress
+        previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
 
     it('should render with error if validation fails invalid format', async () => {
       req.body['phoneNumber'] = 'invalid';
-      await postNlrPhoneNumber()(req as Request, res as Response, next);
+      await postNlrPhoneNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.phoneFormat)
@@ -968,7 +1209,7 @@ describe('Add non-legal representative controllers setup', () => {
         phoneNumber: 'invalid',
         errors: expectedError,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.provideNlrAddress
+        previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
 
@@ -977,7 +1218,7 @@ describe('Add non-legal representative controllers setup', () => {
       req.session.appeal.application.contactDetails = {
         phone: '07827297000'
       };
-      await postNlrPhoneNumber()(req as Request, res as Response, next);
+      await postNlrPhoneNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.nlrDetails.nlrPhoneCannotBeSameAsAppellant)
@@ -991,7 +1232,7 @@ describe('Add non-legal representative controllers setup', () => {
         phoneNumber: '07827297000',
         errors: expectedError,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.provideNlrAddress
+        previousPage: paths.nonLegalRep.addNonLegalRep
       });
     });
 
@@ -999,10 +1240,10 @@ describe('Add non-legal representative controllers setup', () => {
       req.body['phoneNumber'] = '07827297000';
       expect(req.session.appeal.nlrDetails.phoneNumber).to.be.undefined;
       expect(req.session.appeal.nlrDetails.phoneNumber || 'none').to.equal('none');
-      await postNlrPhoneNumber()(req as Request, res as Response, next);
+      await postNlrPhoneNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.phoneNumber).to.equal('07827297000');
-      expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrDetailsCheckAndSend);
+      expect(redirectStub).calledWith(paths.nonLegalRep.addNonLegalRep);
     });
 
     it('should update req.session.appeal and redirect to isSamePerson if validation passes and hasSponsor', async () => {
@@ -1010,26 +1251,21 @@ describe('Add non-legal representative controllers setup', () => {
       req.session.appeal.application.hasSponsor = 'Yes';
       expect(req.session.appeal.nlrDetails.phoneNumber).to.be.undefined;
       expect(req.session.appeal.nlrDetails.phoneNumber || 'none').to.equal('none');
-      await postNlrPhoneNumber()(req as Request, res as Response, next);
+      await postNlrPhoneNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.nlrDetails.phoneNumber).to.equal('07827297000');
-      expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrDetailsCheckAndSend);
+      expect(redirectStub).calledWith(paths.nonLegalRep.addNonLegalRep);
     });
 
     it('should catch an error and call next with error', async () => {
       res.render = throwStub;
-      await postNlrPhoneNumber()(req as Request, res as Response, next);
+      await postNlrPhoneNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(next.calledWith(error)).to.equal(true);
     });
   });
 
   describe('getSamePerson', () => {
-    it('should redirect with error code if no email address', () => {
-      getSamePerson(req as Request, res as Response, next);
-      expect(res.redirect).to.be.calledWithMatch(ErrorCode.stepTwoNoEmailProvided);
-    });
-
     it('should render is-same-person.njk', () => {
       req.query.edit = '';
       req.session.appeal.nlrDetails.emailAddress = 'some@test.com';
@@ -1061,7 +1297,7 @@ describe('Add non-legal representative controllers setup', () => {
     });
 
     it('should catch an error and call next with error', async () => {
-      res.redirect = throwStub;
+      res.render = throwStub;
       getSamePerson(req as Request, res as Response, next);
 
       expect(next.calledWith(error)).to.equal(true);
@@ -1070,7 +1306,7 @@ describe('Add non-legal representative controllers setup', () => {
 
   describe('postSamePerson', () => {
     it('should render with error if validation fails required', async () => {
-      await postSamePerson()(req as Request, res as Response, next);
+      await postSamePerson(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         'isSponsorSameAsNlr': createStructuredError('isSponsorSameAsNlr', i18n.validationErrors.isSponsorSameAsNlr)
@@ -1091,14 +1327,14 @@ describe('Add non-legal representative controllers setup', () => {
       expect(req.session.appeal.application.isSponsorSameAsNlr).to.be.undefined;
       expect(req.session.appeal.application.isSponsorSameAsNlr || 'none').to.equal('none');
 
-      await postSamePerson()(req as Request, res as Response, next);
+      await postSamePerson(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.application.isSponsorSameAsNlr).to.equal('No');
-      expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrName);
+      expect(redirectStub).calledWith(paths.nonLegalRep.addNonLegalRep);
     });
 
     it('should catch an error and call next with error', async () => {
       res.render = throwStub;
-      await postSamePerson()(req as Request, res as Response, next);
+      await postSamePerson(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(next.calledWith(error)).to.equal(true);
     });
@@ -1110,11 +1346,15 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        pageTitle: i18n.pages.provideNlrDetails.title,
+        buttonText: i18n.pages.addNonLegalRepresentative.cyaButton,
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
         formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
-        previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+        previousPage: paths.nonLegalRep.addNonLegalRep,
         summaryLists: [{
           summaryRows: [{
+            'key': { 'text': "Non-legal representative's email" },
+            'value': { 'html': '' },
+          }, {
             'key': { 'text': "Non-legal representative's name" },
             'value': { 'html': ' ' },
             'actions': {
@@ -1169,11 +1409,15 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        pageTitle: i18n.pages.provideNlrDetails.title,
+        buttonText: i18n.pages.addNonLegalRepresentative.cyaButton,
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
         formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
-        previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+        previousPage: paths.nonLegalRep.addNonLegalRep,
         summaryLists: [{
           summaryRows: [{
+            'key': { 'text': "Non-legal representative's email" },
+            'value': { 'html': 'someEmailAddress' },
+          }, {
             'key': { 'text': "Non-legal representative's name" },
             'value': { 'html': 'someGivenNames someFamilyName' },
             'actions': {
@@ -1231,11 +1475,15 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        pageTitle: i18n.pages.provideNlrDetails.title,
+        buttonText: i18n.pages.addNonLegalRepresentative.cyaButton,
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
         formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
-        previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+        previousPage: paths.nonLegalRep.addNonLegalRep,
         summaryLists: [{
           summaryRows: [{
+            'key': { 'text': "Non-legal representative's email" },
+            'value': { 'html': 'someEmailAddress' },
+          }, {
             'key': { 'text': "Non-legal representative's name" },
             'value': { 'html': 'someGivenNames someFamilyName' },
             'actions': {
@@ -1303,11 +1551,15 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        pageTitle: i18n.pages.provideNlrDetails.title,
+        buttonText: i18n.pages.addNonLegalRepresentative.cyaButton,
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
         formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
-        previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+        previousPage: paths.nonLegalRep.addNonLegalRep,
         summaryLists: [{
           summaryRows: [{
+            'key': { 'text': "Non-legal representative's email" },
+            'value': { 'html': 'someEmailAddress' },
+          }, {
             'key': { 'text': "Non-legal representative's name" },
             'value': { 'html': 'someGivenNames someFamilyName' },
             'actions': {
@@ -1366,6 +1618,7 @@ describe('Add non-legal representative controllers setup', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
+        'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.nlrDetails.emailAddress),
         'givenNames': createStructuredError('givenNames', i18n.validationErrors.nlrDetails.givenNames),
         'familyName': createStructuredError('familyName', i18n.validationErrors.nlrDetails.familyName),
         'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.nlrDetails.phoneNumber),
@@ -1374,11 +1627,15 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        pageTitle: i18n.pages.provideNlrDetails.title,
+        buttonText: i18n.pages.addNonLegalRepresentative.cyaButton,
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
         formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
-        previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+        previousPage: paths.nonLegalRep.addNonLegalRep,
         summaryLists: [{
           summaryRows: [{
+            'key': { 'text': "Non-legal representative's email" },
+            'value': { 'html': '' },
+          }, {
             'key': { 'text': "Non-legal representative's name" },
             'value': { 'html': ' ' },
             'actions': {
@@ -1415,22 +1672,25 @@ describe('Add non-legal representative controllers setup', () => {
       });
     });
 
-    it('should redirect to confirmation page if validation passes if sponsor same', async () => {
+    it('should redirect to confirmation page if validation passes if sponsor not same', async () => {
       req.session.appeal.nlrDetails = {
         givenNames: 'someGivenNames',
         familyName: 'someFamilyName',
         phoneNumber: 'somePhoneNumber',
         emailAddress: 'someEmailAddress',
+        idamId: 'idamId',
         address: 'someAddress'
       };
-      const submitStub = sandbox.stub().resolves();
-      updateAppealService = {
-        submitEventRefactored: submitStub
-      };
+      submitEventRefactoredStub.resolves();
+      mapStub.resolves();
+      validateMidEventStub.resolves();
+
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(submitStub).calledWith(Events.PROVIDE_NON_LEGAL_REP_DETAILS, req.session.appeal, 'idamUID', 'atoken');
-      expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrDetailsConfirmation);
+      expect(submitEventRefactoredStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, req.session.appeal, 'idamUID', 'atoken');
+      expect(mapStub.called).to.equal(true);
+      expect(validateMidEventStub.called).to.equal(true);
+      expect(redirectStub).calledWith(paths.nonLegalRep.inviteToJoinAppealConfirmation);
     });
 
     it('should render check and send page with error if missing fields if sponsor same', async () => {
@@ -1439,6 +1699,7 @@ describe('Add non-legal representative controllers setup', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
+        'emailAddress': createStructuredError('emailAddress', i18n.validationErrors.nlrDetails.emailAddress),
         'givenNames': createStructuredError('givenNames', i18n.validationErrors.nlrDetails.givenNames),
         'familyName': createStructuredError('familyName', i18n.validationErrors.nlrDetails.familyName),
         'phoneNumber': createStructuredError('phoneNumber', i18n.validationErrors.nlrDetails.phoneNumber),
@@ -1450,11 +1711,15 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        pageTitle: i18n.pages.provideNlrDetails.title,
+        buttonText: i18n.pages.addNonLegalRepresentative.cyaButton,
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
         formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
-        previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+        previousPage: paths.nonLegalRep.addNonLegalRep,
         summaryLists: [{
           summaryRows: [{
+            'key': { 'text': "Non-legal representative's email" },
+            'value': { 'html': '' },
+          }, {
             'key': { 'text': "Non-legal representative's name" },
             'value': { 'html': ' ' },
             'actions': {
@@ -1522,11 +1787,15 @@ describe('Add non-legal representative controllers setup', () => {
 
       expect(renderStub.called).to.equal(true);
       expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
-        pageTitle: i18n.pages.provideNlrDetails.title,
+        buttonText: i18n.pages.addNonLegalRepresentative.cyaButton,
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
         formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
-        previousPage: paths.nonLegalRep.provideNlrPhoneNumber,
+        previousPage: paths.nonLegalRep.addNonLegalRep,
         summaryLists: [{
           summaryRows: [{
+            'key': { 'text': "Non-legal representative's email" },
+            'value': { 'html': 'emailAddress' },
+          }, {
             'key': { 'text': "Non-legal representative's name" },
             'value': { 'html': 'givenNames familyName' },
             'actions': {
@@ -1589,132 +1858,103 @@ describe('Add non-legal representative controllers setup', () => {
           postcode: 'somePostcode',
         }
       };
-      const submitStub = sandbox.stub().resolves();
-      updateAppealService = {
-        submitEventRefactored: submitStub
+      submitEventRefactoredStub.resolves();
+      mapStub.resolves();
+      validateMidEventStub.resolves();
+      await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitEventRefactoredStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, req.session.appeal, 'idamUID', 'atoken');
+      expect(mapStub.called).to.equal(true);
+      expect(validateMidEventStub.called).to.equal(true);
+      expect(redirectStub).calledWith(paths.nonLegalRep.inviteToJoinAppealConfirmation);
+    });
+
+    it('should render with error if idam account verification validation fails', async () => {
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
+      req.session.appeal.nlrDetails = {
+        givenNames: 'someGivenNames',
+        familyName: 'someFamilyName',
+        phoneNumber: 'somePhoneNumber',
+        emailAddress: 'someEmailAddress',
+        addressUk: {
+          line1: 'someLine1',
+          line2: 'someLine2',
+          city: 'someCity',
+          county: 'someCounty',
+          postcode: 'somePostcode',
+        }
       };
+      submitEventRefactoredStub.resolves();
+      mapStub.resolves();
+      validateMidEventStub.resolves(['someError']);
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(submitStub).calledWith(Events.PROVIDE_NON_LEGAL_REP_DETAILS, req.session.appeal, 'idamUID', 'atoken');
-      expect(redirectStub).calledWith(paths.nonLegalRep.provideNlrDetailsConfirmation);
-    });
+      const error = createStructuredError('inviteJoinAppeal', i18n.pages.addNonLegalRepresentative.userNotExistsError);
 
-    it('should catch an error and call next with error', async () => {
-      res.render = throwStub;
-      await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(next.calledWith(error)).to.equal(true);
-    });
-  });
-
-  describe('getProvideNlrDetailsConfirmation', () => {
-    it('should render confirmation-page.njk', () => {
-      getProvideNlrDetailsConfirmation(req as Request, res as Response, next);
-      expect(renderStub.calledOnce).to.equal(true);
-      expectRenderedCalledOnceWithArgs(renderStub, 'templates/confirmation-page.njk', {
-        title: i18n.pages.provideNlrDetails.confirmation.title,
-        whatNextContent: i18n.pages.provideNlrDetails.confirmation.whatNextContent,
-        backToAddNlr: true
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/check-and-send.njk', {
+        pageTitle: i18n.pages.addNonLegalRepresentative.title,
+        formAction: paths.nonLegalRep.provideNlrDetailsCheckAndSend,
+        previousPage: paths.nonLegalRep.addNonLegalRep,
+        summaryLists: [{
+          summaryRows: [{
+            'key': { 'text': "Non-legal representative's email" },
+            'value': { 'html': 'someEmailAddress' },
+          }, {
+            'key': { 'text': "Non-legal representative's name" },
+            'value': { 'html': 'someGivenNames someFamilyName' },
+            'actions': {
+              'items': [{
+                'href': '/add-non-legal-rep/provide-name?edit',
+                'text': 'Change',
+                'visuallyHiddenText': "Non-legal representative's name"
+              }]
+            }
+          }, {
+            'key': { 'text': "Non-legal representative's address" },
+            'value': { 'html': 'someLine1<br>someLine2<br>someCity<br>someCounty<br>somePostcode' },
+            'actions': {
+              'items': [{
+                'href': '/add-non-legal-rep/provide-address?edit',
+                'text': 'Change',
+                'visuallyHiddenText': "Non-legal representative's address"
+              }]
+            }
+          }, {
+            'key': { 'text': "Non-legal representative's phone number" },
+            'value': { 'html': 'somePhoneNumber' },
+            'actions': {
+              'items': [{
+                'href': '/add-non-legal-rep/provide-phone-number?edit',
+                'text': 'Change',
+                'visuallyHiddenText': "Non-legal representative's phone number"
+              }]
+            }
+          }, {
+            'key': { 'text': 'Is your sponsor the same as your non-legal representative?' },
+            'value': { 'html': 'Yes' },
+            'actions': {
+              'items': [{
+                'href': '/add-non-legal-rep/is-same-person-as-sponsor?edit',
+                'text': 'Change',
+                'visuallyHiddenText': 'Is your sponsor the same as your non-legal representative?'
+              }]
+            }
+          }]
+        }],
+        buttonText: i18n.pages.addNonLegalRepresentative.cyaButton,
+        noSaveForLater: true,
+        errorList: [error]
       });
+      expect(mapStub.called).to.equal(true);
+      expect(validateMidEventStub.called).to.equal(true);
+      expect(submitEventRefactoredStub.called).to.equal(false);
+      expect(redirectStub.called).to.equal(false);
     });
 
     it('should catch an error and call next with error', async () => {
       res.render = throwStub;
-      getProvideNlrDetailsConfirmation(req as Request, res as Response, next);
-
-      expect(next.calledWith(error)).to.equal(true);
-    });
-  });
-
-  describe('postInviteToJoinAppeal', () => {
-    it('should redirect to add nlr with error if no email', async () => {
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(redirectStub).calledWithMatch(ErrorCode.stepThreeNoEmailProvided);
-    });
-
-    it('should redirect to add nlr with error if any missing nlr details', async () => {
-      req.session.appeal.nlrDetails.emailAddress = 'someEmailAddress';
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(redirectStub).calledWithMatch(ErrorCode.stepThreeNoDetailsProvided);
-    });
-
-    it('should redirect to add nlr with error if mid event validation fails with sponsor same', async () => {
-      req.session.appeal.application.hasSponsor = 'Yes';
-      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
-      req.session.appeal.nlrDetails = {
-        givenNames: 'someGivenNames',
-        familyName: 'someFamilyName',
-        phoneNumber: 'somePhoneNumber',
-        emailAddress: 'someEmailAddress',
-        addressUk: {
-          line1: 'someLine1',
-          line2: 'someLine2',
-          city: 'someCity',
-          county: 'someCounty',
-          postcode: 'somePostcode',
-        }
-      };
-      updateAppealService.validateMidEvent = validateMidEventStub.returns(['some issue']);
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(validateMidEventStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, 'sendPipToNonLegalRepsendPipToNonLegalRep', req.session.appeal, sinon.match.any, 'idamUID', 'atoken');
-      expect(redirectStub).calledWithMatch(ErrorCode.stepThreeUserNotExisting);
-    });
-
-    it('should redirect to inviteToJoinAppealConfirmation if mid event validation passes with sponsor same', async () => {
-      req.session.appeal.application.hasSponsor = 'Yes';
-      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
-      req.session.appeal.nlrDetails = {
-        givenNames: 'someGivenNames',
-        familyName: 'someFamilyName',
-        phoneNumber: 'somePhoneNumber',
-        emailAddress: 'someEmailAddress',
-        addressUk: {
-          line1: 'someLine1',
-          line2: 'someLine2',
-          city: 'someCity',
-          county: 'someCounty',
-          postcode: 'somePostcode',
-        }
-      };
-      updateAppealService.validateMidEvent = validateMidEventStub.returns([]);
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(validateMidEventStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, 'sendPipToNonLegalRepsendPipToNonLegalRep', req.session.appeal, sinon.match.any, 'idamUID', 'atoken');
-      expect(submitEventRefactoredStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, req.session.appeal, 'idamUID', 'atoken');
-      expect(redirectStub).calledWith(paths.nonLegalRep.inviteToJoinAppealConfirmation);
-    });
-
-    it('should redirect to add nlr with error if mid event validation fails', async () => {
-      req.session.appeal.nlrDetails = {
-        givenNames: 'someGivenNames',
-        familyName: 'someFamilyName',
-        phoneNumber: 'somePhoneNumber',
-        emailAddress: 'someEmailAddress',
-        address: 'someAddress'
-      };
-      updateAppealService.validateMidEvent = validateMidEventStub.returns(['some issue']);
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(validateMidEventStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, 'sendPipToNonLegalRepsendPipToNonLegalRep', req.session.appeal, sinon.match.any, 'idamUID', 'atoken');
-      expect(redirectStub).calledWithMatch(ErrorCode.stepThreeUserNotExisting);
-    });
-
-    it('should redirect to inviteToJoinAppealConfirmation if mid event validation passes', async () => {
-      req.session.appeal.nlrDetails = {
-        givenNames: 'someGivenNames',
-        familyName: 'someFamilyName',
-        phoneNumber: 'somePhoneNumber',
-        emailAddress: 'someEmailAddress',
-        address: 'someAddress'
-      };
-      updateAppealService.validateMidEvent = validateMidEventStub.returns([]);
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(validateMidEventStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, 'sendPipToNonLegalRepsendPipToNonLegalRep', req.session.appeal, sinon.match.any, 'idamUID', 'atoken');
-      expect(submitEventRefactoredStub).calledWith(Events.SEND_PIP_TO_NON_LEGAL_REP, req.session.appeal, 'idamUID', 'atoken');
-      expect(redirectStub).calledWith(paths.nonLegalRep.inviteToJoinAppealConfirmation);
-    });
-
-    it('should catch an error and call next with error', async () => {
-      res.redirect = throwStub;
-      await postInviteToJoinAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(next.calledWith(error)).to.equal(true);
     });
@@ -1762,7 +2002,7 @@ describe('Add non-legal representative controllers setup', () => {
       const middleware = [isJourneyAllowedMiddleware];
 
       setupNonLegalRepresentativeControllers(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub.calledWith(paths.nonLegalRep.addNonLegalRep, middleware, getAddNonLegalRepresentative)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.nonLegalRep.addNonLegalRep, middleware, getTaskList)).to.equal(true);
       expect(routerGetStub.calledWith(paths.nonLegalRep.inviteToCreateAccount, middleware, getInviteToCreateAccount)).to.equal(true);
       expect(routerPostStub.calledWith(paths.nonLegalRep.inviteToCreateAccount, middleware, sinon.match.any)).to.equal(true);
       expect(routerGetStub.calledWith(paths.nonLegalRep.inviteToCreateAccountConfirmation, middleware, getInviteToCreateAccountConfirmation)).to.equal(true);
@@ -1772,11 +2012,30 @@ describe('Add non-legal representative controllers setup', () => {
       expect(routerPostStub.calledWith(paths.nonLegalRep.provideNlrAddress, middleware, sinon.match.any)).to.equal(true);
       expect(routerGetStub.calledWith(paths.nonLegalRep.provideNlrPhoneNumber, middleware, getNlrPhoneNumber)).to.equal(true);
       expect(routerPostStub.calledWith(paths.nonLegalRep.provideNlrPhoneNumber, middleware, sinon.match.any)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.nonLegalRep.provideNlrIsSamePerson, middleware, getSamePerson)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.nonLegalRep.provideNlrIsSamePerson, middleware, sinon.match.any)).to.equal(true);
       expect(routerGetStub.calledWith(paths.nonLegalRep.provideNlrDetailsCheckAndSend, middleware, getCheckAndSend)).to.equal(true);
       expect(routerPostStub.calledWith(paths.nonLegalRep.provideNlrDetailsCheckAndSend, middleware, sinon.match.any)).to.equal(true);
-      expect(routerGetStub.calledWith(paths.nonLegalRep.provideNlrDetailsConfirmation, middleware, getProvideNlrDetailsConfirmation)).to.equal(true);
-      expect(routerPostStub.calledWith(paths.nonLegalRep.inviteToJoinAppeal, middleware, sinon.match.any)).to.equal(true);
       expect(routerGetStub.calledWith(paths.nonLegalRep.inviteToJoinAppealConfirmation, middleware, getInviteToJoinAppealConfirmation)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.nonLegalRep.addAnotherNonLegalRep, middleware, getAddAnotherNonLegalRepresentative)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.nonLegalRep.addAnotherNonLegalRep, middleware, sinon.match.any)).to.equal(true);
     });
   });
 });
+
+function createTask(taskId: string, isActive: boolean, isCompleted: boolean): Task {
+  return {
+    id: taskId,
+    completed: isCompleted,
+    active: isActive,
+    saved: isCompleted
+  };
+}
+
+function createSection(sectionId: string, tasks: Task[]): Section {
+  return {
+    sectionId: sectionId,
+    tasks: tasks
+  };
+}
+

@@ -310,10 +310,78 @@ function resetFeeSupportSectionStatusAndValues(application: AppealApplication) {
   application.feeSupportPersisted = false;
 }
 
+function hasValue(appeal: Appeal, path: string): boolean {
+  const value = _.get(appeal, path);
+  return value !== null && value !== undefined;
+}
+function addNonLegalRepStatus(appeal: Appeal): ApplicationStatus {
+  const provideNlrEmail: Task = {
+    id: 'provideNlrEmail',
+    active: !hasValue(appeal, 'nlrDetails.emailAddress'),
+    saved: hasValue(appeal, 'nlrDetails.emailAddress'),
+    completed: hasValue(appeal, 'nlrDetails.emailAddress')
+  };
+
+  const hasSponsor = _.get(appeal, 'application.hasSponsor') === 'Yes';
+  const isNlrSameAsSponsor: Task = {
+    id: 'isNlrSameAsSponsor',
+    active: provideNlrEmail.completed && hasSponsor && !hasValue(appeal, 'application.isSponsorSameAsNlr'),
+    saved: !hasSponsor || hasValue(appeal, 'application.isSponsorSameAsNlr'),
+    completed: !hasSponsor || hasValue(appeal, 'application.isSponsorSameAsNlr')
+  };
+
+  const provideNlrName: Task = {
+    id: 'provideNlrName',
+    active: provideNlrEmail.completed && !hasValue(appeal, 'nlrDetails.givenNames'),
+    saved: hasValue(appeal, 'nlrDetails.givenNames') && hasValue(appeal, 'nlrDetails.familyName'),
+    completed: hasValue(appeal, 'nlrDetails.givenNames') && hasValue(appeal, 'nlrDetails.familyName')
+  };
+
+  const provideNlrAddress: Task = {
+    id: 'provideNlrAddress',
+    active: provideNlrEmail.completed && (_.get(appeal, 'application.isSponsorSameAsNlr') === 'Yes' ? !hasValue(appeal, 'nlrDetails.addressUk') : !hasValue(appeal, 'nlrDetails.address')),
+    saved: _.get(appeal, 'application.isSponsorSameAsNlr') === 'Yes' ? hasValue(appeal, 'nlrDetails.addressUk.line1') && hasValue(appeal, 'nlrDetails.addressUk.city') && hasValue(appeal, 'nlrDetails.addressUk.postcode') : hasValue(appeal, 'nlrDetails.address'),
+    completed: _.get(appeal, 'application.isSponsorSameAsNlr') === 'Yes' ? hasValue(appeal, 'nlrDetails.addressUk.line1') && hasValue(appeal, 'nlrDetails.addressUk.city') && hasValue(appeal, 'nlrDetails.addressUk.postcode') : hasValue(appeal, 'nlrDetails.address')
+  };
+
+  const provideNlrPhone: Task = {
+    id: 'provideNlrPhone',
+    active: provideNlrEmail.completed && !hasValue(appeal, 'nlrDetails.phoneNumber'),
+    saved: hasValue(appeal, 'nlrDetails.phoneNumber'),
+    completed: hasValue(appeal, 'nlrDetails.phoneNumber')
+  };
+
+  const nlrDetailsProvided: boolean = provideNlrEmail.completed && isNlrSameAsSponsor.completed
+    && provideNlrName.completed && provideNlrAddress.completed && provideNlrPhone.completed;
+
+  const checkAndSend: Task = {
+    id: 'checkAndSend',
+    active: nlrDetailsProvided && !hasValue(appeal, 'nlrDetails.idamId'),
+    saved: nlrDetailsProvided && hasValue(appeal, 'nlrDetails.idamId'),
+    completed: nlrDetailsProvided && hasValue(appeal, 'nlrDetails.idamId')
+  };
+
+  return hasSponsor ? {
+    provideNlrEmail,
+    isNlrSameAsSponsor,
+    provideNlrName,
+    provideNlrAddress,
+    provideNlrPhone,
+    checkAndSend
+  } : {
+    provideNlrEmail,
+    provideNlrName,
+    provideNlrAddress,
+    provideNlrPhone,
+    checkAndSend
+  };
+}
+
 export {
   appealApplicationStatus,
   buildSectionObject,
   cmaRequirementsStatus,
   submitHearingRequirementsStatus,
+  addNonLegalRepStatus,
   resetFeeSupportSectionStatusAndValues
 };

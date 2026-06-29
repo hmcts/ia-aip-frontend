@@ -146,6 +146,7 @@ describe('ccd-service', () => {
     });
 
     it('submitCreateCase', async () => {
+      postRequest.resolves({ status: 201 });
       await ccdService.submitCreateCase(userId, headers, {} as any);
 
       expect(postRequest.called).to.equal(true);
@@ -209,7 +210,7 @@ describe('ccd-service', () => {
       const pageId: string = 'somePageId';
       await ccdService.validateMidEvent(midEventDetails, pageId, userId, headers);
       const expectedUrl =
-          '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
+        '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
       expect(postRequest.calledOnceWith(ccdBaseUrl + expectedUrl, midEventDetails)).to.equal(true);
     });
 
@@ -235,7 +236,7 @@ describe('ccd-service', () => {
       const response = await ccdService.validateMidEvent(midEventDetails, pageId, userId, headers);
 
       const expectedUrl =
-          '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
+        '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
       expect(postRequest.calledOnceWith(ccdBaseUrl + expectedUrl, midEventDetails)).to.equal(true);
       expect(response).to.deep.equal(error.response);
     });

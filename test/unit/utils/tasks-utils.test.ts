@@ -3,10 +3,10 @@ import session from 'express-session';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
-import { appealApplicationStatus } from '../../../app/utils/tasks-utils';
+import { addNonLegalRepStatus, appealApplicationStatus } from '../../../app/utils/tasks-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('getStatus', () => {
+describe('taskUtils', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let appeal: Appeal;
@@ -467,4 +467,185 @@ describe('getStatus', () => {
     expect(appeal.application.feeSupportPersisted).to.equal(false);
   });
 
+  it('should create NLR tasks with sponsor = No and all details missing', () => {
+    appeal.application.contactDetails = {
+      email: 'email@test.com',
+      wantsEmail: true
+    } as any;
+
+    appeal.application.hasSponsor = 'No';
+    appeal.application.hasNonLegalRep = 'Yes';
+
+    const applicationStatus = addNonLegalRepStatus(appeal);
+
+    expect(applicationStatus.provideNlrEmail).to.deep.equal({
+      id: 'provideNlrEmail',
+      active: true,
+      saved: false,
+      completed: false
+    });
+
+    expect(applicationStatus.provideNlrName).to.deep.equal({
+      id: 'provideNlrName',
+      active: false,
+      saved: false,
+      completed: false
+    });
+
+    expect(applicationStatus.provideNlrAddress).to.deep.equal({
+      id: 'provideNlrAddress',
+      active: false,
+      saved: false,
+      completed: false
+    });
+
+    expect(applicationStatus.provideNlrPhone).to.deep.equal({
+      id: 'provideNlrPhone',
+      active: false,
+      saved: false,
+      completed: false
+    });
+
+    expect(applicationStatus.checkAndSend).to.deep.equal({
+      id: 'checkAndSend',
+      active: false,
+      saved: false,
+      completed: false
+    });
+
+    expect(applicationStatus).to.not.have.property('isNlrSameAsSponsor');
+  });
+
+  it('should activate isNlrSameAsSponsor after email is completed', () => {
+    appeal.application.contactDetails = {
+      email: 'email@test.com',
+      wantsEmail: true
+    } as any;
+
+    appeal.application.hasSponsor = 'Yes';
+    appeal.application.hasNonLegalRep = 'Yes';
+
+    appeal.nlrDetails = {
+      emailAddress: 'nlr@test.com'
+    } as any;
+
+    const applicationStatus = addNonLegalRepStatus(appeal);
+
+    expect(applicationStatus.provideNlrEmail.completed).to.equal(true);
+
+    expect(applicationStatus.isNlrSameAsSponsor).to.deep.equal({
+      id: 'isNlrSameAsSponsor',
+      active: true,
+      saved: false,
+      completed: false
+    });
+  });
+
+  it('should activate address task for UK address when sponsor is same as NLR', () => {
+    appeal.application.contactDetails = {
+      email: 'email@test.com',
+      wantsEmail: true
+    } as any;
+
+    appeal.application.hasSponsor = 'Yes';
+    appeal.application.hasNonLegalRep = 'Yes';
+    appeal.application.isSponsorSameAsNlr = 'Yes';
+
+    appeal.nlrDetails = {
+      emailAddress: 'email@test.com',
+      givenNames: 'John',
+      familyName: 'Smith'
+    } as any;
+
+    const applicationStatus = addNonLegalRepStatus(appeal);
+
+    expect(applicationStatus.provideNlrAddress).to.deep.equal({
+      id: 'provideNlrAddress',
+      active: true,
+      saved: false,
+      completed: false
+    });
+  });
+
+  it('should complete UK address task when required UK fields are provided', () => {
+    appeal.application.contactDetails = {
+      email: 'email@test.com',
+      wantsEmail: true
+    } as any;
+
+    appeal.application.hasSponsor = 'Yes';
+    appeal.application.hasNonLegalRep = 'Yes';
+    appeal.application.isSponsorSameAsNlr = 'Yes';
+
+    appeal.nlrDetails = {
+      emailAddress: 'email@test.com',
+      givenNames: 'John',
+      familyName: 'Smith',
+      addressUk: {
+        line1: '1 High Street',
+        city: 'London',
+        postcode: 'SW1A 1AA'
+      }
+    } as any;
+
+    const applicationStatus = addNonLegalRepStatus(appeal);
+
+    expect(applicationStatus.provideNlrAddress.saved).to.equal(true);
+    expect(applicationStatus.provideNlrAddress.completed).to.equal(true);
+  });
+
+  it('should activate checkAndSend once all NLR details are complete but idamId is missing', () => {
+    appeal.application.contactDetails = {
+      email: 'email@test.com',
+      wantsEmail: true
+    } as any;
+
+    appeal.application.hasSponsor = 'No';
+    appeal.application.hasNonLegalRep = 'Yes';
+
+    appeal.nlrDetails = {
+      emailAddress: 'email@test.com',
+      givenNames: 'John',
+      familyName: 'Smith',
+      address: 'Some address',
+      phoneNumber: '07123456789'
+    } as any;
+
+    const applicationStatus = addNonLegalRepStatus(appeal);
+
+    expect(applicationStatus.checkAndSend).to.deep.equal({
+      id: 'checkAndSend',
+      active: true,
+      saved: false,
+      completed: false
+    });
+  });
+
+  it('should complete checkAndSend once idamId exists', () => {
+    appeal.application.contactDetails = {
+      email: 'email@test.com',
+      wantsEmail: true
+    } as any;
+
+    appeal.application.hasSponsor = 'No';
+    appeal.application.hasNonLegalRep = 'Yes';
+
+    appeal.nlrDetails = {
+      emailAddress: 'email@test.com',
+      givenNames: 'John',
+      familyName: 'Smith',
+      address: 'Some address',
+      phoneNumber: '07123456789',
+      idamId: 'abc123'
+    } as any;
+
+    const applicationStatus = addNonLegalRepStatus(appeal);
+
+    expect(applicationStatus.checkAndSend).to.deep.equal({
+      id: 'checkAndSend',
+      active: false,
+      saved: true,
+      completed: true
+    });
+  });
 });

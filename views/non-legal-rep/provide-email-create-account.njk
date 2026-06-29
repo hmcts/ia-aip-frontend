@@ -19,6 +19,7 @@
       isPageHeading: true
     }
   }) %}
+  <p class="govuk-inset-text">{{ i18n.pages.addNonLegalRepresentative.instructionsPartOne }}</p>
   <form action="{{ paths.nonLegalRep.inviteToCreateAccount }}" method="post" novalidate>
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukInput({

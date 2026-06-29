@@ -396,7 +396,7 @@ function postHasSponsorOrNlr(updateAppealService: UpdateAppealService) {
         }
       };
       if (hasSponsor !== 'Yes' || hasNonLegalRep !== 'Yes') {
-        appeal.application.isSponsorSameAsNlr = null;
+        appeal.application.isSponsorSameAsNlr = 'No';
       }
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
       req.session.refreshCasesList = true;
@@ -892,6 +892,7 @@ function postNlrAddress(updateAppealService: UpdateAppealService) {
           ...nlrAddress
         }
       };
+
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {

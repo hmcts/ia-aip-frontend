@@ -76,7 +76,7 @@ class CcdService {
     );
 
     const response = await axios.post(url, startEvent, options);
-    if (response.status !== 201) {
+    if (!response.status.toString().startsWith('2')) {
       logger.exception(`Failed to create case for user ${userId}. Status: ${response.status},
        Data: ${JSON.stringify(response.data)}`, logLabel);
       throw new Error(`Failed to create case. Status: ${response.status}`);

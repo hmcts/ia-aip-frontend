@@ -12,21 +12,14 @@
   {% endif %}
   {% set options = [] %}
   {% for item in types %}
-    {% set examples =
-      govukDetails({
-      summaryText: i18n.pages.appealType.exampleSummaryText + item.name,
-      html: item.examples
-    }) %}
-
     {% set options = (options.push(
       {
         value: item.value,
-        html: item.title,
+        text: item.name,
+        hint: {
+          text: item.examples
+        },
         checked: item.checked
-      }), options) %}
-    {% set options = (options.push(
-      {
-        divider: examples
       }), options) %}
   {% endfor %}
   {{ paymentsFlag | dump }}

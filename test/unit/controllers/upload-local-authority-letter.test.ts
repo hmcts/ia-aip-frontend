@@ -193,6 +193,19 @@ describe('Local authority letter', function () {
     });
   });
 
+  describe('getLocalAuthorityLetter error link', () => {
+    it('should generate error link with href matching file-upload input id', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      req.query.error = 'noFileSelected';
+      const { getLocalAuthorityLetter } = require('../../../app/controllers/appeal-application/upload-local-authority-letter');
+      await getLocalAuthorityLetter(req as Request, res as Response, next);
+
+      expect(renderStub.called).to.equal(true);
+      const renderArgs = renderStub.firstCall.args[1];
+      expect(renderArgs.errorList[0].href).to.equal('#file-upload');
+    });
+  });
+
   describe('deleteLocalAuthorityLetter', () => {
     it('should delete an evidence', async () => {
       req.session.appeal.application.localAuthorityLetters = [{ fileId: 'anId', name: 'name' } as Evidence];

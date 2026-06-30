@@ -281,6 +281,36 @@ describe('Out of time controller', () => {
       });
     });
 
+    it('should preserve uploaded file when text validation fails', async () => {
+      req.body['appeal-late'] = '';
+      req.file = { originalname: 'new-file.png', mimetype: 'image/png' } as Express.Multer.File;
+      const documentUploadResponse: DocumentUploadResponse = {
+        fileId: 'newFileUUID',
+        name: 'new-file.png'
+      };
+      documentManagementService.uploadFile = uploadStub.returns(documentUploadResponse);
+
+      await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(uploadStub.calledWith(req)).to.equal(true);
+      expect(renderStub.called).to.equal(true);
+      const renderArgs = renderStub.firstCall.args[1];
+      expect(renderArgs.evidence).to.deep.equal({ fileId: 'newFileUUID', name: 'new-file.png' });
+      expect(req.session.appeal.application.lateAppeal.evidence).to.deep.equal({ fileId: 'newFileUUID', name: 'new-file.png' });
+    });
+
+    it('should preserve existing evidence when text validation fails and no new file uploaded', async () => {
+      req.body['appeal-late'] = '';
+      req.session.appeal.application.lateAppeal.evidence = evidenceExample;
+
+      await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(uploadStub.called).to.equal(false);
+      expect(renderStub.called).to.equal(true);
+      const renderArgs = renderStub.firstCall.args[1];
+      expect(renderArgs.evidence).to.deep.equal(evidenceExample);
+    });
+
     it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       res.render = renderStub.throws(error);

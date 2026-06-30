@@ -158,6 +158,59 @@ describe('Make application controllers helper', () => {
 
       expect(redirectStub.calledWith(paths.makeApplication.askChangeHearing)).to.equal(true);
     });
+
+    it('should clear makeAnApplicationDetails on GET without error query param', () => {
+      req.session.appeal.makeAnApplicationTypes = {
+        value: {
+          code: 'expedite',
+          label: 'Expedite'
+        }
+      };
+      req.session.appeal.makeAnApplicationDetails = 'stale data from previous request';
+
+      config = {
+        validationErrors: undefined,
+        makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askHearingSooner.description,
+        makeAnApplicationDetailsHint: i18n.pages.makeApplication.askHearingSooner.hint,
+        makeAnApplicationDetailsTitle: i18n.pages.makeApplication.askHearingSooner.title,
+        formAction: paths.makeApplication.expedite,
+        ableToAddEvidenceTitle: i18n.pages.makeApplication.askHearingSooner.ableToAddEvidenceTitle,
+        ableToAddEvidenceAdvice: i18n.pages.makeApplication.askHearingSooner.ableToAddEvidenceAdvice
+      };
+
+      makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req as Request, res as Response, next, config);
+
+      expect(req.session.appeal.makeAnApplicationDetails).to.equal(undefined);
+      const renderArgs = renderStub.firstCall.args[1];
+      expect(renderArgs.question.value).to.equal(undefined);
+    });
+
+    it('should not clear makeAnApplicationDetails on GET with error query param', () => {
+      req.session.appeal.makeAnApplicationTypes = {
+        value: {
+          code: 'expedite',
+          label: 'Expedite'
+        }
+      };
+      req.session.appeal.makeAnApplicationDetails = 'user entered data';
+      req.query.error = 'askHearingSooner';
+
+      config = {
+        validationErrors: { askHearingSooner: { key: 'makeAnApplicationDetails', text: 'Enter details', href: '#makeAnApplicationDetails' } },
+        makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askHearingSooner.description,
+        makeAnApplicationDetailsHint: i18n.pages.makeApplication.askHearingSooner.hint,
+        makeAnApplicationDetailsTitle: i18n.pages.makeApplication.askHearingSooner.title,
+        formAction: paths.makeApplication.expedite,
+        ableToAddEvidenceTitle: i18n.pages.makeApplication.askHearingSooner.ableToAddEvidenceTitle,
+        ableToAddEvidenceAdvice: i18n.pages.makeApplication.askHearingSooner.ableToAddEvidenceAdvice
+      };
+
+      makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req as Request, res as Response, next, config);
+
+      expect(req.session.appeal.makeAnApplicationDetails).to.equal('user entered data');
+      const renderArgs = renderStub.firstCall.args[1];
+      expect(renderArgs.question.value).to.equal('user entered data');
+    });
   });
 
   describe('postProvideMakeAnApplicationDetails', () => {

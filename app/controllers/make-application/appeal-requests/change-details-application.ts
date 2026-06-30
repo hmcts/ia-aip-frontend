@@ -8,7 +8,7 @@ import { makeApplicationControllersHelper } from '../make-application-controller
 function getChangeDetailsApplication(req: Request, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
-      askUpdateDetails: createStructuredError('askUpdateDetails', i18n.validationErrors.makeApplication.askUpdateDetails)
+      askUpdateDetails: createStructuredError('makeAnApplicationDetails', i18n.validationErrors.makeApplication.askUpdateDetails)
     },
     makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askUpdateDetails.description,
     makeAnApplicationDetailsHint: i18n.pages.makeApplication.askUpdateDetails.hint,

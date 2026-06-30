@@ -21,7 +21,7 @@ const express = require('express');
 
 function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
   return [{
-    key: { text: 'In the UK' },
+    key: { text: 'Currently living in the UK' },
     value: { html: 'No' },
     actions: { items: [{ href: '/in-the-uk?edit', text: 'Change' }] }
   }, {

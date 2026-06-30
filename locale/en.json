@@ -9,11 +9,11 @@
     "version": "Beta",
     "text": [
       "This is a new service – your ",
-      " will help us to improve it. (opens in a new window)"
+      " will help us to improve it."
     ],
     "feedbackSurveyLik": {
       "href": "https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum/",
-      "text": "feedback"
+      "text": "feedback (opens in a new tab)"
     }
   },
   "common": {
@@ -21,7 +21,7 @@
       "saveAndContinue": "Save and continue",
       "continue": "Continue",
       "saveForLater": "Save for later",
-      "uploadFile": "Upload file",
+      "uploadFile": "Upload",
       "send": "Send",
       "cancel": "Cancel",
       "seeProgress": "See your appeal progress",
@@ -170,10 +170,10 @@
       "inputs": {
         "building": "Building and street",
         "buildingAndStreet": "Building and street <span class=\"govuk-visually-hidden\">line 1 of 2</span>",
-        "buildingAndStreet2": "<span class=\"govuk-visually-hidden\">Building and street line 2 of 2</span>",
+        "buildingAndStreet2": "<span class=\"govuk-visually-hidden\">Building and street line 2 of 2 (optional)</span>",
         "town": "Town or city",
         "country": "Country",
-        "county": "County",
+        "county": "County (optional)",
         "postcode": "Postcode"
       }
     },
@@ -210,21 +210,25 @@
     "decisionTypePage": {
       "title": "How do you want your appeal to be decided?",
       "hint" : {
-        "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
-        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80.</p><p>Select an option</p>"
+        "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><p class='govuk-body govuk-!-font-weight-bold'>If you choose with a hearing</p><p>A judge will decide your appeal at a hearing that you can attend.</p><p class='govuk-body govuk-!-font-weight-bold'>If you choose without a hearing</p><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
+        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><p class='govuk-body govuk-!-font-weight-bold'>If you choose with a hearing</p><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £140.</p><p class='govuk-body govuk-!-font-weight-bold'>If you choose without a hearing</p><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80.</p><p>Select an option</p>"
       },
       "hintWithDrlmSetAsideFlag": {
-        "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>",
-        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>"
+        "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><p class='govuk-body govuk-!-font-weight-bold'>If you choose with a hearing</p><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><p class='govuk-body govuk-!-font-weight-bold'>If you choose without a hearing</p><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>",
+        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><p class='govuk-body govuk-!-font-weight-bold'>If you choose with a hearing</p><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><p class='govuk-body govuk-!-font-weight-bold'>If you choose without a hearing</p><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>"
       },
       "options": {
         "withHearing": {
           "value": "decisionWithHearing",
-          "text": "I want the appeal to be decided with a hearing"
+          "text": "I want the appeal to be decided with a hearing",
+          "hintWithFee": "A judge will decide your appeal at a hearing you can attend. The fee is £140.",
+          "hintWithoutFee": "A judge will decide your appeal at a hearing you can attend."
         },
         "withoutHearing": {
           "value": "decisionWithoutHearing",
-          "text": "I want the appeal to be decided without a hearing"
+          "text": "I want the appeal to be decided without a hearing",
+          "hintWithFee": "A judge will decide your appeal by looking at the information and evidence you send. The fee is £80.",
+          "hintWithoutFee": "A judge will decide your appeal by looking at the information and evidence you send."
         }
       }
     },
@@ -255,7 +259,7 @@
       "statement": "Statement of truth",
       "agreement": "I believe the information I have given is true",
       "rowTitles": {
-        "appellantInUk": "In the UK",
+        "appellantInUk": "Currently living in the UK",
         "textMessage": "Mobile phone",
         "mobilePhone": "Enter a phone number",
         "email": "Email",
@@ -279,7 +283,7 @@
         "supportingEvidence": "Supporting evidence",
         "paymentType": "Payment type",
         "feeAmount": "Fee amount",
-        "inTheUk": "In the UK",
+        "inTheUk": "Currently living in the UK",
         "outsideUKWhenApplicationWasMade": "Outside UK when application was made",
         "gwfReferenceNumber": "GWF reference number",
         "dateLetterReceived": "Date letter received",
@@ -353,10 +357,10 @@
       "inputs": {
         "building": "Building and street",
         "buildingAndStreet": "Building and street <span class=\"govuk-visually-hidden\">line 1 of 2</span>",
-        "buildingAndStreet2": "<span class=\"govuk-visually-hidden\">Building and street line 2 of 2</span>",
+        "buildingAndStreet2": "<span class=\"govuk-visually-hidden\">Building and street line 2 of 2 (optional)</span>",
         "town": "Town or city",
         "country": "Country",
-        "county": "County",
+        "county": "County (optional)",
         "postcode": "Postcode"
       }
     },
@@ -377,7 +381,6 @@
       "hints": [
         "Your Home Office reference number is usually on the first page of your Home Office decision letter",
         "It is usually either 9 numbers or 16 numbers with dashes, for example 123456789 or 1234-1234-1234-1234",
-        "If your letter includes a reference with 8 numbers, like 98765432, add 0 to the start and enter that number, for example 098765432",
         "<strong>Do not</strong> enter any reference that includes a letter, for example A246893521"
       ]
     },
@@ -428,7 +431,7 @@
         "You can upload <b>one piece of evidence</b> to support your answer such as a letter, photo or document. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
         "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
       ],
-      "fileUploadTitle": "Upload a file",
+      "fileUploadTitle": "Select a file",
       "uploadedFileTitle": "Uploaded file"
     },
     "successPage": {
@@ -515,7 +518,7 @@
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
-      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
+      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents (opens in a new tab)</a>. They include your decision letter and other information about your case.",
       "textTitle": "<span class='govuk-body govuk-!-font-weight-bold'> Tell us in your own words</span> - you don't have to have perfect English.",
       "howToAnswer": "How to answer this question",
       "bulletOne": "Carefully read your Home Office decision letter",
@@ -736,7 +739,7 @@
         "title": "Ask for something else",
         "description": "<p>Tell us what you want to ask for and explain why you need it. You should provide supporting evidence for your answer if you have any.</p>",
         "hint": "What do you need and why?",
-        "ableToAddEvidenceTitle": "Supporting evidence for why you need what you are asking for",
+        "ableToAddEvidenceTitle": "Supporting evidence",
         "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
       },
       "askReinstate": {
@@ -774,7 +777,7 @@
           "You can upload evidence to support your appeal such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
           "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
         ],
-        "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
+        "fileUpload": "<span class='govuk-!-font-weight-bold'>Select a file</span>"
       },
       "checkYourAnswers": {
         "title": "Check your answer",
@@ -825,7 +828,7 @@
             "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
           ]
         },
-        "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
+        "fileUpload": "<span class='govuk-!-font-weight-bold'>Select a file</span>"
       },
       "checkYourAnswers": {
         "title": "Check your answer",
@@ -847,7 +850,7 @@
       "titleNew": "Supporting evidence",
       "heading": "Provide supporting evidence",
       "uploadInfo": "You can upload evidence to support your appeal such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
-      "uploadFile": "<span class='govuk-body govuk-!-font-weight-bold'> Upload a file</span> ",
+      "uploadFile": "<span class='govuk-body govuk-!-font-weight-bold'> Select a file</span> ",
       "findOutMore": "Find out more about the evidence to support your appeal",
       "uploadFiles": "Uploaded files",
       "noFiles": "No files uploaded",
@@ -880,8 +883,7 @@
       "endedInsert": "This appeal has ended",
       "transferredToUt": "Appeal moved to the Upper Tribunal",
       "time": "Monday to Friday, 8:30am to 5pm",
-      "charges": "Find out about call charges",
-      "newWindow": "(opens in a new window)",
+      "charges": "Find out about call charges (opens in a new tab)",
       "appealRef": "Appeal reference:",
       "answersBeenSaved": "Your answers have been saved",
       "askedForMoreTime": "You have asked for more time",
@@ -1145,7 +1147,7 @@
             "title": "Helpful Information",
             "titleFtpaEnabled": "Appeal Information",
             "text": "If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.",
-            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>",
+            "url": "<a class=\"govuk-link\" target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (opens in a new tab)</a>",
             "urlFtpaEnabled": "<a href=\"{{ paths.ftpa.ftpaApplication }}\">Apply for permission to appeal to the Upper Tribunal</a>"
           },
           "underRule32": {
@@ -1274,7 +1276,7 @@
           },
           "usefulDocuments": {
             "title": "Helpful Information",
-            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/courts-tribunals/upper-tribunal-immigration-and-asylum-chamber\" target=\"_blank\">Find out more about the Upper Tribunal, including contact details</a>. (Opens in a new window)"
+            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/courts-tribunals/upper-tribunal-immigration-and-asylum-chamber\" target=\"_blank\">Find out more about the Upper Tribunal, including contact details</a>. (opens in a new tab)"
           }
         },
         "remitted": {
@@ -2539,7 +2541,7 @@
               "<ul class='govuk-list govuk-list--bullet'>",
               "<li>If you can, visit the hearing centre before your hearing day </li>",
               "<li>Go to a hearing during your visit – they are usually open to the public</li>",
-              "<li>Everyone has to go through a security check when entering the hearing centre – do not take any sprays, perfumes, deodorants or mirrors as they will be kept by security <br /><a href='https://www.gov.uk/entering-court-or-tribunal-building' target='_blank' class=\"govuk-link\">See the full list of items you’re not allowed to take in (opens in a new window)</a></li>",
+              "<li>Everyone has to go through a security check when entering the hearing centre – do not take any sprays, perfumes, deodorants or mirrors as they will be kept by security <br /><a href='https://www.gov.uk/entering-court-or-tribunal-building' target='_blank' class=\"govuk-link\">See the full list of items you’re not allowed to take in (opens in a new tab)</a></li>",
               "<li>Children are not always allowed into the hearing room. If you need to bring children with you, you should bring a responsible adult to take care of them while you are at the hearing </li>",
               "<li>Bring food and drink and any medication you might need; you may have to wait several hours before your hearing starts.</li>",
               "<li>Bring family and friends along for support if you can. Supporters will not be able to speak at the hearing unless they are part of your case</li>",
@@ -3157,7 +3159,7 @@
         "You can upload evidence to support your appeal such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
         "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
       ],
-      "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
+      "fileUpload": "<span class='govuk-!-font-weight-bold'>Select a file</span>"
     },
     "askForMoreTimeConfirmation": {
       "title": "Your request has been sent to the Tribunal",
@@ -3712,7 +3714,7 @@
         "title": "Advice on preparing for an appointment",
         "bullets": [
           "If you can, visit the hearing centre before the day of your appointment",
-          "Everyone has to go through a security check when entering the hearing centre – do not take any sprays, perfumes, deodorants or mirrors as they will be kept by security <br /><a href='https://www.gov.uk/entering-court-or-tribunal-building' target='_blank' class=\"govuk-link\">See the full list of items you’re not allowed to take in (opens in a new window)</a>",
+          "Everyone has to go through a security check when entering the hearing centre – do not take any sprays, perfumes, deodorants or mirrors as they will be kept by security <br /><a href='https://www.gov.uk/entering-court-or-tribunal-building' target='_blank' class=\"govuk-link\">See the full list of items you’re not allowed to take in (opens in a new tab)</a>",
           "Children are not always allowed into the hearing room. If you need to bring children with you, you should bring a responsible adult to take care of them while you’re at the appointment",
           "Bring food and drink and any medication you might need",
           "Bring family and friends along for support if you want to"
@@ -3985,12 +3987,12 @@
       "tipsBullet1": "receive certain benefits",
       "tipsBullet2": "have little or no savings",
       "tipsBullet3": "are on a low income or have no income",
-      "guidanceLink": "<a href=\"https://www.gov.uk/get-help-with-court-fees/\" target=\"_blank\">Visit the help with fees guidance page (opens in a new tab)</a> to find out if you are eligible for support.",
+      "guidanceLink": "<a href=\"https://www.gov.uk/get-help-with-court-fees/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"govuk-link\">Visit the help with fees guidance page (opens in a new tab)</a> to find out if you are eligible for support.",
       "radioButtonsTitle": "Do you want to apply for help with fees?",
       "options": {
         "wantToApply": {
           "value": "wantToApply",
-          "text": "Yes, I want to apply for help with fees"
+          "text": "I want to apply for help with fees"
         },
         "alreadyApplied": {
           "value": "alreadyApplied",
@@ -3998,7 +4000,7 @@
         },
         "willPayForAppeal": {
           "value": "willPayForAppeal",
-          "text": "No, I will pay for the appeal now"
+          "text": "No, I do not want to apply for help with fees"
         }
       },
       "checkAndSendWantToApply": "I want to apply for help with fees",
@@ -4319,7 +4321,7 @@
     },
     "contactUs": {
       "heading": "Contact us for help",
-      "content": "<div><p>Ask a question or get help in your language.</p></div><div><p class='govuk-body govuk-!-margin-bottom-0'>Telephone: 0300 123 1711</p></div><div><p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>Monday to Friday, 8:30am to 5pm</p><a href='https://www.gov.uk/call-charges' target='_blank' rel='noopener noreferrer' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>Find out about call charges</a><p>(opens in a new window)</p><p>Email: <a href='mailto:contactia@justice.gov.uk' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>contactia@justice.gov.uk</a></p><p>We aim to get back to you within 5 days.</p></div>"
+      "content": "<div><p>Ask a question or get help in your language.</p></div><div><p class='govuk-body govuk-!-margin-bottom-0'>Telephone: 0300 123 1711</p></div><div><p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>Monday to Friday, 8:30am to 5pm</p><a href='https://www.gov.uk/call-charges' target='_blank' rel='noopener noreferrer' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>Find out about call charges (opens in a new tab)</a><p>Email: <a href='mailto:contactia@justice.gov.uk' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>contactia@justice.gov.uk</a></p><p>We aim to get back to you within 5 days.</p></div>"
     },
     "contactUsErrorPages": {
       "telephone": "Telephone: 0300 123 1711",
@@ -4461,9 +4463,9 @@
       "description": "It costs:",
       "optionsList": [
         "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
-        "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
+        "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new tab)</a> ",
         "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
-        "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
+        "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in a new tab).</a></li></ul>",
         "In all other cases, you should use the new service."
       ],
       "insetText": "You can only appeal an EU Settlement Scheme decision if your application was made after 11pm on 31 January 2020."
@@ -4473,9 +4475,9 @@
       "description": "It costs:",
       "optionsList": [
         "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
-        "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
+        "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new tab)</a> ",
         "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
-        "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
+        "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in a new tab).</a></li></ul>",
         "In all other cases, you should use the new service."
       ],
       "cta": "link",

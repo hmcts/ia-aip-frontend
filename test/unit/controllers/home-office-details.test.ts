@@ -614,14 +614,17 @@ describe('Home Office Details Controller', function () {
       req.body['month'] = tomorrowDate.getMonth() + 1;
       req.body['year'] = tomorrowDate.getFullYear();
 
+      const crossesMonth = tomorrowDate.getMonth() !== currentDate.getMonth();
+      const errorKey = crossesMonth ? 'month' : 'day';
+
       const expectedError: ValidationError = {
-        key: 'day',
+        key: errorKey,
         text: 'The date letter was sent must be in the past',
-        href: '#day'
+        href: `#${errorKey}`
       };
 
       const error = {
-        day: expectedError
+        [errorKey]: expectedError
       };
       const errorList = [expectedError];
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

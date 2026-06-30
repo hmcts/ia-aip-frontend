@@ -53,7 +53,8 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
           name: evidenceStored.name
         };
         req.session.appeal.application.lateAppeal = {
-          ...(req.session.appeal.application.lateAppeal || {}),
+          ...req.session.appeal.application.lateAppeal,
+          reason: req.session.appeal.application.lateAppeal?.reason || '',
           evidence
         };
       }

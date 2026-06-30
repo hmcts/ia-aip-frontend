@@ -15,7 +15,6 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
-const proxyquire = require('proxyquire').noCallThru();
 
 describe('Home Office Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
@@ -29,9 +28,11 @@ describe('Home Office Details Controller', function () {
   let validateMidEventStub: sinon.SinonStub;
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
+  let clock: sinon.SinonFakeTimers;
+  const mockDate: Date = new Date('2025-06-16');
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    sandbox.useFakeTimers(new Date('2025-06-16'));
+    clock = sandbox.useFakeTimers(mockDate);
     req = {
       body: {},
       session: {
@@ -82,6 +83,7 @@ describe('Home Office Details Controller', function () {
   });
 
   afterEach(() => {
+    clock.restore();
     sandbox.restore();
   });
 
@@ -638,12 +640,10 @@ describe('Home Office Details Controller', function () {
     });
 
     it('should fail validation and render a validation error with invalid date', async () => {
-      const currentDate = new Date();
-
       const tomorrowDate = new Date();
-      tomorrowDate.setDate(currentDate.getDate() + 1);
+      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
 
-      req.body['day'] = 31;
+      req.body['day'] = 35;
       req.body['month'] = 9;
       req.body['year'] = 2024;
 

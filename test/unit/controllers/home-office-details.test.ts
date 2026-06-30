@@ -7,7 +7,6 @@ import {
   getHomeOfficeDetails,
   postDateLetterReceived,
   postDateLetterSent,
-  postHomeOfficeDetails,
   setupHomeOfficeDetailsController
 } from '../../../app/controllers/appeal-application/home-office-details';
 import { Events } from '../../../app/data/events';
@@ -16,6 +15,8 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
+
+const proxyquire = require('proxyquire').noCallThru();
 
 describe('Home Office Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
@@ -120,6 +121,21 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('postHomeOfficeDetails', () => {
+    let postHomeOfficeDetails;
+    beforeEach(() => {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(false)
+      };
+      const homeOfficeDetailsController = proxyquire('../../../app/controllers/appeal-application/home-office-details', { config: configStub });
+      postHomeOfficeDetails = homeOfficeDetailsController.postHomeOfficeDetails;
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
     it('should validate and redirect name page', async () => {
       const appeal: Appeal = {
         ...req.session.appeal,
@@ -228,6 +244,215 @@ describe('Home Office Details Controller', function () {
       const errorList = {
         ...fieldError,
         text: 'Enter the Home Office reference number in the correct format'
+      };
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
+        'appeal-application/home-office/details.njk',
+        {
+          errors: {
+            homeOfficeRefNumber: fieldError
+          },
+          errorList: [errorList],
+          homeOfficeRefNumber: 'notValid',
+          previousPage: paths.appealStarted.taskList
+        });
+    });
+
+    it('when save and continue should fail validation due to blank home office reference and render home-office/details.njk with error', async () => {
+      req.body['homeOfficeRefNumber'] = '';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const fieldError = {
+        href: '#homeOfficeRefNumber',
+        key: 'homeOfficeRefNumber',
+        text: 'There is a problem'
+      };
+      const errorList = {
+        ...fieldError,
+        text: 'Enter the Home Office reference number'
+      };
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
+        'appeal-application/home-office/details.njk',
+        {
+          errors: {
+            homeOfficeRefNumber: fieldError
+          },
+          errorList: [errorList],
+          homeOfficeRefNumber: '',
+          previousPage: paths.appealStarted.taskList
+        });
+    });
+
+    it('should redirect to path list when save for later and home office ref number is blank', async () => {
+      req.body['homeOfficeRefNumber'] = '';
+      req.body['saveForLater'] = 'saveForLater';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
+    });
+
+    it('should catch exception and call next with the error', async () => {
+      const error = new Error('an error');
+      res.render = renderStub.throws(error);
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next.calledOnceWith(error)).to.equal(true);
+    });
+
+    it('should not call validateMidEvent', async () => {
+      req.body['homeOfficeRefNumber'] = '1212-0099-0089-1080';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(validateMidEventStub.called).to.equal(false);
+    });
+  });
+
+  describe('postHomeOfficeDetails with updated validation', () => {
+    let postHomeOfficeDetails;
+    beforeEach(() => {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(true)
+      };
+      const homeOfficeDetailsController = proxyquire('../../../app/controllers/appeal-application/home-office-details', { config: configStub });
+      postHomeOfficeDetails = homeOfficeDetailsController.postHomeOfficeDetails;
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should validate and redirect name page', async () => {
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          homeOfficeRefNumber: '1212-0099-0089-1080'
+        }
+      };
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
+        application: {
+          homeOfficeRefNumber: '1212-0099-0089-1080'
+        }
+      } as Appeal);
+      req.body['homeOfficeRefNumber'] = '1212-0099-0089-1080';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('1212-0099-0089-1080');
+      expect(redirectStub.calledWith(paths.appealStarted.name)).to.equal(true);
+    });
+
+    it('should validate with GWF reference and redirect name page', async () => {
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          homeOfficeRefNumber: 'GWF123456789'
+        }
+      };
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
+        application: {
+          homeOfficeRefNumber: 'GWF123456789'
+        }
+      } as Appeal);
+      req.body['homeOfficeRefNumber'] = 'GWF123456789';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('GWF123456789');
+      expect(redirectStub.calledWith(paths.appealStarted.name)).to.equal(true);
+    });
+
+    it('when save for later should validate and redirect task-list.njk', async () => {
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          homeOfficeRefNumber: '1212-0099-0089-1080'
+        }
+      };
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
+        application: {
+          homeOfficeRefNumber: 'A1234567'
+        }
+      } as Appeal);
+      req.body['homeOfficeRefNumber'] = '1212-0099-0089-1080';
+      req.body['saveForLater'] = 'saveForLater';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('A1234567');
+      expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
+    });
+
+    it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          homeOfficeRefNumber: '1212-0099-0089-1080',
+          isEdit: true
+        }
+      };
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
+        application: {
+          homeOfficeRefNumber: '1212-0099-0089-1080'
+        }
+      } as Appeal);
+      req.session.appeal.application.isEdit = true;
+      req.body['homeOfficeRefNumber'] = '1212-0099-0089-1080';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('1212-0099-0089-1080');
+      expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
+      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+    });
+
+    it('should fail validation and render home-office/details.njk with error', async () => {
+      // req.body['homeOfficeRefNumber'] = 'notValid';
+      // req.body['homeOfficeRefNumber'] = '1212-0099-0089-1080';
+      req.body['homeOfficeRefNumber'] = 'A1234567';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const fieldError = {
+        href: '#homeOfficeRefNumber',
+        key: 'homeOfficeRefNumber',
+        text: 'There is a problem'
+      };
+      const errorList = {
+        ...fieldError,
+        text: 'You should enter the UAN or GWF reference exactly as it appears on the decision letter. This can often be found in the \'How to appeal\' section. The UAN is 16 digits with dashes. The GWF starts with the letters \"GWF\" and then has 9 digits. If you need help, please use the Home Office help form in the bullet points on this page.'
+      };
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith(
+        'appeal-application/home-office/details.njk',
+        {
+          errors: {
+            homeOfficeRefNumber: fieldError
+          },
+          errorList: [errorList],
+          homeOfficeRefNumber: 'A1234567',
+          previousPage: paths.appealStarted.taskList
+        });
+    });
+
+    it('when save for later should fail validation and render home-office/details.njk with error', async () => {
+      req.body['homeOfficeRefNumber'] = 'notValid';
+      req.body['saveForLater'] = 'saveForLater';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const fieldError = {
+        href: '#homeOfficeRefNumber',
+        key: 'homeOfficeRefNumber',
+        text: 'There is a problem'
+      };
+      const errorList = {
+        ...fieldError,
+        text: 'You should enter the UAN or GWF reference exactly as it appears on the decision letter. This can often be found in the \'How to appeal\' section. The UAN is 16 digits with dashes. The GWF starts with the letters \"GWF\" and then has 9 digits. If you need help, please use the Home Office help form in the bullet points on this page.'
       };
       expect(submitRefactoredStub.called).to.equal(false);
       expect(renderStub).to.be.calledWith(

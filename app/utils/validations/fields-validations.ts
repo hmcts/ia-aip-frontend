@@ -410,7 +410,7 @@ function gwfReferenceNumberValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     gwfReferenceNumber: Joi.string().required().regex(/^[a-zA-Z]+\d{8}/).messages({
       'string.empty': i18n.validationErrors.gwfReference.required,
-      'string.pattern.base': i18n.validationErrors.homeOfficeReference.invalid
+      'string.pattern.base': i18n.validationErrors.gwfReference.invalid
     })
   }).unknown();
   return validate(obj, schema);

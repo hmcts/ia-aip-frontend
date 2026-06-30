@@ -5,8 +5,7 @@ import {
   getDateLetterReceived,
   getDateLetterSent,
   getHomeOfficeDetails,
-  postDateLetterReceived,
-  postDateLetterSent,
+  postDateLetterReceived, postDateLetterSent,
   postHomeOfficeDetails,
   setupHomeOfficeDetailsController
 } from '../../../app/controllers/appeal-application/home-office-details';
@@ -30,7 +29,7 @@ describe('Home Office Details Controller', function () {
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
   let clock: sinon.SinonFakeTimers;
-  const mockDate: Date = new Date('2025-03-20');
+  const mockDate: Date = new Date('2025-06-16');
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     clock = sandbox.useFakeTimers(mockDate);
@@ -344,16 +343,11 @@ describe('Home Office Details Controller', function () {
 
   describe('postDateLetterSent', () => {
     describe('appeal on time', () => {
-      const date = new Date(mockDate);
-      date.setDate(mockDate.getDate() - 14);
       let appeal: Appeal;
-      let day: string;
-      let month: string;
-      let year: string;
+      const day: string = '02';
+      const month: string = '06';
+      const year: string = '2025';
       beforeEach(() => {
-        day = date.getDate().toString();
-        month = (date.getMonth() + 1).toString();
-        year = date.getFullYear().toString();
         req.body['day'] = day;
         req.body['month'] = month;
         req.body['year'] = year;
@@ -416,16 +410,11 @@ describe('Home Office Details Controller', function () {
     });
 
     describe('appeal out of time', () => {
-      const date = new Date(mockDate);
-      date.setDate(mockDate.getDate() - 15);
       let appeal: Appeal;
-      let day: string;
-      let month: string;
-      let year: string;
+      const day: string = '01';
+      const month: string = '06';
+      const year: string = '2025';
       beforeEach(() => {
-        day = date.getDate().toString();
-        month = (date.getMonth() + 1).toString();
-        year = date.getFullYear().toString();
         req.body['day'] = day;
         req.body['month'] = month;
         req.body['year'] = year;
@@ -622,8 +611,7 @@ describe('Home Office Details Controller', function () {
     });
 
     it('should fail validation and render a validation error with day in future', async () => {
-      const tomorrowDate = new Date();
-      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+      const tomorrowDate = new Date('2025-06-17');
 
       req.body['day'] = tomorrowDate.getDate();
       req.body['month'] = tomorrowDate.getMonth() + 1;

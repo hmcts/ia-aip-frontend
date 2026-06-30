@@ -205,6 +205,7 @@ const paths = {
     redirectUrl: '/redirectUrl',
     start: '/start-appeal',
     overview: '/appeal-overview',
+    loadCase: '/load-case',
     casesList: '/cases-list',
     createNewAppeal: '/create-new-appeal',
     deleteDraftAppeal: '/delete-draft-appeal/:id',

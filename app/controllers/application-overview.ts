@@ -129,18 +129,23 @@ function isAppealInProgress(appealStatus: string) {
   return appealStatus !== States.APPEAL_STARTED.id && appealStatus !== States.PENDING_PAYMENT.id && appealStatus !== States.ENDED.id;
 }
 
-function getApplicationOverview(updateAppealService: UpdateAppealService) {
+function getLoadCase(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (req.query.caseId) {
       const caseId = req.query.caseId as string;
       try {
         await updateAppealService.loadAppealByCaseId(caseId, req);
+        return res.redirect(paths.common.overview);
       } catch (error) {
         logger.exception(error, logLabel);
         return res.redirect(`${paths.common.casesList}?errorCode=${ErrorCode.caseNotFound}&caseId=${caseId}`);
       }
     }
+  };
+}
 
+function getApplicationOverview(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!req.session?.appeal?.application) {
         return res.redirect(paths.common.casesList);
@@ -183,7 +188,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus);
       const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus);
       const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus)
-          && !isPostDecisionState(appealStatus);
+        && !isPostDecisionState(appealStatus);
 
       const application = req.session.appeal.application;
 
@@ -248,6 +253,7 @@ function hasRespondentFtpaApplication(appeal: Appeal): boolean {
 function setupApplicationOverviewController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.common.overview, getApplicationOverview(updateAppealService));
+  router.get(paths.common.loadCase, getLoadCase(updateAppealService));
   return router;
 }
 
@@ -259,6 +265,7 @@ function isRemissionApprovedOrPartiallyApproved(appeal: Appeal): boolean {
 export {
   setupApplicationOverviewController,
   getApplicationOverview,
+  getLoadCase,
   getAppealRefNumber,
   checkAppealEnded,
   checkEnableProvideMoreEvidenceSection,

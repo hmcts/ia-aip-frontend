@@ -51,7 +51,7 @@
                   <td class="govuk-table__cell">{{ case.appellantGivenNames }} {{ case.appellantFamilyName }}</td>
                   <td class="govuk-table__cell">{{ "DRAFT" if isDraft else case.stateName }}</td>
                   <td class="govuk-table__cell">
-                    <a class="govuk-link" href="{{ paths.common.overview }}?caseId={{ case.id }}">{{ i18n.pages.casesList.viewLink }}</a>
+                    <a class="govuk-link" href="{{ paths.common.loadCase }}?caseId={{ case.id }}">{{ i18n.pages.casesList.viewLink }}</a>
                     {% if isDraft %}
                       <a id="{{ i18n.pages.casesList.deleteLinkId }}-{{ case.id }}" href='#' class="govuk-link {{ i18n.pages.casesList.deleteLinkClass }}" data-case-id="{{ case.id }}" role="button" tabindex="0">{{ i18n.pages.casesList.deleteLink }}</a>
                     {% endif %}

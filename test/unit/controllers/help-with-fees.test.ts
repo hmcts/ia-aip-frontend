@@ -287,6 +287,7 @@ describe('Help with fees Controller', () => {
       await postHelpWithFees(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
   });
 });

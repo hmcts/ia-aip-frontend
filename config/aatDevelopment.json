@@ -92,6 +92,7 @@
   "iaPayments": {
     "apiUrl": "IA_CASE_PAYMENTS_API_URL"
   },
+  "maxDraftAppeals": "MAX_DRAFT_APPEALS",
   "dueDate": {
     "ftpaDecisionResponse": 14,
     "ftpaDecisionResponseOoc": 28,

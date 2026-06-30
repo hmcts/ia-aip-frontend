@@ -154,6 +154,8 @@ describe('Hearing Requirements - Other Needs Section: Bring Equipment Reason con
       await postHearingMultimediaEquipmentReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsSingleSexHearingQuestion)).to.equal(true);
     });
 

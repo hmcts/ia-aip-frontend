@@ -262,7 +262,10 @@ describe('DetailViewController', () => {
       const expectedBuffer = Buffer.from(fetchResponse.data, 'binary');
       await getDocumentViewer(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
       expect(headerStub.calledOnceWith('content-type', 'image/png')).to.equal(true);
-      expect(sendStub.calledOnceWith(expectedBuffer)).to.equal(true);
+      expect(sendStub.calledOnce).to.equal(true);
+      const sentBuffer = sendStub.firstCall.args[0];
+      expect(Buffer.isBuffer(sentBuffer)).to.equal(true);
+      expect(sentBuffer.equals(expectedBuffer)).to.equal(true);
     });
 
     it('getDocumentViewer should catch exception and call next with the error', async () => {

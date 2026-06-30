@@ -1513,6 +1513,7 @@ describe('Hearing Requirements Check and Send controller', () => {
 
       // expect(req.session.appeal.hearingRequirements).to.deep.equal(hearingRequirements);
       // expect(submitStub.calledWith(Events.SUBMIT_HEARING_REQUIREMENTS, req)).to.equal(true);
+ expect(req.session.refreshCasesList).to.equal(true);
       // expect(req.session.appeal.appealStatus).to.equal('hearingRequirementsSubmitted');
       expect(redirectStub.calledWith(paths.submitHearingRequirements.confirmation)).to.equal(true);
     });

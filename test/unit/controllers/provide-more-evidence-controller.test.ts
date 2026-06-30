@@ -299,6 +299,7 @@ describe('Provide more evidence controller', () => {
       await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
       expect(redirectStub.calledWith(paths.common.provideMoreEvidenceConfirmation)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
 
     it('should redirect to provide-more-evidence confirmation page when addendum evidence and feature flag enabled', async () => {
@@ -312,6 +313,7 @@ describe('Provide more evidence controller', () => {
       await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
       expect(redirectStub.calledWith(paths.common.provideMoreEvidenceConfirmation)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
 
     it('should catch an error and redirect with error', async () => {

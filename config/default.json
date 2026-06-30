@@ -111,7 +111,7 @@
   "features": {
     "askForMoreTime": false,
     "timelineEnabled": false,
-    "homeOfficeValidationEnabled": true
+    "homeOfficeValidationEnabled": false
   },
   "testAccounts": {
     "testCaseOfficerUserName": "TEST_CASEOFFICER_USERNAME",

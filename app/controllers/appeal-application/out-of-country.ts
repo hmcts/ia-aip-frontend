@@ -187,7 +187,7 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
 
       if (homeOfficeValidationEnabled) {
         const pageId: string = 'editAppealcuiGwfReferenceNumber';
-        const midEventData = {gwfReferenceNumber: req.body.gwfReferenceNumber};
+        const midEventData = { gwfReferenceNumber: req.body.gwfReferenceNumber };
         const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
         if (midEventErrors?.length > 0) {

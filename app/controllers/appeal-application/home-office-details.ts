@@ -72,7 +72,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
 
       if (homeOfficeValidationEnabled) {
         const pageId: string = 'editAppealcuiHomeOfficeReferenceNumber';
-        const midEventData = {homeOfficeReferenceNumber: req.body.homeOfficeRefNumber};
+        const midEventData = { homeOfficeReferenceNumber: req.body.homeOfficeRefNumber };
         const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
         if (midEventErrors?.length > 0) {
@@ -236,7 +236,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
 
       if (homeOfficeValidationEnabled) {
         const pageId: string = 'editAppealcuiAppellantDob';
-        const midEventData = {appellantDateOfBirth: toIsoDate(appeal.application.personalDetails.dob)};
+        const midEventData = { appellantDateOfBirth: toIsoDate(appeal.application.personalDetails.dob) };
         const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
         if (midEventErrors?.length > 0) {

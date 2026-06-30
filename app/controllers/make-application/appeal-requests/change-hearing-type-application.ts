@@ -8,7 +8,7 @@ import { makeApplicationControllersHelper } from '../make-application-controller
 function getChangeHearingTypeApplication(req: Request, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
-      askChangeHearingType: createStructuredError('askChangeHearingType', i18n.validationErrors.makeApplication.askChangeHearingType)
+      askChangeHearingType: createStructuredError('makeAnApplicationDetails', i18n.validationErrors.makeApplication.askChangeHearingType)
     },
     makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askChangeHearingType.description,
     makeAnApplicationDetailsHint: i18n.pages.makeApplication.askChangeHearingType.hint,

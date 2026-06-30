@@ -1,4 +1,4 @@
-{% from "components/radio-button-question.njk" import radioButtonQuestion %}
+{% from "components/radio-button-question-custom-legend-class.njk" import radioButtonQuestion %}
 
 {% extends "layout.njk" %}
 
@@ -18,12 +18,12 @@
         {{ radioButtonQuestion(
             question.name or 'answer',
             question.options,
-            question.title | eval | safe if question.title,
-            question.titleIsheading or true,
+            i18n.pages.deportationOrder.title,
+            false,
             question.hint | eval | safe if question.hint,
             error[question.name].text,
             question.inline,
-            "govuk-fieldset__legend--m"
+            "govuk-fieldset__legend--m govuk-visually-hidden"
         ) }}
         <div>
             {{ saveButtons() }}

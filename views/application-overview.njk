@@ -28,14 +28,19 @@
         {% else %}
           {{ progressBar(stages) }}
         {% endif %}
+        {% if saved %}
+          <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+              <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+              <p class="govuk-notification-banner__heading">{{ i18n.pages.overviewPage.answersBeenSaved }}</p>
+            </div>
+          </div>
+        {% endif %}
         <h2 class="govuk-heading-m">
           {{ i18n.pages.overviewPage.doThisNext.toDo if applicationNextStep.cta else i18n.pages.overviewPage.doThisNext.nothingToDo }}
         </h2>
-        {% if saved %}
-          <div class="saved-banner">
-            <p class="govuk-!-padding-left-3">{{ i18n.pages.overviewPage.answersBeenSaved }}</p>
-          </div>
-        {% endif %}
         {% if saveAndAskForMoreTime or askForMoreTime %}
           {% if saveAndAskForMoreTime %}
             {% set askForMoreTimeCopy = i18n.pages.overviewPage.savedAndAskedForMoreTime %}
@@ -188,8 +193,7 @@
           <p>
             {{ i18n.pages.overviewPage.time }}
             <a href='https://www.gov.uk/call-charges' target='_blank' rel="noopener noreferrer"
-               class='govuk-link'>{{ i18n.pages.overviewPage.charges }}</a></br>
-            {{ i18n.pages.overviewPage.newWindow }}
+               class='govuk-link'>{{ i18n.pages.overviewPage.charges }}</a>
           </p>
           <p>
             {{ i18n.pages.overviewPage.email | safe }}<br>

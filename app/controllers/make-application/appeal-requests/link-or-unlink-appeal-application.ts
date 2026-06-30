@@ -8,7 +8,7 @@ import { makeApplicationControllersHelper } from '../make-application-controller
 function getLinkOrUnlinkAppealApplication(req: Request, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
-      askLinkUnlink: createStructuredError('askLinkUnlink', i18n.validationErrors.makeApplication.askLinkUnlink)
+      askLinkUnlink: createStructuredError('makeAnApplicationDetails', i18n.validationErrors.makeApplication.askLinkUnlink)
     },
     makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askLinkUnlink.description,
     makeAnApplicationDetailsHint: i18n.pages.makeApplication.askLinkUnlink.hint,

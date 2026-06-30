@@ -766,6 +766,25 @@ describe('Contact details Controller', () => {
       expect(renderStub.calledWith('appeal-application/sponsor-details/sponsor-address.njk')).to.equal(true);
     });
 
+    it('should retain entered field values on validation error', async () => {
+      req.body['address-line-1'] = '123 High Street';
+      req.body['address-line-2'] = 'Flat 4';
+      req.body['address-town'] = 'Manchester';
+      req.body['address-county'] = 'Greater Manchester';
+      req.body['address-postcode'] = 'W';
+      await postSponsorAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(renderStub.called).to.equal(true);
+      const renderArgs = renderStub.firstCall.args[1];
+      expect(renderArgs.address).to.deep.equal({
+        line1: '123 High Street',
+        line2: 'Flat 4',
+        city: 'Manchester',
+        county: 'Greater Manchester',
+        postcode: 'W'
+      });
+    });
+
     it('should validate and redirect to task list page', async () => {
       await postSponsorAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 

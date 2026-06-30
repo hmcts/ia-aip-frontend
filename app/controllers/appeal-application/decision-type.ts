@@ -15,6 +15,7 @@ import { decisionTypeValidation } from '../../utils/validations/fields-validatio
 function getDecisionTypeQuestion(appeal: Appeal, dlrmSetAsideFlag: boolean = false) {
   let hint: string;
   let decision: string;
+  let hasFee: boolean = false;
 
   if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
     hint = dlrmSetAsideFlag ? i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag.withoutFee : i18n.pages.decisionTypePage.hint.withoutFee;
@@ -22,6 +23,7 @@ function getDecisionTypeQuestion(appeal: Appeal, dlrmSetAsideFlag: boolean = fal
   } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(appeal.application.appealType)) {
     hint = dlrmSetAsideFlag ? i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag.withFee : i18n.pages.decisionTypePage.hint.withFee;
     decision = appeal.application.decisionHearingFeeOption || null;
+    hasFee = true;
   }
 
   const question = {
@@ -31,11 +33,13 @@ function getDecisionTypeQuestion(appeal: Appeal, dlrmSetAsideFlag: boolean = fal
       {
         value: i18n.pages.decisionTypePage.options.withHearing.value,
         text: i18n.pages.decisionTypePage.options.withHearing.text,
+        hint: { text: hasFee ? i18n.pages.decisionTypePage.options.withHearing.hintWithFee : i18n.pages.decisionTypePage.options.withHearing.hintWithoutFee },
         checked: decision === i18n.pages.decisionTypePage.options.withHearing.value
       },
       {
         value: i18n.pages.decisionTypePage.options.withoutHearing.value,
         text: i18n.pages.decisionTypePage.options.withoutHearing.text,
+        hint: { text: hasFee ? i18n.pages.decisionTypePage.options.withoutHearing.hintWithFee : i18n.pages.decisionTypePage.options.withoutHearing.hintWithoutFee },
         checked: decision === i18n.pages.decisionTypePage.options.withoutHearing.value
       }
     ],

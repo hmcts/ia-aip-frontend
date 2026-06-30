@@ -15,6 +15,8 @@ function getProvideMakeAnApplicationDetails(req: Request, res: Response, next: N
     let validationErrors: ValidationErrors;
     if (req.query.error) {
       validationErrors = config.validationErrors;
+    } else {
+      delete req.session.appeal.makeAnApplicationDetails;
     }
 
     const makeAnApplicationTypes = req.session.appeal.makeAnApplicationTypes;

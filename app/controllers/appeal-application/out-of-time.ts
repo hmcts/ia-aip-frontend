@@ -36,8 +36,29 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
       }
 
       const { application } = req.session.appeal;
-      let validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
       const appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
+
+      let evidence = null;
+      if (_.has(application, 'lateAppeal.evidence')) {
+        evidence = application.lateAppeal.evidence;
+      }
+
+      if (req.file && !(res.locals && res.locals.errorCode)) {
+        if (application.lateAppeal && _.has(application.lateAppeal, 'evidence.fileId')) {
+          await documentManagementService.deleteFile(req, application.lateAppeal.evidence.fileId);
+        }
+        const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
+        evidence = {
+          fileId: evidenceStored.fileId,
+          name: evidenceStored.name
+        };
+        req.session.appeal.application.lateAppeal = {
+          ...(req.session.appeal.application.lateAppeal || {}),
+          evidence
+        };
+      }
+
+      let validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
 
       if (res.locals && res.locals.errorCode) {
         validationError = {
@@ -47,11 +68,6 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
       }
 
       if (validationError) {
-        let evidence = null;
-        if (_.has(application, 'lateAppeal.evidence')) {
-          evidence = application.lateAppeal.evidence;
-        }
-
         return res.render('appeal-application/home-office/appeal-late.njk', {
           appealLateReason: req.body['appeal-late'],
           evidence,
@@ -61,20 +77,10 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
           appealOutOfCountry: appealOutOfCountry
         });
       }
-      let lateAppeal: LateAppeal;
-      if (req.file) {
-        if (_.has(application.lateAppeal, 'evidence.fileId')) {
-          await documentManagementService.deleteFile(req, application.lateAppeal.evidence.fileId);
-        }
-        const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
-        lateAppeal = {
-          ...req.session.appeal.application.lateAppeal,
-          evidence: {
-            fileId: evidenceStored.fileId,
-            name: evidenceStored.name
-          }
-        };
-      }
+      let lateAppeal: LateAppeal = {
+        ...req.session.appeal.application.lateAppeal,
+        evidence
+      };
       const appeal: Appeal = {
         ...req.session.appeal,
         application: {

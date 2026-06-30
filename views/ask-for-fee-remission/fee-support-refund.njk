@@ -1,5 +1,5 @@
 {% set pageTitleName = pageTitle %}
-{% from "components/radio-button-question.njk" import radioButtonQuestion %}
+{% from "components/radio-button-question-custom-legend-class.njk" import radioButtonQuestion %}
 
 {% extends "layout.njk" %}
 
@@ -19,17 +19,19 @@
         {% if not paPayLater %}
            <p>{{ i18n.pages.remissionOptionPage.refundParagraph2 }}</p>
            <p>{{ i18n.pages.remissionOptionPage.refundParagraph3 }}</p>
-       {% endif %}
-       <p>{{ i18n.pages.remissionOptionPage.refundParagraph3PaPayLater }}</p>
+        {% else %}
+           <p>{{ i18n.pages.remissionOptionPage.refundParagraph3PaPayLater }}</p>
+        {% endif %}
 
         {{ radioButtonQuestion(
             question.name or 'answer',
             question.options,
-            "",
-            question.titleIsheading or true,
+            i18n.pages.remissionOptionPage.refundTitle,
+            false,
             question.hint | eval | safe if question.hint,
             error[question.name].text,
-            question.inline
+            question.inline,
+            "govuk-fieldset__legend--m govuk-visually-hidden"
         ) }}
         {{ continueButton() }}
         {{ canelButton() }}

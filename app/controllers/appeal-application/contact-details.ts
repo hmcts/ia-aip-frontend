@@ -488,7 +488,7 @@ function postSponsorAddress(updateAppealService: UpdateAppealService) {
       if (validation !== null) {
         const previousPage = req.session.previousPage ? req.session.previousPage : paths.appealStarted.sponsorName;
         return res.render('appeal-application/sponsor-details/sponsor-address.njk', {
-          sponsorAddress: {
+          address: {
             line1: req.body['address-line-1'],
             line2: req.body['address-line-2'],
             city: req.body['address-town'],

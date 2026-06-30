@@ -77,7 +77,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
           appealOutOfCountry: appealOutOfCountry
         });
       }
-      let lateAppeal: LateAppeal = {
+      const lateAppeal: LateAppeal = {
         ...req.session.appeal.application.lateAppeal,
         evidence
       };

@@ -314,6 +314,8 @@ describe('Personal Details Controller', function () {
             previousPage: paths.appealStarted.name
           }
       );
+
+      sinon.restore();
     });
   });
 })

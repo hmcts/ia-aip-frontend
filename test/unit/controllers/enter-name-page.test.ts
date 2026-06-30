@@ -315,6 +315,8 @@ describe('Home Office Details Controller', function () {
             personalDetails: { familyName: req.body.familyName, givenNames: req.body.givenNames },
             previousPage: paths.appealStarted.details
           });
+
+      sinon.restore();
     });
   });
 });

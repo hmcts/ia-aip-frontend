@@ -566,6 +566,13 @@ describe('Out of Country Controller', function () {
       await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
     });
+
+    it('should not call validateMidEvent', async () => {
+      req.body['gwfReferenceNumber'] = 'GWF123456789';
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(validateMidEventStub.called).to.equal(false);
+    });
   });
 
   describe('postGwfReference with updated validation', () => {

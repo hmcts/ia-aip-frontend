@@ -115,8 +115,7 @@ describe('Personal Details Controller', function() {
         href: '#postcode'
       };
       postEnterPostcodePage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/enter-postcode.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/enter-postcode.njk',
         {
           error: { postcode: error },
           errorList: [ error ],
@@ -137,8 +136,7 @@ describe('Personal Details Controller', function() {
       ];
 
       postEnterPostcodePage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/enter-postcode.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/enter-postcode.njk',
         {
           error: { postcode },
           errorList: emptyPostcodeText,

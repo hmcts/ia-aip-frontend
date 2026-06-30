@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { getConfirmationPage, setupClarifyingQuestionsConfirmationPage } from '../../../../app/controllers/clarifying-questions/confirmation-page';
 import { paths } from '../../../../app/paths';
 import { expect, sinon } from '../../../utils/testUtils';

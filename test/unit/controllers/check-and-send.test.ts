@@ -95,7 +95,7 @@ function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
   }, {
     key: { text: 'Sponsor' },
     value: { html: 'Yes' },
-    actions: { items: [{ href: '/has-sponsor?edit', text: 'Change', visuallyHiddenText: 'Sponsor' }] }
+    actions: { items: [{ href: '/has-sponsor-or-non-legal-rep?edit', text: 'Change', visuallyHiddenText: 'Sponsor' }] }
   }, {
     key: { text: 'Sponsor\'s name' },
     value: { html: 'Frank Smith' },
@@ -209,7 +209,7 @@ function getMockedSummaryRowsPayment(appealType = 'protection'): SummaryRow[] {
   }, {
     key: { text: 'Sponsor' },
     value: { html: 'Yes' },
-    actions: { items: [{ href: '/has-sponsor?edit', text: 'Change', visuallyHiddenText: 'Sponsor' }] }
+    actions: { items: [{ href: '/has-sponsor-or-non-legal-rep?edit', text: 'Change', visuallyHiddenText: 'Sponsor' }] }
   }, {
     key: { text: 'Sponsor\'s name' },
     value: { html: 'Frank Smith' },
@@ -440,6 +440,71 @@ describe('createSummaryRowsFrom', () => {
       });
     });
   });
+
+  it('should create NLR rows for hasNlr', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
+    req.session.appeal.application.hasNonLegalRep = 'Yes';
+    req.session.appeal.nlrDetails = {
+      emailAddress: 'someEmail',
+      givenNames: 'GivenNames',
+      familyName: 'familyNames',
+      phoneNumber: 'phoneNumber',
+      addressUk: {
+        line1: 'addressLine1',
+        line2: 'addressLine2',
+        city: 'city',
+        postcode: 'postcode'
+      },
+      address: 'some address text \narea'
+    };
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const minimisedRows = rows.map(object => {
+      return { key: object.key, value: object.value };
+    });
+    expect(minimisedRows).to.deep.contain({
+      'key': { 'text': i18n.pages.checkYourAnswers.rowTitles.hasNonLegalRep },
+      'value': { 'html': 'Yes' }
+    });
+    expect(minimisedRows).to.deep.contain({
+      'key': { 'text': i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail },
+      'value': { 'html': 'someEmail' }
+    });
+  });
+
+  it('should create row for isSponsorSameAsNlr', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
+    req.session.appeal.application.hasNonLegalRep = 'Yes';
+    req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const minimisedRows = rows.map(object => {
+      return { key: object.key, value: object.value };
+    });
+    expect(minimisedRows).to.deep.contain({
+      'key': { 'text': i18n.pages.checkYourAnswers.rowTitles.isSponsorSameAsNlr },
+      'value': { 'html': 'Yes' }
+    });
+  });
+
+  it('should create NLR rows for No hasNlr', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
+    req.session.appeal.application.hasNonLegalRep = 'No';
+    req.session.appeal.nlrDetails = {emailAddress: 'someEmail'};
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const minimisedRows = rows.map(object => {
+      return { key: object.key, value: object.value };
+    });
+    expect(minimisedRows).to.deep.contain({
+      'key': { 'text': i18n.pages.checkYourAnswers.rowTitles.hasNonLegalRep },
+      'value': { 'html': 'No' }
+    });
+    expect(minimisedRows).to.not.deep.contain({
+      'key': { 'text': i18n.pages.checkYourAnswers.rowTitles.nonLegalRepEmail },
+      'value': { 'html': 'someEmail' }
+    });
+  });
 });
 
 describe('Check and Send Controller', () => {
@@ -533,7 +598,8 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeWithHearing = '80';
       req.session.appeal.feeWithoutHearing = '140';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList
       });
@@ -547,7 +613,8 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeWithHearing = '80';
       req.session.appeal.feeWithoutHearing = '140';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         fee: '80',
@@ -565,7 +632,8 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeWithoutHearing = '140';
 
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         fee: '140',
@@ -581,7 +649,8 @@ describe('Check and Send Controller', () => {
       req.session.appeal.feeWithHearing = '80';
       req.session.appeal.feeWithoutHearing = '140';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         fee: '140',
@@ -595,7 +664,8 @@ describe('Check and Send Controller', () => {
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         dlrmFeeRemissionFlag: true,
@@ -607,7 +677,8 @@ describe('Check and Send Controller', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
         dlrmFeeRemissionFlag: true
@@ -640,7 +711,8 @@ describe('Check and Send Controller', () => {
       };
 
       const summaryRows = getMockedSummaryRows();
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         error: expectedError,
         errorList: Object.values(expectedError),
         summaryRows: summaryRows,
@@ -659,7 +731,8 @@ describe('Check and Send Controller', () => {
 
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         error: sinon.match.any,
         errorList: sinon.match.any,

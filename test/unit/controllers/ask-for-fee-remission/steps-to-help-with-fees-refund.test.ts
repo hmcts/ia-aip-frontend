@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getStepsToHelpWithFees,
@@ -83,7 +83,8 @@ describe('Steps to help with fees Refund Controller', function () {
 
     it('should render steps-to-help-with-fees.njk', async () => {
       await getStepsToHelpWithFees(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/steps-to-help-with-fees.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/steps-to-help-with-fees.njk', {
         previousPage: paths.appealSubmitted.helpWithFeesRefund,
         refundJourney: true
       });
@@ -98,7 +99,8 @@ describe('Steps to help with fees Refund Controller', function () {
       req.query = { 'edit': '' };
       await postStepsToHelpWithFees()(req as Request, res as Response, next);
       expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.helpWithFeesReferenceNumberRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {

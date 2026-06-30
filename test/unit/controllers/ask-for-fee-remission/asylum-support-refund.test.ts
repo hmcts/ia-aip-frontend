@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getAsylumSupport,
   postAsylumSupport,
@@ -84,7 +84,8 @@ describe('Asylum support refund Controller', function () {
     it('should render appeal-application/fee-support/asylum-support.njk', async () => {
       await getAsylumSupport(req as Request, res as Response, next);
       const asylumSupportRefNumber = null;
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/asylum-support.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/asylum-support.njk', {
         previousPage: paths.appealSubmitted.feeSupportRefund,
         formAction: paths.appealSubmitted.asylumSupportRefund,
         asylumSupportRefNumber,
@@ -105,7 +106,8 @@ describe('Asylum support refund Controller', function () {
       await postAsylumSupport()(req as Request, res as Response, next);
       expect(req.session.appeal.application.lateAsylumSupportRefNumber).to.deep.equal('12345');
       expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {
@@ -124,8 +126,7 @@ describe('Asylum support refund Controller', function () {
         href: '#asylumSupportRefNumber'
       };
       await postAsylumSupport()(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/asylum-support.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/asylum-support.njk',
         {
           errors: {
             asylumSupportRefNumber: error
@@ -156,9 +157,12 @@ describe('Asylum support refund Controller', function () {
       application.lateLocalAuthorityLetters = [];
 
       await postAsylumSupport()(req as Request, res as Response, next);
-      expect(application.lateHelpWithFeesOption).to.equal(null);
-      expect(application.lateHelpWithFeesRefNumber).to.equal(null);
-      expect(application.lateLocalAuthorityLetters).to.equal(null);
+      expect(application.lateHelpWithFeesOption).to.be.null;
+      expect(application.lateHelpWithFeesOption || 'none').to.equal('none');
+      expect(application.lateHelpWithFeesRefNumber).to.be.null;
+      expect(application.lateHelpWithFeesRefNumber || 'none').to.equal('none');
+      expect(application.lateLocalAuthorityLetters).to.be.null;
+      expect(application.lateLocalAuthorityLetters || 'none').to.equal('none');
     });
   });
 

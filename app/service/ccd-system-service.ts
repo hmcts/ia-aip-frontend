@@ -12,15 +12,63 @@ const jurisdictionId: string = config.get('ccd.jurisdictionId');
 const caseType: string = config.get('ccd.caseType');
 
 export interface PipValidation {
-  accessValidated: boolean;
-  caseSummary?: {
-    name: string,
-    referenceNumber: string
-  };
+  accessValidated?: boolean;
+  caseIdValid?: boolean;
+  doesPinExist?: boolean;
+  pinValid?: boolean;
+  nlrEmailValid?: boolean;
+  codeUnused?: boolean;
+  codeNotExpired?: boolean;
+  caseSummary?: PipCaseSummary;
+}
+
+export interface PipCaseSummary {
+  name: string,
+  referenceNumber: string
+  appealReference?: string
 }
 
 const PIP_VALIDATION_FAILED: PipValidation = {
   accessValidated: false
+};
+
+const CASE_ID_VALIDATION_FAILED: PipValidation = {
+  caseIdValid: false
+};
+
+const PIP_EXISTS_VALIDATION_FAILED: PipValidation = {
+  doesPinExist: false,
+  caseIdValid: true
+};
+
+const PIP_PIN_VALIDATION_FAILED: PipValidation = {
+  pinValid: false,
+  caseIdValid: true,
+  doesPinExist: true
+};
+
+const PIP_USED_VALIDATION_FAILED: PipValidation = {
+  codeUnused: false,
+  caseIdValid: true,
+  doesPinExist: true,
+  pinValid: true
+};
+
+const PIP_EXPIRY_VALIDATION_FAILED: PipValidation = {
+  codeNotExpired: false,
+  caseIdValid: true,
+  doesPinExist: true,
+  pinValid: true,
+  codeUnused: true
+};
+
+const NLR_EMAIL_INCORRECT_VALIDATION_FAILED: PipValidation = {
+  codeNotExpired: true,
+  caseIdValid: true,
+  doesPinExist: true,
+  pinValid: true,
+  codeUnused: true,
+  nlrEmailValid: false
 };
 
 export function validateAccessCode(caseDetails, accessCode: string): boolean {
@@ -34,11 +82,64 @@ export function validateAccessCode(caseDetails, accessCode: string): boolean {
   return false;
 }
 
+export function isJoinAppealAccessCodeNotExpired(joinAppealPin: PinInPost): boolean {
+  const expiryDate: Date = new Date(joinAppealPin.expiryDate);
+  return new Date(Date.now()) <= expiryDate;
+}
+
+export function isJoinAppealAccessCodeUnused(joinAppealPin: PinInPost): boolean {
+  return joinAppealPin.pinUsed === 'No';
+}
+
+export function isJoinAppealAccessCodeCorrect(joinAppealPin: PinInPost, accessCode: string): boolean {
+  return joinAppealPin.accessCode === accessCode;
+}
+
+export function doesJoinAppealAccessCodeExist(caseDetails: CaseData): boolean {
+  return caseDetails.joinAppealPin !== undefined && caseDetails.joinAppealPin !== null;
+}
+
+export function doesLoggedInEmailMatchCaseNlrEmail(idamEmail: string, caseDetails: CaseData): boolean {
+  return caseDetails?.nlrDetails?.emailAddress === idamEmail;
+}
+
+function validateJoinAppealPin(caseData, accessCode: string, caseId: string, idamEmail: string): PipValidation {
+  if (!doesJoinAppealAccessCodeExist(caseData)) {
+    return PIP_EXISTS_VALIDATION_FAILED;
+  }
+  const joinAppealPin = caseData.joinAppealPin;
+  if (!isJoinAppealAccessCodeCorrect(joinAppealPin, accessCode)) {
+    return PIP_PIN_VALIDATION_FAILED;
+  }
+  if (!isJoinAppealAccessCodeUnused(joinAppealPin)) {
+    return PIP_USED_VALIDATION_FAILED;
+  }
+  if (!isJoinAppealAccessCodeNotExpired(joinAppealPin)) {
+    return PIP_EXPIRY_VALIDATION_FAILED;
+  }
+  if (!doesLoggedInEmailMatchCaseNlrEmail(idamEmail, caseData)) {
+    return NLR_EMAIL_INCORRECT_VALIDATION_FAILED;
+  }
+  logger.trace(`Join Appeal Pin in Post validation successful for case id - '${caseId}'`, logLabel);
+  return getJoinAppealPipValidationSuccess(caseId, caseData);
+}
+
 export function getPipValidationSuccess(id: string, caseDetails: CaseData): PipValidation {
   return {
     accessValidated: true,
     caseSummary: {
       name: `${caseDetails.appellantGivenNames} ${caseDetails.appellantFamilyName}`,
+      referenceNumber: id
+    }
+  };
+}
+
+export function getJoinAppealPipValidationSuccess(id: string, caseDetails: CaseData): PipValidation {
+  return {
+    accessValidated: true,
+    caseSummary: {
+      name: `${caseDetails.appellantGivenNames} ${caseDetails.appellantFamilyName}`,
+      appealReference: caseDetails.appealReferenceNumber,
       referenceNumber: id
     }
   };
@@ -74,6 +175,27 @@ export default class CcdSystemService {
     });
   }
 
+  async joinAppealPipValidation(caseId: string, accessCode: string, idamEmail: string): Promise<PipValidation> {
+    return this.getCaseById(caseId)
+      .then(function (response) {
+        return validateJoinAppealPin(response.data.case_data, accessCode, caseId, idamEmail);
+      }).catch(function (error) {
+        logger.exception(`Join Appeal case validation failed for case id - '${caseId}'', error - '${error}'`, logLabel);
+        return CASE_ID_VALIDATION_FAILED;
+      });
+  }
+
+  async getCaseById(caseId: string): Promise<any> {
+    const userToken = await this._authenticationService.getCaseworkSystemToken();
+    const userId = await this._authenticationService.getCaseworkSystemUUID(userToken);
+    const headers = await this.getHeaders(userToken);
+    return axios.get(
+      `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`, {
+        headers: headers
+      }
+    );
+  }
+
   async givenAppellantAccess(caseId: string, appellantId: string): Promise<any> {
     const userToken = await this._authenticationService.getCaseworkSystemToken();
     const userId = await this._authenticationService.getCaseworkSystemUUID(userToken);
@@ -82,7 +204,7 @@ export default class CcdSystemService {
     return axios.post(
       `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/users`, {
         id: appellantId
-      },{
+      }, {
         headers: headers
       }
     );

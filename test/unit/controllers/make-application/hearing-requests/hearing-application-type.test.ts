@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getHearingApplicationType, postHearingApplicationType } from '../../../../../app/controllers/make-application/hearing-requests/hearing-application-type';
 import { applicationTypes } from '../../../../../app/data/application-types';
 import { paths } from '../../../../../app/paths';
@@ -99,7 +99,8 @@ describe('Hearing applications types controller', () => {
       };
       getHearingApplicationType(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('make-application/radio-button-question-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -123,7 +124,8 @@ describe('Hearing applications types controller', () => {
       };
       getHearingApplicationType(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('make-application/radio-button-question-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });

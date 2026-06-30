@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getSingleSexHearingAllFemaleReason,
   postSingleSexHearingAllFemaleReason, setupSingleSexHearingAllFemaleReasonController
@@ -88,7 +88,7 @@ describe('Hearing Requirements - Single sex all female Reason controller', () =>
       };
 
       getSingleSexHearingAllFemaleReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should render template with saved answer', () => {
@@ -109,7 +109,7 @@ describe('Hearing Requirements - Single sex all female Reason controller', () =>
       };
 
       getSingleSexHearingAllFemaleReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -154,7 +154,7 @@ describe('Hearing Requirements - Single sex all female Reason controller', () =>
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
 
     });
 

@@ -47,7 +47,8 @@ describe('cookies', () => {
       // Act.
       const output = cookies.get(req, 'nonexistent-cookie');
       // Assert.
-      expect(output).to.equal(undefined);
+      expect(output).to.be.undefined;
+      expect(output || 'none').to.equal('none');
     });
 
     it('returns undefined when no cookies set', () => {
@@ -56,7 +57,8 @@ describe('cookies', () => {
       // Act.
       const output = cookies.get(req, 'nonexistent-cookie');
       // Assert.
-      expect(output).to.equal(undefined);
+      expect(output).to.be.undefined;
+      expect(output || 'none').to.equal('none');
     });
   });
 

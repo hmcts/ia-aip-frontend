@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getApplyOption,
@@ -137,7 +137,8 @@ describe('Help with fees refund Controller', () => {
     it('should render help-with-fees.njk template', async () => {
       await getHelpWithFees(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/help-with-fees.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees.njk', {
         previousPage: paths.appealSubmitted.feeSupportRefund,
         formAction: paths.appealSubmitted.helpWithFeesRefund,
         question: sinon.match.any,
@@ -160,7 +161,8 @@ describe('Help with fees refund Controller', () => {
       await postHelpWithFees()(req as Request, res as Response, next);
       expect(req.session.appeal.application.lateHelpWithFeesOption).to.deep.equal('wantToApply');
       expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('when called with edit param should render help-with-fees.njk and update session', async () => {

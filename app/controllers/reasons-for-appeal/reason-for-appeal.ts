@@ -10,7 +10,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { addDaysToDate } from '../../utils/date-utils';
 import { getFileUploadError } from '../../utils/upload-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { asBooleanValue, documentIdToDocStoreUrl, hasPendingTimeExtension } from '../../utils/utils';
+import { asBooleanValue, hasPendingTimeExtension } from '../../utils/utils';
 import {
   createStructuredError,
   reasonForAppealDecisionValidation,

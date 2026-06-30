@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getCheckAndSend,
@@ -11,7 +11,7 @@ import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../../../app/utils/summary-list';
 import { formatTextForCYA, nowIsoDate } from '../../../../app/utils/utils';
 import i18n from '../../../../locale/en.json';
-import { expect, sinon } from '../../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../../utils/testUtils';
 
 describe('Reasons For Appeal - Check and send Controller', () => {
   let sandbox: sinon.SinonSandbox;
@@ -77,7 +77,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
   });
 
   describe('getCheckAndSend', () => {
-    it('should render reasons-for-appeal/check-and-send-page.njk with supporting evidences', () => {
+    it('should render templates/check-and-send.njk with supporting evidences', () => {
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
         addSummaryRow(i18n.common.cya.answerRowTitle, [ formatTextForCYA(req.session.appeal.reasonsForAppeal.applicationReason) ], paths.awaitingReasonsForAppeal.decision + editParameter),
@@ -97,22 +97,29 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       ];
 
       getCheckAndSend(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('reasons-for-appeal/check-and-send-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         summaryRows,
-        previousPage: paths.awaitingReasonsForAppeal.supportingEvidenceUpload
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidenceUpload,
+        hasNlr: false,
+        formAction: paths.awaitingReasonsForAppeal.checkAndSend
       });
     });
 
-    it('should render reasons-for-appeal/check-and-send-page.njk without supporting evidences', () => {
+    it('should render templates/check-and-send.njk without supporting evidences with NLR', () => {
+      setActiveNlr(req);
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
         addSummaryRow(i18n.common.cya.answerRowTitle, [ formatTextForCYA(req.session.appeal.reasonsForAppeal.applicationReason) ], paths.awaitingReasonsForAppeal.decision + editParameter)
       ];
 
       getCheckAndSend(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('reasons-for-appeal/check-and-send-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         summaryRows,
-        previousPage: paths.awaitingReasonsForAppeal.supportingEvidence
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
+        hasNlr: true,
+        formAction: paths.awaitingReasonsForAppeal.checkAndSend
       });
     });
 
@@ -147,6 +154,32 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       res.redirect = redirectStub.throws(error);
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
+    });
+  });
+
+  describe('nlrStatementValidation', () => {
+    it('should render error if fails validation', async () => {
+      setActiveNlr(req);
+
+      await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(renderStub.calledOnce).to.equal(true);
+      const expectedError = {
+        'key': 'nlrStatement',
+        'text': i18n.validationErrors.nlrStatement,
+        'href': '#nlrStatement'
+      };
+      const renderArgs = renderStub.getCall(0).args;
+      expect(renderArgs[0]).to.equal('templates/check-and-send.njk');
+      expect(renderArgs[1].errors).to.deep.equal({ nlrStatement: expectedError });
+      expect(renderArgs[1].errorList).to.deep.equal([expectedError]);
+    });
+
+    it('should continue if passes validation', async () => {
+      setActiveNlr(req);
+      req.body = { nlrStatement: 'nlr' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(false);
     });
   });
 });

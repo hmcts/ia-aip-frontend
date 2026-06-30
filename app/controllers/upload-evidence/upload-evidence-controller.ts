@@ -4,7 +4,6 @@ import { DocumentManagementService } from '../../service/document-management-ser
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getFileUploadError } from '../../utils/upload-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { documentIdToDocStoreUrl } from '../../utils/utils';
 import { createStructuredError, yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
 export interface EvidenceUploadConfig {

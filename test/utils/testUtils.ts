@@ -10,8 +10,35 @@ chai.use(chaiAsPromised);
 
 const expect = chai.expect;
 
+function buildExpectedRequiredError(key: string) {
+  return {
+    key: key,
+    text: `"${key}" is required`,
+    href: `#${key}`
+  };
+}
+
+function setActiveNlr(req: any) {
+  req.session = {
+    ...req.session,
+    appeal: {
+      ...req.session.appeal,
+      application: {
+        ...req.session.appeal.application,
+        hasNonLegalRep: 'Yes'
+      },
+      nlrDetails: {
+        ...req.session.appeal.nlrDetails,
+        idamId: 'someId'
+      }
+    }
+  };
+}
+
 export {
   expect,
   sinon,
-  validateUuid
+  validateUuid,
+  buildExpectedRequiredError,
+  setActiveNlr
 };

@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): ApplicationStatus {
+function appealApplicationStatus(appeal: Appeal, drlmSetAsideFlag: Boolean): ApplicationStatus {
   const appealOutOfCountry: boolean = !!_.get(appeal.application, 'appealOutOfCountry');
   const appealType: boolean = !!_.get(appeal.application, 'appealType');
   const typeOfAppeal: Task = {
@@ -36,8 +36,7 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
   const appellantOutOfCountryAddress: boolean = !!_.get(appeal.application, 'appellantOutOfCountryAddress');
   const postcode: boolean = !!_.get(appeal.application, 'personalDetails.address.postcode');
   const line1: boolean = !!_.get(appeal.application, 'personalDetails.address.line1');
-  const hasSponsorNo: boolean = appeal.application.hasSponsor && appeal.application.hasSponsor === 'No' || false;
-  const hasSponsorYes: boolean = appeal.application.hasSponsor && appeal.application.hasSponsor === 'Yes' || false;
+  const hasSponsor: boolean = appeal.application.hasSponsor === 'Yes';
   const sponsorEmail: boolean = !!_.get(appeal.application, 'sponsorContactDetails.email');
   const sponsorWantsEmail: boolean = !!_.get(appeal.application, 'sponsorContactDetails.wantsEmail');
   const sponsorPhone: boolean = !!_.get(appeal.application, 'sponsorContactDetails.phone');
@@ -48,11 +47,30 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
   const sponsorAuthorisation: boolean = !!_.get(appeal.application, 'sponsorAuthorisation');
   const appellantContactDetails: boolean = (email && wantsEmail || phone && wantsSms) && (line1 || appellantOutOfCountryAddress);
   const sponsorContactDetails: boolean = sponsorEmail && sponsorWantsEmail || sponsorPhone && sponsorWantsSms;
-  const outUkContactDetailsComplete: boolean = (appellantContactDetails && hasSponsorNo) ||
-    (appellantContactDetails && hasSponsorYes && sponsorGivenNames && sponsorFamilyName && sponsorAddress && sponsorContactDetails && sponsorAuthorisation);
+  const sponsorDetailsComplete: boolean = sponsorGivenNames && sponsorFamilyName && sponsorAddress && sponsorContactDetails && sponsorAuthorisation;
+  const hasSponsorOrNlrComplete: boolean = !!_.get(appeal.application, 'hasNonLegalRep') && !!_.get(appeal.application, 'hasSponsor');
+  const hasNlr: boolean = appeal.application.hasNonLegalRep === 'Yes';
+  const nlrGivenNames: boolean = !!_.get(appeal.nlrDetails, 'givenNames');
+  const nlrFamilyName: boolean = !!_.get(appeal.nlrDetails, 'familyName');
+  const nlrPhoneNumber: boolean = !!_.get(appeal.nlrDetails, 'phoneNumber');
+  const nlrEmailAddress: boolean = !!_.get(appeal.nlrDetails, 'emailAddress');
+  const nlrAddress: boolean = !!_.get(appeal.nlrDetails, 'address');
+  const isSponsorSameAsNlrYes: boolean = appeal?.application?.isSponsorSameAsNlr === 'Yes' || false;
+  const isSponsorSameAsNlrNo: boolean = appeal?.application?.isSponsorSameAsNlr === 'No' || false;
+  const nlrLine1: boolean = !!_.get(appeal.nlrDetails, 'addressUk.line1');
+  const nlrCity: boolean = !!_.get(appeal.nlrDetails, 'addressUk.city');
+  const nlrPostcode: boolean = !!_.get(appeal.nlrDetails, 'addressUk.postcode');
+  const nlrAddressComplete: boolean = isSponsorSameAsNlrYes ? nlrLine1 && nlrCity && nlrPostcode : nlrAddress;
+  const nlrDetailsComplete: boolean = nlrGivenNames && nlrFamilyName && nlrPhoneNumber && nlrEmailAddress && nlrAddressComplete;
+
+  const sponsorDetailsRequired = hasSponsor && (!hasNlr || isSponsorSameAsNlrNo);
+  const sponsorNlrDetailsComplete =
+    (!sponsorDetailsRequired || sponsorDetailsComplete) &&
+    (!hasNlr || nlrDetailsComplete);
+
   const contactDetails: Task = {
     saved: (email && wantsEmail) || (phone && wantsSms) || postcode || line1 || appellantOutOfCountryAddress,
-    completed: _.get(appeal.application, 'appellantInUk') === 'Yes' ? appellantContactDetails : outUkContactDetailsComplete,
+    completed: appellantContactDetails && hasSponsorOrNlrComplete && sponsorNlrDetailsComplete,
     active: homeOfficeDetails.completed || homeOfficeDetailsOOC.completed
   };
 
@@ -132,7 +150,7 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
 
 }
 
-function submitHearingRequirementsStatus(appeal: Appeal) {
+function submitHearingRequirementsStatus(appeal: Appeal, hasNonLegalRep: boolean) {
 
   const witnessesOnHearing: boolean = _.has(appeal, 'hearingRequirements.witnessesOnHearing');
   const witnessesOutsideUK: boolean = _.has(appeal, 'hearingRequirements.witnessesOutsideUK');
@@ -153,12 +171,30 @@ function submitHearingRequirementsStatus(appeal: Appeal) {
     completed: isHearingLoopNeeded,
     active: witnessesTask.completed
   };
+
+  const isNlrAttending: boolean = appeal?.hearingRequirements?.nlrAttending === 'Yes';
+  const isnlrAttendingOutsideUk: boolean = appeal?.hearingRequirements?.nlrAttendingOutsideUk === 'Yes';
+  const areNlrRequirementsNeeded: boolean = isNlrAttending || isnlrAttendingOutsideUk;
+  const nlrAttendingTask: Task = {
+    saved: !!_.get(appeal, 'hearingRequirements.nlrAttending'),
+    completed: _.has(appeal, isNlrAttending ? 'hearingRequirements.nlrAttending' : 'hearingRequirements.nlrAttendingOutsideUk'),
+    active: hasNonLegalRep && accessNeedsTask.completed
+  };
+
+  const nlrNeeds: boolean = !!_.get(appeal, 'hearingRequirements.nlrNeeds');
+  const nlrNeedsTask: Task = {
+    saved: nlrNeeds,
+    completed: _.has(appeal, 'hearingRequirements.nlrNeedsHearingLoop'),
+    active: areNlrRequirementsNeeded && hasNonLegalRep && nlrAttendingTask.completed
+  };
+
   const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');
 
+  const otherNeedsNonLegalRep: boolean = areNlrRequirementsNeeded ? nlrNeedsTask.completed : nlrAttendingTask.completed;
   const otherNeedsTask: Task = {
     saved: otherNeeds,
     completed: _.has(appeal, 'hearingRequirements.otherNeeds.anythingElse'),
-    active: accessNeedsTask.completed
+    active: hasNonLegalRep ? otherNeedsNonLegalRep : accessNeedsTask.completed
   };
 
   let datesToAvoidCompleted: boolean = !!_.get(appeal, 'hearingRequirements.datesToAvoid');
@@ -183,13 +219,17 @@ function submitHearingRequirementsStatus(appeal: Appeal) {
     active: datesToAvoidCompleted
   };
 
-  return {
+  const returnObject = {
     witnesses: witnessesTask,
     accessNeeds: accessNeedsTask,
+    nlrAttending: nlrAttendingTask,
     otherNeeds: otherNeedsTask,
     datesToAvoid: datesToAvoidTask,
     checkAndSend
   };
+  if (areNlrRequirementsNeeded) returnObject['nlrNeeds'] = nlrNeedsTask;
+
+  return returnObject;
 }
 
 function cmaRequirementsStatus(appeal: Appeal) {
@@ -270,10 +310,78 @@ function resetFeeSupportSectionStatusAndValues(application: AppealApplication) {
   application.feeSupportPersisted = false;
 }
 
+function hasValue(appeal: Appeal, path: string): boolean {
+  const value = _.get(appeal, path);
+  return value !== null && value !== undefined;
+}
+function addNonLegalRepStatus(appeal: Appeal): ApplicationStatus {
+  const provideNlrEmail: Task = {
+    id: 'provideNlrEmail',
+    active: !hasValue(appeal, 'nlrDetails.emailAddress'),
+    saved: hasValue(appeal, 'nlrDetails.emailAddress'),
+    completed: hasValue(appeal, 'nlrDetails.emailAddress')
+  };
+
+  const hasSponsor = _.get(appeal, 'application.hasSponsor') === 'Yes';
+  const isNlrSameAsSponsor: Task = {
+    id: 'isNlrSameAsSponsor',
+    active: provideNlrEmail.completed && hasSponsor && !hasValue(appeal, 'application.isSponsorSameAsNlr'),
+    saved: !hasSponsor || hasValue(appeal, 'application.isSponsorSameAsNlr'),
+    completed: !hasSponsor || hasValue(appeal, 'application.isSponsorSameAsNlr')
+  };
+
+  const provideNlrName: Task = {
+    id: 'provideNlrName',
+    active: provideNlrEmail.completed && !hasValue(appeal, 'nlrDetails.givenNames'),
+    saved: hasValue(appeal, 'nlrDetails.givenNames') && hasValue(appeal, 'nlrDetails.familyName'),
+    completed: hasValue(appeal, 'nlrDetails.givenNames') && hasValue(appeal, 'nlrDetails.familyName')
+  };
+
+  const provideNlrAddress: Task = {
+    id: 'provideNlrAddress',
+    active: provideNlrEmail.completed && (_.get(appeal, 'application.isSponsorSameAsNlr') === 'Yes' ? !hasValue(appeal, 'nlrDetails.addressUk') : !hasValue(appeal, 'nlrDetails.address')),
+    saved: _.get(appeal, 'application.isSponsorSameAsNlr') === 'Yes' ? hasValue(appeal, 'nlrDetails.addressUk.line1') && hasValue(appeal, 'nlrDetails.addressUk.city') && hasValue(appeal, 'nlrDetails.addressUk.postcode') : hasValue(appeal, 'nlrDetails.address'),
+    completed: _.get(appeal, 'application.isSponsorSameAsNlr') === 'Yes' ? hasValue(appeal, 'nlrDetails.addressUk.line1') && hasValue(appeal, 'nlrDetails.addressUk.city') && hasValue(appeal, 'nlrDetails.addressUk.postcode') : hasValue(appeal, 'nlrDetails.address')
+  };
+
+  const provideNlrPhone: Task = {
+    id: 'provideNlrPhone',
+    active: provideNlrEmail.completed && !hasValue(appeal, 'nlrDetails.phoneNumber'),
+    saved: hasValue(appeal, 'nlrDetails.phoneNumber'),
+    completed: hasValue(appeal, 'nlrDetails.phoneNumber')
+  };
+
+  const nlrDetailsProvided: boolean = provideNlrEmail.completed && isNlrSameAsSponsor.completed
+    && provideNlrName.completed && provideNlrAddress.completed && provideNlrPhone.completed;
+
+  const checkAndSend: Task = {
+    id: 'checkAndSend',
+    active: nlrDetailsProvided && !hasValue(appeal, 'nlrDetails.idamId'),
+    saved: nlrDetailsProvided && hasValue(appeal, 'nlrDetails.idamId'),
+    completed: nlrDetailsProvided && hasValue(appeal, 'nlrDetails.idamId')
+  };
+
+  return hasSponsor ? {
+    provideNlrEmail,
+    isNlrSameAsSponsor,
+    provideNlrName,
+    provideNlrAddress,
+    provideNlrPhone,
+    checkAndSend
+  } : {
+    provideNlrEmail,
+    provideNlrName,
+    provideNlrAddress,
+    provideNlrPhone,
+    checkAndSend
+  };
+}
+
 export {
   appealApplicationStatus,
   buildSectionObject,
   cmaRequirementsStatus,
   submitHearingRequirementsStatus,
+  addNonLegalRepStatus,
   resetFeeSupportSectionStatusAndValues
 };

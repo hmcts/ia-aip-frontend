@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getNamePage, postNamePage, setupHomeOfficeDetailsController } from '../../../app/controllers/appeal-application/home-office-details';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
@@ -172,7 +172,8 @@ describe('Home Office Details Controller', function () {
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -231,8 +232,7 @@ describe('Home Office Details Controller', function () {
       };
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/name.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/name.njk',
         {
           error: {
             givenNames: givenNameErrors,
@@ -262,8 +262,7 @@ describe('Home Office Details Controller', function () {
       };
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/name.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/name.njk',
         {
           error: {
             givenNames: givenNameErrors,

@@ -7,37 +7,47 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { formatTextForCYA, nowIsoDate } from '../../utils/utils';
+import { formatTextForCYA, handleNlrStatementValidation, hasActiveNlr, nowIsoDate } from '../../utils/utils';
+
+function getCheckAndSendRenderArgs(req: Request): RenderArgs {
+  const editParameter: string = '?edit';
+  let previousPage: string = paths.awaitingReasonsForAppeal.supportingEvidence;
+
+  const formattedReason = formatTextForCYA(req.session.appeal.reasonsForAppeal.applicationReason);
+
+  const summaryRows = [
+    addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.reasonForAppeal.heading], null),
+    addSummaryRow(i18n.common.cya.answerRowTitle, [formattedReason], paths.awaitingReasonsForAppeal.decision + editParameter)
+  ];
+
+  if (_.has(req.session.appeal.reasonsForAppeal, 'evidences')) {
+    const evidences: Evidence[] = req.session.appeal.reasonsForAppeal.evidences || [];
+    const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
+    if (evidenceNames.length) {
+      const evidenceText = evidences.map((evidence) => {
+        return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+      });
+
+      summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceText, paths.awaitingReasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));
+      previousPage = paths.awaitingReasonsForAppeal.supportingEvidenceUpload;
+    }
+  }
+
+  return {
+    renderPath: 'templates/check-and-send.njk',
+    renderObj: {
+      summaryRows,
+      previousPage: previousPage,
+      hasNlr: hasActiveNlr(req.session.appeal),
+      formAction: paths.awaitingReasonsForAppeal.checkAndSend
+    }
+  };
+}
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction): void {
   try {
-    const editParameter: string = '?edit';
-    let previousPage: string = paths.awaitingReasonsForAppeal.supportingEvidence;
-
-    const formattedReason = formatTextForCYA(req.session.appeal.reasonsForAppeal.applicationReason);
-
-    const summaryRows = [
-      addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
-      addSummaryRow(i18n.common.cya.answerRowTitle, [ formattedReason ], paths.awaitingReasonsForAppeal.decision + editParameter)
-    ];
-
-    if (_.has(req.session.appeal.reasonsForAppeal, 'evidences')) {
-      const evidences: Evidence[] = req.session.appeal.reasonsForAppeal.evidences || [];
-      const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
-      if (evidenceNames.length) {
-        const evidenceText = evidences.map((evidence) => {
-          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
-        });
-
-        summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceText, paths.awaitingReasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));
-        previousPage = paths.awaitingReasonsForAppeal.supportingEvidenceUpload;
-      }
-    }
-
-    return res.render('reasons-for-appeal/check-and-send-page.njk', {
-      summaryRows,
-      previousPage: previousPage
-    });
+    const { renderPath, renderObj } = getCheckAndSendRenderArgs(req);
+    return res.render(renderPath, renderObj);
   } catch (error) {
     next(error);
   }
@@ -48,6 +58,12 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body)) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
+      if (hasActiveNlr(req.session.appeal)) {
+        const canContinue = handleNlrStatementValidation(req, res, getCheckAndSendRenderArgs(req));
+        if (!canContinue) {
+          return;
+        }
       }
       const appeal: Appeal = {
         ...req.session.appeal,

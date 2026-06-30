@@ -22,6 +22,17 @@ module.exports = {
       await I.waitInUrl(paths.common.casesList, 30);
     });
 
+    Given('I have logged in as a user with multiple appeals both repped and unrepped', async () => {
+      await I.amOnPage(testUrl + paths.common.login);
+      signInForUser('multiple-appeals-nlr@example.com');
+      await I.waitInUrl(paths.common.casesList, 30);
+    });
+    Given('I have logged in as a user with one repped appeal', async () => {
+      await I.amOnPage(testUrl + paths.common.login);
+      signInForUser('nlr-login-with-repped-case@example.com');
+      await I.waitInUrl(paths.common.casesList, 30);
+    });
+
     When('I visit the cases list page', async () => {
       await I.amOnPage(testUrl + paths.common.casesList);
     });
@@ -44,6 +55,32 @@ module.exports = {
       await I.seeElement('.govuk-table');
       const rowCount: number = await I.grabNumberOfVisibleElements('.govuk-table__body tr');
       expect(rowCount).to.equal(parseInt(count, 10), `Expected ${count} appeals but found ${rowCount}`);
+    });
+
+    Then(/^I should see (\d+) tables?$/, async (count: string) => {
+      const tableCount: number = await I.grabNumberOfVisibleElements('.govuk-table');
+      expect(tableCount).to.equal(parseInt(count, 10), `Expected ${count} tables but found ${tableCount}`);
+    });
+
+    Then(/^I should see (\d+) appeals? in table (\d+)$/, async (appealCount: string, tableIndex: string) => {
+      const table = locate('.govuk-table').at(parseInt(tableIndex, 10));
+      await I.seeElement(table);
+      const rowCount: number = await I.grabNumberOfVisibleElements(table.find('.govuk-table__body tr'));
+      expect(rowCount).to.equal(parseInt(appealCount, 10), `Expected ${appealCount} appeals in table ${tableIndex} but found ${rowCount}`);
+    });
+
+    Then(/^I should see appeal reference "([^"]*)" in table (\d+)$/, async (reference: string, tableIndex: string) => {
+      const table = locate('.govuk-table').at(parseInt(tableIndex, 10));
+      await I.seeElement(table);
+      await I.see(reference, table.find('.govuk-table__body'));
+    });
+
+    Then(/^I should (see|not see) the "([^"]*)" h2 heading?$/, async (see: string, heading: string) => {
+      if (see === 'see') {
+        await I.see(heading, 'h2');
+      } else {
+        await I.dontSee(heading, 'h2');
+      }
     });
 
     Then(/^I should see "View" link for the appeal$/, async () => {
@@ -71,13 +108,25 @@ module.exports = {
     When(/^I should see the confirm create appeal popup$/, async () => {
       await I.waitForVisible(`#${i18n.pages.casesList.createAppealModal.id}`, 30);
       await I.see(i18n.pages.casesList.createAppealModal.title);
-      await I.see(i18n.pages.casesList.createAppealModal.description.replace('{{ maxDraftAppeals }}', '5'));
+      await I.see(i18n.pages.casesList.createAppealModal.description.replace('MAX_DRAFT_APPEALS', '5'));
       await I.see(i18n.pages.casesList.createAppealModal.confirmButton);
       await I.seeElement(`#${i18n.pages.casesList.createAppealModal.id}-cancel`);
     });
 
     When(/^I click cancel on the confirm create appeal popup$/, async () => {
       await I.click(`#${i18n.pages.casesList.createAppealModal.id}-cancel`);
+    });
+
+    When('I click the Create appeal nav link', async () => {
+      await I.click(`#${i18n.components.header.createNewAppealNavId}`);
+    });
+
+    When('I click the View appeals nav link', async () => {
+      await I.click(i18n.components.header.casesList);
+    });
+
+    When('I click the Join appeal nav link', async () => {
+      await I.click(i18n.components.header.joinAppeal);
     });
 
     When(/^I click confirm on the confirm create appeal popup$/, async () => {
@@ -117,7 +166,7 @@ module.exports = {
       await I.see(status, `//tr[contains(., "${reference}")]`);
     });
 
-    When('I click the "Back to cases list" link', async () => {
+    When('I click the "Back to view appeals" link', async () => {
       await I.click(i18n.components.back.backToCasesList);
     });
 

@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getDeportationOrder, getDeportationOrderOptionsQuestion,
@@ -92,7 +92,8 @@ describe('Deportation order Controller', function () {
   describe('getDeportationOrder', () => {
     it('should render templates/deportation-order.njk', async () => {
       await getDeportationOrder(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('templates/deportation-order.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/deportation-order.njk', {
         previousPage: paths.appealStarted.homeOfficeDecisionLetter,
         formAction: paths.appealStarted.deportationOrder,
         question: sinon.match.any
@@ -137,7 +138,8 @@ describe('Deportation order Controller', function () {
       req.session.appeal.application.isEdit = true;
       await postDeportationOrder(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealStarted.checkAndSend}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
   });
 
@@ -150,8 +152,7 @@ describe('Deportation order Controller', function () {
 
     await postDeportationOrder(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     const deportationOptions = getDeportationOrderOptionsQuestion(req.session.appeal);
-    expect(renderStub).to.be.calledWith(
-      'templates/deportation-order.njk',
+    expectRenderedCalledWithArgs(renderStub, 'templates/deportation-order.njk',
       {
         errors: {
           answer: error

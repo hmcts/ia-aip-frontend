@@ -1,14 +1,11 @@
-import { Express, NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
-  setupHearingBundleFeatureToggleController,
   setupHearingRequirementsFeatureToggleController
 } from '../../../../app/controllers/hearing-requirements/hearings-feature-toggle';
-import {
-  hearingBundleFeatureMiddleware, hearingRequirementsMiddleware
+import { hearingRequirementsMiddleware
 } from '../../../../app/middleware/hearing-requirements-middleware';
 import { paths } from '../../../../app/paths';
-import LaunchDarklyService from '../../../../app/service/launchDarkly-service';
 import { expect, sinon } from '../../../utils/testUtils';
 
 const express = require('express');

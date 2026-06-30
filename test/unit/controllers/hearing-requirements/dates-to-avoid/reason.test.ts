@@ -1,12 +1,15 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
-  getDatesToAvoidReason, getDatesToAvoidReasonWithId, postDatesToAvoidReason, postDatesToAvoidReasonWithId,
+  getDatesToAvoidReason,
+  getDatesToAvoidReasonWithId,
+  postDatesToAvoidReason,
+  postDatesToAvoidReasonWithId,
   setupHearingDatesToAvoidReasonController
 } from '../../../../../app/controllers/hearing-requirements/dates-to-avoid/reason';
 import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
-import { expect, sinon } from '../../../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../../../utils/testUtils';
 
 describe('Hearing Requirements - Reason controller', () => {
   let sandbox: sinon.SinonSandbox;
@@ -34,6 +37,7 @@ describe('Hearing Requirements - Reason controller', () => {
       params: {},
       session: {
         appeal: {
+          application: {},
           hearingRequirements: {
             datesToAvoid: {
               isDateCannotAttend: true,
@@ -92,7 +96,26 @@ describe('Hearing Requirements - Reason controller', () => {
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
+    });
+
+    it('should render template with nlr if hasNlr', () => {
+      setActiveNlr(req);
+
+      getDatesToAvoidReason(req as Request, res as Response, next);
+      const expectedArgs = {
+        formAction: '/hearing-dates-avoid-reasons',
+        pageTitle: 'Why can you, your non-legal representative or any witnesses not go to the hearing on this date?',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        question: {
+          name: 'reason',
+          title: 'Why can you, your non-legal representative or any witnesses not go to the hearing on this date?',
+          value: ''
+        },
+        supportingEvidence: false,
+        timeExtensionAllowed: false
+      };
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -121,7 +144,28 @@ describe('Hearing Requirements - Reason controller', () => {
         timeExtensionAllowed: false
       };
       getDatesToAvoidReasonWithId(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
+    });
+
+    it('should render template with previously saved answer for NLR if hasNlr', () => {
+      req.params.id = '0';
+      req.session.appeal.hearingRequirements.datesToAvoid.dates[0].reason = 'Previously saved reason';
+      setActiveNlr(req);
+
+      const expectedArgs = {
+        formAction: '/hearing-dates-avoid-reasons/0',
+        pageTitle: 'Why can you, your non-legal representative or any witnesses not go to the hearing on this date?',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        question: {
+          name: 'reason',
+          title: 'Why can you, your non-legal representative or any witnesses not go to the hearing on this date?',
+          value: 'Previously saved reason'
+        },
+        supportingEvidence: false,
+        timeExtensionAllowed: false
+      };
+      getDatesToAvoidReasonWithId(req as Request, res as Response, next);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -139,8 +183,52 @@ describe('Hearing Requirements - Reason controller', () => {
     it('should fail validation and render template with errors', async () => {
 
       await postDatesToAvoidReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: 'reason',
+        text: 'Enter details of why you cannot go to the hearing on this date',
+        href: '#reason'
+      };
+      const expectedArgs = {
+        formAction: '/hearing-dates-avoid-reasons/0',
+        pageTitle: 'Why can you or any witnesses not go to the hearing on this date?',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        question: {
+          name: 'reason',
+          title: 'Why can you or any witnesses not go to the hearing on this date?',
+          value: 'Previously saved reason'
+        },
+        supportingEvidence: false,
+        timeExtensionAllowed: false,
+        errorList: [expectedError],
+        error: { reason: expectedError }
+      };
+      expect(renderStub).calledWith('templates/textarea-question-page.njk', expectedArgs);
+    });
 
-      expect(renderStub.calledWith('templates/textarea-question-page.njk')).to.equal(true);
+    it('should fail validation and render template with errors for nlr with hasNlr', async () => {
+      setActiveNlr(req);
+
+      await postDatesToAvoidReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedError = {
+        key: 'reason',
+        text: 'Enter details of why you cannot go to the hearing on this date',
+        href: '#reason'
+      };
+      const expectedArgs = {
+        formAction: '/hearing-dates-avoid-reasons/0',
+        pageTitle: 'Why can you, your non-legal representative or any witnesses not go to the hearing on this date?',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        question: {
+          name: 'reason',
+          title: 'Why can you, your non-legal representative or any witnesses not go to the hearing on this date?',
+          value: 'Previously saved reason'
+        },
+        supportingEvidence: false,
+        timeExtensionAllowed: false,
+        errorList: [expectedError],
+        error: { reason: expectedError }
+      };
+      expect(renderStub).calledWith('templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to add another date page', async () => {
@@ -188,7 +276,38 @@ describe('Hearing Requirements - Reason controller', () => {
         timeExtensionAllowed: false
       };
 
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
+    });
+
+    it('should fail validation and render template with errors with nlr if hasNlr', async () => {
+      req.params.id = '0';
+      setActiveNlr(req);
+
+      await postDatesToAvoidReasonWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const expectedError = {
+        reason: {
+          href: '#reason',
+          key: 'reason',
+          text: 'Enter details of why you cannot go to the hearing on this date'
+        }
+      };
+      const expectedArgs = {
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        formAction: '/hearing-dates-avoid-reasons/0',
+        pageTitle: 'Why can you, your non-legal representative or any witnesses not go to the hearing on this date?',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        question: {
+          name: 'reason',
+          title: 'Why can you, your non-legal representative or any witnesses not go to the hearing on this date?',
+          value: 'Previously saved reason'
+        },
+        supportingEvidence: false,
+        timeExtensionAllowed: false
+      };
+
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to taskList page', async () => {

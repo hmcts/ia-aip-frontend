@@ -34,24 +34,6 @@ export const Events = {
     summary: 'Request respondent review',
     description: 'Request respondent review'
   },
-  // TODO: remove event once make an application is fully working
-  SUBMIT_TIME_EXTENSION: {
-    id: 'submitTimeExtension',
-    summary: 'Submit time extension AIP',
-    description: 'Submit time extensions for case AIP'
-  },
-  // TODO: remove event once make an application is fully working
-  REVIEW_TIME_EXTENSION: {
-    id: 'reviewTimeExtension',
-    summary: 'Submits review of time extension for appeal case AIP',
-    description: 'Submits review of time extension for appeal case AIP'
-  },
-  // TODO: remove event once make an application is fully working
-  EDIT_TIME_EXTENSION: {
-    id: 'editTimeExtension',
-    summary: 'Edit time extension AIP',
-    description: 'edits time extensions for case AIP'
-  },
   MAKE_AN_APPLICATION: {
     id: 'makeAnApplication',
     summary: 'Make an application',
@@ -76,11 +58,6 @@ export const Events = {
     id: 'submitCmaRequirements',
     summary: 'Submit CMA requirements',
     description: 'Submit CMA requirements'
-  },
-  SEND_DIRECTION_WITH_QUESTIONS: {
-    id: 'sendDirectionWithQuestions',
-    summary: 'Direct the appellant to answer clarifying questions',
-    description: 'Direct the appellant to answer clarifying questions'
   },
   UPDATE_TRIBUNAL_DECISION: {
     id: 'updateTribunalDecision',
@@ -146,11 +123,6 @@ export const Events = {
     id: 'uploadAddendumEvidenceHomeOffice',
     summary: 'Home office uploads addendum evidence for AIP',
     description: 'Home office uploads addendum evidence for AIP'
-  },
-  EDIT_DOCUMENTS: {
-    id: 'editDocuments',
-    summary: 'Edit additional evidence for AIP',
-    description: 'Edit additional evidence for AIP'
   },
   REQUEST_HEARING_REQUIREMENTS_FEATURE: {
     id: 'requestHearingRequirementsFeature',
@@ -253,6 +225,41 @@ export const Events = {
     id: 'deleteDraftAppeal',
     summary: 'Delete draft appeal AIP',
     description: 'Delete draft appeal AIP'
+  },
+  SEND_INVITE_TO_NON_LEGAL_REP: {
+    id: 'sendInviteToNonLegalRep',
+    summary: 'Send invite to non legal rep',
+    description: 'Send invite to non legal rep'
+  },
+  PROVIDE_NON_LEGAL_REP_DETAILS: {
+    id: 'provideNonLegalRepDetails',
+    summary: 'AiP provide NLR details',
+    description: 'AiP provided non-legal representative details after appeal submission'
+  },
+  SEND_PIP_TO_NON_LEGAL_REP: {
+    id: 'sendPipToNonLegalRep',
+    summary: 'Send PIP to non legal rep',
+    description: 'Send PIP to non legal rep'
+  },
+  JOIN_APPEAL_CONFIRMATION: {
+    id: 'joinAppealConfirmation',
+    summary: 'NLR Joined appeal',
+    description: 'Non Legal Rep joined appeal via PIP'
+  },
+  REMOVE_NON_LEGAL_REP: {
+    id: 'removeNonLegalRep',
+    summary: 'NLR removed',
+    description: 'Appellant has removed their non-legal representative from the appeal'
+  },
+  REMOVE_NON_LEGAL_REP_SELF: {
+    id: 'removeNonLegalRep',
+    summary: 'NLR removed',
+    description: 'Non-legal representative has removed themselves from the appeal'
+  },
+  NLR_DETAILS_UPDATED: {
+    id: 'nlrDetailsUpdated',
+    summary: 'NLR updated details',
+    description: 'Non-legal Representative has updated their details'
   },
   MARK_APPEAL_PAID: {
     id: 'markAppealPaid',

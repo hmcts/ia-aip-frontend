@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getQuestionsList,
   setupClarifyingQuestionsListController
@@ -67,8 +67,7 @@ describe('Questions-list controller', () => {
     it('should render questions-list.njk page', () => {
       getQuestionsList(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith(
-        'clarifying-questions/questions-list.njk',
+      expectRenderedCalledWithArgs(renderStub, 'clarifying-questions/questions-list.njk',
         {
           previousPage: paths.common.overview,
           questions: [ clarifyingQuestions[0] ],
@@ -92,8 +91,7 @@ describe('Questions-list controller', () => {
       req.session.appeal.draftClarifyingQuestionsAnswers = [ ...questionsAnswered ];
       getQuestionsList(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith(
-        'clarifying-questions/questions-list.njk',
+      expectRenderedCalledWithArgs(renderStub, 'clarifying-questions/questions-list.njk',
         {
           previousPage: paths.common.overview,
           questions: [ questionsAnswered[0] ],

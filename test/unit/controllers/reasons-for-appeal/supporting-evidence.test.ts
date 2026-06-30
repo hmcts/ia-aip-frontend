@@ -1,5 +1,5 @@
 import config from 'config';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import {
   getAdditionalSupportingEvidenceQuestionPage,
   postAdditionalSupportingEvidenceQuestionPage,
@@ -82,7 +82,8 @@ describe('Supporting Evidence Upload Controller', () => {
   describe('getAdditionalSupportingEvidenceQuestionPage', () => {
     it('should render reasons-for-appeal/supporting-evidence-page.njk', () => {
       getAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-page.njk', {
         previousPage: paths.awaitingReasonsForAppeal.decision,
         askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime'))
 
@@ -107,7 +108,8 @@ describe('Supporting Evidence Upload Controller', () => {
       };
 
       postAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-page.njk', {
         error: { answer: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,

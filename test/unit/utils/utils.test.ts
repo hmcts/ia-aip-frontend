@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import {
@@ -13,6 +13,7 @@ import {
   getLatestUpdateRemissionDecisionsEventHistory,
   getLatestUpdateTribunalDecisionHistory,
   getStateName,
+  handleNlrStatementValidation,
   hasPendingTimeExtension,
   isRemissionDecisionDecided,
   isUpdateTribunalDecide,
@@ -27,10 +28,19 @@ describe('utils', () => {
 
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
+  let res: Partial<Response>;
+  let renderStub: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    const redirectStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    res = {
+      redirect: redirectStub,
+      render: renderStub,
+      send: sandbox.stub()
+    } as Partial<Response>;
     req = {
       body: {},
       cookies: {},
@@ -234,7 +244,8 @@ describe('utils', () => {
     });
 
     it('Invalid type', () => {
-      expect(getApplicationType('INVALID')).to.equal(undefined);
+      expect(getApplicationType('INVALID')).to.be.undefined;
+      expect(getApplicationType('INVALID') || 'none').to.equal('none');
     });
   });
 
@@ -286,7 +297,8 @@ describe('utils', () => {
 
     it('getFtpaApplicantType should return undefined in ftpa submitted state', () => {
       req.session.appeal.appealStatus = 'ftpaSubmitted';
-      expect(getFtpaApplicantType(req.session.appeal)).to.eq(undefined);
+      expect(getFtpaApplicantType(req.session.appeal)).to.be.undefined;
+      expect(getFtpaApplicantType(req.session.appeal) || 'none').to.eq('none');
     });
 
     it('documentIdToDocStoreUrl should retrieve the doc store url using key', () => {
@@ -387,7 +399,8 @@ describe('utils', () => {
           'createdDate': '2024-03-01T15:36:26.099'
         }
       ] as HistoryEvent[];
-      expect(getLatestUpdateTribunalDecisionHistory(req as Request, true)).to.eq(null);
+      expect(getLatestUpdateTribunalDecisionHistory(req as Request, true)).to.be.null;
+      expect(getLatestUpdateTribunalDecisionHistory(req as Request, true) || 'none').to.eq('none');
     });
   });
 
@@ -530,7 +543,8 @@ describe('utils', () => {
       ] as HistoryEvent[];
 
       const latestHistoryEvent = getLatestRequestFeeRemissionEventHistoryWithRefundEnabled(req as Request);
-      expect(latestHistoryEvent).to.deep.equal(null);
+      expect(latestHistoryEvent).to.be.null;
+      expect(latestHistoryEvent || 'none').to.equal('none');
     });
   });
 
@@ -569,4 +583,43 @@ describe('utils', () => {
     });
   });
 
+  describe('handleNlrStatementValidation', () => {
+    const renderArgs: RenderArgs = {
+      renderPath: 'some-template',
+      renderObj: {}
+    };
+    it('should return true if statement is valid as nlr', () => {
+      req.body = { nlrStatement: 'nlr' };
+      const result = handleNlrStatementValidation(req as Request, res as Response, renderArgs);
+      expect(renderStub.called).to.equal(false);
+      expect(req.session.appeal.hasNlrSubmitted).to.equal('Yes');
+      expect(result).to.equal(true);
+    });
+
+    it('should return true if statement is valid as appellant', () => {
+      req.body = { nlrStatement: 'appellant' };
+      const result = handleNlrStatementValidation(req as Request, res as Response, renderArgs);
+      expect(renderStub.called).to.equal(false);
+      expect(req.session.appeal.hasNlrSubmitted).to.be.undefined;
+      expect(req.session.appeal.hasNlrSubmitted || 'none').to.equal('none');
+      expect(result).to.equal(true);
+    });
+
+    it('should return false and render page with error if statement is invalid', () => {
+      const result = handleNlrStatementValidation(req as Request, res as Response, renderArgs);
+      expect(renderStub.calledOnce).to.equal(true);
+      const expectedError = {
+        'href': '#nlrStatement',
+        'key': 'nlrStatement',
+        'text': 'You must select one of the options under the Non-legal representative statement of truth as you have a non-legal representative on this case'
+      };
+      expectRenderedCalledWithArgs(renderStub, 'some-template', {
+        errors: { nlrStatement: expectedError },
+        errorList: [expectedError]
+      });
+      expect(result).to.equal(false);
+      expect(req.session.appeal.hasNlrSubmitted).to.be.undefined;
+      expect(req.session.appeal.hasNlrSubmitted || 'none').to.equal('none');
+    });
+  });
 });

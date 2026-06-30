@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import PcqService from '../../../app/service/pcq-service';
 import Logger from '../../../app/utils/logger';
@@ -99,8 +99,8 @@ describe('PCQ service', () => {
     it('should return pcqId', async () => {
       const pcqService = new PcqService();
       const pcqId = pcqService.getPcqId();
-      expect(pcqId).to.not.equal(null);
-      expect(pcqId).to.not.equal(undefined);
+      expect(pcqId).to.not.be.null;
+      expect(pcqId).to.not.be.undefined;
       expect(pcqId).to.not.equal('');
     });
   });

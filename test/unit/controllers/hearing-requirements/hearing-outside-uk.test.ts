@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getWitnessesOutsideUkQuestion, postWitnessesOutsideUkQuestion,
   setupWitnessesOutsideUkQuestionController
@@ -88,7 +88,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
         saveAndContinue: true
 
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         expectedArgs
       );
     });
@@ -132,8 +132,9 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
         },
         saveAndContinue: true
       };
-      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
-      expect(req.session.refreshCasesList).to.equal(undefined);
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', expectedArgs);
+      expect(req.session.refreshCasesList).to.be.undefined;
+      expect(req.session.refreshCasesList || 'none').to.equal('none');
     });
 
     it('should validate and redirect to task list page if answer yes', async () => {

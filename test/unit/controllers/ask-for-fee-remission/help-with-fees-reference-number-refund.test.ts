@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getHelpWithFeesRefNumber,
@@ -85,7 +85,8 @@ describe('Help with fees reference number refund Controller', function () {
     it('should render appeal-application/fee-support/help-with-fees-reference-number.njk', async () => {
       await getHelpWithFeesRefNumber(req as Request, res as Response, next);
       const helpWithFeesReferenceNumber = null;
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/help-with-fees-reference-number.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk', {
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         formAction: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
         helpWithFeesReferenceNumber,
@@ -107,7 +108,8 @@ describe('Help with fees reference number refund Controller', function () {
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
       expect(req.session.appeal.application.lateHelpWithFeesRefNumber).to.deep.equal('HWF-111');
       expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {
@@ -126,8 +128,7 @@ describe('Help with fees reference number refund Controller', function () {
         href: '#helpWithFeesRefNumber'
       };
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/help-with-fees-reference-number.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk',
         {
           errors: {
             helpWithFeesRefNumber: error
@@ -149,8 +150,7 @@ describe('Help with fees reference number refund Controller', function () {
         href: '#helpWithFeesRefNumber'
       };
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/help-with-fees-reference-number.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk',
         {
           errors: {
             helpWithFeesRefNumber: error
@@ -180,8 +180,10 @@ describe('Help with fees reference number refund Controller', function () {
       application.lateLocalAuthorityLetters = [];
 
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
-      expect(application.lateAsylumSupportRefNumber).to.equal(null);
-      expect(application.lateLocalAuthorityLetters).to.equal(null);
+      expect(application.lateAsylumSupportRefNumber).to.be.null;
+      expect(application.lateAsylumSupportRefNumber || 'none').to.equal('none');
+      expect(application.lateLocalAuthorityLetters).to.be.null;
+      expect(application.lateLocalAuthorityLetters || 'none').to.equal('none');
     });
   });
 

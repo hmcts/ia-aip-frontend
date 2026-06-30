@@ -9,8 +9,6 @@ import Logger, { getLogLabel } from '../utils/logger';
 import { createStructuredError } from '../utils/validations/fields-validations';
 
 const maxDraftAppeals: number = config.get('maxDraftAppeals');
-const createAppealModalDescription = i18n.pages.casesList.createAppealModal.description
-  .replace('{{ maxDraftAppeals }}', maxDraftAppeals.toString());
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 const useRedis: boolean = config.get('session.useRedis') === true;
@@ -22,6 +20,16 @@ export enum ErrorCode {
   caseNotFound = 'caseNotFound'
 }
 
+function refreshCasesList() {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      req.session.refreshCasesList = true;
+      return res.redirect(paths.common.casesList);
+    } catch (e) {
+      next(e);
+    }
+  };
+}
 function getCasesList(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -53,10 +61,13 @@ function getCasesList(updateAppealService: UpdateAppealService) {
           break;
       }
 
+      const cases: CaseListItem[] = req.session.casesList || [];
+      const appellantCases: CaseListItem[] = cases.filter(caseItem => !caseItem.isNonLegalRep);
+      const nlrCases: CaseListItem[] = cases.filter(caseItem => caseItem.isNonLegalRep);
       return res.render('cases-list.njk', {
         createNewAppealUrl: paths.common.createNewAppeal,
-        cases: req.session.casesList || [],
-        createAppealModalDescription,
+        appellantCases,
+        nlrCases,
         errorList: errorList
       });
 
@@ -75,6 +86,7 @@ function getCreateNewAppeal(updateAppealService: UpdateAppealService) {
       return res.redirect(`${paths.common.casesList}?errorCode=${ErrorCode.tooManyDrafts}`);
     }
     try {
+      req.session.isNonLegalRep = false;
       await updateAppealService.createNewAppeal(req);
       return res.redirect(paths.common.overview);
     } catch (e) {
@@ -112,6 +124,7 @@ function setupCasesListController(updateAppealService: UpdateAppealService): Rou
     : [getCreateNewAppeal(updateAppealService)];
   router.get(paths.common.createNewAppeal, createNewAppealMiddleware);
   router.get(paths.common.deleteDraftAppeal, getDeleteDraftAppeal(updateAppealService));
+  router.get(paths.common.refreshCasesList, refreshCasesList());
   return router;
 }
 
@@ -119,5 +132,6 @@ export {
   setupCasesListController,
   getCasesList,
   getCreateNewAppeal,
-  getDeleteDraftAppeal
+  getDeleteDraftAppeal,
+  refreshCasesList
 };

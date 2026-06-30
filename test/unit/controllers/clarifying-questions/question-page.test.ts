@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getClarifyingQuestionPage,
   postClarifyingQuestionPage,
@@ -93,8 +93,7 @@ describe('Question-page controller', () => {
       const questionOrderNo = parseInt(req.params.id, 10) - 1;
       getClarifyingQuestionPage(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith(
-        'clarifying-questions/question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'clarifying-questions/question-page.njk',
         {
           previousPage: paths.awaitingClarifyingQuestionsAnswers.questionsList,
           pendingTimeExtension: false,
@@ -144,8 +143,7 @@ describe('Question-page controller', () => {
       };
       await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith(
-        'clarifying-questions/question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'clarifying-questions/question-page.njk',
         {
           previousPage: paths.awaitingClarifyingQuestionsAnswers.questionsList,
           question: {

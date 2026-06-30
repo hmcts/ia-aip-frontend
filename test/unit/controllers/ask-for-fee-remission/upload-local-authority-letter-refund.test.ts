@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import session from 'express-session';
 import { validate } from '../../../../app/controllers/appeal-application/upload-local-authority-letter';
 import {
@@ -128,7 +128,8 @@ describe('Local authority letter refund Controller', function () {
       req.query = { error: 'error' };
       const validationErrors = { uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload[`${req.query.error}`]) };
       await getLocalAuthorityLetterRefund(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/upload-local-authority-letter.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/upload-local-authority-letter.njk', {
         title: i18n.pages.uploadLocalAuthorityLetter.title,
         evidenceListTitle: i18n.pages.uploadLocalAuthorityLetter.uploadedFileTitle,
         formSubmitAction: paths.appealSubmitted.localAuthorityLetterRefund,

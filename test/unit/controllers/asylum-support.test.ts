@@ -93,7 +93,8 @@ describe('Asylum support Controller', function () {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await getAsylumSupport(req as Request, res as Response, next);
       const asylumSupportRefNumber = null;
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/asylum-support.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/asylum-support.njk', {
         previousPage: paths.appealStarted.feeSupport,
         formAction: paths.appealStarted.asylumSupport,
         asylumSupportRefNumber,
@@ -202,7 +203,8 @@ describe('Asylum support Controller', function () {
       expect(submit.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
       expect(req.session.appeal.application.asylumSupportRefNumber).to.deep.equal('1212-0099-0089-1080');
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('should fail validation and render appeal-application/fee-support/asylum-support.njk with error', async () => {
@@ -217,8 +219,7 @@ describe('Asylum support Controller', function () {
         href: '#asylumSupportRefNumber'
       };
       expect(submit.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/asylum-support.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/asylum-support.njk',
         {
           errors: {
             asylumSupportRefNumber: error

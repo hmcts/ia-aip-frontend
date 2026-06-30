@@ -93,7 +93,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
         }
       };
       getEnterAddressForOutOfCountryAppeal(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should render template with saved answer', () => {
@@ -112,7 +112,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
       };
 
       getEnterAddressForOutOfCountryAppeal(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -149,7 +149,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
           value: ''
         }
       };
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
 
     });
 
@@ -159,7 +159,7 @@ describe('Personal Details Controller - Out of Country Address Page', function (
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
-      expect(redirectStub.calledWith(paths.appealStarted.hasSponsor)).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.hasSponsorOrNlr)).to.equal(true);
     });
 
     it('should catch error and call next with error', async () => {

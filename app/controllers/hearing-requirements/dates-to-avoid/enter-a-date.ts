@@ -8,6 +8,7 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { dayMonthYearFormat } from '../../../utils/date-utils';
 import { getNextPage, shouldValidateWhenSaveForLater } from '../../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
+import { hasActiveNlr } from '../../../utils/utils';
 import { isDateInRange } from '../../../utils/validations/fields-validations';
 import { getHearingStartDate } from '../common';
 
@@ -29,7 +30,7 @@ function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: 
 
   const savedDates = req.session.appeal.hearingRequirements.datesToAvoid.dates || [];
 
-  const find = savedDates.find((saved) =>
+  const find = savedDates.some((saved) =>
     saved.date.day === req.body.day &&
     saved.date.month === req.body.month &&
     saved.date.year === req.body.year &&
@@ -54,7 +55,8 @@ function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: 
       date: { ...req.body },
       availableHearingDates,
       previousPage: previousPage,
-      saveAndContinueOnly: true
+      saveAndContinueOnly: true,
+      hasNonLegalRep: hasActiveNlr(req.session.appeal)
     });
   }
 
@@ -80,7 +82,8 @@ function getEnterADatePageWithId(req: Request, res: Response, next: NextFunction
         date: dateToEdit,
         availableHearingDates,
         previousPage: previousPage,
-        saveAndContinueOnly: true
+        saveAndContinueOnly: true,
+        hasNonLegalRep: hasActiveNlr(req.session.appeal)
       });
     }
   } catch (e) {
@@ -108,7 +111,8 @@ function getEnterADatePage(req: Request, res: Response, next: NextFunction) {
       date: lastDate,
       availableHearingDates,
       previousPage: previousPage,
-      saveAndContinueOnly: true
+      saveAndContinueOnly: true,
+      hasNonLegalRep: hasActiveNlr(req.session.appeal)
     });
   } catch (e) {
     next(e);
@@ -122,7 +126,7 @@ function postEnterADatePage(updateAppealService: UpdateAppealService) {
       const onSuccess = async () => {
         const datesToAvoid: CmaDateToAvoid[] = [...(_.get(req.session.appeal.hearingRequirements, 'datesToAvoid.dates', []))];
 
-        const find = datesToAvoid.find((saved) =>
+        const find = datesToAvoid.some((saved) =>
           saved.date.day === req.body.day &&
           saved.date.month === req.body.month &&
           saved.date.year === req.body.year

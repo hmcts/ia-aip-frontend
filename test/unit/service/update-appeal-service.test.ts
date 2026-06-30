@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Request } from 'express';
 import session from 'express-session';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
@@ -9,8 +10,9 @@ import { DocumentManagementService } from '../../../app/service/document-managem
 import IdamService from '../../../app/service/idam-service';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import S2SService from '../../../app/service/s2s-service';
+import { SystemAuthenticationService } from '../../../app/service/system-authentication-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
-import { expect, sinon, validateUuid } from '../../utils/testUtils';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('update-appeal-service', () => {
   let sandbox: sinon.SinonSandbox;
@@ -20,6 +22,7 @@ describe('update-appeal-service', () => {
   let idamService: Partial<IdamService>;
   let s2sService: Partial<S2SService>;
   let authenticationService: AuthenticationService;
+  let systemAuthenticationService: SystemAuthenticationService;
   let updateAppealService: UpdateAppealService;
   let expectedCaseData: Partial<CaseData>;
   let documentManagementService: DocumentManagementService;
@@ -43,12 +46,15 @@ describe('update-appeal-service', () => {
     ccdServiceMock = sandbox.mock(ccdService);
 
     sandbox.stub(idamService, 'getUserToken').returns(userToken);
+    sandbox.stub(axios, 'post')
+      .withArgs('S2S_URL/lease')
+      .resolves({ data: serviceToken });
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.HEARING_BUNDLE, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.OUT_OF_COUNTRY, false).resolves(false);
+      .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     documentManagementService = new DocumentManagementService(authenticationService);
-    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
+    systemAuthenticationService = new SystemAuthenticationService();
+
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
     req = {
       idam: {
         userDetails: {
@@ -258,8 +264,69 @@ describe('update-appeal-service', () => {
     });
   });
 
+  describe('deleteDraftAppeal', () => {
+    const caseList = [{
+      'id': caseId,
+      'appealReferenceNumber': '',
+      'state': 'appealStarted',
+      'appellantGivenNames': '',
+      'appellantFamilyName': '',
+      'stateName': 'Appeal started'
+    }];
+    let startUpdateAppealStub: sinon.SinonStub;
+    let submitUpdateAppealStub: sinon.SinonStub;
+    let microSandbox: sinon.SinonSandbox;
+    beforeEach(() => {
+      microSandbox = sinon.createSandbox();
+      startUpdateAppealStub = microSandbox.stub();
+      submitUpdateAppealStub = microSandbox.stub();
+      ccdService = {
+        startUpdateAppeal: startUpdateAppealStub.resolves({
+          event_id: Events.DELETE_DRAFT_APPEAL.id,
+          token: userToken
+        }),
+        submitUpdateAppeal: submitUpdateAppealStub.resolves(),
+      };
+      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
+    });
+
+    afterEach(() => {
+      microSandbox.restore();
+    });
+    it('should submit event and remove case from casesList when present', async () => {
+      req.session.casesList = caseList;
+      req.params = { id: caseId };
+      await updateAppealService.deleteDraftAppeal(req as Request);
+
+      expect(startUpdateAppealStub).to.be.calledOnceWith(userId, caseId, Events.DELETE_DRAFT_APPEAL.id, sinon.match.any);
+      expect(submitUpdateAppealStub).to.be.calledOnceWith(userId, caseId, sinon.match.any, sinon.match.any);
+      expect(req.session.casesList).to.deep.equal([]);
+    });
+
+    it('should submit event and do nothing to casesList when not present', async () => {
+      const caseIdNotInList = 'caseIdNotInList';
+      req.params = { id: caseIdNotInList };
+      req.session.casesList = caseList;
+      await updateAppealService.deleteDraftAppeal(req as Request);
+
+      expect(startUpdateAppealStub).to.be.calledOnceWith(userId, caseIdNotInList, Events.DELETE_DRAFT_APPEAL.id, sinon.match.any);
+      expect(submitUpdateAppealStub).to.be.calledOnceWith(userId, caseIdNotInList, sinon.match.any, sinon.match.any);
+      expect(req.session.casesList).to.deep.equal(caseList);
+    });
+
+    it('should submit event and do nothing to casesList when casesList undefined', async () => {
+      req.params = { id: caseId };
+      req.session.casesList = undefined;
+      await updateAppealService.deleteDraftAppeal(req as Request);
+
+      expect(startUpdateAppealStub).to.be.calledOnceWith(userId, caseId, Events.DELETE_DRAFT_APPEAL.id, sinon.match.any);
+      expect(submitUpdateAppealStub).to.be.calledOnceWith(userId, caseId, sinon.match.any, sinon.match.any);
+      expect(req.session.casesList).to.deep.equal([]);
+    });
+  });
+
   describe('loadAppealByCaseId', () => {
-    it('should fetch case by id and populate session', async () => {
+    it('should fetch case by id and populate session for no NLR field', async () => {
       const mockCcdCase = {
         id: 'case123',
         state: 'appealStarted',
@@ -277,6 +344,53 @@ describe('update-appeal-service', () => {
 
       expect(req.session.ccdCaseId).to.equal('case123');
       expect(req.session.appeal).to.equal(mockAppeal);
+      expect(req.session.isNonLegalRep).to.equal(false);
+      expect(result).to.equal(mockAppeal);
+      expect(mapStub).to.have.been.calledWith(mockCcdCase);
+    });
+
+    it('should fetch case by id and populate session for non NLR', async () => {
+      const mockCcdCase = {
+        id: 'case123',
+        state: 'appealStarted',
+        case_data: { nlrDetails: { idamId: 'someOtherId' } } as CaseData
+      } as CcdCaseDetails;
+      const mockAppeal = { ccdCaseId: 'case123' } as Appeal;
+
+      ccdServiceMock.expects('loadCaseById')
+        .withArgs(userId, 'case123', { userToken, serviceToken })
+        .resolves(mockCcdCase);
+
+      const mapStub = sandbox.stub(updateAppealService, 'mapCcdCaseToAppeal').returns(mockAppeal);
+
+      const result = await updateAppealService.loadAppealByCaseId('case123', req as Request);
+
+      expect(req.session.ccdCaseId).to.equal('case123');
+      expect(req.session.appeal).to.equal(mockAppeal);
+      expect(req.session.isNonLegalRep).to.equal(false);
+      expect(result).to.equal(mockAppeal);
+      expect(mapStub).to.have.been.calledWith(mockCcdCase);
+    });
+
+    it('should fetch case by id and populate session for NLR', async () => {
+      const mockCcdCase = {
+        id: 'case123',
+        state: 'appealStarted',
+        case_data: { nlrDetails: { idamId: userId } } as CaseData
+      } as CcdCaseDetails;
+      const mockAppeal = { ccdCaseId: 'case123' } as Appeal;
+
+      ccdServiceMock.expects('loadCaseById')
+        .withArgs(userId, 'case123', { userToken, serviceToken })
+        .resolves(mockCcdCase);
+
+      const mapStub = sandbox.stub(updateAppealService, 'mapCcdCaseToAppeal').returns(mockAppeal);
+
+      const result = await updateAppealService.loadAppealByCaseId('case123', req as Request);
+
+      expect(req.session.ccdCaseId).to.equal('case123');
+      expect(req.session.appeal).to.equal(mockAppeal);
+      expect(req.session.isNonLegalRep).to.equal(true);
       expect(result).to.equal(mockAppeal);
       expect(mapStub).to.have.been.calledWith(mockCcdCase);
     });
@@ -295,7 +409,10 @@ describe('update-appeal-service', () => {
               case_data: {
                 appealReferenceNumber: 'PA/0001/2022',
                 appellantGivenNames: 'John',
-                appellantFamilyName: 'Smith'
+                appellantFamilyName: 'Smith',
+                nlrDetails: {
+                  idamId: userId
+                }
               }
             },
             {
@@ -319,7 +436,8 @@ describe('update-appeal-service', () => {
         state: 'appealStarted',
         appellantGivenNames: 'John',
         appellantFamilyName: 'Smith',
-        stateName: 'Appeal started'
+        stateName: 'Appeal started',
+        isNonLegalRep: true
       });
       expect(req.session.casesList[1]).to.deep.equal({
         id: 'case2',
@@ -327,7 +445,8 @@ describe('update-appeal-service', () => {
         state: 'appealSubmitted',
         appellantGivenNames: 'Jane',
         appellantFamilyName: 'Doe',
-        stateName: 'Appeal submitted'
+        stateName: 'Appeal submitted',
+        isNonLegalRep: false
       });
     });
 
@@ -357,6 +476,7 @@ describe('update-appeal-service', () => {
           id: 'case1',
           appealReferenceNumber: 'PA/0001/2022',
           state: state.id,
+          isNonLegalRep: false,
           appellantGivenNames: 'John',
           appellantFamilyName: 'Smith',
           stateName: state.name
@@ -1390,18 +1510,19 @@ describe('update-appeal-service', () => {
 
         expect(mappedAppeal.hearingRequirements.otherNeeds.multimediaEvidence).to.equal(true);
         expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment).to.equal(true);
-        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).to.equal(undefined);
+        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).to.be.undefined;
+        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason || 'none').to.equal('none');
       });
     });
 
     describe('ftpaR35AppellantDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaR35AppellantDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
-          'document_filename': 'FTPA_R35_DOCUMENT.PDF',
-          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+            'document_filename': 'FTPA_R35_DOCUMENT.PDF',
+            'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1450,11 +1571,11 @@ describe('update-appeal-service', () => {
     describe('ftpaR35RespondentDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaR35RespondentDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
-          'document_filename': 'FTPA_R35_DOCUMENT.PDF',
-          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+            'document_filename': 'FTPA_R35_DOCUMENT.PDF',
+            'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1470,11 +1591,11 @@ describe('update-appeal-service', () => {
     describe('ftpaApplicationAppellantDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaApplicationAppellantDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
-          'document_filename': 'FTPA_APPELLANT_DECISION_DOCUMENT.PDF',
-          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+            'document_filename': 'FTPA_APPELLANT_DECISION_DOCUMENT.PDF',
+            'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1490,11 +1611,11 @@ describe('update-appeal-service', () => {
     describe('rule32NoticeDocument', () => {
       const caseData: Partial<CaseData> = {
         'rule32NoticeDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d',
-          'document_filename': 'rule32.pdf',
-          'document_binary_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d',
+            'document_filename': 'rule32.pdf',
+            'document_binary_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1603,11 +1724,11 @@ describe('update-appeal-service', () => {
     describe('ftpaApplicationRespondentDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaApplicationRespondentDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
-          'document_filename': 'FTPA_RESPONDENT_DECISION_DOCUMENT.PDF',
-          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+            'document_filename': 'FTPA_RESPONDENT_DECISION_DOCUMENT.PDF',
+            'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1803,6 +1924,117 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.hearingRequirements.witnessListElement2).to.deep.eq(caseData.witnessListElement2);
         expect(mappedAppeal.hearingRequirements.witness2InterpreterSpokenLanguage).to.deep.eq(caseData.witness2InterpreterSpokenLanguage);
         expect(mappedAppeal.hearingRequirements.witness2InterpreterSignLanguage).to.deep.eq(caseData.witness2InterpreterSignLanguage);
+      });
+    });
+
+    describe('map non-legal rep details from caseData to appeal', () => {
+      function getMappedAppeal(caseData: Partial<CaseData>): any {
+        const appeal: Partial<CcdCaseDetails> = {
+          case_data: caseData as CaseData
+        };
+        return updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+      }
+
+      it('do nothing if no details present', () => {
+        const caseData: Partial<CaseData> = {};
+        const mappedAppeal = getMappedAppeal(caseData);
+
+        expect(mappedAppeal.nlrDetails).to.be.null;
+        expect(mappedAppeal.nlrDetails || 'none').to.equal('none');
+      });
+
+      it('map correctly if full details present with full addressUk isSponsorSameAsNlr', () => {
+        const caseData: Partial<CaseData> = {
+          isSponsorSameAsNlr: 'Yes',
+          nlrDetails: {
+            givenNames: 'givenNames',
+            familyName: 'familyName',
+            emailAddress: 'emailAddress',
+            phoneNumber: 'phoneNumber',
+            idamId: 'idamId',
+            addressUk: {
+              AddressLine1: 'AddressLine1',
+              AddressLine2: 'AddressLine2',
+              PostTown: 'PostTown',
+              PostCode: 'PostCode',
+              County: 'County',
+              Country: 'Country'
+            },
+          }
+        };
+        const mappedAppeal = getMappedAppeal(caseData);
+
+        expect(mappedAppeal.nlrDetails.givenNames).to.equal('givenNames');
+        expect(mappedAppeal.nlrDetails.familyName).to.equal('familyName');
+        expect(mappedAppeal.nlrDetails.emailAddress).to.equal('emailAddress');
+        expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
+        expect(mappedAppeal.nlrDetails.idamId).to.equal('idamId');
+        expect(mappedAppeal.nlrDetails.addressUk.line1).to.equal('AddressLine1');
+        expect(mappedAppeal.nlrDetails.addressUk.line2).to.equal('AddressLine2');
+        expect(mappedAppeal.nlrDetails.addressUk.city).to.equal('PostTown');
+        expect(mappedAppeal.nlrDetails.addressUk.county).to.equal('County');
+        expect(mappedAppeal.nlrDetails.addressUk.postcode).to.equal('PostCode');
+        expect(mappedAppeal.nlrDetails.address).to.be.null;
+        expect(mappedAppeal.nlrDetails.address || 'none').to.equal('none');
+      });
+
+      it('map correctly if partial details present with partial addressUk', () => {
+        const caseData: Partial<CaseData> = {
+          isSponsorSameAsNlr: 'Yes',
+          nlrDetails: {
+            emailAddress: 'emailAddress',
+            phoneNumber: 'phoneNumber',
+            addressUk: {
+              Country: 'Country'
+            },
+          }
+        };
+        const mappedAppeal = getMappedAppeal(caseData);
+
+        expect(mappedAppeal.nlrDetails.givenNames).to.be.null;
+        expect(mappedAppeal.nlrDetails.givenNames || 'none').to.equal('none');
+        expect(mappedAppeal.nlrDetails.familyName).to.be.null;
+        expect(mappedAppeal.nlrDetails.familyName || 'none').to.equal('none');
+        expect(mappedAppeal.nlrDetails.emailAddress).to.equal('emailAddress');
+        expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
+        expect(mappedAppeal.nlrDetails.idamId).to.be.null;
+        expect(mappedAppeal.nlrDetails.idamId || 'none').to.equal('none');
+        expect(mappedAppeal.nlrDetails.addressUk.line1).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.line1 || 'none').to.equal('none');
+        expect(mappedAppeal.nlrDetails.addressUk.line2).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.line2 || 'none').to.equal('none');
+        expect(mappedAppeal.nlrDetails.addressUk.city).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.city || 'none').to.equal('none');
+        expect(mappedAppeal.nlrDetails.addressUk.county).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.county || 'none').to.equal('none');
+        expect(mappedAppeal.nlrDetails.addressUk.postcode).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk.postcode || 'none').to.equal('none');
+        expect(mappedAppeal.nlrDetails.address).to.be.null;
+        expect(mappedAppeal.nlrDetails.address || 'none').to.equal('none');
+      });
+
+      it('map correctly if full details present with address text area for no isSponsorSameAsNlr', () => {
+        const caseData: Partial<CaseData> = {
+          isSponsorSameAsNlr: 'No',
+          nlrDetails: {
+            givenNames: 'givenNames',
+            familyName: 'familyName',
+            emailAddress: 'emailAddress',
+            phoneNumber: 'phoneNumber',
+            idamId: 'idamId',
+            address: 'some address'
+          }
+        };
+        const mappedAppeal = getMappedAppeal(caseData);
+
+        expect(mappedAppeal.nlrDetails.givenNames).to.equal('givenNames');
+        expect(mappedAppeal.nlrDetails.familyName).to.equal('familyName');
+        expect(mappedAppeal.nlrDetails.emailAddress).to.equal('emailAddress');
+        expect(mappedAppeal.nlrDetails.phoneNumber).to.equal('phoneNumber');
+        expect(mappedAppeal.nlrDetails.idamId).to.equal('idamId');
+        expect(mappedAppeal.nlrDetails.addressUk).to.be.null;
+        expect(mappedAppeal.nlrDetails.addressUk || 'none').to.equal('none');
+        expect(mappedAppeal.nlrDetails.address).to.equal('some address');
       });
     });
   });
@@ -2054,7 +2286,7 @@ describe('update-appeal-service', () => {
         getUserToken: sandbox.stub().returns(userToken)
       };
       documentManagementService = new DocumentManagementService(authenticationService);
-      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
+      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, systemAuthenticationService, null, documentManagementService);
       expectedCaseData = {
         'asylumSupportReference': null,
         'helpWithFeesReferenceNumber': null,
@@ -2700,7 +2932,368 @@ describe('update-appeal-service', () => {
         ]);
       });
     });
+  });
 
+  describe('submitEventRefactored', async () => {
+    for (const event of Object.values(Events)) {
+      it(`should submit event ${event.id} with ccd`, async () => {
+        const appeal: Appeal = {
+          ccdCaseId: caseId,
+          appealStatus: 'appealStarted',
+        } as Appeal;
+        const userId = '12345';
+        const userToken = 'userToken';
+        sandbox.stub(ccdService, 'updateAppeal').resolves();
+        updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
+        sandbox.stub(updateAppealService, 'mapCcdCaseToAppeal').resolves();
+        await updateAppealService.submitEventRefactored(event, appeal, userId, userToken);
+        expect(ccdService.updateAppeal).to.be.calledWith(
+          event,
+          userId,
+          {
+            id: caseId,
+            state: 'appealStarted',
+            case_data: { journeyType: 'aip' }
+          },
+          {
+            userToken: `Bearer ${userToken}`,
+            serviceToken: sinon.match.string
+          });
+      });
+    }
+  });
+
+  it('submitEventByCaseDetails', async () => {
+    const event = Events.EDIT_APPEAL;
+    const ccdCaseDetails: CcdCaseDetails = {
+      id: caseId,
+      state: 'appealStarted',
+      case_data: {
+        journeyType: 'aip'
+      } as CaseData
+    };
+    const userId = '12345';
+    const userToken = 'userToken';
+    sandbox.stub(ccdService, 'updateAppeal').resolves();
+    sandbox.stub(systemAuthenticationService, 'getCaseworkSystemToken').resolves(userToken);
+    sandbox.stub(systemAuthenticationService, 'getCaseworkSystemUUID')
+      .withArgs(userToken)
+      .resolves(userId);
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
+    await updateAppealService.submitEventByCaseDetails(event, ccdCaseDetails);
+    expect(ccdService.updateAppeal).to.be.calledWith(
+      event,
+      userId,
+      {
+        id: caseId,
+        state: 'appealStarted',
+        case_data: { journeyType: 'aip' }
+      },
+      {
+        userToken: `Bearer ${userToken}`,
+        serviceToken
+      });
+  });
+
+  it('validateMidEvent should validate for pageId', async () => {
+    const event = Events.EDIT_APPEAL;
+    const appeal: Appeal = {
+      ccdCaseId: caseId,
+      appealStatus: 'appealStarted',
+    } as Appeal;
+    const midEventData = {};
+    const userId = '12345';
+    const userToken = 'userToken';
+    const pageId = 'pageId1';
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
+    sandbox.stub(ccdService, 'validateMidEvent')
+      .withArgs(
+        sinon.match.any,
+        pageId,
+        userId,
+        sinon.match.any)
+      .resolves({ status: 200 });
+    const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
+    expect(ccdService.validateMidEvent).to.be.calledOnceWith(
+      {
+        case_reference: caseId,
+        data: {},
+        event_data: {},
+        event: event,
+        ignore_warning: false
+      }, pageId, userId,
+      {
+        userToken: `Bearer ${userToken}`,
+        serviceToken
+      });
+    expect(errors).to.have.lengthOf(0);
+  });
+
+  it('validateMidEvent should return error list of errors', async () => {
+    const event = Events.EDIT_APPEAL;
+    const appeal: Appeal = {
+      ccdCaseId: caseId,
+      appealStatus: 'appealStarted',
+    } as Appeal;
+    const midEventData = {};
+    const userId = '12345';
+    const userToken = 'userToken';
+    const pageId = 'pageId1';
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
+    const error1 = 'error 1';
+    const error2 = 'error 2';
+    sandbox.stub(ccdService, 'validateMidEvent')
+      .withArgs(
+        sinon.match.any,
+        sinon.match.string,
+        userId,
+        sinon.match.any)
+      .resolves({ status: 422, callbackErrors: [error1, error2] });
+    const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
+    expect(ccdService.validateMidEvent).to.be.calledOnceWith(
+      {
+        case_reference: caseId,
+        data: {},
+        event_data: {},
+        event: event,
+        ignore_warning: false
+      }, pageId, userId,
+      {
+        userToken: `Bearer ${userToken}`,
+        serviceToken
+      });
+    expect(errors).to.have.lengthOf(2);
+    expect(errors.includes(error1)).to.equal(true);
+    expect(errors.includes(error2)).to.equal(true);
+  });
+
+  describe('mapToCCDCaseNlrDetails', () => {
+    let appeal;
+    let caseData;
+    beforeEach(() => {
+      appeal = {};
+      caseData = {};
+    });
+    it('if no appeal nlr details then do nothing', () => {
+      updateAppealService.mapToCCDCaseNlrDetails(appeal, caseData);
+      expect(caseData).to.deep.equal({});
+    });
+
+    it('if appeal full nlr details then map full', () => {
+      appeal['nlrDetails'] = {
+        givenNames: 'givenNames',
+        familyName: 'familyName',
+        emailAddress: 'emailAddress',
+        phoneNumber: 'phoneNumber',
+        idamId: 'idamId',
+        addressUk: {
+          line1: 'line1',
+          line2: 'line2',
+          city: 'city',
+          postcode: 'postcode',
+          county: 'county'
+        },
+      };
+      appeal.application = {
+        isSponsorSameAsNlr: 'Yes',
+      };
+      updateAppealService.mapToCCDCaseNlrDetails(appeal, caseData);
+      expect(caseData).to.deep.equal({
+        nlrDetails: {
+          givenNames: 'givenNames',
+          familyName: 'familyName',
+          emailAddress: 'emailAddress',
+          phoneNumber: 'phoneNumber',
+          idamId: 'idamId',
+          sameAsSponsor: 'Yes',
+          addressUk: {
+            AddressLine1: 'line1',
+            AddressLine2: 'line2',
+            PostTown: 'city',
+            County: 'county',
+            PostCode: 'postcode',
+            Country: 'United Kingdom'
+          }
+        }
+      });
+    });
+
+    it('if appeal full nlr details then map full sponsor not same', () => {
+      appeal['nlrDetails'] = {
+        givenNames: 'givenNames',
+        familyName: 'familyName',
+        emailAddress: 'emailAddress',
+        phoneNumber: 'phoneNumber',
+        idamId: 'idamId',
+        address: 'some address'
+      };
+      appeal.application = {
+        isSponsorSameAsNlr: 'No',
+      };
+      updateAppealService.mapToCCDCaseNlrDetails(appeal, caseData);
+      expect(caseData).to.deep.equal({
+        nlrDetails: {
+          givenNames: 'givenNames',
+          familyName: 'familyName',
+          emailAddress: 'emailAddress',
+          phoneNumber: 'phoneNumber',
+          sameAsSponsor: 'No',
+          idamId: 'idamId',
+          address: 'some address'
+        }
+      });
+    });
+
+    it('if appeal partial nlr details then map partial', () => {
+      appeal['nlrDetails'] = {
+        emailAddress: 'emailAddress',
+        phoneNumber: 'phoneNumber',
+        addressUk: {},
+      };
+      appeal.application = {
+        isSponsorSameAsNlr: 'Yes',
+      };
+      updateAppealService.mapToCCDCaseNlrDetails(appeal, caseData);
+      expect(caseData).to.deep.equal({
+        nlrDetails: {
+          emailAddress: 'emailAddress',
+          phoneNumber: 'phoneNumber',
+          sameAsSponsor: 'Yes',
+          addressUk: {
+            AddressLine1: null,
+            AddressLine2: null,
+            PostTown: null,
+            County: null,
+            PostCode: null,
+            Country: 'United Kingdom'
+          }
+        }
+      });
+    });
+  });
+
+  describe('mapCcdNlrRequirementsToAppeal', () => {
+    let hearingRequirements;
+    let caseData;
+    beforeEach(() => {
+      hearingRequirements = {};
+      caseData = {};
+    });
+    it('if nlr reqs then do nothing', () => {
+      hearingRequirements = updateAppealService.mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements);
+      expect(hearingRequirements).to.deep.equal({});
+    });
+
+    it('if hasNonLegalRep is No then do nothing ', () => {
+      caseData.hasNonLegalRep = 'No';
+      hearingRequirements = updateAppealService.mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements);
+      expect(hearingRequirements).to.deep.equal({});
+    });
+
+    it('if hasNonLegalRep is Yes but other fields null then do nothing ', () => {
+      caseData.hasNonLegalRep = 'Yes';
+      hearingRequirements = updateAppealService.mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements);
+      expect(hearingRequirements).to.deep.equal({});
+    });
+
+    it('if hasNonLegalRep is Yes but other fields non null then map ', () => {
+      caseData.hasNonLegalRep = 'Yes';
+      caseData.nlrAttendingOutsideUk = 'nlrAttendingOutsideUk';
+      caseData.nlrAttending = 'nlrAttending';
+      caseData.nlrNeedsHearingLoop = 'nlrNeedsHearingLoop';
+      caseData.nlrNeedsStepFreeAccess = 'nlrNeedsStepFreeAccess';
+      caseData.isNlrInterpreterRequired = 'isNlrInterpreterRequired';
+      caseData.nlrInterpreterLanguageCategory = 'nlrInterpreterLanguageCategory';
+      caseData.nlrInterpreterSpokenLanguage = 'nlrInterpreterSpokenLanguage';
+      caseData.nlrInterpreterSignLanguage = 'nlrInterpreterSignLanguage';
+      expect(hearingRequirements.nlrAttendingOutsideUk).to.be.undefined;
+      expect(hearingRequirements.nlrAttendingOutsideUk || 'none').to.equal('none');
+      expect(hearingRequirements.nlrAttending).to.be.undefined;
+      expect(hearingRequirements.nlrAttending || 'none').to.equal('none');
+      expect(hearingRequirements.nlrNeedsHearingLoop).to.be.undefined;
+      expect(hearingRequirements.nlrNeedsHearingLoop || 'none').to.equal('none');
+      expect(hearingRequirements.nlrNeedsStepFreeAccess).to.be.undefined;
+      expect(hearingRequirements.nlrNeedsStepFreeAccess || 'none').to.equal('none');
+      expect(hearingRequirements.isNlrInterpreterRequired).to.be.undefined;
+      expect(hearingRequirements.isNlrInterpreterRequired || 'none').to.equal('none');
+      expect(hearingRequirements.nlrInterpreterLanguageCategory).to.be.undefined;
+      expect(hearingRequirements.nlrInterpreterLanguageCategory || 'none').to.equal('none');
+      expect(hearingRequirements.nlrInterpreterSpokenLanguage).to.be.undefined;
+      expect(hearingRequirements.nlrInterpreterSpokenLanguage || 'none').to.equal('none');
+      expect(hearingRequirements.nlrInterpreterSignLanguage).to.be.undefined;
+      expect(hearingRequirements.nlrInterpreterSignLanguage || 'none').to.equal('none');
+      hearingRequirements = updateAppealService.mapCcdNlrRequirementsToAppeal(caseData, hearingRequirements);
+      expect(hearingRequirements.nlrAttendingOutsideUk).to.equal('nlrAttendingOutsideUk');
+      expect(hearingRequirements.nlrAttending).to.equal('nlrAttending');
+      expect(hearingRequirements.nlrNeedsHearingLoop).to.equal('nlrNeedsHearingLoop');
+      expect(hearingRequirements.nlrNeedsStepFreeAccess).to.equal('nlrNeedsStepFreeAccess');
+      expect(hearingRequirements.isNlrInterpreterRequired).to.equal('isNlrInterpreterRequired');
+      expect(hearingRequirements.nlrInterpreterLanguageCategory).to.equal('nlrInterpreterLanguageCategory');
+      expect(hearingRequirements.nlrInterpreterSpokenLanguage).to.equal('nlrInterpreterSpokenLanguage');
+      expect(hearingRequirements.nlrInterpreterSignLanguage).to.equal('nlrInterpreterSignLanguage');
+    });
+  });
+
+  describe('mapToCCDNlrRequirements', () => {
+    let appeal;
+    let caseData;
+    beforeEach(() => {
+      appeal = { application: {}, hearingRequirements: {} };
+      caseData = {};
+    });
+    it('if nlr reqs then do nothing', () => {
+      updateAppealService.mapToCCDNlrRequirements(appeal, caseData);
+      expect(caseData).to.deep.equal({});
+    });
+
+    it('if hasNonLegalRep is No then do nothing ', () => {
+      appeal.application.hasNonLegalRep = 'No';
+      updateAppealService.mapToCCDNlrRequirements(appeal, caseData);
+      expect(caseData).to.deep.equal({});
+    });
+
+    it('if hasNonLegalRep is Yes but other fields null then do nothing ', () => {
+      appeal.application.hasNonLegalRep = 'No';
+      updateAppealService.mapToCCDNlrRequirements(appeal, caseData);
+      expect(caseData).to.deep.equal({});
+    });
+
+    it('if hasNonLegalRep is Yes but other fields non null then map ', () => {
+      appeal.application.hasNonLegalRep = 'Yes';
+      appeal.hearingRequirements.nlrAttendingOutsideUk = 'nlrAttendingOutsideUk';
+      appeal.hearingRequirements.nlrAttending = 'nlrAttending';
+      appeal.hearingRequirements.nlrNeedsStepFreeAccess = 'nlrNeedsStepFreeAccess';
+      appeal.hearingRequirements.nlrNeedsHearingLoop = 'nlrNeedsHearingLoop';
+      appeal.hearingRequirements.isNlrInterpreterRequired = 'isNlrInterpreterRequired';
+      appeal.hearingRequirements.nlrInterpreterLanguageCategory = 'nlrInterpreterLanguageCategory';
+      appeal.hearingRequirements.nlrInterpreterSpokenLanguage = 'nlrInterpreterSpokenLanguage';
+      appeal.hearingRequirements.nlrInterpreterSignLanguage = 'nlrInterpreterSignLanguage';
+      expect(caseData.nlrAttendingOutsideUk).to.be.undefined;
+      expect(caseData.nlrAttendingOutsideUk || 'none').to.equal('none');
+      expect(caseData.nlrAttending).to.be.undefined;
+      expect(caseData.nlrAttending || 'none').to.equal('none');
+      expect(caseData.nlrNeedsStepFreeAccess).to.be.undefined;
+      expect(caseData.nlrNeedsStepFreeAccess || 'none').to.equal('none');
+      expect(caseData.nlrNeedsHearingLoop).to.be.undefined;
+      expect(caseData.nlrNeedsHearingLoop || 'none').to.equal('none');
+      expect(caseData.isNlrInterpreterRequired).to.be.undefined;
+      expect(caseData.isNlrInterpreterRequired || 'none').to.equal('none');
+      expect(caseData.nlrInterpreterLanguageCategory).to.be.undefined;
+      expect(caseData.nlrInterpreterLanguageCategory || 'none').to.equal('none');
+      expect(caseData.nlrInterpreterSpokenLanguage).to.be.undefined;
+      expect(caseData.nlrInterpreterSpokenLanguage || 'none').to.equal('none');
+      expect(caseData.nlrInterpreterSignLanguage).to.be.undefined;
+      expect(caseData.nlrInterpreterSignLanguage || 'none').to.equal('none');
+      updateAppealService.mapToCCDNlrRequirements(appeal, caseData);
+      expect(caseData.nlrAttendingOutsideUk).to.equal('nlrAttendingOutsideUk');
+      expect(caseData.nlrAttending).to.equal('nlrAttending');
+      expect(caseData.nlrNeedsStepFreeAccess).to.equal('nlrNeedsStepFreeAccess');
+      expect(caseData.nlrNeedsHearingLoop).to.equal('nlrNeedsHearingLoop');
+      expect(caseData.isNlrInterpreterRequired).to.equal('isNlrInterpreterRequired');
+      expect(caseData.nlrInterpreterLanguageCategory).to.equal('nlrInterpreterLanguageCategory');
+      expect(caseData.nlrInterpreterSpokenLanguage).to.equal('nlrInterpreterSpokenLanguage');
+      expect(caseData.nlrInterpreterSignLanguage).to.equal('nlrInterpreterSignLanguage');
+    });
   });
 
   describe('validateMidEvent', () => {
@@ -2714,28 +3307,28 @@ describe('update-appeal-service', () => {
       const userId = '12345';
       const userToken = 'userToken';
       const pageId = 'pageId1';
-      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
+      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
       sandbox.stub(ccdService, 'validateMidEvent')
-          .withArgs(
-              sinon.match.any,
-              pageId,
-              userId,
-              sinon.match.any)
-          .resolves({ status: 200, data: {} });
+        .withArgs(
+          sinon.match.any,
+          pageId,
+          userId,
+          sinon.match.any)
+        .resolves({ status: 200, data: {} });
       const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
       expect(ccdService.validateMidEvent).to.be.calledOnceWith(
-          {
-            case_reference: caseId,
-            data: {},
-            event_data: {},
-            event: event,
-            ignore_warning: false
-          }, pageId, userId,
-          {
-            userToken: `Bearer ${userToken}`,
-            serviceToken
-          });
-      expect(errors.length).to.equal(0);
+        {
+          case_reference: caseId,
+          data: {},
+          event_data: {},
+          event: event,
+          ignore_warning: false
+        }, pageId, userId,
+        {
+          userToken: `Bearer ${userToken}`,
+          serviceToken
+        });
+      expect(errors).to.have.lengthOf(0);
     });
 
     it('validateMidEvent should return list of errors', async () => {
@@ -2748,30 +3341,30 @@ describe('update-appeal-service', () => {
       const userId = '12345';
       const userToken = 'userToken';
       const pageId = 'pageId1';
-      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
+      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
       const error1 = 'error 1';
       const error2 = 'error 2';
       sandbox.stub(ccdService, 'validateMidEvent')
-          .withArgs(
-              sinon.match.any,
-              sinon.match.string,
-              userId,
-              sinon.match.any)
-          .resolves({ status: 422, data: { callbackErrors: [error1, error2] }});
+        .withArgs(
+          sinon.match.any,
+          sinon.match.string,
+          userId,
+          sinon.match.any)
+        .resolves({ status: 422, data: { callbackErrors: [error1, error2] } });
       const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
       expect(ccdService.validateMidEvent).to.be.calledOnceWith(
-          {
-            case_reference: caseId,
-            data: {},
-            event_data: {},
-            event: event,
-            ignore_warning: false
-          }, pageId, userId,
-          {
-            userToken: `Bearer ${userToken}`,
-            serviceToken
-          });
-      expect(errors.length).to.equal(2);
+        {
+          case_reference: caseId,
+          data: {},
+          event_data: {},
+          event: event,
+          ignore_warning: false
+        }, pageId, userId,
+        {
+          userToken: `Bearer ${userToken}`,
+          serviceToken
+        });
+      expect(errors).to.have.lengthOf(2);
       expect(errors.includes(error1)).to.equal(true);
       expect(errors.includes(error2)).to.equal(true);
     });
@@ -2786,28 +3379,28 @@ describe('update-appeal-service', () => {
       const userId = '12345';
       const userToken = 'userToken';
       const pageId = 'pageId1';
-      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
+      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
       sandbox.stub(ccdService, 'validateMidEvent')
-          .withArgs(
-              sinon.match.any,
-              sinon.match.string,
-              userId,
-              sinon.match.any)
-          .resolves({ status: 401, data: { callbackErrors: ['error'] }});
+        .withArgs(
+          sinon.match.any,
+          sinon.match.string,
+          userId,
+          sinon.match.any)
+        .resolves({ status: 401, data: { callbackErrors: ['error'] } });
       const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
       expect(ccdService.validateMidEvent).to.be.calledOnceWith(
-          {
-            case_reference: caseId,
-            data: {},
-            event_data: {},
-            event: event,
-            ignore_warning: false
-          }, pageId, userId,
-          {
-            userToken: `Bearer ${userToken}`,
-            serviceToken
-          });
-      expect(errors.length).to.equal(1);
+        {
+          case_reference: caseId,
+          data: {},
+          event_data: {},
+          event: event,
+          ignore_warning: false
+        }, pageId, userId,
+        {
+          userToken: `Bearer ${userToken}`,
+          serviceToken
+        });
+      expect(errors).to.have.lengthOf(1);
       expect(errors.includes('There is a problem')).to.equal(true);
     });
   });

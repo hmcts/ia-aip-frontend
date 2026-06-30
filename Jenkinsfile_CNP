@@ -8,7 +8,7 @@ properties([
     pipelineTriggers([[$class: 'GitHubPushTrigger']])
 ])
 
-@Library("Infrastructure")
+@Library("Infrastructure@2.0.0")
 
 def product = "ia"
 def component = "aip-frontend"

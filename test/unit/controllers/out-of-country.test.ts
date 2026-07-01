@@ -5,7 +5,6 @@ import {
   getOocHrInside,
   getOocProtectionDepartureDate,
   postAppellantInUk,
-  postGwfReference,
   postOocHrInside,
   postOocProtectionDepartureDate,
   setupOutOfCountryController
@@ -17,6 +16,8 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
+
+const proxyquire = require('proxyquire').noCallThru();
 
 describe('Out of Country Controller', function () {
   let sandbox: sinon.SinonSandbox;
@@ -480,6 +481,21 @@ describe('Out of Country Controller', function () {
   });
 
   describe('postGwfReference', () => {
+    let postGwfReference;
+    beforeEach(() => {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(false)
+      };
+      const outOfCountryController = proxyquire('../../../app/controllers/appeal-application/out-of-country', { config: configStub });
+      postGwfReference = outOfCountryController.postGwfReference;
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
     it('should validate and redirect to the name page', async () => {
       const appeal = {
         ...req.session.appeal,
@@ -519,6 +535,125 @@ describe('Out of Country Controller', function () {
       });
     });
 
+    it('should fail validation with empty value and render out-of-country/gwf-reference.njk with a validation error', async () => {
+      req.body['gwfReferenceNumber'] = '';
+
+      const fieldError: ValidationError = {
+        href: '#gwfReferenceNumber',
+        key: 'gwfReferenceNumber',
+        text: 'There is a problem'
+      };
+      const errorList = {
+        ...fieldError,
+        text: 'Enter the GWF reference number'
+      };
+
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/gwf-reference.njk', {
+        errors: { gwfReferenceNumber: fieldError },
+        errorList: [errorList],
+        gwfReferenceNumber: req.body['gwfReferenceNumber'],
+        previousPage: paths.appealStarted.taskList
+      });
+    });
+
+    it('should catch exception and call next with the error', async () => {
+      const error = new Error('an error');
+      req.body = { 'gwfReferenceNumber': undefined };
+      res.render = renderStub.throws(error);
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next.calledOnceWith(error)).to.equal(true);
+    });
+
+    it('should not call validateMidEvent', async () => {
+      req.body['gwfReferenceNumber'] = 'GWF123456789';
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(validateMidEventStub.called).to.equal(false);
+    });
+  });
+
+  describe('postGwfReference with updated validation', () => {
+    let postGwfReference;
+    beforeEach(() => {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(true)
+      };
+      const outOfCountryController = proxyquire('../../../app/controllers/appeal-application/out-of-country', { config: configStub });
+      postGwfReference = outOfCountryController.postGwfReference;
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should validate and redirect to the name page', async () => {
+      const appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          gwfReferenceNumber: 'GWF123456789'
+        }
+      };
+      req.body['gwfReferenceNumber'] = 'GWF123456789';
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.name)).to.equal(true);
+    });
+
+    it('should fail validation and render out-of-country/gwf-reference.njk with a validation error', async () => {
+      req.body['gwfReferenceNumber'] = 'GWF1234567';
+
+      const fieldError: ValidationError = {
+        href: '#gwfReferenceNumber',
+        key: 'gwfReferenceNumber',
+        text: 'There is a problem'
+      };
+      const errorList = {
+        ...fieldError,
+        text: 'You should enter the UAN or GWF reference exactly as it appears on the decision letter. This can often be found in the \'How to appeal\' section. The UAN is 16 digits with dashes. The GWF starts with the letters \"GWF\" and then has 9 digits. If you need help, please use the Home Office help form in the bullet points on this page.'
+      };
+
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/gwf-reference.njk', {
+        errors: { gwfReferenceNumber: fieldError },
+        errorList: [errorList],
+        gwfReferenceNumber: req.body['gwfReferenceNumber'],
+        previousPage: paths.appealStarted.taskList
+      });
+    });
+
+    it('should fail validation with empty value and render out-of-country/gwf-reference.njk with a validation error', async () => {
+      req.body['gwfReferenceNumber'] = '';
+
+      const fieldError: ValidationError = {
+        href: '#gwfReferenceNumber',
+        key: 'gwfReferenceNumber',
+        text: 'There is a problem'
+      };
+      const errorList = {
+        ...fieldError,
+        text: 'Enter the GWF reference number'
+      };
+
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.called).to.equal(false);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/gwf-reference.njk', {
+        errors: { gwfReferenceNumber: fieldError },
+        errorList: [errorList],
+        gwfReferenceNumber: req.body['gwfReferenceNumber'],
+        previousPage: paths.appealStarted.taskList
+      });
+    });
+
     it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'gwfReferenceNumber': undefined };
@@ -530,7 +665,7 @@ describe('Out of Country Controller', function () {
     it('should fail validateMidEvent and render out-of-country/gwf-reference.njk with error', async () => {
       const errorMessage = 'Please contact HMCTS for support.';
       updateAppealService.validateMidEvent = validateMidEventStub.returns([errorMessage]);
-      req.body['gwfReferenceNumber'] = 'GWF12345678';
+      req.body['gwfReferenceNumber'] = 'GWF123456789';
       await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const fieldError = {
@@ -550,10 +685,9 @@ describe('Out of Country Controller', function () {
               gwfReferenceNumber: fieldError
             },
             errorList: [errorList],
-            gwfReferenceNumber: 'GWF12345678',
+            gwfReferenceNumber: 'GWF123456789',
             previousPage: paths.appealStarted.taskList
           });
       });
   });
-
 });

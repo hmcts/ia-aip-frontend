@@ -829,38 +829,38 @@ describe('Home Office Details Controller', function () {
       );
     });
 
-    // it('should fail validation and render a validation error with day in future', async () => {
-    //   const currentDate = new Date();
-    //
-    //   const tomorrowDate = new Date();
-    //   tomorrowDate.setDate(currentDate.getDate() + 1);
-    //
-    //   req.body['day'] = tomorrowDate.getDate();
-    //   req.body['month'] = tomorrowDate.getMonth() + 1;
-    //   req.body['year'] = tomorrowDate.getFullYear();
-    //
-    //   const expectedError: ValidationError = {
-    //     key: 'day',
-    //     text: 'The date letter was sent must be in the past',
-    //     href: '#day'
-    //   };
-    //
-    //   const error = {
-    //     day: expectedError
-    //   };
-    //   const errorList = [expectedError];
-    //   await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-    //
-    //   expect(submitStub.called).to.equal(false);
-    //   expect(renderStub).to.be.calledWith('appeal-application/home-office/letter-sent.njk',
-    //     {
-    //       error,
-    //       errorList,
-    //       dateLetterSent: { ...req.body },
-    //       previousPage: paths.appealStarted.nationality
-    //     }
-    //   );
-    // });
+    it('should fail validation and render a validation error with day in future', async () => {
+      const currentDate = new Date();
+
+      const tomorrowDate = new Date();
+      tomorrowDate.setDate(currentDate.getDate() + 1);
+
+      req.body['day'] = tomorrowDate.getDate();
+      req.body['month'] = tomorrowDate.getMonth() + 1;
+      req.body['year'] = tomorrowDate.getFullYear();
+
+      const expectedError: ValidationError = {
+        key: 'day',
+        text: 'The date letter was sent must be in the past',
+        href: '#day'
+      };
+
+      const error = {
+        day: expectedError
+      };
+      const errorList = [expectedError];
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitStub.called).to.equal(false);
+      expect(renderStub).to.be.calledWith('appeal-application/home-office/letter-sent.njk',
+        {
+          error,
+          errorList,
+          dateLetterSent: { ...req.body },
+          previousPage: paths.appealStarted.nationality
+        }
+      );
+    });
 
     it('should fail validation and render a validation error with invalid date', async () => {
       const currentDate = new Date();

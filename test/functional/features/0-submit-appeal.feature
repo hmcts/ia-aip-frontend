@@ -55,7 +55,7 @@ Feature: Submit appeal
 
     Then I see "Upload your Home Office decision letter" in title
     And I choose a file that is "VALID"
-    And I click "Upload file" button
+    And I click "Upload" button
     And I check page accessibility
     And I click "Save and continue" button
     And I check page accessibility

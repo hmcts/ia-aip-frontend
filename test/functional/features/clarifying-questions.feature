@@ -29,7 +29,7 @@ Feature: Clarifying questions
     And I check page accessibility
     Then I see "Provide supporting evidence" in title
 
-    When I choose a file that is "VALID" and click the "Upload file" button
+    When I choose a file that is "VALID" and click the "Upload" button
     And I check page accessibility
     And I click "Save and continue" button
     And I check page accessibility
@@ -74,7 +74,7 @@ Feature: Clarifying questions
     And I check page accessibility
     Then I see "Provide supporting evidence" in title
 
-    When I choose a file that is "VALID" and click the "Upload file" button
+    When I choose a file that is "VALID" and click the "Upload" button
     And I check page accessibility
     And I click "Save and continue" button
     And I check page accessibility

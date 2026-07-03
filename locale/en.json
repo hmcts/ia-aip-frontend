@@ -211,11 +211,11 @@
       "title": "How do you want your appeal to be decided?",
       "hint" : {
         "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
-        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80.</p><p>Select an option</p>"
+        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £144.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £82.</p><p>Select an option</p>"
       },
       "hintWithDrlmSetAsideFlag": {
-        "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>",
-        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>"
+        "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £144.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £82.</p><p>Select an option</p>",
+        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £144.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £82.</p><p>Select an option</p>"
       },
       "options": {
         "withHearing": {
@@ -3761,7 +3761,7 @@
         "creatingAccountTitle": "Creating an account",
         "creatingAccountText": "Appellants will then be asked to create an account. It is important that the appellant you’re supporting uses an email addresses that belongs to them and that they are unlikely to forget or delete.",
         "feesTitle": "Fees",
-        "feesText": "There is a fee of £140 for all appeals that are decided at an in-person hearing. This fee will also apply for the new appeals service. The process to pay this fee isn't ready yet, so appellants who have started their appeal will be asked to pay this fee at a later date.",
+        "feesText": "There is a fee of £144 for all appeals that are decided at an in-person hearing. This fee will also apply for the new appeals service. The process to pay this fee isn't ready yet, so appellants who have started their appeal will be asked to pay this fee at a later date.",
         "feesTextTwo": "When we ask appellants to pay the fee, we will also ask for information about exemptions, e.g. if an appellant is in receipt of Asylum Support. Appellants will not pay more to use the online service.",
         "feesTextThree": "Find information about exemptions in the <a href='https://www.gov.uk/government/publications/immigration-and-appeals-tribunal-fees-t495'>Immigration and Asylum Tribunal Fees Guidance document.</a>",
         "feesTextFour": "If an appellant does not have an exemption and wants to apply for help paying a fee, they must do this at the same time as submitting their appeal.  <a href='https://www.gov.uk/get-help-with-court-fees'>Visit the Help with Fees page to apply.</a>",
@@ -4460,7 +4460,7 @@
       "title": "There is a fee for this appeal",
       "description": "It costs:",
       "optionsList": [
-        "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
+        "<ul class='govuk-list govuk-list--bullet'><li>£82 without a hearing</li><li>£144 with a hearing</li></ul>",
         "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
         "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
         "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
@@ -4472,7 +4472,7 @@
       "title": "There is a fee for this appeal",
       "description": "It costs:",
       "optionsList": [
-        "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
+        "<ul class='govuk-list govuk-list--bullet'><li>£82 without a hearing</li><li>£144 with a hearing</li></ul>",
         "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
         "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
         "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",

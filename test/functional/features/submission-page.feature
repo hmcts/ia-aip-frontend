@@ -20,11 +20,11 @@ Feature: submission
   Scenario: Submit an EU/EUSS/HU appeal
     Given I have logged in as an appellant with email "euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal@example.com"
     And I am on the check your answers page
-    When I click Submit and continue to pay £80 by debit or credit card
+    When I click Submit and continue to pay £82 by debit or credit card
     And I check page accessibility
     Then I should see error summary
     When I check the statement of truth
-    And I click Submit and continue to pay £80 by debit or credit card
+    And I click Submit and continue to pay £82 by debit or credit card
     And I check page accessibility
     Then I am on the appeal submission confirmation page
     And I see "Your appeal has been submitted" in title

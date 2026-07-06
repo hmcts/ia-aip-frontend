@@ -55,9 +55,9 @@
         "value": {
           "description": "Home office decision letter document",
           "document": {
-            "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3/binary",
+            "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/f24a016d-7d9c-48a7-a909-046bac631237/binary",
             "document_filename": "testfile1.pdf",
-            "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/9d65644c-5146-49b5-9e3c-2ce91afcefb3"
+            "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/f24a016d-7d9c-48a7-a909-046bac631237"
           }
         }
       }

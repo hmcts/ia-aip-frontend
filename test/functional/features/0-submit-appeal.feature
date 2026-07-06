@@ -88,7 +88,7 @@ Feature: Submit appeal
     And I check page accessibility
 
     Then I see "Do you have a sponsor" in title
-    When I choose No and click continue
+    When I choose No, wait 3 seconds and click Save and continue
     And I check page accessibility
 
     Then I see "Tell us about your appeal" in title

@@ -3,9 +3,7 @@ Feature: Task list
 
 Scenario: Task List links work
   Given I am on home page
-  When I click Sign in to continue with your appeal
-  Then I should see the sign in page
-  When I log in as an appellant ready to submit appeal
+  When I have logged in for the e2e as an appellant in state "appealStarted"
   Then I should see the appeal overview page
   When I click continue
   Then I should see the task-list page

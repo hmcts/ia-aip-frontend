@@ -75,7 +75,8 @@
   "functionalTests": "FUNCTIONAL_TESTS",
   "features": {
     "askForMoreTime": "ASK_FOR_MORE_TIME_ENABLED",
-    "timelineEnabled": "TIMELINE_ENABLED"
+    "timelineEnabled": "TIMELINE_ENABLED",
+    "homeOfficeValidationEnabled": "HOME_OFFICE_VALIDATION_ENABLED"
   },
   "testAccounts": {
     "testCaseOfficerUserName": "TEST_CASEOFFICER_USERNAME",

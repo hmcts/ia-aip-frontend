@@ -25,16 +25,18 @@
       {% set errorMessage =  errors.year.text if errors.year else errorMessage %}
       {% set errorMessage =  errors.date.text if errors.date else errorMessage %}
 
-      <ul class="govuk-list govuk-list--bullet">
-        {% for hint in i18n.pages.DOB.hints %}
-          <li>{{ hint | safe }}</li>
-        {% endfor %}
-      </ul>
+      {% if homeOfficeValidationEnabled %}
+        <ul class="govuk-list govuk-list--bullet">
+          {% for hint in i18n.pages.DOB.updatedHints %}
+            <li>{{ hint | safe }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
 
       {{ govukDateInput({
         hint: {
           text: i18n.pages.DOB.dateHint
-        },
+        } if not homeOfficeValidationEnabled,
         id: 'date',
         name: 'date',
         errorMessage: {

@@ -47,7 +47,8 @@ function renderHomeOfficeDetailsError(req: Request, res: Response, errorList: Va
         errors: fieldErrors,
         errorList: Object.values(errorList),
         homeOfficeRefNumber: req.body.homeOfficeRefNumber,
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled
       }
   );
 }
@@ -121,7 +122,8 @@ function renderNamePageError(req: Request, res: Response, errors: ValidationErro
     },
     error: errors,
     errorList: Object.values(errorList),
-    previousPage
+    previousPage,
+    homeOfficeValidationEnabled
   });
 }
 
@@ -201,7 +203,8 @@ function renderDateOfBirthError(req: Request, res: Response, errors: boolean | V
     errors: errors,
     errorList: Object.values(errorList),
     dob: { ...req.body },
-    previousPage: paths.appealStarted.name
+    previousPage: paths.appealStarted.name,
+    homeOfficeValidationEnabled
   });
 }
 

@@ -108,7 +108,8 @@ describe('Home Office Details Controller', function () {
             familyName: 'familyName',
             givenNames: 'givenName'
           },
-          previousPage: paths.appealStarted.details
+          previousPage: paths.appealStarted.details,
+          homeOfficeValidationEnabled: false
         }
       );
     });
@@ -124,7 +125,8 @@ describe('Home Office Details Controller', function () {
             familyName: 'familyName',
             givenNames: 'givenName'
           },
-          previousPage: paths.appealStarted.gwfReference
+          previousPage: paths.appealStarted.gwfReference,
+          homeOfficeValidationEnabled: false
         }
       );
     });
@@ -237,7 +239,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [ givenNameErrors, familyNameError ],
           personalDetails: { familyName: '', givenNames: '' },
-          previousPage: paths.appealStarted.details
+          previousPage: paths.appealStarted.details,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -268,7 +271,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [ givenNameErrors, familyNameError ],
           personalDetails: { familyName: '', givenNames: '' },
-          previousPage: paths.appealStarted.gwfReference
+          previousPage: paths.appealStarted.gwfReference,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -305,7 +309,8 @@ describe('Home Office Details Controller', function () {
             },
             errorList: [errorList],
             personalDetails: { familyName: req.body.familyName, givenNames: req.body.givenNames },
-            previousPage: paths.appealStarted.details
+            previousPage: paths.appealStarted.details,
+            homeOfficeValidationEnabled: false
           });
     });
   });

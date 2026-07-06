@@ -207,7 +207,8 @@ describe('Personal Details Controller', function () {
             day: errorDay
           },
           errorList: [ errorDay ],
-          previousPage: paths.appealStarted.name
+          previousPage: paths.appealStarted.name,
+          homeOfficeValidationEnabled: false
         }
       );
     });
@@ -227,7 +228,8 @@ describe('Personal Details Controller', function () {
             month: errorMonth
           },
           errorList: [ errorMonth ],
-          previousPage: paths.appealStarted.name
+          previousPage: paths.appealStarted.name,
+          homeOfficeValidationEnabled: false
         }
       );
     });
@@ -248,7 +250,8 @@ describe('Personal Details Controller', function () {
             year: errorYear
           },
           errorList: [ errorYear ],
-          previousPage: paths.appealStarted.name
+          previousPage: paths.appealStarted.name,
+          homeOfficeValidationEnabled: false
         }
       );
     });
@@ -269,7 +272,8 @@ describe('Personal Details Controller', function () {
             year: errorDate
           },
           errorList: [ errorDate ],
-          previousPage: paths.appealStarted.name
+          previousPage: paths.appealStarted.name,
+          homeOfficeValidationEnabled: false
         }
       );
     });
@@ -302,7 +306,8 @@ describe('Personal Details Controller', function () {
               day: dayError
             },
             errorList: [errorList],
-            previousPage: paths.appealStarted.name
+            previousPage: paths.appealStarted.name,
+            homeOfficeValidationEnabled: false
           }
       );
     });

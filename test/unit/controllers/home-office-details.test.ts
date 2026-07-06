@@ -211,7 +211,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [errorList],
           homeOfficeRefNumber: 'A1234567',
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.taskList,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -238,7 +239,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [errorList],
           homeOfficeRefNumber: 'notValid',
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.taskList,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -264,7 +266,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [errorList],
           homeOfficeRefNumber: '',
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.taskList,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -308,7 +311,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [errorList],
           homeOfficeRefNumber: '1212-0099-0089-1080',
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.taskList,
+          homeOfficeValidationEnabled: false
       });
     });
   });

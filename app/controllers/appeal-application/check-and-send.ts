@@ -389,7 +389,7 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
         const appeal: Appeal = {
           ...req.session.appeal,
           paymentStatus: 'Paid',
-          paymentDate: paymentDetails.status_histories.filter(event => event.status === 'Success')[0].date_created,
+          paymentDate: moment(paymentDetails.status_histories.filter(event => event.status === 'Success')[0].date_created).format('D MMM YYYY'),
           isFeePaymentEnabled: 'Yes',
           application: {
             ...req.session.appeal.application,

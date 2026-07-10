@@ -58,7 +58,7 @@ async function getDecisionType(req: Request, res: Response, next: NextFunction) 
     const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!paymentsFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-    const feePriceEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+    const feePriceEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FEE_PAY_PRICE, false);
 
     return res.render('templates/radio-question-page.njk', {
       previousPage: paths.appealStarted.taskList,
@@ -90,7 +90,7 @@ function postDecisionType(updateAppealService: UpdateAppealService) {
       }
       const validation = decisionTypeValidation(req.body);
       const { appealType } = req.session.appeal.application;
-      const feePriceEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+      const feePriceEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FEE_PAY_PRICE, false);
 
       if (validation) {
         return res.render('templates/radio-question-page.njk', {

@@ -106,7 +106,7 @@ describe('Type of appeal Controller', () => {
         inline: false
       };
       req.session.appeal.application.appealType = 'protection';
-      const question = getDecisionTypeQuestion(req.session.appeal, false);
+      const question = getDecisionTypeQuestion(req.session.appeal, false, true);
 
       expect(question).to.deep.equal(expectedQuestion);
     });
@@ -143,7 +143,7 @@ describe('Type of appeal Controller', () => {
         inline: false
       };
       req.session.appeal.application.appealType = 'protection';
-      const question = getDecisionTypeQuestion(req.session.appeal, true);
+      const question = getDecisionTypeQuestion(req.session.appeal, true, true);
 
       expect(question.hint).to.equal(expectedQuestion.hint);
     });
@@ -155,7 +155,7 @@ describe('Type of appeal Controller', () => {
         inline: false
       };
       req.session.appeal.application.appealType = 'deprivation';
-      const question = getDecisionTypeQuestion(req.session.appeal, true);
+      const question = getDecisionTypeQuestion(req.session.appeal, true, true);
 
       expect(question.hint).to.equal(expectedQuestion.hint);
     });

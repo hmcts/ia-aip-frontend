@@ -12,23 +12,24 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage, isFeePayPriceEnabled } from '../../utils/utils';
 import { decisionTypeValidation } from '../../utils/validations/fields-validations';
 
+function getHintText(hintSource: any, hasFee: boolean, feePriceEnabled: boolean): string {
+  if (hasFee) {
+    return feePriceEnabled ? hintSource.withFee : hintSource.withFeeOld;
+  }
+  return feePriceEnabled ? hintSource.withoutFee : (hintSource.withoutFeeOld || hintSource.withoutFee);
+}
+
 function getDecisionTypeQuestion(appeal: Appeal, dlrmSetAsideFlag: boolean = false, feePriceEnabled: boolean = false) {
   let hint: string;
   let decision: string;
 
+  const hintSource = dlrmSetAsideFlag ? i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag : i18n.pages.decisionTypePage.hint;
+
   if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
-    if (feePriceEnabled) {
-      hint = dlrmSetAsideFlag ? i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag.withoutFee : i18n.pages.decisionTypePage.hint.withoutFee;
-    } else {
-      hint = dlrmSetAsideFlag ? i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag.withoutFeeOld : i18n.pages.decisionTypePage.hint.withoutFee;
-    }
+    hint = getHintText(hintSource, false, feePriceEnabled);
     decision = appeal.application.rpDcAppealHearingOption || null;
   } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(appeal.application.appealType)) {
-    if (feePriceEnabled) {
-        hint = dlrmSetAsideFlag ? i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag.withFee : i18n.pages.decisionTypePage.hint.withFee;
-    } else {
-        hint = dlrmSetAsideFlag ? i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag.withFeeOld : i18n.pages.decisionTypePage.hint.withFeeOld;
-    }
+    hint = getHintText(hintSource, true, feePriceEnabled);
     decision = appeal.application.decisionHearingFeeOption || null;
   }
 

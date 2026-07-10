@@ -1222,7 +1222,7 @@ describe('DetailViewController', () => {
       expect(next.calledOnceWith(error)).to.equal(true);
     });
 
-    describe('Remission decision', async () => {
+    describe('Remission decision', () => {
       const previousRemissionDetails = [{
         id: '1',
         feeAmount: '1000',

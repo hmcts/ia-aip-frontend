@@ -56,6 +56,7 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
       case 'dlrm-setaside-feature-flag':
       case 'dlrm-refund-feature-flag':
       case 'dlrm-internal-feature-flag':
+      case 'fee-pay-price':
         return true;
       default:
         return false;

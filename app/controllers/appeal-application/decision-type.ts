@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import _ from 'lodash';
+import has from 'lodash/has';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
@@ -9,7 +9,7 @@ import PcqService from '../../service/pcq-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { getRedirectPage, isFeePayPriceEnabled } from '../../utils/utils';
+import { getRedirectPage } from '../../utils/utils';
 import { decisionTypeValidation } from '../../utils/validations/fields-validations';
 
 function getHintText(hintSource: any, hasFee: boolean, feePriceEnabled: boolean): string {
@@ -58,7 +58,7 @@ async function getDecisionType(req: Request, res: Response, next: NextFunction) 
     const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
     const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!paymentsFlag) return res.redirect(paths.common.overview);
-    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = has(req.query, 'edit');
     const feePriceEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FEE_PAY_PRICE, false);
 
     return res.render('templates/radio-question-page.njk', {

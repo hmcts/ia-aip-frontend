@@ -176,6 +176,7 @@ describe('isJourneyAllowedMiddleware', () => {
       paths.common.createNewAppeal,
       paths.common.deleteDraftAppeal,
       paths.common.refreshCasesList,
+      paths.common.loadCase,
       paths.common.accessibility
     ];
     it('should render forbidden to forbidden common pages for Non legal rep', () => {

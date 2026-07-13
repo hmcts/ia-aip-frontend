@@ -699,7 +699,7 @@ describe('DetailViewController', () => {
       );
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee amount' }, value: { html: '£144' } },
         { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
         {
           key: { text: i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber },
@@ -711,7 +711,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.remissionType = 'hoWaiverRemission';
       req.session.appeal.application.remissionClaim = 'legalAid';
       req.session.appeal.application.legalAidAccountNumber = 'legalAidAccountNumber';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.application.hasNonLegalRep = 'Yes';
       req.session.appeal.nlrDetails = {
         emailAddress: 'someEmail',
@@ -1511,7 +1511,7 @@ describe('DetailViewController', () => {
               value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" }
             },
             { key: { text: 'Fee support status' }, value: { html: 'Fee support request granted' } },
-            { key: { text: 'Fee to refund' }, value: { html: '£140' } }
+            { key: { text: 'Fee to refund' }, value: { html: '£144' } }
           ],
           [
             { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },

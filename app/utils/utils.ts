@@ -1,12 +1,13 @@
-import * as path from 'path';
 import { Request, Response } from 'express';
 import moment from 'moment';
 import nl2br from 'nl2br';
+import * as path from 'path';
 import { applicationTypes } from '../data/application-types';
-import { APPLICANT_TYPE } from '../data/constants';
+import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
+import LaunchDarklyService from '../service/launchDarkly-service';
 import { nlrStatementValidation } from './validations/fields-validations';
 
 /**
@@ -133,8 +134,7 @@ export function isReadonlyApplicationEnabled(req: Request) {
 
 export async function isFeePayPriceEnabled(req: Request) {
   const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-  const isFeePayPriceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FEE_PAY_PRICE, defaultFlag);
-  return isFeePayPriceFeatureEnabled;
+  return await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FEE_PAY_PRICE, defaultFlag);
 }
 
 export function isUpdateTribunalDecide(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {

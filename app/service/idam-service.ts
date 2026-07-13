@@ -9,7 +9,7 @@ export default class IdamService {
     const authToken = req.cookies?.['__auth-token'];
     if (!authToken) {
       logger.exception(`Auth token cookie is missing or undefined. Cookies present: ${Object.keys(req.cookies || {}).join(', ')}`, logLabel);
-    } else {
+    } else if (typeof authToken === 'string') {
       // Log token info for debugging (first 10 chars only for security)
       const tokenPreview = authToken.substring(0, 10);
       logger.trace(`Auth token retrieved: length=${authToken.length}, preview=${tokenPreview}...`, logLabel);

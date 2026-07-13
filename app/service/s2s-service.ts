@@ -100,8 +100,8 @@ export default class S2SService implements IS2SService {
       logger.trace('Token expired. Attempting to acquire a new one.', logLabel);
       await this.requestServiceToken();
     }
-    const tokenPreview = this.serviceToken ? `${this.serviceToken.substring(0, 10)}...` : 'MISSING';
-    logger.trace(`S2S getServiceToken - wasExpired: ${wasExpired}, tokenPresent: ${!!this.serviceToken}, tokenLength: ${this.serviceToken?.length || 0}, preview: ${tokenPreview}`, logLabel);
+    const tokenPreview = (typeof this.serviceToken === 'string' && this.serviceToken) ? `${this.serviceToken.substring(0, 10)}...` : 'MISSING';
+    logger.trace(`S2S getServiceToken - wasExpired: ${wasExpired}, tokenPresent: ${!!this.serviceToken}, tokenLength: ${typeof this.serviceToken === 'string' ? this.serviceToken.length : 0}, preview: ${tokenPreview}`, logLabel);
     return `Bearer ${this.serviceToken}`;
   }
 

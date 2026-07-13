@@ -66,9 +66,9 @@ class CdamDocumentManagementService {
     const url = `${cdamDocumentManagementBaseUrl}/cases/documents`;
 
     // Log token details for debugging (partial tokens only for security)
-    const userTokenPreview = headers.userToken ? `${headers.userToken.substring(0, 17)}...` : 'MISSING';
-    const serviceTokenPreview = headers.serviceToken ? `${headers.serviceToken.substring(0, 17)}...` : 'MISSING';
-    logger.trace(`CDAM upload request - URL: ${url}, userToken: ${userTokenPreview} (length: ${headers.userToken?.length || 0}), serviceToken: ${serviceTokenPreview} (length: ${headers.serviceToken?.length || 0})`, logLabel);
+    const userTokenPreview = (typeof headers.userToken === 'string' && headers.userToken) ? `${headers.userToken.substring(0, 17)}...` : 'MISSING';
+    const serviceTokenPreview = (typeof headers.serviceToken === 'string' && headers.serviceToken) ? `${headers.serviceToken.substring(0, 17)}...` : 'MISSING';
+    logger.trace(`CDAM upload request - URL: ${url}, userToken: ${userTokenPreview} (length: ${typeof headers.userToken === 'string' ? headers.userToken.length : 0}), serviceToken: ${serviceTokenPreview} (length: ${typeof headers.serviceToken === 'string' ? headers.serviceToken.length : 0})`, logLabel);
 
     // Validate tokens before making request
     if (!headers.userToken || headers.userToken === 'Bearer undefined' || headers.userToken === 'Bearer null') {

@@ -1,7 +1,7 @@
+import * as path from 'path';
 import { Request, Response } from 'express';
 import moment from 'moment';
 import nl2br from 'nl2br';
-import * as path from 'path';
 import { applicationTypes } from '../data/application-types';
 import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';

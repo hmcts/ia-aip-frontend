@@ -131,8 +131,8 @@ describe('ccd-service', () => {
 
     beforeEach(() => {
       sandbox = sinon.createSandbox();
-      getRequest = sandbox.stub(axios, 'get').resolves({});
-      postRequest = sandbox.stub(axios, 'post').resolves({});
+      getRequest = sandbox.stub(axios, 'get').resolves({ status: 200, data: {} });
+      postRequest = sandbox.stub(axios, 'post').resolves({ status: 200, data: {} });
     });
 
     afterEach(() => {

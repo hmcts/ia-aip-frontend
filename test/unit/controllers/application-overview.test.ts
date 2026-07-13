@@ -7,7 +7,7 @@ import {
   getAppealRefNumber,
   getAppellantName,
   getApplicationOverview,
-  getHearingDetails,
+  getHearingDetails, getLoadCase,
   isAppealInProgress,
   isPostDecisionState,
   setupApplicationOverviewController,
@@ -1341,7 +1341,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getApplicationOverview with caseId query param should call loadAppealByCaseId and render', async () => {
+  it('getLoadCase with caseId query param should call loadAppealByCaseId and render', async () => {
     req.query = { caseId: '123' };
     req.idam = {
       userDetails: {
@@ -1358,13 +1358,13 @@ describe('Confirmation Page Controller', () => {
     const loadAppealByCaseIdStub = sandbox.stub().resolves();
     updateAppealService.loadAppealByCaseId = loadAppealByCaseIdStub;
 
-    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    await getLoadCase(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     expect(loadAppealByCaseIdStub).to.be.calledWith('123', req);
-    expect(res.render).to.be.calledOnceWith();
+    expect(res.redirect).to.be.calledOnceWith(paths.common.overview);
   });
 
-  it('getApplicationOverview with caseId query param should redirect to cases list and render error if loadAppealByCaseId fails', async () => {
+  it('getLoadCase with caseId query param should redirect to cases list and render error if loadAppealByCaseId fails', async () => {
     req.query = { caseId: '123' };
     req.idam = {
       userDetails: {
@@ -1381,7 +1381,7 @@ describe('Confirmation Page Controller', () => {
     const loadAppealByCaseIdStub = sandbox.stub().rejects();
     updateAppealService.loadAppealByCaseId = loadAppealByCaseIdStub;
 
-    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    await getLoadCase(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     expect(loadAppealByCaseIdStub).to.be.calledWith('123', req);
     expect(res.render).to.not.be.calledOnceWith();

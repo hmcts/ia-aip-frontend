@@ -131,18 +131,23 @@ function isAppealInProgress(appealStatus: string, isCitizen: boolean) {
   return isCitizen && !endedStates.includes(appealStatus);
 }
 
-function getApplicationOverview(updateAppealService: UpdateAppealService) {
+function getLoadCase(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (req.query.caseId) {
       const caseId = req.query.caseId as string;
       try {
         await updateAppealService.loadAppealByCaseId(caseId, req);
+        return res.redirect(paths.common.overview);
       } catch (error) {
         logger.exception(error, logLabel);
         return res.redirect(`${paths.common.casesList}?errorCode=${ErrorCode.caseNotFound}&caseId=${caseId}`);
       }
     }
+  };
+}
 
+function getApplicationOverview(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!req.session?.appeal?.application) {
         return res.redirect(paths.common.casesList);
@@ -181,11 +186,11 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
           && !isRemissionApprovedOrPartiallyApproved(req.session.appeal);
       }
 
-      const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, isCitizen);
-      const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, isCitizen);
-      const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, isCitizen);
-      const showHearingRequests = isCitizen && showHearingRequestSection(req.session.appeal.appealStatus)
-        && !isPostDecisionState(appealStatus);
+      const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(appealStatus, isCitizen);
+      const showAppealRequests = showAppealRequestSection(appealStatus, isCitizen);
+      const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(appealStatus, isCitizen);
+      const showHearingRequests = isCitizen && showHearingRequestSection(appealStatus)
+          && !isPostDecisionState(appealStatus);
 
       const application = req.session.appeal.application;
 
@@ -263,6 +268,7 @@ function hasRespondentFtpaApplication(appeal: Appeal): boolean {
 function setupApplicationOverviewController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.common.overview, getApplicationOverview(updateAppealService));
+  router.get(paths.common.loadCase, getLoadCase(updateAppealService));
   return router;
 }
 
@@ -274,6 +280,7 @@ function isRemissionApprovedOrPartiallyApproved(appeal: Appeal): boolean {
 export {
   setupApplicationOverviewController,
   getApplicationOverview,
+  getLoadCase,
   getAppealRefNumber,
   checkAppealEnded,
   checkEnableProvideMoreEvidenceSection,

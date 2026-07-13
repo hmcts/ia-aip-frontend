@@ -773,7 +773,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
@@ -959,7 +959,7 @@ describe('Check and Send Controller', () => {
 
     it('should init a later payment', async () => {
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.feeCode = 'aCode';
       await getPayLater(paymentService as PaymentService, false)(req as Request, res as Response, next);
 
@@ -968,7 +968,7 @@ describe('Check and Send Controller', () => {
 
     it('should atch exception and call next with the error', async () => {
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       const error = new Error('an error');
       paymentService.initiatePayment = initiatePaymentStub.throws(error);
       updateAppealService.submitEventRefactored = submitStub.throws(error);

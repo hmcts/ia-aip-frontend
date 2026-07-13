@@ -68,7 +68,7 @@ describe('Help with fees refund Controller', () => {
     beforeEach(() => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
         .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
     });
 
@@ -88,7 +88,7 @@ describe('Help with fees refund Controller', () => {
     it('should return the question', () => {
       const expectedQuestion = {
         title: i18n.pages.helpWithFees.radioButtonsTitle,
-        helpWithFeesHint: i18n.pages.helpWithFees.refundsNote.replace('{{ fee }}', '140'),
+        helpWithFeesHint: i18n.pages.helpWithFees.refundsNote.replace('{{ fee }}', '144'),
         options: [
           {
             value: i18n.pages.helpWithFees.options.wantToApply.value,
@@ -112,7 +112,7 @@ describe('Help with fees refund Controller', () => {
     it('should return the question with option checked', () => {
       const expectedQuestion = {
         title: i18n.pages.helpWithFees.radioButtonsTitle,
-        helpWithFeesHint: i18n.pages.helpWithFees.refundsNote.replace('{{ fee }}', '140'),
+        helpWithFeesHint: i18n.pages.helpWithFees.refundsNote.replace('{{ fee }}', '144'),
         options: [
           {
             value: i18n.pages.helpWithFees.options.wantToApply.value,

@@ -221,6 +221,7 @@ const paths = {
     redirectUrl: '/redirectUrl',
     start: '/start-appeal',
     overview: '/appeal-overview',
+    loadCase: '/load-case',
     casesList: '/cases-list',
     refreshCasesList: '/refresh-cases-list',
     createNewAppeal: '/create-new-appeal',

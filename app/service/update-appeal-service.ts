@@ -182,6 +182,15 @@ export default class UpdateAppealService {
   }
 
   async submitEventRefactored(event, appeal: Appeal, uid: string, userToken: string, paymentsFlag = false, refundFlag = false): Promise<Appeal> {
+    // Validate inputs before making CCD call
+    if (!appeal.ccdCaseId) {
+      logger.exception(`submitEventRefactored - appeal.ccdCaseId is missing. appeal keys: ${Object.keys(appeal).join(',')}`, logLabel);
+      throw new Error('Cannot update appeal: ccdCaseId is missing');
+    }
+    if (!userToken) {
+      logger.exception('submitEventRefactored - userToken is missing or undefined', logLabel);
+      throw new Error('Cannot update appeal: userToken is missing');
+    }
     const securityHeaders: SecurityHeaders = {
       userToken: `Bearer ${userToken}`,
       serviceToken: await this._s2sService.getServiceToken()
@@ -192,7 +201,9 @@ export default class UpdateAppealService {
       state: appeal.appealStatus,
       case_data: caseData
     };
+    logger.trace(`submitEventRefactored - calling updateAppeal for event '${event.id}', caseId '${appeal.ccdCaseId}'`, logLabel);
     const ccdCase: CcdCaseDetails = await this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders);
+    logger.trace(`submitEventRefactored - CCD response received: id=${ccdCase?.id}, state=${ccdCase?.state}, has_case_data=${!!ccdCase?.case_data}, keys=${ccdCase ? Object.keys(ccdCase).join(',') : 'null'}`, logLabel);
     return this.mapCcdCaseToAppeal(ccdCase);
   }
 
@@ -234,6 +245,10 @@ export default class UpdateAppealService {
   }
 
   mapCcdCaseToAppeal(ccdCase: CcdCaseDetails): Appeal {
+    if (!ccdCase || !ccdCase.case_data) {
+      logger.exception(`mapCcdCaseToAppeal received invalid ccdCase: ${JSON.stringify(ccdCase)}`, logLabel);
+      throw new Error('Invalid CCD case response: case_data is missing');
+    }
     const caseData: CaseData = ccdCase.case_data;
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const decisionLetterReceivedDate = this.getDate(caseData.decisionLetterReceivedDate);

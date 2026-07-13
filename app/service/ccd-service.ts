@@ -91,11 +91,6 @@ class CcdService {
       headers
     );
     const response = await axios.get(url, options);
-    if (!response.status.toString().startsWith('2')) {
-      logger.exception(`Failed to start update appeal for case ${caseId}. Status: ${response.status},
-       Data: ${JSON.stringify(response.data)}`, logLabel);
-      throw new Error(`Failed to start update appeal. Status: ${response.status}`);
-    }
     return response.data;
   }
 
@@ -107,11 +102,6 @@ class CcdService {
     );
 
     const response = await axios.post(url, event, options);
-    if (!response.status.toString().startsWith('2')) {
-      logger.exception(`Failed to submit update appeal for case ${caseId}. Status: ${response.status},
-       Data: ${JSON.stringify(response.data)}`, logLabel);
-      throw new Error(`Failed to submit update appeal. Status: ${response.status}`);
-    }
     return response.data;
   }
 
@@ -135,11 +125,6 @@ class CcdService {
     const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}`;
     const options = this.createOptions(userId, headers);
     const response = await axios.get(url, options);
-    if (!response.status.toString().startsWith('2')) {
-      logger.exception(`Failed to load case ${caseId}. Status: ${response.status},
-       Data: ${JSON.stringify(response.data)}`, logLabel);
-      throw new Error(`Failed to load case. Status: ${response.status}`);
-    }
     return response.data;
   }
 

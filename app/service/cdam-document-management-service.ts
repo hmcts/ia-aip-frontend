@@ -64,24 +64,6 @@ class CdamDocumentManagementService {
 
   private async upload(headers: SecurityHeaders, uploadData: CdamUploadData): Promise<any> {
     const url = `${cdamDocumentManagementBaseUrl}/cases/documents`;
-
-    // Log token details for debugging (partial tokens only for security)
-    const userTokenPreview = (typeof headers.userToken === 'string' && headers.userToken) ? `${headers.userToken.substring(0, 17)}...` : 'MISSING';
-    const serviceTokenPreview = (typeof headers.serviceToken === 'string' && headers.serviceToken) ? `${headers.serviceToken.substring(0, 17)}...` : 'MISSING';
-    logger.trace(`CDAM upload request - URL: ${url}, userToken: ${userTokenPreview} (length: ${typeof headers.userToken === 'string' ? headers.userToken.length : 0}), serviceToken: ${serviceTokenPreview} (length: ${typeof headers.serviceToken === 'string' ? headers.serviceToken.length : 0})`, logLabel);
-
-    // Validate tokens before making request
-    if (!headers.userToken || headers.userToken === 'Bearer undefined' || headers.userToken === 'Bearer null') {
-      const error = new Error(`Invalid user token: token is missing or undefined. Value: ${headers.userToken}`);
-      logger.exception(error.message, logLabel);
-      throw error;
-    }
-    if (!headers.serviceToken || headers.serviceToken === 'Bearer undefined' || headers.serviceToken === 'Bearer null') {
-      const error = new Error(`Invalid service token: token is missing or undefined. Value: ${headers.serviceToken}`);
-      logger.exception(error.message, logLabel);
-      throw error;
-    }
-
     const form = new FormData();
     form.append('files', uploadData.file.buffer, {
       filename: uploadData.file.originalname,
@@ -95,18 +77,8 @@ class CdamDocumentManagementService {
       form.getHeaders()
     );
 
-    logger.trace(`CDAM upload form data - classification: ${uploadData.classification}, caseTypeId: ${uploadData.caseTypeId}, jurisdictionId: ${uploadData.jurisdictionId}, filename: ${uploadData.file.originalname}`, logLabel);
-
-    try {
-      const response = await axios.post(url, form, options);
-      logger.trace(`CDAM upload successful - status: ${response.status}`, logLabel);
-      return JSON.stringify(response.data);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        logger.exception(`CDAM upload failed: status=${error.response?.status}, statusText=${error.response?.statusText}, data=${JSON.stringify(error.response?.data)}, headers=${JSON.stringify(error.response?.headers)}, url=${url}`, logLabel);
-      }
-      throw error;
-    }
+    const response = await axios.post(url, form, options);
+    return JSON.stringify(response.data);
   }
 
   private async delete(headers: SecurityHeaders, fileLocation: string): Promise<any> {

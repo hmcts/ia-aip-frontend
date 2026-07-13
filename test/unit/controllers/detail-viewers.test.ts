@@ -642,12 +642,12 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       expectedSummaryRows.push(
         { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
-        { key: { text: 'Fee amount' }, value: { html: '£140' } }
+        { key: { text: 'Fee amount' }, value: { html: '£144' } }
       );
 
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
@@ -666,7 +666,7 @@ describe('DetailViewController', () => {
 
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
@@ -695,7 +695,7 @@ describe('DetailViewController', () => {
       expectedSummaryRowsWithDlrmFeeRemission.personalDetailsRows[3].value.html = 'some appellant out of country address'; // out of country address
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee amount' }, value: { html: '£144' } },
         { key: { text: 'Payment status' }, value: { html: 'Paid' } }
       );
 
@@ -719,7 +719,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.sponsorAuthorisation = 'Sponsor authorisation';
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
       req.session.appeal.application.helpWithFeesOption = 'willPayForAppeal';
       req.session.appeal.paymentStatus = 'Paid';
@@ -738,12 +738,12 @@ describe('DetailViewController', () => {
     it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee amount' }, value: { html: '£144' } },
         { key: { text: 'Payment status' }, value: { html: 'Paid' } }
       );
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
       req.session.appeal.application.helpWithFeesOption = 'willPayForAppeal';
       req.session.appeal.paymentStatus = 'Paid';
@@ -764,7 +764,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee amount' }, value: { html: '£144' } },
         { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
       );
@@ -772,7 +772,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
@@ -797,7 +797,7 @@ describe('DetailViewController', () => {
         sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
           { key: { text: i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber }, value: { html: 'legalAidAccountNumber' } }
         );
@@ -806,7 +806,7 @@ describe('DetailViewController', () => {
         req.session.appeal.application.remissionType = 'hoWaiverRemission';
         req.session.appeal.application.remissionClaim = 'legalAid';
         req.session.appeal.application.legalAidAccountNumber = 'legalAidAccountNumber';
-        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.feeWithHearing = '144';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
         expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
@@ -822,7 +822,7 @@ describe('DetailViewController', () => {
       it('should add exceptional circumstances row if exceptionalCircumstances exists', async () => {
         sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
           { key: { text: i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstances }, value: { html: 'Exceptional reason' } },
           {
@@ -838,7 +838,7 @@ describe('DetailViewController', () => {
           { fileId: '1', name: 'ecDoc1.pdf' },
           { fileId: '2', name: 'ecDoc2.pdf' }
         ];
-        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.feeWithHearing = '144';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
         expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
@@ -855,7 +855,7 @@ describe('DetailViewController', () => {
         sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
           { key: { text: i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber }, value: { html: 'asylumSupportReference' } },
           { key: {
@@ -869,7 +869,7 @@ describe('DetailViewController', () => {
         req.session.appeal.application.remissionClaim = 'asylumSupport';
         req.session.appeal.application.asylumSupportReference = 'asylumSupportReference';
         req.session.appeal.application.asylumSupportDocument = { fileId: '1', name: 'asylumDoc1.pdf' };
-        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.feeWithHearing = '144';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
         expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
@@ -886,7 +886,7 @@ describe('DetailViewController', () => {
         sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
           { key: {
             text: i18n.pages.checkYourAnswers.rowTitles.section17Document },
@@ -898,7 +898,7 @@ describe('DetailViewController', () => {
         req.session.appeal.application.remissionType = 'hoWaiverRemission';
         req.session.appeal.application.remissionClaim = 'section17';
         req.session.appeal.application.section17Document = { fileId: '1', name: 'section17Doc1.pdf' };
-        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.feeWithHearing = '144';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
         expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
@@ -915,7 +915,7 @@ describe('DetailViewController', () => {
         sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
           { key: {
             text: i18n.pages.checkYourAnswers.rowTitles.section20Document },
@@ -927,7 +927,7 @@ describe('DetailViewController', () => {
         req.session.appeal.application.remissionType = 'hoWaiverRemission';
         req.session.appeal.application.remissionClaim = 'section20';
         req.session.appeal.application.section20Document = { fileId: '1', name: 'section20Doc1.pdf' };
-        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.feeWithHearing = '144';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
         expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
@@ -944,7 +944,7 @@ describe('DetailViewController', () => {
         sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
           {
             key: { text: i18n.pages.checkYourAnswers.rowTitles.homeOfficeWaiverDocument },
@@ -956,7 +956,7 @@ describe('DetailViewController', () => {
         req.session.appeal.application.remissionType = 'hoWaiverRemission';
         req.session.appeal.application.remissionClaim = 'homeOfficeWaiver';
         req.session.appeal.application.homeOfficeWaiverDocument = { fileId: '1', name: 'homeOfficeWaiverDoc1.pdf' };
-        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.feeWithHearing = '144';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
         expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
@@ -975,7 +975,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee amount' }, value: { html: '£144' } },
         { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
         { key: { text: 'Fee support type' }, value: { html: 'SOME FEE REMISSION TYPE' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
@@ -985,7 +985,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.feeRemissionType = 'SOME FEE REMISSION TYPE';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
@@ -1003,7 +1003,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee amount' }, value: { html: '£144' } },
         { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
       );
@@ -1011,7 +1011,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportReference = 'supportRefNumber';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
@@ -1029,11 +1029,11 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee amount' }, value: { html: '£144' } },
         { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
         { key: { text: 'Help with fees reference number' }, value: { html: 'helpWithFeesRefNumberValue' } }
       );
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
       req.session.appeal.application.helpWithFeesOption = 'wantToApply';
@@ -1054,13 +1054,13 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee amount' }, value: { html: '£144' } },
         { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } }
       );
 
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
@@ -1079,7 +1079,7 @@ describe('DetailViewController', () => {
         .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
         .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee amount' }, value: { html: '£144' } },
         { key: { text: 'Payment status' }, value: { html: 'Paid' } },
         { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
         { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
@@ -1088,7 +1088,7 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
@@ -1107,7 +1107,7 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee amount' }, value: { html: '£144' } },
         { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
         {
           key: { text: 'Local Authority letter' }, value: {
@@ -1116,7 +1116,7 @@ describe('DetailViewController', () => {
           }
         }
       );
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'parentGetSupportFromLocalAuthority';
       req.session.appeal.application.localAuthorityLetters = [
@@ -1146,11 +1146,11 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
-        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee amount' }, value: { html: '£144' } },
         { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
         { key: { text: 'Help with fees reference number' }, value: { html: 'helpWithFeesRefNumberValue' } }
       );
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
       req.session.appeal.application.helpWithFeesOption = 'wantToApply';
@@ -1225,7 +1225,7 @@ describe('DetailViewController', () => {
       expect(next.calledOnceWith(error)).to.equal(true);
     });
 
-    describe('Remission decision', async () => {
+    describe('Remission decision', () => {
       const previousRemissionDetails = [{
         id: '1',
         feeAmount: '1000',
@@ -1315,7 +1315,7 @@ describe('DetailViewController', () => {
           { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } }
         ],
         'feeDetailsRows': [
-          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Payment status' }, value: { html: 'No payment needed' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support request approved' } },
           { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
@@ -1333,14 +1333,14 @@ describe('DetailViewController', () => {
             { key: { text: 'Home Office waiver document' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 5'>file_5_name</a>" } },
             { key: { text: 'Exceptional circumstances evidence' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" } },
             { key: { text: 'Fee support status' }, value: {  html: 'Fee support request granted' } },
-            { key: { text: 'Fee to refund' }, value: { html: '£140' } }
+            { key: { text: 'Fee to refund' }, value: { html: '£144' } }
           ],
           [
             { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
             { key: { text: 'Help with fees reference number' }, value: { html: 'Help with fees' } },
             { key: { text: 'Fee support status' }, value: { html: 'Fee support request partially granted' } },
             { key: { text: 'Reason for decision' }, value: { html: 'Decision 1' } },
-            { key: { text: 'Fee to refund' }, value: { html: '£130' } }
+            { key: { text: 'Fee to refund' }, value: { html: '£134' } }
           ], [
             { key: { text: 'Fee support type' }, value: {  html: 'Local Authority Support (Section 20)' } },
             { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
@@ -1380,7 +1380,7 @@ describe('DetailViewController', () => {
         req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
         req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
         req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
-        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.feeWithHearing = '144';
         req.session.appeal.paymentStatus = 'Paid';
         req.session.appeal.application.remissionDecision = 'approved';
 
@@ -1404,13 +1404,13 @@ describe('DetailViewController', () => {
         req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
         req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
         req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
-        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.feeWithHearing = '144';
         req.session.appeal.paymentStatus = 'Paid';
         req.session.appeal.application.previousRemissionDetails = previousRemissionDetails;
         req.session.appeal.history = [historyEvent, historyEvent, historyEvent];
 
         const feeDetails = [
-          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Payment status' }, value: { html: 'Paid' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
           { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
@@ -1437,7 +1437,7 @@ describe('DetailViewController', () => {
         req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
         req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
         req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
-        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.feeWithHearing = '144';
         req.session.appeal.paymentStatus = 'Paid';
         req.session.appeal.application.remissionDecision = 'approved';
 
@@ -1484,7 +1484,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
       req.session.appeal.application.feeUpdateReason = 'decisionTypeChanged';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
       req.session.appeal.application.paidAmount = '1400';
@@ -1520,7 +1520,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
       req.session.appeal.application.feeUpdateReason = 'decisionTypeChanged';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
       req.session.appeal.previousFeeAmountGbp = '800';
@@ -1557,7 +1557,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
       req.session.appeal.application.feeUpdateReason = 'feeRemissionChanged';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
       req.session.appeal.application.paidAmount = '1400';
@@ -1593,7 +1593,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
       req.session.appeal.application.feeUpdateReason = 'feeRemissionChanged';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
       req.session.appeal.previousFeeAmountGbp = '800';
@@ -1630,7 +1630,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
       req.session.appeal.application.feeUpdateReason = 'appealNotValid';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
       req.session.appeal.application.paidAmount = '1400';
@@ -1664,7 +1664,7 @@ describe('DetailViewController', () => {
       req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
       req.session.appeal.application.feeUpdateReason = 'appealNotValid';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
       req.session.appeal.previousFeeAmountGbp = '800';
@@ -1697,7 +1697,7 @@ describe('DetailViewController', () => {
         .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
         .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.newFeeAmount = '1400';
       req.session.appeal.application.paidAmount = '1400';
@@ -1894,12 +1894,12 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       expectedSummaryRows.push(
         { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
-        { key: { text: 'Fee amount' }, value: { html: '£140' } }
+        { key: { text: 'Fee amount' }, value: { html: '£144' } }
       );
 
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
@@ -1918,7 +1918,7 @@ describe('DetailViewController', () => {
 
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
@@ -2099,12 +2099,12 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       expectedSummaryRows.push(
         { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
-        { key: { text: 'Fee amount' }, value: { html: '£140' } }
+        { key: { text: 'Fee amount' }, value: { html: '£144' } }
       );
 
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
@@ -2123,7 +2123,7 @@ describe('DetailViewController', () => {
 
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
@@ -5984,7 +5984,7 @@ describe('DetailViewController', () => {
   });
 
   describe('Amount to refund', () => {
-    const fee = { code: 'test', calculated_amount: 80, version: '1' };
+    const fee = { code: 'test', calculated_amount: 82, version: '1' };
     beforeEach(() => {
       const historyEvent = {
         id: 'paymentAppeal',
@@ -6021,7 +6021,7 @@ describe('DetailViewController', () => {
           'text': 'Amount to refund'
         },
         'value': {
-          'html': '£80'
+          'html': '£82'
         }
       });
     });
@@ -6040,7 +6040,7 @@ describe('DetailViewController', () => {
           'text': 'Amount to refund'
         },
         'value': {
-          'html': '£40'
+          'html': '£42'
         }
       });
     });
@@ -6057,7 +6057,7 @@ describe('DetailViewController', () => {
           'text': 'Amount to refund'
         },
         'value': {
-          'text': '£80'
+          'text': '£82'
         }
       });
     });
@@ -6074,7 +6074,7 @@ describe('DetailViewController', () => {
           'text': 'Amount to refund'
         },
         'value': {
-          'text': '£80'
+          'text': '£82'
         }
       });
     });

@@ -95,10 +95,13 @@ export default class S2SService implements IS2SService {
    * If it has expired it refreshes the token and returns it.
    */
   async getServiceToken() {
-    if (isJWTExpired(this.serviceToken)) {
-      logger.trace('Token expired Attempting to acquire a new one.', logLabel);
+    const wasExpired = isJWTExpired(this.serviceToken);
+    if (wasExpired) {
+      logger.trace('Token expired. Attempting to acquire a new one.', logLabel);
       await this.requestServiceToken();
     }
+    const tokenPreview = this.serviceToken ? `${this.serviceToken.substring(0, 10)}...` : 'MISSING';
+    logger.trace(`S2S getServiceToken - wasExpired: ${wasExpired}, tokenPresent: ${!!this.serviceToken}, tokenLength: ${this.serviceToken?.length || 0}, preview: ${tokenPreview}`, logLabel);
     return `Bearer ${this.serviceToken}`;
   }
 

@@ -157,9 +157,9 @@
     "hasSponsorOrNlr": {
       "title": "Do you have a sponsor or a non-legal representative?",
       "whoTheyAre": "Who they might be",
-      "textBullet1": "A sponsor is usually someone the appellant CONTENT NEEDS TO GO HERE. They can have information about the appeal if the appellant agrees, but they cannot play an active role in it.",
-      "textBullet2": "A non-legal representative is someone CONTENT NEEDS TO GO HERE.  They can play an active role in the appeal, including representing the appellant at a hearing, and will be sent all information relating to the appeal.",
-      "textBullet3": "This can be the same person, or it may be different people.",
+      "textBullet1": "A sponsor is usually someone whose support the appellant needs for their visa, such as a parent supporting a child’s application or someone supporting their partner’s application. They can have information about the appeal if the appellant agrees, and may attend a hearing to give evidence in support of the appeal, particularly if the appellant is unable because they are outside the country.",
+      "textBullet2": "A non-legal representative is someone acting on the appellant’s behalf who is not acting in the course of a business. They can play an active role in the appeal, including representing the appellant at a hearing, and will be sent all information relating to the appeal.",
+      "textBullet3": "These can be the same people, or they may be different people.",
       "hasSponsorLabel": "Do you have a sponsor?",
       "hasNonLegalRepLabel": "Do you have a non-legal representative?"
     },

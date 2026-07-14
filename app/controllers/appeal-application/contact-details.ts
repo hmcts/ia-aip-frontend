@@ -739,8 +739,14 @@ function isSponsorSame(req: Request): boolean {
 }
 
 function getNlrNamePreviousPage(req: Request) {
-  return req.session.appeal?.application?.hasSponsor == 'Yes' && req.session.appeal?.application?.isSponsorSameAsNlr !== 'Yes'
-    ? paths.appealStarted.sponsorAuthorisation : paths.appealStarted.hasSponsorOrNlr;
+  if (req.session.appeal?.application?.hasSponsor == 'Yes') {
+    if (req.session.appeal?.application?.isSponsorSameAsNlr !== 'Yes') {
+      return paths.appealStarted.sponsorAuthorisation;
+    } else {
+      return paths.appealStarted.isSponsorSameAsNlr;
+    }
+  }
+  return paths.appealStarted.hasSponsorOrNlr;
 }
 
 function getNlrName(req: Request, res: Response, next: NextFunction) {

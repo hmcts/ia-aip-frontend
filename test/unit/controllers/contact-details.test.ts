@@ -1495,7 +1495,7 @@ describe('Contact details Controller', () => {
     it('should return isSponsorSameAsNlr if hasSponsor and isSamePerson', function () {
       req.session.appeal.application.hasSponsor = 'Yes';
       req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
-      expect(getNlrNamePreviousPage(req as Request)).to.equal(paths.appealStarted.hasSponsorOrNlr);
+      expect(getNlrNamePreviousPage(req as Request)).to.equal(paths.appealStarted.isSponsorSameAsNlr);
     });
 
     it('should return sponsorAuthorisation if hasSponsor and not isSamePerson', function () {

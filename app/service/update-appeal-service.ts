@@ -1686,7 +1686,10 @@ export default class UpdateAppealService {
 
     if (givenNames) target.givenNames = givenNames;
     if (familyName) target.familyName = familyName;
-    if (emailAddress) target.emailAddress = emailAddress;
+    if (emailAddress) {
+      target.emailAddress = emailAddress;
+      caseData.shouldInviteNlrToIdam = 'Yes';
+    }
     if (phoneNumber) target.phoneNumber = phoneNumber;
     if (idamId) target.idamId = idamId;
     return caseData;

@@ -56,7 +56,7 @@ async function getFeeSupport(req: Request, res: Response, next: NextFunction) {
     return res.render('ask-for-fee-remission/fee-support-refund.njk', {
       previousPage: paths.common.overview,
       pageTitle: i18n.pages.remissionOptionPage.refundTitle,
-      formAction: paths.appealSubmitted.feeSupportRefund,
+      formAction: paths.common.feeSupportRefund,
       question: getOptionsQuestion(req.session.appeal),
       paPayLater
     });
@@ -79,7 +79,7 @@ function postFeeSupport() {
           errorList: Object.values(validation),
           previousPage: paths.common.overview,
           pageTitle: i18n.pages.remissionOptionPage.refundTitle,
-          formAction: paths.appealSubmitted.feeSupportRefund,
+          formAction: paths.common.feeSupportRefund,
           question: getOptionsQuestion(req.session.appeal),
           paPayLater
         });
@@ -97,22 +97,22 @@ function postFeeSupport() {
 
 function setupFeeSupportRefundController(middleware: Middleware[]): Router {
   const router = Router();
-  router.get(paths.appealSubmitted.feeSupportRefund, middleware, getFeeSupport);
-  router.post(paths.appealSubmitted.feeSupportRefund, middleware, postFeeSupport());
+  router.get(paths.common.feeSupportRefund, middleware, getFeeSupport);
+  router.post(paths.common.feeSupportRefund, middleware, postFeeSupport());
   return router;
 }
 
 function getFeeSupportRedirectPage(remissionOption: string): string {
   switch (remissionOption) {
     case i18n.pages.remissionOptionPage.options.asylumSupportFromHo.value:
-      return paths.appealSubmitted.asylumSupportRefund;
+      return paths.common.asylumSupportRefund;
     case i18n.pages.remissionOptionPage.options.feeWaiverFromHo.value:
-      return paths.appealSubmitted.feeWaiverRefund;
+      return paths.common.feeWaiverRefund;
     case i18n.pages.remissionOptionPage.options.under18GetSupportFromLocalAuthority.value:
     case i18n.pages.remissionOptionPage.options.parentGetSupportFromLocalAuthority.value:
-      return paths.appealSubmitted.localAuthorityLetterRefund;
+      return paths.common.localAuthorityLetterRefund;
     case i18n.pages.remissionOptionPage.options.iWantToGetHelpWithFees.value:
-      return paths.appealSubmitted.helpWithFeesRefund;
+      return paths.common.helpWithFeesRefund;
     default:
       throw new Error('The selected remission option is not valid. Please check the value.');
   }

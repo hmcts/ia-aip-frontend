@@ -81,8 +81,8 @@ describe('Fee support refund Controller', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
       setupFeeSupportRefundController(middleware);
-      expect(routerGetStub.calledWith(paths.appealSubmitted.feeSupportRefund)).to.equal(true);
-      expect(routerPostStub.calledWith(paths.appealSubmitted.feeSupportRefund)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.feeSupportRefund)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.common.feeSupportRefund)).to.equal(true);
     });
 
     it('should return the question', () => {
@@ -169,7 +169,7 @@ describe('Fee support refund Controller', () => {
       expect(renderStub).to.be.calledOnceWith('ask-for-fee-remission/fee-support-refund.njk', {
         previousPage: paths.common.overview,
         pageTitle: i18n.pages.remissionOptionPage.refundTitle,
-        formAction: paths.appealSubmitted.feeSupportRefund,
+        formAction: paths.common.feeSupportRefund,
         paPayLater: false,
         question: sinon.match.any
       });
@@ -179,7 +179,7 @@ describe('Fee support refund Controller', () => {
       req.body['answer'] = 'asylumSupportFromHo';
       req.session.appeal.application.appealType = 'protection';
       await postFeeSupport()(req as Request, res as Response, next);
-      expect(redirectStub.calledOnceWith(paths.appealSubmitted.asylumSupportRefund)).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.common.asylumSupportRefund)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect asylum-support-refund.njk and reset isEdit flag', async () => {
@@ -187,7 +187,7 @@ describe('Fee support refund Controller', () => {
       req.query = { 'edit': '' };
       await postFeeSupport()(req as Request, res as Response, next);
       expect(req.session.appeal.application.lateRemissionOption).to.deep.equal('asylumSupportFromHo');
-      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.asylumSupportRefund}(?!.*\\bedit\\b)`));
+      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.common.asylumSupportRefund}(?!.*\\bedit\\b)`));
       expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
 
@@ -202,27 +202,27 @@ describe('Fee support refund Controller', () => {
       const testData = [
         {
           input: 'asylumSupportFromHo',
-          expected: paths.appealSubmitted.asylumSupportRefund,
+          expected: paths.common.asylumSupportRefund,
           description: 'Asylum support page'
         },
         {
           input: 'feeWaiverFromHo',
-          expected: paths.appealSubmitted.feeWaiverRefund,
+          expected: paths.common.feeWaiverRefund,
           description: 'Fee waiver page'
         },
         {
           input: 'under18GetSupportFromLocalAuthority',
-          expected: paths.appealSubmitted.localAuthorityLetterRefund,
+          expected: paths.common.localAuthorityLetterRefund,
           description: 'Upload local authority letter page'
         },
         {
           input: 'parentGetSupportFromLocalAuthority',
-          expected: paths.appealSubmitted.localAuthorityLetterRefund,
+          expected: paths.common.localAuthorityLetterRefund,
           description: 'Upload local authority letter page'
         },
         {
           input: 'iWantToGetHelpWithFees',
-          expected: paths.appealSubmitted.helpWithFeesRefund,
+          expected: paths.common.helpWithFeesRefund,
           description: 'Help with fees page'
         }
       ];
@@ -252,7 +252,7 @@ describe('Fee support refund Controller', () => {
           errorList: [error],
           previousPage: paths.common.overview,
           pageTitle: i18n.pages.remissionOptionPage.refundTitle,
-          formAction: paths.appealSubmitted.feeSupportRefund,
+          formAction: paths.common.feeSupportRefund,
           paPayLater: false,
           question: sinon.match.any
         });

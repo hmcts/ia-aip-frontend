@@ -3133,6 +3133,7 @@ describe('update-appeal-service', () => {
       };
       updateAppealService.mapToCCDCaseNlrDetails(appeal, caseData);
       expect(caseData).to.deep.equal({
+        shouldInviteNlrToIdam: 'Yes',
         nlrDetails: {
           givenNames: 'givenNames',
           familyName: 'familyName',
@@ -3156,6 +3157,7 @@ describe('update-appeal-service', () => {
       };
       updateAppealService.mapToCCDCaseNlrDetails(appeal, caseData);
       expect(caseData).to.deep.equal({
+        shouldInviteNlrToIdam: 'Yes',
         nlrDetails: {
           emailAddress: 'emailAddress',
           phoneNumber: 'phoneNumber',

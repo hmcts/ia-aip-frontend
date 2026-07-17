@@ -11,7 +11,7 @@ async function getStepsToHelpWithFees(req: Request, res: Response, next: NextFun
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     return res.render('appeal-application/fee-support/steps-to-help-with-fees.njk', {
-      previousPage: paths.appealSubmitted.helpWithFeesRefund,
+      previousPage: paths.common.helpWithFeesRefund,
       refundJourney: true
     });
   } catch (error) {
@@ -24,7 +24,7 @@ function postStepsToHelpWithFees() {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     try {
-      return res.redirect(paths.appealSubmitted.helpWithFeesReferenceNumberRefund);
+      return res.redirect(paths.common.helpWithFeesReferenceNumberRefund);
     } catch (error) {
       next(error);
     }
@@ -33,8 +33,8 @@ function postStepsToHelpWithFees() {
 
 function setupStepToHelpWithFeesRefundController(middleware: Middleware[]): Router {
   const router = Router();
-  router.get(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund, middleware, getStepsToHelpWithFees);
-  router.post(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund, middleware, postStepsToHelpWithFees());
+  router.get(paths.common.stepsToApplyForHelpWithFeesRefund, middleware, getStepsToHelpWithFees);
+  router.post(paths.common.stepsToApplyForHelpWithFeesRefund, middleware, postStepsToHelpWithFees());
   return router;
 }
 

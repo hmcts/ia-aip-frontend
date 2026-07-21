@@ -4002,7 +4002,7 @@
         },
         "willPayForAppeal": {
           "value": "willPayForAppeal",
-          "text": "No, I do not want to apply for help with fees"
+          "text": "I do not want to apply for help with fees"
         }
       },
       "checkAndSendWantToApply": "I want to apply for help with fees",

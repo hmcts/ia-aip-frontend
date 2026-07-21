@@ -170,8 +170,8 @@ describe('CYA Refund Controller', function () {
       const middleware = [];
 
       setupCheckYourAnswersRefundController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub.calledWith(paths.appealSubmitted.checkYourAnswersRefund)).to.equal(true);
-      expect(routerPOSTStub.calledWith(paths.appealSubmitted.checkYourAnswersRefund)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.checkYourAnswersRefund)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.common.checkYourAnswersRefund)).to.equal(true);
     });
 
     it('should render check-and-send.njk', async () => {
@@ -204,7 +204,7 @@ describe('CYA Refund Controller', function () {
       await postCheckYourAnswersRefund(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.REQUEST_FEE_REMISSION, appeal, 'idamUID', 'atoken')).to.equal(true);
-      expect(redirectStub.calledWith(paths.appealSubmitted.confirmationRefund)).to.equal(true);
+      expect(redirectStub.calledWith(paths.common.confirmationRefund)).to.equal(true);
     });
 
     it('should create fee rows when fee support values are present and dlrm-refund set aside enabled', async () => {
@@ -216,9 +216,9 @@ describe('CYA Refund Controller', function () {
       const fileLine = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/fileId'>filename</a>`;
 
       const rows: any[] = await createSummaryRowsFrom(req as Request);
-      const asylumSupportRefNumberRow = addSummaryRow('Asylum support reference number', ['refNumber'], paths.appealSubmitted.asylumSupportRefund + editParameter);
-      const helpWithFeesRefNumberRow = addSummaryRow('Help with fees reference number', ['HWF12345'], paths.appealSubmitted.helpWithFeesReferenceNumberRefund + editParameter);
-      const localAuthorityLettersRow = addSummaryRow('Local authority letter', [fileLine], paths.appealSubmitted.localAuthorityLetterRefund + editParameter);
+      const asylumSupportRefNumberRow = addSummaryRow('Asylum support reference number', ['refNumber'], paths.common.asylumSupportRefund + editParameter);
+      const helpWithFeesRefNumberRow = addSummaryRow('Help with fees reference number', ['HWF12345'], paths.common.helpWithFeesReferenceNumberRefund + editParameter);
+      const localAuthorityLettersRow = addSummaryRow('Local authority letter', [fileLine], paths.common.localAuthorityLetterRefund + editParameter);
       const mockedRows: SummaryRow[] = getMockedSummaryRows();
 
       mockedRows.push(asylumSupportRefNumberRow);
@@ -261,13 +261,13 @@ describe('CYA Refund Controller', function () {
 
       helpWithFeesOptionTestData.forEach(({ input, expectedResponse }) => {
         req.session.appeal.application.lateHelpWithFeesOption = input;
-        const helpWithFeesRow = addSummaryRow('Help with fees', [expectedResponse], paths.appealSubmitted.helpWithFeesRefund + editParameter);
+        const helpWithFeesRow = addSummaryRow('Help with fees', [expectedResponse], paths.common.helpWithFeesRefund + editParameter);
         mockedRows.push(helpWithFeesRow);
 
         remissionOptionTestData.forEach(({ input, expectedResponse }) => {
           it('Should correctly build the rows', () => {
             req.session.appeal.application.lateRemissionOption = input;
-            const remissionOptionRow = addSummaryRow('Fee statement', [expectedResponse], paths.appealSubmitted.feeSupportRefund + editParameter);
+            const remissionOptionRow = addSummaryRow('Fee statement', [expectedResponse], paths.common.feeSupportRefund + editParameter);
             mockedRows.push(remissionOptionRow);
             expect(rows).to.deep.equal(mockedRows);
             mockedRows.pop();

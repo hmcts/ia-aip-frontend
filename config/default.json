@@ -110,7 +110,8 @@
   },
   "features": {
     "askForMoreTime": false,
-    "timelineEnabled": false
+    "timelineEnabled": false,
+    "homeOfficeValidationEnabled": false
   },
   "testAccounts": {
     "testCaseOfficerUserName": "TEST_CASEOFFICER_USERNAME",

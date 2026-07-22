@@ -7,30 +7,30 @@ provider "azurerm" {
 }
 
 locals {
-  key_vault_name                  = "${var.product}-${var.env}"
+  key_vault_name = "${var.product}-${var.env}"
 }
 
 resource "azurerm_resource_group" "rg" {
   name     = "${var.product}-${var.component}-${var.env}"
   location = var.location
-  tags     = merge(var.common_tags, tomap({"lastUpdated" = "${timestamp()}"}))
+  tags     = merge(var.common_tags, tomap({ "lastUpdated" = "${timestamp()}" }))
 }
 
 data "azurerm_key_vault" "ia_key_vault" {
-  name                = "${local.key_vault_name}"
-  resource_group_name = "${local.key_vault_name}"
+  name                = local.key_vault_name
+  resource_group_name = local.key_vault_name
 }
 
 module "redis-cache" {
-  source      = "git@github.com:hmcts/cnp-module-redis?ref=master"
-  product     = "${var.product}"
-  location    = var.location
-  env         = var.env
-  private_endpoint_enabled = true
-  redis_version = "6"
-  business_area = "cft" # cft or sds
+  source                        = "git@github.com:hmcts/cnp-module-redis?ref=master"
+  product                       = var.product
+  location                      = var.location
+  env                           = var.env
+  private_endpoint_enabled      = true
+  redis_version                 = "6"
+  business_area                 = "cft" # cft or sds
   public_network_access_enabled = false
-  common_tags = var.common_tags
+  common_tags                   = var.common_tags
   sku_name                      = var.sku_name
   family                        = var.family
   capacity                      = var.capacity
@@ -38,14 +38,14 @@ module "redis-cache" {
 
 resource "azurerm_key_vault_secret" "redis_access_key" {
   name         = "${var.product}-redis-access-key"
-  value        = "${module.redis-cache.access_key}"
-  key_vault_id = "${data.azurerm_key_vault.ia_key_vault.id}"
+  value        = module.redis-cache.access_key
+  key_vault_id = data.azurerm_key_vault.ia_key_vault.id
 }
 
 resource "azurerm_key_vault_secret" "redis_connection_string" {
   name         = "${var.product}-redis-connection-string"
   value        = "redis://${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
-  key_vault_id = "${data.azurerm_key_vault.ia_key_vault.id}"
+  key_vault_id = data.azurerm_key_vault.ia_key_vault.id
 }
 
 module "redis_cache_managed_redis" {
@@ -54,13 +54,13 @@ module "redis_cache_managed_redis" {
   source   = "git@github.com:hmcts/terraform-module-azure-managed-redis?ref=main"
 
   product     = var.product
-  component   = var.component       # NEW:        HMCTS component name — used to form the resource name |
+  component   = var.component # NEW:        HMCTS component name — used to form the resource name |
   env         = var.env
   location    = var.location
   common_tags = var.common_tags
 
   # Performance:
-  sku_name = "Balanced_B0"          # NEW:        Be cautious, it's very expensive as usual
+  sku_name = "Balanced_B0" # NEW:        Be cautious, it's very expensive as usual
 
   # Networking:
   public_network_access   = "Disabled"
@@ -71,7 +71,7 @@ module "redis_cache_managed_redis" {
   access_keys_authentication_enabled = true
 
   # Backup (persistence) options:
-  persistence_rdb_backup_frequency   = "6h"
+  persistence_rdb_backup_frequency = "6h"
   # other available options (https://learn.microsoft.com/en-gb/azure/redis/how-to-persistence`):
   ## persistence_aof_backup_frequency
   ## geo_replication_group_name

@@ -21,6 +21,12 @@ data "azurerm_key_vault" "ia_key_vault" {
   resource_group_name = "${local.key_vault_name}"
 }
 
+data "azurerm_subnet" "core_infra_redis_subnet" {
+  name                 = "core-infra-subnet-1-${var.env}"
+  virtual_network_name = "core-infra-vnet-${var.env}"
+  resource_group_name  = "core-infra-${var.env}"
+}
+
 module "redis-cache" {
   source      = "git@github.com:hmcts/cnp-module-redis?ref=master"
   product     = "${var.product}"
@@ -54,18 +60,18 @@ module "redis_cache_managed_redis" {
   source   = "git@github.com:hmcts/terraform-module-azure-managed-redis?ref=main"
 
   product     = var.product
-  component   = var.component       # NEW:        HMCTS component name — used to form the resource name |
+  component   = var.component
   env         = var.env
   location    = var.location
   common_tags = var.common_tags
 
   # Performance:
-  sku_name = "Balanced_B0"          # NEW:        Be cautious, it's very expensive as usual
+  sku_name          = var.managed_redis_sku
 
   # Networking:
   public_network_access   = "Disabled"
   create_private_endpoint = true
-  subnet_id               = data.azurerm_subnet.redis_private_endpoint.id
+  subnet_id               = data.azurerm_subnet.core_infra_redis_subnet.id
   private_dns_zone_ids    = ["/subscriptions/${var.private_dns_subscription_id}/resourceGroups/core-infra-intsvc-rg/providers/Microsoft.Network/privateDnsZones/privatelink.redis.azure.net"]
 
   access_keys_authentication_enabled = true
@@ -81,5 +87,5 @@ module "redis_cache_managed_redis" {
 resource "azurerm_key_vault_secret" "managed_redis_connection_string" {
   name         = "managed-redis-connection-string"
   value        = "rediss://:${urlencode(module.redis_cache_managed_redis.access_key)}@${module.redis_cache_managed_redis.host_name}:${module.redis_cache_managed_redis.redis_port}?tls=true"
-  key_vault_id = module.azurerm_key_vault.key_vault_id
+  key_vault_id = "${data.azurerm_key_vault.ia_key_vault.id}"
 }

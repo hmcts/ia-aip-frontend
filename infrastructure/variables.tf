@@ -1,17 +1,17 @@
-variable "product" {  
+variable "product" {
 }
 
-variable "component" {  
+variable "component" {
 }
 
-variable "location" {  
+variable "location" {
   default = "UK South"
 }
 
-variable "env" {  
+variable "env" {
 }
 
-variable "subscription" {  
+variable "subscription" {
 }
 
 variable "common_tags" {

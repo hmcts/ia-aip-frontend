@@ -66,7 +66,7 @@ module "redis_cache_managed_redis" {
   common_tags = var.common_tags
 
   # Performance:
-  sku_name          = var.managed_redis_sku
+  sku_name = var.managed_redis_sku
 
   # Networking:
   public_network_access   = "Disabled"

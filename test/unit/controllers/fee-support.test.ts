@@ -89,12 +89,12 @@ describe('Fee support Controller', () => {
   describe('getRemissionOptionsQuestion', () => {
     it('should return the question', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
 
       const expectedQuestion = {
         title: i18n.pages.remissionOptionPage.title,
-        hint: i18n.pages.remissionOptionPage.hint.replace('{{ fee }}', '140'),
+        hint: i18n.pages.remissionOptionPage.hint.replace('{{ fee }}', '144'),
         options: [
           {
             value: i18n.pages.remissionOptionPage.options.asylumSupportFromHo.value,
@@ -135,12 +135,12 @@ describe('Fee support Controller', () => {
 
     it('should return the question with option checked', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
 
       const expectedQuestion = {
         title: i18n.pages.remissionOptionPage.title,
-        hint: i18n.pages.remissionOptionPage.hint.replace('{{ fee }}', '140'),
+        hint: i18n.pages.remissionOptionPage.hint.replace('{{ fee }}', '144'),
         options: [
           {
             value: i18n.pages.remissionOptionPage.options.asylumSupportFromHo.value,
@@ -189,7 +189,7 @@ describe('Fee support Controller', () => {
 
     it('should render fee-support.njk template with feature flag ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       await getFeeSupport(req as Request, res as Response, next);
 
@@ -260,7 +260,7 @@ describe('Fee support Controller', () => {
     it('should fail validation and render appeal-application/fee-support/fee-support.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       req.body = { 'button': 'save-and-continue' };
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
 
       const error: ValidationError = {
@@ -293,7 +293,7 @@ describe('Fee support Controller', () => {
       req.body = {
         'asylumSupportRefNumber': '',
         'saveForLater': 'saveForLater',
-        'feeWithHearing': '140',
+        'feeWithHearing': '144',
         'decisionHearingFeeOption': 'decisionWithHearing'
       };
 
@@ -305,7 +305,7 @@ describe('Fee support Controller', () => {
 
     it('should catch exception and call next with the error', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
 
       const error = new Error('an error');

@@ -131,6 +131,12 @@ export function isReadonlyApplicationEnabled(req: Request) {
   return req.session.appeal.readonlyApplicationEnabled;
 }
 
+export async function isFeePayPriceEnabled(req: Request) {
+  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
+  const isFeePayPriceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FEE_PAY_PRICE, defaultFlag);
+  return isFeePayPriceFeatureEnabled;
+}
+
 export function isUpdateTribunalDecide(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
   return (ftpaSetAsideFeatureEnabled &&
     req.session.appeal.history &&

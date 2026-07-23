@@ -85,8 +85,7 @@ module "redis_cache_managed_redis" {
 
 # Create a new secret for the new managed redis instance, this allows for ease of rollback via Flux
 resource "azurerm_key_vault_secret" "managed_redis_connection_string" {
-  for_each     = module.redis_cache_managed_redis
-  name         = "${var.product}-managed-redis-connection-string"
-  value        = "rediss://:${urlencode(each.value.access_key)}@${each.value.host_name}:${each.value.redis_port}?tls=true"
+  name         = "managed-redis-connection-string"
+  value        = "rediss://:${urlencode(module.redis_cache_managed_redis[var.env].access_key)}@${module.redis_cache_managed_redis[var.env].host_name}:${module.redis_cache_managed_redis[var.env].redis_port}?tls=true"
   key_vault_id = data.azurerm_key_vault.ia_key_vault.id
 }

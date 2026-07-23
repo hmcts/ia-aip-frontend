@@ -66,7 +66,7 @@ module "redis_cache_managed_redis" {
   common_tags = var.common_tags
 
   # Performance:
-  sku_name          = var.managed_redis_sku
+  sku_name = var.managed_redis_sku
 
   # Networking:
   public_network_access   = "Disabled"
@@ -87,5 +87,5 @@ module "redis_cache_managed_redis" {
 resource "azurerm_key_vault_secret" "managed_redis_connection_string" {
   name         = "managed-redis-connection-string"
   value        = "rediss://:${urlencode(module.redis_cache_managed_redis.access_key)}@${module.redis_cache_managed_redis.host_name}:${module.redis_cache_managed_redis.redis_port}?tls=true"
-  key_vault_id = "${data.azurerm_key_vault.ia_key_vault.id}"
+  key_vault_id = data.azurerm_key_vault.ia_key_vault.id
 }

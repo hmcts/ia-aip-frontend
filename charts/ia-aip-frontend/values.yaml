@@ -36,6 +36,7 @@ nodejs:
         - s2s-secret
         - ia-redis-access-key
         - ia-redis-connection-string
+        - ia-managed-redis-connection-string
         - launch-darkly-sdk-key
         - AppInsightsInstrumentationKey
         - hearing-centre-bradford-email

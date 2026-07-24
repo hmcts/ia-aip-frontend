@@ -1,17 +1,17 @@
-variable "product" {  
+variable "product" {
 }
 
-variable "component" {  
+variable "component" {
 }
 
-variable "location" {  
+variable "location" {
   default = "UK South"
 }
 
-variable "env" {  
+variable "env" {
 }
 
-variable "subscription" {  
+variable "subscription" {
 }
 
 variable "common_tags" {
@@ -31,4 +31,17 @@ variable "sku_name" {
 variable "capacity" {
   default     = "1"
   description = "The size of the Redis cache to deploy. Valid values are 1, 2, 3, 4, 5"
+}
+
+/** Managed redis variables **/
+variable "managed_redis_sku" {
+  description = "Managed Redis SKU. Override per environment in <env>.tfvars."
+  type        = string
+  default     = "Balanced_B0"
+}
+
+variable "private_dns_subscription_id" {
+  description = "Subscription ID hosting the privatelink.redis.azure.net DNS zone in core-infra-intsvc-rg."
+  type        = string
+  default     = "1baf5470-1c3e-40d3-a6f7-74bfbce4b348"
 }

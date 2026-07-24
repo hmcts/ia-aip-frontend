@@ -56,7 +56,7 @@ resource "azurerm_key_vault_secret" "redis_connection_string" {
 
 module "redis_cache_managed_redis" {
   # foreach conditional allows selective deployment to desired environments
-  for_each = toset(contains(["sandbox", "aat", "ithc", "perftest"], var.env) ? [var.env] : [])
+  for_each = toset(contains(["demo", "aat", "ithc", "perftest"], var.env) ? [var.env] : [])
   source   = "git@github.com:hmcts/terraform-module-azure-managed-redis?ref=main"
 
   product     = var.product

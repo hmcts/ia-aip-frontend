@@ -1,3 +1,4 @@
+import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
@@ -9,7 +10,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { getNationalitiesOptions } from '../../utils/nationalities';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { getRedirectPage, toIsoDate } from '../../utils/utils';
+import { asBooleanValue, getRedirectPage, toIsoDate } from '../../utils/utils';
 import {
   appellantNamesValidation,
   createStructuredError,
@@ -20,6 +21,8 @@ import {
   nationalityValidation
 } from '../../utils/validations/fields-validations';
 
+const homeOfficeValidationEnabled = asBooleanValue(config.get('features.homeOfficeValidationEnabled'));
+
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
@@ -27,7 +30,8 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
     const { homeOfficeRefNumber } = req.session.appeal.application || null;
     res.render('appeal-application/home-office/details.njk', {
       homeOfficeRefNumber,
-      previousPage: paths.appealStarted.taskList
+      previousPage: paths.appealStarted.taskList,
+      homeOfficeValidationEnabled
     });
   } catch (e) {
     next(e);
@@ -43,7 +47,8 @@ function renderHomeOfficeDetailsError(req: Request, res: Response, errorList: Va
         errors: fieldErrors,
         errorList: Object.values(errorList),
         homeOfficeRefNumber: req.body.homeOfficeRefNumber,
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled
       }
   );
 }
@@ -99,7 +104,8 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
     const previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
     return res.render('appeal-application/personal-details/name.njk', {
       personalDetails,
-      previousPage
+      previousPage,
+      homeOfficeValidationEnabled
     });
   } catch (e) {
     next(e);
@@ -116,7 +122,8 @@ function renderNamePageError(req: Request, res: Response, errors: ValidationErro
     },
     error: errors,
     errorList: Object.values(errorList),
-    previousPage
+    previousPage,
+    homeOfficeValidationEnabled
   });
 }
 
@@ -183,7 +190,8 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
     const dob = application.personalDetails && application.personalDetails.dob || null;
     return res.render('appeal-application/personal-details/date-of-birth.njk', {
       dob,
-      previousPage: paths.appealStarted.name
+      previousPage: paths.appealStarted.name,
+      homeOfficeValidationEnabled
     });
   } catch (e) {
     next(e);
@@ -195,7 +203,8 @@ function renderDateOfBirthError(req: Request, res: Response, errors: boolean | V
     errors: errors,
     errorList: Object.values(errorList),
     dob: { ...req.body },
-    previousPage: paths.appealStarted.name
+    previousPage: paths.appealStarted.name,
+    homeOfficeValidationEnabled
   });
 }
 

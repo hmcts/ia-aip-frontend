@@ -41,7 +41,7 @@ function postCheckYourAnswersRefund(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      return res.redirect(paths.appealSubmitted.confirmationRefund);
+      return res.redirect(paths.common.confirmationRefund);
     } catch (error) {
       next(error);
     }
@@ -66,7 +66,7 @@ async function createSummaryRowsFrom(req: Request) {
     const feeStatementRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.feeStatement,
       rowValue,
-      paths.appealSubmitted.feeSupportRefund + editParameter
+      paths.common.feeSupportRefund + editParameter
     );
     rows.push(feeStatementRow);
   }
@@ -75,7 +75,7 @@ async function createSummaryRowsFrom(req: Request) {
     const asylumSupportRefNumberRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.asylumSupportRefNumber,
       [lateAsylumSupportRefNumber],
-      paths.appealSubmitted.asylumSupportRefund + editParameter
+      paths.common.asylumSupportRefund + editParameter
     );
     rows.push(asylumSupportRefNumberRow);
   }
@@ -90,7 +90,7 @@ async function createSummaryRowsFrom(req: Request) {
     const helpWithFeesRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.helpWithFees,
       [helpWithFeeValue],
-      paths.appealSubmitted.helpWithFeesRefund + editParameter
+      paths.common.helpWithFeesRefund + editParameter
     );
     rows.push(helpWithFeesRow);
   }
@@ -99,7 +99,7 @@ async function createSummaryRowsFrom(req: Request) {
     const helpWithFeeRefNumberRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.helpWithFeesRefNumber,
       [lateHelpWithFeesRefNumber],
-      paths.appealSubmitted.helpWithFeesReferenceNumberRefund + editParameter
+      paths.common.helpWithFeesReferenceNumberRefund + editParameter
     );
     rows.push(helpWithFeeRefNumberRow);
   }
@@ -108,7 +108,7 @@ async function createSummaryRowsFrom(req: Request) {
     const localAuthorityLetterRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter,
       application.lateLocalAuthorityLetters.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
-      paths.appealSubmitted.localAuthorityLetterRefund + editParameter,
+      paths.common.localAuthorityLetterRefund + editParameter,
       Delimiter.BREAK_LINE
     );
     rows.push(localAuthorityLetterRow);
@@ -118,8 +118,8 @@ async function createSummaryRowsFrom(req: Request) {
 
 function setupCheckYourAnswersRefundController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.appealSubmitted.checkYourAnswersRefund, middleware, getCheckYourAnswersRefund);
-  router.post(paths.appealSubmitted.checkYourAnswersRefund, middleware, postCheckYourAnswersRefund(updateAppealService));
+  router.get(paths.common.checkYourAnswersRefund, middleware, getCheckYourAnswersRefund);
+  router.post(paths.common.checkYourAnswersRefund, middleware, postCheckYourAnswersRefund(updateAppealService));
   return router;
 }
 

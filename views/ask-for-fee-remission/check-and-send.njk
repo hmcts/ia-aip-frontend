@@ -21,7 +21,7 @@
     rows: summaryRows
   }) }}
 
-  <form method="post" action={{ paths.appealSubmitted.checkYourAnswersRefund }}>
+  <form method="post" action={{ paths.common.checkYourAnswersRefund }}>
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     <div class="save-buttons__container">
       {{ govukButton({

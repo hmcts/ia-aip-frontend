@@ -54,35 +54,7 @@ resource "azurerm_key_vault_secret" "redis_connection_string" {
   key_vault_id = data.azurerm_key_vault.ia_key_vault.id
 }
 
-module "redis_cache_managed_redis" {
-  # foreach conditional allows selective deployment to desired environments
-  for_each = toset(contains(["demo", "aat", "ithc", "perftest"], var.env) ? [var.env] : [])
-  source   = "git@github.com:hmcts/terraform-module-azure-managed-redis?ref=main"
 
-  product     = var.product
-  component   = var.component
-  env         = var.env
-  location    = var.location
-  common_tags = var.common_tags
-
-  # Performance:
-  sku_name = var.managed_redis_sku
-  clustering_policy = "EnterpriseCluster"
-
-  # Networking:
-  public_network_access   = "Disabled"
-  create_private_endpoint = true
-  subnet_id               = data.azurerm_subnet.core_infra_redis_subnet.id
-  private_dns_zone_ids    = ["/subscriptions/${var.private_dns_subscription_id}/resourceGroups/core-infra-intsvc-rg/providers/Microsoft.Network/privateDnsZones/privatelink.redis.azure.net"]
-
-  access_keys_authentication_enabled = true
-
-  # Backup (persistence) options:
-  persistence_rdb_backup_frequency = "6h"
-  # other available options (https://learn.microsoft.com/en-gb/azure/redis/how-to-persistence`):
-  ## persistence_aof_backup_frequency
-  ## geo_replication_group_name
-}
 
 # Create a new secret for the new managed redis instance, this allows for ease of rollback via Flux
 resource "azurerm_key_vault_secret" "managed_redis_connection_string" {
@@ -91,3 +63,6 @@ resource "azurerm_key_vault_secret" "managed_redis_connection_string" {
   value        = "rediss://:${urlencode(each.value.primary_access_key)}@${each.value.hostname}:${each.value.port}"
   key_vault_id = data.azurerm_key_vault.ia_key_vault.id
 }
+
+
+

@@ -67,6 +67,7 @@ module "redis_cache_managed_redis" {
 
   # Performance:
   sku_name = var.managed_redis_sku
+  clustering_policy = "EnterpriseCluster"
 
   # Networking:
   public_network_access   = "Disabled"

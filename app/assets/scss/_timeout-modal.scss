@@ -30,3 +30,9 @@
 .modal-overlay:not([aria-hidden="true"]) {
 	display: block;
 }
+
+.modal-buttons__container{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}

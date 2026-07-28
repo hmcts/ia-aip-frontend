@@ -67,6 +67,7 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
       const dlrmRefundFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true, dlrmRefundFlag);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...req.body['appealType'] !== 'protection' && { paAppealTypeAipPaymentOption: '' },

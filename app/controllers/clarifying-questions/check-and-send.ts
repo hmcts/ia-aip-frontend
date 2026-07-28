@@ -95,6 +95,7 @@ function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
         draftClarifyingQuestionsAnswers: []
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated

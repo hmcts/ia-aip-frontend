@@ -180,6 +180,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidReason)).to.equal(true);
     });
 
@@ -241,6 +242,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith('/appointment-dates-avoid-reasons/0')).to.equal(true);
     });
 

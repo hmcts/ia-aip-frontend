@@ -4,6 +4,7 @@ function getCurrentState(eventType: string): string {
   switch (eventType) {
     case 'editAppeal':
     case 'submitAppeal':
+    case 'deleteDraftAppeal':
       return 'appealStarted';
     case 'editReasonsForAppeal':
     case 'submitReasonsForAppeal':

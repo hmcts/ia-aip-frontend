@@ -54,6 +54,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_REASONS_FOR_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -156,6 +157,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
         }
         const appeal: Appeal = { ...req.session.appeal };
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_REASONS_FOR_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated

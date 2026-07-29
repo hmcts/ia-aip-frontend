@@ -1,8 +1,8 @@
 import config from 'config';
+import { redisClient } from './redis/client';
 import Logger, { getLogLabel } from './utils/logger';
 
 const session = require('express-session');
-const redis = require('redis');
 
 const useRedis: boolean = config.get('session.useRedis') === true;
 const isSecure: boolean = config.get('session.cookie.secure') === true;
@@ -15,12 +15,7 @@ function setupSession() {
   if (useRedis) {
     logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
     const RedisStore = require('connect-redis')(session);
-    const redisOpts = {
-      url: config.get('session.redis.url'),
-      ttl: config.get('session.redis.ttlInSeconds')
-    };
 
-    const client = redis.createClient(redisOpts);
     return session({
       cookie: {
         httpOnly: true,
@@ -32,7 +27,7 @@ function setupSession() {
       saveUninitialized: true,
       secret: config.get('session.redis.secret'),
       rolling: true,
-      store: new RedisStore({ client })
+      store: new RedisStore({ client: redisClient })
     });
   } else {
     return session({

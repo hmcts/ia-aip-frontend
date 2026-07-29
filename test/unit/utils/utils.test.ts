@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import {
@@ -12,6 +13,7 @@ import {
   getLatestRequestFeeRemissionEventHistoryWithRefundEnabled,
   getLatestUpdateRemissionDecisionsEventHistory,
   getLatestUpdateTribunalDecisionHistory,
+  getStateName,
   hasPendingTimeExtension,
   isFeePayPriceEnabled,
   isRemissionDecisionDecided,
@@ -558,19 +560,31 @@ describe('utils', () => {
 
   describe('isFeePayPriceEnabled', () => {
     it('should return true when fee pay price flag is enabled', async () => {
-      sandbox.stub(LaunchDarklyService, 'getInstance').returns({
-        getVariation: sandbox.stub().resolves(true)
-      });
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.FEE_PAY_PRICE, sinon.match.any).resolves(true);
       const result = await isFeePayPriceEnabled(req as Request);
       expect(result).to.equal(true);
     });
 
     it('should return false when fee pay price flag is disabled', async () => {
-      sandbox.stub(LaunchDarklyService, 'getInstance').returns({
-        getVariation: sandbox.stub().resolves(false)
-      });
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.FEE_PAY_PRICE, sinon.match.any).resolves(false);
+
       const result = await isFeePayPriceEnabled(req as Request);
       expect(result).to.equal(false);
+    });
+  });
+
+  describe('getStateName', () => {
+    it('should return the state name for a valid state id', () => {
+      expect(getStateName('appealStarted')).to.equal('Appeal started');
+      expect(getStateName('appealSubmitted')).to.equal('Appeal submitted');
+      expect(getStateName('awaitingReasonsForAppeal')).to.equal('Awaiting reasons for appeal');
+      expect(getStateName('decided')).to.equal('Decided');
+    });
+
+    it('should return the state id when state is not found', () => {
+      expect(getStateName('unknownState')).to.equal('unknownState');
     });
   });
 

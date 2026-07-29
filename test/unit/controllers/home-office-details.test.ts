@@ -4,7 +4,8 @@ import moment from 'moment';
 import {
   getDateLetterReceived,
   getDateLetterSent,
-  postDateLetterReceived,
+  getHomeOfficeDetails,
+  postDateLetterReceived, 
   postDateLetterSent,
   postHomeOfficeDetails,
   setupHomeOfficeDetailsController
@@ -30,8 +31,11 @@ describe('Home Office Details Controller', function () {
   let validateMidEventStub: sinon.SinonStub;
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
+  let clock: sinon.SinonFakeTimers;
+  const mockDate: Date = new Date('2025-06-16');
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    clock = sandbox.useFakeTimers(mockDate);
     req = {
       body: {},
       session: {
@@ -82,6 +86,7 @@ describe('Home Office Details Controller', function () {
   });
 
   afterEach(() => {
+    clock.restore();
     sandbox.restore();
   });
 
@@ -174,6 +179,7 @@ describe('Home Office Details Controller', function () {
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('1212-0099-0089-1080');
       expect(redirectStub.calledWith(paths.appealStarted.name)).to.equal(true);
     });
@@ -196,6 +202,7 @@ describe('Home Office Details Controller', function () {
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('A1234567');
       expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
@@ -219,6 +226,7 @@ describe('Home Office Details Controller', function () {
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('1212-0099-0089-1080');
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.equal(undefined);
@@ -380,15 +388,11 @@ describe('Home Office Details Controller', function () {
 
   describe('postDateLetterSent', () => {
     describe('appeal on time', () => {
-      const date = moment().subtract(14, 'd');
       let appeal: Appeal;
-      let day: string;
-      let month: string;
-      let year: string;
+      const day: string = '02';
+      const month: string = '06';
+      const year: string = '2025';
       beforeEach(() => {
-        day = date.format('DD');
-        month = date.format('MM');
-        year = date.format('YYYY');
         req.body['day'] = day;
         req.body['month'] = month;
         req.body['year'] = year;
@@ -424,6 +428,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -438,6 +443,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -448,18 +454,14 @@ describe('Home Office Details Controller', function () {
     });
 
     describe('appeal out of time', () => {
-      const date = moment().subtract(15, 'd');
       let appeal: Appeal;
-      let day: string;
-      let month: string;
-      let year: string;
+      const day: string = '01';
+      const month: string = '06';
+      const year: string = '2025';
       beforeEach(() => {
-        day = date.format('DD');
-        month = date.format('MM');
-        year = date.format('YYYY');
-        req.body['day'] = date.format('DD');
-        req.body['month'] = date.format('MM');
-        req.body['year'] = date.format('YYYY');
+        req.body['day'] = day;
+        req.body['month'] = month;
+        req.body['year'] = year;
         appeal = {
           ...req.session.appeal,
           application: {
@@ -493,6 +495,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -507,6 +510,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -520,6 +524,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -533,6 +538,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -547,6 +553,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -646,10 +653,7 @@ describe('Home Office Details Controller', function () {
     });
 
     it('should fail validation and render a validation error with day in future', async () => {
-      const currentDate = new Date();
-
-      const tomorrowDate = new Date();
-      tomorrowDate.setDate(currentDate.getDate() + 1);
+      const tomorrowDate = new Date('2025-06-17');
 
       req.body['day'] = tomorrowDate.getDate();
       req.body['month'] = tomorrowDate.getMonth() + 1;
@@ -679,12 +683,10 @@ describe('Home Office Details Controller', function () {
     });
 
     it('should fail validation and render a validation error with invalid date', async () => {
-      const currentDate = new Date();
-
       const tomorrowDate = new Date();
-      tomorrowDate.setDate(currentDate.getDate() + 1);
+      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
 
-      req.body['day'] = 31;
+      req.body['day'] = 35;
       req.body['month'] = 9;
       req.body['year'] = 2024;
 
@@ -786,6 +788,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.homeOfficeDecisionLetter)).to.equal(true);
     });
 
@@ -884,6 +887,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterReceived(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.homeOfficeDecisionLetter)).to.equal(true);
     });
 

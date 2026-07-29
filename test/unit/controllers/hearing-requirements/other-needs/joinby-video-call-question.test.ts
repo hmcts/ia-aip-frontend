@@ -138,6 +138,7 @@ describe('Hearing Requirements - Other Needs Section: Join By VideoCall Question
       expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsMultimediaEvidenceQuestion)).to.equal(true);
       expect(req.session.appeal.hearingRequirements.otherNeeds.remoteVideoCall).to.equal(true);
       expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
 
     it('should validate if appellant answers no and redirect to next page', async () => {
@@ -145,6 +146,7 @@ describe('Hearing Requirements - Other Needs Section: Join By VideoCall Question
       await postJoinHearingByVideoCallQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsVideoAppointmentReason)).to.equal(true);
       expect(req.session.appeal.hearingRequirements.otherNeeds.remoteVideoCall).to.equal(false);
     });

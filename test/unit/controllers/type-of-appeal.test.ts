@@ -151,6 +151,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
@@ -160,6 +161,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
@@ -209,6 +211,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
@@ -218,6 +221,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
@@ -228,6 +232,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });

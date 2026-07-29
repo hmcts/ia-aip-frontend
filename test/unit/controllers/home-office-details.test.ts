@@ -5,7 +5,8 @@ import {
   getDateLetterReceived,
   getDateLetterSent,
   getHomeOfficeDetails,
-  postDateLetterReceived, postDateLetterSent,
+  postDateLetterReceived, 
+  postDateLetterSent,
   postHomeOfficeDetails,
   setupHomeOfficeDetailsController
 } from '../../../app/controllers/appeal-application/home-office-details';
@@ -15,6 +16,8 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
+
+const proxyquire = require('proxyquire').noCallThru();
 
 describe('Home Office Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
@@ -102,9 +105,28 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('getHomeOfficeDetails', () => {
+    let getHomeOfficeDetails;
+    beforeEach(() => {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(false)
+      };
+      const homeOfficeDetailsController = proxyquire('../../../app/controllers/appeal-application/home-office-details', { config: configStub });
+      getHomeOfficeDetails = homeOfficeDetailsController.getHomeOfficeDetails;
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
     it('should render home-office/details.njk', function () {
       getHomeOfficeDetails(req as Request, res as Response, next);
-      expect(renderStub.calledOnceWith('appeal-application/home-office/details.njk')).to.equal(true);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/details.njk', {
+        homeOfficeRefNumber: req.session.appeal.application.homeOfficeRefNumber,
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled: false,
+      });
     });
 
     it('when called with edit param should render home-office/details.njk and update session', function () {
@@ -119,6 +141,23 @@ describe('Home Office Details Controller', function () {
       res.render = renderStub.throws(error);
       getHomeOfficeDetails(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
+    });
+
+    it('should render home-office/details.njk with homeOfficeValidationEnabled set to true', function () {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(true)
+      };
+      const homeOfficeDetailsController = proxyquire('../../../app/controllers/appeal-application/home-office-details', { config: configStub });
+      getHomeOfficeDetails = homeOfficeDetailsController.getHomeOfficeDetails;
+
+      getHomeOfficeDetails(req as Request, res as Response, next);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/details.njk', {
+        homeOfficeRefNumber: req.session.appeal.application.homeOfficeRefNumber,
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled: true,
+      });
     });
   });
 
@@ -217,7 +256,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [errorList],
           homeOfficeRefNumber: 'A1234567',
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.taskList,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -244,7 +284,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [errorList],
           homeOfficeRefNumber: 'notValid',
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.taskList,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -270,7 +311,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [errorList],
           homeOfficeRefNumber: '',
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.taskList,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -314,7 +356,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [errorList],
           homeOfficeRefNumber: '1212-0099-0089-1080',
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.taskList,
+          homeOfficeValidationEnabled: false
       });
     });
   });

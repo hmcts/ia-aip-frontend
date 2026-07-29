@@ -7,6 +7,7 @@ import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
+const proxyquire = require('proxyquire').noCallThru();
 
 describe('Home Office Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
@@ -86,6 +87,21 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('getNamesPage', () => {
+    let getNamePage;
+    beforeEach(() => {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(false)
+      };
+      const homeOfficeDetailsController = proxyquire('../../../app/controllers/appeal-application/home-office-details', { config: configStub });
+      getNamePage = homeOfficeDetailsController.getNamePage;
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
     it('should render personal-details/name.njk', function () {
       getNamePage(req as Request, res as Response, next);
       expect(renderStub.calledOnceWith('appeal-application/personal-details/name.njk')).to.equal(true);
@@ -108,7 +124,8 @@ describe('Home Office Details Controller', function () {
             familyName: 'familyName',
             givenNames: 'givenName'
           },
-          previousPage: paths.appealStarted.details
+          previousPage: paths.appealStarted.details,
+          homeOfficeValidationEnabled: false
         }
       );
     });
@@ -124,9 +141,28 @@ describe('Home Office Details Controller', function () {
             familyName: 'familyName',
             givenNames: 'givenName'
           },
-          previousPage: paths.appealStarted.gwfReference
+          previousPage: paths.appealStarted.gwfReference,
+          homeOfficeValidationEnabled: false
         }
       );
+    });
+
+    it('should render personal-details/name.njk with homeOfficeValidationEnabled set to true', function () {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(true)
+      };
+      const homeOfficeDetailsController = proxyquire('../../../app/controllers/appeal-application/home-office-details', { config: configStub });
+      const getNamePage = homeOfficeDetailsController.getNamePage;
+
+      req.session.appeal.application.personalDetails = { givenNames: 'givenName', familyName: 'familyName', dob: null };
+      getNamePage(req as Request, res as Response, next);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/name.njk', {
+        personalDetails: req.session.appeal.application.personalDetails,
+        previousPage: paths.appealStarted.details,
+        homeOfficeValidationEnabled: true,
+      });
     });
   });
 
@@ -240,7 +276,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [ givenNameErrors, familyNameError ],
           personalDetails: { familyName: '', givenNames: '' },
-          previousPage: paths.appealStarted.details
+          previousPage: paths.appealStarted.details,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -271,7 +308,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [ givenNameErrors, familyNameError ],
           personalDetails: { familyName: '', givenNames: '' },
-          previousPage: paths.appealStarted.gwfReference
+          previousPage: paths.appealStarted.gwfReference,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -308,7 +346,8 @@ describe('Home Office Details Controller', function () {
             },
             errorList: [errorList],
             personalDetails: { familyName: req.body.familyName, givenNames: req.body.givenNames },
-            previousPage: paths.appealStarted.details
+            previousPage: paths.appealStarted.details,
+            homeOfficeValidationEnabled: false
           });
     });
   });

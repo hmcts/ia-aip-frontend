@@ -28,6 +28,7 @@ nodejs:
     MAX_DRAFT_APPEALS: 5
     SECURE_SESSION: true
     TRACKING_SCRIPTS: false
+    HOME_OFFICE_VALIDATION_ENABLED: false
   aadIdentityName: ia
   keyVaults:
     ia:

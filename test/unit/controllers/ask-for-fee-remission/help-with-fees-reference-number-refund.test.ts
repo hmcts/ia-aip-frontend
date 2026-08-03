@@ -78,8 +78,8 @@ describe('Help with fees reference number refund Controller', function () {
       const middleware = [];
 
       setupHelpWithFeesReferenceNumberRefundController(middleware);
-      expect(routerGetStub.calledWith(paths.appealSubmitted.helpWithFeesReferenceNumberRefund)).to.equal(true);
-      expect(routerPOSTStub.calledWith(paths.appealSubmitted.helpWithFeesReferenceNumberRefund)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.helpWithFeesReferenceNumberRefund)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.common.helpWithFeesReferenceNumberRefund)).to.equal(true);
     });
 
     it('should render appeal-application/fee-support/help-with-fees-reference-number.njk', async () => {
@@ -88,7 +88,7 @@ describe('Help with fees reference number refund Controller', function () {
       expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk', {
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
-        formAction: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
+        formAction: paths.common.helpWithFeesReferenceNumberRefund,
         helpWithFeesReferenceNumber,
         refundJourney: true,
         errors: null
@@ -99,7 +99,7 @@ describe('Help with fees reference number refund Controller', function () {
       req.body['helpWithFeesRefNumber'] = 'HWF-111';
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
       expect(req.session.appeal.application.lateHelpWithFeesRefNumber).to.deep.equal('HWF-111');
-      expect(redirectStub.calledWith(paths.appealSubmitted.checkYourAnswersRefund)).to.equal(true);
+      expect(redirectStub.calledWith(paths.common.checkYourAnswersRefund)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
@@ -107,7 +107,7 @@ describe('Help with fees reference number refund Controller', function () {
       req.query = { 'edit': '' };
       await postHelpWithFeesRefNumber()(req as Request, res as Response, next);
       expect(req.session.appeal.application.lateHelpWithFeesRefNumber).to.deep.equal('HWF-111');
-      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
+      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.common.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
       expect(req.session.appeal.application.isEdit).to.be.undefined;
       expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
@@ -134,9 +134,9 @@ describe('Help with fees reference number refund Controller', function () {
             helpWithFeesRefNumber: error
           },
           errorList: [error],
-          previousPage: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
+          previousPage: paths.common.helpWithFeesReferenceNumberRefund,
           pageTitle: i18n.pages.helpWithFeesReference.title,
-          formAction: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
+          formAction: paths.common.helpWithFeesReferenceNumberRefund,
           refundJourney: true
         });
     });
@@ -156,9 +156,9 @@ describe('Help with fees reference number refund Controller', function () {
             helpWithFeesRefNumber: error
           },
           errorList: [error],
-          previousPage: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
+          previousPage: paths.common.helpWithFeesReferenceNumberRefund,
           pageTitle: i18n.pages.helpWithFeesReference.title,
-          formAction: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
+          formAction: paths.common.helpWithFeesReferenceNumberRefund,
           refundJourney: true
         });
     });

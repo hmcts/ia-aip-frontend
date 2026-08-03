@@ -22,7 +22,7 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
 
 function setConfirmationRefundController(middleware: Middleware[]): Router {
   const router = Router();
-  router.get(paths.appealSubmitted.confirmationRefund, middleware, getConfirmationPage);
+  router.get(paths.common.confirmationRefund, middleware, getConfirmationPage);
   return router;
 }
 

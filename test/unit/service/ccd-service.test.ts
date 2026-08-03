@@ -176,6 +176,12 @@ describe('ccd-service', () => {
       expect(getRequest.called).to.equal(true);
     });
 
+    it('loadCaseById', async () => {
+      await ccdService.loadCaseById(userId, caseId, headers);
+
+      expect(getRequest).to.have.been.called;
+    });
+
     it('validateMidEvent', async () => {
       const caseData = { journeyType: 'AIP' } as Partial<CaseData>;
       const midEventDetails: MidEventDetails = {

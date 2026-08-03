@@ -78,28 +78,28 @@ describe('Fee waiver Refund Controller', function () {
       const middleware = [];
 
       setupFeeWaiverRefundController(middleware);
-      expect(routerGetStub.calledWith(paths.appealSubmitted.feeWaiverRefund)).to.equal(true);
-      expect(routerPOSTStub.calledWith(paths.appealSubmitted.feeWaiverRefund)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.feeWaiverRefund)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.common.feeWaiverRefund)).to.equal(true);
     });
 
     it('should render fee-waiver.njk', async () => {
       await getFeeWaiver(req as Request, res as Response, next);
       expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/fee-waiver.njk', {
-        previousPage: paths.appealSubmitted.feeSupportRefund,
+        previousPage: paths.common.feeSupportRefund,
         refundJourney: true
       });
     });
 
     it('should redirect CYA page', async () => {
       await postFeeWaiver()(req as Request, res as Response, next);
-      expect(redirectStub.calledWith(paths.appealSubmitted.checkYourAnswersRefund)).to.equal(true);
+      expect(redirectStub.calledWith(paths.common.checkYourAnswersRefund)).to.equal(true);
     });
 
     it('when in edit mode should redirect check-and-send.njk and reset isEdit flag', async () => {
       req.query = { 'edit': '' };
       await postFeeWaiver()(req as Request, res as Response, next);
-      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
+      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.common.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
       expect(req.session.appeal.application.isEdit).to.be.undefined;
       expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });

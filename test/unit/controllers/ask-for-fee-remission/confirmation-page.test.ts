@@ -61,7 +61,7 @@ describe('Ask for a refund confirmation page Controller', function () {
       const middleware = [];
 
       setConfirmationRefundController(middleware);
-      expect(routerGetStub.calledWith(paths.appealSubmitted.confirmationRefund)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.confirmationRefund)).to.equal(true);
     });
 
     it('getConfirmationPage should render confirmation-page.njk after submission', () => {

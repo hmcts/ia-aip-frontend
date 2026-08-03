@@ -106,7 +106,18 @@ describe('isJourneyAllowedMiddleware', () => {
       paths.common.payLater,
       paths.common.payImmediately,
       paths.common.confirmationPayment,
-      paths.common.clarifyingQuestionsAnswersSentConfirmation
+      paths.common.clarifyingQuestionsAnswersSentConfirmation,
+      paths.common.feeSupportRefund,
+      paths.common.asylumSupportRefund,
+      paths.common.feeWaiverRefund,
+      paths.common.localAuthorityLetterRefund,
+      paths.common.localAuthorityLetterUploadRefund,
+      paths.common.localAuthorityLetterDeleteRefund,
+      paths.common.helpWithFeesRefund,
+      paths.common.stepsToApplyForHelpWithFeesRefund,
+      paths.common.helpWithFeesReferenceNumberRefund,
+      paths.common.checkYourAnswersRefund,
+      paths.common.confirmationRefund
     ];
     const permittedCommonPaths: string[] = [
       paths.common.index,

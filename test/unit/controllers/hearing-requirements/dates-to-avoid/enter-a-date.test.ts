@@ -196,19 +196,20 @@ describe('Hearing Requirements - Enter A date controller', () => {
   });
 
   describe('postEnterADatePage', () => {
-    it('should fail validation and render template with errors', async () => {
-      const invalidDate = moment().add(-1, 'week');
+    let invalidDate;
+    let availableHearingDates;
+    let expectedValidationError;
+    let invalidDateBody;
+    let expectedArgs;
 
-      req.body['day'] = invalidDate.date();
-      req.body['month'] = invalidDate.month() + 1;
-      req.body['year'] = invalidDate.year();
-
-      const availableHearingDates = {
+    beforeEach(() => {
+      invalidDate = moment().add(-1, 'week');
+      availableHearingDates = {
         from: moment().add(0, 'week').format(dayMonthYearFormat),
         to: moment().add(6, 'week').format(dayMonthYearFormat)
       };
 
-      const expectedValidationError = {
+      expectedValidationError = {
         date: {
           key: 'date',
           text: `Enter a date between ${availableHearingDates.from} and ${availableHearingDates.to}`,
@@ -216,22 +217,26 @@ describe('Hearing Requirements - Enter A date controller', () => {
         }
       };
 
-      const expectedArgs = {
+      invalidDateBody = {
+        day: invalidDate.date(),
+        month: invalidDate.month() + 1,
+        year: invalidDate.year()
+      };
+
+      expectedArgs = {
         errors: expectedValidationError,
         errorList: Object.values(expectedValidationError),
-        date: { ...req.body },
+        date: invalidDateBody,
         availableHearingDates,
         formAction: '/hearing-dates-avoid-enter',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         saveAndContinueOnly: true,
         hasNonLegalRep: false
-
       };
 
-      await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/dates-to-avoid/enter-a-date.njk',
-        expectedArgs);
+      req.body['day'] = invalidDateBody.day;
+      req.body['month'] = invalidDateBody.month;
+      req.body['year'] = invalidDateBody.year;
     });
 
     it('should fail validation and render template with errors and hasNonLegalRep', async () => {
@@ -272,7 +277,13 @@ describe('Hearing Requirements - Enter A date controller', () => {
         expectedArgs);
     });
 
-    it('should catch error and call next with error', async () => {
+    it('postEnterADatePage should fail validation and render template with errors', async () => {
+      await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(renderStub).to.be.calledWith('hearing-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs);
+    });
+
+    it('postEnterADatePage should catch error and call next with error', async () => {
       const error = new Error('an error');
       res.render = renderStub.throws(error);
 
@@ -280,10 +291,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
       expect(next.calledOnceWith(error)).to.equal(true);
     });
 
-  });
-
-  describe('postEnterADatePageWithId', () => {
-    it('should fail validation and render template with errors', async () => {
+    it('postEnterADatePageWithId should fail validation and render template with errors', async () => {
       req.params.id = '0';
 
       const invalidDate = moment(new Date('10-02-1989')).add(1, 'week');
@@ -322,7 +330,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
         expectedArgs);
     });
 
-    it('should catch error and call next with error', async () => {
+    it('postEnterADatePageWithId should catch error and call next with error', async () => {
       req.params.id = '0';
 
       const error = new Error('an error');

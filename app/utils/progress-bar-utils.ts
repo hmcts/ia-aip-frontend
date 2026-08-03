@@ -21,7 +21,6 @@ function buildProgressBarStages(state: string, isNonLegalRep: boolean, paymentSt
         States.CMA_REQUIREMENTS_SUBMITTED.id,
         States.CMA_ADJUSTMENTS_AGREED.id,
         States.CMA_LISTED.id,
-        States.RESPONDENT_REVIEW.id,
         States.CASE_UNDER_REVIEW.id
       ]
     },
@@ -41,8 +40,10 @@ function buildProgressBarStages(state: string, isNonLegalRep: boolean, paymentSt
 
   if (is24WeeksTimeline) {
     stages.yourAppealDetails.activeStatus.push(States.LISTING.id);
+    stages.yourHearingDetails.activeStatus.push(States.RESPONDENT_REVIEW.id);
   } else {
     stages.yourHearingDetails.activeStatus.push(States.LISTING.id);
+    stages.yourAppealArgument.activeStatus.push(States.RESPONDENT_REVIEW.id);
   }
 
   const i18n = getI18n(isNonLegalRep);

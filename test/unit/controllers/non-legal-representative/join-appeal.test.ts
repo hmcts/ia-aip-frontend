@@ -192,7 +192,7 @@ describe('Join appeal controllers setup', () => {
       expect(res.redirect).to.be.calledOnceWith(paths.nonLegalRep.joinAppealConfirmDetails);
     });
 
-    describe('should render join-appeal with correct errors on pip validation failure', async () => {
+    describe('should render join-appeal with correct errors on pip validation failure', () => {
       let pipValidation: PipValidation;
       const caseId: string = '1234-5678 9012-3456';
       const accessCode: string = 'someAccessCode';

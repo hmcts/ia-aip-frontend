@@ -2934,7 +2934,7 @@ describe('update-appeal-service', () => {
     });
   });
 
-  describe('submitEventRefactored', async () => {
+  describe('submitEventRefactored', () => {
     for (const event of Object.values(Events)) {
       it(`should submit event ${event.id} with ccd`, async () => {
         const appeal: Appeal = {

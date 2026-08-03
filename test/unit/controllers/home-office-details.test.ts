@@ -4,7 +4,6 @@ import moment from 'moment';
 import {
   getDateLetterReceived,
   getDateLetterSent,
-  getHomeOfficeDetails,
   postDateLetterReceived, postDateLetterSent,
   postHomeOfficeDetails,
   setupHomeOfficeDetailsController

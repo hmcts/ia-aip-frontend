@@ -31,7 +31,7 @@ Feature: Out of Time appeal @outOfTimeAppeal
     And I check page accessibility
     And I enter "11" "11" "1999" as my DOB and click Save and continue
     And I check page accessibility
-    And I pick "Angola" from the Nationalities drop down and click continue
+    And I pick "Angolan" from the Nationalities drop down and click continue
     And I check page accessibility
     And I enter an out of time letter sent date and click Save and continue
     And I check page accessibility

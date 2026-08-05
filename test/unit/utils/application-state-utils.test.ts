@@ -147,7 +147,7 @@ describe('application-state-utils', () => {
 
     it('should return \'Do This next section\' when application status is appealStartedPartial', async () => {
       req.session.appeal.appealStatus = 'appealStarted';
-      req.session.appeal.application.homeOfficeRefNumber = '12345678';
+      req.session.appeal.application.appealType = '12345678';
 
       const result = await getAppealApplicationNextStep(req as Request);
 
@@ -1201,7 +1201,7 @@ describe('application-state-utils', () => {
 
     req.session.appeal.appealStatus = 'appealSubmitted';
     req.session.appeal.application.remissionDecision = 'rejected';
-    req.session.appeal.feeWithHearing = '140';
+    req.session.appeal.feeWithHearing = '144';
     req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
     req.session.appeal.application.remissionRejectedDatePlus14days = '2022-03-12';
     req.session.appeal.history = [
@@ -1219,7 +1219,7 @@ describe('application-state-utils', () => {
     expect(result).to.deep.equal({
       cta: {},
       deadline: '07 March 2020',
-      feeForAppeal: '140',
+      feeForAppeal: '144',
       remissionRejectedDatePlus14days: '2022-03-12',
       descriptionParagraphs: [
         'The fee for this appeal is £{{ applicationNextStep.feeForAppeal }}.',
@@ -1937,7 +1937,7 @@ describe('application-state-utils', () => {
 
         req.session.appeal.appealStatus = 'pendingPayment';
         req.session.appeal.application.remissionDecision = 'rejected';
-        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.feeWithHearing = '144';
         req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
         req.session.appeal.application.remissionRejectedDatePlus14days = '2022-03-12';
         req.session.appeal.history = [
@@ -1955,7 +1955,7 @@ describe('application-state-utils', () => {
         expect(result).to.deep.equal({
           cta: {},
           deadline: '07 March 2020',
-          feeForAppeal: '140',
+          feeForAppeal: '144',
           remissionRejectedDatePlus14days: '2022-03-12',
           descriptionParagraphs: [
             'The fee for this appeal is £{{ applicationNextStep.feeForAppeal }}.',

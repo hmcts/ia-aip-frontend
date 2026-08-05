@@ -45,17 +45,6 @@ const paths = {
   },
   appealSubmitted: {
     confirmation: '/appeals-details-sent',
-    feeSupportRefund: '/fee-support-refund',
-    asylumSupportRefund: '/asylum-support-refund',
-    feeWaiverRefund: '/fee-waiver-refund',
-    localAuthorityLetterRefund: '/local-authority-letter-refund',
-    localAuthorityLetterUploadRefund: '/local-authority-letter-refund/upload',
-    localAuthorityLetterDeleteRefund: '/local-authority-letter-refund/delete',
-    helpWithFeesRefund: '/help-with-fees-refund',
-    stepsToApplyForHelpWithFeesRefund: '/steps-to-help-with-fees-refund',
-    helpWithFeesReferenceNumberRefund: '/help-with-fees-ref-number-refund',
-    checkYourAnswersRefund: '/check-your-answers-refund',
-    confirmationRefund: '/asked-for-remission'
   },
   pendingPayment: {
     confirmation: '/appeals-details-sent'
@@ -205,6 +194,10 @@ const paths = {
     redirectUrl: '/redirectUrl',
     start: '/start-appeal',
     overview: '/appeal-overview',
+    loadCase: '/load-case',
+    casesList: '/cases-list',
+    createNewAppeal: '/create-new-appeal',
+    deleteDraftAppeal: '/delete-draft-appeal/:id',
     fileNotFound: '/file-not-found',
     yourCQanswers: '/your-answers/:id',
 
@@ -271,6 +264,19 @@ const paths = {
     payLater: '/pay-later',
     payImmediately: '/pay-immediately',
     confirmationPayment: '/confirmation-payment',
+
+    // Refunds
+    feeSupportRefund: '/fee-support-refund',
+    asylumSupportRefund: '/asylum-support-refund',
+    feeWaiverRefund: '/fee-waiver-refund',
+    localAuthorityLetterRefund: '/local-authority-letter-refund',
+    localAuthorityLetterUploadRefund: '/local-authority-letter-refund/upload',
+    localAuthorityLetterDeleteRefund: '/local-authority-letter-refund/delete',
+    helpWithFeesRefund: '/help-with-fees-refund',
+    stepsToApplyForHelpWithFeesRefund: '/steps-to-help-with-fees-refund',
+    helpWithFeesReferenceNumberRefund: '/help-with-fees-ref-number-refund',
+    checkYourAnswersRefund: '/check-your-answers-refund',
+    confirmationRefund: '/asked-for-remission',
 
     // Change Representation
     changeRepresentation: '/change-representation',

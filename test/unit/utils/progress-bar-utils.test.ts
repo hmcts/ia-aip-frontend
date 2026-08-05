@@ -45,16 +45,16 @@ describe('progress-bar utils', () => {
     it('appealSubmitted', () => {
       const stages = buildProgressBarStages('appealSubmitted');
       const expectedStages = defaultStages;
-      expectedStages[0].active = true;
-      expectedStages[0].completed = false;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
       expect(expectedStages).to.deep.equal(stages);
     });
 
     it('appealSubmitted and not Paid', () => {
       const stages = buildProgressBarStages('appealSubmitted', 'Payment pending');
       const expectedStages = defaultStages;
-      expectedStages[0].active = true;
-      expectedStages[0].completed = false;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
       expect(expectedStages).to.deep.equal(stages);
     });
 
@@ -175,6 +175,36 @@ describe('progress-bar utils', () => {
       const expectedStages = defaultStages;
       expectedStages[0].active = true;
       expectedStages[0].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
+
+
+    it('respondentReview', () => {
+      const stages = buildProgressBarStages('respondentReview', 'Paid', false);
+
+      const expectedStages = defaultStages;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
+      expectedStages[1].active = true;
+      expectedStages[1].completed = false;
+      expectedStages[2].active = false;
+      expectedStages[2].completed = false;
+      expectedStages[3].active = false;
+      expectedStages[3].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
+
+    it('respondentReview when stf24w is set to \'Yes\'', () => {
+      const stages = buildProgressBarStages('respondentReview', 'Paid', true);
+      const expectedStages = defaultStages;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
+      expectedStages[1].active = false;
+      expectedStages[1].completed = true;
+      expectedStages[2].active = true;
+      expectedStages[2].completed = false;
+      expectedStages[3].active = false;
+      expectedStages[3].completed = false;
       expect(expectedStages).to.deep.equal(stages);
     });
   });

@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { APPLICANT_TYPE, FEATURE_FLAGS, FTPA_DECISION_OUTCOME_TYPE } from '../data/constants';
-import { countryList } from '../data/country-list';
+import { nationalityList } from '../data/nationality-list';
 import { paths } from '../paths';
 import { DocumentManagementService } from '../service/document-management-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
@@ -42,7 +42,7 @@ const getAppealApplicationData = (eventId: string, req: Request) => {
 async function getAppealDetails(req: Request): Promise<Array<any>> {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
   const { application } = req.session.appeal;
-  const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
+  const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : nationalityList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
     return getEvidenceUrl(doc);
   });
@@ -177,7 +177,7 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
 
 async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   const { application } = req.session.appeal;
-  const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
+  const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : nationalityList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
     return getEvidenceUrl(doc);
   });

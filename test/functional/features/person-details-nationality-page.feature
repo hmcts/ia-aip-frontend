@@ -21,7 +21,7 @@ Feature: Personal details nationality page
     Then I should see error summary
 
     Given I am on the personal details nationality page
-    When I enter a nationality "Armenia"
+    When I enter a nationality "Armenian"
     And I click "Save for later" button
     And I check page accessibility
     Then I am on the overview page
@@ -32,7 +32,7 @@ Feature: Personal details nationality page
     And I check page accessibility
 
     Given I am on the personal details nationality page
-    When I enter a nationality "Armenia"
+    When I enter a nationality "Armenian"
     And I click "Save and continue" button
     And I check page accessibility
     Then I should see letter received page

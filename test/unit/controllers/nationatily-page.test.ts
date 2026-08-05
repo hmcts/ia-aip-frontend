@@ -4,8 +4,8 @@ import {
   postNationalityPage,
   setupHomeOfficeDetailsController
 } from '../../../app/controllers/appeal-application/home-office-details';
-import { countryList } from '../../../app/data/country-list';
 import { Events } from '../../../app/data/events';
+import { nationalityList } from '../../../app/data/nationality-list';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
@@ -136,6 +136,7 @@ describe('Nationality details Controller', function () {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.letterReceived)).to.equal(true);
     });
 
@@ -145,6 +146,7 @@ describe('Nationality details Controller', function () {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.equal(undefined);
 
@@ -155,7 +157,7 @@ describe('Nationality details Controller', function () {
         nationality: ''
       };
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      const nationalitiesOptions = getNationalitiesOptions(countryList, '', 'Please select a nationality');
+      const nationalitiesOptions = getNationalitiesOptions(nationalityList, '', 'Please select a nationality');
       const error = {
         href: '#nationality',
         key: 'nationality',

@@ -1,15 +1,16 @@
+import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
-import { countryList } from '../../data/country-list';
 import { Events } from '../../data/events';
+import { nationalityList } from '../../data/nationality-list';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getNationalitiesOptions } from '../../utils/nationalities';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { getRedirectPage, toIsoDate } from '../../utils/utils';
+import { asBooleanValue, getRedirectPage, toIsoDate } from '../../utils/utils';
 import {
   appellantNamesValidation,
   createStructuredError,
@@ -20,6 +21,8 @@ import {
   nationalityValidation
 } from '../../utils/validations/fields-validations';
 
+const homeOfficeValidationEnabled = asBooleanValue(config.get('features.homeOfficeValidationEnabled'));
+
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
@@ -27,7 +30,8 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
     const { homeOfficeRefNumber } = req.session.appeal.application || null;
     res.render('appeal-application/home-office/details.njk', {
       homeOfficeRefNumber,
-      previousPage: paths.appealStarted.taskList
+      previousPage: paths.appealStarted.taskList,
+      homeOfficeValidationEnabled
     });
   } catch (e) {
     next(e);
@@ -43,7 +47,8 @@ function renderHomeOfficeDetailsError(req: Request, res: Response, errorList: Va
         errors: fieldErrors,
         errorList: Object.values(errorList),
         homeOfficeRefNumber: req.body.homeOfficeRefNumber,
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled
       }
   );
 }
@@ -78,6 +83,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -99,7 +105,8 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
     const previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
     return res.render('appeal-application/personal-details/name.njk', {
       personalDetails,
-      previousPage
+      previousPage,
+      homeOfficeValidationEnabled
     });
   } catch (e) {
     next(e);
@@ -116,7 +123,8 @@ function renderNamePageError(req: Request, res: Response, errors: ValidationErro
     },
     error: errors,
     errorList: Object.values(errorList),
-    previousPage
+    previousPage,
+    homeOfficeValidationEnabled
   });
 }
 
@@ -163,6 +171,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -183,7 +192,8 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
     const dob = application.personalDetails && application.personalDetails.dob || null;
     return res.render('appeal-application/personal-details/date-of-birth.njk', {
       dob,
-      previousPage: paths.appealStarted.name
+      previousPage: paths.appealStarted.name,
+      homeOfficeValidationEnabled
     });
   } catch (e) {
     next(e);
@@ -195,7 +205,8 @@ function renderDateOfBirthError(req: Request, res: Response, errors: boolean | V
     errors: errors,
     errorList: Object.values(errorList),
     dob: { ...req.body },
-    previousPage: paths.appealStarted.name
+    previousPage: paths.appealStarted.name,
+    homeOfficeValidationEnabled
   });
 }
 
@@ -241,6 +252,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -260,7 +272,7 @@ function getNationalityPage(req: Request, res: Response, next: NextFunction) {
     const { application } = req.session.appeal;
     const stateless = application.personalDetails.stateless;
     const nationality = application.personalDetails && application.personalDetails.nationality || null;
-    const nationalitiesOptions = getNationalitiesOptions(countryList, nationality, i18n.pages.nationality.defaultNationality);
+    const nationalitiesOptions = getNationalitiesOptions(nationalityList, nationality, i18n.pages.nationality.defaultNationality);
     return res.render('appeal-application/personal-details/nationality.njk', {
       stateless,
       nationalitiesOptions,
@@ -280,7 +292,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
       const validation = nationalityValidation(req.body);
       if (validation) {
         const nationality = req.body.nationality;
-        const nationalitiesOptions = getNationalitiesOptions(countryList, nationality, i18n.pages.nationality.defaultNationality);
+        const nationalitiesOptions = getNationalitiesOptions(nationalityList, nationality, i18n.pages.nationality.defaultNationality);
         return res.render('appeal-application/personal-details/nationality.njk', {
           nationalitiesOptions,
           errors: validation,
@@ -301,6 +313,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -365,6 +378,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -425,6 +439,7 @@ function postDateLetterReceived(updateAppealService: UpdateAppealService) {
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated

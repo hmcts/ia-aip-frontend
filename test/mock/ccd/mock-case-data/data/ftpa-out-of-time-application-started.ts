@@ -262,7 +262,7 @@ export default {
     ],
     'isAppellantMinor': 'No',
     'paymentReference': 'RC-1680-5369-5746-4868',
-    'feeWithoutHearing': '80',
+    'feeWithoutHearing': '82',
     'hmctsCaseCategory': 'Human rights',
     'isDecisionAllowed': 'dismissed',
     'notificationsSent': [

@@ -72,7 +72,7 @@ function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
     actions: { items: [{ href: '/date-birth?edit', text: 'Change', visuallyHiddenText: 'Date of birth' }] }
   }, {
     key: { text: 'Nationality' },
-    value: { html: 'Austria' },
+    value: { html: 'Austrian' },
     actions: { items: [{ href: '/nationality?edit', text: 'Change', visuallyHiddenText: 'Nationality' }] }
   }, {
     key: { text: 'Date letter received' },
@@ -124,10 +124,6 @@ function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
         visuallyHiddenText: 'Sponsor has access to information'
       }]
     }
-  }, {
-    key: { text: 'Appeal type' },
-    value: { html: i18n.appealTypes[appealType].name },
-    actions: { items: [{ href: '/appeal-type?edit', text: 'Change', visuallyHiddenText: 'Appeal type' }] }
   }, {
     key: { text: 'Home Office decision letter' },
     value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/anId\'>name</a>' },
@@ -190,7 +186,7 @@ function getMockedSummaryRowsPayment(appealType = 'protection'): SummaryRow[] {
     actions: { items: [{ href: '/date-birth?edit', text: 'Change', visuallyHiddenText: 'Date of birth' }] }
   }, {
     key: { text: 'Nationality' },
-    value: { html: 'Austria' },
+    value: { html: 'Austrian' },
     actions: { items: [{ href: '/nationality?edit', text: 'Change', visuallyHiddenText: 'Nationality' }] }
   }, {
     key: { text: 'Date letter received' },
@@ -242,10 +238,6 @@ function getMockedSummaryRowsPayment(appealType = 'protection'): SummaryRow[] {
         visuallyHiddenText: 'Sponsor has access to information'
       }]
     }
-  }, {
-    key: { text: 'Appeal type' },
-    value: { html: 'Deprivation of Citizenship' },
-    actions: { items: [{ href: '/appeal-type?edit', text: 'Change', visuallyHiddenText: 'Appeal type' }] }
   }, {
     key: { text: 'Home Office decision letter' },
     value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/anId\'>name</a>' },
@@ -699,6 +691,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(resRedirectSpy.called).to.equal(true);
     });
 
@@ -707,7 +700,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
@@ -722,6 +715,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(resRedirectSpy.called).to.equal(true);
     });
 
@@ -733,6 +727,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(resRedirectSpy.called).to.equal(true);
     });
 
@@ -744,6 +739,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
     });
 
     it('should submit appeal for "euSettlementScheme"', async () => {
@@ -754,6 +750,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(resRedirectSpy.called).to.equal(true);
     });
 
@@ -765,6 +762,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(resRedirectSpy.called).to.equal(true);
     });
 
@@ -776,6 +774,7 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(resRedirectSpy.called).to.equal(true);
     });
 
@@ -887,7 +886,7 @@ describe('Check and Send Controller', () => {
 
     it('should init a later payment', async () => {
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.feeCode = 'aCode';
       await getPayLater(paymentService as PaymentService, false)(req as Request, res as Response, next);
 
@@ -896,7 +895,7 @@ describe('Check and Send Controller', () => {
 
     it('should atch exception and call next with the error', async () => {
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       const error = new Error('an error');
       paymentService.initiatePayment = initiatePaymentStub.throws(error);
       updateAppealService.submitEventRefactored = submitStub.throws(error);

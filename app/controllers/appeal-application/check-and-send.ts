@@ -3,8 +3,8 @@ import moment from 'moment';
 import i18n from '../../../locale/en.json';
 import { appealTypes } from '../../data/appeal-types';
 import { FEATURE_FLAGS } from '../../data/constants';
-import { countryList } from '../../data/country-list';
 import { Events } from '../../data/events';
+import { nationalityList } from '../../data/nationality-list';
 import { appealOutOfTimeMiddleware } from '../../middleware/outOfTime-middleware';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
@@ -25,7 +25,7 @@ async function createSummaryRowsFrom(req: Request) {
   const appealTypeNames: string[] = application.appealType.split(',').map(appealTypeInstance => {
     return i18n.appealTypes[appealTypeInstance].name;
   });
-  const nationality = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
+  const nationality = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : nationalityList.find(country => country.value === application.personalDetails.nationality).name;
   const appealType = appealTypes.find(appeal => appeal.value === application.appealType).name;
   const editParameter = '?edit';
   const appellantInUk: boolean = (application.appellantInUk === 'Yes') || false;
@@ -176,12 +176,6 @@ async function createSummaryRowsFrom(req: Request) {
       rows.push(hasSponsorContactDetails);
       rows.push(hasSponsorAuthorisation);
     }
-
-    const appealTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType,
-        [appealTypeNames],
-        paths.appealStarted.typeOfAppeal + editParameter,
-        Delimiter.BREAK_LINE);
-    rows.push(appealTypeRow);
   }
 
   const homeOfficeDecisionLetterRow = addSummaryRow(
@@ -358,6 +352,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
       }
       const { appeal } = req.session;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -411,6 +406,7 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
           redirectUrl = paths.common.confirmationPayment;
         }
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true, dlrmRefundFlag);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated

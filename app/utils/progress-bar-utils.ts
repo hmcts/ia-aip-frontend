@@ -21,7 +21,6 @@ function buildProgressBarStages(state: string, paymentStatus?: string, is24Weeks
         States.CMA_REQUIREMENTS_SUBMITTED.id,
         States.CMA_ADJUSTMENTS_AGREED.id,
         States.CMA_LISTED.id,
-        States.RESPONDENT_REVIEW.id,
         States.CASE_UNDER_REVIEW.id
       ]
     },
@@ -41,15 +40,19 @@ function buildProgressBarStages(state: string, paymentStatus?: string, is24Weeks
 
   if (is24WeeksTimeline) {
     stages.yourAppealDetails.activeStatus.push(States.LISTING.id);
+    stages.yourHearingDetails.activeStatus.push(States.RESPONDENT_REVIEW.id);
   } else {
     stages.yourHearingDetails.activeStatus.push(States.LISTING.id);
+    stages.yourAppealArgument.activeStatus.push(States.RESPONDENT_REVIEW.id);
   }
+
+  const appealSubmitted = state === States.APPEAL_SUBMITTED.id;
 
   const yourAppealDetailsStage = {
     title: i18n.components.progressBar.yourAppealDetails.title,
     ariaLabel: i18n.components.progressBar.yourAppealDetails.ariaLabel,
-    active: stages.yourAppealDetails.activeStatus.includes(state) && paymentStatus !== 'Paid',
-    completed: !stages.yourAppealDetails.activeStatus.includes(state) || paymentStatus === 'Paid'
+    active: !appealSubmitted && stages.yourAppealDetails.activeStatus.includes(state) && paymentStatus !== 'Paid',
+    completed: appealSubmitted || !stages.yourAppealDetails.activeStatus.includes(state) || paymentStatus === 'Paid'
   };
 
   const yourAppealArgumentStage = {

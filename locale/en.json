@@ -211,11 +211,14 @@
       "title": "How do you want your appeal to be decided?",
       "hint" : {
         "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
-        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80.</p><p>Select an option</p>"
+        "withFeeOld": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80.</p><p>Select an option</p>",
+        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £144.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £82.</p><p>Select an option</p>"
       },
       "hintWithDrlmSetAsideFlag": {
-        "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>",
-        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>"
+        "withoutFeeOld": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>",
+        "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £144.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £82.</p><p>Select an option</p>",
+        "withFeeOld": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>",
+        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £144.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £82.</p><p>Select an option</p>"
       },
       "options": {
         "withHearing": {
@@ -230,7 +233,12 @@
     },
     "DOB": {
       "title": "What is your date of birth? ",
-      "hint": "For example, 31 3 1980"
+      "hint": "For example, 31 3 1980",
+      "updatedHints": [
+        "You should enter the details exactly as they appear on the decision letter. This can often be found in the 'How to appeal' section.",
+        "Do not enter a date of birth that does not appear on the decision letter",
+        "If you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>"
+      ]
     },
     "OOC": {
       "title": "Are you currently living in the United Kingdom?",
@@ -337,7 +345,12 @@
     "name": {
       "title": "What is your name?",
       "givenNames": "Given names",
-      "familyName": "Family name"
+      "familyName": "Family name",
+      "hints": [
+        "You should enter the details exactly as they appear on the decision letter. This can often be found in the 'How to appeal' section.",
+        "Do not enter any names that do not appear on your decision letter",
+        "If you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>"
+      ]
     },
     "enterPostcode": {
       "heading": "What is your address?",
@@ -379,6 +392,13 @@
         "It is usually either 9 numbers or 16 numbers with dashes, for example 123456789 or 1234-1234-1234-1234",
         "If your letter includes a reference with 8 numbers, like 98765432, add 0 to the start and enter that number, for example 098765432",
         "<strong>Do not</strong> enter any reference that includes a letter, for example A246893521"
+      ],
+      "updatedHints": [
+        "You should enter the reference number exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section.",
+        "It is usually either 9 numbers or 16 numbers with dashes, for example 123456789 or 1234-1234-1234-1234",
+        "If your letter includes a reference with 8 numbers, like 98765432, add 0 to the start and enter that number, for example 098765432",
+        "<strong>Do not</strong> enter any reference that includes a letter, for example A246893521",
+        "If you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>"
       ]
     },
     "homeOfficeLetterSent": {
@@ -854,7 +874,6 @@
       "needMoreTime": "Need more time?"
     },
     "ineligiblePage": {
-      "title": "You cannot currently use the service",
       "moreInfo": {
         "title": "More information",
         "moreInfoList": [
@@ -868,6 +887,39 @@
       "basedOnAnswers": "Based on your answers, you can use the new service to appeal an immigration or asylum decision.",
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
       "questions": "If you have any questions about the appeal process, call the Tribunal on<span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span> or email<a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:contactia@justice.gov.uk\"> contactia@justice.gov.uk/a>"
+    },
+    "casesList": {
+      "title": "Your appeals",
+      "columns": {
+        "appealRef": "Appeal reference",
+        "caseRef": "Case reference",
+        "appellant": "Appellant",
+        "status": "Status",
+        "options": "Options"
+      },
+      "viewLink": "View",
+      "deleteLink": "Delete",
+      "noCases": "You do not have any appeals.",
+      "createNewAppeal": "Create a new appeal",
+      "createNewAppealId": "create-new-appeal",
+      "tooManyDraftsError": "You have too many draft appeals. Please submit or delete them before creating a new appeal.",
+      "deleteDraftError": "There was an error deleting your draft appeal with reference {{ caseId }}. Please try again.",
+      "deleteNonDraftError": "You cannot delete appeal with reference {{ caseId }} because it is not a DRAFT appeal.",
+      "caseNotFoundError": "The case with reference {{ caseId }} could not be accessed.",
+      "createAppealModal": {
+        "id": "confirm-create-modal",
+        "title": "Are you sure you want to create a new appeal?",
+        "description": "You can only have {{ maxDraftAppeals }} draft appeals at one time. If you have more than this, you will need to submit or delete some first.",
+        "confirmButton": "Create new appeal"
+      },
+      "deleteDraftModal": {
+        "id": "delete-draft-modal",
+        "title": "Are you sure you want to delete this draft appeal?",
+        "description": "Are you sure you want to delete the draft appeal with the reference {{ caseId }}. Once deleted, it will be removed from the system and you will not be able to access it again.",
+        "confirmButton": "Delete draft appeal"
+      },
+      "deleteLinkClass": "delete-draft-appeal",
+      "deleteLinkId": "delete"
     },
     "overviewPage": {
       "title": "Your appeal overview",
@@ -4166,10 +4218,11 @@
     },
     "homeOfficeReference": {
       "required": "Enter the Home Office reference number",
-      "invalid": "You should enter the UAN or GWF reference exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section. The UAN is 16 digits with dashes. The GWF starts with the letters \"GWF\" and then has 9 digits. If you need help, please use the Home Office help form in the bullet points on this page."
+      "invalid": "Enter the Home Office reference number in the correct format"
     },
     "gwfReference": {
-      "required": "Enter the GWF reference number"
+      "required": "Enter the GWF reference number",
+      "invalid": "Enter the GWF reference number in the correct format"
     },
     "homeOfficeDecision": {
       "required": "Enter the reasons you think the Home Office decision is wrong"
@@ -4353,7 +4406,8 @@
       }
     },
     "back": {
-      "back": "Back"
+      "back": "Back",
+      "backToCasesList": "Back to your appeals"
     },
     "progressBar": {
       "yourAppealDetails": {
@@ -4463,7 +4517,7 @@
       "title": "There is a fee for this appeal",
       "description": "It costs:",
       "optionsList": [
-        "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
+        "<ul class='govuk-list govuk-list--bullet'><li>{{ £80 }} without a hearing</li><li>£140 with a hearing</li></ul>",
         "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
         "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
         "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",

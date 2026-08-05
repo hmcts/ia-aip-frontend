@@ -106,7 +106,7 @@ describe('Type of appeal Controller', () => {
         inline: false
       };
       req.session.appeal.application.appealType = 'protection';
-      const question = getDecisionTypeQuestion(req.session.appeal, false);
+      const question = getDecisionTypeQuestion(req.session.appeal, false, true);
 
       expect(question).to.deep.equal(expectedQuestion);
     });
@@ -143,7 +143,7 @@ describe('Type of appeal Controller', () => {
         inline: false
       };
       req.session.appeal.application.appealType = 'protection';
-      const question = getDecisionTypeQuestion(req.session.appeal, true);
+      const question = getDecisionTypeQuestion(req.session.appeal, true, true);
 
       expect(question.hint).to.equal(expectedQuestion.hint);
     });
@@ -155,7 +155,31 @@ describe('Type of appeal Controller', () => {
         inline: false
       };
       req.session.appeal.application.appealType = 'deprivation';
-      const question = getDecisionTypeQuestion(req.session.appeal, true);
+      const question = getDecisionTypeQuestion(req.session.appeal, true, true);
+
+      expect(question.hint).to.equal(expectedQuestion.hint);
+    });
+
+    it('should return the question hint text with old fee when fee price flag is off', () => {
+      const expectedQuestion = {
+        title: i18n.pages.decisionTypePage.title,
+        hint: i18n.pages.decisionTypePage.hint.withFeeOld,
+        inline: false
+      };
+      req.session.appeal.application.appealType = 'protection';
+      const question = getDecisionTypeQuestion(req.session.appeal, false, false);
+
+      expect(question.hint).to.equal(expectedQuestion.hint);
+    });
+
+    it('should return the question hint text with old fee and drlm flag when fee price flag is off', () => {
+      const expectedQuestion = {
+        title: i18n.pages.decisionTypePage.title,
+        hint: i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag.withFeeOld,
+        inline: false
+      };
+      req.session.appeal.application.appealType = 'protection';
+      const question = getDecisionTypeQuestion(req.session.appeal, true, false);
 
       expect(question.hint).to.equal(expectedQuestion.hint);
     });
@@ -197,6 +221,7 @@ describe('Type of appeal Controller', () => {
       sandbox.stub(PcqService.prototype, 'checkPcqHealth').resolves(false);
       await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
@@ -256,6 +281,35 @@ describe('Type of appeal Controller', () => {
       expect(renderStub.calledOnceWith('templates/radio-question-page.njk')).to.equal(true);
     });
 
+    it('should validate and redirect to the task-list page for revocationOfProtection appeal type', async () => {
+      req.body['answer'] = 'decisionWithHearing';
+      req.session.appeal.application.appealType = 'revocationOfProtection';
+      appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
+      appeal.application.decisionHearingFeeOption = '';
+      req.session.appeal.pcqId = 'temp';
+      appeal.pcqId = 'temp';
+      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
+    });
+
+    it('should validate and redirect to the task-list page for refusalOfHumanRights appeal type', async () => {
+      req.body['answer'] = 'decisionWithHearing';
+      req.session.appeal.application.appealType = 'refusalOfHumanRights';
+      appeal.application.appealType = 'refusalOfHumanRights';
+      appeal.application.rpDcAppealHearingOption = '';
+      appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.pcqId = 'temp';
+      appeal.pcqId = 'temp';
+      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
+    });
+
     it('getDecisionType should catch exception and call next with the error', async () => {
       req.body['answer'] = 'decisionWithHearing';
       const error = new Error('an error');
@@ -263,6 +317,13 @@ describe('Type of appeal Controller', () => {
       await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(next.calledOnceWith(error)).to.equal(true);
+    });
+
+    it('should redirect to overview with saved query when save for later is clicked', async () => {
+      req.body['saveForLater'] = 'saveForLater';
+      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(redirectStub.calledOnceWith(paths.common.overview + '?saved')).to.equal(true);
     });
   });
 

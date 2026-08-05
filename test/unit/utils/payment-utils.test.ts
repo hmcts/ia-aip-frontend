@@ -26,7 +26,7 @@ describe('payment-utils', () => {
             'decisionHearingFeeOption': 'decisionWithHearing'
           },
           'paAppealTypeAipPaymentOption': 'payNow',
-          'feeWithHearing': '140',
+          'feeWithHearing': '144',
           'feeCode': 'FEE0238',
           'feeVersion': '2'
         }
@@ -44,7 +44,7 @@ describe('payment-utils', () => {
 
       expect(result).to.deep.equal(
         {
-          calculated_amount: '140',
+          calculated_amount: '144',
           code: 'FEE0238',
           version: '2'
         }

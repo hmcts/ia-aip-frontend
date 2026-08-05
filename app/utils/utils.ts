@@ -131,6 +131,12 @@ export function isReadonlyApplicationEnabled(req: Request) {
   return req.session.appeal.readonlyApplicationEnabled;
 }
 
+export async function isFeePayPriceEnabled(req: Request) {
+  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
+  const isFeePayPriceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FEE_PAY_PRICE, defaultFlag);
+  return isFeePayPriceFeatureEnabled;
+}
+
 export function isUpdateTribunalDecide(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
   return (ftpaSetAsideFeatureEnabled &&
     req.session.appeal.history &&
@@ -281,4 +287,14 @@ export function toHtmlLink(fileId: string, name: string, hrefBase: string): stri
 export function documentIdToDocStoreUrl(id: string, documentMap: DocumentMap[]): string {
   const target: DocumentMap = documentMap.find(e => e.id === id);
   return target ? target.url : null;
+}
+
+/**
+ * Gets the display name for a state ID
+ * @param stateId the state ID (e.g., 'appealStarted')
+ * @returns the state display name (e.g., 'Appeal started') or the stateId if not found
+ */
+export function getStateName(stateId: string): string {
+  const state = Object.values(States).find(s => s.id === stateId);
+  return state ? state.name : stateId;
 }

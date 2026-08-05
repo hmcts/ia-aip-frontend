@@ -249,6 +249,11 @@ export const Events = {
     summary: 'Mark appeal as remitted',
     description: 'Mark appeal as remitted'
   },
+  DELETE_DRAFT_APPEAL: {
+    id: 'deleteDraftAppeal',
+    summary: 'Delete draft appeal AIP',
+    description: 'Delete draft appeal AIP'
+  },
   MARK_APPEAL_PAID: {
     id: 'markAppealPaid',
     summary: 'Mark appeal as paid',

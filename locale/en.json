@@ -3953,8 +3953,7 @@
       "homeOfficeReferenceNumberLabel": "Enter your GWF reference number",
       "hints": [
       "You should enter the reference number exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section.",
-      "Your GWF reference will be a 9-digit number starting with GWF, for example GWF123456789",
-      "If you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>"
+      "Your GWF reference will be a 9-digit number starting with GWF, for example GWF123456789"
     ]
     },
     "hrInside": {

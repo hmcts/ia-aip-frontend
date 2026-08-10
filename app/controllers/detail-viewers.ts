@@ -1197,6 +1197,26 @@ function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunct
   }
 }
 
+function getStfRemovalDecisionDocumentViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    const previousPage: string = paths.common.overview;
+    const doc = req.session.appeal.legalRepresentativeDocuments
+      .find(doc => doc.tag === 'stf24WeeksRemovalDecisionDocument');
+    const fileNameFormatted = fileNameFormatter(doc.name);
+    const data = [
+      addSummaryRow(i18n.pages.detailViewers.stfRemovalDecision.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${fileNameFormatted}</a>`]),
+      addSummaryRow(i18n.pages.detailViewers.stfRemovalDecision.dateTimeUploaded, [moment(doc.dateTimeUploaded).format(dateTimeFormat)]),
+    ];
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.stfRemovalDecision.title,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function getHomeOfficeWithdrawLetter(req: Request, res: Response, next: NextFunction) {
   try {
     const previousPage: string = paths.common.overview;
@@ -1677,6 +1697,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.directionHistoryViewer, getDirectionHistory);
   router.get(paths.common.updatedDecisionAndReasonsViewer, getUpdatedDecisionAndReasonsViewer);
   router.get(paths.common.remittalDocumentsViewer, getRemittalDocumentsViewer);
+  router.get(paths.common.stfRemovalDecisionDocumentViewer, getStfRemovalDecisionDocumentViewer);
   return router;
 }
 
@@ -1709,6 +1730,7 @@ export {
   getDirectionHistory,
   getRespondentApplicationSummaryRows,
   getUpdatedDecisionAndReasonsViewer,
+  getStfRemovalDecisionDocumentViewer,
   getRemittalDocumentsViewer,
   addFeeSupportStatus
 };

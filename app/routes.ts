@@ -33,6 +33,7 @@ import {
   setupStepToHelpWithFeesRefundController
 } from './controllers/ask-for-fee-remission/steps-to-help-with-fees-refund';
 import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
+import { setupCasesListController } from './controllers/cases-list';
 import { setupChangeRepresentationControllers } from './controllers/changing-representation';
 import { setupCQAnythingElseAnswerController } from './controllers/clarifying-questions/anything-else-answer';
 import { setupCQAnythingElseQuestionController } from './controllers/clarifying-questions/anything-else-question';
@@ -233,6 +234,7 @@ const startRepresentingMyselfPublicControllers = setupStartRepresentingMyselfCon
 const middleware = [isJourneyAllowedMiddleware];
 
 const applicationOverview = setupApplicationOverviewController(updateAppealService);
+const casesListController = setupCasesListController(updateAppealService);
 const taskListController = setupTaskListController(middleware);
 const homeOfficeDetailsController = setupHomeOfficeDetailsController(middleware, updateAppealService);
 const typeOfAppealController = setupTypeOfAppealController(middleware, updateAppealService);
@@ -398,6 +400,7 @@ router.use(confirmationController);
 router.use(checkAndSendController);
 router.use(outOfTimeController);
 router.use(applicationOverview);
+router.use(casesListController);
 
 router.use(reasonsForAppealController);
 router.use(reasonsForAppealCYAController);

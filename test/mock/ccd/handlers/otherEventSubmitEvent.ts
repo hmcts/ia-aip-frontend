@@ -17,6 +17,7 @@ function getNextState(body: EventSubmitBody): string {
   }
   switch (eventId) {
     case 'editAppeal':
+    case 'deleteDraftAppeal':
       return 'appealStarted';
     case 'submitAppeal':
       return ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(appealType)

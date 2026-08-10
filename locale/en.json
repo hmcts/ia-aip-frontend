@@ -233,7 +233,12 @@
     },
     "DOB": {
       "title": "What is your date of birth? ",
-      "hint": "For example, 31 3 1980"
+      "hint": "For example, 31 3 1980",
+      "updatedHints": [
+        "You should enter the details exactly as they appear on the decision letter. This can often be found in the 'How to appeal' section.",
+        "Do not enter a date of birth that does not appear on the decision letter",
+        "If you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>"
+      ]
     },
     "OOC": {
       "title": "Are you currently living in the United Kingdom?",
@@ -340,7 +345,12 @@
     "name": {
       "title": "What is your name?",
       "givenNames": "Given names",
-      "familyName": "Family name"
+      "familyName": "Family name",
+      "hints": [
+        "You should enter the details exactly as they appear on the decision letter. This can often be found in the 'How to appeal' section.",
+        "Do not enter any names that do not appear on your decision letter",
+        "If you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>"
+      ]
     },
     "enterPostcode": {
       "heading": "What is your address?",
@@ -382,6 +392,13 @@
         "It is usually either 9 numbers or 16 numbers with dashes, for example 123456789 or 1234-1234-1234-1234",
         "If your letter includes a reference with 8 numbers, like 98765432, add 0 to the start and enter that number, for example 098765432",
         "<strong>Do not</strong> enter any reference that includes a letter, for example A246893521"
+      ],
+      "updatedHints": [
+        "You should enter the reference number exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section.",
+        "It is usually either 9 numbers or 16 numbers with dashes, for example 123456789 or 1234-1234-1234-1234",
+        "If your letter includes a reference with 8 numbers, like 98765432, add 0 to the start and enter that number, for example 098765432",
+        "<strong>Do not</strong> enter any reference that includes a letter, for example A246893521",
+        "If you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>"
       ]
     },
     "homeOfficeLetterSent": {
@@ -870,6 +887,39 @@
       "basedOnAnswers": "Based on your answers, you can use the new service to appeal an immigration or asylum decision.",
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
       "questions": "If you have any questions about the appeal process, call the Tribunal on<span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span> or email<a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:contactia@justice.gov.uk\"> contactia@justice.gov.uk/a>"
+    },
+    "casesList": {
+      "title": "Your appeals",
+      "columns": {
+        "appealRef": "Appeal reference",
+        "caseRef": "Case reference",
+        "appellant": "Appellant",
+        "status": "Status",
+        "options": "Options"
+      },
+      "viewLink": "View",
+      "deleteLink": "Delete",
+      "noCases": "You do not have any appeals.",
+      "createNewAppeal": "Create a new appeal",
+      "createNewAppealId": "create-new-appeal",
+      "tooManyDraftsError": "You have too many draft appeals. Please submit or delete them before creating a new appeal.",
+      "deleteDraftError": "There was an error deleting your draft appeal with reference {{ caseId }}. Please try again.",
+      "deleteNonDraftError": "You cannot delete appeal with reference {{ caseId }} because it is not a DRAFT appeal.",
+      "caseNotFoundError": "The case with reference {{ caseId }} could not be accessed.",
+      "createAppealModal": {
+        "id": "confirm-create-modal",
+        "title": "Are you sure you want to create a new appeal?",
+        "description": "You can only have {{ maxDraftAppeals }} draft appeals at one time. If you have more than this, you will need to submit or delete some first.",
+        "confirmButton": "Create new appeal"
+      },
+      "deleteDraftModal": {
+        "id": "delete-draft-modal",
+        "title": "Are you sure you want to delete this draft appeal?",
+        "description": "Are you sure you want to delete the draft appeal with the reference {{ caseId }}. Once deleted, it will be removed from the system and you will not be able to access it again.",
+        "confirmButton": "Delete draft appeal"
+      },
+      "deleteLinkClass": "delete-draft-appeal",
+      "deleteLinkId": "delete"
     },
     "overviewPage": {
       "title": "Your appeal overview",
@@ -4353,7 +4403,8 @@
       }
     },
     "back": {
-      "back": "Back"
+      "back": "Back",
+      "backToCasesList": "Back to your appeals"
     },
     "progressBar": {
       "yourAppealDetails": {

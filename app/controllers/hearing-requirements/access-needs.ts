@@ -98,6 +98,7 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
         req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = answer;
         clearUnnecessaryInterpreterCachedData(req.session.appeal.hearingRequirements);
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated
@@ -190,6 +191,7 @@ function postInterpreterSupportAppellantWitnesses(updateAppealService: UpdateApp
       }
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -262,6 +264,7 @@ function postWitnessesInterpreterNeeds(updateAppealService: UpdateAppealService)
       });
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -390,6 +393,7 @@ function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
       clearUnnecessaryInterpreterCachedData(req.session.appeal.hearingRequirements);
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -556,6 +560,7 @@ function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealServ
       }
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -672,6 +677,7 @@ function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealServic
       }
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -841,6 +847,7 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
       }
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -975,6 +982,7 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
       const onSuccess = async (answer: boolean) => {
         req.session.appeal.hearingRequirements.isHearingRoomNeeded = answer;
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated
@@ -1029,6 +1037,7 @@ function postHearingLoopPage(updateAppealService: UpdateAppealService) {
       const onSuccess = async (answer: boolean) => {
         req.session.appeal.hearingRequirements.isHearingLoopNeeded = answer;
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated

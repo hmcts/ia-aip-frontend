@@ -89,9 +89,29 @@ describe('Personal Details Controller', function () {
   });
 
   describe('getDateOfBirthPage', () => {
+    let getDateOfBirthPage;
+    beforeEach(() => {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(false)
+      };
+      const homeOfficeDetailsController = proxyquire('../../../app/controllers/appeal-application/home-office-details', { config: configStub });
+      getDateOfBirthPage = homeOfficeDetailsController.getDateOfBirthPage;
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
     it('should render appeal-application/personal-details/date-of-birth.njk', () => {
+      req.session.appeal.application.personalDetails.dob = { day: '1', month: '1', year: '1990' };
       getDateOfBirthPage(req as Request, res as Response, next);
-      expect(renderStub.calledOnceWith('appeal-application/personal-details/date-of-birth.njk')).to.equal(true);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/date-of-birth.njk', {
+        dob: req.session.appeal.application.personalDetails.dob,
+        previousPage: paths.appealStarted.name,
+        homeOfficeValidationEnabled: false
+      });
     });
 
     it('when called with edit param should render appeal-application/personal-details/date-of-birth.njk and update session', () => {
@@ -102,6 +122,25 @@ describe('Personal Details Controller', function () {
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
       expect(renderStub.calledOnceWith('appeal-application/personal-details/date-of-birth.njk')).to.equal(true);
     });
+
+    it('should render appeal-application/personal-details/date-of-birth.njk with homeOfficeValidationEnabled set to true', () => {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(true)
+      };
+      const homeOfficeDetailsController = proxyquire('../../../app/controllers/appeal-application/home-office-details', { config: configStub });
+      getDateOfBirthPage = homeOfficeDetailsController.getDateOfBirthPage;
+
+      req.session.appeal.application.personalDetails.dob = { day: '1', month: '1', year: '1990' };
+      getDateOfBirthPage(req as Request, res as Response, next);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/date-of-birth.njk', {
+        dob: req.session.appeal.application.personalDetails.dob,
+        previousPage: paths.appealStarted.name,
+        homeOfficeValidationEnabled: true
+      });
+    });
+
   });
 
   describe('postDateOfBirth', () => {
@@ -141,6 +180,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.nationality)).to.equal(true);
     });
 
@@ -150,6 +190,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
       expect(req.session.appeal.application.isEdit).to.equal(undefined);
     });
@@ -209,7 +250,8 @@ describe('Personal Details Controller', function () {
             day: errorDay
           },
           errorList: [ errorDay ],
-          previousPage: paths.appealStarted.name
+          previousPage: paths.appealStarted.name,
+          homeOfficeValidationEnabled: false
         }
       );
     });
@@ -229,7 +271,8 @@ describe('Personal Details Controller', function () {
             month: errorMonth
           },
           errorList: [ errorMonth ],
-          previousPage: paths.appealStarted.name
+          previousPage: paths.appealStarted.name,
+          homeOfficeValidationEnabled: false
         }
       );
     });
@@ -250,7 +293,8 @@ describe('Personal Details Controller', function () {
             year: errorYear
           },
           errorList: [ errorYear ],
-          previousPage: paths.appealStarted.name
+          previousPage: paths.appealStarted.name,
+          homeOfficeValidationEnabled: false
         }
       );
     });
@@ -271,7 +315,8 @@ describe('Personal Details Controller', function () {
             year: errorDate
           },
           errorList: [ errorDate ],
-          previousPage: paths.appealStarted.name
+          previousPage: paths.appealStarted.name,
+          homeOfficeValidationEnabled: false
         }
       );
     });
@@ -311,7 +356,8 @@ describe('Personal Details Controller', function () {
               day: dayError
             },
             errorList: [errorList],
-            previousPage: paths.appealStarted.name
+            previousPage: paths.appealStarted.name,
+            homeOfficeValidationEnabled: false
           }
       );
 

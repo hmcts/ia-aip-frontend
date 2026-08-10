@@ -31,7 +31,8 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
     const { homeOfficeRefNumber } = req.session.appeal.application || null;
     res.render('appeal-application/home-office/details.njk', {
       homeOfficeRefNumber,
-      previousPage: paths.appealStarted.taskList
+      previousPage: paths.appealStarted.taskList,
+      homeOfficeValidationEnabled
     });
   } catch (e) {
     next(e);
@@ -47,7 +48,8 @@ function renderHomeOfficeDetailsError(req: Request, res: Response, errorList: Va
         errors: fieldErrors,
         errorList: Object.values(errorList),
         homeOfficeRefNumber: req.body.homeOfficeRefNumber,
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled
       }
   );
 }
@@ -85,6 +87,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -106,7 +109,8 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
     const previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
     return res.render('appeal-application/personal-details/name.njk', {
       personalDetails,
-      previousPage
+      previousPage,
+      homeOfficeValidationEnabled
     });
   } catch (e) {
     next(e);
@@ -123,7 +127,8 @@ function renderNamePageError(req: Request, res: Response, errors: ValidationErro
     },
     error: errors,
     errorList: Object.values(errorList),
-    previousPage
+    previousPage,
+    homeOfficeValidationEnabled
   });
 }
 
@@ -172,6 +177,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -192,7 +198,8 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
     const dob = application.personalDetails && application.personalDetails.dob || null;
     return res.render('appeal-application/personal-details/date-of-birth.njk', {
       dob,
-      previousPage: paths.appealStarted.name
+      previousPage: paths.appealStarted.name,
+      homeOfficeValidationEnabled
     });
   } catch (e) {
     next(e);
@@ -204,7 +211,8 @@ function renderDateOfBirthError(req: Request, res: Response, errors: boolean | V
     errors: errors,
     errorList: Object.values(errorList),
     dob: { ...req.body },
-    previousPage: paths.appealStarted.name
+    previousPage: paths.appealStarted.name,
+    homeOfficeValidationEnabled
   });
 }
 
@@ -252,6 +260,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -312,6 +321,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -376,6 +386,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -436,6 +447,7 @@ function postDateLetterReceived(updateAppealService: UpdateAppealService) {
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated

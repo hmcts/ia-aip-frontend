@@ -352,6 +352,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
       }
       const { appeal } = req.session;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -405,6 +406,7 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
           redirectUrl = paths.common.confirmationPayment;
         }
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true, dlrmRefundFlag);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated

@@ -308,6 +308,7 @@ interface Application<T> {
   decisionDate?: string;
   decisionMaker?: string;
   decisionReason?: string;
+  applicationFor24w?: string;
 }
 interface DateToAvoid {
   dateToAvoid: string;

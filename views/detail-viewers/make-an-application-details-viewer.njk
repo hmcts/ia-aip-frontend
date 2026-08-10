@@ -19,6 +19,10 @@
     {{ govukSummaryList({
       rows: response
     }) }}
+    {% if noticeOf24RemovalDoc %}
+      <p class="govuk-!-margin-top-8"><a href="{{ noticeOf24RemovalDoc.url }}" class="govuk-link" target="_blank">{{ noticeOf24RemovalDoc.name }}</a></p>
+    {% endif %}
+
   {% endif %}
 
   {% if whatNext %}

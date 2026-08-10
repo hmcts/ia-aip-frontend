@@ -182,7 +182,8 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'listing':
       let paragraphs: string[];
       if (is24WeeksTimeline) {
-        paragraphs = [i18n.pages.overviewPage.doThisNext.stf24w.listing.detailsSent];
+        const isWithoutHearing = req.session.appeal.application.decisionHearingFeeOption == 'decisionWithoutHearing' || req.session.appeal.application.rpDcAppealHearingOption == 'decisionWithoutHearing';
+        paragraphs = [(isWithoutHearing ? i18n.pages.overviewPage.doThisNext.stf24w.listing.withoutHearing : i18n.pages.overviewPage.doThisNext.stf24w.listing.detailsSent)];
       } else {
         paragraphs = eventByLegalRep(req, Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, 'listing')
             ? [

@@ -1435,6 +1435,31 @@ describe('application-state-utils', () => {
         });
       });
 
+      if (is24WeeksTimeline) {
+        const hearingOptions = ['decisionWithoutHearing', 'decisionWithHearing'];
+        hearingOptions.forEach(hearingOption => {
+          it(`when application status is listing and stf24w was set to Yes and hearing option is '${hearingOption}' should get correct 'Do This next section`, async () => {
+            req.session.appeal.appealStatus = 'listing';
+            req.session.appeal.application.decisionHearingFeeOption = hearingOption;
+            const result = await getAppealApplicationNextStep(req as Request);
+
+            const isWithoutHearing = hearingOption === 'decisionWithoutHearing';
+            expect(result).to.deep.equal({
+              cta: null,
+              deadline: '25 January 2022',
+              descriptionParagraphs: isWithoutHearing ?
+                  ['As you have asked for a decision without a hearing, your appeal will be allocated to a Judge at a later date.'] :
+                  ['Your appeal is being listed for a hearing, you will receive a notification of the hearing once it has been scheduled.'],
+              info: {
+                title: 'Helpful Information',
+                url: '<a class=\'govuk-link\' href=\'{{ paths.common.whatToExpectAtHearing }}\'>What to expect at a hearing</a>'
+              },
+              allowedAskForMoreTime: false
+            });
+          });
+        });
+      }
+
       describe('awaitingReasonsForAppeal', () => {
         beforeEach(() => {
           req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';

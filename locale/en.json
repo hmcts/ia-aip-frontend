@@ -1386,7 +1386,8 @@
             }
           },
           "listing": {
-            "detailsSent": "Your appeal is being listed for a hearing, you will receive a notification of the hearing once it has been scheduled."
+            "detailsSent": "Your appeal is being listed for a hearing, you will receive a notification of the hearing once it has been scheduled.",
+            "withoutHearing": "As you have asked for a decision without a hearing, your appeal will be allocated to a Judge at a later date."
           },
           "awaitingRespondentEvidence": {
             "detailsSent": "Your appeal details have been sent to the Tribunal.",

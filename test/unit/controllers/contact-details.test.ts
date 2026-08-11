@@ -545,7 +545,7 @@ describe('Contact details Controller', () => {
       expect(renderStub.calledOnceWith('appeal-application/sponsor-details/has-sponsor-or-nlr.njk')).to.equal(true);
     });
 
-    it('should render sponsor-details/has-sponsor-or-nlr.njk', async () => {
+    it('should render sponsor-details/has-sponsor-or-nlr.njk with previous page pointing to enter-postcode endpoint', async () => {
       await getHasSponsorOrNlr(req as Request, res as Response, next);
       expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/sponsor-details/has-sponsor-or-nlr.njk', {
@@ -1905,7 +1905,7 @@ describe('Contact details Controller', () => {
       });
     });
 
-    it('should render with error if validation fails empty and isSponsorSameAsNlr', async () => {
+    it('should render textarea with error if validation fails empty when isSponsorSameAsNlr is No', async () => {
       req.session.appeal.application.isSponsorSameAsNlr = 'No';
       req.session.appeal.application.hasSponsor = 'No';
       req.body['nlr-address'] = '';
@@ -1935,7 +1935,7 @@ describe('Contact details Controller', () => {
       });
     });
 
-    it('should update req.session.appeal and redirect to contact details if validation passes and isEdit false and isSponsorSameAsNlr', async () => {
+    it('should update req.session.appeal with textarea address and redirect to contact details if validation passes and isEdit false', async () => {
       const expectedAddress: string = 'some address\ntext area';
       req.body['nlr-address'] = expectedAddress;
 
@@ -1947,7 +1947,7 @@ describe('Contact details Controller', () => {
       expect(redirectStub).calledWith(paths.appealStarted.nlrContactDetails);
     });
 
-    it('should update req.session.appeal and redirect to CYA if validation passes and isEdit true and isSponsorSameAsNlr', async () => {
+    it('should update req.session.appeal with textarea address and redirect to CYA if validation passes and isEdit true', async () => {
       const expectedAddress: string = 'some address\ntext area';
       req.body['nlr-address'] = expectedAddress;
       req.session.appeal.application.isEdit = true;

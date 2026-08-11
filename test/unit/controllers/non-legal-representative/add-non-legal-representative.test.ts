@@ -1055,7 +1055,7 @@ describe('Add non-legal representative controllers setup', () => {
       });
     });
 
-    it('should render with error if validation fails empty', async () => {
+    it('should render textarea with error if validation fails empty when hasSponsor is No', async () => {
       req.session.appeal.application.hasSponsor = 'No';
       req.body['nlr-address'] = '';
       await postNlrAddress(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -1083,7 +1083,7 @@ describe('Add non-legal representative controllers setup', () => {
       });
     });
 
-    it('should update req.session.appeal and redirect to contact details if validation passes and isEdit true', async () => {
+    it('should update req.session.appeal with textarea address and redirect to contact details if validation passes and isEdit false', async () => {
       req.body['nlr-address'] = 'some address';
       expect(req.session.appeal.nlrDetails.address).to.be.undefined;
       expect(req.session.appeal.nlrDetails.address || 'none').to.equal('none');
@@ -1093,7 +1093,7 @@ describe('Add non-legal representative controllers setup', () => {
       expect(redirectStub).calledWith(paths.nonLegalRep.addNonLegalRep);
     });
 
-    it('should update req.session.appeal and redirect to CYA if validation passes and isEdit true', async () => {
+    it('should update req.session.appeal with textarea address and redirect to CYA if validation passes and isEdit true', async () => {
       req.session.appeal.application.isEdit = true;
       req.body['nlr-address'] = 'some address';
       expect(req.session.appeal.nlrDetails.address).to.be.undefined;
@@ -1173,7 +1173,7 @@ describe('Add non-legal representative controllers setup', () => {
       });
     });
 
-    it('should render with error if validation fails empty', async () => {
+    it('should render with error if phone number validation fails empty', async () => {
       req.body['phoneNumber'] = '';
       await postNlrPhoneNumber(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 

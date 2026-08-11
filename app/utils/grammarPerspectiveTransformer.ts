@@ -164,11 +164,11 @@ function grammarAwareTransform(text, isProgressBar: boolean) {
 
 function removeLink(text: string, path: string, removeText: boolean) {
   if (text.includes(path)) {
-    const linkRegex = new RegExp(`<a href={{\\s*${path}\\s*}}>(.*?)</a>`, 'g');
+    const linkRegex = new RegExp(String.raw`<a href={{\s*${path}\s*}}>(.*?)</a>`, 'g');
     if (linkRegex.test(text)) {
       return text.replaceAll(linkRegex, removeText ? '' : '$1');
     }
-    const linkRegex2 = new RegExp(`<a href="{{\\s*${path}\\s*}}">(.*?)</a>`, 'g');
+    const linkRegex2 = new RegExp(String.raw`<a href="{{\s*${path}\s*}}">(.*?)</a>`, 'g');
     return text.replaceAll(linkRegex2, removeText ? '' : '$1');
   } else {
     return text;

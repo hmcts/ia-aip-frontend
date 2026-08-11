@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import _ from 'lodash';
+import has from 'lodash/has';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
@@ -17,7 +17,7 @@ import {
 
 function getSamePerson(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = has(req.query, 'edit');
     const application = req.session.appeal.application;
     const isSponsorSameAsNlr = application.isSponsorSameAsNlr;
     return res.render('appeal-application/sponsor-details/is-same-person.njk', {
@@ -64,7 +64,7 @@ function postSamePerson() {
 
 function getNlrName(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = has(req.query, 'edit');
     const nlrDetails = req.session?.appeal?.nlrDetails;
     const nlrGivenNames = nlrDetails?.givenNames;
     const nlrFamilyName = nlrDetails?.familyName;
@@ -116,7 +116,7 @@ function postNlrName() {
 
 function getNlrAddress(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = has(req.query, 'edit');
     const isSponsorSameAsNlr: boolean = req.session.appeal?.application?.isSponsorSameAsNlr === 'Yes';
     const renderObj: any = {
       previousPage: paths.nonLegalRep.updateName,
@@ -209,7 +209,7 @@ function postNlrAddress() {
 
 function getNlrContactDetails(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = has(req.query, 'edit');
     const emailAddress = req.session.appeal?.nlrDetails?.emailAddress;
     const phoneNumber = req.session.appeal?.nlrDetails?.phoneNumber;
     return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {

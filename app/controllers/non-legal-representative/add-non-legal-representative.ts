@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import _ from 'lodash';
+import has from 'lodash/has';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
@@ -159,7 +159,7 @@ function getInviteToCreateAccountConfirmation(req: Request, res: Response, next:
 
 function getSamePerson(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = has(req.query, 'edit');
     const application = req.session.appeal.application;
     const isSponsorSameAsNlr = application.isSponsorSameAsNlr;
     return res.render('appeal-application/sponsor-details/is-same-person.njk', {
@@ -219,7 +219,7 @@ function isSponsorSame(req: Request): boolean {
 
 function getNlrName(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = has(req.query, 'edit');
     const isSponsorSameAsNlr = isSponsorSame(req);
     const nlrDetails = req.session?.appeal?.nlrDetails;
     const nlrGivenNames = nlrDetails?.givenNames || (isSponsorSameAsNlr ? req.session.appeal?.application?.sponsorGivenNames : '');
@@ -274,7 +274,7 @@ function postNlrName(updateAppealService: UpdateAppealService) {
 
 function getNlrAddress(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = has(req.query, 'edit');
     const isSponsorSameAsNlr = isSponsorSame(req);
     const renderObj: any = {
       previousPage: paths.nonLegalRep.addNonLegalRep,
@@ -373,7 +373,7 @@ function postNlrAddress(updateAppealService: UpdateAppealService) {
 
 function getNlrPhoneNumber(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = has(req.query, 'edit');
     const phoneNumber = req.session.appeal?.nlrDetails?.phoneNumber;
     return res.render('appeal-application/non-legal-rep-details/contact-details.njk', {
       title: i18n.pages.nlrPhoneNumber.title,

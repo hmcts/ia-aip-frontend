@@ -323,6 +323,8 @@ function addNonLegalRepStatus(appeal: Appeal): ApplicationStatus {
   };
 
   const hasSponsor = _.get(appeal, 'application.hasSponsor') === 'Yes';
+  const isSponsorSameAsNlr = _.get(appeal, 'application.isSponsorSameAsNlr') === 'Yes';
+
   const isNlrSameAsSponsor: Task = {
     id: 'isNlrSameAsSponsor',
     active: provideNlrEmail.completed && hasSponsor && !hasValue(appeal, 'application.isSponsorSameAsNlr'),
@@ -337,11 +339,18 @@ function addNonLegalRepStatus(appeal: Appeal): ApplicationStatus {
     completed: hasValue(appeal, 'nlrDetails.givenNames') && hasValue(appeal, 'nlrDetails.familyName')
   };
 
+  const hasUkAddress = hasValue(appeal, 'nlrDetails.addressUk.line1') &&
+    hasValue(appeal, 'nlrDetails.addressUk.city') &&
+    hasValue(appeal, 'nlrDetails.addressUk.postcode');
+  const hasTextAddress = hasValue(appeal, 'nlrDetails.address');
+  const addressCompleted = isSponsorSameAsNlr ? hasUkAddress : hasTextAddress;
+  const addressMissing = isSponsorSameAsNlr ? !hasValue(appeal, 'nlrDetails.addressUk') : !hasTextAddress;
+
   const provideNlrAddress: Task = {
     id: 'provideNlrAddress',
-    active: provideNlrEmail.completed && (_.get(appeal, 'application.isSponsorSameAsNlr') === 'Yes' ? !hasValue(appeal, 'nlrDetails.addressUk') : !hasValue(appeal, 'nlrDetails.address')),
-    saved: _.get(appeal, 'application.isSponsorSameAsNlr') === 'Yes' ? hasValue(appeal, 'nlrDetails.addressUk.line1') && hasValue(appeal, 'nlrDetails.addressUk.city') && hasValue(appeal, 'nlrDetails.addressUk.postcode') : hasValue(appeal, 'nlrDetails.address'),
-    completed: _.get(appeal, 'application.isSponsorSameAsNlr') === 'Yes' ? hasValue(appeal, 'nlrDetails.addressUk.line1') && hasValue(appeal, 'nlrDetails.addressUk.city') && hasValue(appeal, 'nlrDetails.addressUk.postcode') : hasValue(appeal, 'nlrDetails.address')
+    active: provideNlrEmail.completed && addressMissing,
+    saved: addressCompleted,
+    completed: addressCompleted
   };
 
   const provideNlrPhone: Task = {

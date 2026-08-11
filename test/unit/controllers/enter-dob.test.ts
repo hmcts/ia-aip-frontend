@@ -357,7 +357,7 @@ describe('Personal Details Controller', function () {
             },
             errorList: [errorList],
             previousPage: paths.appealStarted.name,
-            homeOfficeValidationEnabled: false
+            homeOfficeValidationEnabled: true
           }
       );
 

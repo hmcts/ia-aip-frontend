@@ -354,7 +354,7 @@ describe('Home Office Details Controller', function () {
             errorList: [errorList],
             personalDetails: { familyName: req.body.familyName, givenNames: req.body.givenNames },
             previousPage: paths.appealStarted.details,
-            homeOfficeValidationEnabled: false
+            homeOfficeValidationEnabled: true
           });
 
       sinon.restore();

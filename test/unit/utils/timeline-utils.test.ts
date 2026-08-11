@@ -1052,8 +1052,8 @@ describe('timeline-utils', () => {
   describe('getEventsAndStates', () => {
     it('should return relevant events and states when uploadAddendumEvidence feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false);
-      expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(18);
-      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(18);
+      expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(19);
+      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(19);
     });
 
     it('should return relevant events when hearingBundle and uploadAddendumEvidence features enabled', () => {

@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
@@ -103,7 +104,7 @@ function getApplicationEvents(req: Request): any[] {
     };
     if (application.value.decision !== 'Pending') {
       const decideAnApplicationContent = i18n.pages.overviewPage.timeline.decideAnApplication[getApplicant(application.value)];
-      const is24wDecision = application.value?.applicationFor24w === 'Yes';
+      const is24wDecision: boolean = _.has(application.value, 'refusalOfRemoval24wDocument');
       const decision = {
         id: application.id,
         date: moment(application.value.decisionDate).format('DD MMMM YYYY'),

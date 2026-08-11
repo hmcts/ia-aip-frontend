@@ -2160,7 +2160,7 @@ describe('DetailViewController', () => {
 
   describe('getMakeAnApplicationViewer', () => {
     it('should render detail-viewers/make-an-application-details-viewer.njk with no evidences for appellant', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2021-07-15',
@@ -2203,7 +2203,7 @@ describe('DetailViewController', () => {
     });
 
     it('should render detail-viewers/make-an-application-details-viewer.njk with decision for Legal rep', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '3',
         'value': {
           'date': '2022-07-18',
@@ -2288,7 +2288,7 @@ describe('DetailViewController', () => {
     });
 
     it('should render detail-viewers/make-an-application-details-viewer.njk for respondent (Expedite)', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '3',
         'value': {
           'date': '2022-07-18',
@@ -2354,7 +2354,7 @@ describe('DetailViewController', () => {
     });
 
     it('should render detail-viewers/make-an-application-details-viewer.njk for respondent (Reinstate an ended appeal)', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '3',
         'value': {
           'date': '2022-07-18',
@@ -3348,7 +3348,7 @@ describe('DetailViewController', () => {
 
   describe('getMakeAnApplicationDecisionWhatNext', () => {
     it('refused appellant application should show correct what next message.', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3371,7 +3371,7 @@ describe('DetailViewController', () => {
     });
 
     it('refused appellant application should show correct what next message (default message).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3394,7 +3394,7 @@ describe('DetailViewController', () => {
     });
 
     it('granted appellant application should show correct what next message.', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3417,7 +3417,7 @@ describe('DetailViewController', () => {
     });
 
     it('refused respondent application should show correct what next message (Reinstate an ended appeal).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3440,7 +3440,7 @@ describe('DetailViewController', () => {
     });
 
     it('granted respondent application should show correct what next message (Reinstate an ended appeal).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3463,7 +3463,7 @@ describe('DetailViewController', () => {
     });
 
     it('Granted respondent application should show correct what next message (Judge\'s review of application decision).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3486,7 +3486,7 @@ describe('DetailViewController', () => {
     });
 
     it('Refused respondent application should show correct what next message (Judge\'s review of application decision).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3509,7 +3509,7 @@ describe('DetailViewController', () => {
     });
 
     it('granted respondent application should show correct what next message (Transfer).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3532,7 +3532,7 @@ describe('DetailViewController', () => {
     });
 
     it('Refused respondent application should show correct what next message (Transfer).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3555,7 +3555,7 @@ describe('DetailViewController', () => {
     });
 
     it('Refused respondent application should show correct what next message (Link/unlink appeals).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3578,7 +3578,7 @@ describe('DetailViewController', () => {
     });
 
     it('Granted respondent application should show correct what next message (Link/unlink appeals).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3601,7 +3601,7 @@ describe('DetailViewController', () => {
     });
 
     it('Granted respondent application should show correct what next message (Other).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3624,7 +3624,7 @@ describe('DetailViewController', () => {
     });
 
     it('Refused respondent application should show correct what next message (Other).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3651,7 +3651,7 @@ describe('DetailViewController', () => {
   describe('getMakeAnApplicationSummaryRows', () => {
     it('should get rows', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const makeAnApplicationPendingDecision: Collection<Application<Evidence>> = {
+      const makeAnApplicationPendingDecision: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2021-07-15',
@@ -3722,7 +3722,7 @@ describe('DetailViewController', () => {
   describe('getRespondentApplicationSummaryRows', () => {
     it('should get rows for respondent pending decision', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const application: Collection<Application<Evidence>> = {
+      const application: Collection<MakeAnApplication> = {
         'id': '2',
         'value': {
           'date': '2021-07-15',
@@ -3753,7 +3753,7 @@ describe('DetailViewController', () => {
 
     it('should get rows for respondent after decision', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const application: Collection<Application<Evidence>> = {
+      const application: Collection<MakeAnApplication> = {
         'id': '2',
         'value': {
           'date': '2021-07-15',

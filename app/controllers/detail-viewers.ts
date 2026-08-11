@@ -673,7 +673,7 @@ function getRespondentApplicationSummaryRows(application: Collection<MakeAnAppli
     response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.response.date, [moment(data.decisionDate).format(dayMonthYearFormat)]));
     response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.response.maker, [data.decisionMaker]));
     if (_.has(data, 'refusalOfRemoval24wDocument')) {
-      response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.appellant.response.remove24wDocument,
+      response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.response.remove24wDocument,
         [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${data.refusalOfRemoval24wDocument.fileId}'>${data.refusalOfRemoval24wDocument.name}</a>`])
       );
     }

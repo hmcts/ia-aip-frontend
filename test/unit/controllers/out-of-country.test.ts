@@ -609,6 +609,21 @@ describe('Out of Country Controller', function () {
       expect(redirectStub.calledOnceWith(paths.appealStarted.name)).to.equal(true);
     });
 
+    it('should validate and redirect to the name page for case insensitive', async () => {
+      const appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          gwfReferenceNumber: 'GWF123456789'
+        }
+      };
+      req.body['gwfReferenceNumber'] = 'Gwf123456789';
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.appealStarted.name)).to.equal(true);
+    });
+
     it('should fail validation and render out-of-country/gwf-reference.njk with a validation error', async () => {
       req.body['gwfReferenceNumber'] = 'GWF1234567';
 

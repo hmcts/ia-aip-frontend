@@ -412,6 +412,27 @@ describe('Home Office Details Controller', function () {
       expect(redirectStub.calledWith(paths.appealStarted.name)).to.equal(true);
     });
 
+    it('should validate with GWF reference and redirect name page for case insensitive', async () => {
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          homeOfficeRefNumber: 'GWF123456789'
+        }
+      };
+      updateAppealService.submitEventRefactored = submitRefactoredStub.returns({
+        application: {
+          homeOfficeRefNumber: 'GWF123456789'
+        }
+      } as Appeal);
+      req.body['homeOfficeRefNumber'] = 'Gwf123456789';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('GWF123456789');
+      expect(redirectStub.calledWith(paths.appealStarted.name)).to.equal(true);
+    });
+
     it('when save for later should validate and redirect task-list.njk', async () => {
       const appeal: Appeal = {
         ...req.session.appeal,

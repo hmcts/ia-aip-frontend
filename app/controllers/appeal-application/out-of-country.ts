@@ -179,17 +179,18 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
       if (validation) {
         return renderGwfReferenceError(req, res, validation);
       }
+      const referenceNumberUpperCase: string = req.body.gwfReferenceNumber.toUpperCase();
       const appeal: Appeal = {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
-          gwfReferenceNumber: req.body.gwfReferenceNumber.toUpperCase()
+          gwfReferenceNumber: referenceNumberUpperCase
         }
       };
 
       if (homeOfficeValidationEnabled) {
         const pageId: string = 'editAppealcuiGwfReferenceNumber';
-        const midEventData = { gwfReferenceNumber: req.body.gwfReferenceNumber };
+        const midEventData = { gwfReferenceNumber: referenceNumberUpperCase };
         const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
         if (midEventErrors?.length > 0) {

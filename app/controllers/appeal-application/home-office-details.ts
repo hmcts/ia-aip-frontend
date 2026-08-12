@@ -68,7 +68,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
-          homeOfficeRefNumber: req.body.homeOfficeRefNumber
+          homeOfficeRefNumber: req.body.homeOfficeRefNumber.toUpperCase()
         }
       };
 

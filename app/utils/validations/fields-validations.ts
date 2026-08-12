@@ -107,7 +107,7 @@ function updatedHomeOfficeNumberValidation(obj: object) {
    */
 
   const schema = Joi.object({
-    homeOfficeRefNumber: Joi.string().required().regex(/^(([0-9]{4}\-[0-9]{4}\-[0-9]{4}\-[0-9]{4})|(GWF[0-9]{9}))$/).messages({
+    homeOfficeRefNumber: Joi.string().required().regex(/^(([0-9]{4}\-[0-9]{4}\-[0-9]{4}\-[0-9]{4})|(GWF[0-9]{9}))$/i).messages({
       'string.empty': i18n.validationErrors.homeOfficeReference.required,
       'string.pattern.base': i18n.validationErrors.homeOfficeReference.updatedInvalid
     })
@@ -122,7 +122,7 @@ function updatedGwfReferenceNumberValidation(obj: object): null | ValidationErro
    */
 
   const schema = Joi.object({
-    gwfReferenceNumber: Joi.string().required().regex(/^GWF[0-9]{9}$/).messages({
+    gwfReferenceNumber: Joi.string().required().regex(/^GWF[0-9]{9}$/i).messages({
       'string.empty': i18n.validationErrors.gwfReference.required,
       'string.pattern.base': i18n.validationErrors.homeOfficeReference.updatedInvalid
     })

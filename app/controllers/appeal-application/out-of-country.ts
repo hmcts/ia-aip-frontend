@@ -183,7 +183,7 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
-          gwfReferenceNumber: req.body.gwfReferenceNumber
+          gwfReferenceNumber: req.body.gwfReferenceNumber.toUpperCase()
         }
       };
 

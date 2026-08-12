@@ -30,6 +30,7 @@ function refreshCasesList() {
     }
   };
 }
+
 function getCasesList(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {

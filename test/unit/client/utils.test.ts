@@ -1,3 +1,4 @@
+import ConfirmModal from '../../../client/confirm-modal';
 import CookieBanner from '../../../client/cookies-banner';
 import CreateModal from '../../../client/create-modal';
 import DeleteModal from '../../../client/delete-modal';

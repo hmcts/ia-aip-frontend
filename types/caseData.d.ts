@@ -39,15 +39,6 @@ interface CaseListItem {
   isNonLegalRep?: boolean;
 }
 
-interface CaseListItem {
-  id: string;
-  appealReferenceNumber: string;
-  state: string;
-  appellantGivenNames: string;
-  appellantFamilyName: string;
-  stateName?: string;
-}
-
 interface PinInPost {
   pinUsed: 'Yes' | 'No';
   expiryDate: Date;

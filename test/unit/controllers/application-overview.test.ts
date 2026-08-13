@@ -887,12 +887,19 @@ describe('Confirmation Page Controller', () => {
     }
   });
 
-  it('should not render showNonLegalRep when the state is not in progress', async () => {
-    for (const state of endedStates) {
+  it('should not render showNonLegalRep when the state is appealStarted or ended', async () => {
+    const nonLegalRepHiddenStates = [States.APPEAL_STARTED.id, States.ENDED.id];
+    for (const state of nonLegalRepHiddenStates) {
       req.session.appeal.appealStatus = state;
       await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(resRenderStub).to.be.calledWithMatch('application-overview.njk', { showNonLegalRep: false });
     }
+  });
+
+  it('should render showNonLegalRep when the state is pendingPayment', async () => {
+    req.session.appeal.appealStatus = States.PENDING_PAYMENT.id;
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    expect(resRenderStub).to.be.calledWithMatch('application-overview.njk', { showNonLegalRep: true });
   });
 
   it('should render showAskForSomethingInEndedState property when the state in ended', async () => {

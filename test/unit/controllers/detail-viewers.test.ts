@@ -156,7 +156,7 @@ describe('DetailViewController', () => {
 
   describe('getStfRemovalDecisionDocumentViewer', () => {
     beforeEach(() => {
-      req.session.appeal.legalRepresentativeDocuments = [
+      req.session.appeal.tribunalDocuments = [
         {
           fileId: 'uuid',
           name: 'filename',

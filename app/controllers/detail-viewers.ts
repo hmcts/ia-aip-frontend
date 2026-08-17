@@ -1228,7 +1228,7 @@ function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunct
 function getStfRemovalDecisionDocumentViewer(req: Request, res: Response, next: NextFunction) {
   try {
     const previousPage: string = paths.common.overview;
-    const doc = req.session.appeal.legalRepresentativeDocuments
+    const doc = req.session.appeal.tribunalDocuments
       .find(doc => doc.tag === 'stf24WeeksRemovalDecisionDocument');
     const fileNameFormatted = fileNameFormatter(doc.name);
     const data = [

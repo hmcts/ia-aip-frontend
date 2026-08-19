@@ -27,6 +27,7 @@
     {% endif %}
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% if showEmail %}
+        <p class="govuk-body"><strong>{{ i18n.pages.nlrContactDetails.loginEmailWarningPrefix }}</strong> {{ i18n.pages.nlrContactDetails.loginEmailWarning }}</p>
         {{ govukInput({
           id: "emailAddress",
           name: "emailAddress",

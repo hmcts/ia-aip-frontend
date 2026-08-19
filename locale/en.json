@@ -225,7 +225,9 @@
       "emailAddress": "Email address",
       "phoneNumber": "Phone number",
       "hint": "Please provide an email address and phone number for your non-legal representative. They will receive an email invitation to create an account if they do not already have an account with us.",
-      "nextStep": "Once your appeal has been submitted, please click the 'Add non-legal representative' link on the right of your appeal page and enter the email address you provided here to verify their account and send them instructions to access your case."
+      "nextStep": "Once your appeal has been submitted, please click the 'Add non-legal representative' link on the right of your appeal page and enter the email address you provided here to verify their account and send them instructions to access your case.",
+      "loginEmailWarningPrefix": "Important:",
+      "loginEmailWarning": "Changes made on this page only affect the contact details used for appeal notifications. They do not update your MyHMCTS account details."
     },
     "nlrPhoneNumber": {
       "title": "What is your non-legal representative's phone number?",

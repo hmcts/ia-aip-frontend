@@ -539,8 +539,8 @@ describe('Update non-legal rep details', () => {
         emailAddress: undefined,
         phoneNumber: undefined,
         previousPage: paths.nonLegalRep.updateAddress,
-        saveForLater: false
-      });
+        saveForLater: false,
+              });
     });
 
     it('should render contact-details.njk with contact details if present', () => {
@@ -556,8 +556,8 @@ describe('Update non-legal rep details', () => {
         emailAddress: 'emailAddress',
         phoneNumber: 'phoneNumber',
         previousPage: paths.nonLegalRep.updateAddress,
-        saveForLater: false
-      });
+        saveForLater: false,
+              });
     });
 
     it('should catch an error and call next with error', async () => {
@@ -585,8 +585,8 @@ describe('Update non-legal rep details', () => {
         phoneNumber: undefined,
         errors: expectedError,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.updateAddress
-      });
+        previousPage: paths.nonLegalRep.updateAddress,
+              });
     });
 
     it('should render with error if validation fails empty', async () => {
@@ -607,8 +607,8 @@ describe('Update non-legal rep details', () => {
         phoneNumber: '',
         errors: expectedError,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.updateAddress
-      });
+        previousPage: paths.nonLegalRep.updateAddress,
+              });
     });
 
     it('should render with error if validation fails invalid format', async () => {
@@ -629,8 +629,8 @@ describe('Update non-legal rep details', () => {
         phoneNumber: 'invalid',
         errors: expectedError,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.updateAddress
-      });
+        previousPage: paths.nonLegalRep.updateAddress,
+              });
     });
 
     it('should render with error if validation fails contact details are same as appellant', async () => {
@@ -655,8 +655,8 @@ describe('Update non-legal rep details', () => {
         phoneNumber: '07827292000',
         errors: expectedError,
         errorList: Object.values(expectedError),
-        previousPage: paths.nonLegalRep.updateAddress
-      });
+        previousPage: paths.nonLegalRep.updateAddress,
+              });
     });
 
     it('should update req.session.appeal and redirect to CYA if validation passes', async () => {

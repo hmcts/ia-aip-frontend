@@ -57,6 +57,18 @@ class CcdService {
     };
   }
 
+  private createOptionsWithErrors(userId: string, headers: SecurityHeaders) {
+    return {
+      headers: {
+        Authorization: headers.userToken,
+        ServiceAuthorization: headers.serviceToken,
+        'content-type': 'application/json',
+        UserId: userId // Hack param to prove RIA-5761.
+      },
+      validateStatus: (status: number) => (status >= 200 && status < 300) || status === 422
+    };
+  }
+
   async startCreateCase(userId: string, headers: SecurityHeaders): Promise<StartEventResponse> {
     const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/event-triggers/startAppeal/token`;
     const options = this.createOptions(
@@ -88,12 +100,11 @@ class CcdService {
     return response.data;
   }
 
-  async submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData): Promise<CcdCaseDetails> {
+  async submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData, shouldReturnErrors = false): Promise<CcdCaseDetails> {
     const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`;
-    const options: any = this.createOptions(
-      userId,
-      headers
-    );
+    const options: any = shouldReturnErrors
+      ? this.createOptionsWithErrors(userId, headers)
+      : this.createOptions(userId, headers);
 
     const response = await axios.post(url, event, options);
     return response.data;
@@ -157,7 +168,7 @@ class CcdService {
     });
   }
 
-  async updateAppeal(event, userId: string, updatedCase: CcdCaseDetails, headers: SecurityHeaders): Promise<CcdCaseDetails> {
+  async updateAppeal(event, userId: string, updatedCase: CcdCaseDetails, headers: SecurityHeaders, shouldReturnErrors = false): Promise<CcdCaseDetails> {
     logger.trace(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${updatedCase.id}' `, logLabel);
     const updateEventResponse = await this.startUpdateAppeal(userId, updatedCase.id, event.id, headers);
     logger.trace(`Submitting update appeal case with event '${event.id}'`, logLabel);
@@ -173,14 +184,14 @@ class CcdService {
       event_token: updateEventResponse.token,
       ignore_warning: true,
       supplementary_data_request: supplementaryDataRequest
-    });
+    }, shouldReturnErrors);
   }
 
   async validateMidEvent(midEventDetails: MidEventDetails, pageId: string, userId: string, headers: SecurityHeaders): Promise<MidEventResponse> {
     const url = `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/validate?pageId=${pageId}`;
     const options: any = this.createOptions(
-        userId,
-        headers
+      userId,
+      headers
     );
 
     try {

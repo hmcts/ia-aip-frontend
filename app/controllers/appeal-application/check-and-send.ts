@@ -14,7 +14,7 @@ import { getFee, payNowForApplicationNeeded } from '../../utils/payments-utils';
 import { appealHasRemissionOption } from '../../utils/remission-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { formatTextForCYA } from '../../utils/utils';
-import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
+import { createStructuredError, statementOfTruthValidation } from '../../utils/validations/fields-validations';
 
 async function createSummaryRowsFrom(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
@@ -32,90 +32,90 @@ async function createSummaryRowsFrom(req: Request) {
 
   const rows = [
     addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.appellantInUk,
-        [ application.appellantInUk ],
-        paths.appealStarted.appealOutOfCountry + editParameter
+      i18n.pages.checkYourAnswers.rowTitles.appellantInUk,
+      [application.appellantInUk],
+      paths.appealStarted.appealOutOfCountry + editParameter
     ),
     addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.appealType,
-        [appealType],
-        paths.appealStarted.typeOfAppeal + editParameter
+      i18n.pages.checkYourAnswers.rowTitles.appealType,
+      [appealType],
+      paths.appealStarted.typeOfAppeal + editParameter
     )
   ];
 
   if (application.dateClientLeaveUk && application.dateClientLeaveUk.year && application.appealType === 'protection') {
     const decisionLetterReceivedDateRow = addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourProtectionClaimWasRefused,
-        [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
-        paths.appealStarted.oocProtectionDepartureDate + editParameter,
-        Delimiter.SPACE);
+      i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourProtectionClaimWasRefused,
+      [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
+      paths.appealStarted.oocProtectionDepartureDate + editParameter,
+      Delimiter.SPACE);
     rows.push(decisionLetterReceivedDateRow);
   }
 
   if (application.outsideUkWhenApplicationMade && application.outsideUkWhenApplicationMade !== null) {
     const gwfReferenceNumberRow = addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.outsideUKWhenApplicationWasMade,
-        [application.outsideUkWhenApplicationMade],
-        paths.appealStarted.oocHrEea + editParameter);
+      i18n.pages.checkYourAnswers.rowTitles.outsideUKWhenApplicationWasMade,
+      [application.outsideUkWhenApplicationMade],
+      paths.appealStarted.oocHrEea + editParameter);
     rows.push(gwfReferenceNumberRow);
   }
 
   if (application.dateClientLeaveUk && application.dateClientLeaveUk.year && application.appealType !== 'protection') {
     const decisionLetterReceivedDateRow = addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused,
-        [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
-        paths.appealStarted.oocHrInside + editParameter,
-        Delimiter.SPACE);
+      i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused,
+      [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
+      paths.appealStarted.oocHrInside + editParameter,
+      Delimiter.SPACE);
     rows.push(decisionLetterReceivedDateRow);
   }
 
   if (application.gwfReferenceNumber && application.gwfReferenceNumber !== null) {
     const gwfReferenceNumberRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.gwfReferenceNumber,
-        [application.gwfReferenceNumber],
-        paths.appealStarted.gwfReference + editParameter);
+      [application.gwfReferenceNumber],
+      paths.appealStarted.gwfReference + editParameter);
     rows.push(gwfReferenceNumberRow);
   } else {
     const homeOfficeRefNumberRow = addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber,
-        [application.homeOfficeRefNumber],
-        paths.appealStarted.details + editParameter);
+      i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber,
+      [application.homeOfficeRefNumber],
+      paths.appealStarted.details + editParameter);
     rows.push(homeOfficeRefNumberRow);
   }
 
   const personalDetailsRows = [
     addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.name,
-        [application.personalDetails.givenNames, application.personalDetails.familyName],
-        paths.appealStarted.name + editParameter,
-        Delimiter.SPACE
+      i18n.pages.checkYourAnswers.rowTitles.name,
+      [application.personalDetails.givenNames, application.personalDetails.familyName],
+      paths.appealStarted.name + editParameter,
+      Delimiter.SPACE
     ),
     addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.dob,
-        [application.personalDetails.dob.day, moment.months(parseInt(application.personalDetails.dob.month, 10) - 1), application.personalDetails.dob.year],
-        paths.appealStarted.dob + editParameter,
-        Delimiter.SPACE
+      i18n.pages.checkYourAnswers.rowTitles.dob,
+      [application.personalDetails.dob.day, moment.months(parseInt(application.personalDetails.dob.month, 10) - 1), application.personalDetails.dob.year],
+      paths.appealStarted.dob + editParameter,
+      Delimiter.SPACE
     ),
     addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.nationality,
-        [ nationality ],
-        paths.appealStarted.nationality + editParameter
+      i18n.pages.checkYourAnswers.rowTitles.nationality,
+      [nationality],
+      paths.appealStarted.nationality + editParameter
     )
   ];
   rows.push(...personalDetailsRows);
 
   if (application.decisionLetterReceivedDate && application.decisionLetterReceivedDate.year) {
     const decisionLetterReceivedDateRow = addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.dateLetterReceived,
-        [application.decisionLetterReceivedDate.day, moment.months(parseInt(application.decisionLetterReceivedDate.month, 10) - 1), application.decisionLetterReceivedDate.year],
-        paths.appealStarted.letterReceived + editParameter,
-        Delimiter.SPACE);
+      i18n.pages.checkYourAnswers.rowTitles.dateLetterReceived,
+      [application.decisionLetterReceivedDate.day, moment.months(parseInt(application.decisionLetterReceivedDate.month, 10) - 1), application.decisionLetterReceivedDate.year],
+      paths.appealStarted.letterReceived + editParameter,
+      Delimiter.SPACE);
     rows.push(decisionLetterReceivedDateRow);
   } else {
     const dateLetterSentRow = addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.dateLetterSent,
-        [application.dateLetterSent.day, moment.months(parseInt(application.dateLetterSent.month, 10) - 1), application.dateLetterSent.year],
-        paths.appealStarted.letterSent + editParameter,
-        Delimiter.SPACE);
+      i18n.pages.checkYourAnswers.rowTitles.dateLetterSent,
+      [application.dateLetterSent.day, moment.months(parseInt(application.dateLetterSent.month, 10) - 1), application.dateLetterSent.year],
+      paths.appealStarted.letterSent + editParameter,
+      Delimiter.SPACE);
     rows.push(dateLetterSentRow);
   }
 
@@ -123,23 +123,23 @@ async function createSummaryRowsFrom(req: Request) {
 
     if (appellantInUk) {
       const addressInUk = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails,
-          [...Object.values(application.personalDetails.address)],
-          paths.appealStarted.enterAddress + editParameter,
-          Delimiter.BREAK_LINE);
+        [...Object.values(application.personalDetails.address)],
+        paths.appealStarted.enterAddress + editParameter,
+        Delimiter.BREAK_LINE);
       rows.push(addressInUk);
     }
 
     if (!appellantInUk && application.appellantOutOfCountryAddress) {
       const oocAddress = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails,
-          [...Object.values(application.appellantOutOfCountryAddress)],
-          paths.appealStarted.oocAddress + editParameter);
+        [...Object.values(application.appellantOutOfCountryAddress)],
+        paths.appealStarted.oocAddress + editParameter);
       rows.push(oocAddress);
     }
 
     const contactDetails = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails,
-        [ application.contactDetails.email, application.contactDetails.phone ],
-        paths.appealStarted.contactDetails + editParameter,
-        Delimiter.BREAK_LINE);
+      [application.contactDetails.email, application.contactDetails.phone],
+      paths.appealStarted.contactDetails + editParameter,
+      Delimiter.BREAK_LINE);
 
     rows.push(contactDetails);
   }
@@ -147,29 +147,29 @@ async function createSummaryRowsFrom(req: Request) {
   if (application.hasSponsor) {
 
     const hasSponsor = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.hasSponsor,
-        [...Object.values(application.hasSponsor)],
-        paths.appealStarted.hasSponsor + editParameter);
+      [...Object.values(application.hasSponsor)],
+      paths.appealStarted.hasSponsor + editParameter);
     rows.push(hasSponsor);
 
     if (['Yes'].includes(application.hasSponsor)) {
 
       const hasSponsorName = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay,
-          [...Object.values(application.sponsorNameForDisplay)],
-          paths.appealStarted.sponsorName + editParameter);
+        [...Object.values(application.sponsorNameForDisplay)],
+        paths.appealStarted.sponsorName + editParameter);
 
       const hasSponsorAddress = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails,
-          [...Object.values(application.sponsorAddress)],
-          paths.appealStarted.sponsorAddress + editParameter,
-          Delimiter.BREAK_LINE);
+        [...Object.values(application.sponsorAddress)],
+        paths.appealStarted.sponsorAddress + editParameter,
+        Delimiter.BREAK_LINE);
 
       const hasSponsorContactDetails = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails,
-          [ application.sponsorContactDetails.email, application.sponsorContactDetails.phone ],
-          paths.appealStarted.sponsorContactDetails + editParameter,
-          Delimiter.BREAK_LINE);
+        [application.sponsorContactDetails.email, application.sponsorContactDetails.phone],
+        paths.appealStarted.sponsorContactDetails + editParameter,
+        Delimiter.BREAK_LINE);
 
       const hasSponsorAuthorisation = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAuthorisation,
-          [...Object.values(application.sponsorAuthorisation)],
-          paths.appealStarted.sponsorAuthorisation + editParameter);
+        [...Object.values(application.sponsorAuthorisation)],
+        paths.appealStarted.sponsorAuthorisation + editParameter);
 
       rows.push(hasSponsorName);
       rows.push(hasSponsorAddress);
@@ -179,19 +179,19 @@ async function createSummaryRowsFrom(req: Request) {
   }
 
   const homeOfficeDecisionLetterRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter,
-      application.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
-      paths.appealStarted.homeOfficeDecisionLetter + editParameter,
-      Delimiter.BREAK_LINE
+    i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter,
+    application.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
+    paths.appealStarted.homeOfficeDecisionLetter + editParameter,
+    Delimiter.BREAK_LINE
   );
   rows.push(homeOfficeDecisionLetterRow);
 
   if (dlrmInternalFeatureFlag) {
     const deportationOrderRow = addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.deportationOrder,
-        [application.deportationOrderOptions === 'Yes' ? i18n.pages.deportationOrder.cyaPageRowValueWhenYesSelected : i18n.pages.deportationOrder.cyaPageRowValueWhenNoSelected],
-        paths.appealStarted.deportationOrder + editParameter,
-        Delimiter.BREAK_LINE);
+      i18n.pages.checkYourAnswers.rowTitles.deportationOrder,
+      [application.deportationOrderOptions === 'Yes' ? i18n.pages.deportationOrder.cyaPageRowValueWhenYesSelected : i18n.pages.deportationOrder.cyaPageRowValueWhenNoSelected],
+      paths.appealStarted.deportationOrder + editParameter,
+      Delimiter.BREAK_LINE);
 
     rows.push(deportationOrderRow);
   }
@@ -209,9 +209,9 @@ async function createSummaryRowsFrom(req: Request) {
     const { paAppealTypeAipPaymentOption = null } = req.session.appeal;
     if (paAppealTypeAipPaymentOption) {
       const payNowRow = addSummaryRow(
-          i18n.pages.checkYourAnswers.rowTitles.paymentType,
-          [i18n.pages.checkYourAnswers[paAppealTypeAipPaymentOption]],
-          paths.appealStarted.payNow + editParameter
+        i18n.pages.checkYourAnswers.rowTitles.paymentType,
+        [i18n.pages.checkYourAnswers[paAppealTypeAipPaymentOption]],
+        paths.appealStarted.payNow + editParameter
       );
       rows.push(payNowRow);
     }
@@ -228,7 +228,7 @@ async function createSummaryRowsFrom(req: Request) {
       const feeStatementRow = addSummaryRow(
         i18n.pages.checkYourAnswers.rowTitles.feeStatement,
         [i18n.pages.remissionOptionPage.options[remissionOption].text],
-          paths.appealStarted.feeSupport + editParameter
+        paths.appealStarted.feeSupport + editParameter
       );
       rows.push(feeStatementRow);
     }
@@ -292,66 +292,74 @@ async function createSummaryRowsFrom(req: Request) {
 function getCheckAndSend(paymentService: PaymentService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, defaultFlag);
-      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-      const { application } = req.session.appeal;
-      const hasRemissionOption = appealHasRemissionOption(application);
-      const summaryRows = await createSummaryRowsFrom(req);
-      const { paymentReference = null } = req.session.appeal;
-      let fee;
-      let appealPaid;
-      const payNow = payNowForApplicationNeeded(req);
-      if (paymentsFlag && payNow) {
-        fee = getFee(req.session.appeal);
-        const paymentDetails = paymentReference ? JSON.parse(await paymentService.getPaymentDetails(req, paymentReference)) : null;
-        appealPaid = paymentDetails && paymentDetails.status === 'Success';
-      }
-      return res.render('appeal-application/check-and-send.njk', {
-        summaryRows,
-        previousPage: paths.appealStarted.taskList,
-        ...(paymentsFlag && payNow) && { fee: fee.calculated_amount },
-        ...(paymentsFlag && !appealPaid) && { payNow },
-        ...(paymentsFlag && appealPaid) && { appealPaid },
-        ...(dlrmFeeRemissionFlag) && { dlrmFeeRemissionFlag },
-        ...(hasRemissionOption) && { hasRemissionOption }
-      });
+      return res.render(
+        'appeal-application/check-and-send.njk',
+        await getCheckAndSendRenderObject(req, res, paymentService, null)
+      );
     } catch (error) {
       next(error);
     }
   };
 }
 
+async function getCheckAndSendRenderObject(req: Request, res: Response, paymentService: PaymentService, error: ValidationErrors) {
+  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
+  const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, defaultFlag);
+  const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+  const { application } = req.session.appeal;
+  const hasRemissionOption = appealHasRemissionOption(application);
+  const summaryRows = await createSummaryRowsFrom(req);
+  const { paymentReference = null } = req.session.appeal;
+  let fee: any;
+  let appealPaid: boolean;
+  const payNow = payNowForApplicationNeeded(req);
+  if (paymentsFlag && payNow) {
+    fee = getFee(req.session.appeal);
+    const paymentDetails = paymentReference ? JSON.parse(await paymentService.getPaymentDetails(req, paymentReference)) : null;
+    appealPaid = paymentDetails && paymentDetails.status === 'Success';
+  }
+  const renderObj: any = {
+    summaryRows,
+    previousPage: paths.appealStarted.taskList,
+    ...(paymentsFlag && payNow) && { fee: fee.calculated_amount },
+    ...(paymentsFlag && !appealPaid) && { payNow },
+    ...(paymentsFlag && appealPaid) && { appealPaid },
+    ...(dlrmFeeRemissionFlag) && { dlrmFeeRemissionFlag },
+    ...(hasRemissionOption) && { hasRemissionOption }
+  };
+
+  if (error) {
+    renderObj['error'] = error;
+    renderObj['errorList'] = Object.values(error);
+  }
+
+  return renderObj;
+}
+
 function postCheckAndSend(updateAppealService: UpdateAppealService, paymentService: PaymentService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const request = req.body;
     try {
-      const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, defaultFlag);
-      const payNow = payNowForApplicationNeeded(req);
       const validationResult = statementOfTruthValidation(request);
       if (validationResult) {
-        const summaryRows = await createSummaryRowsFrom(req);
-        const { paymentReference = null } = req.session.appeal;
-        let appealPaid;
-        let fee;
-        if (paymentsFlag && payNow) {
-          fee = getFee(req.session.appeal);
-          const paymentDetails = paymentReference ? JSON.parse(await paymentService.getPaymentDetails(req, paymentReference)) : null;
-          appealPaid = paymentDetails && paymentDetails.status === 'Success';
-        }
-        return res.render('appeal-application/check-and-send.njk', {
-          summaryRows,
-          error: validationResult,
-          ...(paymentsFlag && payNow) && { fee: fee.calculated_amount },
-          ...(paymentsFlag && !appealPaid) && { payNow },
-          ...(paymentsFlag && appealPaid) && { appealPaid },
-          errorList: Object.values(validationResult),
-          previousPage: paths.appealStarted.taskList
-        });
+        return res.render(
+          'appeal-application/check-and-send.njk',
+          await getCheckAndSendRenderObject(req, res, paymentService, validationResult)
+        );
       }
       const { appeal } = req.session;
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const ccdCaseDetails: CcdCaseDetails = await updateAppealService.submitEventToCcd(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true);
+      if (ccdCaseDetails?.status === 422 && ccdCaseDetails?.callbackErrors?.length > 0) {
+        const errorMessage = i18n.validationErrors.hoDataNotMatchingOnSubmit.replace('{{ hoReferenceNumber }}', appeal.application.homeOfficeRefNumber);
+        const validationErrors: ValidationErrors = {};
+        for (let i = 0; i < ccdCaseDetails.callbackErrors.length; i++) {
+          // TODO custom if statement to catch HO errors and use the errorMessage instead of the CCD error message
+          validationErrors['error' + (i + 1)] = createStructuredError('', ccdCaseDetails.callbackErrors[i]);
+        }
+        return res.render('appeal-application/check-and-send.njk',
+          await getCheckAndSendRenderObject(req, res, paymentService, validationErrors));
+      }
+      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(ccdCaseDetails);
       req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,

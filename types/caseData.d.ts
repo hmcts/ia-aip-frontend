@@ -25,6 +25,8 @@ interface CcdCaseDetails {
   case_data: CaseData;
   created_date?: string;
   last_modified?: string;
+  status?: number;
+  callbackErrors?: string[];
 }
 
 interface CaseListItem {

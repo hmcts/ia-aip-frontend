@@ -171,6 +171,11 @@ export default class UpdateAppealService {
   }
 
   async submitEventRefactored(event, appeal: Appeal, uid: string, userToken: string, paymentsFlag = false, refundFlag = false): Promise<Appeal> {
+    const ccdCase: CcdCaseDetails = await this.submitEventToCcd(event, appeal, uid, userToken, false, paymentsFlag, refundFlag);
+    return this.mapCcdCaseToAppeal(ccdCase);
+  }
+
+  async submitEventToCcd(event, appeal: Appeal, uid: string, userToken: string, shouldReturnErrors: boolean, paymentsFlag = false, refundFlag = false): Promise<CcdCaseDetails> {
     const securityHeaders: SecurityHeaders = {
       userToken: `Bearer ${userToken}`,
       serviceToken: await this._s2sService.getServiceToken()
@@ -181,8 +186,7 @@ export default class UpdateAppealService {
       state: appeal.appealStatus,
       case_data: caseData
     };
-    const ccdCase: CcdCaseDetails = await this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders);
-    return this.mapCcdCaseToAppeal(ccdCase);
+    return this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders, shouldReturnErrors);
   }
 
   async validateMidEvent(event, pageId: string, appeal: Appeal, midEventData: any, uid: string, userToken: string): Promise<string[]> {

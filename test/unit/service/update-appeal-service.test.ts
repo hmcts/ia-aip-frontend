@@ -2853,5 +2853,166 @@ describe('update-appeal-service', () => {
       expect(errors.includes('There is a problem')).to.equal(true);
     });
   });
-})
-;
+
+  describe('submitEventToCcd', () => {
+    let appeal: Appeal;
+    beforeEach(() => {
+      appeal = {
+        appealStatus: 'appealStarted',
+        application: {
+          appellantInUk: 'undefined',
+          homeOfficeRefNumber: 'newRef',
+          outsideUkWhenApplicationMade: 'No',
+          hasSponsor: 'No',
+          sponsorGivenNames: 'ABC XYZ',
+          sponsorFamilyName: 'ABC XYZ',
+          sponsorNameForDisplay: 'ABC XYZ',
+          sponsorAuthorisation: 'ABC XYZ',
+          gwfReferenceNumber: '',
+          appealType: 'appealType',
+          dateLetterSent: {
+            year: '2019',
+            month: '12',
+            day: '11'
+          },
+          dateClientLeaveUk: {
+            year: '2019',
+            month: '12',
+            day: '15'
+          },
+          decisionLetterReceivedDate: {
+            year: '2019',
+            month: '12',
+            day: '11'
+          },
+          isAppealLate: true,
+          lateAppeal: {
+            reason: 'a reason',
+            evidence: {
+              name: 'somefile.png',
+              fileId: '00000000-0000-0000-0000-000000000000',
+              dateUploaded: '2020-01-01',
+              'description': 'Some evidence 1',
+              'tag': 'additionalEvidence'
+            }
+          },
+          personalDetails: {
+            givenNames: 'givenNames',
+            familyName: 'familyName',
+            dob: {
+              year: '1980',
+              month: '1',
+              day: '2'
+            },
+            nationality: 'nationality',
+            address: {
+              line1: '60 Beautiful Street',
+              line2: 'Flat 2',
+              city: 'London',
+              postcode: 'W1W 7RT',
+              county: 'London'
+            }
+          },
+          contactDetails: {
+            email: 'email@example.net',
+            wantsEmail: true,
+            phone: '07123456789',
+            wantsSms: false
+          },
+          addressLookup: {},
+          remissionOption: 'test',
+          asylumSupportRefNumber: 'test',
+          feeSupportPersisted: true,
+          helpWithFeesOption: 'test',
+          helpWithFeesRefNumber: 'HWF-123',
+          localAuthorityLetters: [{
+            name: 'somefile.png',
+            fileId: '00000000-0000-0000-0000-000000000000',
+            dateUploaded: '2020-01-01',
+            'description': 'Some evidence 1',
+            'tag': 'additionalEvidence'
+          }],
+          lateRemissionOption: 'test',
+          lateAsylumSupportRefNumber: 'test',
+          lateHelpWithFeesOption: 'test',
+          lateHelpWithFeesRefNumber: 'HWF-123',
+          lateLocalAuthorityLetters: [{
+            name: 'somefile.png',
+            fileId: '00000000-0000-0000-0000-000000000000',
+            dateUploaded: '2020-01-01',
+            'description': 'Some evidence 1',
+            'tag': 'additionalEvidence'
+          }],
+          remissionDecision: 'approved',
+          deportationOrderOptions: 'Yes'
+        } as AppealApplication,
+        reasonsForAppeal: {
+          applicationReason: 'I\'ve decided to appeal because ...',
+          uploadDate: '2020-01-02',
+          evidences: [
+            {
+              fileId: '00000000-0000-0000-0000-000000000001',
+              name: 'File1.png',
+              dateUploaded: '2020-01-01',
+              description: 'Some evidence 1'
+            },
+            {
+              fileId: '00000000-0000-0000-0000-000000000002',
+              name: 'File2.png',
+              dateUploaded: '2020-02-02',
+              description: 'Some evidence 2'
+            }
+          ] as Evidence[]
+        },
+        documentMap: [
+          {
+            id: '00000000-0000-0000-0000-000000000000',
+            url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000'
+          },
+          {
+            id: '00000000-0000-0000-0000-000000000001',
+            url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001'
+          },
+          {
+            id: '00000000-0000-0000-0000-000000000002',
+            url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002'
+          }
+        ],
+        askForMoreTime: {
+          reason: 'ask for more time reason',
+          evidence: []
+        }
+      } as Appeal;
+    });
+
+    it('submitEventToCcd should updateAppeal and return errors if true', async () => {
+      const event = Events.SUBMIT_APPEAL;
+      const userId = '12345';
+      const mockResponse: CcdCaseDetails = {
+        id: '1',
+        state: 'state',
+        status: 200,
+        callbackErrors: ['someString']
+      } as CcdCaseDetails;
+      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
+      sandbox.stub(ccdService, 'updateAppeal').resolves(mockResponse);
+      const caseDetails = await updateAppealService.submitEventToCcd(event, appeal, userId, 'userToken', true);
+      expect(ccdService.updateAppeal).to.be.calledOnceWith(event, userId, sinon.match.any, sinon.match.any, true);
+      expect(caseDetails.callbackErrors.length).to.equal(1);
+    });
+
+    it('submitEventToCcd should updateAppeal and not return errors if false', async () => {
+      const event = Events.SUBMIT_APPEAL;
+      const userId = '12345';
+      const mockResponse: CcdCaseDetails = {
+        id: '1',
+        state: 'state'
+      } as CcdCaseDetails;
+      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
+      sandbox.stub(ccdService, 'updateAppeal').resolves(mockResponse);
+      const caseDetails = await updateAppealService.submitEventToCcd(event, appeal, userId, 'userToken', false);
+      expect(ccdService.updateAppeal).to.be.calledOnceWith(event, userId, sinon.match.any, sinon.match.any, false);
+      expect(caseDetails.callbackErrors).to.equal(undefined);
+    });
+  });
+});

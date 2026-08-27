@@ -235,6 +235,7 @@ const paths = {
     cmaRequirementsAnswerViewer: '/your-appointment-needs',
     noticeEndedAppealViewer: '/notice-ended-appeal',
     outOfTimeDecisionViewer: '/out-of-time-decision',
+    stfRemovalDecisionDocumentViewer: '/stf-24-week-removal-decision',
     homeOfficeWithdrawLetter: '/home-office-withdrawal-letter',
     homeOfficeResponse: '/home-office-response',
     hearingNoticeViewer: '/hearing-notice/:id',

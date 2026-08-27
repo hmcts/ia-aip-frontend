@@ -72,15 +72,15 @@ export function yesNoToBool(answer: string): boolean {
   return answer ? answer.toLowerCase() === 'yes' : false;
 }
 
-export function getAppellantApplications(applications: Collection<Application<Evidence>>[]): any[] {
+export function getAppellantApplications(applications: Collection<MakeAnApplication>[]): any[] {
   return (applications || []).filter(app => getApplicant(app.value) === 'Appellant');
 }
 
-export function getRespondentApplication(applications: Collection<Application<Evidence>>[]): any[] {
+export function getRespondentApplication(applications: Collection<MakeAnApplication>[]): any[] {
   return (applications || []).filter(app => getApplicant(app.value) === 'Respondent');
 }
 
-export function getApplicant(application: Application<Evidence>) {
+export function getApplicant(application: MakeAnApplication) {
   return ['Appellant', 'Legal representative'].includes(application.applicant) ? 'Appellant' : application.applicant;
 }
 

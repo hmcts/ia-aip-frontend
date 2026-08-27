@@ -1179,13 +1179,14 @@ export default class UpdateAppealService {
     return evidences;
   };
 
-  private mapMakeApplicationsToSession = (makeAnApplications: Collection<Application<Collection<SupportingDocument>>>[], documentMap: DocumentMap[]): Collection<Application<Evidence>>[] => {
+  private mapMakeApplicationsToSession = (makeAnApplications: Collection<Application>[], documentMap: DocumentMap[]): Collection<MakeAnApplication>[] => {
     return makeAnApplications.map((application) => {
       return {
         id: application.id,
         value: {
           ...application.value,
-          ...application.value.evidence && { evidence: this.mapSupportingDocumentsToEvidence(application.value.evidence, documentMap) }
+          ...application.value.evidence && { evidence: this.mapSupportingDocumentsToEvidence(application.value.evidence, documentMap) },
+          ...application.value.refusalOfRemoval24wDocument && { refusalOfRemoval24wDocument: this.mapSupportingDocumentToEvidence(application.value.refusalOfRemoval24wDocument, documentMap) }
         }
       };
     });

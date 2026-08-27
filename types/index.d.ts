@@ -63,6 +63,21 @@ declare global {
     historyData: HistoryEvent;
   }
 
+  interface MakeAnApplication {
+    date: string;
+    type: string;
+    state: string;
+    details: string;
+    decision: string;
+    evidence: Evidence[];
+    applicant: string;
+    applicantRole: string;
+    decisionDate?: string;
+    decisionMaker?: string;
+    decisionReason?: string;
+    refusalOfRemoval24wDocument?: Evidence;
+  }
+
   interface Evidence {
     id?: string;
     fileId: string;
@@ -144,7 +159,7 @@ declare global {
     makeAnApplicationTypes?: MakeAnApplicationTypes;
     makeAnApplicationDetails?: string;
     makeAnApplicationEvidence?: Evidence[];
-    makeAnApplications?: Collection<Application<Evidence>>[];
+    makeAnApplications?: Collection<MakeAnApplication>[];
     appealReviewDecisionTitle?: any;
     appealReviewOutcome?: string;
     homeOfficeAppealResponseDocument?: any;

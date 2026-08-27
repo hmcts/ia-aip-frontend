@@ -254,6 +254,11 @@ export const Events = {
     summary: 'Delete draft appeal AIP',
     description: 'Delete draft appeal AIP'
   },
+  REMOVE_STATUTORY_TIMEFRAME: {
+    id: 'removeStatutoryTimeframe24Weeks',
+    summary: 'Remove Statutory Timeframe',
+    description: 'Remove Statutory Timeframe 24 Weeks'
+  },
   MARK_APPEAL_PAID: {
     id: 'markAppealPaid',
     summary: 'Mark appeal as paid',

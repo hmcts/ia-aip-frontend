@@ -1487,14 +1487,14 @@ describe('application-state-utils', () => {
         });
 
         it(`should return 'Do This next section' when application status is awaitingReasonsForAppeal and a pending time extension and stf24w was set to ${stf24w}`, async () => {
-          const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          const timeExtensionApplication: Collection<Partial<MakeAnApplication>> = {
             value: {
               decision: 'Pending',
               applicant: 'Appellant',
               type: 'Time extension'
             }
           };
-          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<MakeAnApplication>];
           const result = await getAppealApplicationNextStep(req as Request);
 
           expect(result).to.deep.equal(
@@ -1521,13 +1521,13 @@ describe('application-state-utils', () => {
         });
 
         it(`should return 'Do This next section' when application status is awaitingReasonsForAppeal and a granted time extension and stf24w was set to ${stf24w}`, async () => {
-          const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          const timeExtensionApplication: Collection<Partial<MakeAnApplication>> = {
             value: {
               decision: 'Granted',
               applicant: 'Appellant'
             }
           };
-          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<MakeAnApplication>];
           const result = await getAppealApplicationNextStep(req as Request);
 
           expect(result).to.deep.equal(
@@ -1554,13 +1554,13 @@ describe('application-state-utils', () => {
         });
 
         it(`should return 'Do This next section' when application status is awaitingReasonsForAppeal and a refused time extension and stf24w was set to ${stf24w}`, async () => {
-          const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          const timeExtensionApplication: Collection<Partial<MakeAnApplication>> = {
             value: {
               decision: 'Refused',
               applicant: 'Appellant'
             }
           };
-          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<MakeAnApplication>];
           const result = await getAppealApplicationNextStep(req as Request);
 
           expect(result).to.deep.equal(
@@ -1642,14 +1642,14 @@ describe('application-state-utils', () => {
         });
 
         it(`should return 'Do This next section' when application status is awaitingReasonsForAppealPartial and pending time extension and stf24w was set to ${stf24w}`, async () => {
-          const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          const timeExtensionApplication: Collection<Partial<MakeAnApplication>> = {
             value: {
               decision: 'Pending',
               applicant: 'Appellant',
               type: 'Time extension'
             }
           };
-          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<MakeAnApplication>];
           req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
           req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
           const result = await getAppealApplicationNextStep(req as Request);
@@ -1678,13 +1678,13 @@ describe('application-state-utils', () => {
         });
 
         it(`should return 'Do This next section' when application status is awaitingReasonsForAppealPartial and granted time extension and stf24w was set to ${stf24w}`, async () => {
-          const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          const timeExtensionApplication: Collection<Partial<MakeAnApplication>> = {
             value: {
               decision: 'Granted',
               applicant: 'Appellant'
             }
           };
-          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<MakeAnApplication>];
           req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
           req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
           const result = await getAppealApplicationNextStep(req as Request);
@@ -1713,13 +1713,13 @@ describe('application-state-utils', () => {
         });
 
         it(`should return 'Do This next section' when application status is awaitingReasonsForAppealPartial and refused time extension and stf24w was set to ${stf24w}`, async () => {
-          const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          const timeExtensionApplication: Collection<Partial<MakeAnApplication>> = {
             value: {
               decision: 'Refused',
               applicant: 'Appellant'
             }
           };
-          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<MakeAnApplication>];
           req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
           req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
           const result = await getAppealApplicationNextStep(req as Request);
@@ -1991,7 +1991,7 @@ describe('application-state-utils', () => {
       });
 
       it(`should return 'Do This next section' when application status is submitHearingRequirements and a pending time extension and stf24w was set to ${stf24w}`, async () => {
-        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+        const timeExtensionApplication: Collection<Partial<MakeAnApplication>> = {
           value: {
             decision: 'Pending',
             applicant: 'Appellant',
@@ -1999,7 +1999,7 @@ describe('application-state-utils', () => {
           }
         };
         req.session.appeal.appealStatus = 'submitHearingRequirements';
-        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<MakeAnApplication>];
         const result = await getAppealApplicationNextStep(req as Request);
 
         expect(result).to.deep.equal(
@@ -2047,14 +2047,14 @@ describe('application-state-utils', () => {
 
 
         it(`when application status is ${state}, a pending time extension and stf24w was set to ${stf24w} should get correct Do this next section.`, async () => {
-          const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+          const timeExtensionApplication: Collection<Partial<MakeAnApplication>> = {
             value: {
               decision: 'Pending',
               applicant: 'Appellant',
               type: 'Time extension'
             }
           };
-          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
+          req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<MakeAnApplication>];
           req.session.appeal.appealStatus = state;
           const result = await getAppealApplicationNextStep(req as Request);
 

@@ -1656,6 +1656,7 @@
           "Appellant": {
             "Granted": "Your request was granted.",
             "Refused": "Your request was refused.",
+            "Refused24w": "Your request to remove the statutory 24 week timeframe was refused.",
             "links": [
               {
                 "title": "What the Tribunal said",
@@ -1667,6 +1668,7 @@
           "Respondent": {
             "Granted": "The Home Office request was granted.",
             "Refused": "The Home Office request was refused.",
+            "Refused24w": "The Home Office request to remove the statutory 24 week timeframe was refused.",
             "links": [
               {
                 "title": "What the Tribunal said",
@@ -1750,6 +1752,16 @@
               "title": "What the Tribunal said",
               "text": "Reasons for decision",
               "href": "{{ paths.common.outOfTimeDecisionViewer }}"
+            }
+          ]
+        },
+        "removeStatutoryTimeframe24Weeks": {
+          "text": "Your appeal was removed from the 24-week statutory timeframe.",
+          "links": [
+            {
+              "title": "What the Tribunal said",
+              "text": "Reasons for removal",
+              "href": "{{ paths.common.stfRemovalDecisionDocumentViewer }}"
             }
           ]
         },
@@ -2025,6 +2037,7 @@
             "reason": "Reason for the decision",
             "date": "Date of the decision",
             "maker": "Who made the decision",
+            "remove24wDocument": "Decision document",
             "Refused": "Your request was refused",
             "Granted": "Your request has been granted"
           },
@@ -2118,6 +2131,7 @@
             "reason": "Reason for the decision",
             "date": "Date of the decision",
             "maker": "Who made the decision",
+            "remove24wDocument": "Decision document",
             "whatNext": {
               "default": {
                 "granted": "You will be notified when the Tribunal makes the changes the Home Office asked for.",
@@ -2199,6 +2213,11 @@
           "approved": "The appeal is out of time but can proceed",
           "inTime": "The appeal is in time"
         }
+      },
+      "stfRemovalDecision": {
+        "title": "Reasons for removal",
+        "dateTimeUploaded": "Document upload date and time",
+        "document": "Document"
       },
       "homeOfficeWithdrawLetter": {
         "title": "Home Office Withdrawal Letter",

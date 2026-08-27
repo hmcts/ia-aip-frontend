@@ -10,7 +10,7 @@ import IdamService from '../../../app/service/idam-service';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
-import { expect, sinon, validateUuid } from '../../utils/testUtils';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('update-appeal-service', () => {
   let sandbox: sinon.SinonSandbox;
@@ -44,9 +44,7 @@ describe('update-appeal-service', () => {
 
     sandbox.stub(idamService, 'getUserToken').returns(userToken);
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-      .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.HEARING_BUNDLE, false).resolves(false)
-      .withArgs(req as Request, FEATURE_FLAGS.OUT_OF_COUNTRY, false).resolves(false);
+      .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     documentManagementService = new DocumentManagementService(authenticationService);
     updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
     req = {
@@ -1022,6 +1020,7 @@ describe('update-appeal-service', () => {
         'refundConfirmationApplied': 'No'
       });
     });
+
     it('converts uploadTheNoticeOfDecisionDocs', () => {
       emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
       emptyApplication.application.homeOfficeLetter = [
@@ -1397,11 +1396,11 @@ describe('update-appeal-service', () => {
     describe('ftpaR35AppellantDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaR35AppellantDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
-          'document_filename': 'FTPA_R35_DOCUMENT.PDF',
-          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+            'document_filename': 'FTPA_R35_DOCUMENT.PDF',
+            'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1450,11 +1449,11 @@ describe('update-appeal-service', () => {
     describe('ftpaR35RespondentDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaR35RespondentDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
-          'document_filename': 'FTPA_R35_DOCUMENT.PDF',
-          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+            'document_filename': 'FTPA_R35_DOCUMENT.PDF',
+            'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1470,11 +1469,11 @@ describe('update-appeal-service', () => {
     describe('ftpaApplicationAppellantDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaApplicationAppellantDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
-          'document_filename': 'FTPA_APPELLANT_DECISION_DOCUMENT.PDF',
-          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+            'document_filename': 'FTPA_APPELLANT_DECISION_DOCUMENT.PDF',
+            'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1490,11 +1489,11 @@ describe('update-appeal-service', () => {
     describe('rule32NoticeDocument', () => {
       const caseData: Partial<CaseData> = {
         'rule32NoticeDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d',
-          'document_filename': 'rule32.pdf',
-          'document_binary_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d',
+            'document_filename': 'rule32.pdf',
+            'document_binary_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1603,11 +1602,11 @@ describe('update-appeal-service', () => {
     describe('ftpaApplicationRespondentDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaApplicationRespondentDocument':
-        {
-          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
-          'document_filename': 'FTPA_RESPONDENT_DECISION_DOCUMENT.PDF',
-          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
-        }
+          {
+            'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+            'document_filename': 'FTPA_RESPONDENT_DECISION_DOCUMENT.PDF',
+            'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+          }
       };
 
       const appeal: Partial<CcdCaseDetails> = {
@@ -1663,6 +1662,49 @@ describe('update-appeal-service', () => {
       it('should map correctedDecisionAndReasons collection', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
         expect(mappedAppeal.updatedDecisionAndReasons).to.be.length(2);
+      });
+    });
+
+    describe('mapMakeApplicationsToSession', () => {
+      const caseData: Partial<CaseData> = {
+        makeAnApplications:
+          [
+            {
+              id: '1', value: {
+                date: '2023-01-01',
+                type: 'refusalOfRemoval24w',
+                state: 'someSate',
+                details: 'somedetails',
+                decision: 'somedec',
+                evidence: [{
+                  id: '2',
+                  value: {
+                    document_url: 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+                    document_filename: 'EVIDENCE.PDF',
+                    document_binary_url: 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+                  }
+                }],
+                applicant: 'Appellant',
+                applicantRole: 'Appellant',
+                refusalOfRemoval24wDocument: {
+                  document_url: 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+                  document_filename: 'DECISION_DOCUMENT.PDF',
+                  document_binary_url: 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+                }
+              }
+            }
+          ]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+
+      it('should map Decide FTPA decision document (respondent)', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.makeAnApplications.length).to.equal(1);
+        expect(mappedAppeal.makeAnApplications[0].value.refusalOfRemoval24wDocument.name).to.equal('DECISION_DOCUMENT.PDF');
       });
     });
 
@@ -2716,25 +2758,25 @@ describe('update-appeal-service', () => {
       const pageId = 'pageId1';
       updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
       sandbox.stub(ccdService, 'validateMidEvent')
-          .withArgs(
-              sinon.match.any,
-              pageId,
-              userId,
-              sinon.match.any)
-          .resolves({ status: 200, data: {} });
+        .withArgs(
+          sinon.match.any,
+          pageId,
+          userId,
+          sinon.match.any)
+        .resolves({ status: 200, data: {} });
       const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
       expect(ccdService.validateMidEvent).to.be.calledOnceWith(
-          {
-            case_reference: caseId,
-            data: {},
-            event_data: {},
-            event: event,
-            ignore_warning: false
-          }, pageId, userId,
-          {
-            userToken: `Bearer ${userToken}`,
-            serviceToken
-          });
+        {
+          case_reference: caseId,
+          data: {},
+          event_data: {},
+          event: event,
+          ignore_warning: false
+        }, pageId, userId,
+        {
+          userToken: `Bearer ${userToken}`,
+          serviceToken
+        });
       expect(errors.length).to.equal(0);
     });
 
@@ -2752,25 +2794,25 @@ describe('update-appeal-service', () => {
       const error1 = 'error 1';
       const error2 = 'error 2';
       sandbox.stub(ccdService, 'validateMidEvent')
-          .withArgs(
-              sinon.match.any,
-              sinon.match.string,
-              userId,
-              sinon.match.any)
-          .resolves({ status: 422, data: { callbackErrors: [error1, error2] }});
+        .withArgs(
+          sinon.match.any,
+          sinon.match.string,
+          userId,
+          sinon.match.any)
+        .resolves({ status: 422, data: { callbackErrors: [error1, error2] } });
       const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
       expect(ccdService.validateMidEvent).to.be.calledOnceWith(
-          {
-            case_reference: caseId,
-            data: {},
-            event_data: {},
-            event: event,
-            ignore_warning: false
-          }, pageId, userId,
-          {
-            userToken: `Bearer ${userToken}`,
-            serviceToken
-          });
+        {
+          case_reference: caseId,
+          data: {},
+          event_data: {},
+          event: event,
+          ignore_warning: false
+        }, pageId, userId,
+        {
+          userToken: `Bearer ${userToken}`,
+          serviceToken
+        });
       expect(errors.length).to.equal(2);
       expect(errors.includes(error1)).to.equal(true);
       expect(errors.includes(error2)).to.equal(true);
@@ -2788,27 +2830,28 @@ describe('update-appeal-service', () => {
       const pageId = 'pageId1';
       updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
       sandbox.stub(ccdService, 'validateMidEvent')
-          .withArgs(
-              sinon.match.any,
-              sinon.match.string,
-              userId,
-              sinon.match.any)
-          .resolves({ status: 401, data: { callbackErrors: ['error'] }});
+        .withArgs(
+          sinon.match.any,
+          sinon.match.string,
+          userId,
+          sinon.match.any)
+        .resolves({ status: 401, data: { callbackErrors: ['error'] } });
       const errors = await updateAppealService.validateMidEvent(event, pageId, appeal, midEventData, userId, userToken);
       expect(ccdService.validateMidEvent).to.be.calledOnceWith(
-          {
-            case_reference: caseId,
-            data: {},
-            event_data: {},
-            event: event,
-            ignore_warning: false
-          }, pageId, userId,
-          {
-            userToken: `Bearer ${userToken}`,
-            serviceToken
-          });
+        {
+          case_reference: caseId,
+          data: {},
+          event_data: {},
+          event: event,
+          ignore_warning: false
+        }, pageId, userId,
+        {
+          userToken: `Bearer ${userToken}`,
+          serviceToken
+        });
       expect(errors.length).to.equal(1);
       expect(errors.includes('There is a problem')).to.equal(true);
     });
   });
-});
+})
+;

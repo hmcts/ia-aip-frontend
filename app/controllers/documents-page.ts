@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import i18n from '../../../../locale/en.json';
-import { paths } from '../../../paths';
+import i18n from '../../locale/en.json';
+import { paths } from '../paths';
 
 
 function getDocuments(req: Request, res: Response, next: NextFunction) {

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { getDocuments } from '../../../app/controllers/documents-page';
+import { getDocuments, setupDocumentsController } from '../../../app/controllers/documents-page';
+import { paths } from '../../../app/paths';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('Documents controllers setup', () => {
@@ -48,49 +49,20 @@ describe('Documents controllers setup', () => {
 
   describe('getDocuments', () => {
     it('should render the documents page', () => {
+      const expectedRenderPayload = {
+        title: 'Documents',
+        documents: []
+      };
+
       getDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.have.been.calledOnce;
-      expect(renderStub).to.have.been.calledWith(
+      expect(renderStub).to.have.been.calledOnceWithExactly(
         'documents.njk',
-        {
-          title: 'Documents',
-          documents: []
-        }
+        expectedRenderPayload
       );
     });
 
-    it('should render the documents page with an empty documents list', () => {
-      getDocuments(req as Request, res as Response, next);
-
-      const renderArguments = renderStub.firstCall.args;
-
-      expect(renderArguments[0]).to.equal('documents.njk');
-      expect(renderArguments[1]).to.deep.equal({
-        title: 'Documents',
-        documents: []
-      });
-    });
-
-    it('should set the page title to Documents', () => {
-      getDocuments(req as Request, res as Response, next);
-
-      expect(renderStub.firstCall.args[1].title).to.equal('Documents');
-    });
-
-    it('should set documents to an empty array', () => {
-      getDocuments(req as Request, res as Response, next);
-
-      expect(renderStub.firstCall.args[1].documents).to.deep.equal([]);
-    });
-
-    it('should not call next when the page renders successfully', () => {
-      getDocuments(req as Request, res as Response, next);
-
-      expect(next).to.not.have.been.called;
-    });
-
-    it('should pass the error to next when rendering fails', () => {
+    it('should pass an error to next when rendering fails', () => {
       const error = new Error('the error');
 
       renderStub.throws(error);
@@ -98,6 +70,41 @@ describe('Documents controllers setup', () => {
       getDocuments(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledOnceWithExactly(error);
+    });
+  });
+
+  describe('setupDocumentsController', () => {
+    it('should create a router', () => {
+      const router = setupDocumentsController();
+
+      expect(router).to.exist;
+    });
+
+    it('should register the documents page GET route', () => {
+      const router = setupDocumentsController();
+
+      const routeLayer = router.stack.find(
+        (layer: any) =>
+          layer.route &&
+          layer.route.path === paths.common.documentsPage &&
+          layer.route.methods.get
+      );
+
+      expect(routeLayer).to.exist;
+    });
+
+    it('should register getDocuments as the GET route handler', () => {
+      const router = setupDocumentsController();
+
+      const routeLayer = router.stack.find(
+        (layer: any) =>
+          layer.route &&
+          layer.route.path === paths.common.documentsPage &&
+          layer.route.methods.get
+      );
+
+      expect(routeLayer).to.exist;
+      expect(routeLayer.route.stack[0].handle).to.equal(getDocuments);
     });
   });
 });

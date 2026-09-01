@@ -50,16 +50,54 @@ describe('Documents controllers setup', () => {
     it('should render the documents page', () => {
       getDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('documents.njk');
+      expect(renderStub).to.have.been.calledOnce;
+      expect(renderStub).to.have.been.calledWith(
+        'documents/documents.njk',
+        {
+          title: 'Documents',
+          documents: []
+        }
+      );
     });
 
-    it('should catch an error and pass it to next', () => {
+    it('should render the documents page with an empty documents list', () => {
+      getDocuments(req as Request, res as Response, next);
+
+      const renderArguments = renderStub.firstCall.args;
+
+      expect(renderArguments[0]).to.equal('documents/documents.njk');
+      expect(renderArguments[1]).to.deep.equal({
+        title: 'Documents',
+        documents: []
+      });
+    });
+
+    it('should set the page title to Documents', () => {
+      getDocuments(req as Request, res as Response, next);
+
+      expect(renderStub.firstCall.args[1].title).to.equal('Documents');
+    });
+
+    it('should set documents to an empty array', () => {
+      getDocuments(req as Request, res as Response, next);
+
+      expect(renderStub.firstCall.args[1].documents).to.deep.equal([]);
+    });
+
+    it('should not call next when the page renders successfully', () => {
+      getDocuments(req as Request, res as Response, next);
+
+      expect(next).to.not.have.been.called;
+    });
+
+    it('should pass the error to next when rendering fails', () => {
       const error = new Error('the error');
-      res.render = renderStub.throws(error);
+
+      renderStub.throws(error);
 
       getDocuments(req as Request, res as Response, next);
 
-      expect(next.calledWith(error)).to.equal(true);
+      expect(next).to.have.been.calledOnceWithExactly(error);
     });
   });
 });

@@ -52,7 +52,7 @@ describe('Documents controllers setup', () => {
 
       expect(renderStub).to.have.been.calledOnce;
       expect(renderStub).to.have.been.calledWith(
-        'documents/documents.njk',
+        'documents.njk',
         {
           title: 'Documents',
           documents: []

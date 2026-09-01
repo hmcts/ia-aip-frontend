@@ -50,7 +50,7 @@ describe('Documents controllers setup', () => {
     it('should render the documents page', () => {
       getDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('documents/documents.njk');
+      expect(renderStub).to.be.calledWith('documents.njk');
     });
 
     it('should catch an error and pass it to next', () => {

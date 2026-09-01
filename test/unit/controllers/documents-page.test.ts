@@ -65,7 +65,7 @@ describe('Documents controllers setup', () => {
 
       const renderArguments = renderStub.firstCall.args;
 
-      expect(renderArguments[0]).to.equal('documents/documents.njk');
+      expect(renderArguments[0]).to.equal('documents.njk');
       expect(renderArguments[1]).to.deep.equal({
         title: 'Documents',
         documents: []

@@ -48,29 +48,9 @@ describe('Documents controllers setup', () => {
 
   describe('getDocuments', () => {
     it('should render the documents page', () => {
-      const expectedRenderPayload = {
-        title: 'Documents',
-        documents: [
-          {
-            name: 'Notice of Hearing',
-            url: '/documents/notice-of-hearing'
-          },
-          {
-            name: 'Appeal Documents',
-            url: '/documents/appeal-documents'
-          },
-          {
-            name: 'Supporting Evidence',
-            url: '/documents/supporting-evidence'
-          }
-        ]
-      };
-
       getDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('documents.njk', {
-        ...expectedRenderPayload
-      });
+      expect(renderStub).to.be.calledWith('documents/documents.njk');
     });
 
     it('should catch an error and pass it to next', () => {

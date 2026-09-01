@@ -1,30 +1,24 @@
-import { NextFunction, Request, Response } from 'express';
-import i18n from '../../locale/en.json';
+import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
 
-
 function getDocuments(req: Request, res: Response, next: NextFunction) {
-  const documents = [
-    {
-      name: 'Notice of Hearing',
-      url: '/documents/notice-of-hearing'
-    },
-    {
-      name: 'Appeal Documents',
-      url: '/documents/appeal-documents'
-    },
-    {
-      name: 'Supporting Evidence',
-      url: '/documents/supporting-evidence'
-    }
-  ];
+  try {
+    res.render('documents.njk', {
+      title: 'Documents',
+      documents: []
+    });
+  } catch (e) {
+    next(e);
+  }
+}
 
-  return res.render('documents', {
-    title: 'Documents',
-    documents
-  });
+function setupDocumentsController(): Router {
+  const router = Router();
+  router.get(paths.common.documentsPage, getDocuments);
+  return router;
 }
 
 export {
-  getDocuments
+  getDocuments,
+  setupDocumentsController
 };

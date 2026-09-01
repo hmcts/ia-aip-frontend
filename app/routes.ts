@@ -101,6 +101,7 @@ import { setupCMARequirementsStartPageController } from './controllers/cma-requi
 import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
 import { setupcmaGuidancePageController } from './controllers/cma-requirements/what-to-expect';
 import { setupDetailViewersController } from './controllers/detail-viewers';
+import { setupDocumentsController } from './controllers/documents-page';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';
 import { setupFooterController } from './controllers/footer';
@@ -235,6 +236,7 @@ const middleware = [isJourneyAllowedMiddleware];
 
 const applicationOverview = setupApplicationOverviewController(updateAppealService);
 const casesListController = setupCasesListController(updateAppealService);
+const documentsPageController = setupDocumentsController();
 const taskListController = setupTaskListController(middleware);
 const homeOfficeDetailsController = setupHomeOfficeDetailsController(middleware, updateAppealService);
 const typeOfAppealController = setupTypeOfAppealController(middleware, updateAppealService);
@@ -401,6 +403,7 @@ router.use(checkAndSendController);
 router.use(outOfTimeController);
 router.use(applicationOverview);
 router.use(casesListController);
+router.use(documentsPageController);
 
 router.use(reasonsForAppealController);
 router.use(reasonsForAppealCYAController);

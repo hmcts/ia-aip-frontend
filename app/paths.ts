@@ -200,7 +200,7 @@ const paths = {
     deleteDraftAppeal: '/delete-draft-appeal/:id',
     fileNotFound: '/file-not-found',
     yourCQanswers: '/your-answers/:id',
-    documentPage: '/documents',
+    documentsPage: '/documents',
 
     // Health endpoints
     health: '/health',

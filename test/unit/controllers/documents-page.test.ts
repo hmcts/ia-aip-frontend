@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { getDocuments } from '../../../../../app/controllers/documents-page';
+import { getDocuments } from '../../../../../app/controllers/documents-page.ts';
 import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('Documents controllers setup', () => {

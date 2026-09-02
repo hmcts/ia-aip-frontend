@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
   checkSession,
@@ -161,7 +161,8 @@ describe('session-middleware', () => {
     expect(givenAppellantAccessStub.callCount).to.equal(1);
     expect(submitSimpleEventStub.callCount).to.equal(1);
     expect(next).to.have.been.callCount(0);
-    expect(req.session.startRepresentingYourself).to.equal(undefined);
+    expect(req.session.startRepresentingYourself).to.be.undefined;
+    expect(req.session.startRepresentingYourself || 'none').to.equal('none');
     expect(req.session.ccdCaseId).to.deep.equal('1234123412341234');
     expect(req.session.appeal).to.equal(appeal);
     expect(req.session.refreshCasesList).to.equal(true);

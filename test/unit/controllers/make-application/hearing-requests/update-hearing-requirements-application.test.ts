@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getUpdateHearingRequirementsApplication, postUpdateHearingRequirementsApplication } from '../../../../../app/controllers/make-application/hearing-requests/update-hearing-requirements-application';
 import { expect, sinon } from '../../../../utils/testUtils';
 

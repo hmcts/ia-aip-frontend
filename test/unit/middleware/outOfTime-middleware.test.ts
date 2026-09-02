@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { appealOutOfTimeMiddleware } from '../../../app/middleware/outOfTime-middleware';
 import { expect, sinon } from '../../utils/testUtils';
 

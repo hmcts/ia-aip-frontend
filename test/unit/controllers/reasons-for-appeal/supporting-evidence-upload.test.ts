@@ -1,5 +1,5 @@
 import config from 'config';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import {
   getSupportingEvidenceDeleteFile,
   getSupportingEvidenceUploadPage,
@@ -99,7 +99,8 @@ describe('Supporting Evidence Upload Controller', () => {
 
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: Object.values(evidences),
         evidenceCTA: paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile,
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
@@ -111,7 +112,8 @@ describe('Supporting Evidence Upload Controller', () => {
       req.session.appeal.reasonsForAppeal.evidences = someEvidences;
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: someEvidences,
         evidenceCTA: paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile,
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
@@ -137,7 +139,8 @@ describe('Supporting Evidence Upload Controller', () => {
       };
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidences: [],
@@ -156,7 +159,8 @@ describe('Supporting Evidence Upload Controller', () => {
       res.locals.errorCode = 'incorrectFormat';
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidences: [],
@@ -177,7 +181,8 @@ describe('Supporting Evidence Upload Controller', () => {
       res.locals.errorCode = 'fileTooLarge';
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidences: [],

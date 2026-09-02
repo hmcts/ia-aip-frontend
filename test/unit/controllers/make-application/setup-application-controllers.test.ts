@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { setupMakeApplicationControllers, validate } from '../../../../app/controllers/make-application/setup-application-controllers';
 import { paths } from '../../../../app/paths';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';

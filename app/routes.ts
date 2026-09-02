@@ -236,7 +236,6 @@ const middleware = [isJourneyAllowedMiddleware];
 
 const applicationOverview = setupApplicationOverviewController(updateAppealService);
 const casesListController = setupCasesListController(updateAppealService);
-const documentsPageController = setupDocumentsController();
 const taskListController = setupTaskListController(middleware);
 const homeOfficeDetailsController = setupHomeOfficeDetailsController(middleware, updateAppealService);
 const typeOfAppealController = setupTypeOfAppealController(middleware, updateAppealService);
@@ -265,6 +264,7 @@ const reasonsForAppealController = setupReasonsForAppealController(middleware, {
 });
 const reasonsForAppealCYAController = setupReasonsForAppealCheckAndSendController(middleware, updateAppealService);
 const detailViewersController = setupDetailViewersController(documentManagementService);
+const documentsPageController = setupDocumentsController();
 const eligibilityController = setupEligibilityController();
 const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();
@@ -403,7 +403,6 @@ router.use(checkAndSendController);
 router.use(outOfTimeController);
 router.use(applicationOverview);
 router.use(casesListController);
-router.use(documentsPageController);
 
 router.use(reasonsForAppealController);
 router.use(reasonsForAppealCYAController);
@@ -481,6 +480,7 @@ router.use(hearingBundleFeatureToggleController);
 router.use(outOfCountryFeatureToggleController);
 
 router.use(detailViewersController);
+router.use(documentsPageController);
 router.use(forbiddenController);
 router.use(deportationOrderController);
 

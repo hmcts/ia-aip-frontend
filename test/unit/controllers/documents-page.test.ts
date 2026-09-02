@@ -57,7 +57,7 @@ describe('Documents controllers setup', () => {
       getDocuments(req as Request, res as Response, next);
 
       expect(renderStub).to.have.been.calledOnceWithExactly(
-        'documents.njk',
+        'documents/documents.njk',
         expectedRenderPayload
       );
     });

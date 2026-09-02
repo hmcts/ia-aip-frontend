@@ -3,7 +3,7 @@ import { paths } from '../paths';
 
 function getDocuments(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('documents.njk', {
+    res.render('documents/documents.njk', {
       title: 'Documents',
       documents: []
     });

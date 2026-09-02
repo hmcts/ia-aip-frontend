@@ -309,6 +309,7 @@ interface Application {
   decisionMaker?: string;
   decisionReason?: string;
   refusalOfRemoval24wDocument?: SupportingDocument;
+  completeCaseReviewDocument?: SupportingDocument;
 }
 
 interface DateToAvoid {

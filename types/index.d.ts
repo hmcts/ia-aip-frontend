@@ -76,6 +76,7 @@ declare global {
     decisionMaker?: string;
     decisionReason?: string;
     refusalOfRemoval24wDocument?: Evidence;
+    completeCaseReviewDocument?: Evidence;
   }
 
   interface Evidence {

@@ -236,6 +236,7 @@ const paths = {
     noticeEndedAppealViewer: '/notice-ended-appeal',
     outOfTimeDecisionViewer: '/out-of-time-decision',
     stfRemovalDecisionDocumentViewer: '/stf-24-week-removal-decision',
+    stfCaseReviewDocumentViewer: '/stf-24-week-review-document',
     homeOfficeWithdrawLetter: '/home-office-withdrawal-letter',
     homeOfficeResponse: '/home-office-response',
     hearingNoticeViewer: '/hearing-notice/:id',

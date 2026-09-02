@@ -1186,7 +1186,8 @@ export default class UpdateAppealService {
         value: {
           ...application.value,
           ...application.value.evidence && { evidence: this.mapSupportingDocumentsToEvidence(application.value.evidence, documentMap) },
-          ...application.value.refusalOfRemoval24wDocument && { refusalOfRemoval24wDocument: this.mapSupportingDocumentToEvidence(application.value.refusalOfRemoval24wDocument, documentMap) }
+          ...application.value.refusalOfRemoval24wDocument && { refusalOfRemoval24wDocument: this.mapSupportingDocumentToEvidence(application.value.refusalOfRemoval24wDocument, documentMap) },
+          ...application.value.completeCaseReviewDocument && { completeCaseReviewDocument: this.mapSupportingDocumentToEvidence(application.value.completeCaseReviewDocument, documentMap) }
         }
       };
     });

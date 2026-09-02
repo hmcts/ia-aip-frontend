@@ -642,6 +642,13 @@ function getMakeAnApplicationSummaryRows(makeAnApplicationEvent: Collection<Make
     response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.appellant.response.reason, [data.decisionReason]));
     response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.appellant.response.date, [moment(data.decisionDate).format(dayMonthYearFormat)]));
     response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.appellant.response.maker, [data.decisionMaker]));
+
+    if (_.has(data, 'completeCaseReviewDocument')) {
+      response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.appellant.response.stf24wReviewDocument,
+          [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${data.completeCaseReviewDocument.fileId}'>${data.completeCaseReviewDocument.name}</a>`])
+      );
+    }
+
     if (_.has(data, 'refusalOfRemoval24wDocument')) {
       response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.appellant.response.remove24wDocument,
         [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${data.refusalOfRemoval24wDocument.fileId}'>${data.refusalOfRemoval24wDocument.name}</a>`])
@@ -672,6 +679,12 @@ function getRespondentApplicationSummaryRows(application: Collection<MakeAnAppli
     response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.response.reason, [data.decisionReason]));
     response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.response.date, [moment(data.decisionDate).format(dayMonthYearFormat)]));
     response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.response.maker, [data.decisionMaker]));
+    if (_.has(data, 'completeCaseReviewDocument')) {
+      response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.response.stf24wReviewDocument,
+          [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${data.completeCaseReviewDocument.fileId}'>${data.completeCaseReviewDocument.name}</a>`])
+      );
+    }
+
     if (_.has(data, 'refusalOfRemoval24wDocument')) {
       response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.response.remove24wDocument,
         [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${data.refusalOfRemoval24wDocument.fileId}'>${data.refusalOfRemoval24wDocument.name}</a>`])
@@ -1245,6 +1258,26 @@ function getStfRemovalDecisionDocumentViewer(req: Request, res: Response, next: 
   }
 }
 
+function getStfCaseReviewDocumentViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    const previousPage: string = paths.common.overview;
+    const doc = req.session.appeal.tribunalDocuments
+        .find(doc => doc.tag === 'stf24WeeksCaseReviewAppeallantDocument');
+    const fileNameFormatted = fileNameFormatter(doc.name);
+    const data = [
+      addSummaryRow(i18n.pages.detailViewers.stfCaseReviewDocument.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${fileNameFormatted}</a>`]),
+      addSummaryRow(i18n.pages.detailViewers.stfCaseReviewDocument.dateTimeUploaded, [moment(doc.dateTimeUploaded).format(dateTimeFormat)]),
+    ];
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.stfCaseReviewDocument.title,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function getHomeOfficeWithdrawLetter(req: Request, res: Response, next: NextFunction) {
   try {
     const previousPage: string = paths.common.overview;
@@ -1726,6 +1759,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.updatedDecisionAndReasonsViewer, getUpdatedDecisionAndReasonsViewer);
   router.get(paths.common.remittalDocumentsViewer, getRemittalDocumentsViewer);
   router.get(paths.common.stfRemovalDecisionDocumentViewer, getStfRemovalDecisionDocumentViewer);
+  router.get(paths.common.stfCaseReviewDocumentViewer, getStfCaseReviewDocumentViewer);
   return router;
 }
 
@@ -1759,6 +1793,7 @@ export {
   getRespondentApplicationSummaryRows,
   getUpdatedDecisionAndReasonsViewer,
   getStfRemovalDecisionDocumentViewer,
+  getStfCaseReviewDocumentViewer,
   getRemittalDocumentsViewer,
   addFeeSupportStatus
 };

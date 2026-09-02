@@ -264,7 +264,7 @@ const reasonsForAppealController = setupReasonsForAppealController(middleware, {
 });
 const reasonsForAppealCYAController = setupReasonsForAppealCheckAndSendController(middleware, updateAppealService);
 const detailViewersController = setupDetailViewersController(documentManagementService);
-const documentsPageController = setupDocumentsController();
+const documentsPageController = setupDocumentsController(documentManagementService);
 const eligibilityController = setupEligibilityController();
 const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();

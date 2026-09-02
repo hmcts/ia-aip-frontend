@@ -6,9 +6,25 @@
   <div class="govuk-width-container">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
+
         <h1 class="govuk-heading-xl">
           Documents
         </h1>
+
+        {% if documents.length %}
+          <ul class="govuk-list govuk-list--spaced">
+            {% for document in documents %}
+              <li>
+                <a href="/documents/{{ document.id }}" class="govuk-link">
+                  {{ document.url }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No documents are available.</p>
+        {% endif %}
+
       </div>
     </div>
   </div>

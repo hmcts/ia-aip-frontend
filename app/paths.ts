@@ -201,6 +201,7 @@ const paths = {
     fileNotFound: '/file-not-found',
     yourCQanswers: '/your-answers/:id',
     documentsPage: '/documents',
+    documentDownload: '/documents/:documentId',
 
     // Health endpoints
     health: '/health',

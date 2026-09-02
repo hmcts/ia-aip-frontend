@@ -1142,6 +1142,7 @@ describe('update-appeal-service', () => {
         'refundConfirmationApplied': 'No'
       });
     });
+
     it('converts uploadTheNoticeOfDecisionDocs', () => {
       emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
       emptyApplication.application.homeOfficeLetter = [
@@ -1784,6 +1785,49 @@ describe('update-appeal-service', () => {
       it('should map correctedDecisionAndReasons collection', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
         expect(mappedAppeal.updatedDecisionAndReasons).to.be.length(2);
+      });
+    });
+
+    describe('mapMakeApplicationsToSession', () => {
+      const caseData: Partial<CaseData> = {
+        makeAnApplications:
+          [
+            {
+              id: '1', value: {
+                date: '2023-01-01',
+                type: 'refusalOfRemoval24w',
+                state: 'someSate',
+                details: 'somedetails',
+                decision: 'somedec',
+                evidence: [{
+                  id: '2',
+                  value: {
+                    document_url: 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+                    document_filename: 'EVIDENCE.PDF',
+                    document_binary_url: 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+                  }
+                }],
+                applicant: 'Appellant',
+                applicantRole: 'Appellant',
+                refusalOfRemoval24wDocument: {
+                  document_url: 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+                  document_filename: 'DECISION_DOCUMENT.PDF',
+                  document_binary_url: 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+                }
+              }
+            }
+          ]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+
+      it('should map Decide FTPA decision document (respondent)', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.makeAnApplications.length).to.equal(1);
+        expect(mappedAppeal.makeAnApplications[0].value.refusalOfRemoval24wDocument.name).to.equal('DECISION_DOCUMENT.PDF');
       });
     });
 
@@ -3407,4 +3451,5 @@ describe('update-appeal-service', () => {
       expect(errors.includes('There is a problem')).to.equal(true);
     });
   });
-});
+})
+;

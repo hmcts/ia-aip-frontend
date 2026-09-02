@@ -143,7 +143,7 @@ describe('utils', () => {
   });
 
   describe('hasPendingTimeExtension', () => {
-    const pendingApplication: Collection<Application<Evidence>>[] = [{
+    const pendingApplication: Collection<MakeAnApplication>[] = [{
       id: '2',
       value: {
         applicant: 'Appellant',
@@ -156,7 +156,7 @@ describe('utils', () => {
         evidence: []
       }
     }];
-    const refusedApplication: Collection<Application<Evidence>>[] = [{
+    const refusedApplication: Collection<MakeAnApplication>[] = [{
       id: '1',
       value: {
         applicant: 'Appellant',

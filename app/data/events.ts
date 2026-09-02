@@ -261,6 +261,11 @@ export const Events = {
     summary: 'NLR updated details',
     description: 'Non-legal Representative has updated their details'
   },
+  REMOVE_STATUTORY_TIMEFRAME: {
+    id: 'removeStatutoryTimeframe24Weeks',
+    summary: 'Remove Statutory Timeframe',
+    description: 'Remove Statutory Timeframe 24 Weeks'
+  },
   MARK_APPEAL_PAID: {
     id: 'markAppealPaid',
     summary: 'Mark appeal as paid',

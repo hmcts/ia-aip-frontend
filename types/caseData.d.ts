@@ -132,7 +132,7 @@ interface CaseData {
   makeAnApplicationTypes?: any;
   makeAnApplicationDetails?: string;
   makeAnApplicationEvidence?: Collection<SupportingDocument>[];
-  makeAnApplications?: Collection<Application<Collection<SupportingDocument>>>[];
+  makeAnApplications?: Collection<Application>[];
   appealReviewDecisionTitle?: any;
   appealReviewOutcome?: string;
   homeOfficeAppealResponseDocument?: any;
@@ -332,13 +332,15 @@ interface Application<T> {
   state: string;
   details: string;
   decision: string;
-  evidence: T[];
+  evidence: Collection<SupportingDocument>[];
   applicant: string;
   applicantRole: string;
   decisionDate?: string;
   decisionMaker?: string;
   decisionReason?: string;
+  refusalOfRemoval24wDocument?: SupportingDocument;
 }
+
 interface DateToAvoid {
   dateToAvoid: string;
   dateToAvoidReason: string;

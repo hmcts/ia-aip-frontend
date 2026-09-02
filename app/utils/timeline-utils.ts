@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import _ from 'lodash';
 import moment from 'moment';
 import { FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
@@ -104,11 +105,12 @@ function getApplicationEvents(req: Request): any[] {
     };
     if (application.value.decision !== 'Pending') {
       const decideAnApplicationContent = i18n.pages.overviewPage.timeline.decideAnApplication[getApplicant(application.value)];
+      const is24wDecision: boolean = _.has(application.value, 'refusalOfRemoval24wDocument');
       const decision = {
         id: application.id,
         date: moment(application.value.decisionDate).format('DD MMMM YYYY'),
         dateObject: new Date(application.value.decisionDate),
-        text: decideAnApplicationContent[application.value.decision],
+        text: decideAnApplicationContent[is24wDecision ? 'Refused24w' : application.value.decision],
         links: [{
           ...decideAnApplicationContent.links[0],
           href: `${decideAnApplicationContent.links[0].href}/${application.id}`
@@ -481,6 +483,7 @@ function getEventsAndStates(ftpaSetAsideFeatureEnabled: boolean,
     Events.END_APPEAL.id,
     Events.END_APPEAL_AUTOMATICALLY.id,
     Events.RECORD_OUT_OF_TIME_DECISION.id,
+    Events.REMOVE_STATUTORY_TIMEFRAME.id,
     Events.MARK_AS_READY_FOR_UT_TRANSFER.id
   ];
   const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id, Events.MARK_APPEAL_AS_REMITTED.id];

@@ -27,6 +27,7 @@ import {
   getReasonsForAppealViewer,
   getRemittalDocumentsViewer,
   getRespondentApplicationSummaryRows,
+  getStfRemovalDecisionDocumentViewer,
   getUpdatedDecisionAndReasonsViewer,
   getUpdatedTribunalDecisionWithRule32Viewer,
   setupCmaRequirementsViewer,
@@ -151,6 +152,49 @@ describe('DetailViewController', () => {
       const error = new Error('an error');
       res.render = renderStub.throws(error);
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
+      expect(next.calledOnceWith(error)).to.equal(true);
+    });
+  });
+
+  describe('getStfRemovalDecisionDocumentViewer', () => {
+    beforeEach(() => {
+      req.session.appeal.tribunalDocuments = [
+        {
+          fileId: 'uuid',
+          name: 'filename',
+          description: 'description here',
+          dateUploaded: '2020-02-21',
+          id: '2',
+          tag: 'appealResponse'
+        },
+        {
+          fileId: 'uuid2',
+          name: 'filename2',
+          description: 'description here 2',
+          dateUploaded: '2020-02-25',
+          id: '1',
+          tag: 'stf24WeeksRemovalDecisionDocument'
+        }
+      ];
+    });
+
+    it('should render details-viewer template', () => {
+      getStfRemovalDecisionDocumentViewer(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+
+      const [template, actualViewModel] = renderStub.firstCall.args;
+
+      expect(template).to.equal('templates/details-viewer.njk');
+      expect(actualViewModel.title).to.equal(i18n.pages.detailViewers.stfRemovalDecision.title);
+      expect(actualViewModel.data.length).to.equal(2);
+      expect(actualViewModel.data[0].value.html).to.contain('filename2').and.to.contain('uuid2');
+      expect(actualViewModel.previousPage).to.equal(paths.common.overview);
+    });
+
+    it('getStfRemovalDecisionDocumentViewer should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = renderStub.throws(error);
+      getStfRemovalDecisionDocumentViewer(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
@@ -2365,7 +2409,7 @@ describe('DetailViewController', () => {
 
   describe('getMakeAnApplicationViewer', () => {
     it('should render detail-viewers/make-an-application-details-viewer.njk with no evidences for appellant', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2021-07-15',
@@ -2409,7 +2453,7 @@ describe('DetailViewController', () => {
     });
 
     it('should render detail-viewers/make-an-application-details-viewer.njk with decision for Legal rep', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '3',
         'value': {
           'date': '2022-07-18',
@@ -2495,7 +2539,7 @@ describe('DetailViewController', () => {
     });
 
     it('should render detail-viewers/make-an-application-details-viewer.njk for respondent (Expedite)', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '3',
         'value': {
           'date': '2022-07-18',
@@ -2562,7 +2606,7 @@ describe('DetailViewController', () => {
     });
 
     it('should render detail-viewers/make-an-application-details-viewer.njk for respondent (Reinstate an ended appeal)', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '3',
         'value': {
           'date': '2022-07-18',
@@ -3578,7 +3622,7 @@ describe('DetailViewController', () => {
 
   describe('getMakeAnApplicationDecisionWhatNext', () => {
     it('refused appellant application should show correct what next message.', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3601,7 +3645,7 @@ describe('DetailViewController', () => {
     });
 
     it('refused appellant application should show correct what next message (default message).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3624,7 +3668,7 @@ describe('DetailViewController', () => {
     });
 
     it('granted appellant application should show correct what next message.', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3647,7 +3691,7 @@ describe('DetailViewController', () => {
     });
 
     it('refused respondent application should show correct what next message (Reinstate an ended appeal).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3670,7 +3714,7 @@ describe('DetailViewController', () => {
     });
 
     it('granted respondent application should show correct what next message (Reinstate an ended appeal).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3693,7 +3737,7 @@ describe('DetailViewController', () => {
     });
 
     it('Granted respondent application should show correct what next message (Judge\'s review of application decision).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3716,7 +3760,7 @@ describe('DetailViewController', () => {
     });
 
     it('Refused respondent application should show correct what next message (Judge\'s review of application decision).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3739,7 +3783,7 @@ describe('DetailViewController', () => {
     });
 
     it('granted respondent application should show correct what next message (Transfer).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3762,7 +3806,7 @@ describe('DetailViewController', () => {
     });
 
     it('Refused respondent application should show correct what next message (Transfer).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3785,7 +3829,7 @@ describe('DetailViewController', () => {
     });
 
     it('Refused respondent application should show correct what next message (Link/unlink appeals).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3808,7 +3852,7 @@ describe('DetailViewController', () => {
     });
 
     it('Granted respondent application should show correct what next message (Link/unlink appeals).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3831,7 +3875,7 @@ describe('DetailViewController', () => {
     });
 
     it('Granted respondent application should show correct what next message (Other).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3854,7 +3898,7 @@ describe('DetailViewController', () => {
     });
 
     it('Refused respondent application should show correct what next message (Other).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3881,7 +3925,7 @@ describe('DetailViewController', () => {
   describe('getMakeAnApplicationSummaryRows', () => {
     it('should get rows', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const makeAnApplicationPendingDecision: Collection<Application<Evidence>> = {
+      const makeAnApplicationPendingDecision: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2021-07-15',
@@ -3947,12 +3991,55 @@ describe('DetailViewController', () => {
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.date, ['14 July 2021'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.maker, ['Tribunal Caseworker'])).to.equal(true);
     });
+
+    it('should get rows with decision and 24w removal document', () => {
+      const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
+      const makeAnApplicationPendingDecision = {
+        'id': '2',
+        'value': {
+          'date': '2021-07-14',
+          'type': 'Time extension',
+          'state': 'awaitingReasonsForAppeal',
+          'details': 'My reason',
+          'decision': 'Refused',
+          'refusalOfRemoval24wDocument': {
+            fileId: '654321',
+            name: 'eman',
+          },
+          'evidence': [{
+            id: 'id',
+            fileId: '123456',
+            name: 'name',
+            tag: 'test-tag',
+            suppliedBy: 'test-supplied',
+            description: 'test-description',
+            dateUploaded: 'test-date'
+          }],
+          'applicant': 'Appellant',
+          'decisionDate': '2021-07-14',
+          'applicantRole': 'citizen',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Reason not enough'
+        }
+      };
+
+      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
+      expect(addSummaryRowStub).to.have.been.callCount(9);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.date, ['14 July 2021'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.decision, [i18n.pages.detailViewers.makeAnApplication.appellant.response.Refused])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.reason, ['Reason not enough'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.date, ['14 July 2021'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.maker, ['Tribunal Caseworker'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.remove24wDocument,[`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/654321'>eman</a>`])).to.equal(true);
+    });
   });
 
   describe('getRespondentApplicationSummaryRows', () => {
     it('should get rows for respondent pending decision', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const application: Collection<Application<Evidence>> = {
+      const application: Collection<MakeAnApplication> = {
         'id': '2',
         'value': {
           'date': '2021-07-15',
@@ -3983,7 +4070,7 @@ describe('DetailViewController', () => {
 
     it('should get rows for respondent after decision', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const application: Collection<Application<Evidence>> = {
+      const application: Collection<MakeAnApplication> = {
         'id': '2',
         'value': {
           'date': '2021-07-15',
@@ -4017,6 +4104,49 @@ describe('DetailViewController', () => {
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.reason, ['Reason not enough'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.date, ['14 July 2021'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.maker, ['Tribunal Caseworker'])).to.equal(true);
+    });
+
+    it('should get rows for respondent after decision', () => {
+      const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
+      const application: Collection<MakeAnApplication> = {
+        'id': '2',
+        'value': {
+          'date': '2021-07-15',
+          'type': 'Withdraw',
+          'state': 'awaitingReasonsForAppeal',
+          'details': 'My reason',
+          'decision': 'Granted',
+          'refusalOfRemoval24wDocument': {
+            fileId: '654321',
+            name: 'eman',
+          },
+          'evidence': [{
+            id: 'id',
+            fileId: '123456',
+            name: 'name',
+            tag: 'test-tag',
+            suppliedBy: 'test-supplied',
+            description: 'test-description',
+            dateUploaded: 'test-date'
+          }],
+          'applicant': 'Respondent',
+          'applicantRole': 'caseworker-ia-homeofficeapc',
+          'decisionDate': '2021-07-14',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Reason not enough'
+        }
+      };
+
+      getRespondentApplicationSummaryRows(application);
+      expect(addSummaryRowStub).to.have.been.callCount(9);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.date, ['15 July 2021'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.decision, ['Granted'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.reason, ['Reason not enough'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.date, ['14 July 2021'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.maker, ['Tribunal Caseworker'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.remove24wDocument, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/654321'>eman</a>`])).to.equal(true);
     });
   });
 

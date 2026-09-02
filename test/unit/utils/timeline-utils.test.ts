@@ -520,13 +520,17 @@ describe('timeline-utils', () => {
             applicant: 'Legal representative',
             applicantRole: 'caseworker-ia-legalrep-solicitor',
             date: '2021-07-10',
-            decision: 'Granted',
+            decision: 'Refused',
             decisionDate: '2021-07-12',
             decisionMaker: 'Tribunal Caseworker',
             decisionReason: 'reason why',
             details: 'my details',
             state: 'awaitingReasonsForAppeal',
             type: 'Time extension',
+            refusalOfRemoval24wDocument: {
+              fileId: 'fileId',
+              name: 'fileName',
+            },
             evidence: []
           }
         }
@@ -549,7 +553,7 @@ describe('timeline-utils', () => {
           'id': '2',
           'date': '12 July 2021',
           'dateObject': new Date('2021-07-12T00:00:00.00Z'),
-          'text': 'Your request was granted.',
+          'text': 'Your request to remove the statutory 24 week timeframe was refused.',
           'links': [{
             'title': 'What the Tribunal said',
             'text': 'Reason for decision',

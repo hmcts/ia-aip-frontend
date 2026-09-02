@@ -51,7 +51,7 @@ describe('Documents controllers setup', () => {
     renderStub = sandbox.stub();
     setStub = sandbox.stub();
     sendStub = sandbox.stub();
-    statusStub = sandbox.stub().returns(res);
+    statusStub = sandbox.stub();
 
     res = {
       render: renderStub,
@@ -60,6 +60,8 @@ describe('Documents controllers setup', () => {
       status: statusStub,
       locals: {}
     } as Partial<Response>;
+
+    statusStub.returns(res);
 
     next = sandbox.stub();
   });

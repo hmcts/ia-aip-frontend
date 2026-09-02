@@ -611,7 +611,7 @@ function setupAnswersReasonsForAppeal(req: Request, fromLegalRep: boolean): Arra
   return array;
 }
 
-function getMakeAnApplicationSummaryRows(makeAnApplicationEvent: Collection<Application<Evidence>>, isNonLegalRep: boolean) {
+function getMakeAnApplicationSummaryRows(makeAnApplicationEvent: Collection<MakeAnApplication>, isNonLegalRep: boolean) {
   const request = [];
   const data = makeAnApplicationEvent.value;
   const i18n = getI18n(isNonLegalRep);
@@ -641,7 +641,7 @@ function getMakeAnApplicationSummaryRows(makeAnApplicationEvent: Collection<Appl
   return { request };
 }
 
-function getRespondentApplicationSummaryRows(application: Collection<Application<Evidence>>, isNonLegalRep: boolean) {
+function getRespondentApplicationSummaryRows(application: Collection<MakeAnApplication>, isNonLegalRep: boolean) {
   const request = [];
   const data = application.value;
   const i18n = getI18n(isNonLegalRep);
@@ -951,7 +951,7 @@ function getMakeAnApplicationViewer(req: Request, res: Response, next: NextFunct
   }
 }
 
-function getRespondentApplicationDetails(application: Collection<Application<Evidence>>, isNonLegalRep: boolean) {
+function getRespondentApplicationDetails(application: Collection<MakeAnApplication>, isNonLegalRep: boolean) {
   const { request, response = null } = getRespondentApplicationSummaryRows(application, isNonLegalRep);
   const applicationType = application.value.type;
   const decision = application.value.decision;
@@ -978,7 +978,7 @@ function getRespondentApplicationDetails(application: Collection<Application<Evi
     };
 }
 
-function getAppellantApplicationDetails(application: Collection<Application<Evidence>>, isNonLegalRep: boolean) {
+function getAppellantApplicationDetails(application: Collection<MakeAnApplication>, isNonLegalRep: boolean) {
   const { request, response = null } = getMakeAnApplicationSummaryRows(application, isNonLegalRep);
   const whatNext = getMakeAnApplicationDecisionWhatNext(application, isNonLegalRep);
   const i18n = getI18n(isNonLegalRep);
@@ -991,7 +991,7 @@ function getAppellantApplicationDetails(application: Collection<Application<Evid
   };
 }
 
-function getMakeAnApplicationDecisionWhatNext(makeAnApplicationEvent: Collection<Application<Evidence>>, isNonLegalRep: boolean) {
+function getMakeAnApplicationDecisionWhatNext(makeAnApplicationEvent: Collection<MakeAnApplication>, isNonLegalRep: boolean) {
   const data = makeAnApplicationEvent.value;
   const applicationType = getApplicationType(data.type);
   if (applicationType && data.decision !== 'Pending') {

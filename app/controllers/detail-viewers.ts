@@ -1235,6 +1235,7 @@ function getStfRemovalDecisionDocumentViewer(req: Request, res: Response, next: 
     const doc = req.session.appeal.tribunalDocuments
       .find(doc => doc.tag === 'stf24WeeksRemovalDecisionDocument');
     const fileNameFormatted = fileNameFormatter(doc.name);
+    const i18n = getI18n(req.session.isNonLegalRep);
     const data = [
       addSummaryRow(i18n.pages.detailViewers.stfRemovalDecision.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${fileNameFormatted}</a>`]),
       addSummaryRow(i18n.pages.detailViewers.stfRemovalDecision.dateTimeUploaded, [moment(doc.dateTimeUploaded).format(dateTimeFormat)]),

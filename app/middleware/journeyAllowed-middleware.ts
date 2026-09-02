@@ -61,7 +61,8 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
       paths.common.stepsToApplyForHelpWithFeesRefund,
       paths.common.helpWithFeesReferenceNumberRefund,
       paths.common.checkYourAnswersRefund,
-      paths.common.confirmationRefund
+      paths.common.confirmationRefund,
+      paths.common.stfRemovalDecisionDocumentViewer
     ]);
     allowedPaths = [
       ...commonPaths.filter(path => !nonLegalRepForbiddenCommonPaths.has(path)),

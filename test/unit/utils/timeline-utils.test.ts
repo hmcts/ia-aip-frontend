@@ -1055,7 +1055,7 @@ describe('timeline-utils', () => {
   describe('getEventsAndStates', () => {
     it('should return relevant events and states when uploadAddendumEvidence feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false);
-      expect(eventsAndStates.appealArgumentSectionEvents).to.have.lengthOf(18);
+      expect(eventsAndStates.appealArgumentSectionEvents).to.have.lengthOf(19);
       expect(eventsAndStates.appealArgumentSectionStates).to.have.lengthOf(18);
     });
 

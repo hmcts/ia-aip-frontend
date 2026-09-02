@@ -326,7 +326,7 @@ interface CCDNlrDetails {
   sameAsSponsor?: string
 }
 
-interface Application<T> {
+interface Application {
   date: string;
   type: string;
   state: string;

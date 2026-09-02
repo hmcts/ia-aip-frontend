@@ -48,7 +48,8 @@ describe('cdam-document-management-service', () => {
       req.session.appeal.documentMap = [
         {
           id: 'fileId',
-          url: 'http://store/documents/ID'
+          url: 'http://store/documents/ID',
+          name: 'file.pdf'
         }
       ];
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
@@ -78,7 +79,7 @@ describe('cdam-document-management-service', () => {
     it('should upload a file', async () => {
       req.session.appeal.documentMap = [];
 
-      const documentUploadResponse = '{"documents":[{"originalDocumentName":"file.txt","_links":{"self":{"href":"http://store/documents/doc-id"}}}]}';
+      const documentUploadResponse = '{"documents":[{"originalDocumentName":"file.pdf","_links":{"self":{"href":"http://store/documents/doc-id"}}}]}';
 
       const resolved = new Promise((r) => r(documentUploadResponse));
 
@@ -98,9 +99,10 @@ describe('cdam-document-management-service', () => {
 
       const documentMap: DocumentMap[] = [];
       const documentUrl: string = 'http://documenturl/';
+        const documentName: string = 'file.pdf';
 
       const documentManagementService = new CdamDocumentManagementService(null);
-      const result = documentManagementService.addToDocumentMapper(documentUrl, documentMap);
+      const result = documentManagementService.addToDocumentMapper(documentUrl, documentName, documentMap);
       validateUuid(result);
     });
 
@@ -109,7 +111,8 @@ describe('cdam-document-management-service', () => {
         req.session.appeal.documentMap = [
           {
             id: 'fileId',
-            url: 'file-url.com'
+            url: 'file-url.com',
+            name: 'file.pdf'
           }
         ];
         const documentManagementService = new CdamDocumentManagementService(null);
@@ -121,7 +124,8 @@ describe('cdam-document-management-service', () => {
         req.session.appeal.documentMap = [
           {
             id: 'fileId',
-            url: 'file-url.com'
+            url: 'file-url.com',
+            name: 'file.pdf'
           }
         ];
         const documentManagementService = new CdamDocumentManagementService(null);
@@ -143,7 +147,7 @@ describe('cdam-document-management-service', () => {
     describe('upload', () => {
       const fileMock = {
         fieldname: 'file',
-        originalname: 'file.txt',
+        originalname: 'file.pdf',
         encoding: '7bit',
         mimetype: 'text/plain',
         size: 4,

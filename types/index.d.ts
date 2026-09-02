@@ -55,6 +55,7 @@ declare global {
   interface DocumentMap {
     id: string;
     url: string;
+    name: string;
   }
 
   interface TimeExtensionEventMap {

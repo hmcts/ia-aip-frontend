@@ -95,7 +95,7 @@ describe('Documents controllers setup', () => {
         }
       ];
 
-      req.session!.appeal.documentMap = documents;
+      req.session.appeal.documentMap = documents;
 
       getDocuments(req as Request, res as Response, next);
 
@@ -135,7 +135,7 @@ describe('Documents controllers setup', () => {
         }
       };
 
-      req.session!.appeal.documentMap = [document];
+      req.session.appeal.documentMap = [document];
       req.params = {
         documentId: 'document-1'
       };
@@ -164,7 +164,7 @@ describe('Documents controllers setup', () => {
     });
 
     it('should return a 404 when the requested document does not exist', async () => {
-      req.session!.appeal.documentMap = [
+      req.session.appeal.documentMap = [
         {
           id: 'document-1',
           url: 'https://cdam/documents/document-1'
@@ -201,7 +201,7 @@ describe('Documents controllers setup', () => {
         url: 'https://cdam/documents/document-1'
       };
 
-      req.session!.appeal.documentMap = [document];
+      req.session.appeal.documentMap = [document];
 
       req.params = {
         documentId: 'document-1'

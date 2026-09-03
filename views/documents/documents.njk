@@ -1,4 +1,5 @@
 {% extends 'layout.njk' %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% set pageTitleName = 'Documents' %}
 
@@ -25,23 +26,23 @@
                   ]
                   ), documentsRows) %}
               {% endfor %}
-              {% else %}
-                <p>No documents are available.</p>
+        {% else %}
+            <p>No documents are available.</p>
         {% endif %}
 
 
-          {{ govukTable({
-            firstCellIsHeader: false,
-            head: [
-              {
-                text: i18n.pages.detailViewers.common.dateUploaded
-              },
-              {
-                text: i18n.pages.detailViewers.common.document
-              }
-            ],
-            rows: documentsRows
-          }) }}
+        {{ govukTable({
+          firstCellIsHeader: false,
+          head: [
+            {
+              text: i18n.pages.detailViewers.common.dateUploaded
+            },
+            {
+              text: i18n.pages.detailViewers.common.document
+            }
+          ],
+          rows: documentsRows
+        }) }}
 
       </div>
     </div>

@@ -26,9 +26,7 @@
       {% set errorMessage =  errors.date.text if errors.date else errorMessage %}
 
       <ul class="govuk-list govuk-list--bullet">
-        {% for hint in i18n.pages.DOB.hints %}
-          <li>{{ hint }}</li>
-        {% endfor %}
+        <li>{{ i18n.pages.DOB.hint }}</li>
         {% if homeOfficeValidationEnabled %}
           <li>{{ i18n.common.homeOfficeHelpForm | safe }}</li>
         {% endif %}
@@ -36,7 +34,7 @@
 
       {{ govukDateInput({
         hint: {
-          text: i18n.pages.DOB.hint
+          text: i18n.pages.DOB.example
         } if not homeOfficeValidationEnabled,
         id: 'date',
         name: 'date',

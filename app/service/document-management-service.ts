@@ -50,13 +50,14 @@ class DocumentManagementService {
    * @param documentUrl the document url to be inserted in the map
    * @param documentMap the document map array.
    */
-  public addToDocumentMapper(documentUrl: string, documentName: string,
+  public addToDocumentMapper(documentUrl: string, documentName: string, documentUploadDate: string,
                              documentMap: DocumentMap[]) {
     const documentId: string = uuid();
     documentMap.push({
       id: documentId,
       url: documentUrl,
-      name: documentName
+      name: documentName,
+      documentUploadDate: documentUploadDate
     });
 
     return documentId;

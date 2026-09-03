@@ -121,6 +121,7 @@ class CdamDocumentManagementService {
         const documentMapperId: string = this.addToDocumentMapper(
             res.documents[0]._links.self.href,
             res.documents[0].originalDocumentName,
+            res.documents[0].createdOn,
             req.session.appeal.documentMap
         );
         return {
@@ -176,6 +177,7 @@ class CdamDocumentManagementService {
   public addToDocumentMapper(
       documentUrl: string,
       documentName: string,
+      documentUploadDate: string,
       documentMap: DocumentMap[]
   ) {
     const documentId: string = uuid();
@@ -183,7 +185,8 @@ class CdamDocumentManagementService {
     documentMap.push({
       id: documentId,
       url: documentUrl,
-      name: documentName
+      name: documentName,
+      documentUploadDate: documentUploadDate
     });
 
     return documentId;

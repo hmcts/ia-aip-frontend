@@ -135,6 +135,7 @@ class DmDocumentManagementService {
         const documentMapperId: string = this.addToDocumentMapper(
             res._embedded.documents[0]._links.self.href,
             res._embedded.documents[0].originalDocumentName,
+            res._embedded.documents[0].createdOn,
             req.session.appeal.documentMap
         );
         return {
@@ -184,6 +185,7 @@ class DmDocumentManagementService {
   public addToDocumentMapper(
       documentUrl: string,
       documentName: string,
+      documentUploadDate: string,
       documentMap: DocumentMap[]
   ) {
     const documentId: string = uuid();
@@ -191,7 +193,8 @@ class DmDocumentManagementService {
     documentMap.push({
       id: documentId,
       url: documentUrl,
-      name: documentName
+      name: documentName,
+      documentUploadDate: documentUploadDate
     });
 
     return documentId;

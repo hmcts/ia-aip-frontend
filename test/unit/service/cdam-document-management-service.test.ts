@@ -49,7 +49,8 @@ describe('cdam-document-management-service', () => {
         {
           id: 'fileId',
           url: 'http://store/documents/ID',
-          name: 'file.pdf'
+          name: 'file.pdf',
+          documentUploadDate: '2024-06-01T12:00:00Z'
         }
       ];
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
@@ -99,10 +100,11 @@ describe('cdam-document-management-service', () => {
 
       const documentMap: DocumentMap[] = [];
       const documentUrl: string = 'http://documenturl/';
-        const documentName: string = 'file.pdf';
+      const documentName: string = 'file.pdf';
+      const documentUploadDate: string = '2024-06-01T12:00:00Z';
 
       const documentManagementService = new CdamDocumentManagementService(null);
-      const result = documentManagementService.addToDocumentMapper(documentUrl, documentName, documentMap);
+      const result = documentManagementService.addToDocumentMapper(documentUrl, documentName, documentUploadDate, documentMap);
       validateUuid(result);
     });
 
@@ -112,7 +114,9 @@ describe('cdam-document-management-service', () => {
           {
             id: 'fileId',
             url: 'file-url.com',
-            name: 'file.pdf'
+            name: 'file.pdf',
+            documentUploadDate: '2024-06-01T12:00:00Z'
+
           }
         ];
         const documentManagementService = new CdamDocumentManagementService(null);
@@ -125,7 +129,8 @@ describe('cdam-document-management-service', () => {
           {
             id: 'fileId',
             url: 'file-url.com',
-            name: 'file.pdf'
+            name: 'file.pdf',
+            documentUploadDate: '2024-06-01T12:00:00Z'
           }
         ];
         const documentManagementService = new CdamDocumentManagementService(null);

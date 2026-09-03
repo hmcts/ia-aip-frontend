@@ -46,7 +46,8 @@ describe('dm-document-management-service', () => {
         {
           id: 'fileId',
           url: 'file-url.com',
-          name: 'file.pdf'
+          name: 'file.pdf',
+          documentUploadDate: '2024-06-01T12:00:00Z'
         }
       ];
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
@@ -104,12 +105,14 @@ describe('dm-document-management-service', () => {
       const documentMap: DocumentMap[] = [];
       const documentUrl = 'http://documenturl/';
       const documentName = 'file.pdf';
+      const documentUploadDate = '2024-06-01T12:00:00Z';
 
       const documentManagementService = new DmDocumentManagementService(null);
 
       const result = documentManagementService.addToDocumentMapper(
           documentUrl,
           documentName,
+          documentUploadDate,
           documentMap
       );
 
@@ -127,7 +130,8 @@ describe('dm-document-management-service', () => {
           {
             id: 'fileId',
             url: 'file-url.com',
-            name: 'file.pdf'
+            name: 'file.pdf',
+            documentUploadDate: '2024-06-01T12:00:00Z'
           }
         ];
         const documentManagementService = new DmDocumentManagementService(null);
@@ -140,7 +144,8 @@ describe('dm-document-management-service', () => {
           {
             id: 'fileId',
             url: 'file-url.com',
-            name: 'file.pdf'
+            name: 'file.pdf',
+            documentUploadDate: '2024-06-01T12:00:00Z'
           }
         ];
         const documentManagementService = new DmDocumentManagementService(null);

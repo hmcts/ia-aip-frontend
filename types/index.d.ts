@@ -56,6 +56,7 @@ declare global {
     id: string;
     url: string;
     name: string;
+    documentUploadDate: string;
   }
 
   interface TimeExtensionEventMap {

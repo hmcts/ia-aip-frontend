@@ -1,25 +1,49 @@
 import { paths } from '../../../app/paths';
+import Logger, { getLogLabel } from '../../../app/utils/logger';
 import * as progression from '../service/case-progression-service';
 import { createCaseFromThread } from '../service/ccd-service';
-import {
-  createCitizenUser,
-  setTestingSupportToken
-} from '../service/user-service';
-import { currentUserDetails, signInForUserFromThread } from './helper-functions';
+import { createCitizenUser } from '../service/user-service';
+import { currentUserDetails, signInForUserFromThread, signInForUserWithId } from './helper-functions';
 
 const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
 const { signInForUser } = require('./helper-functions');
+const logger: Logger = new Logger();
+const logLabel: string = getLogLabel(__filename);
 
 async function navigateFromCasesListToOverview(I) {
   await I.waitInUrl(paths.common.casesList, 30);
+  await I.click('Refresh');
   const hasCases = await I.grabNumberOfVisibleElements('.govuk-table__body');
+  logger.trace(`Found ${hasCases} cases on appeal list`, logLabel);
   if (hasCases > 0) {
     await I.click('View', '.govuk-table__body');
   } else {
     await I.click(i18n.pages.casesList.createNewAppeal);
     await I.waitForVisible(`#${i18n.pages.casesList.createAppealModal.id}`, 30);
     await I.click(`#${i18n.pages.casesList.createAppealModal.id}-confirm`);
+  }
+  await I.waitInUrl(paths.common.overview, 30);
+}
+
+async function createAppeal(I) {
+  await I.waitInUrl(paths.common.casesList, 30);
+  await I.click(i18n.pages.casesList.createNewAppeal);
+  await I.waitForVisible(`#${i18n.pages.casesList.createAppealModal.id}`, 30);
+  await I.click(`#${i18n.pages.casesList.createAppealModal.id}-confirm`);
+  await I.waitInUrl(paths.common.overview, 30);
+}
+
+async function navigateFromCasesListToOverviewWithId(I, id: string) {
+  await I.waitInUrl(paths.common.casesList, 30);
+  const refLocator = locate('td.govuk-table__cell').withText(id);
+  const rowLocator = locate('.govuk-table__row').withChild(refLocator);
+  const viewLinkLocator = rowLocator.find('a.govuk-link').withText('View');
+  const count = await I.grabNumberOfVisibleElements(viewLinkLocator);
+  if (count > 0) {
+    await I.click(viewLinkLocator);
+  } else {
+    await I.amOnPage(testUrl + '/appeal-overview?caseId=' + id);
   }
   await I.waitInUrl(paths.common.overview, 30);
 }
@@ -98,133 +122,137 @@ module.exports = {
 
     Given(/^I have logged in as an appellant in state "([^"]*)"$/, async (appealState) => {
       I.amOnPage(testUrl + paths.common.login);
-
+      let id: string;
       switch (appealState) {
         case 'appealStarted': {
-          signInForUser('no-cases@example.com');
+          id = signInForUserWithId('no-cases@example.com');
           break;
         }
         case 'Saved appealStarted': {
-          signInForUser('has-case@example.com');
+          id = signInForUserWithId('has-case@example.com');
           break;
         }
         case 'appealSubmitted': {
-          signInForUser('appeal-submitted@example.com');
+          id = signInForUserWithId('appeal-submitted@example.com');
           break;
         }
         case 'awaitingReasonsForAppeal': {
-          signInForUser('awaiting-reasons-for-appeal@example.com');
+          id = signInForUserWithId('awaiting-reasons-for-appeal@example.com');
           break;
         }
         case 'Saved awaitingReasonsForAppeal': {
-          signInForUser('partial-awaiting-reasons-for-appeal@example.com');
+          id = signInForUserWithId('partial-awaiting-reasons-for-appeal@example.com');
           break;
         }
         case 'awaitingReasonsForAppeal with time extensions': {
-          signInForUser('awaitingReasonsForAppeal-with-time_extension@example.com');
+          id = signInForUserWithId('awaitingReasonsForAppeal-with-time_extension@example.com');
           break;
         }
         case 'awaitingClarifyingQuestionsAnswers with time extensions': {
-          signInForUser('awaitingClarifyingQuestions-with-time_extension@example.com');
+          id = signInForUserWithId('awaitingClarifyingQuestions-with-time_extension@example.com');
           break;
         }
         case 'awaitingClarifyingQuestionsAnswers': {
-          signInForUser('clarifying-questions@example.com');
+          id = signInForUserWithId('clarifying-questions@example.com');
           break;
         }
         case 'awaitingCmaRequirements': {
-          signInForUser('awaitingCmaRequirements@example.com');
+          id = signInForUserWithId('awaitingCmaRequirements@example.com');
           break;
         }
         case 'awaitingCmaRequirements with time extensions': {
-          signInForUser('awaitingCmaRequirements-with-time_extension@example.com');
+          id = signInForUserWithId('awaitingCmaRequirements-with-time_extension@example.com');
           break;
         }
         case 'cmaRequirementsSubmitted': {
-          signInForUser('cmaRequirementsSubmitted@example.com');
+          id = signInForUserWithId('cmaRequirementsSubmitted@example.com');
           break;
         }
         case 'cmaListed': {
-          signInForUser('cmaListed@example.com');
+          id = signInForUserWithId('cmaListed@example.com');
           break;
         }
         case 'preHearing': {
-          signInForUser('preHearing@example.com');
+          id = signInForUserWithId('preHearing@example.com');
           break;
         }
         case 'decided': {
-          signInForUser('decided@example.com');
+          id = signInForUserWithId('decided@example.com');
           break;
         }
         case 'ftpaOutOfTimeApplicationStarted': {
-          signInForUser('ftpa-out-of-time-application-started@example.com');
+          id = signInForUserWithId('ftpa-out-of-time-application-started@example.com');
           break;
         }
         case 'appealSubmitted with stf24w': {
-          signInForUser('appeal-submitted-stf24w@example.com');
+          id = signInForUserWithId('appeal-submitted-stf24w@example.com');
           break;
         }
         case 'lateAppealSubmitted with stf24w': {
-          signInForUser('late-appeal-submitted-stf24w@example.com');
+          id = signInForUserWithId('late-appeal-submitted-stf24w@example.com');
           break;
         }
         case 'awaitingRespondentEvidence with stf24w': {
-          signInForUser('awaiting-respondent-evidence-stf24w@example.com');
+          id = signInForUserWithId('awaiting-respondent-evidence-stf24w@example.com');
           break;
         }
         case 'listing with stf24w': {
-          signInForUser('listing-stf24w@example.com');
+          id = signInForUserWithId('listing-stf24w@example.com');
           break;
         }
         case 'awaitingReasonsForAppeal with stf24w': {
-          signInForUser('awaiting-reasons-for-appeal-stf24w@example.com');
+          id = signInForUserWithId('awaiting-reasons-for-appeal-stf24w@example.com');
           break;
         }
         case 'reasonsForAppealSubmitted with stf24w': {
-          signInForUser('reasons-for-appeal-submitted-stf24w@example.com');
+          id = signInForUserWithId('reasons-for-appeal-submitted-stf24w@example.com');
           break;
         }
         case 'caseUnderReview with stf24w': {
-          signInForUser('case-under-review-stf24w@example.com');
+          id = signInForUserWithId('case-under-review-stf24w@example.com');
           break;
         }
         case 'respondentReview with stf24w': {
-          signInForUser('respondent-review-stf24w@example.com');
+          id = signInForUserWithId('respondent-review-stf24w@example.com');
           break;
         }
         case 'decisionMaintained with stf24w': {
-          signInForUser('decision-maintained-stf24w@example.com');
+          id = signInForUserWithId('decision-maintained-stf24w@example.com');
           break;
         }
         case 'awaitingReasonsForAppealPartial with stf24w': {
-          signInForUser('awaiting-reasons-for-appeal-partial-stf24w@example.com');
+          id = signInForUserWithId('awaiting-reasons-for-appeal-partial-stf24w@example.com');
           break;
         }
         case 'prepareForHearing with stf24w': {
-          signInForUser('prepare-for-hearing-stf24w@example.com');
+          id = signInForUserWithId('prepare-for-hearing-stf24w@example.com');
           break;
         }
         case 'finalBundling with stf24w': {
-          signInForUser('final-bundling-stf24w@example.com');
+          id = signInForUserWithId('final-bundling-stf24w@example.com');
           break;
         }
         case 'pendingPayment with stf24w': {
-          signInForUser('pending-payment-stf24w@example.com');
+          id = signInForUserWithId('pending-payment-stf24w@example.com');
           break;
         }
         case 'submitHearingRequirements with stf24w': {
-          signInForUser('submit-hearing-requirements-stf24w@example.com');
+          id = signInForUserWithId('submit-hearing-requirements-stf24w@example.com');
           break;
         }
         case 'awaitingClarifyingQuestionsAnswers with stf24w': {
-          signInForUser('awaiting-clarifying-questions-answers-stf24w@example.com');
+          id = signInForUserWithId('awaiting-clarifying-questions-answers-stf24w@example.com');
           break;
         }
         default:
           break;
       }
 
-      await navigateFromCasesListToOverview(I);
+      if (id === '1') {
+        await createAppeal(I);
+      } else {
+        await navigateFromCasesListToOverviewWithId(I, id);
+      }
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
@@ -245,7 +273,7 @@ module.exports = {
       I.amOnPage(testUrl + paths.common.login);
       await createCitizenUser();
       await signInForUserFromThread();
-      await I.seeInTitle(`Your appeals - ${i18n.serviceName} - ${i18n.provider}`);
+      await I.seeInTitle(`Appeal list - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given('I have logged back in for the e2e', async () => {

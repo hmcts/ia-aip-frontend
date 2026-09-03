@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getJoinHearingByVideoCallQuestion,
   postJoinHearingByVideoCallQuestion,
@@ -87,7 +87,7 @@ describe('Hearing Requirements - Other Needs Section: Join By VideoCall Question
         },
         saveAndContinue: true
       };
-      expect(renderStub).to.be.calledWith('hearing-requirements/other-needs/join-hearing-by-videocall.njk',
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/other-needs/join-hearing-by-videocall.njk',
         expectedArgs
       );
     });
@@ -128,7 +128,7 @@ describe('Hearing Requirements - Other Needs Section: Join By VideoCall Question
         saveAndContinue: true
 
       };
-      expect(renderStub.calledWith('hearing-requirements/other-needs/join-hearing-by-videocall.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'hearing-requirements/other-needs/join-hearing-by-videocall.njk', expectedArgs);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {

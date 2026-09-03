@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { any } from 'joi';
 import * as paymentsApi from '../../../app/api/payments-api';
 import { paths } from '../../../app/paths';
 import { AuthenticationService } from '../../../app/service/authentication-service';

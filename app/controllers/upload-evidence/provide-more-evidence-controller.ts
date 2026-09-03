@@ -2,14 +2,13 @@ import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
-import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
-import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { isAddendumEvidenceUploadState } from '../../utils/application-state-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
+import { handleNlrStatementValidation, hasActiveNlr } from '../../utils/utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
 function getProvideMoreEvidence(req: Request, res: Response, next: NextFunction) {
@@ -451,38 +450,61 @@ async function uploadAdditionalEvidence(req: Request, res: Response, documentMan
   return res.redirect(paths.common.provideMoreEvidenceForm);
 }
 
-function getProvideAddendumEvidenceCheckAndSend(req: Request, res: Response) {
+function getProvideAddendumEvidenceCheckAndSendRenderArgs(req: Request): RenderArgs {
   const summaryList: SummaryList[] = buildAddendumEvidenceDocumentsSummaryList(req.session.appeal.addendumEvidence);
 
-  if (summaryList.length < 1) {
+  return {
+    renderPath: 'templates/check-and-send.njk', renderObj: {
+      pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
+      continuePath: paths.common.provideMoreEvidenceCheck,
+      previousPage: paths.common.whyEvidenceLate,
+      summaryLists: summaryList,
+      hasNlr: hasActiveNlr(req.session.appeal)
+    }
+  };
+}
+
+function getProvideAddendumEvidenceCheckAndSend(req: Request, res: Response) {
+  const renderArgs: RenderArgs = getProvideAddendumEvidenceCheckAndSendRenderArgs(req);
+
+  if (renderArgs.renderObj?.summaryLists?.length < 1) {
     return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
   }
 
-  return res.render('templates/check-and-send.njk', {
-    pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
-    continuePath: paths.common.provideMoreEvidenceConfirmation,
-    previousPage: paths.common.whyEvidenceLate,
-    summaryLists: summaryList
-  });
+  return res.render(renderArgs.renderPath, renderArgs.renderObj);
+}
+
+function getProvideAdditionalEvidenceCheckAndSendRenderArgs(req: Request): RenderArgs {
+  const summaryList: SummaryList[] = buildAdditionalEvidenceDocumentsSummaryList(req.session.appeal.additionalEvidence);
+  return {
+    renderPath: 'templates/check-and-send.njk',
+    renderObj: {
+      pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
+      continuePath: paths.common.provideMoreEvidenceCheck,
+      previousPage: paths.common.provideMoreEvidenceForm,
+      summaryLists: summaryList,
+      hasNlr: hasActiveNlr(req.session.appeal)
+    }
+  };
 }
 
 function getProvideAdditionalEvidenceCheckAndSend(req: Request, res: Response) {
-  const summaryList: SummaryList[] = buildAdditionalEvidenceDocumentsSummaryList(req.session.appeal.additionalEvidence);
+  const renderArgs: RenderArgs = getProvideAdditionalEvidenceCheckAndSendRenderArgs(req);
 
-  if (summaryList.length < 1) {
+  if (renderArgs?.renderObj.summaryLists?.length < 1) {
     return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
   }
 
-  return res.render('templates/check-and-send.njk', {
-    pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
-    continuePath: paths.common.provideMoreEvidenceConfirmation,
-    previousPage: paths.common.provideMoreEvidenceForm,
-    summaryLists: summaryList
-  });
+  return res.render(renderArgs.renderPath, renderArgs.renderObj);
 }
 
 async function postAddendumEvidence(req: Request, res: Response, updateAppealService: UpdateAppealService): Promise<any> {
-
+  if (hasActiveNlr(req.session.appeal)) {
+    const canContinue = handleNlrStatementValidation(req, res, getProvideAdditionalEvidenceCheckAndSendRenderArgs(req));
+    if (!canContinue) {
+      return;
+    }
+  }
   const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence || [])];
   const appeal: Appeal = {
     ...req.session.appeal,
@@ -501,6 +523,12 @@ async function postAddendumEvidence(req: Request, res: Response, updateAppealSer
 }
 
 async function postAdditionalEvidence(req: Request, res: Response, updateAppealService: UpdateAppealService): Promise<any> {
+  if (hasActiveNlr(req.session.appeal)) {
+    const canContinue = handleNlrStatementValidation(req, res, getProvideAdditionalEvidenceCheckAndSendRenderArgs(req));
+    if (!canContinue) {
+      return;
+    }
+  }
   const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence || [])];
   const appeal: Appeal = {
     ...req.session.appeal,

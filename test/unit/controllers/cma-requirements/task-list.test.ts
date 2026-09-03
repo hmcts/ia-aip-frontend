@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getTaskList,
@@ -104,7 +104,8 @@ describe('Cma Requirements Task List Controller', () => {
     } ];
 
     getTaskList(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledOnceWith('cma-requirements/task-list.njk', {
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'cma-requirements/task-list.njk', {
       previousPage: paths.common.overview,
       data: mockData
     });

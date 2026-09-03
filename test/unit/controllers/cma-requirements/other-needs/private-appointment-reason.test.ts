@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getPrivateAppointmentReason,
   postPrivateAppointmentReason,
@@ -78,7 +78,7 @@ describe('CMA Requirements - Other Needs Section: Private Appointment Reason con
       };
 
       getPrivateAppointmentReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should render template with saved answer', () => {
@@ -99,7 +99,7 @@ describe('CMA Requirements - Other Needs Section: Private Appointment Reason con
       };
 
       getPrivateAppointmentReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -137,7 +137,7 @@ describe('CMA Requirements - Other Needs Section: Private Appointment Reason con
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
 
     });
 

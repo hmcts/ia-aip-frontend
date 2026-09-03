@@ -1,3 +1,4 @@
+import { setupCcdGetCaseById } from './ccdGetCaseById';
 import { setupLoadCases } from './loadCases';
 import { setupLoadCasesES } from './loadCasesES';
 import { setupLoadHistoryV2 } from './loadHistoryV2';
@@ -5,7 +6,6 @@ import { setupOtherEventStartEvent } from './otherEventStartEvent';
 import { setupOtherEventSubmitEvent } from './otherEventSubmitEvent';
 import { setupStartAppealStartEvent } from './startAppealStartEvent';
 import { setupStartAppealSubmitEvent } from './startAppealSubmitEvent';
-import { setupStartRepresentingYourself } from './startRepresentingYourself';
 import { setupTestHandler } from './test';
 import { setupValidate } from './validate';
 
@@ -17,7 +17,7 @@ export default [
   setupOtherEventSubmitEvent,
   setupStartAppealStartEvent,
   setupStartAppealSubmitEvent,
-  setupStartRepresentingYourself,
+  setupCcdGetCaseById,
   setupTestHandler,
   setupValidate
 ];

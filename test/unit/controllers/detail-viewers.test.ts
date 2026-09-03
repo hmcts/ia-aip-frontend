@@ -1,4 +1,4 @@
-import { application, NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
   addFeeSupportStatus,
@@ -27,6 +27,7 @@ import {
   getReasonsForAppealViewer,
   getRemittalDocumentsViewer,
   getRespondentApplicationSummaryRows,
+  getStfRemovalDecisionDocumentViewer,
   getUpdatedDecisionAndReasonsViewer,
   getUpdatedTribunalDecisionWithRule32Viewer,
   setupCmaRequirementsViewer,
@@ -119,7 +120,8 @@ describe('DetailViewController', () => {
     it('should render detail-viewers/view-ho-details.njk with no documents', () => {
 
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('detail-viewers/view-ho-details.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'detail-viewers/view-ho-details.njk', {
         documents: [],
         previousPage: paths.common.overview
       });
@@ -136,7 +138,8 @@ describe('DetailViewController', () => {
       ];
 
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('detail-viewers/view-ho-details.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'detail-viewers/view-ho-details.njk', {
         documents: [{
           dateUploaded: '21 February 2020',
           url: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/someUUID'>evidence_file(PNG)</a>"
@@ -149,6 +152,49 @@ describe('DetailViewController', () => {
       const error = new Error('an error');
       res.render = renderStub.throws(error);
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
+      expect(next.calledOnceWith(error)).to.equal(true);
+    });
+  });
+
+  describe('getStfRemovalDecisionDocumentViewer', () => {
+    beforeEach(() => {
+      req.session.appeal.tribunalDocuments = [
+        {
+          fileId: 'uuid',
+          name: 'filename',
+          description: 'description here',
+          dateUploaded: '2020-02-21',
+          id: '2',
+          tag: 'appealResponse'
+        },
+        {
+          fileId: 'uuid2',
+          name: 'filename2',
+          description: 'description here 2',
+          dateUploaded: '2020-02-25',
+          id: '1',
+          tag: 'stf24WeeksRemovalDecisionDocument'
+        }
+      ];
+    });
+
+    it('should render details-viewer template', () => {
+      getStfRemovalDecisionDocumentViewer(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+
+      const [template, actualViewModel] = renderStub.firstCall.args;
+
+      expect(template).to.equal('templates/details-viewer.njk');
+      expect(actualViewModel.title).to.equal(i18n.pages.detailViewers.stfRemovalDecision.title);
+      expect(actualViewModel.data.length).to.equal(2);
+      expect(actualViewModel.data[0].value.html).to.contain('filename2').and.to.contain('uuid2');
+      expect(actualViewModel.previousPage).to.equal(paths.common.overview);
+    });
+
+    it('getStfRemovalDecisionDocumentViewer should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = renderStub.throws(error);
+      getStfRemovalDecisionDocumentViewer(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
@@ -168,7 +214,8 @@ describe('DetailViewController', () => {
     });
     it('should render details-viewer template', () => {
       getHomeOfficeWithdrawLetter(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeWithdrawLetter.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -185,7 +232,8 @@ describe('DetailViewController', () => {
         tag: 'appealResponse'
       });
       getHomeOfficeWithdrawLetter(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeWithdrawLetter.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -215,7 +263,8 @@ describe('DetailViewController', () => {
     });
     it('should render details-viewer template', () => {
       getHomeOfficeResponse(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeResponse.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -232,7 +281,8 @@ describe('DetailViewController', () => {
         tag: 'appealResponse'
       });
       getHomeOfficeResponse(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeResponse.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
@@ -309,7 +359,8 @@ describe('DetailViewController', () => {
         'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>test.txt</a>" }
       }];
       getReasonsForAppealViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/reasons-for-appeal-details-viewer.njk', {
         previousPage: paths.common.overview,
         data: expectedSummaryRows
       });
@@ -391,7 +442,8 @@ describe('DetailViewController', () => {
       }];
 
       getLrReasonsForAppealViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/reasons-for-appeal-details-viewer.njk', {
         hint: i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.hint,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -434,7 +486,7 @@ describe('DetailViewController', () => {
     });
   });
 
-  describe('getAppealDetailsViewer', () => {
+  describe('getAppealDetailsViewer inUk', () => {
     let expectedSummaryRows;
     let expectedSummaryRowsWithDlrmFeeRemission;
 
@@ -631,7 +683,8 @@ describe('DetailViewController', () => {
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -650,7 +703,8 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -669,12 +723,132 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
       });
     });
+
+
+    it('should add NLR details if present DLRM', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows.push(
+        { key: { text: 'Non-legal representative\'s name' }, value: { html: 'some name' } },
+        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
+        { key: { text: 'Non-legal representative\'s phone number' }, value: { html: 'some phone' } },
+        { key: { text: 'Non-legal representative\'s address' }, value: { html: 'some line1<br>some city<br>some postcode' } },
+        { key: { text: 'Non-legal representative\'s address' }, value: { html: 'someAddress' } }
+      );
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£144' } },
+        { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+        {
+          key: { text: i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber },
+          value: { html: 'legalAidAccountNumber' }
+        }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionType = 'hoWaiverRemission';
+      req.session.appeal.application.remissionClaim = 'legalAid';
+      req.session.appeal.application.legalAidAccountNumber = 'legalAidAccountNumber';
+      req.session.appeal.feeWithHearing = '144';
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        givenNames: 'some',
+        familyName: 'name',
+        phoneNumber: 'some phone',
+        addressUk: {
+          line1: 'some line1',
+          city: 'some city',
+          postcode: 'some postcode'
+        },
+        address: 'someAddress'
+      };
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should add NLR details and no sponsor details if present non DLRM with sponsor same', async () => {
+      expectedSummaryRows.splice(9, 0, { key: { text: 'Sponsor' }, value: { html: 'Yes' } });
+      expectedSummaryRows.push(
+        { key: { text: 'Non-legal representative\'s name' }, value: { html: 'some name' } },
+        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
+        { key: { text: 'Non-legal representative\'s phone number' }, value: { html: 'some phone' } },
+        { key: { text: 'Non-legal representative\'s address' }, value: { html: 'some line1' } },
+        { key: { text: 'Is your sponsor the same as your non-legal representative?' }, value: { html: 'Yes' } },
+      );
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        givenNames: 'some',
+        familyName: 'name',
+        phoneNumber: 'some phone',
+        addressUk: {
+          line1: 'some line1'
+        }
+      };
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'Yes';
+      req.session.appeal.application.hasSponsor = 'Yes';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRows
+      });
+    });
+
+
+    it('should add NLR details with sponsor details if present non DLRM with sponsor not same', async () => {
+      expectedSummaryRows.splice(9, 0, { key: { text: 'Sponsor' }, value: { html: 'Yes' } });
+      expectedSummaryRows.splice(10, 0, { key: { text: 'Sponsor\'s name' }, value: { html: 'NAME' } });
+      expectedSummaryRows.splice(11, 0, { key: { text: 'Sponsor has access to information' }, value: { html: 'No' } });
+      expectedSummaryRows.push(
+        { key: { text: 'Non-legal representative\'s name' }, value: { html: 'some name' } },
+        { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
+        { key: { text: 'Non-legal representative\'s phone number' }, value: { html: 'some phone' } },
+        { key: { text: 'Non-legal representative\'s address' }, value: { html: 'some line1' } },
+        { key: { text: 'Is your sponsor the same as your non-legal representative?' }, value: { html: 'No' } },
+      );
+      req.session.appeal.nlrDetails = {
+        emailAddress: 'someEmail',
+        givenNames: 'some',
+        familyName: 'name',
+        phoneNumber: 'some phone',
+        addressUk: {
+          line1: 'some line1'
+        }
+      };
+      req.session.appeal.application.sponsorNameForDisplay = 'NAME';
+      req.session.appeal.application.sponsorAuthorisation = 'No';
+      req.session.appeal.application.hasNonLegalRep = 'Yes';
+      req.session.appeal.application.isSponsorSameAsNlr = 'No';
+      req.session.appeal.application.hasSponsor = 'Yes';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRows
+      });
+    });
+
 
     it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and has sponsor not in Uk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
@@ -725,7 +899,8 @@ describe('DetailViewController', () => {
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -749,7 +924,8 @@ describe('DetailViewController', () => {
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -775,7 +951,8 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -799,7 +976,10 @@ describe('DetailViewController', () => {
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
           { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-          { key: { text: i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber }, value: { html: 'legalAidAccountNumber' } }
+          {
+            key: { text: i18n.pages.checkYourAnswers.rowTitles.legalAidAccountNumber },
+            value: { html: 'legalAidAccountNumber' }
+          }
         );
 
         req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
@@ -809,7 +989,8 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '144';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -824,7 +1005,10 @@ describe('DetailViewController', () => {
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
           { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-          { key: { text: i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstances }, value: { html: 'Exceptional reason' } },
+          {
+            key: { text: i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstances },
+            value: { html: 'Exceptional reason' }
+          },
           {
             key: { text: i18n.pages.checkYourAnswers.rowTitles.exceptionalCircumstancesEvidence },
             value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>ecDoc1.pdf</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/2'>ecDoc2.pdf</a>" }
@@ -841,7 +1025,8 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '144';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -857,9 +1042,14 @@ describe('DetailViewController', () => {
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
           { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-          { key: { text: i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber }, value: { html: 'asylumSupportReference' } },
-          { key: {
-            text: i18n.pages.checkYourAnswers.rowTitles.asylumSupportDocument },
+          {
+            key: { text: i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber },
+            value: { html: 'asylumSupportReference' }
+          },
+          {
+            key: {
+              text: i18n.pages.checkYourAnswers.rowTitles.asylumSupportDocument
+            },
             value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>asylumDoc1.pdf</a>" }
           }
         );
@@ -872,7 +1062,8 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '144';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -888,8 +1079,10 @@ describe('DetailViewController', () => {
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
           { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-          { key: {
-            text: i18n.pages.checkYourAnswers.rowTitles.section17Document },
+          {
+            key: {
+              text: i18n.pages.checkYourAnswers.rowTitles.section17Document
+            },
             value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>section17Doc1.pdf</a>" }
           }
         );
@@ -901,7 +1094,8 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '144';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -917,8 +1111,10 @@ describe('DetailViewController', () => {
         expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
           { key: { text: 'Fee amount' }, value: { html: '£144' } },
           { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
-          { key: {
-            text: i18n.pages.checkYourAnswers.rowTitles.section20Document },
+          {
+            key: {
+              text: i18n.pages.checkYourAnswers.rowTitles.section20Document
+            },
             value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/1'>section20Doc1.pdf</a>" }
           }
         );
@@ -930,7 +1126,8 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '144';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -959,7 +1156,8 @@ describe('DetailViewController', () => {
         req.session.appeal.feeWithHearing = '144';
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -988,7 +1186,8 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1014,7 +1213,8 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1040,7 +1240,8 @@ describe('DetailViewController', () => {
       req.session.appeal.application.helpWithFeesReferenceNumber = 'helpWithFeesRefNumberValue';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1063,7 +1264,8 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1092,7 +1294,8 @@ describe('DetailViewController', () => {
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1131,7 +1334,8 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1157,7 +1361,8 @@ describe('DetailViewController', () => {
       req.session.appeal.application.helpWithFeesRefNumber = 'helpWithFeesRefNumberValue';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1182,7 +1387,8 @@ describe('DetailViewController', () => {
       req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1207,7 +1413,8 @@ describe('DetailViewController', () => {
       req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1322,17 +1529,32 @@ describe('DetailViewController', () => {
         ],
         'feeHistoryRows': [
           [
-            { key: { text: 'Fee support type' }, value: {  html: 'Local Authority Support (Section 17)' } },
+            { key: { text: 'Fee support type' }, value: { html: 'Local Authority Support (Section 17)' } },
             { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
             { key: { text: 'Asylum Support reference number' }, value: { html: 'refNum' } },
             { key: { text: 'Legal Aid account number' }, value: { html: 'legalAidAccountNumber' } },
             { key: { text: 'Exceptional circumstances' }, value: { html: 'Exceptional reason' } },
-            { key: { text: 'Asylum support document' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 2'>file_2_name</a>" } },
-            { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 3'>file_3_name</a>" } },
-            { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 4'>file_4_name</a>" } },
-            { key: { text: 'Home Office waiver document' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 5'>file_5_name</a>" } },
-            { key: { text: 'Exceptional circumstances evidence' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" } },
-            { key: { text: 'Fee support status' }, value: {  html: 'Fee support request granted' } },
+            {
+              key: { text: 'Asylum support document' },
+              value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 2'>file_2_name</a>" }
+            },
+            {
+              key: { text: 'Local Authority letter' },
+              value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 3'>file_3_name</a>" }
+            },
+            {
+              key: { text: 'Local Authority letter' },
+              value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 4'>file_4_name</a>" }
+            },
+            {
+              key: { text: 'Home Office waiver document' },
+              value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 5'>file_5_name</a>" }
+            },
+            {
+              key: { text: 'Exceptional circumstances evidence' },
+              value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" }
+            },
+            { key: { text: 'Fee support status' }, value: { html: 'Fee support request granted' } },
             { key: { text: 'Fee to refund' }, value: { html: '£144' } }
           ],
           [
@@ -1342,7 +1564,7 @@ describe('DetailViewController', () => {
             { key: { text: 'Reason for decision' }, value: { html: 'Decision 1' } },
             { key: { text: 'Fee to refund' }, value: { html: '£134' } }
           ], [
-            { key: { text: 'Fee support type' }, value: {  html: 'Local Authority Support (Section 20)' } },
+            { key: { text: 'Fee support type' }, value: { html: 'Local Authority Support (Section 20)' } },
             { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
             {
               key: { text: 'Local Authority letter' },
@@ -1388,7 +1610,8 @@ describe('DetailViewController', () => {
         req.session.appeal.history = [historyEvent, historyEvent, historyEvent];
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1420,7 +1643,8 @@ describe('DetailViewController', () => {
           'feeDetailsRows': feeDetails
         };
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1465,7 +1689,8 @@ describe('DetailViewController', () => {
         req.session.appeal.history = [historyEventDayBefore, historyEvent, historyEvent, historyEvent];
 
         await getAppealDetailsViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
           title: i18n.pages.detailViewers.appealDetails.title,
           aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
           personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1502,7 +1727,8 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1539,7 +1765,8 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1575,7 +1802,8 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1612,7 +1840,8 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1646,7 +1875,8 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1682,7 +1912,8 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1712,7 +1943,8 @@ describe('DetailViewController', () => {
       ];
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-with-fees-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
         personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
@@ -1723,7 +1955,7 @@ describe('DetailViewController', () => {
     });
   });
 
-  describe('getAppealDetailsViewer', () => {
+  describe('getAppealDetailsViewer ooc has sponsor', () => {
     let expectedSummaryRows;
 
     beforeEach(() => {
@@ -1882,8 +2114,10 @@ describe('DetailViewController', () => {
 
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
+      expectedSummaryRows.splice(2, 1, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' } });
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -1900,9 +2134,11 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       req.session.appeal.feeWithHearing = '144';
+      expectedSummaryRows.splice(2, 1, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' } });
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -1919,9 +2155,11 @@ describe('DetailViewController', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       req.session.appeal.feeWithHearing = '144';
+      expectedSummaryRows.splice(2, 1, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' } });
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -1937,7 +2175,8 @@ describe('DetailViewController', () => {
     //   req.session.appeal.application.appealType = 'deprivation';
     //   req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
     //   await getAppealDetailsViewer(req as Request, res as Response, next);
-    //   expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+    //   expect(renderStub.called).to.equal(true);
+    //   expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
     //     title: i18n.pages.detailViewers.appealDetails.title,
     //     previousPage: paths.common.overview,
     //     data: expectedSummaryRows
@@ -1953,7 +2192,7 @@ describe('DetailViewController', () => {
     });
   });
 
-  describe('getAppealDetailsViewer', () => {
+  describe('getAppealDetailsViewer ooc no sponsor', () => {
     let expectedSummaryRows;
 
     beforeEach(() => {
@@ -2087,8 +2326,11 @@ describe('DetailViewController', () => {
 
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
+      expectedSummaryRows.splice(2, 1, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' } });
+      expectedSummaryRows.splice(9, 1);
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -2097,6 +2339,8 @@ describe('DetailViewController', () => {
 
     it('should render detail-viewers/appeal-details-viewer.njk payments NOW flag ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      expectedSummaryRows.splice(2, 1, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' } });
+      expectedSummaryRows.splice(9, 1);
       expectedSummaryRows.push(
         { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
         { key: { text: 'Fee amount' }, value: { html: '£144' } }
@@ -2107,7 +2351,8 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -2116,6 +2361,8 @@ describe('DetailViewController', () => {
 
     it('should render detail-viewers/appeal-details-viewer.njk payments LATER flag ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      expectedSummaryRows.splice(2, 1, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' } });
+      expectedSummaryRows.splice(9, 1);
       expectedSummaryRows.push(
         { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
         { key: { text: 'Payment type' }, value: { html: 'Pay later' } }
@@ -2126,7 +2373,8 @@ describe('DetailViewController', () => {
       req.session.appeal.feeWithHearing = '144';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
         data: expectedSummaryRows
@@ -2142,7 +2390,8 @@ describe('DetailViewController', () => {
     //   req.session.appeal.application.appealType = 'deprivation';
     //   req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
     //   await getAppealDetailsViewer(req as Request, res as Response, next);
-    //   expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+    //   expect(renderStub.called).to.equal(true);
+    //   expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
     //     title: i18n.pages.detailViewers.appealDetails.title,
     //     previousPage: paths.common.overview,
     //     data: expectedSummaryRows
@@ -2160,7 +2409,7 @@ describe('DetailViewController', () => {
 
   describe('getMakeAnApplicationViewer', () => {
     it('should render detail-viewers/make-an-application-details-viewer.njk with no evidences for appellant', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2021-07-15',
@@ -2191,7 +2440,8 @@ describe('DetailViewController', () => {
         dateUploaded: 'test-date'
       }];
       getMakeAnApplicationViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
         title: i18n.pages.detailViewers.makeAnApplication.appellant.title,
         whatNextTitle: i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.title,
@@ -2203,7 +2453,7 @@ describe('DetailViewController', () => {
     });
 
     it('should render detail-viewers/make-an-application-details-viewer.njk with decision for Legal rep', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '3',
         'value': {
           'date': '2022-07-18',
@@ -2242,7 +2492,8 @@ describe('DetailViewController', () => {
         dateUploaded: 'test-date'
       }];
       getMakeAnApplicationViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
         title: i18n.pages.detailViewers.makeAnApplication.appellant.title,
         whatNextTitle: i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.title,
@@ -2288,7 +2539,7 @@ describe('DetailViewController', () => {
     });
 
     it('should render detail-viewers/make-an-application-details-viewer.njk for respondent (Expedite)', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '3',
         'value': {
           'date': '2022-07-18',
@@ -2325,7 +2576,8 @@ describe('DetailViewController', () => {
         dateUploaded: 'test-date'
       }];
       getMakeAnApplicationViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
         title: i18n.pages.detailViewers.makeAnApplication.respondent.request.title,
         description: i18n.pages.detailViewers.makeAnApplication.respondent.request.description,
@@ -2354,7 +2606,7 @@ describe('DetailViewController', () => {
     });
 
     it('should render detail-viewers/make-an-application-details-viewer.njk for respondent (Reinstate an ended appeal)', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '3',
         'value': {
           'date': '2022-07-18',
@@ -2391,7 +2643,8 @@ describe('DetailViewController', () => {
         dateUploaded: 'test-date'
       }];
       getMakeAnApplicationViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
         title: i18n.pages.detailViewers.makeAnApplication.respondent.request.title,
         description: i18n.pages.detailViewers.makeAnApplication.respondent.request.description,
@@ -2566,7 +2819,8 @@ describe('DetailViewController', () => {
 
         it('should render details-viewer template', function () {
           getHearingBundle(req as Request, res as Response, next);
-          expect(renderStub).to.be.calledWith('templates/details-viewer-hearing-bundles.njk', {
+          expect(renderStub.called).to.equal(true);
+          expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer-hearing-bundles.njk', {
             title: expectedOutput[index].title,
             subtitle1: expectedOutput[index].subtitle1,
             data1: sinonArrayMatcher(expectedOutput[index].data1),
@@ -2607,7 +2861,8 @@ describe('DetailViewController', () => {
         }];
 
       getNoticeEndedAppeal(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.endedAppeal.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2646,7 +2901,8 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2700,7 +2956,8 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2770,7 +3027,8 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2791,7 +3049,8 @@ describe('DetailViewController', () => {
           }];
 
         getHearingNoticeViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
           title: i18n.pages.detailViewers.hearingNotice.title,
           data: expectedSummaryRows,
           previousPage: paths.common.overview
@@ -2823,7 +3082,8 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2846,7 +3106,8 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2868,7 +3129,8 @@ describe('DetailViewController', () => {
         { value: { reheardHearingDocs: [{ fileId: '123' }] } }
       ];
       const result = findDocumentInReheardHearingDocCollection(collections, '456');
-      expect(result).to.equal(undefined);
+      expect(result).to.be.undefined;
+      expect(result || 'none').to.equal('none');
     });
 
     it('should handle collections with undefined values', () => {
@@ -2883,7 +3145,8 @@ describe('DetailViewController', () => {
     it('should handle empty collections', () => {
       const collections: any[] = [];
       const result = findDocumentInReheardHearingDocCollection(collections, '123');
-      expect(result).to.equal(undefined);
+      expect(result).to.be.undefined;
+      expect(result || 'none').to.equal('none');
     });
   });
 
@@ -2971,7 +3234,8 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3041,7 +3305,8 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3062,7 +3327,8 @@ describe('DetailViewController', () => {
           }];
 
         getHearingNoticeViewer(req as Request, res as Response, next);
-        expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
           title: i18n.pages.detailViewers.hearingNotice.title,
           data: expectedSummaryRows,
           previousPage: paths.common.overview
@@ -3094,7 +3360,8 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3117,7 +3384,8 @@ describe('DetailViewController', () => {
         }];
 
       getHearingNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3139,7 +3407,8 @@ describe('DetailViewController', () => {
         { value: { reheardHearingDocs: [{ fileId: '123' }] } }
       ];
       const result = findDocumentInReheardHearingDocCollection(collections, '456');
-      expect(result).to.equal(undefined);
+      expect(result).to.be.undefined;
+      expect(result || 'none').to.equal('none');
     });
 
     it('should handle collections with undefined values', () => {
@@ -3154,7 +3423,8 @@ describe('DetailViewController', () => {
     it('should handle empty collections', () => {
       const collections: any[] = [];
       const result = findDocumentInReheardHearingDocCollection(collections, '123');
-      expect(result).to.equal(undefined);
+      expect(result).to.be.undefined;
+      expect(result || 'none').to.equal('none');
     });
   });
 
@@ -3227,7 +3497,8 @@ describe('DetailViewController', () => {
         }];
 
       getHearingAdjournmentNoticeViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.hearingAdjournmentNotice.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3283,7 +3554,8 @@ describe('DetailViewController', () => {
       ];
 
       getDecisionAndReasonsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.decisionsAndReasons.title,
         description: i18n.pages.detailViewers.decisionsAndReasons.description,
         data: expectedSummaryRows,
@@ -3318,7 +3590,8 @@ describe('DetailViewController', () => {
 
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getUpdatedTribunalDecisionWithRule32Viewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -3337,18 +3610,19 @@ describe('DetailViewController', () => {
 
   describe('getApplicationTitle', () => {
     it('return title based on application type', () => {
-      expect(getApplicationTitle('Time extension')).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime);
-      expect(getApplicationTitle('Link/unlink appeals')).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askLinkUnlink);
+      expect(getApplicationTitle('Time extension', false)).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime);
+      expect(getApplicationTitle('Link/unlink appeals', false)).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askLinkUnlink);
     });
 
     it('return undefined for invalid application types', () => {
-      expect(getApplicationTitle('INVALID')).to.equal(undefined);
+      expect(getApplicationTitle('INVALID', false)).to.be.undefined;
+      expect(getApplicationTitle('INVALID', false) || 'none').to.equal('none');
     });
   });
 
   describe('getMakeAnApplicationDecisionWhatNext', () => {
     it('refused appellant application should show correct what next message.', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3365,13 +3639,13 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askReinstate.refused);
     });
 
     it('refused appellant application should show correct what next message (default message).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3388,13 +3662,13 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.default.refused);
     });
 
     it('granted appellant application should show correct what next message.', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3411,13 +3685,13 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askChangeHearing.granted);
     });
 
     it('refused respondent application should show correct what next message (Reinstate an ended appeal).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3434,13 +3708,13 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
 
     it('granted respondent application should show correct what next message (Reinstate an ended appeal).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3457,13 +3731,13 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askReinstate.granted);
     });
 
     it('Granted respondent application should show correct what next message (Judge\'s review of application decision).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3480,13 +3754,13 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askJudgeReview.granted);
     });
 
     it('Refused respondent application should show correct what next message (Judge\'s review of application decision).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3503,13 +3777,13 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
 
     it('granted respondent application should show correct what next message (Transfer).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3526,13 +3800,13 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askChangeHearing.granted);
     });
 
     it('Refused respondent application should show correct what next message (Transfer).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3549,13 +3823,13 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
 
     it('Refused respondent application should show correct what next message (Link/unlink appeals).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3572,13 +3846,13 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
 
     it('Granted respondent application should show correct what next message (Link/unlink appeals).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3595,13 +3869,13 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askLinkUnlink.granted);
     });
 
     it('Granted respondent application should show correct what next message (Other).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3618,13 +3892,13 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.granted);
     });
 
     it('Refused respondent application should show correct what next message (Other).', () => {
-      const makeAnApplications: Collection<Application<Evidence>> = {
+      const makeAnApplications: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2022-07-18',
@@ -3641,7 +3915,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications, false);
 
       expect(whatNext).to.equal(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
     });
@@ -3651,7 +3925,7 @@ describe('DetailViewController', () => {
   describe('getMakeAnApplicationSummaryRows', () => {
     it('should get rows', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const makeAnApplicationPendingDecision: Collection<Application<Evidence>> = {
+      const makeAnApplicationPendingDecision: Collection<MakeAnApplication> = {
         'id': '1',
         'value': {
           'date': '2021-07-15',
@@ -3673,7 +3947,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
+      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision, false);
       expect(addSummaryRowStub).to.have.been.callCount(4);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason'])).to.equal(true);
@@ -3707,7 +3981,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
+      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision, false);
       expect(addSummaryRowStub).to.have.been.callCount(8);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason'])).to.equal(true);
@@ -3717,12 +3991,55 @@ describe('DetailViewController', () => {
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.date, ['14 July 2021'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.maker, ['Tribunal Caseworker'])).to.equal(true);
     });
+
+    it('should get rows with decision and 24w removal document', () => {
+      const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
+      const makeAnApplicationPendingDecision = {
+        'id': '2',
+        'value': {
+          'date': '2021-07-14',
+          'type': 'Time extension',
+          'state': 'awaitingReasonsForAppeal',
+          'details': 'My reason',
+          'decision': 'Refused',
+          'refusalOfRemoval24wDocument': {
+            fileId: '654321',
+            name: 'eman',
+          },
+          'evidence': [{
+            id: 'id',
+            fileId: '123456',
+            name: 'name',
+            tag: 'test-tag',
+            suppliedBy: 'test-supplied',
+            description: 'test-description',
+            dateUploaded: 'test-date'
+          }],
+          'applicant': 'Appellant',
+          'decisionDate': '2021-07-14',
+          'applicantRole': 'citizen',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Reason not enough'
+        }
+      };
+
+      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
+      expect(addSummaryRowStub).to.have.been.callCount(9);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.date, ['14 July 2021'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.decision, [i18n.pages.detailViewers.makeAnApplication.appellant.response.Refused])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.reason, ['Reason not enough'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.date, ['14 July 2021'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.maker, ['Tribunal Caseworker'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.remove24wDocument,[`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/654321'>eman</a>`])).to.equal(true);
+    });
   });
 
   describe('getRespondentApplicationSummaryRows', () => {
     it('should get rows for respondent pending decision', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const application: Collection<Application<Evidence>> = {
+      const application: Collection<MakeAnApplication> = {
         'id': '2',
         'value': {
           'date': '2021-07-15',
@@ -3744,7 +4061,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      getRespondentApplicationSummaryRows(application);
+      getRespondentApplicationSummaryRows(application, false);
       expect(addSummaryRowStub).to.have.been.callCount(4);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason'])).to.equal(true);
@@ -3753,7 +4070,7 @@ describe('DetailViewController', () => {
 
     it('should get rows for respondent after decision', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const application: Collection<Application<Evidence>> = {
+      const application: Collection<MakeAnApplication> = {
         'id': '2',
         'value': {
           'date': '2021-07-15',
@@ -3778,7 +4095,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      getRespondentApplicationSummaryRows(application);
+      getRespondentApplicationSummaryRows(application, false);
       expect(addSummaryRowStub).to.have.been.callCount(8);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason'])).to.equal(true);
@@ -3787,6 +4104,49 @@ describe('DetailViewController', () => {
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.reason, ['Reason not enough'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.date, ['14 July 2021'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.maker, ['Tribunal Caseworker'])).to.equal(true);
+    });
+
+    it('should get rows for respondent after decision', () => {
+      const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
+      const application: Collection<MakeAnApplication> = {
+        'id': '2',
+        'value': {
+          'date': '2021-07-15',
+          'type': 'Withdraw',
+          'state': 'awaitingReasonsForAppeal',
+          'details': 'My reason',
+          'decision': 'Granted',
+          'refusalOfRemoval24wDocument': {
+            fileId: '654321',
+            name: 'eman',
+          },
+          'evidence': [{
+            id: 'id',
+            fileId: '123456',
+            name: 'name',
+            tag: 'test-tag',
+            suppliedBy: 'test-supplied',
+            description: 'test-description',
+            dateUploaded: 'test-date'
+          }],
+          'applicant': 'Respondent',
+          'applicantRole': 'caseworker-ia-homeofficeapc',
+          'decisionDate': '2021-07-14',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Reason not enough'
+        }
+      };
+
+      getRespondentApplicationSummaryRows(application);
+      expect(addSummaryRowStub).to.have.been.callCount(9);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.date, ['15 July 2021'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.decision, ['Granted'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.reason, ['Reason not enough'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.date, ['14 July 2021'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.maker, ['Tribunal Caseworker'])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.remove24wDocument, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/654321'>eman</a>`])).to.equal(true);
     });
   });
 
@@ -3821,7 +4181,8 @@ describe('DetailViewController', () => {
       req.session.appeal.history = expectedEventsWithCmaRequirements;
 
       getCmaRequirementsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('detail-viewers/cma-requirements-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/cma-requirements-details-viewer.njk', {
         anythingElse: [{
           key: { text: 'Question' },
           value: { html: 'Will you need anything else at the appointment?' }
@@ -4240,7 +4601,8 @@ describe('DetailViewController', () => {
 
       getFtpaAppellantApplication(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('templates/details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -4331,7 +4693,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4395,7 +4758,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4443,7 +4807,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4487,7 +4852,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4531,7 +4897,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4597,7 +4964,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4663,7 +5031,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4730,7 +5099,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4777,7 +5147,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4823,7 +5194,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4869,7 +5241,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -4935,7 +5308,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5001,7 +5375,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5069,7 +5444,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5137,7 +5513,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5185,7 +5562,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5233,7 +5611,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5301,7 +5680,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5369,7 +5749,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5417,7 +5798,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5465,7 +5847,8 @@ describe('DetailViewController', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
@@ -5540,7 +5923,8 @@ describe('DetailViewController', () => {
 
       getDirectionHistory(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('detail-viewers/direction-history-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/direction-history-viewer.njk', {
         title: i18n.pages.detailViewers.directionHistory.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -5568,7 +5952,8 @@ describe('DetailViewController', () => {
 
       getDirectionHistory(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('detail-viewers/direction-history-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/direction-history-viewer.njk', {
         title: i18n.pages.detailViewers.directionHistory.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -5581,11 +5966,12 @@ describe('DetailViewController', () => {
 
       getDirectionHistory(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('detail-viewers/direction-history-viewer.njk', sinon.match({
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/direction-history-viewer.njk', {
         title: i18n.pages.detailViewers.directionHistory.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
-      }));
+      });
     });
 
     it('should render respondent direction when ID includes "-respondent" suffix', () => {
@@ -5594,11 +5980,12 @@ describe('DetailViewController', () => {
 
       getDirectionHistory(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('detail-viewers/direction-history-viewer.njk', sinon.match({
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'detail-viewers/direction-history-viewer.njk', {
         title: i18n.pages.detailViewers.directionHistory.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
-      }));
+      });
     });
 
     it('should catch error and call next with it', () => {
@@ -5723,7 +6110,8 @@ describe('DetailViewController', () => {
 
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/updated-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/updated-details-viewer.njk', {
         title: i18n.pages.detailViewers.decisionsAndReasons.title,
         originalSubTitle: i18n.pages.detailViewers.decisionsAndReasons.originalSubTitle,
         description: i18n.pages.detailViewers.decisionsAndReasons.description,
@@ -5853,7 +6241,8 @@ describe('DetailViewController', () => {
 
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
       await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/updated-details-viewer.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/updated-details-viewer.njk', {
         title: i18n.pages.detailViewers.decisionsAndReasons.title,
         originalSubTitle: i18n.pages.detailViewers.decisionsAndReasons.originalSubTitle,
         description: i18n.pages.detailViewers.decisionsAndReasons.description,
@@ -5966,7 +6355,8 @@ describe('DetailViewController', () => {
       ];
 
       await getRemittalDocumentsViewer(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/details-viewer-remittal.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/details-viewer-remittal.njk', {
         title: i18n.pages.detailViewers.remittalDocuments.title,
         remittalDocs: expectedSummaryList,
         previousPage: paths.common.overview
@@ -6079,5 +6469,4 @@ describe('DetailViewController', () => {
       });
     });
   });
-})
-;
+});

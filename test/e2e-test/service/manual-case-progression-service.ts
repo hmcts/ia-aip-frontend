@@ -28,7 +28,7 @@ module.exports = {
       await I.waitForText('Online case reference number:', 45);
       const ref = await I.grabTextFrom('//li');
       onlineCaseReference = ref.split('Online case reference number: ')[1];
-      caseUrl = exUiUrl + 'cases/case-details/' + onlineCaseReference.split('-').join('');
+      caseUrl = exUiUrl + 'cases/case-details/' + onlineCaseReference.replaceAll(' ', '');
     });
 
     When(/^I sign in as a Case Officer and Request Home Office data$/, async () => {

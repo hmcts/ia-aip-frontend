@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getHelpWithFeesRefNumber,
@@ -94,7 +94,8 @@ describe('Help with fees reference number Controller', function () {
     it('should render appeal-application/fee-support/help-with-fees-reference-number.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await getHelpWithFeesRefNumber(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/help-with-fees-reference-number.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk', {
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         formAction: paths.appealStarted.helpWithFeesReferenceNumber,
         helpWithFeesReferenceNumber: null,
@@ -201,7 +202,8 @@ describe('Help with fees reference number Controller', function () {
       expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.helpWithFeesRefNumber).to.deep.equal('HWF12345');
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('should fail validation if value is empty and render appeal-application/fee-support/help-with-fees-reference-number.njk with error', async () => {
@@ -216,8 +218,7 @@ describe('Help with fees reference number Controller', function () {
         href: '#helpWithFeesRefNumber'
       };
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/help-with-fees-reference-number.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk',
         {
           errors: {
             helpWithFeesRefNumber: error
@@ -242,8 +243,7 @@ describe('Help with fees reference number Controller', function () {
         href: '#helpWithFeesRefNumber'
       };
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/help-with-fees-reference-number.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees-reference-number.njk',
         {
           errors: {
             helpWithFeesRefNumber: error

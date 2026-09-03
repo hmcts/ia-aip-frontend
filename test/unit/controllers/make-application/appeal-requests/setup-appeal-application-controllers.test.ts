@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { setupAppealRequestControllers } from '../../../../../app/controllers/make-application/appeal-requests/setup-appeal-application-controllers';
 import { paths } from '../../../../../app/paths';
 import { DocumentManagementService } from '../../../../../app/service/document-management-service';

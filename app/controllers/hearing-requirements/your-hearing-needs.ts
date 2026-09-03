@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
-import UpdateAppealService from '../../service/update-appeal-service';
 import { buildHearingRequirementsSummarySections } from './hearing-requirements-summary-sections';
 
 function getYourHearingNeedsPage(req: Request, res: Response, next: NextFunction) {
   try {
     const hearingRequirements: HearingRequirements = req.session.appeal.hearingRequirements;
-    const hearingRequirementsSummarySections = buildHearingRequirementsSummarySections(hearingRequirements, false);
+    const hasNlr: boolean = req.session.appeal?.application?.hasNonLegalRep === 'Yes';
+    const hearingRequirementsSummarySections = buildHearingRequirementsSummarySections(hearingRequirements, false, hasNlr);
 
     res.render('templates/check-and-send.njk', {
       pageTitle: i18n.pages.hearingRequirements.yourHearingNeeds.title,
@@ -19,27 +19,14 @@ function getYourHearingNeedsPage(req: Request, res: Response, next: NextFunction
   }
 }
 
-function postYourHearingNeedsPage(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      // TODO: check if we need to submit these changes to any CCD event
-      res.redirect(paths.common.overview);
-    } catch (e) {
-      next(e);
-    }
-  };
-}
-
-function setupYourHearingNeedsController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupYourHearingNeedsController(middleware: Middleware[]): Router {
   const router = Router();
   router.get(paths.submitHearingRequirements.yourHearingNeeds, middleware, getYourHearingNeedsPage);
-  router.post(paths.submitHearingRequirements.yourHearingNeeds, middleware, postYourHearingNeedsPage(updateAppealService));
 
   return router;
 }
 
 export {
   setupYourHearingNeedsController,
-  getYourHearingNeedsPage,
-  postYourHearingNeedsPage
+  getYourHearingNeedsPage
 };

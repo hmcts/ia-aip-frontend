@@ -1,0 +1,47 @@
+{% set pageTitleName = title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <h1 class="govuk-heading-xl">{{ title }}</h1>
+  <p class="govuk-body"><b>{{ paragraphOne }}</b></p>
+  {% if paragraphTwo %}
+    <p class="govuk-body"><b>{{ paragraphTwo }}</b></p>
+  {% endif %}
+
+  <form method="post" action="{{ paths.nonLegalRep.removeNonLegalRep }}">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukCheckboxes({
+      idPrefix: "statement",
+      name: "statement",
+      fieldset: {
+        legend: {
+          text: i18n.pages.removeNonLegalRepresentative.statement,
+          isPageHeading: false,
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      items: [
+        {
+          value: "acceptance",
+          text: agreement
+        }
+      ],
+      errorMessage: {
+        text: errors['statement'].text
+      } if errors['statement']
+    }) }}
+    {{ govukButton({
+      id: 'removeNonLegalRep',
+      text: i18n.pages.removeNonLegalRepresentative.button
+    }) }}
+  </form>
+  {{ contactUs() }}
+{% endblock %}

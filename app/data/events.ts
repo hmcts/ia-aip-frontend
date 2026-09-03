@@ -266,6 +266,11 @@ export const Events = {
     summary: 'Remove Statutory Timeframe',
     description: 'Remove Statutory Timeframe 24 Weeks'
   },
+  COMPLETE_CASE_REVIEW: {
+    id: 'completeCaseReview',
+    summary: 'stf24WCaseReview appeal case AIP',
+    description: 'stf24WCaseReview Appeal case AIP'
+  },
   MARK_APPEAL_PAID: {
     id: 'markAppealPaid',
     summary: 'Mark appeal as paid',

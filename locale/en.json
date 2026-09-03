@@ -2001,6 +2001,16 @@
             }
           ]
         },
+        "completeCaseReview": {
+          "text": "Your appeal was reviewed.",
+          "links": [
+            {
+              "title": "What the Tribunal said",
+              "text": "Reasons for review",
+              "href": "{{ paths.common.stfCaseReviewDocumentViewer }}"
+            }
+          ]
+        },
         "paymentAppeal": {
           "text": "You paid for your appeal",
           "links": [
@@ -2274,6 +2284,7 @@
             "date": "Date of the decision",
             "maker": "Who made the decision",
             "remove24wDocument": "Decision document",
+            "stf24wReviewDocument": "Decision document",
             "Refused": "Your request was refused",
             "Granted": "Your request has been granted"
           },
@@ -2368,6 +2379,7 @@
             "date": "Date of the decision",
             "maker": "Who made the decision",
             "remove24wDocument": "Decision document",
+            "stf24wReviewDocument": "Decision document",
             "whatNext": {
               "default": {
                 "granted": "You will be notified when the Tribunal makes the changes the Home Office asked for.",
@@ -2452,6 +2464,11 @@
       },
       "stfRemovalDecision": {
         "title": "Reasons for removal",
+        "dateTimeUploaded": "Document upload date and time",
+        "document": "Document"
+      },
+      "stfCaseReviewDocument": {
+        "title": "Case review letter",
         "dateTimeUploaded": "Document upload date and time",
         "document": "Document"
       },

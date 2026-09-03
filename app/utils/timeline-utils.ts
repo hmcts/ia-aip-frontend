@@ -484,6 +484,7 @@ function getEventsAndStates(ftpaSetAsideFeatureEnabled: boolean,
     Events.END_APPEAL_AUTOMATICALLY.id,
     Events.RECORD_OUT_OF_TIME_DECISION.id,
     Events.REMOVE_STATUTORY_TIMEFRAME.id,
+    Events.COMPLETE_CASE_REVIEW.id,
     Events.MARK_AS_READY_FOR_UT_TRANSFER.id
   ];
   const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id, Events.MARK_APPEAL_AS_REMITTED.id];

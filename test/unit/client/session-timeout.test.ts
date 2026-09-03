@@ -155,8 +155,10 @@ describe('Session Timeout', () => {
       const modalAriaHiddenAttr = modalElement.getAttribute('aria-hidden');
       const overlayAriaHiddenAttr = modalOverlayElement.getAttribute('aria-hidden');
 
-      expect(modalAriaHiddenAttr).to.equal(null);
-      expect(overlayAriaHiddenAttr).to.equal(null);
+      expect(modalAriaHiddenAttr).to.be.null;
+      expect(modalAriaHiddenAttr || 'none').to.equal('none');
+      expect(overlayAriaHiddenAttr).to.be.null;
+      expect(overlayAriaHiddenAttr || 'none').to.equal('none');
       expect(focusStub.callCount).to.equal(1);
       expect(disableScrollStub.callCount).to.equal(1);
       expect(bodyEventListenerStub.callCount).to.equal(1);
@@ -187,7 +189,7 @@ describe('Session Timeout', () => {
       stopCountersStub = sandbox.stub(sessionTimeout, 'stopCounters');
 
       sessionTimeout.extendSession().then(() => {
-        expect(sessionTimeout.sessionExpirationTime).to.equal(1000);
+        expect(sessionTimeout.sessionExpirationTime.toString()).to.equal('1000');
         expect(restartCountersStub.callCount).to.equal(1);
       }).then(done, done);
     });

@@ -6,18 +6,26 @@ import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { dayMonthYearFormat } from '../../../utils/date-utils';
+import { hasActiveNlr } from '../../../utils/utils';
 import { getHearingStartDate, postHearingRequirementsYesNoHandler, setCheckedAttributeToQuestion } from '../common';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
-const pageTitle = i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.title;
+
+const getPageTitle = (hasNonLegalRep: boolean) => hasNonLegalRep
+  ? i18n.pages.hearingRequirements.datesToAvoidSection.questionPageNlr.title
+  : i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.title;
+
 const formAction = paths.submitHearingRequirements.hearingDatesToAvoidQuestion;
 
 function getQuestion(appeal: Appeal) {
   const present = _.has(appeal, 'hearingRequirements.datesToAvoid.isDateCannotAttend') || null;
+  const hasNonLegalRep = hasActiveNlr(appeal);
+  const source = hasNonLegalRep ? i18n.pages.hearingRequirements.datesToAvoidSection.questionPageNlr
+    : i18n.pages.hearingRequirements.datesToAvoidSection.questionPage;
   const question = {
     name: 'answer',
-    title: i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.question,
-    hint: i18n.pages.hearingRequirements.datesToAvoidSection.questionPage.description,
+    title: source.question,
+    hint: source.description,
     options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
   };
 
@@ -39,7 +47,7 @@ function getDatesToAvoidQuestion(req: Request, res: Response, next: NextFunction
   try {
     return res.render('templates/radio-question-page.njk', {
       previousPage,
-      pageTitle,
+      pageTitle: getPageTitle(hasActiveNlr(req.session.appeal)),
       formAction,
       question,
       availableHearingDates,
@@ -62,7 +70,7 @@ function postDatesToAvoidQuestion(updateAppealService: UpdateAppealService) {
       const question = getQuestion(req.session.appeal);
       const pageContent = {
         previousPage,
-        pageTitle,
+        pageTitle: getPageTitle(hasActiveNlr(req.session.appeal)),
         formAction,
         question,
         availableHearingDates,
@@ -123,5 +131,7 @@ function setupHearingDatesToAvoidQuestionController(middleware: Middleware[], up
 export {
   setupHearingDatesToAvoidQuestionController,
   getDatesToAvoidQuestion,
-  postDatesToAvoidQuestion
+  postDatesToAvoidQuestion,
+  getPageTitle,
+  getQuestion
 };

@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { setupHearingApplicationControllers } from '../../../../../app/controllers/make-application/hearing-requests/setup-hearing-application-controllers';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';

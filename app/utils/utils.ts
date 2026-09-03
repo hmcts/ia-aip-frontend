@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import moment from 'moment';
 import nl2br from 'nl2br';
 import { applicationTypes } from '../data/application-types';
@@ -8,6 +8,7 @@ import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
+import { nlrStatementValidation } from './validations/fields-validations';
 
 /**
  * Translate primitive values to Boolean value
@@ -133,8 +134,7 @@ export function isReadonlyApplicationEnabled(req: Request) {
 
 export async function isFeePayPriceEnabled(req: Request) {
   const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-  const isFeePayPriceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FEE_PAY_PRICE, defaultFlag);
-  return isFeePayPriceFeatureEnabled;
+  return await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FEE_PAY_PRICE, defaultFlag);
 }
 
 export function isUpdateTribunalDecide(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
@@ -266,7 +266,7 @@ export function clearWitnessCachedData(hearingRequirements: HearingRequirements)
 export function fileNameFormatter(fileName: string): string {
   const extension = path.extname(fileName);
   const baseName = path.basename(fileName, extension);
-  const extName = extension.split('.').join('').toUpperCase();
+  const extName = extension.replaceAll('.', '').toUpperCase();
   return `${baseName}(${extName})`;
 }
 
@@ -297,4 +297,25 @@ export function documentIdToDocStoreUrl(id: string, documentMap: DocumentMap[]):
 export function getStateName(stateId: string): string {
   const state = Object.values(States).find(s => s.id === stateId);
   return state ? state.name : stateId;
+}
+
+export function hasActiveNlr(appeal: Appeal): boolean {
+  return appeal?.application?.hasNonLegalRep === 'Yes'
+    && appeal?.nlrDetails?.idamId != null;
+}
+
+export function handleNlrStatementValidation(req: Request, res: Response, renderArgs: RenderArgs): boolean {
+  const validation = nlrStatementValidation(req.body);
+  if (validation) {
+    const { renderPath, renderObj } = renderArgs;
+    renderObj.errors = validation;
+    renderObj.errorList = Object.values(validation);
+    res.render(renderPath, renderObj);
+    return false;
+  }
+  req.session.appeal = {
+    ...req.session.appeal,
+    hasNlrSubmitted: req.body['nlrStatement'] === 'nlr' ? 'Yes' : undefined
+  };
+  return true;
 }

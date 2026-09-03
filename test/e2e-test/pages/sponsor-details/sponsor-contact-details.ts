@@ -6,7 +6,7 @@ const testUrl = config.get('testUrl');
 module.exports = {
   sponsorContactDetails(I) {
     Given('I should be taken to the sponsor contact details page', async () => {
-      I.amOnPage(testUrl + paths.appealStarted.sponsorContactDetails);
+      I.waitInUrl(testUrl + paths.appealStarted.sponsorContactDetails, 10);
     });
 
     When(/^I enter sponsor email "([^"]*)"$/, async (sponsorEmail) => {

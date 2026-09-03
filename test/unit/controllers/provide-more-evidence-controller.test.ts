@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   buildAddendumEvidenceDocumentsSummaryList,
   buildAdditionalEvidenceDocumentsSummaryList,
@@ -12,22 +12,23 @@ import {
   getHomeOfficeEvidenceDocuments,
   getLrAdditionalEvidenceDocuments,
   getProvideMoreEvidence,
+  getProvideMoreEvidenceCheckAndSend,
   getReasonForLateEvidence,
   getUploadedAddendumEvidenceDocuments,
   postProvideMoreEvidence,
   postProvideMoreEvidenceCheckAndSend,
   postReasonForLateEvidence,
   setupProvideMoreEvidenceController,
-  uploadProvideMoreEvidence, validate
+  uploadProvideMoreEvidence,
+  validate
 } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
-import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import i18n from '../../../locale/en.json';
-import { expect, sinon } from '../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../utils/testUtils';
 
 describe('Provide more evidence controller', () => {
   let sandbox: sinon.SinonSandbox;
@@ -345,8 +346,8 @@ describe('Provide more evidence controller', () => {
 
       await deleteProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.additionalEvidence.length).to.eq(0);
-      expect(req.session.appeal.documentMap.length).to.eq(0);
+      expect(req.session.appeal.additionalEvidence).to.have.lengthOf(0);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(0);
     });
 
     it('should delete an addendum document', async () => {
@@ -363,8 +364,8 @@ describe('Provide more evidence controller', () => {
 
       await deleteProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.addendumEvidence.length).to.eq(0);
-      expect(req.session.appeal.documentMap.length).to.eq(0);
+      expect(req.session.appeal.addendumEvidence).to.have.lengthOf(0);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(0);
     });
 
     it('should not delete any document if no query id', async () => {
@@ -379,8 +380,8 @@ describe('Provide more evidence controller', () => {
 
       await deleteProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.additionalEvidence.length).to.eq(1);
-      expect(req.session.appeal.documentMap.length).to.eq(1);
+      expect(req.session.appeal.additionalEvidence).to.have.lengthOf(1);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(1);
       expect(redirectStub.calledWith(paths.common.provideMoreEvidenceForm)).to.equal(true);
     });
   });
@@ -406,7 +407,8 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.additionalEvidenceDocuments = [];
       getAdditionalEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('templates/check-and-send.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
         previousPage: paths.common.overview,
         summaryLists: summaryList
@@ -420,7 +422,8 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.additionalEvidenceDocuments = [];
       getLrAdditionalEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
         description: i18n.pages.provideMoreEvidence.yourEvidence.description,
         previousPage: paths.common.overview,
@@ -435,7 +438,8 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.addendumEvidenceDocuments = [];
       getAddendumEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.newEvidence.title,
         description: i18n.pages.provideMoreEvidence.newEvidence.description,
         previousPage: paths.common.overview,
@@ -450,7 +454,8 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.addendumEvidenceDocuments = [];
       getAppellantAddendumEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.yourAddendumEvidence.title,
         description: i18n.pages.provideMoreEvidence.yourAddendumEvidence.description,
         previousPage: paths.common.overview,
@@ -513,7 +518,8 @@ describe('Provide more evidence controller', () => {
       ];
       const docs: Evidence[] = getUploadedAddendumEvidenceDocuments(req as Request, 'uploadedBy');
 
-      expect(docs).to.have.lengthOf(0);;
+      expect(docs).to.have.lengthOf(0);
+      ;
     });
   });
 
@@ -523,7 +529,8 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.addendumEvidenceDocuments = [];
       getHomeOfficeEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.homeOfficeEvidence.title,
         description: i18n.pages.provideMoreEvidence.homeOfficeEvidence.description,
         previousPage: paths.common.overview,
@@ -589,7 +596,8 @@ describe('Provide more evidence controller', () => {
 
       const result = buildAdditionalEvidenceDocumentsSummaryList(mockEvidenceDocuments);
 
-      expect(result[0].summaryRows).to.have.lengthOf(0);;
+      expect(result[0].summaryRows).to.have.lengthOf(0);
+      ;
     });
   });
 
@@ -680,7 +688,8 @@ describe('Provide more evidence controller', () => {
 
       const result = buildAddendumEvidenceDocumentsSummaryList(mockEvidenceDocuments);
 
-      expect(result).to.have.lengthOf(0);;
+      expect(result).to.have.lengthOf(0);
+      ;
     });
   });
 
@@ -881,4 +890,197 @@ describe('Provide more evidence controller', () => {
       expect(next.calledWith(error)).to.equal(true);
     });
   });
+
+  describe('getProvideMoreEvidenceCheckAndSend', () => {
+    const addendumEvidence: AdditionalEvidenceDocument[] = [{
+      fileId: '1',
+      name: 'addendum doc',
+      description: 'reason for addendum evidence'
+    } as AdditionalEvidenceDocument];
+    const additionalEvidence: AdditionalEvidenceDocument[] = [{
+      fileId: '2',
+      name: 'additional doc',
+      description: 'reason for additional evidence'
+    } as AdditionalEvidenceDocument];
+    const addendumSummaryRow = [
+      {
+        'actions': {
+          'items': [
+            {
+              'href': 'provide-more-evidence',
+              'text': 'Change',
+              'visuallyHiddenText': 'Supporting evidence'
+            }
+          ]
+        },
+        'key': {
+          'text': 'Supporting evidence'
+        },
+        'value': {
+          'html': '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/1\'>addendum doc</a>'
+        }
+      },
+      {
+        'actions': {
+          'items': [
+            {
+              'href': 'why-evidence-late',
+              'text': 'Change',
+              'visuallyHiddenText': 'Reason evidence is late'
+            }
+          ]
+        },
+        'key': {
+          'text': 'Reason evidence is late'
+        },
+        'value': {
+          'html': '<p>reason for addendum evidence</p>'
+        }
+      }
+    ];
+    const additionalSummaryRow = [
+      {
+        'actions': {
+          'items': [
+            {
+              'href': 'provide-more-evidence',
+              'text': 'Change',
+              'visuallyHiddenText': 'Supporting evidence'
+            }
+          ]
+        },
+        'key': {
+          'text': 'Supporting evidence'
+        },
+        'value': {
+          'html': '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/2\'>additional doc</a>'
+        }
+      }
+    ];
+    describe('addendum', () => {
+      it('redirects with error if no file selected', () => {
+        req.session.appeal.appealStatus = States.DECIDED.id;
+        getProvideMoreEvidenceCheckAndSend(req as Request, res as Response, next);
+
+        expect(renderStub.called).to.equal(false);
+        expect(redirectStub).to.be.calledWith(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
+      });
+
+      it('renders page if file selected no hasNlr', () => {
+        req.session.appeal.appealStatus = States.DECIDED.id;
+        req.session.appeal.additionalEvidence = additionalEvidence;
+        req.session.appeal.addendumEvidence = addendumEvidence;
+        const summaryList: SummaryList[] = [{ summaryRows: addendumSummaryRow }];
+        getProvideMoreEvidenceCheckAndSend(req as Request, res as Response, next);
+
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+          pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
+          continuePath: paths.common.provideMoreEvidenceCheck,
+          previousPage: paths.common.whyEvidenceLate,
+          summaryLists: summaryList,
+          hasNlr: false
+        });
+      });
+
+      it('renders page if file selected with hasNlr', () => {
+        req.session.appeal.appealStatus = States.DECIDED.id;
+        setActiveNlr(req);
+        req.session.appeal.additionalEvidence = additionalEvidence;
+        req.session.appeal.addendumEvidence = addendumEvidence;
+        const summaryList: SummaryList[] = [{ summaryRows: addendumSummaryRow }];
+        getProvideMoreEvidenceCheckAndSend(req as Request, res as Response, next);
+
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+          pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
+          continuePath: paths.common.provideMoreEvidenceCheck,
+          previousPage: paths.common.whyEvidenceLate,
+          summaryLists: summaryList,
+          hasNlr: true
+        });
+      });
+    });
+
+    describe('additional', () => {
+      it('redirects with error if no file selected', () => {
+        getProvideMoreEvidenceCheckAndSend(req as Request, res as Response, next);
+
+        expect(renderStub.called).to.equal(false);
+        expect(redirectStub).to.be.calledWith(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
+      });
+
+      it('renders page if file selected no hasNlr', () => {
+        req.session.appeal.additionalEvidence = additionalEvidence;
+        req.session.appeal.addendumEvidence = addendumEvidence;
+        const summaryList: SummaryList[] = [{ summaryRows: additionalSummaryRow }];
+        getProvideMoreEvidenceCheckAndSend(req as Request, res as Response, next);
+
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+          pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
+          continuePath: paths.common.provideMoreEvidenceCheck,
+          previousPage: paths.common.provideMoreEvidenceForm,
+          summaryLists: summaryList,
+          hasNlr: false
+        });
+      });
+
+      it('renders page if file selected with hasNlr', () => {
+        req.session.appeal.additionalEvidence = additionalEvidence;
+        req.session.appeal.addendumEvidence = addendumEvidence;
+        const summaryList: SummaryList[] = [{ summaryRows: additionalSummaryRow }];
+        setActiveNlr(req);
+        getProvideMoreEvidenceCheckAndSend(req as Request, res as Response, next);
+
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+          pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
+          continuePath: paths.common.provideMoreEvidenceCheck,
+          previousPage: paths.common.provideMoreEvidenceForm,
+          summaryLists: summaryList,
+          hasNlr: true
+        });
+      });
+    });
+  });
 });
+
+function getSummaryRows(fileId: string, fileName: string, desc: string): SummaryRow[] {
+  return [
+    {
+      'actions': {
+        'items': [
+          {
+            'href': 'provide-more-evidence',
+            'text': 'Change',
+            'visuallyHiddenText': 'Supporting evidence'
+          }
+        ]
+      },
+      'key': {
+        'text': 'Supporting evidence'
+      },
+      'value': {
+        'html': `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/${fileId}'>${fileName}</a>`
+      }
+    },
+    {
+      'actions': {
+        'items': [
+          {
+            'href': 'why-evidence-late',
+            'text': 'Change',
+            'visuallyHiddenText': 'Reason evidence is late'
+          }
+        ]
+      },
+      'key': {
+        'text': 'Reason evidence is late'
+      },
+      'value': {
+        'html': `<p>${desc}</p>`
+      }
+    }
+  ];
+}

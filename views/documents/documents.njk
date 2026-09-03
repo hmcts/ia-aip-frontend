@@ -11,22 +11,23 @@
           Documents
         </h1>
 
-        {% set documentsRows = [] %}
-          {% for document in documents %}
-            {% set documentsRows = (documentsRows.push(
-              [
-                {
-                  text: document.dateUploaded
-                },
-                {
-                  html: document.name
-                }
-              ]
-              ), documentsRows) %}
-          {% endfor %}
-          {% else %}
-            <p>No documents are available.</p>
-          {% endif %}
+        {% if documents|length > 0 %}
+            {% set documentsRows = [] %}
+              {% for document in documents %}
+                {% set documentsRows = (documentsRows.push(
+                  [
+                    {
+                      text: document.dateUploaded
+                    },
+                    {
+                      html: document.name
+                    }
+                  ]
+                  ), documentsRows) %}
+              {% endfor %}
+              {% else %}
+                <p>No documents are available.</p>
+        {% endif %}
 
 
           {{ govukTable({

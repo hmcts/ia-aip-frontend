@@ -11,19 +11,36 @@
           Documents
         </h1>
 
-        {% if documents.length %}
-          <ul class="govuk-list govuk-list--spaced">
-            {% for document in documents %}
-              <li>
-                <a href="/documents/{{ document.id }}" class="govuk-link">
-                  {{ document.name }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <p>No documents are available.</p>
-        {% endif %}
+        {% set documentsRows = [] %}
+          {% for document in documents %}
+            {% set documentsRows = (documentsRows.push(
+              [
+                {
+                  text: document.dateUploaded
+                },
+                {
+                  html: document.name
+                }
+              ]
+              ), documentsRows) %}
+          {% endfor %}
+          {% else %}
+            <p>No documents are available.</p>
+          {% endif %}
+
+
+          {{ govukTable({
+            firstCellIsHeader: false,
+            head: [
+              {
+                text: i18n.pages.detailViewers.common.dateUploaded
+              },
+              {
+                text: i18n.pages.detailViewers.common.document
+              }
+            ],
+            rows: documentsRows
+          }) }}
 
       </div>
     </div>

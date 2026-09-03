@@ -118,7 +118,9 @@ describe('isJourneyAllowedMiddleware', () => {
       paths.common.helpWithFeesReferenceNumberRefund,
       paths.common.checkYourAnswersRefund,
       paths.common.confirmationRefund,
-      paths.common.stfRemovalDecisionDocumentViewer
+      paths.common.stfRemovalDecisionDocumentViewer,
+      paths.common.documentsPage,
+      paths.common.documentDownload
     ];
     const permittedCommonPaths: string[] = [
       paths.common.index,

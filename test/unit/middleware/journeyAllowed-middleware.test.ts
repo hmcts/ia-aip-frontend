@@ -189,7 +189,8 @@ describe('isJourneyAllowedMiddleware', () => {
       paths.common.deleteDraftAppeal,
       paths.common.refreshCasesList,
       paths.common.loadCase,
-      paths.common.accessibility
+      paths.common.accessibility,
+      paths.common.documents
     ];
     it('should render forbidden to forbidden common pages for Non legal rep', () => {
       req.session.isNonLegalRep = true;

@@ -1,3 +1,4 @@
+import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
@@ -6,7 +7,7 @@ import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { getRedirectPage } from '../../utils/utils';
+import { asBooleanValue, getRedirectPage } from '../../utils/utils';
 import {
   appellantInUkValidation,
   createStructuredError,
@@ -14,6 +15,8 @@ import {
   gwfReferenceNumberValidation,
   oocHrEeaValidation
 } from '../../utils/validations/fields-validations';
+
+const homeOfficeValidationEnabled = asBooleanValue(config.get('features.homeOfficeValidationEnabled'));
 
 async function getAppellantInUk(req: Request, res: Response, next: NextFunction) {
   try {
@@ -144,7 +147,8 @@ function getGwfReference(req: Request, res: Response, next: NextFunction) {
     const { gwfReferenceNumber } = req.session.appeal.application || null;
     res.render('appeal-application/out-of-country/gwf-reference.njk', {
       gwfReferenceNumber,
-      previousPage: paths.appealStarted.taskList
+      previousPage: paths.appealStarted.taskList,
+      homeOfficeValidationEnabled
     });
   } catch (getGwfReferenceError) {
     next(getGwfReferenceError);
@@ -160,7 +164,8 @@ function renderGwfReferenceError(req: Request, res: Response, errorList: Validat
         errors: fieldErrors,
         errorList: Object.values(errorList),
         gwfReferenceNumber: req.body.gwfReferenceNumber,
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled
       }
   );
 }

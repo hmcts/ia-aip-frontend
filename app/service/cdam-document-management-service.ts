@@ -121,7 +121,7 @@ class CdamDocumentManagementService {
         const documentMapperId: string = this.addToDocumentMapper(
             res.documents[0]._links.self.href,
             res.documents[0].originalDocumentName,
-            res.documents[0].createdOn,
+            res.documents[0].createdOn.toISOString(),
             req.session.appeal.documentMap
         );
         return {

@@ -118,7 +118,9 @@ describe('isJourneyAllowedMiddleware', () => {
       paths.common.helpWithFeesReferenceNumberRefund,
       paths.common.checkYourAnswersRefund,
       paths.common.confirmationRefund,
-      paths.common.stfRemovalDecisionDocumentViewer
+      paths.common.stfRemovalDecisionDocumentViewer,
+      paths.common.documentsPage,
+      paths.common.documentDownload
     ];
     const permittedCommonPaths: string[] = [
       paths.common.index,
@@ -167,7 +169,6 @@ describe('isJourneyAllowedMiddleware', () => {
       paths.common.evidenceToSupportAppeal,
       paths.common.whatIsIt,
       paths.common.gettingStarted,
-      paths.common.documents,
       paths.common.fourStages,
       paths.common.giveFeedback,
       paths.common.notifications,
@@ -189,7 +190,8 @@ describe('isJourneyAllowedMiddleware', () => {
       paths.common.deleteDraftAppeal,
       paths.common.refreshCasesList,
       paths.common.loadCase,
-      paths.common.accessibility
+      paths.common.accessibility,
+      paths.common.documents
     ];
     it('should render forbidden to forbidden common pages for Non legal rep', () => {
       req.session.isNonLegalRep = true;

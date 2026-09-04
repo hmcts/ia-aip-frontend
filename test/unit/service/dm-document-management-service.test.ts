@@ -45,7 +45,9 @@ describe('dm-document-management-service', () => {
       req.session.appeal.documentMap = [
         {
           id: 'fileId',
-          url: 'file-url.com'
+          url: 'file-url.com',
+          name: 'file.pdf',
+          documentUploadDate: '2024-06-01T12:00:00Z'
         }
       ];
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
@@ -99,14 +101,27 @@ describe('dm-document-management-service', () => {
   });
 
   describe('Helper methods @helper', () => {
-    it('addToDocumentMapper should store url and return back a uuid', () => {
-
+    it('addToDocumentMapper should store url and name and return back a uuid', () => {
       const documentMap: DocumentMap[] = [];
-      const documentUrl: string = 'http://documenturl/';
+      const documentUrl = 'http://documenturl/';
+      const documentName = 'file.pdf';
+      const documentUploadDate = '2024-06-01T12:00:00Z';
 
       const documentManagementService = new DmDocumentManagementService(null);
-      const result = documentManagementService.addToDocumentMapper(documentUrl, documentMap);
+
+      const result = documentManagementService.addToDocumentMapper(
+          documentUrl,
+          documentName,
+          documentUploadDate,
+          documentMap
+      );
+
       validateUuid(result);
+
+      expect(documentMap).to.have.length(1);
+      expect(documentMap[0].id).to.equal(result);
+      expect(documentMap[0].url).to.equal(documentUrl);
+      expect(documentMap[0].name).to.equal(documentName);
     });
 
     describe('removeFromDocumentMapper', () => {
@@ -114,7 +129,9 @@ describe('dm-document-management-service', () => {
         req.session.appeal.documentMap = [
           {
             id: 'fileId',
-            url: 'file-url.com'
+            url: 'file-url.com',
+            name: 'file.pdf',
+            documentUploadDate: '2024-06-01T12:00:00Z'
           }
         ];
         const documentManagementService = new DmDocumentManagementService(null);
@@ -126,7 +143,9 @@ describe('dm-document-management-service', () => {
         req.session.appeal.documentMap = [
           {
             id: 'fileId',
-            url: 'file-url.com'
+            url: 'file-url.com',
+            name: 'file.pdf',
+            documentUploadDate: '2024-06-01T12:00:00Z'
           }
         ];
         const documentManagementService = new DmDocumentManagementService(null);

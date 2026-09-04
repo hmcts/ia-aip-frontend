@@ -1,0 +1,49 @@
+{% extends 'layout.njk' %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set pageTitleName = 'Documents' %}
+
+{% block content %}
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+          Documents
+        </h1>
+
+        {% if documents|length > 0 %}
+            {% set documentsRows = [] %}
+              {% for document in documents %}
+                {% set documentsRows = (documentsRows.push(
+                  [
+                    {
+                      html: '<strong>' + document.name + '</strong><br>' + 'Date: ' + document.documentUploadDate
+                    },
+                    {
+                      html: '<a href="/documents/' + document.id + '" class="govuk-link">' + document.name + '</a>'
+                    }
+                  ]
+                ), documentsRows) %}
+              {% endfor %}
+
+        {{ govukTable({
+          firstCellIsHeader: false,
+          head: [
+            {
+              text: i18n.pages.detailViewers.common.dateUploaded
+            },
+            {
+              text: i18n.pages.detailViewers.common.document
+            }
+          ],
+          rows: documentsRows
+        }) }}
+        {% else %}
+            <p>No documents at this time.</p>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

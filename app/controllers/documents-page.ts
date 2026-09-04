@@ -6,7 +6,7 @@ function getDocuments(req: Request, res: Response, next: NextFunction) {
   try {
     const documents = req.session.appeal.documentMap || [];
 
-    console.log('DOCUMENT MAP:', JSON.stringify(documents, null, 2));
+    console.info('DOCUMENT MAP:', JSON.stringify(documents, null, 2));
 
     res.render('documents/documents.njk', {
       title: 'Documents',

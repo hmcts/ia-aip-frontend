@@ -521,7 +521,7 @@ describe('Out of Country Controller', function () {
       req.query = {'edit': ''};
       await getGwfReference(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/gwf-reference.njk').to.equal(true);
+      expect(renderStub.calledOnceWith('appeal-application/out-of-country/gwf-reference.njk')).to.equal(true);
     });
 
     it('should catch exception and call next with the error', function () {

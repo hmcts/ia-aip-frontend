@@ -324,7 +324,7 @@ export default class UpdateAppealService {
     if (caseData.reasonsForAppealDocuments) {
       reasonsForAppealDocumentUploads = [];
       caseData.reasonsForAppealDocuments.forEach(document => {
-        const documentMapperId: string = this._documentManagementService.addToDocumentMapper(document.value.document.document_url, document.value.document.document_filename, document.value.document.dateUploaded, documentMap);
+        const documentMapperId: string = this._documentManagementService.addToDocumentMapper(document.value.document.document_url, document.value.document.document_filename, document.value.dateUploaded, documentMap);
 
         reasonsForAppealDocumentUploads.push(
           {
@@ -1024,7 +1024,7 @@ export default class UpdateAppealService {
 
   mapCaseDataDocumentsToAppealEvidences = (documents: Collection<DocumentWithMetaData>[], documentMap: DocumentMap[]): Evidence[] => {
     return documents.map(document => {
-      const documentMapperId: string = this._documentManagementService.addToDocumentMapper(document.value.document.document_url, document.value.document.document_filename, document.value.document.dateUploaded, documentMap);
+      const documentMapperId: string = this._documentManagementService.addToDocumentMapper(document.value.document.document_url, document.value.document.document_filename, document.value.dateUploaded, documentMap);
       return {
         id: document.id,
         fileId: documentMapperId,

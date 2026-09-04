@@ -18,18 +18,14 @@
                 {% set documentsRows = (documentsRows.push(
                   [
                     {
-                      text: document.dateUploaded
+                      text: document.documentUploadDate
                     },
                     {
-                      html: document.name
+                      html: '<a href="/documents/' + document.id + '" class="govuk-link">' + document.name + '</a>'
                     }
                   ]
-                  ), documentsRows) %}
+                ), documentsRows) %}
               {% endfor %}
-        {% else %}
-            <p>No documents are available.</p>
-        {% endif %}
-
 
         {{ govukTable({
           firstCellIsHeader: false,
@@ -43,6 +39,9 @@
           ],
           rows: documentsRows
         }) }}
+        {% else %}
+            <p>No documents at this time.</p>
+        {% endif %}
 
       </div>
     </div>

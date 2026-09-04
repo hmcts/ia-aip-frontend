@@ -80,8 +80,7 @@ describe('cdam-document-management-service', () => {
     it('should upload a file', async () => {
       req.session.appeal.documentMap = [];
 
-      const documentUploadResponse = '{"documents":[{"originalDocumentName":"file.pdf","_links":{"self":{"href":"http://store/documents/doc-id"}}}]}';
-
+      const documentUploadResponse = '{"documents":[{"originalDocumentName":"file.pdf","createdOn":"2024-06-01T12:00:00Z","_links":{"self":{"href":"http://store/documents/doc-id"}}}]}';
       const resolved = new Promise((r) => r(documentUploadResponse));
 
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());

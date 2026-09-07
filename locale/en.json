@@ -2002,11 +2002,11 @@
           ]
         },
         "completeCaseReview": {
-          "text": "Your appeal was reviewed.",
+          "text": "The Tribunal has issued directions to your appeal",
           "links": [
             {
-              "title": "What the Tribunal said",
-              "text": "Reasons for review",
+              "title": "",
+              "text": "Pre-hearing Review and Directions",
               "href": "{{ paths.common.stfCaseReviewDocumentViewer }}"
             }
           ]

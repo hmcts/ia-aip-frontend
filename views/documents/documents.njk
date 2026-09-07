@@ -19,7 +19,7 @@
             {% set documentsRows = (documentsRows.push(
               [
                 {
-                  text: document.documentUploadDate
+                  text: document.documentUploadDate or ''
                 },
                 {
                   html: '<a href="/documents/' + document.id + '" class="govuk-link">' + document.name + '</a>'

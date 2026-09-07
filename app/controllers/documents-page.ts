@@ -7,18 +7,16 @@ function getDocuments(req: Request, res: Response, next: NextFunction) {
   try {
     const documents = req.session.appeal.documentMap || [];
 
-    const documentsWithFormattedDates = documents.map(document => ({
+    const formattedDocuments = documents.map(document => ({
       ...document,
-      documentUploadDate: document.documentUploadDate
-          ? moment(document.documentUploadDate).format('D MMMM YYYY')
-          : undefined
+      ...(document.documentUploadDate && {
+        documentUploadDate: moment(document.documentUploadDate).format('D MMMM YYYY')
+      })
     }));
-
-    console.info('DOCUMENT MAP:', JSON.stringify(documents, null, 2));
 
     res.render('documents/documents.njk', {
       title: 'Documents',
-      documentsWithFormattedDates
+      documents: formattedDocuments
     });
   } catch (e) {
     next(e);

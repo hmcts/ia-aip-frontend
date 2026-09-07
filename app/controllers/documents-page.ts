@@ -1,16 +1,24 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
 import { DocumentManagementService } from '../service/document-management-service';
+import moment from 'moment';
 
 function getDocuments(req: Request, res: Response, next: NextFunction) {
   try {
     const documents = req.session.appeal.documentMap || [];
 
+    const documentsWithFormattedDates = documents.map(document => ({
+      ...document,
+      documentUploadDate: document.documentUploadDate
+          ? moment(document.documentUploadDate).format('D MMMM YYYY')
+          : undefined
+    }));
+
     console.info('DOCUMENT MAP:', JSON.stringify(documents, null, 2));
 
     res.render('documents/documents.njk', {
       title: 'Documents',
-      documents
+      documentsWithFormattedDates
     });
   } catch (e) {
     next(e);

@@ -1,6 +1,5 @@
 {% extends 'layout.njk' %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
-import moment from 'moment';
 
 {% set pageTitleName = 'Documents' %}
 
@@ -14,34 +13,36 @@ import moment from 'moment';
         </h1>
 
         {% if documents|length > 0 %}
-            {% set documentsRows = [] %}
-              {% for document in documents %}
-                {% set documentsRows = (documentsRows.push(
-                  [
-                    {
-                      html: moment(document.documentUploadDate).format('D MMMM YYYY')
-                    },
-                    {
-                      html: '<a href="/documents/' + document.id + '" class="govuk-link">' + document.name + '</a>'
-                    }
-                  ]
-                ), documentsRows) %}
-              {% endfor %}
+          {% set documentsRows = [] %}
 
-        {{ govukTable({
-          firstCellIsHeader: false,
-          head: [
-            {
-              text: i18n.pages.detailViewers.common.dateUploaded
-            },
-            {
-              text: i18n.pages.detailViewers.common.document
-            }
-          ],
-          rows: documentsRows
-        }) }}
+          {% for document in documents %}
+            {% set documentsRows = (documentsRows.push(
+              [
+                {
+                  text: document.documentUploadDate
+                },
+                {
+                  html: '<a href="/documents/' + document.id + '" class="govuk-link">' + document.name + '</a>'
+                }
+              ]
+            ), documentsRows) %}
+          {% endfor %}
+
+          {{ govukTable({
+            firstCellIsHeader: false,
+            head: [
+              {
+                text: i18n.pages.detailViewers.common.dateUploaded
+              },
+              {
+                text: i18n.pages.detailViewers.common.document
+              }
+            ],
+            rows: documentsRows
+          }) }}
+
         {% else %}
-            <p>No documents at this time.</p>
+          <p>No documents at this time.</p>
         {% endif %}
 
       </div>

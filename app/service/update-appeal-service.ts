@@ -1185,7 +1185,7 @@ export default class UpdateAppealService {
   };
 
   private mapDocWithMetadataToEvidence = (doc: Collection<DocumentWithMetaData>, documentMap: DocumentMap[]): Evidence => {
-    const fileId = this._documentManagementService.addToDocumentMapper(doc.value.document.document_url, doc.value.document.document_filename, doc.value.document.dateUploaded, documentMap);
+    const fileId = this._documentManagementService.addToDocumentMapper(doc.value.document.document_url, doc.value.document.document_filename, doc.value.dateUploaded, documentMap);
     return {
       fileId,
       name: doc.value.document.document_filename,

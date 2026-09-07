@@ -1,5 +1,6 @@
 {% extends 'layout.njk' %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
+import moment from 'moment';
 
 {% set pageTitleName = 'Documents' %}
 
@@ -18,7 +19,7 @@
                 {% set documentsRows = (documentsRows.push(
                   [
                     {
-                      html: '<strong>' + document.name + '</strong><br>' + 'Date: ' + document.documentUploadDate
+                       moment(document.documentUploadDate).format('D MMMM YYYY')
                     },
                     {
                       html: '<a href="/documents/' + document.id + '" class="govuk-link">' + document.name + '</a>'

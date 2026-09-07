@@ -19,7 +19,7 @@ import moment from 'moment';
                 {% set documentsRows = (documentsRows.push(
                   [
                     {
-                       moment(document.documentUploadDate).format('D MMMM YYYY')
+                      html: moment(document.documentUploadDate).format('D MMMM YYYY')
                     },
                     {
                       html: '<a href="/documents/' + document.id + '" class="govuk-link">' + document.name + '</a>'

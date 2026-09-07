@@ -1401,7 +1401,8 @@ export default class UpdateAppealService {
         caseData.applicationOutOfTimeDocument = {
           document_filename: appeal.application.lateAppeal.evidence.name,
           document_url: documentLocationUrl,
-          document_binary_url: `${documentLocationUrl}/binary`
+          document_binary_url: `${documentLocationUrl}/binary`,
+          dateUploaded: appeal.application.lateAppeal.evidence.dateUploaded
         };
       } else {
         caseData.applicationOutOfTimeDocument = null;

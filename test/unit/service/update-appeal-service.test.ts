@@ -104,7 +104,8 @@ describe('update-appeal-service', () => {
       'applicationOutOfTimeDocument': {
         'document_url': 'http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891',
         'document_filename': '1580296112615-evidence-file.jpeg',
-        'document_binary_url': 'http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891/binary'
+        'document_binary_url': 'http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891/binary',
+        'dateUploaded': '2020-01-01'
       },
       'subscriptions': [{
         'id': '7166f13d-1f99-4323-9459-b22a8325db9d',
@@ -2354,7 +2355,8 @@ describe('update-appeal-service', () => {
         'applicationOutOfTimeDocument': {
           'document_filename': 'somefile.png',
           'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
-          'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
+          'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary',
+          'dateUploaded': '2020-01-01'
         },
         'appellantGivenNames': 'givenNames',
         'appellantFamilyName': 'familyName',

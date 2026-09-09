@@ -7,65 +7,19 @@ import { expect, sinon } from '../../utils/testUtils';
 import { multipleEventsData, startAppealEventData } from '../mockData/events/data';
 import { expectedMultipleEventsData, expectedStartAppealEventData } from '../mockData/events/expectations';
 
-describe('idam-service', () => {
+describe('ccd-service', () => {
   const ccdBaseUrl: string = config.get('ccd.apiUrl');
   const headers = {} as SecurityHeaders;
+  const user: IdamDetails = {
+    uid: 'userId',
+    name: 'forename surname',
+    given_name: 'forename',
+    family_name: 'surname',
+    sub: '',
+    roles: ['citizen']
+  };
   const userId = 'userId';
   const caseId = 'caseId';
-  const expectedCase = { caseId: 1 };
-  const elasticSearchResponse = {
-    length: 1,
-    cases: [ expectedCase ],
-    total: 1
-  };
-  let loadedCase;
-  let loadCaseStub;
-  let createCaseStub;
-
-  describe('loadOrCreateCase loads a case', () => {
-    const ccdService = new CcdService();
-
-    before(async () => {
-      loadCaseStub = sinon.stub(ccdService, 'loadCasesForUser');
-      loadCaseStub.withArgs(userId, headers).returns(new Promise((resolve) => {
-        resolve(elasticSearchResponse);
-      }));
-
-      createCaseStub = sinon.mock(ccdService).expects('createCase').never();
-
-      loadedCase = await ccdService.loadOrCreateCase(userId, headers);
-    });
-
-    it('loads the first case', () => {
-      expect(loadedCase).to.equal(expectedCase);
-    });
-
-    it('does not create a new case', () => {
-      createCaseStub.verify();
-    });
-  });
-
-  describe('loadOrCreateCase creates a case', () => {
-    const ccdService = new CcdService();
-
-    before(async () => {
-      loadCaseStub = sinon.stub(ccdService, 'loadCasesForUser');
-      loadCaseStub.withArgs(userId, headers).returns(new Promise((resolve) => {
-        resolve(elasticSearchResponse);
-      }));
-      createCaseStub = sinon.stub(ccdService, 'createCase');
-      createCaseStub.withArgs(userId, headers).returns(new Promise((resolve) => {
-        resolve(expectedCase);
-      }));
-
-      loadedCase = await ccdService.loadOrCreateCase(userId, headers);
-    });
-
-    it('creates a case', () => {
-      expect(loadedCase).to.equal(expectedCase);
-    });
-  });
-
   describe('createCase', () => {
     const ccdService = new CcdService();
 
@@ -78,23 +32,25 @@ describe('idam-service', () => {
 
       const submitCreateCaseStub = sinon.stub(ccdService, 'submitCreateCase');
       const expectedResult = {} as any;
-      const serviceId = { $set: { HMCTSServiceId : 'BFA1' } };
+      const serviceId = { $set: { HMCTSServiceId: 'BFA1' } };
 
-      submitCreateCaseStub.withArgs(userId, headers, {
+      submitCreateCaseStub.withArgs(user.uid, headers, {
         event: {
           id: 'eventId',
           summary: 'Create case AIP',
           description: 'Create case AIP'
         },
         data: {
-          journeyType: 'aip'
+          journeyType: 'aip',
+          appellantGivenNames: user.given_name,
+          appellantFamilyName: user.family_name
         },
         event_token: 'token',
         supplementary_data_request: serviceId,
         ignore_warning: true
       }).resolves(expectedResult);
 
-      const ccdCaseDetails = await ccdService.createCase(userId, headers);
+      const ccdCaseDetails = await ccdService.createCase(user, headers);
 
       expect(ccdCaseDetails).to.equal(expectedResult);
     });
@@ -113,7 +69,7 @@ describe('idam-service', () => {
 
       const submitUpdateCaseStub = sinon.stub(ccdService, 'submitUpdateAppeal');
       const caseData = { journeyType: 'AIP' } as Partial<CaseData>;
-      const serviceId = { $set: { HMCTSServiceId : 'BFA1' } };
+      const serviceId = { $set: { HMCTSServiceId: 'BFA1' } };
       submitUpdateCaseStub.withArgs(userId, caseId, headers, {
         event: {
           id: 'eventId',
@@ -190,13 +146,14 @@ describe('idam-service', () => {
     });
 
     it('submitCreateCase', async () => {
+      postRequest.resolves({ status: 201 });
       await ccdService.submitCreateCase(userId, headers, {} as any);
 
       expect(postRequest.called).to.equal(true);
     });
 
-    it('loadCasesForUser', async () => {
-      await ccdService.loadCasesForUser(userId, headers);
+    it('loadCasesListForUser', async () => {
+      await ccdService.loadCasesListForUser(userId, headers);
 
       expect(postRequest.called).to.equal(true);
     });
@@ -219,6 +176,12 @@ describe('idam-service', () => {
       expect(getRequest.called).to.equal(true);
     });
 
+    it('loadCaseById', async () => {
+      await ccdService.loadCaseById(userId, caseId, headers);
+
+      expect(getRequest).to.have.been.called;
+    });
+
     it('validateMidEvent', async () => {
       const caseData = { journeyType: 'AIP' } as Partial<CaseData>;
       const midEventDetails: MidEventDetails = {
@@ -231,7 +194,7 @@ describe('idam-service', () => {
       const pageId: string = 'somePageId';
       await ccdService.validateMidEvent(midEventDetails, pageId, userId, headers);
       const expectedUrl =
-          '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
+        '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
       expect(postRequest.calledOnceWith(ccdBaseUrl + expectedUrl, midEventDetails)).to.equal(true);
     });
 
@@ -257,7 +220,7 @@ describe('idam-service', () => {
       const response = await ccdService.validateMidEvent(midEventDetails, pageId, userId, headers);
 
       const expectedUrl =
-          '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
+        '/citizens/userId/jurisdictions/IA/case-types/Asylum/validate?pageId=somePageId';
       expect(postRequest.calledOnceWith(ccdBaseUrl + expectedUrl, midEventDetails)).to.equal(true);
       expect(response).to.deep.equal(error.response);
     });

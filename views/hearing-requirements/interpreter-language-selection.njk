@@ -38,12 +38,18 @@
         }) }}
    {% endset %}
 
-    <p><div>{{ pageText }}</div></p>
+    <p>{{ pageText }}</p>
 
     <form action="{{ formAction }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <input type="hidden" name="selectedWitnessesList" value="{{ selectedWitnessesList }}">
             {{ govukSelect({
+                errorMessage: {
+                    text: errors['languageRefData'].text
+                } if errors['languageRefData'],
+                errorMessage: {
+                    text: errors['languageRefData-languageManualEntry'].text
+                } if errors['languageRefData-languageManualEntry'],
                 idPrefix: "languageRefData",
                 name: "languageRefData",
                 value: languageRefData,

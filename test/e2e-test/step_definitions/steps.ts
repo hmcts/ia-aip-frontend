@@ -1,6 +1,7 @@
 const { aipToLegalRepNoC } = require('../pages/aip-to-legal-rep-noc/aip-to-legal-rep-noc');
 const { appealSent } = require('../pages/appeal-sent/appeal-sent');
 const { askForMoreTime } = require('../pages/ask-for-more-time/ask-for-more-time');
+const { casesList } = require('../pages/cases-list/cases-list');
 const { changeRepresentation } = require('../pages/change-representation/change-representation');
 const { checkAndSend } = require('../pages/check-and-send/check-and-send');
 const { clarifyingQuestions } = require('../pages/clarifying-questions/clarifying-questions');
@@ -23,6 +24,10 @@ const { homeOfficeUpload } = require('../pages/home-office-details/home-office-u
 const { legalRepCreateCase } = require('../pages/legal-rep-create-case/legal-rep-create-case');
 const { makeAppealApplication } = require('../pages/make-application/make-appeal-application');
 const { makeHearingApplication } = require('../pages/make-application/make-hearing-application');
+const { addNonLegalRep } = require('../pages/non-legal-rep/add-non-legal-rep');
+const { joinAppeal } = require('../pages/non-legal-rep/join-appeal');
+const { nonLegalRepDetails } = require('../pages/non-legal-rep/non-legal-rep-details');
+const { removeNonLegalRep } = require('../pages/non-legal-rep/remove-non-legal-rep');
 const { oocProtectionDepartureDate } = require('../pages/ooc-details/out-of-country');
 const { outOfTimeAppeal } = require('../pages/out-of-time-appeal/out-of-time');
 const { overviewPage } = require('../pages/overview-page/overview-page');
@@ -53,7 +58,7 @@ const { manualCaseProgression } = require('../service/manual-case-progression-se
 const { I } = inject();
 
 Before((test) => {
-  test.retries(5);
+  test.retries(15);
 });
 
 common(I);
@@ -74,6 +79,10 @@ enterAddress(I);
 oocAddress(I);
 contactDetails(I);
 hasSponsor(I);
+addNonLegalRep(I);
+removeNonLegalRep(I);
+joinAppeal(I);
+nonLegalRepDetails(I);
 sponsorName(I);
 sponsorAddress(I);
 sponsorContactDetails(I);
@@ -109,3 +118,4 @@ applyForFTPAAppellant(I);
 homeOfficeUpload(I);
 deportationOrder(I);
 feeSupport(I);
+casesList(I);

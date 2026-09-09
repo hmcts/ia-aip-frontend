@@ -151,7 +151,7 @@ async function createCitizenUser(): Promise<void> {
 }
 
 function getCitizenUserFromThread(): UserInfo {
-  return functionalUsers()[workerThreads.threadId - 1];
+  return functionalUsers()[workerThreads.threadId === 0 ? 0 : workerThreads.threadId - 1];
 }
 
 function functionalUsers(): UserInfo[] {

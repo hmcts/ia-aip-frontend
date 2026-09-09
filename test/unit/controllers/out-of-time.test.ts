@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getAppealLate,
@@ -163,6 +163,7 @@ describe('Out of time controller', () => {
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.lateAppeal.reason).to.equal(whyAmLate);
       expect(req.session.appeal.application.lateAppeal.evidence).to.deep.equal(evidence);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
@@ -198,6 +199,7 @@ describe('Out of time controller', () => {
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(deleteStub.calledWith(req, evidenceExample.fileId)).to.equal(true);
       expect(uploadStub.calledWith(req)).to.equal(true);
       expect(req.session.appeal.application.lateAppeal.reason).to.equal(whyAmLate);
@@ -233,8 +235,10 @@ describe('Out of time controller', () => {
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
     it('Should display validation error LIMIT_FILE_SIZE and render appeal-application/home-office/appeal-late.njk', async () => {
       // Because the file size is being overriden on the development config for testing purposes
@@ -250,7 +254,8 @@ describe('Out of time controller', () => {
       req.session.appeal.appealOutOfCountry = 'Yes';
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/appeal-late.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/home-office/appeal-late.njk', {
         appealLateReason: 'My explanation why am late',
         evidence: evidenceExample,
         error: { uploadFile: expectedError },
@@ -271,7 +276,8 @@ describe('Out of time controller', () => {
       req.session.appeal.appealOutOfCountry = 'Yes';
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/appeal-late.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/home-office/appeal-late.njk', {
         appealLateReason: 'My explanation why am late',
         evidence: null,
         error: { uploadFile: expectedError },
@@ -335,8 +341,10 @@ describe('Out of time controller', () => {
 
       await postAppealLateDeleteFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(deleteStub.calledWith(req, evidenceExample.fileId)).to.equal(true);
-      expect(req.session.appeal.application.lateAppeal.evidence).to.equal(undefined);
-      expect(renderStub).to.be.calledWith('appeal-application/home-office/appeal-late.njk', {
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.undefined;
+      expect(req.session.appeal.application.lateAppeal.evidence || 'none').to.equal('none');
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/appeal-late.njk', {
         appealLateReason: undefined,
         error: { 'appeal-late': expectedError },
         errorList: [ expectedError ],
@@ -370,7 +378,9 @@ describe('Out of time controller', () => {
 
       expect(deleteStub.calledWith(req, evidenceExample.fileId)).to.equal(true);
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
-      expect(req.session.appeal.application.lateAppeal.evidence).to.equal(undefined);
+      expect(req.session.refreshCasesList).to.equal(true);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.undefined;
+      expect(req.session.appeal.application.lateAppeal.evidence || 'none').to.equal('none');
       expect(redirectStub.called).to.equal(true);
     });
 

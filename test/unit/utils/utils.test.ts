@@ -1,4 +1,5 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import {
@@ -12,6 +13,8 @@ import {
   getLatestRequestFeeRemissionEventHistoryWithRefundEnabled,
   getLatestUpdateRemissionDecisionsEventHistory,
   getLatestUpdateTribunalDecisionHistory,
+  getStateName,
+  handleNlrStatementValidation,
   hasPendingTimeExtension,
   isFeePayPriceEnabled,
   isRemissionDecisionDecided,
@@ -27,10 +30,19 @@ describe('utils', () => {
 
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
+  let res: Partial<Response>;
+  let renderStub: sinon.SinonStub;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    const redirectStub = sandbox.stub();
+    renderStub = sandbox.stub();
+    res = {
+      redirect: redirectStub,
+      render: renderStub,
+      send: sandbox.stub()
+    } as Partial<Response>;
     req = {
       body: {},
       cookies: {},
@@ -131,7 +143,7 @@ describe('utils', () => {
   });
 
   describe('hasPendingTimeExtension', () => {
-    const pendingApplication: Collection<Application<Evidence>>[] = [{
+    const pendingApplication: Collection<MakeAnApplication>[] = [{
       id: '2',
       value: {
         applicant: 'Appellant',
@@ -144,7 +156,7 @@ describe('utils', () => {
         evidence: []
       }
     }];
-    const refusedApplication: Collection<Application<Evidence>>[] = [{
+    const refusedApplication: Collection<MakeAnApplication>[] = [{
       id: '1',
       value: {
         applicant: 'Appellant',
@@ -234,7 +246,8 @@ describe('utils', () => {
     });
 
     it('Invalid type', () => {
-      expect(getApplicationType('INVALID')).to.equal(undefined);
+      expect(getApplicationType('INVALID')).to.be.undefined;
+      expect(getApplicationType('INVALID') || 'none').to.equal('none');
     });
   });
 
@@ -286,7 +299,8 @@ describe('utils', () => {
 
     it('getFtpaApplicantType should return undefined in ftpa submitted state', () => {
       req.session.appeal.appealStatus = 'ftpaSubmitted';
-      expect(getFtpaApplicantType(req.session.appeal)).to.eq(undefined);
+      expect(getFtpaApplicantType(req.session.appeal)).to.be.undefined;
+      expect(getFtpaApplicantType(req.session.appeal) || 'none').to.eq('none');
     });
 
     it('documentIdToDocStoreUrl should retrieve the doc store url using key', () => {
@@ -387,7 +401,8 @@ describe('utils', () => {
           'createdDate': '2024-03-01T15:36:26.099'
         }
       ] as HistoryEvent[];
-      expect(getLatestUpdateTribunalDecisionHistory(req as Request, true)).to.eq(null);
+      expect(getLatestUpdateTribunalDecisionHistory(req as Request, true)).to.be.null;
+      expect(getLatestUpdateTribunalDecisionHistory(req as Request, true) || 'none').to.eq('none');
     });
   });
 
@@ -530,7 +545,8 @@ describe('utils', () => {
       ] as HistoryEvent[];
 
       const latestHistoryEvent = getLatestRequestFeeRemissionEventHistoryWithRefundEnabled(req as Request);
-      expect(latestHistoryEvent).to.deep.equal(null);
+      expect(latestHistoryEvent).to.be.null;
+      expect(latestHistoryEvent || 'none').to.equal('none');
     });
   });
 
@@ -558,20 +574,71 @@ describe('utils', () => {
 
   describe('isFeePayPriceEnabled', () => {
     it('should return true when fee pay price flag is enabled', async () => {
-      sandbox.stub(LaunchDarklyService, 'getInstance').returns({
-        getVariation: sandbox.stub().resolves(true)
-      });
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.FEE_PAY_PRICE, sinon.match.any).resolves(true);
       const result = await isFeePayPriceEnabled(req as Request);
       expect(result).to.equal(true);
     });
 
     it('should return false when fee pay price flag is disabled', async () => {
-      sandbox.stub(LaunchDarklyService, 'getInstance').returns({
-        getVariation: sandbox.stub().resolves(false)
-      });
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.FEE_PAY_PRICE, sinon.match.any).resolves(false);
+
       const result = await isFeePayPriceEnabled(req as Request);
       expect(result).to.equal(false);
     });
   });
 
+  describe('getStateName', () => {
+    it('should return the state name for a valid state id', () => {
+      expect(getStateName('appealStarted')).to.equal('Appeal started');
+      expect(getStateName('appealSubmitted')).to.equal('Appeal submitted');
+      expect(getStateName('awaitingReasonsForAppeal')).to.equal('Awaiting reasons for appeal');
+      expect(getStateName('decided')).to.equal('Decided');
+    });
+
+    it('should return the state id when state is not found', () => {
+      expect(getStateName('unknownState')).to.equal('unknownState');
+    });
+  });
+
+  describe('handleNlrStatementValidation', () => {
+    const renderArgs: RenderArgs = {
+      renderPath: 'some-template',
+      renderObj: {}
+    };
+    it('should return true if statement is valid as nlr', () => {
+      req.body = { nlrStatement: 'nlr' };
+      const result = handleNlrStatementValidation(req as Request, res as Response, renderArgs);
+      expect(renderStub.called).to.equal(false);
+      expect(req.session.appeal.hasNlrSubmitted).to.equal('Yes');
+      expect(result).to.equal(true);
+    });
+
+    it('should return true if statement is valid as appellant', () => {
+      req.body = { nlrStatement: 'appellant' };
+      const result = handleNlrStatementValidation(req as Request, res as Response, renderArgs);
+      expect(renderStub.called).to.equal(false);
+      expect(req.session.appeal.hasNlrSubmitted).to.be.undefined;
+      expect(req.session.appeal.hasNlrSubmitted || 'none').to.equal('none');
+      expect(result).to.equal(true);
+    });
+
+    it('should return false and render page with error if statement is invalid', () => {
+      const result = handleNlrStatementValidation(req as Request, res as Response, renderArgs);
+      expect(renderStub.calledOnce).to.equal(true);
+      const expectedError = {
+        'href': '#nlrStatement',
+        'key': 'nlrStatement',
+        'text': 'You must select one of the options under the Non-legal representative statement of truth as you have a non-legal representative on this case'
+      };
+      expectRenderedCalledWithArgs(renderStub, 'some-template', {
+        errors: { nlrStatement: expectedError },
+        errorList: [expectedError]
+      });
+      expect(result).to.equal(false);
+      expect(req.session.appeal.hasNlrSubmitted).to.be.undefined;
+      expect(req.session.appeal.hasNlrSubmitted || 'none').to.equal('none');
+    });
+  });
 });

@@ -38,10 +38,6 @@ module.exports = {
       await I.click('(//a[contains(text(),"Change")])[10]');
     });
 
-    When('I click send', async () => {
-      await I.click('Send');
-    });
-
     When('I click submit your appeal', async () => {
       await I.click('Submit your appeal');
     });

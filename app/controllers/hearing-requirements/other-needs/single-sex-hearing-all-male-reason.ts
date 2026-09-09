@@ -48,6 +48,7 @@ function postSingleSexHearingAllMaleReason(updateAppealService: UpdateAppealServ
         };
 
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated

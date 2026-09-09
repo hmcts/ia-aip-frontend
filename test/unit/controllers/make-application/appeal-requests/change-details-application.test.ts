@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getChangeDetailsApplication, postChangeDetailsApplication } from '../../../../../app/controllers/make-application/appeal-requests/change-details-application';
 import { paths } from '../../../../../app/paths';
 import i18n from '../../../../../locale/en.json';
@@ -63,7 +63,8 @@ describe('Appeal application controllers setup', () => {
 
       getChangeDetailsApplication(req as Request, res as Response, next);
 
-      expect(res.render).to.be.calledWith('make-application/details-question-page.njk', {
+      expect(res.render.called).to.equal(true);
+      expectRenderedCalledWithArgs(res.render, 'make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
     });

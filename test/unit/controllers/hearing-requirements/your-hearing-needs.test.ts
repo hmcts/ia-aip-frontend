@@ -1,7 +1,6 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getYourHearingNeedsPage,
-  postYourHearingNeedsPage,
   setupYourHearingNeedsController
 } from '../../../../app/controllers/hearing-requirements/your-hearing-needs';
 
@@ -117,9 +116,8 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupYourHearingNeedsController(middleware, updateAppealService as UpdateAppealService);
+      setupYourHearingNeedsController(middleware);
       expect(routerGetStub.calledWith(paths.submitHearingRequirements.yourHearingNeeds)).to.equal(true);
-      expect(routerPostStub.calledWith(paths.submitHearingRequirements.yourHearingNeeds)).to.equal(true);
     });
   });
 
@@ -646,7 +644,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
     it('should render getYourHearingNeedsPage with requirements - attendance', () => {
@@ -1168,7 +1166,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       getYourHearingNeedsPage(req as Request, res as Response, next);
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
     it('should render getYourHearingNeedsPage with requirements - no attendance', () => {
@@ -1657,7 +1655,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
     it('should render getYourHearingNeedsPage with requirements if user selected no witnesses with spoken and sign language interpreter', () => {
@@ -2075,7 +2073,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
     it('should call next with error', () => {
@@ -2086,21 +2084,4 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
-
-  describe('postYourHearingNeedsPage', () => {
-    it('should submit and redirect to your hearing page', async () => {
-      await postYourHearingNeedsPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(redirectStub.calledWith(paths.common.overview)).to.equal(true);
-    });
-
-    it('should catch error and call next with error', async () => {
-      const error = new Error('an error');
-      res.redirect = redirectStub.throws(error);
-
-      await postYourHearingNeedsPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next.calledOnceWith(error)).to.equal(true);
-    });
-  });
-
 });

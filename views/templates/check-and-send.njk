@@ -1,4 +1,4 @@
-{% set pageTitleName = pageTitle %}
+{% set pageTitleName = pageTitle if pageTitle else i18n.pages.checkYourAnswers.title %}
 {% extends "layout.njk" %}
 {% from "components/summary-list.njk" import govukSummaryList %}
 
@@ -10,7 +10,7 @@
     }) }}
   {% endif %}
 
-  <h1 class="govuk-heading-xl">{{ pageTitle }}</h1>
+  <h1 class="govuk-heading-xl">{{ pageTitleName }}</h1>
 
   {% if summarySections %}
     {% for summarySection in summarySections %}
@@ -37,21 +37,34 @@
     {% endfor %}
   {% endif %}
 
+  {% if summaryRows %}
+    {{ govukSummaryList({
+      rows: summaryRows
+    }) }}
+  {% endif %}
 
   {% if formAction %}
     <form method="post" action="{{ formAction }}">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-      {{ saveButtons({name: 'send', text: 'Send'}) }}
+      {% if hasNlr %}
+          {{ nlrStatement() }}
+      {% endif %}
+      {% if noSaveForLater %}
+        {{ saveButton({name: 'send', text: buttonText if buttonText else i18n.common.buttons.send}) }}
+      {% else %}
+        {{ saveButtons({name: 'send', text: i18n.common.buttons.send}) }}
+      {% endif %}
     </form>
-  {% endif %}
-
-  {% if continuePath %}
-    <form method="post" action="{{ formAction }}">
+  {% elif continuePath %}
+    <form method="post" action="{{ continuePath }}">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {% if hasNlr %}
+          {{ nlrStatement() }}
+      {% endif %}
       {{ govukButton({
         text: i18n.common.buttons.confirmAndSend
       }) }}
-    <a class="cancel-button" href="{{ previousPage }}">{{ i18n.common.buttons.cancel }}</a>
+      <a class="cancel-button" href="{{ cancelPath if cancelPath else previousPage }}">{{ i18n.common.buttons.cancel }}</a>
     </form>
   {% endif %}
 

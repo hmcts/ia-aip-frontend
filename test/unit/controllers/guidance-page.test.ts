@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import {
   getCaseworkerPage,
   getDocumentsPage,
@@ -112,7 +112,8 @@ describe('Guidance page controller', () => {
     const text = getGuidancePageText('whatToExpectAtHearing');
 
     getWhatToExpectAtHearing(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'guidance-pages/guidance-page.njk', {
       showContactUs: true,
       previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
       page: text
@@ -122,7 +123,8 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('understandingHearingBundle');
 
       getUnderstandingHearingBundle(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
@@ -134,7 +136,8 @@ describe('Guidance page controller', () => {
     const text = getGuidancePageText('understandingHearingBundle');
 
     getUnderstandingHearingBundle(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'guidance-pages/guidance-page.njk', {
       showContactUs: true,
       previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
       page: text
@@ -144,7 +147,8 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('understandingHearingBundle');
 
       getUnderstandingHearingBundle(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
@@ -157,7 +161,8 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('caseworker');
 
       getCaseworkerPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
@@ -180,7 +185,8 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('homeOfficeDocuments');
 
       getHomeOfficeDocumentsPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
@@ -202,7 +208,8 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('helpWithAppeal');
 
       getMoreHelpPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
@@ -224,7 +231,8 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('evidenceToSupportAppeal');
 
       getEvidenceToSupportAppealPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
@@ -245,7 +253,8 @@ describe('Guidance page controller', () => {
     it('should render guidance-pages/guidance-page.njk', () => {
 
       getHomeOfficeWithdrawDecision(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         hearingCentreEmail: getHearingCentreEmail(req as Request),
@@ -267,7 +276,8 @@ describe('Guidance page controller', () => {
     it('should render guidance-pages/guidance-page.njk', () => {
 
       getHomeOfficeMaintainDecision(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('guidance-pages/guidance-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: i18n.pages.guidancePages.maintainDecision

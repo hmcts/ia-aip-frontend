@@ -17,7 +17,7 @@ interface CcdState {
 interface SubmitEventData {
   event: CcdEvent;
   data: Partial<CaseData>;
-  event_token: string;
+  event_token?: string;
   ignore_warning: boolean;
-  supplementary_data_request: Record<String, Record<String,String>>
+  supplementary_data_request?: Record<String, Record<String,String>>
 }

@@ -19,7 +19,6 @@ import {
   getUpdateTribunalDecisionDocumentHistory,
   getUpdateTribunalDecisionHistory
 } from '../../../app/utils/timeline-utils';
-import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 
@@ -521,13 +520,17 @@ describe('timeline-utils', () => {
             applicant: 'Legal representative',
             applicantRole: 'caseworker-ia-legalrep-solicitor',
             date: '2021-07-10',
-            decision: 'Granted',
+            decision: 'Refused',
             decisionDate: '2021-07-12',
             decisionMaker: 'Tribunal Caseworker',
             decisionReason: 'reason why',
             details: 'my details',
             state: 'awaitingReasonsForAppeal',
             type: 'Time extension',
+            refusalOfRemoval24wDocument: {
+              fileId: 'fileId',
+              name: 'fileName',
+            },
             evidence: []
           }
         }
@@ -550,7 +553,7 @@ describe('timeline-utils', () => {
           'id': '2',
           'date': '12 July 2021',
           'dateObject': new Date('2021-07-12T00:00:00.00Z'),
-          'text': 'Your request was granted.',
+          'text': 'Your request to remove the statutory 24 week timeframe was refused.',
           'links': [{
             'title': 'What the Tribunal said',
             'text': 'Reason for decision',
@@ -744,9 +747,9 @@ describe('timeline-utils', () => {
       }
     ];
     it('should get Submit CQ events', () => {
-      const events = getSubmitClarifyingQuestionsEvents(history as HistoryEvent[], directions as Direction[]);
+      const events = getSubmitClarifyingQuestionsEvents(history as HistoryEvent[], directions as Direction[], false);
 
-      expect(events.length).to.deep.equal(1);
+      expect(events).to.have.lengthOf(1);
       expect(events[0]).to.contain.keys('date', 'dateObject', 'text', 'links');
     });
 
@@ -758,16 +761,16 @@ describe('timeline-utils', () => {
         dateSent: '2021-08-25',
         uniqueId: 'directionId'
       });
-      const events = getSubmitClarifyingQuestionsEvents(history as HistoryEvent[], directions as Direction[]);
+      const events = getSubmitClarifyingQuestionsEvents(history as HistoryEvent[], directions as Direction[], false);
 
-      expect(events.length).to.deep.equal(1);
+      expect(events).to.have.lengthOf(1);
       expect(events[0]).to.contain.keys('date', 'dateObject', 'text', 'links');
     });
 
     it('should return empty events array', () => {
-      const events = getSubmitClarifyingQuestionsEvents([], []);
+      const events = getSubmitClarifyingQuestionsEvents([], [], false);
 
-      expect(events.length).to.deep.equal(0);
+      expect(events).to.have.lengthOf(0);
     });
   });
 
@@ -807,7 +810,7 @@ describe('timeline-utils', () => {
       ];
       const directionsHistory = getDirectionHistory(req as Request);
 
-      expect(directionsHistory.length).to.deep.equal(4);
+      expect(directionsHistory).to.have.lengthOf(4);
       directionsHistory.forEach(direction => {
         expect(direction).to.contain.keys('date', 'dateObject', 'text', 'links');
       });
@@ -867,7 +870,7 @@ describe('timeline-utils', () => {
         }
       ];
       const directionsHistory = getDirectionHistory(req as Request);
-      expect(directionsHistory.length).to.deep.equal(5);
+      expect(directionsHistory).to.have.lengthOf(5);
       directionsHistory.forEach(direction => {
         expect(direction).to.contain.keys('date', 'dateObject', 'text', 'links');
       });
@@ -876,7 +879,7 @@ describe('timeline-utils', () => {
     it('should return empty direction history', () => {
       req.session.appeal.directions = [];
       const directionsHistory = getDirectionHistory(req as Request);
-      expect(directionsHistory.length).to.deep.equal(0);
+      expect(directionsHistory).to.have.lengthOf(0);
     });
   });
 
@@ -903,7 +906,7 @@ describe('timeline-utils', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.deep.equal(1);
+      expect(updatedTribunalDecisionHistory).to.have.lengthOf(1);
       updatedTribunalDecisionHistory.forEach(history => {
         expect(history).to.contain.keys('date', 'dateObject', 'text');
       });
@@ -926,7 +929,7 @@ describe('timeline-utils', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.deep.equal(1);
+      expect(updatedTribunalDecisionHistory).to.have.lengthOf(1);
       updatedTribunalDecisionHistory.forEach(history => {
         expect(history).to.contain.keys('date', 'dateObject', 'text');
       });
@@ -947,7 +950,7 @@ describe('timeline-utils', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.deep.equal(0);
+      expect(updatedTribunalDecisionHistory).to.have.lengthOf(0);
     });
 
     it('should show the updated tribunal decision history with rule 32', () => {
@@ -956,7 +959,7 @@ describe('timeline-utils', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.deep.equal(1);
+      expect(updatedTribunalDecisionHistory).to.have.lengthOf(1);
       updatedTribunalDecisionHistory.forEach(history => {
         expect(history).to.contain.keys('date', 'dateObject', 'text', 'links');
       });
@@ -982,14 +985,14 @@ describe('timeline-utils', () => {
       req.session.appeal.history = null;
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.deep.equal(0);
+      expect(updatedTribunalDecisionHistory).to.have.lengthOf(0);
     });
 
     it('no updated tribunal decision history will be shown if DLRM set aside flag is off', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, false);
 
-      expect(updatedTribunalDecisionHistory.length).to.deep.equal(0);
+      expect(updatedTribunalDecisionHistory).to.have.lengthOf(0);
     });
   });
 
@@ -1012,7 +1015,7 @@ describe('timeline-utils', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionDocumentHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.deep.equal(1);
+      expect(updatedTribunalDecisionHistory).to.have.lengthOf(1);
       updatedTribunalDecisionHistory.forEach(history => {
         expect(history).to.contain.keys('date', 'dateObject', 'text', 'links');
       });
@@ -1038,27 +1041,27 @@ describe('timeline-utils', () => {
       req.session.appeal.updateTribunalDecisionAndReasonsFinalCheck = null;
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionDocumentHistory(req as Request, true);
 
-      expect(updatedTribunalDecisionHistory.length).to.deep.equal(0);
+      expect(updatedTribunalDecisionHistory).to.have.lengthOf(0);
     });
 
     it('should not show the document history of updated tribunal decision if DLRM set aside flag is off', () => {
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionDocumentHistory(req as Request, false);
 
-      expect(updatedTribunalDecisionHistory.length).to.deep.equal(0);
+      expect(updatedTribunalDecisionHistory).to.have.lengthOf(0);
     });
   });
 
   describe('getEventsAndStates', () => {
     it('should return relevant events and states when uploadAddendumEvidence feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false);
-      expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(18);
-      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(18);
+      expect(eventsAndStates.appealArgumentSectionEvents).to.have.lengthOf(19);
+      expect(eventsAndStates.appealArgumentSectionStates).to.have.lengthOf(18);
     });
 
     it('should return relevant events when hearingBundle and uploadAddendumEvidence features enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.deep.equal(6);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents).to.have.lengthOf(6);
     });
   });
 

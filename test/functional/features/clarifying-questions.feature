@@ -125,7 +125,7 @@ Feature: Clarifying questions
     And I check page accessibility
     Then I see "Check your answer" in title
 
-    And I click "Send" button
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
 

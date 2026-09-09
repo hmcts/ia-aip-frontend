@@ -3,15 +3,22 @@ import moment from 'moment';
 import i18n from '../../../../locale/en.json';
 import { paths } from '../../../paths';
 import { dayMonthYearFormat } from '../../../utils/date-utils';
+import { hasActiveNlr } from '../../../utils/utils';
 import { getHearingStartDate, postHearingRequirementsYesNoHandler } from '../common';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
-const pageTitle = i18n.pages.hearingRequirements.datesToAvoidSection.addAnotherDateQuestion.title;
 const formAction = paths.submitHearingRequirements.hearingDateToAvoidNew;
-const question = {
-  name: 'answer',
-  title: i18n.pages.hearingRequirements.datesToAvoidSection.addAnotherDateQuestion.heading,
-  options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
+const getPageTitle = (hasNonLegalRep: boolean) => hasNonLegalRep
+  ? i18n.pages.hearingRequirements.datesToAvoidSection.addAnotherDateQuestionNlr.title
+  : i18n.pages.hearingRequirements.datesToAvoidSection.addAnotherDateQuestion.title;
+const getQuestion = (hasNonLegalRep: boolean) => {
+  return {
+    name: 'answer',
+    title: hasNonLegalRep
+      ? i18n.pages.hearingRequirements.datesToAvoidSection.addAnotherDateQuestionNlr.heading
+      : i18n.pages.hearingRequirements.datesToAvoidSection.addAnotherDateQuestion.heading,
+    options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
+  };
 };
 
 function getAddAnotherDateQuestionPage(req: Request, res: Response, next: NextFunction) {
@@ -21,12 +28,12 @@ function getAddAnotherDateQuestionPage(req: Request, res: Response, next: NextFu
       from: moment(startDate).format(dayMonthYearFormat),
       to: moment(startDate).add(6, 'week').format(dayMonthYearFormat)
     };
-
+    const hasNonLegalRep: boolean = hasActiveNlr(req.session.appeal);
     res.render('templates/radio-question-page.njk', {
       previousPage,
-      pageTitle,
+      pageTitle: getPageTitle(hasNonLegalRep),
       formAction,
-      question,
+      question: getQuestion(hasNonLegalRep),
       availableHearingDates,
       saveAndContinueOnly: true
 
@@ -44,11 +51,12 @@ function postAddAnotherDateQuestionPage(req: Request, res: Response, next: NextF
     to: moment(startDate).add(6, 'week').format(dayMonthYearFormat)
   };
 
+  const hasNonLegalRep: boolean = hasActiveNlr(req.session.appeal);
   const pageContent = {
     previousPage,
-    pageTitle,
+    pageTitle: getPageTitle(hasNonLegalRep),
     formAction,
-    question,
+    question: getQuestion(hasNonLegalRep),
     availableHearingDates,
     saveAndContinueOnly: true
   };
@@ -75,5 +83,7 @@ function setupHearingDatesToAvoidAddAnotherDateController(middleware: Middleware
 export {
   setupHearingDatesToAvoidAddAnotherDateController,
   getAddAnotherDateQuestionPage,
-  postAddAnotherDateQuestionPage
+  postAddAnotherDateQuestionPage,
+  getQuestion,
+  getPageTitle
 };

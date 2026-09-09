@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { SinonStub } from 'sinon';
 import {
   getAddAnotherDateQuestionPage, postAddAnotherDateQuestionPage,
@@ -66,7 +66,8 @@ describe('CMA Requirements - Add Another Date Question controller', () => {
         },
         saveAndContinueOnly: true
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         expectedArgs
       );
     });

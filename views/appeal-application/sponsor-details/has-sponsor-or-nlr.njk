@@ -1,0 +1,100 @@
+{% set pageTitleName = question %}
+{% extends "layout.njk" %}
+{% import "components/text-components.njk" as text %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% block content %}
+
+  {% if errorList %}
+    {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: errorList
+        }) }}
+
+  {% endif %}
+
+  <form action="{{ paths.appealStarted.hasSponsorOrNlr }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% call govukFieldset({
+      legend: {
+        text: question,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      <h2>{{ i18n.pages.hasSponsorOrNlr.whoTheyAre }}</h2>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>{{ i18n.pages.hasSponsorOrNlr.textBullet1 }}</li>
+          <li>{{ i18n.pages.hasSponsorOrNlr.textBullet2 }}</li>
+          <li>{{ i18n.pages.hasSponsorOrNlr.textBullet3 }}</li>
+        </ul>
+        <br>
+
+      {{ govukRadios({
+        classes: "govuk-radios--inline",
+        name: "hasSponsor",
+        fieldset: {
+          legend: {
+            text:  i18n.pages.hasSponsorOrNlr.hasSponsorLabel,
+            classes: "govuk-heading-m"
+          }
+        },
+        items: [
+            {
+                value: "Yes",
+                text: "Yes",
+                conditional: {
+                  html: isSamePersonHtml
+                },
+                checked: hasSponsor == "Yes"
+            },
+            {
+                value: "No",
+                text: "No",
+                checked: hasSponsor == "No"
+            }
+        ],
+        errorMessage: {
+          text: errors['hasSponsor'].text
+        } if errors['hasSponsor']
+      }) }}
+
+      {{ govukRadios({
+        classes: "govuk-radios--inline",
+        name: "hasNonLegalRep",
+        fieldset: {
+          legend: {
+            text:  i18n.pages.hasSponsorOrNlr.hasNonLegalRepLabel
+          }
+        },
+        items: [
+            {
+                value: "Yes",
+                text: "Yes",
+                checked: hasNonLegalRep == "Yes"
+            },
+            {
+                value: "No",
+                text: "No",
+                checked: hasNonLegalRep == "No"
+            }
+        ],
+        errorMessage: {
+          text: errors['hasNonLegalRep'].text
+        } if errors['hasNonLegalRep']
+      }) }}
+
+      {% if modal %}
+        <div class="overview-banner govuk-!-margin-top-0">
+          {{ modal | safe  }}
+        </div>
+      {% endif %}
+
+      {{ saveButtons() }}
+    {% endcall %}
+  </form>
+
+  {{ contactUs() }}
+{% endblock %}

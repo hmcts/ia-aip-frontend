@@ -51,5 +51,25 @@ module.exports = {
       }
       await I.seeInCurrentUrl(paths.appealStarted.name);
     });
+
+    Given(/^I should (see|not see) the "([^"]*)" task sub title in the task list$/, async (visibility: string, title: string) => {
+      if (visibility === 'see') {
+        await I.see(title, 'h2.govuk-heading-m');
+      } else {
+        await I.dontSee(title, 'h2.govuk-heading-m');
+      }
+    });
+
+    Given(/^I should (see|not see) the "([^"]*)" task in "([^"]*)" state/, async (visibility: string, title: string, state: string) => {
+      const rowLocator = locate('li.task-list__item').withText(title);
+      const stateLocator = rowLocator.find('strong.govuk-tag').withText(state);
+      if (visibility === 'see') {
+        await I.seeElement(rowLocator);
+        await I.seeElement(stateLocator);
+      } else {
+        await I.dontSeeElement(rowLocator);
+        await I.dontSeeElement(stateLocator);
+      }
+    });
   }
 };

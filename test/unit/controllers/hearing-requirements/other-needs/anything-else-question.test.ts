@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getHearingAnythingElseQuestion, postHearingAnythingElseQuestion,
   setupHearingAnythingElseQuestionController
@@ -82,7 +82,7 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Question con
         saveAndContinue: true
 
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         expectedArgs
       );
     });
@@ -122,7 +122,7 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Question con
         saveAndContinue: true
 
       };
-      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
@@ -131,6 +131,7 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Question con
 
       expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsAnythingElseReasons)).to.equal(true);
       expect(req.session.appeal.hearingRequirements.otherNeeds.anythingElse).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(submit.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
     });
 

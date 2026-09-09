@@ -1,8 +1,8 @@
 {% set pageTitleName = question %}
 {% extends "layout.njk" %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 {% import "components/text-components.njk" as text %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% block content %}
 
@@ -14,39 +14,35 @@
 
   {% endif %}
 
-  <form action="{{ paths.appealStarted.hasSponsor }}" method="post">
+  <form action="{{ formAction }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    <input type="hidden" name="questionId" value="{{ questionId }}">
 
-    <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-        <h1 class="govuk-fieldset__heading">{{ question }}</h1>
-        {% if description %}
-          <div id="answer-hint" class="govuk-hint">{{ description }}</div>
-        {% endif %}
-      </legend>
+    {% call govukFieldset({
+      legend: {
+        text: question,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
 
       {{ govukRadios({
             classes: "govuk-radios--inline",
-            name: "answer",
-            hint: {
-                text: i18n.pages.hasSponsor.hint
-            },
+            name: "isSponsorSameAsNlr",
             items: [
                 {
                     value: "Yes",
                     text: "Yes",
-                    checked: answer == "Yes"
+                    checked: isSponsorSameAsNlr == "Yes"
                 },
                 {
                     value: "No",
                     text: "No",
-                    checked: answer == "No"
+                    checked: isSponsorSameAsNlr == "No"
                 }
             ],
             errorMessage: {
-                text:  errors['answer'].text
-            } if errors['answer']
+                text:  errors['isSponsorSameAsNlr'].text
+            } if errors['isSponsorSameAsNlr']
         }) }}
 
       {% if modal %}
@@ -55,8 +51,8 @@
         </div>
       {% endif %}
 
-      {{ saveButtons() }}
-    </fieldset>
+    {{ saveButtons() }}
+    {% endcall %}
   </form>
 
   {{ contactUs() }}

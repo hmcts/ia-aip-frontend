@@ -1,10 +1,9 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
   outOfCountryFeatureMiddleware
 } from '../../../app/middleware/outofcountry-feature-middleware';
 import { paths } from '../../../app/paths';
-import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('hearingRequirementsMiddleware', () => {

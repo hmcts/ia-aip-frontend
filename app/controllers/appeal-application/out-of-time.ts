@@ -94,6 +94,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -136,6 +137,7 @@ function postAppealLateDeleteFile(documentManagementService: DocumentManagementS
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated

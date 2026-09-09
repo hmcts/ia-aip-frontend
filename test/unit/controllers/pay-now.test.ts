@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getPayNow,
@@ -142,7 +142,8 @@ describe('Pay now Controller @payNow', () => {
     it('should render radio-question-page.njk template with payments feature flag ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       await getPayNow(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('templates/radio-question-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/radio-question-page.njk', {
         previousPage: paths.appealStarted.decisionType,
         pageTitle: i18n.pages.payNow.title,
         formAction: paths.appealStarted.payNow,
@@ -184,6 +185,7 @@ describe('Pay now Controller @payNow', () => {
       await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 
@@ -193,6 +195,7 @@ describe('Pay now Controller @payNow', () => {
       await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
     });
 

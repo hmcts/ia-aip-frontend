@@ -54,7 +54,7 @@ describe('dm-document-management-service', () => {
       await documentManagementService.deleteFile(req as Request, 'fileId');
 
       expect(deleteStub.calledWith('anUID', sinon.match.any, 'file-url.com')).to.equal(true);
-      expect(req.session.appeal.documentMap.length).to.equal(0);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(0);
     });
 
   });
@@ -93,7 +93,7 @@ describe('dm-document-management-service', () => {
       await documentManagementService.uploadFile(req as Request);
 
       expect(uploadStub.calledWith(sinon.match.any, sinon.match.any)).to.equal(true);
-      expect(req.session.appeal.documentMap.length).to.equal(1);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(1);
     });
 
   });
@@ -119,7 +119,7 @@ describe('dm-document-management-service', () => {
         ];
         const documentManagementService = new DmDocumentManagementService(null);
         const documentMap = documentManagementService.removeFromDocumentMapper('fileId', req.session.appeal.documentMap);
-        expect(documentMap.length).to.equal(0);
+        expect(documentMap).to.have.lengthOf(0);
       });
 
       it('should leave documentMap as it is if document not found', () => {
@@ -131,7 +131,7 @@ describe('dm-document-management-service', () => {
         ];
         const documentManagementService = new DmDocumentManagementService(null);
         const documentMap = documentManagementService.removeFromDocumentMapper('anotherId', req.session.appeal.documentMap);
-        expect(documentMap.length).to.equal(1);
+        expect(documentMap).to.have.lengthOf(1);
       });
     });
   });

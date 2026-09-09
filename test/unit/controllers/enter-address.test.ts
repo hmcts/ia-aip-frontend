@@ -98,7 +98,8 @@ describe('Personal Details Controller', function () {
         ...address
       };
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/enter-address.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/personal-details/enter-address.njk', {
         address,
         previousPage: paths.appealStarted.contactDetails
       });
@@ -110,7 +111,8 @@ describe('Personal Details Controller', function () {
       };
       req.session.previousPage = '/lastpage';
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/enter-address.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/personal-details/enter-address.njk', {
         address,
         previousPage: '/lastpage'
       });
@@ -122,7 +124,8 @@ describe('Personal Details Controller', function () {
         ...address
       };
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/enter-address.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/personal-details/enter-address.njk', {
         address,
         previousPage: paths.appealStarted.contactDetails
       });
@@ -134,7 +137,8 @@ describe('Personal Details Controller', function () {
       req.session.appeal.application.addressLookup = {};
       _.set(req.session.appeal.application, 'personalDetails.address', { ...address });
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/personal-details/enter-address.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/personal-details/enter-address.njk', {
         address,
         previousPage: paths.appealStarted.contactDetails
       });
@@ -205,7 +209,8 @@ describe('Personal Details Controller', function () {
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
-      expect(redirectStub.calledWith(paths.appealStarted.hasSponsor)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
+      expect(redirectStub.calledWith(paths.appealStarted.hasSponsorOrNlr)).to.equal(true);
     });
 
     it('should catch an exception and call next()', async () => {
@@ -221,7 +226,9 @@ describe('Personal Details Controller', function () {
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.refreshCasesList).to.equal(true);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
     });
 

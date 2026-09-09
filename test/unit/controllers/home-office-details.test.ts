@@ -4,9 +4,7 @@ import moment from 'moment';
 import {
   getDateLetterReceived,
   getDateLetterSent,
-  getHomeOfficeDetails,
-  postDateLetterReceived,
-  postDateLetterSent,
+  postDateLetterReceived, postDateLetterSent,
   postHomeOfficeDetails,
   setupHomeOfficeDetailsController
 } from '../../../app/controllers/appeal-application/home-office-details';
@@ -16,6 +14,8 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
+
+const proxyquire = require('proxyquire').noCallThru();
 
 describe('Home Office Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
@@ -29,8 +29,11 @@ describe('Home Office Details Controller', function () {
   let validateMidEventStub: sinon.SinonStub;
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
+  let clock: sinon.SinonFakeTimers;
+  const mockDate: Date = new Date('2025-06-16');
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    clock = sandbox.useFakeTimers(mockDate);
     req = {
       body: {},
       session: {
@@ -81,6 +84,7 @@ describe('Home Office Details Controller', function () {
   });
 
   afterEach(() => {
+    clock.restore();
     sandbox.restore();
   });
 
@@ -99,9 +103,28 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('getHomeOfficeDetails', () => {
+    let getHomeOfficeDetails;
+    beforeEach(() => {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(false)
+      };
+      const homeOfficeDetailsController = proxyquire('../../../app/controllers/appeal-application/home-office-details', { config: configStub });
+      getHomeOfficeDetails = homeOfficeDetailsController.getHomeOfficeDetails;
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
     it('should render home-office/details.njk', function () {
       getHomeOfficeDetails(req as Request, res as Response, next);
-      expect(renderStub.calledOnceWith('appeal-application/home-office/details.njk')).to.equal(true);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/details.njk', {
+        homeOfficeRefNumber: req.session.appeal.application.homeOfficeRefNumber,
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled: false,
+      });
     });
 
     it('when called with edit param should render home-office/details.njk and update session', function () {
@@ -116,6 +139,23 @@ describe('Home Office Details Controller', function () {
       res.render = renderStub.throws(error);
       getHomeOfficeDetails(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
+    });
+
+    it('should render home-office/details.njk with homeOfficeValidationEnabled set to true', function () {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(true)
+      };
+      const homeOfficeDetailsController = proxyquire('../../../app/controllers/appeal-application/home-office-details', { config: configStub });
+      getHomeOfficeDetails = homeOfficeDetailsController.getHomeOfficeDetails;
+
+      getHomeOfficeDetails(req as Request, res as Response, next);
+      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/details.njk', {
+        homeOfficeRefNumber: req.session.appeal.application.homeOfficeRefNumber,
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled: true,
+      });
     });
   });
 
@@ -137,6 +177,7 @@ describe('Home Office Details Controller', function () {
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('1212-0099-0089-1080');
       expect(redirectStub.calledWith(paths.appealStarted.name)).to.equal(true);
     });
@@ -159,6 +200,7 @@ describe('Home Office Details Controller', function () {
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('A1234567');
       expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
@@ -182,9 +224,11 @@ describe('Home Office Details Controller', function () {
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.deep.equal('1212-0099-0089-1080');
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('should fail validation and render home-office/details.njk with error', async () => {
@@ -203,15 +247,15 @@ describe('Home Office Details Controller', function () {
         text: 'Enter the Home Office reference number in the correct format'
       };
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/home-office/details.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/details.njk',
         {
           errors: {
             homeOfficeRefNumber: fieldError
           },
           errorList: [errorList],
           homeOfficeRefNumber: 'A1234567',
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.taskList,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -230,15 +274,15 @@ describe('Home Office Details Controller', function () {
         text: 'Enter the Home Office reference number in the correct format'
       };
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/home-office/details.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/details.njk',
         {
           errors: {
             homeOfficeRefNumber: fieldError
           },
           errorList: [errorList],
           homeOfficeRefNumber: 'notValid',
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.taskList,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -256,15 +300,15 @@ describe('Home Office Details Controller', function () {
         text: 'Enter the Home Office reference number'
       };
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/home-office/details.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/details.njk',
         {
           errors: {
             homeOfficeRefNumber: fieldError
           },
           errorList: [errorList],
           homeOfficeRefNumber: '',
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.taskList,
+          homeOfficeValidationEnabled: false
         });
     });
 
@@ -308,7 +352,8 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [errorList],
           homeOfficeRefNumber: '1212-0099-0089-1080',
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.taskList,
+          homeOfficeValidationEnabled: false
       });
     });
   });
@@ -339,15 +384,11 @@ describe('Home Office Details Controller', function () {
 
   describe('postDateLetterSent', () => {
     describe('appeal on time', () => {
-      const date = moment().subtract(14, 'd');
       let appeal: Appeal;
-      let day: string;
-      let month: string;
-      let year: string;
+      const day: string = '02';
+      const month: string = '06';
+      const year: string = '2025';
       beforeEach(() => {
-        day = date.format('DD');
-        month = date.format('MM');
-        year = date.format('YYYY');
         req.body['day'] = day;
         req.body['month'] = month;
         req.body['year'] = year;
@@ -383,6 +424,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -397,28 +439,26 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
         expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
-        expect(req.session.appeal.application.isEdit).to.equal(undefined);
+        expect(req.session.appeal.application.isEdit).to.be.undefined;
+        expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
         expect(req.session.appeal.application.isAppealLate).to.equal(false);
       });
     });
 
     describe('appeal out of time', () => {
-      const date = moment().subtract(15, 'd');
       let appeal: Appeal;
-      let day: string;
-      let month: string;
-      let year: string;
+      const day: string = '01';
+      const month: string = '06';
+      const year: string = '2025';
       beforeEach(() => {
-        day = date.format('DD');
-        month = date.format('MM');
-        year = date.format('YYYY');
-        req.body['day'] = date.format('DD');
-        req.body['month'] = date.format('MM');
-        req.body['year'] = date.format('YYYY');
+        req.body['day'] = day;
+        req.body['month'] = month;
+        req.body['year'] = year;
         appeal = {
           ...req.session.appeal,
           application: {
@@ -452,6 +492,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -466,11 +507,13 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
         expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
-        expect(req.session.appeal.application.isEdit).to.equal(undefined);
+        expect(req.session.appeal.application.isEdit).to.be.undefined;
+        expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
         expect(req.session.appeal.application.isAppealLate).to.equal(true);
       });
 
@@ -479,6 +522,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -492,6 +536,7 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
@@ -506,12 +551,14 @@ describe('Home Office Details Controller', function () {
         const { dateLetterSent } = req.session.appeal.application;
 
         expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+        expect(req.session.refreshCasesList).to.equal(true);
         expect(dateLetterSent.day).to.deep.equal(day);
         expect(dateLetterSent.month).to.deep.equal(month);
         expect(dateLetterSent.year).to.deep.equal(year);
         expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
         expect(req.session.appeal.application.isAppealLate).to.equal(true);
-        expect(req.session.appeal.application.isEdit).to.equal(undefined);
+        expect(req.session.appeal.application.isEdit).to.be.undefined;
+        expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
       });
 
     });
@@ -554,7 +601,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith('appeal-application/home-office/letter-sent.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/letter-sent.njk',
         {
           error,
           errorList,
@@ -594,7 +641,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith('appeal-application/home-office/letter-sent.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/letter-sent.njk',
         {
           error,
           errorList,
@@ -605,10 +652,7 @@ describe('Home Office Details Controller', function () {
     });
 
     it('should fail validation and render a validation error with day in future', async () => {
-      const currentDate = new Date();
-
-      const tomorrowDate = new Date();
-      tomorrowDate.setDate(currentDate.getDate() + 1);
+      const tomorrowDate = new Date('2025-06-17');
 
       req.body['day'] = tomorrowDate.getDate();
       req.body['month'] = tomorrowDate.getMonth() + 1;
@@ -630,7 +674,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith('appeal-application/home-office/letter-sent.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/letter-sent.njk',
         {
           error,
           errorList,
@@ -641,12 +685,10 @@ describe('Home Office Details Controller', function () {
     });
 
     it('should fail validation and render a validation error with invalid date', async () => {
-      const currentDate = new Date();
-
       const tomorrowDate = new Date();
-      tomorrowDate.setDate(currentDate.getDate() + 1);
+      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
 
-      req.body['day'] = 31;
+      req.body['day'] = 35;
       req.body['month'] = 9;
       req.body['year'] = 2024;
 
@@ -663,7 +705,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith('appeal-application/home-office/letter-sent.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/home-office/letter-sent.njk',
         {
           error,
           errorList,
@@ -695,7 +737,8 @@ describe('Home Office Details Controller', function () {
         year: '2022'
       };
       getDateLetterSent(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/letter-sent.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/home-office/letter-sent.njk', {
         dateLetterSent: req.session.appeal.application.dateLetterSent,
         previousPage: paths.appealStarted.nationality
       });
@@ -748,6 +791,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.homeOfficeDecisionLetter)).to.equal(true);
     });
 
@@ -762,7 +806,8 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/letter-sent.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/home-office/letter-sent.njk', {
         error: { day: expectedError },
         errorList: [expectedError],
         dateLetterSent: {
@@ -793,7 +838,8 @@ describe('Home Office Details Controller', function () {
         year: '2022'
       };
       getDateLetterReceived(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/letter-received.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/home-office/letter-received.njk', {
         decisionLetterReceivedDate: req.session.appeal.application.decisionLetterReceivedDate,
         previousPage: paths.appealStarted.nationality
       });
@@ -846,6 +892,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterReceived(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.homeOfficeDecisionLetter)).to.equal(true);
     });
 
@@ -860,7 +907,8 @@ describe('Home Office Details Controller', function () {
       await postDateLetterReceived(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/home-office/letter-received.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/home-office/letter-received.njk', {
         error: { day: expectedError },
         errorList: [expectedError],
         decisionLetterReceivedDate: {

@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import moment from 'moment';
 import { paths } from '../paths';
 import { DocumentManagementService } from '../service/document-management-service';
 

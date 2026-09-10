@@ -15,33 +15,20 @@
             {% if task.active %}
               <a class="govuk-link" id='{{ i18n.pages.taskList[task.id].id }}'
                  href='{{ i18n.pages.taskList[task.id].path | path }}'
-                 title='{{ i18n.pages.taskList[task.id].title }}'>
+                 aria-describedby='{{ i18n.pages.taskList[task.id].id }}-status'>
                 {{ i18n.pages.taskList[task.id].title }}
               </a>
             {% else %}
-              {{ i18n.pages.taskList[task.id].title }}
+              <span id='{{ i18n.pages.taskList[task.id].id }}-label'>{{ i18n.pages.taskList[task.id].title }}</span>
             {% endif %}
             {% if task.completed %}
-            <!-- if task.saved or task.completed -->
-              {{ govukTag({
-                  text: "Saved"
-              }) }}
+              <strong class="govuk-tag" id='{{ i18n.pages.taskList[task.id].id }}-status'>Saved</strong>
+            {% else %}
+              {% if task.active %}
+                <strong class="govuk-tag govuk-tag--blue" id='{{ i18n.pages.taskList[task.id].id }}-status'>To do</strong>
               {% else %}
-                {% if task.active %}
-                    <a class="govuk-link" id='{{ i18n.pages.taskList[task.id].id }}-ToDoButton'
-                     href='{{ i18n.pages.taskList[task.id].path | path }}'
-                     title='{{ i18n.pages.taskList[task.id].title }}'>
-                        {{ govukTag({
-                          text: "To do",
-                          classes: "govuk-tag--blue"
-                        }) }}
-                     </a>
-                {% else %}
-                    {{ govukTag({
-                      text: "Cannot start yet",
-                      classes: "govuk-tag--grey"
-                    }) }}
-                {% endif %}
+                <strong class="govuk-tag govuk-tag--grey" id='{{ i18n.pages.taskList[task.id].id }}-status' aria-labelledby='{{ i18n.pages.taskList[task.id].id }}-label {{ i18n.pages.taskList[task.id].id }}-status'>Cannot start yet</strong>
+              {% endif %}
             {% endif %}
           </li>
         {% endfor %}

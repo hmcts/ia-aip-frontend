@@ -95,11 +95,13 @@ describe('Type of appeal Controller', () => {
           {
             value: i18n.pages.decisionTypePage.options.withHearing.value,
             text: i18n.pages.decisionTypePage.options.withHearing.text,
+            hint: { text: i18n.pages.decisionTypePage.options.withHearing.hintWithFee },
             checked: false
           },
           {
             value: i18n.pages.decisionTypePage.options.withoutHearing.value,
             text: i18n.pages.decisionTypePage.options.withoutHearing.text,
+            hint: { text: i18n.pages.decisionTypePage.options.withoutHearing.hintWithFee },
             checked: false
           }
         ],
@@ -119,11 +121,13 @@ describe('Type of appeal Controller', () => {
           {
             value: i18n.pages.decisionTypePage.options.withHearing.value,
             text: i18n.pages.decisionTypePage.options.withHearing.text,
+            hint: { text: i18n.pages.decisionTypePage.options.withHearing.hintWithoutFee },
             checked: true
           },
           {
             value: i18n.pages.decisionTypePage.options.withoutHearing.value,
             text: i18n.pages.decisionTypePage.options.withoutHearing.text,
+            hint: { text: i18n.pages.decisionTypePage.options.withoutHearing.hintWithoutFee },
             checked: false
           }
         ],

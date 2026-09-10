@@ -8,7 +8,7 @@ import { makeApplicationControllersHelper } from '../make-application-controller
 function getWithdrawAppealApplication(req: Request, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
-      askWithdraw: createStructuredError('askWithdraw', i18n.validationErrors.makeApplication.askWithdraw)
+      askWithdraw: createStructuredError('makeAnApplicationDetails', i18n.validationErrors.makeApplication.askWithdraw)
     },
     makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askWithdraw.description,
     makeAnApplicationDetailsHint: i18n.pages.makeApplication.askWithdraw.hint,

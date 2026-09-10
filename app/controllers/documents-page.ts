@@ -1,22 +1,26 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import moment from 'moment';
 import { paths } from '../paths';
 import { DocumentManagementService } from '../service/document-management-service';
 
 function getDocuments(req: Request, res: Response, next: NextFunction) {
   try {
-    const documents = req.session.appeal.documentMap || [];
+    const documentMap = req.session.appeal.documentMap || [];
 
-    const formattedDocuments = documents.map(document => ({
-      ...document,
-      ...(document.documentUploadDate && {
-        documentUploadDate: moment(document.documentUploadDate).format('D MMMM YYYY')
-      })
-    }));
+    const uniqueDocuments = new Map<string, DocumentMap>();
+
+    documentMap.forEach(document => {
+      if (!document.documentUploadDate) {
+        return;
+      }
+
+      if (!uniqueDocuments.has(document.url)) {
+        uniqueDocuments.set(document.url, document);
+      }
+    });
 
     res.render('documents/documents.njk', {
       title: 'Documents',
-      documents: formattedDocuments
+      documents: Array.from(uniqueDocuments.values())
     });
   } catch (e) {
     next(e);

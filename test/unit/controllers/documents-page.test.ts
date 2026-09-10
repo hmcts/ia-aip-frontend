@@ -85,15 +85,19 @@ describe('Documents controllers setup', () => {
       );
     });
 
-    it('should render the documents from the session', () => {
+    it('should render documents with an upload date', () => {
       const documents = [
         {
           id: 'document-1',
-          url: 'https://cdam/documents/document-1'
+          url: 'https://cdam/documents/document-1',
+          name: 'document-1.pdf',
+          documentUploadDate: '2026-09-07'
         },
         {
           id: 'document-2',
-          url: 'https://cdam/documents/document-2'
+          url: 'https://cdam/documents/document-2',
+          name: 'document-2.pdf',
+          documentUploadDate: '2026-09-08'
         }
       ];
 
@@ -106,6 +110,63 @@ describe('Documents controllers setup', () => {
           {
             title: 'Documents',
             documents
+          }
+      );
+    });
+
+    it('should only render one document when the same document URL appears multiple times', () => {
+      const documents = [
+        {
+          id: 'document-1',
+          url: 'https://cdam/documents/document-1',
+          name: 'document-1.pdf',
+          documentUploadDate: '2026-09-07'
+        },
+        {
+          id: 'document-2',
+          url: 'https://cdam/documents/document-1',
+          name: 'document-1.pdf',
+          documentUploadDate: '2026-09-07'
+        }
+      ];
+
+      req.session.appeal.documentMap = documents;
+
+      getDocuments(req as Request, res as Response, next);
+
+      expect(renderStub).to.have.been.calledOnceWithExactly(
+          'documents/documents.njk',
+          {
+            title: 'Documents',
+            documents: [documents[0]]
+          }
+      );
+    });
+
+    it('should render the dated occurrence when the same document has a dated and undated occurrence', () => {
+      const documents = [
+        {
+          id: 'document-1',
+          url: 'https://cdam/documents/504ea75a-53f6-4189-80f4-d4d2eb950c8b',
+          name: 'ftpa_decision_reason_ho.pdf'
+        },
+        {
+          id: 'document-2',
+          url: 'https://cdam/documents/504ea75a-53f6-4189-80f4-d4d2eb950c8b',
+          name: 'ftpa_decision_reason_ho.pdf',
+          documentUploadDate: '2026-09-07'
+        }
+      ];
+
+      req.session.appeal.documentMap = documents;
+
+      getDocuments(req as Request, res as Response, next);
+
+      expect(renderStub).to.have.been.calledOnceWithExactly(
+          'documents/documents.njk',
+          {
+            title: 'Documents',
+            documents: [documents[1]]
           }
       );
     });

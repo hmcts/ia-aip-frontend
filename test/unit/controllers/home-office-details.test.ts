@@ -652,6 +652,7 @@ describe('Home Office Details Controller', function () {
     });
 
     it('should fail validation and render a validation error with day in future', async () => {
+      const currentDate = new Date();
       const tomorrowDate = new Date('2025-06-17');
 
       req.body['day'] = tomorrowDate.getDate();

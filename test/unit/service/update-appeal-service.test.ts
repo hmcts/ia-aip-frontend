@@ -3592,10 +3592,10 @@ describe('update-appeal-service', () => {
         status: 200,
         callbackErrors: ['someString']
       } as CcdCaseDetails;
-      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
+      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
       sandbox.stub(ccdService, 'updateAppeal').resolves(mockResponse);
-      const caseDetails = await updateAppealService.submitEventToCcd(event, appeal, userId, 'userToken', true);
-      expect(ccdService.updateAppeal).to.be.calledOnceWith(event, userId, sinon.match.any, sinon.match.any, true);
+      const caseDetails = await updateAppealService.submitEventToCcd(event, appeal, userId, 'userToken');
+      expect(ccdService.updateAppeal).to.be.calledOnceWith(event, userId, sinon.match.any, sinon.match.any);
       expect(caseDetails.callbackErrors.length).to.equal(1);
     });
 
@@ -3606,10 +3606,10 @@ describe('update-appeal-service', () => {
         id: '1',
         state: 'state'
       } as CcdCaseDetails;
-      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, s2sService as S2SService, documentManagementService);
+      updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, systemAuthenticationService, s2sService as S2SService, documentManagementService);
       sandbox.stub(ccdService, 'updateAppeal').resolves(mockResponse);
-      const caseDetails = await updateAppealService.submitEventToCcd(event, appeal, userId, 'userToken', false);
-      expect(ccdService.updateAppeal).to.be.calledOnceWith(event, userId, sinon.match.any, sinon.match.any, false);
+      const caseDetails = await updateAppealService.submitEventToCcd(event, appeal, userId, 'userToken');
+      expect(ccdService.updateAppeal).to.be.calledOnceWith(event, userId, sinon.match.any, sinon.match.any);
       expect(caseDetails.callbackErrors).to.equal(undefined);
     });
   });

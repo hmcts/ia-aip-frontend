@@ -732,19 +732,19 @@ describe('Check and Send Controller', () => {
       req.body = { statement: 'acceptance' };
       updateAppealService.submitEventToCcd = validateStub.returns({
         status: 422,
-        callbackErrors: ['some error', 'some other error here']
+        callbackErrors: ['An error occurred: service client error', 'some other error here']
       });
 
       const expectedError = {
         error1: {
           href: '#',
           key: '',
-          text: 'some error'
+          text: 'An error occurred: service client error'
         },
         error2: {
           href: '#',
           key: '',
-          text: 'some other error here'
+          text: i18n.validationErrors.hoDataNotMatchingOnSubmit
         }
       };
 

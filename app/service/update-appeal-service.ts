@@ -193,7 +193,6 @@ export default class UpdateAppealService {
       case_data: caseData
     };
     const ccdCase: CcdCaseDetails = await this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders);
-    logger.trace(`CCD Response for event '${event.id}': ${JSON.stringify(ccdCase, null, 2)}`, logLabel);
     return this.mapCcdCaseToAppeal(ccdCase);
   }
 

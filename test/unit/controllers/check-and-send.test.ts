@@ -514,6 +514,7 @@ describe('Check and Send Controller', () => {
   let resRedirectSpy: SinonSpy;
   let renderStub: sinon.SinonStub;
   let submitStub: SinonStub;
+  let validateStub: SinonStub;
   let initiatePaymentStub: SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let paymentService: Partial<PaymentService>;
@@ -526,6 +527,10 @@ describe('Check and Send Controller', () => {
     submitStub = sandbox.stub().returns({
       state: 'appealSubmitted',
       case_data: { appealReferenceNumber: 'PA/1234567' }
+    });
+    validateStub = sandbox.stub().returns({
+      status: 200,
+      callbackErrors: []
     });
     initiatePaymentStub = sandbox.stub().resolves();
     req = {
@@ -547,7 +552,9 @@ describe('Check and Send Controller', () => {
     } as Partial<Request>;
 
     updateAppealService = {
-      submitEventRefactored: submitStub
+      submitEventRefactored: submitStub,
+      submitEventToCcd: validateStub,
+      mapCcdCaseToAppeal: submitStub,
     };
     const statusHistories = [{
       status: 'Success',
@@ -716,6 +723,40 @@ describe('Check and Send Controller', () => {
         error: expectedError,
         errorList: Object.values(expectedError),
         summaryRows: summaryRows,
+        previousPage: paths.appealStarted.taskList
+      });
+    });
+
+    it('should fail validation and render error when 422 response', async () => {
+      req.session.appeal = createDummyAppealApplication();
+      req.body = { statement: 'acceptance' };
+      updateAppealService.submitEventToCcd = validateStub.returns({
+        status: 422,
+        callbackErrors: ['some error', 'some other error here']
+      });
+
+      const expectedError = {
+        error1: {
+          href: '#',
+          key: '',
+          text: 'some error'
+        },
+        error2: {
+          href: '#',
+          key: '',
+          text: 'some other error here'
+        }
+      };
+
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(resRedirectSpy.calledOnceWith(paths.appealSubmitted.confirmation)).to.equal(false);
+      expect(submitStub.called).to.equal(false);
+
+      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList
       });
     });

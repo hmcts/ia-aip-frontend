@@ -27,6 +27,8 @@ interface CcdCaseDetails {
   last_modified?: string;
   error?: string;
   message?: string;
+  status?: number;
+  callbackErrors?: string[];
 }
 
 interface CaseListItem {

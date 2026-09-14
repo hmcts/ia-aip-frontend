@@ -993,6 +993,9 @@
         "ableToAddEvidenceTitle": "Supporting evidence for why you want to change hearing type",
         "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
       },
+      "documentsPage": {
+        "title": "View documents"
+      },
       "provideSupportingEvidenceYesOrNo": {
         "title": "Do you want to provide supporting evidence for this request?",
         "options": {
@@ -1181,6 +1184,10 @@
         "askForSomethingElse": "Ask for something else",
         "askReinstateAppeal": "Ask to reinstate the appeal",
         "askToChangeHearingType": "Ask to change hearing type"
+      },
+      "documents": {
+        "sectionHeading": "Appeal documents",
+        "viewDocuments": "View documents"
       },
       "hearingRequests": {
         "sectionHeading": "Hearing requests",

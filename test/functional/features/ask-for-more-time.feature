@@ -20,16 +20,16 @@ Feature: Ask for more time page
     When I select Yes and click continue
     And I check page accessibility
     Then I am on the evidence upload page
-    When I click "Upload file" button
+    When I click "Upload" button
     And I check page accessibility
     Then I should see error summary
-    When I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
+    When I choose a file that is "INVALID_TOO_BIG" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
-    When I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
+    When I choose a file that is "INVALID_FORMAT" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
-    When I choose a file that is "VALID" and click the "Upload file" button
+    When I choose a file that is "VALID" and click the "Upload" button
     And I check page accessibility
     And I click continue
     And I check page accessibility
@@ -100,16 +100,16 @@ Feature: Ask for more time page
     When I select Yes and click continue
     And I check page accessibility
     Then I am on the evidence upload page
-    When I click "Upload file" button
+    When I click "Upload" button
     And I check page accessibility
     Then I should see error summary
-    When I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
+    When I choose a file that is "INVALID_TOO_BIG" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
-    When I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
+    When I choose a file that is "INVALID_FORMAT" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
-    When I choose a file that is "VALID" and click the "Upload file" button
+    When I choose a file that is "VALID" and click the "Upload" button
     And I check page accessibility
     And I click continue
     And I check page accessibility
@@ -159,16 +159,16 @@ Feature: Ask for more time page
     When I select Yes and click continue
     And I check page accessibility
     Then I am on the evidence upload page
-    When I click "Upload file" button
+    When I click "Upload" button
     And I check page accessibility
     Then I should see error summary
-    When I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
+    When I choose a file that is "INVALID_TOO_BIG" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
-    When I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
+    When I choose a file that is "INVALID_FORMAT" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
-    When I choose a file that is "VALID" and click the "Upload file" button
+    When I choose a file that is "VALID" and click the "Upload" button
     And I check page accessibility
     And I click continue
     And I check page accessibility

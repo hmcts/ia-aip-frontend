@@ -1,4 +1,7 @@
 {% macro evidenceList(evidences, cta) %}
+  <div aria-live="polite" aria-atomic="true" class="govuk-visually-hidden" id="evidence-status">
+    {{ evidences | length }} {{ "files uploaded" if evidences | length != 1 else "file uploaded" }}
+  </div>
   <table class="govuk-table" id="files-uploaded">
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">

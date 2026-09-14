@@ -17,13 +17,13 @@
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     <input type="hidden" name="questionId" value="{{ questionId }}">
 
-    <fieldset class="govuk-fieldset">
+    <fieldset class="govuk-fieldset"{% if description %} aria-describedby="answer-hint"{% endif %}>
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
         <h1 class="govuk-fieldset__heading">{{ question }}</h1>
-        {% if description %}
-          <div id="answer-hint" class="govuk-hint">{{ description }}</div>
-        {% endif %}
       </legend>
+      {% if description %}
+        <div id="answer-hint" class="govuk-hint">{{ description }}</div>
+      {% endif %}
 
       {{ govukRadios({
             classes: "govuk-radios--inline",

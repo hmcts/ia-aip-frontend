@@ -12,14 +12,7 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { decisionTypeValidation } from '../../utils/validations/fields-validations';
 
-function getHintText(hintSource: any, hasFee: boolean, feePriceEnabled: boolean): string {
-  if (hasFee) {
-    return feePriceEnabled ? hintSource.withFee : hintSource.withFeeOld;
-  }
-  return feePriceEnabled ? hintSource.withoutFee : (hintSource.withoutFeeOld || hintSource.withoutFee);
-}
-
-function getDecisionTypeQuestion(appeal: Appeal, dlrmSetAsideFlag: boolean = false, feePriceEnabled: boolean = false) {
+function getDecisionTypeQuestion(appeal: Appeal, dlrmSetAsideFlag: boolean = false) {
   let hint: string;
   let decision: string;
   let hasFee: boolean = false;
@@ -27,10 +20,10 @@ function getDecisionTypeQuestion(appeal: Appeal, dlrmSetAsideFlag: boolean = fal
   const hintSource = dlrmSetAsideFlag ? i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag : i18n.pages.decisionTypePage.hint;
 
   if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
-    hint = getHintText(hintSource, false, feePriceEnabled);
+    hint = hintSource.withoutFee;
     decision = appeal.application.rpDcAppealHearingOption || null;
   } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(appeal.application.appealType)) {
-    hint = getHintText(hintSource, true, feePriceEnabled);
+    hint = hintSource.withFee;
     decision = appeal.application.decisionHearingFeeOption || null;
     hasFee = true;
   }
@@ -63,13 +56,12 @@ async function getDecisionType(req: Request, res: Response, next: NextFunction) 
     const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!paymentsFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = has(req.query, 'edit');
-    const feePriceEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FEE_PAY_PRICE, false);
 
     return res.render('templates/radio-question-page.njk', {
       previousPage: paths.appealStarted.taskList,
       pageTitle: i18n.pages.decisionTypePage.title,
       formAction: paths.appealStarted.decisionType,
-      question: getDecisionTypeQuestion(req.session.appeal, drlmSetAsideFlag, feePriceEnabled),
+      question: getDecisionTypeQuestion(req.session.appeal, drlmSetAsideFlag),
       saveAndContinue: true
     });
   } catch (error) {
@@ -96,7 +88,6 @@ function postDecisionType(updateAppealService: UpdateAppealService) {
       }
       const validation = decisionTypeValidation(req.body);
       const { appealType } = req.session.appeal.application;
-      const feePriceEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FEE_PAY_PRICE, false);
 
       if (validation) {
         return res.render('templates/radio-question-page.njk', {
@@ -105,7 +96,7 @@ function postDecisionType(updateAppealService: UpdateAppealService) {
           previousPage: paths.appealStarted.typeOfAppeal,
           pageTitle: i18n.pages.decisionTypePage.title,
           formAction: paths.appealStarted.decisionType,
-          question: getDecisionTypeQuestion(req.session.appeal, false, feePriceEnabled),
+          question: getDecisionTypeQuestion(req.session.appeal, false),
           saveAndContinue: true
         });
       }

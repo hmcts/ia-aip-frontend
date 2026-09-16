@@ -1,4 +1,9 @@
-{% set pageTitleName = pageTitle | eval %}
+{% if witnessName %}
+  {{ pageTitle | replace('{witnessName}', witnessName) }}
+{% else %}
+  {{ pageTitle }}
+{% endif %}
+
 {% extends "layout.njk" %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/button/macro.njk" import govukButton %}

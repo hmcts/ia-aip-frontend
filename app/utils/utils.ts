@@ -3,11 +3,10 @@ import { Request, Response } from 'express';
 import moment from 'moment';
 import nl2br from 'nl2br';
 import { applicationTypes } from '../data/application-types';
-import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
+import { APPLICANT_TYPE } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
-import LaunchDarklyService from '../service/launchDarkly-service';
 import { nlrStatementValidation } from './validations/fields-validations';
 
 /**

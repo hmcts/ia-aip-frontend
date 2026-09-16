@@ -61,4 +61,44 @@ describe('s2s-service', () => {
     expect(restCall.callCount).to.equal(1);
     expect(result).to.equal('Bearer theNewToken');
   });
+
+  it('requests a new token when current token in memory is expired for test env demo', async () => {
+    const s2s = new S2SService('some.demo.com');
+    s2s.setServiceToken('AExpiredTokenInMemory');
+
+    const stubResponse = { status: 200, statusText: 'OK', data:  'theNewToken' };
+    const restCall = sandbox.stub(axios, 'post').withArgs(requestStub.uri, requestStub.body).returns(Promise.resolve(stubResponse));
+
+    const jwtStub = sandbox.stub(jwtUtils, 'isJWTExpired').callsFake(() => {
+      return true;
+    });
+    const buildStub = sandbox.stub(s2s, 'buildRequest');
+    buildStub.resolves(requestStub);
+
+    const result = await s2s.getServiceToken();
+    expect(jwtStub.callCount).to.equal(1);
+    expect(buildStub.callCount).to.equal(1);
+    expect(restCall.callCount).to.equal(1);
+    expect(result).to.equal('Bearer theNewToken');
+  });
+
+  it('requests a new token when current token in memory is expired for test env aat', async () => {
+    const s2s = new S2SService('some.aat.com');
+    s2s.setServiceToken('AExpiredTokenInMemory');
+
+    const stubResponse = { status: 200, statusText: 'OK', data:  'theNewToken' };
+    const restCall = sandbox.stub(axios, 'post').withArgs(requestStub.uri, requestStub.body).returns(Promise.resolve(stubResponse));
+
+    const jwtStub = sandbox.stub(jwtUtils, 'isJWTExpired').callsFake(() => {
+      return true;
+    });
+    const buildStub = sandbox.stub(s2s, 'buildRequest');
+    buildStub.resolves(requestStub);
+
+    const result = await s2s.getServiceToken();
+    expect(jwtStub.callCount).to.equal(1);
+    expect(buildStub.callCount).to.equal(1);
+    expect(restCall.callCount).to.equal(1);
+    expect(result).to.equal('Bearer theNewToken');
+  });
 });

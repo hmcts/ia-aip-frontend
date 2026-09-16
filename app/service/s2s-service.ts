@@ -7,7 +7,7 @@ const config = setupSecrets();
 
 const otp = require('otp');
 const s2sSecret: string = config.get('s2s.secret');
-const s2sUrl: string = config.get('s2s.url');
+const s2sUrlFromConfig: string = config.get('s2s.url');
 const proxyHost: string = config.get('proxy.host');
 const proxyPort: number = config.get('proxy.port');
 const microServiceName: string = config.get('s2s.microserviceName');
@@ -26,6 +26,7 @@ export default class S2SService implements IS2SService {
   private static instance: S2SService;
   private initialization;
   private serviceToken: string;
+  private s2sUrl: string;
 
   public static getInstance(): S2SService {
     if (!S2SService.instance) {
@@ -34,8 +35,9 @@ export default class S2SService implements IS2SService {
     return S2SService.instance;
   }
 
-  constructor() {
+  constructor(s2sUrl?: string) {
     this.initialization = this.init();
+    this.s2sUrl = s2sUrl || s2sUrlFromConfig;
   }
 
   async init() {
@@ -48,7 +50,7 @@ export default class S2SService implements IS2SService {
    */
   async buildRequest() {
 
-    const uri = `${s2sUrl}/lease`;
+    const uri = `${this.s2sUrl}/lease`;
     const oneTimePassword = await otp(s2sSecret).totp();
 
     return {
@@ -60,33 +62,57 @@ export default class S2SService implements IS2SService {
     };
   }
 
+  async postReq() {
+    logger.trace('Attempting to request a S2S token', logLabel);
+    const request = await this.buildRequest();
+    let proxyConfig;
+    if (process.env.NODE_ENV === 'development' && !this.s2sUrl.startsWith('http://localhost')) {
+      proxyConfig = { proxy: { host: proxyHost, port: proxyPort } };
+    }
+    for (let i = 0; i < 3; i++) {
+      try {
+        return axios.post(request.uri, request.body, proxyConfig);
+      } catch (err) {
+        logger.exception(err, logLabel);
+      }
+    }
+    return null;
+  }
+
+  async testEnvS2sReq() {
+    let i = 1;
+    while (true) {
+      if (i % 3 === 0) {
+        await new Promise(resolve => setTimeout(resolve, 60000));
+      }
+      const res = await this.postReq();
+      if (res && res.data) {
+        this.serviceToken = res.data;
+        logger.trace('Received S2S token and stored token', logLabel);
+        break;
+      } else {
+        logger.exception('Could not retrieve S2S token', logLabel);
+        i++;
+      }
+    }
+  }
+
   /**
    * Sends out a request to the serviceAuthProvider and request a new service token
    * to be passed as a header in any outgoing calls.
    * Note: This token is stored in memory and this token is only valid for 3 hours.
    */
   async requestServiceToken() {
-    logger.trace('Attempting to request a S2S token', logLabel);
-    const request = await this.buildRequest();
-    let proxyConfig;
-    if (process.env.NODE_ENV === 'development' && !s2sUrl.startsWith('http://localhost')) {
-      proxyConfig = { proxy: { host: proxyHost, port: proxyPort } };
-    }
-    let res;
-    for (let i = 0; i < 3; i++) {
-      try {
-        res = await axios.post(request.uri, request.body, proxyConfig);
-        break;
-      } catch (err) {
-        logger.exception(err, logLabel);
-        i++;
-      }
-    }
-    if (res && res.data) {
-      this.serviceToken = res.data;
-      logger.trace('Received S2S token and stored token', logLabel);
+    if (this.s2sUrl.includes('demo') || this.s2sUrl.includes('aat')) {
+      await this.testEnvS2sReq();
     } else {
-      logger.exception('Could not retrieve S2S token', logLabel);
+      const res = await this.postReq();
+      if (res && res.data) {
+        this.serviceToken = res.data;
+        logger.trace('Received S2S token and stored token', logLabel);
+      } else {
+        logger.exception('Could not retrieve S2S token', logLabel);
+      }
     }
   }
 

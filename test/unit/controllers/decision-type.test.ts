@@ -95,18 +95,20 @@ describe('Type of appeal Controller', () => {
           {
             value: i18n.pages.decisionTypePage.options.withHearing.value,
             text: i18n.pages.decisionTypePage.options.withHearing.text,
+            hint: { text: i18n.pages.decisionTypePage.options.withHearing.hintWithFee },
             checked: false
           },
           {
             value: i18n.pages.decisionTypePage.options.withoutHearing.value,
             text: i18n.pages.decisionTypePage.options.withoutHearing.text,
+            hint: { text: i18n.pages.decisionTypePage.options.withoutHearing.hintWithFee },
             checked: false
           }
         ],
         inline: false
       };
       req.session.appeal.application.appealType = 'protection';
-      const question = getDecisionTypeQuestion(req.session.appeal, false, true);
+      const question = getDecisionTypeQuestion(req.session.appeal, false);
 
       expect(question).to.deep.equal(expectedQuestion);
     });
@@ -119,11 +121,13 @@ describe('Type of appeal Controller', () => {
           {
             value: i18n.pages.decisionTypePage.options.withHearing.value,
             text: i18n.pages.decisionTypePage.options.withHearing.text,
+            hint: { text: i18n.pages.decisionTypePage.options.withHearing.hintWithoutFee },
             checked: true
           },
           {
             value: i18n.pages.decisionTypePage.options.withoutHearing.value,
             text: i18n.pages.decisionTypePage.options.withoutHearing.text,
+            hint: { text: i18n.pages.decisionTypePage.options.withoutHearing.hintWithoutFee },
             checked: false
           }
         ],
@@ -143,7 +147,7 @@ describe('Type of appeal Controller', () => {
         inline: false
       };
       req.session.appeal.application.appealType = 'protection';
-      const question = getDecisionTypeQuestion(req.session.appeal, true, true);
+      const question = getDecisionTypeQuestion(req.session.appeal, true);
 
       expect(question.hint).to.equal(expectedQuestion.hint);
     });
@@ -155,31 +159,7 @@ describe('Type of appeal Controller', () => {
         inline: false
       };
       req.session.appeal.application.appealType = 'deprivation';
-      const question = getDecisionTypeQuestion(req.session.appeal, true, true);
-
-      expect(question.hint).to.equal(expectedQuestion.hint);
-    });
-
-    it('should return the question hint text with old fee when fee price flag is off', () => {
-      const expectedQuestion = {
-        title: i18n.pages.decisionTypePage.title,
-        hint: i18n.pages.decisionTypePage.hint.withFeeOld,
-        inline: false
-      };
-      req.session.appeal.application.appealType = 'protection';
-      const question = getDecisionTypeQuestion(req.session.appeal, false, false);
-
-      expect(question.hint).to.equal(expectedQuestion.hint);
-    });
-
-    it('should return the question hint text with old fee and drlm flag when fee price flag is off', () => {
-      const expectedQuestion = {
-        title: i18n.pages.decisionTypePage.title,
-        hint: i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag.withFeeOld,
-        inline: false
-      };
-      req.session.appeal.application.appealType = 'protection';
-      const question = getDecisionTypeQuestion(req.session.appeal, true, false);
+      const question = getDecisionTypeQuestion(req.session.appeal, true);
 
       expect(question.hint).to.equal(expectedQuestion.hint);
     });

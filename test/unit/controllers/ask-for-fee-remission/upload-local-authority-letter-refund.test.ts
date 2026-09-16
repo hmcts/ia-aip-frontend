@@ -126,7 +126,7 @@ describe('Local authority letter refund Controller', function () {
 
     it('should render template with validation errors', async () => {
       req.query = { error: 'error' };
-      const validationErrors = { uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload[`${req.query.error}`]) };
+      const validationErrors = { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${req.query.error}`]) };
       await getLocalAuthorityLetterRefund(req as Request, res as Response, next);
       expect(renderStub.calledOnce).to.equal(true);
       expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/upload-local-authority-letter.njk', {

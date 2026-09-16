@@ -1,8 +1,4 @@
-{% if witnessName %}
-  {{ pageTitle | replace('{witnessName}', witnessName) }}
-{% else %}
-  {{ pageTitle }}
-{% endif %}
+{% set pageHeading = pageTitle | replace('{witnessName}', witnessName or '') %}
 
 {% extends "layout.njk" %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
@@ -22,7 +18,7 @@
 
     {% call govukFieldset({
         legend: {
-            text: pageTitle ,
+            text: pageHeading,
             classes: "govuk-fieldset__legend--xl",
             isPageHeading: true
         }

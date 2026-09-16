@@ -1,10 +1,3 @@
-// Source - https://stackoverflow.com/a/59631754
-// Posted by 07mm8, modified by community. See post 'Timeline' for change history
-// Retrieved 2026-09-15, License - CC BY-SA 4.0
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import validator from 'validator';
@@ -19,6 +12,7 @@ import {
   convertDynamicListToSelectItemList, preparePostInterpreterLanguageSubmissionObj,
   retrieveInterpreterDynamicListByDataType
 } from '../../utils/hearing-requirements-utils';
+import {substituteWitnessNameIfExists} from '../../utils/i18n-template';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
@@ -295,6 +289,7 @@ function postWitnessesInterpreterNeeds(updateAppealService: UpdateAppealService)
 function getInterpreterTypePage(req: Request, res: Response, next: NextFunction) {
   try {
     const { hearingRequirements } = req.session.appeal;
+    let pageQuestion = '';
     let pageQuestionTemplate = '';
     let witnessName: string | null = null;
     let checkboxHintText = '';
@@ -324,10 +319,11 @@ function getInterpreterTypePage(req: Request, res: Response, next: NextFunction)
       interpreterSignLanguage = appellantInterpreterLanguageCategory ? appellantInterpreterLanguageCategory.includes(signLanguageInterpreterString) : false;
     }
 
+    pageQuestion = substituteWitnessNameIfExists(pageQuestionTemplate, witnessName);
+
     return res.render('hearing-requirements/interpreter-types.njk', {
       previousPage: previousPage,
-      pageQuestionTemplate: pageQuestionTemplate,
-      witnessName: witnessName,
+      pageQuestion: pageQuestion,
       checkboxHintText: checkboxHintText,
       interpreterSpokenLanguage: interpreterSpokenLanguage,
       interpreterSignLanguage: interpreterSignLanguage,
@@ -342,6 +338,7 @@ function getInterpreterTypePage(req: Request, res: Response, next: NextFunction)
 function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      let pageQuestion = '';
       let pageQuestionTemplate = '';
       let witnessName: string | null = null;
       let checkboxHintText = '';
@@ -365,12 +362,13 @@ function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
         checkboxHintText = i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.hint;
       }
 
+      pageQuestion = substituteWitnessNameIfExists(pageQuestionTemplate, witnessName);
+
       const validation = interpreterTypesSelectionValidation(req.body);
       if (validation) {
         return res.render('hearing-requirements/interpreter-types.njk', {
           previousPage: previousPage,
-          pageQuestionTemplate: pageQuestionTemplate,
-          witnessName: witnessName,
+          pageQuestion: pageQuestion,
           checkboxHintText: checkboxHintText,
           selectedWitnessesList: selectedWitnessesList,
           errorList: Object.values(validation)
@@ -431,6 +429,7 @@ function handleGetInterpreterSpokenSignLanguagePage(refDataServiceObj: RefDataSe
     try {
       let selectedWitnessesList = null;
       let witnessName: string | null = null;
+      let pageTitle = '';
       let pageTitleTemplate = '';
       let pageText = '';
       let interpreterSpokenSignLanguageFieldString = '';
@@ -452,6 +451,8 @@ function handleGetInterpreterSpokenSignLanguagePage(refDataServiceObj: RefDataSe
         interpreterSpokenSignLanguageFieldString = spokenSignLanguageConfig.interpreterSpokenSignLanguageFieldString.appellantValue;
       }
 
+      pageTitle = substituteWitnessNameIfExists(pageTitleTemplate, witnessName);
+
       const interpreterSpokenSignLanguageDynamicList = await retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, spokenSignLanguageConfig.commonRefDataType);
       return getPrepareInterpreterLanguageType(
         req,
@@ -459,8 +460,7 @@ function handleGetInterpreterSpokenSignLanguagePage(refDataServiceObj: RefDataSe
         interpreterSpokenSignLanguageFieldString,
         interpreterSpokenSignLanguageDynamicList,
         spokenSignLanguageConfig.formAction,
-        pageTitleTemplate,
-        witnessName,
+        pageTitle,
         pageText,
         spokenSignLanguageConfig.dropdownListText,
         spokenSignLanguageConfig.checkBoxText,
@@ -503,6 +503,7 @@ function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealServ
     try {
       let selectedWitnessesList: string[] = null;
       let witnessName: string | null = null;
+      let pageTitle = '';
       let pageTitleTemplate = '';
       let pageText = '';
       const interpreterSpokenSignLanguageDynamicList = await retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSpokenLanguageDataType);
@@ -522,13 +523,14 @@ function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealServ
         pageText = i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.text;
       }
 
+      pageTitle = substituteWitnessNameIfExists(pageTitleTemplate, witnessName);
+
       const validation = interpreterLanguageSelectionValidation(req.body);
       if (validation) {
         return res.render('hearing-requirements/interpreter-language-selection.njk', {
           previousPage: previousPage,
           formAction: paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection,
-          pageTitleTemplate: pageTitleTemplate,
-          witnessName: witnessName,
+          pageTitle: pageTitle,
           pageText: pageText,
           dropdownListText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.dropdownListText,
           checkBoxText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.checkBoxText,
@@ -628,6 +630,7 @@ function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealServic
     try {
       let selectedWitnessesList: string[] = null;
       let witnessName: string | null = null;
+      let pageTitle = '';
       let pageTitleTemplate = '';
       let pageText = '';
       const interpreterSpokenSignLanguageDynamicList = await retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSignLanguageDataType);
@@ -647,13 +650,14 @@ function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealServic
         pageText = i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.text;
       }
 
+      pageTitle = substituteWitnessNameIfExists(pageTitleTemplate, witnessName);
+
       const validation = interpreterLanguageSelectionValidation(req.body);
       if (validation) {
         return res.render('hearing-requirements/interpreter-language-selection.njk', {
           previousPage: previousPage,
           formAction: paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection,
-          pageTitleTemplate: pageTitleTemplate,
-          witnessName: witnessName,
+          pageTitle: pageTitle,
           pageText: pageText,
           dropdownListText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.dropdownListText,
           checkBoxText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.checkBoxText,
@@ -738,7 +742,7 @@ function convertWitnessListToCheckboxItem(witnessNames: WitnessName[], hearingRe
 }
 
 function getPrepareInterpreterLanguageType(req: Request, res: Response, languageTypeFieldString: string, languageList: DynamicList,
-  formAction, formPageTitleTemplate, witnessName, formPageText, formDropdownListText, formCheckBoxText, formLanguageManuallyText,
+  formAction, formPageTitleTemplate, formPageText, formDropdownListText, formCheckBoxText, formLanguageManuallyText,
   selectedWitnessesList?: string[]) {
   const { hearingRequirements } = req.session.appeal;
   const interpreterLanguageType = hearingRequirements && hearingRequirements[languageTypeFieldString] || null;
@@ -759,7 +763,6 @@ function getPrepareInterpreterLanguageType(req: Request, res: Response, language
     previousPage: previousPage,
     formAction: formAction,
     pageTitle: formPageTitleTemplate,
-    witnessName: witnessName,
     pageText: formPageText,
     dropdownListText: formDropdownListText,
     checkBoxText: formCheckBoxText,

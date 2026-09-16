@@ -1,8 +1,4 @@
-{% if witnessName %}
-  {{ pageQuestionTemplate | replace('{witnessName}', witnessName) }}
-{% else %}
-  {{ pageQuestionTemplate }}
-{% endif %}
+{{ pageQuestion }}
 
 {% extends "layout.njk" %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}

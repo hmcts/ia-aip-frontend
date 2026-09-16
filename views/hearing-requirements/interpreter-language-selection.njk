@@ -1,4 +1,4 @@
-{% set pageHeading = pageTitle | replace('{witnessName}', witnessName or '') %}
+{{ pageTitle }}
 
 {% extends "layout.njk" %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}

@@ -1,4 +1,5 @@
-{% set pageTitleName = pageTitle | eval %}
+{{ pageTitle }}
+
 {% extends "layout.njk" %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -17,7 +18,7 @@
 
     {% call govukFieldset({
         legend: {
-            text: pageTitle ,
+            text: pageTitle,
             classes: "govuk-fieldset__legend--xl",
             isPageHeading: true
         }

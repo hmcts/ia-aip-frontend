@@ -59,6 +59,22 @@ export default class S2SService implements IS2SService {
       }
     };
   }
+  async postReq() {
+    logger.trace('Attempting to request a S2S token', logLabel);
+    const request = await this.buildRequest();
+    let proxyConfig;
+    if (process.env.NODE_ENV === 'development' && !s2sUrl.startsWith('http://localhost')) {
+      proxyConfig = { proxy: { host: proxyHost, port: proxyPort } };
+    }
+    for (let i = 0; i < 3; i++) {
+      try {
+        return axios.post(request.uri, request.body, proxyConfig);
+      } catch (err) {
+        logger.exception(err, logLabel);
+      }
+    }
+    return null;
+  }
 
   /**
    * Sends out a request to the serviceAuthProvider and request a new service token
@@ -66,27 +82,15 @@ export default class S2SService implements IS2SService {
    * Note: This token is stored in memory and this token is only valid for 3 hours.
    */
   async requestServiceToken() {
-    logger.trace('Attempting to request a S2S token', logLabel);
-    const request = await this.buildRequest();
-    let proxyConfig;
-    if (process.env.NODE_ENV === 'development' && !s2sUrl.startsWith('http://localhost')) {
-      proxyConfig = { proxy: { host: proxyHost, port: proxyPort } };
-    }
-    let res;
-    for (let i = 0; i < 3; i++) {
-      try {
-        res = await axios.post(request.uri, request.body, proxyConfig);
+    while (true) {
+      const res = await this.postReq();
+      if (res && res.data) {
+        this.serviceToken = res.data;
+        logger.trace('Received S2S token and stored token', logLabel);
         break;
-      } catch (err) {
-        logger.exception(err, logLabel);
-        i++;
       }
-    }
-    if (res && res.data) {
-      this.serviceToken = res.data;
-      logger.trace('Received S2S token and stored token', logLabel);
-    } else {
-      logger.exception('Could not retrieve S2S token', logLabel);
+      logger.exception('Could not retrieve S2S token. Retrying...', logLabel);
+      await new Promise(resolve => setTimeout(resolve, 30000));
     }
   }
 

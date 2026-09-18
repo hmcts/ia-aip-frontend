@@ -17,6 +17,7 @@ function getNextState(body: EventSubmitBody): string {
   }
   switch (eventId) {
     case 'editAppeal':
+    case 'deleteDraftAppeal':
       return 'appealStarted';
     case 'submitAppeal':
       return ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(appealType)
@@ -42,11 +43,20 @@ function getNextState(body: EventSubmitBody): string {
       return 'cmaListed';
     case 'uploadAddendumEvidenceLegalRep':
       return 'preHearing';
+    case 'editAipHearingRequirements':
+      return 'submitHearingRequirements';
     case 'applyForFTPAAppellant':
       return 'ftpaSubmitted';
     case 'residentJudgeFtpaDecision':
     case 'leadershipJudgeFtpaDecision':
       return 'ftpaDecided';
+    case 'sendInviteToNonLegalRep':
+    case 'provideNonLegalRepDetails':
+    case 'sendPipToNonLegalRep':
+    case 'joinAppealConfirmation':
+    case 'removeNonLegalRep':
+    case 'nlrDetailsUpdated':
+      return null;
     default:
       throw new Error(`Event type ${eventId} no next state set`);
   }

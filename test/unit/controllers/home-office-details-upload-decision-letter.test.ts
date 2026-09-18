@@ -117,7 +117,8 @@ describe('Home office decision letter', function () {
       req.query = { error: 'error' };
       const validationErrors = { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${req.query.error}`]) };
       getHomeOfficeDecisionLetter(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('templates/multiple-evidence-upload-page.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'templates/multiple-evidence-upload-page.njk', {
         title: i18n.pages.homeOfficeLetterUpload.title,
         content: i18n.pages.homeOfficeLetterUpload.content,
         formSubmitAction: paths.appealStarted.homeOfficeDecisionLetter,
@@ -226,6 +227,7 @@ describe('Home office decision letter', function () {
 
       expect(uploadStub.called).to.equal(true);
       expect(submitRefactoredStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.homeOfficeDecisionLetter)).to.equal(true);
     });
 
@@ -258,6 +260,7 @@ describe('Home office decision letter', function () {
 
       expect(deleteStub.called).to.equal(true);
       expect(submitRefactoredStub.called).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.homeOfficeDecisionLetter)).to.equal(true);
     });
 

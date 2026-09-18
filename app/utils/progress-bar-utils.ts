@@ -1,7 +1,7 @@
-import i18n from '../../locale/en.json';
 import { States } from '../data/states';
+import { getI18n } from './grammarPerspectiveTransformer';
 
-function buildProgressBarStages(state: string, paymentStatus?: string, is24WeeksTimeline?: boolean) {
+function buildProgressBarStages(state: string, isNonLegalRep: boolean, paymentStatus?: string, is24WeeksTimeline?: boolean) {
   const stages = {
     yourAppealDetails: {
       activeStatus: [
@@ -21,7 +21,6 @@ function buildProgressBarStages(state: string, paymentStatus?: string, is24Weeks
         States.CMA_REQUIREMENTS_SUBMITTED.id,
         States.CMA_ADJUSTMENTS_AGREED.id,
         States.CMA_LISTED.id,
-        States.RESPONDENT_REVIEW.id,
         States.CASE_UNDER_REVIEW.id
       ]
     },
@@ -41,10 +40,13 @@ function buildProgressBarStages(state: string, paymentStatus?: string, is24Weeks
 
   if (is24WeeksTimeline) {
     stages.yourAppealDetails.activeStatus.push(States.LISTING.id);
+    stages.yourHearingDetails.activeStatus.push(States.RESPONDENT_REVIEW.id);
   } else {
     stages.yourHearingDetails.activeStatus.push(States.LISTING.id);
+    stages.yourAppealArgument.activeStatus.push(States.RESPONDENT_REVIEW.id);
   }
 
+  const i18n = getI18n(isNonLegalRep);
   const appealSubmitted = state === States.APPEAL_SUBMITTED.id;
 
   const yourAppealDetailsStage = {

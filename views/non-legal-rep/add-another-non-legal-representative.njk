@@ -1,0 +1,49 @@
+{% set pageTitleName = i18n.pages.addNonLegalRepresentative.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.addNonLegalRepresentative.title }}</h1>
+  <p class="govuk-body"><b>{{ i18n.pages.addNonLegalRepresentative.paragraphOne }}</b></p>
+  <p class="govuk-body"><b>{{ i18n.pages.addNonLegalRepresentative.paragraphTwo }}</b></p>
+  <p class="govuk-body"><b>{{ i18n.pages.addNonLegalRepresentative.paragraphThree }}</b></p>
+  <div class="govuk-inset-text">
+    {{ i18n.pages.addNonLegalRepresentative.another.hint }}
+  </div>
+
+  <form method="post" action="{{ paths.nonLegalRep.addAnotherNonLegalRep }}">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukCheckboxes({
+      idPrefix: "statement",
+      name: "statement",
+      fieldset: {
+        legend: {
+          text: i18n.pages.addNonLegalRepresentative.another.statement,
+          isPageHeading: false,
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      items: [
+        {
+          value: "acceptance",
+          text: i18n.pages.addNonLegalRepresentative.another.agreement
+        }
+      ],
+      errorMessage: {
+        text: errors['statement'].text
+      } if errors['statement']
+    }) }}
+    {{ govukButton({
+      id: 'addAnotherNonLegalRep',
+      text: i18n.pages.addNonLegalRepresentative.another.button
+    }) }}
+  </form>
+  {{ contactUs() }}
+{% endblock %}

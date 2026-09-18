@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import moment from 'moment';
 import {
   getEnterADatePage,
@@ -112,7 +112,7 @@ describe('CMA Requirements - Enter A date controller', () => {
       };
 
       getEnterADatePageWithId(req as Request, res as Response, next);
-      expect(renderStub.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'cma-requirements/dates-to-avoid/enter-a-date.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -166,7 +166,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk',
+      expectRenderedCalledWithArgs(renderStub, 'cma-requirements/dates-to-avoid/enter-a-date.njk',
         expectedArgs);
     });
 
@@ -180,6 +180,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.awaitingCmaRequirements.datesToAvoidReason)).to.equal(true);
     });
 
@@ -226,7 +227,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('cma-requirements/dates-to-avoid/enter-a-date.njk',
+      expectRenderedCalledWithArgs(renderStub, 'cma-requirements/dates-to-avoid/enter-a-date.njk',
         expectedArgs);
     });
 
@@ -241,6 +242,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(submitStub.calledWith(Events.EDIT_CMA_REQUIREMENTS, req)).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith('/appointment-dates-avoid-reasons/0')).to.equal(true);
     });
 

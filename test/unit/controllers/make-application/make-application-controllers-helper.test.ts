@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { makeApplicationControllersHelper } from '../../../../app/controllers/make-application/make-application-controllers-helper';
 import { paths } from '../../../../app/paths';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import i18n from '../../../../locale/en.json';
-import { expect, sinon } from '../../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../../utils/testUtils';
 
 describe('Make application controllers helper', () => {
   let sandbox: sinon.SinonSandbox;
@@ -96,7 +96,8 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req as Request, res as Response, next, config);
 
-      expect(renderStub).to.be.calledWith('make-application/details-question-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -148,7 +149,8 @@ describe('Make application controllers helper', () => {
       };
       makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req as Request, res as Response, next, config);
 
-      expect(renderStub).to.be.calledWith('make-application/details-question-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -211,7 +213,8 @@ describe('Make application controllers helper', () => {
         saveAndContinue: false
       };
       makeApplicationControllersHelper.getProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, previousPage, formAction);
-      expect(renderStub).to.be.calledWith('make-application/radio-button-question-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -265,7 +268,8 @@ describe('Make application controllers helper', () => {
         saveAndContinue: false
       };
       makeApplicationControllersHelper.getProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, previousPage, formAction);
-      expect(renderStub).to.be.calledWith('make-application/radio-button-question-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -328,7 +332,8 @@ describe('Make application controllers helper', () => {
         formSubmitAction: config.pathToProvideSupportingEvidence
       };
       makeApplicationControllersHelper.getProvideSupportingEvidence(req as Request, res as Response, next, config);
-      expect(renderStub).to.be.calledWith('make-application/supporting-evidence-upload-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'make-application/supporting-evidence-upload-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -364,7 +369,8 @@ describe('Make application controllers helper', () => {
         formSubmitAction: config.pathToProvideSupportingEvidence
       };
       makeApplicationControllersHelper.getProvideSupportingEvidence(req as Request, res as Response, next, config);
-      expect(renderStub).to.be.calledWith('make-application/supporting-evidence-upload-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'make-application/supporting-evidence-upload-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -410,19 +416,19 @@ describe('Make application controllers helper', () => {
       const previousPage = config.pathToProvideSupportingEvidence;
       const summaryLists: SummaryList[] = [{ summaryRows: [] }];
 
-      const expectedRenderPayload = {
+      makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.makeApplication.checkYourAnswers.title,
         continuePath: config.pathToCheckYourAnswer,
         previousPage,
+        hasNlr: false,
         summaryLists
-      };
-      makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
-      expect(renderStub).to.be.calledWith('templates/check-and-send.njk', {
-        ...expectedRenderPayload
       });
     });
 
-    it('should render when no supporting evidence', () => {
+    it('should render when no supporting evidence with NLR', () => {
+      setActiveNlr(req);
       req.session.appeal.makeAnApplicationProvideEvidence = 'no';
       req.session.appeal.makeAnApplications = [];
       const config = {
@@ -434,15 +440,14 @@ describe('Make application controllers helper', () => {
       const previousPage = config.pathToSupportingEvidence;
       const summaryLists: SummaryList[] = [{ summaryRows: [] }];
 
-      const expectedRenderPayload = {
+      makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.makeApplication.checkYourAnswers.title,
         continuePath: config.pathToCheckYourAnswer,
         previousPage,
+        hasNlr: true,
         summaryLists
-      };
-      makeApplicationControllersHelper.getProvideSupportingEvidenceCheckAndSend(req as Request, res as Response, next, config);
-      expect(renderStub).to.be.calledWith('templates/check-and-send.njk', {
-        ...expectedRenderPayload
       });
     });
   });
@@ -461,10 +466,10 @@ describe('Make application controllers helper', () => {
       await makeApplicationControllersHelper.postProvideSupportingEvidenceCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(redirectStub.calledWith(paths.makeApplication.requestSent)).to.equal(true);
-      expect(req.session.appeal.makeAnApplicationEvidence.length).to.eq(0);
-      expect(req.session.appeal.makeAnApplicationDetails).to.eq(undefined);
-      expect(req.session.appeal.makeAnApplicationTypes).to.eq(undefined);
-      expect(req.session.appeal.makeAnApplicationProvideEvidence).to.eq(undefined);
+      expect(req.session.appeal.makeAnApplicationEvidence).to.have.lengthOf(0);
+      expect(req.session.appeal.makeAnApplicationDetails).to.be.undefined;
+      expect(req.session.appeal.makeAnApplicationTypes).to.be.undefined;
+      expect(req.session.appeal.makeAnApplicationProvideEvidence).to.be.undefined;
     });
   });
 
@@ -472,7 +477,8 @@ describe('Make application controllers helper', () => {
     it('should render', async () => {
       makeApplicationControllersHelper.getRequestSent(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('templates/confirmation-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/confirmation-page.njk', {
         title: i18n.pages.makeApplication.requestSent.title,
         whatNextContent: i18n.pages.makeApplication.requestSent.whatNextContent
       });
@@ -549,8 +555,8 @@ describe('Make application controllers helper', () => {
 
       await makeApplicationControllersHelper.deleteSupportingEvidence(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.makeAnApplicationEvidence.length).to.eq(0);
-      expect(req.session.appeal.documentMap.length).to.eq(0);
+      expect(req.session.appeal.makeAnApplicationEvidence).to.have.lengthOf(0);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(0);
       expect(redirectStub.calledWith(redirectTo)).to.equal(true);
     });
   });
@@ -661,6 +667,49 @@ describe('Make application controllers helper', () => {
       const actualPath = makeApplicationControllersHelper.getPath('', 'expedite');
 
       expect(actualPath).to.equal(expectedPath);
+    });
+  });
+
+  describe('nlrStatementValidation', () => {
+    it('should render error if fails validation', async () => {
+      setActiveNlr(req);
+      const evidence: Evidence[] = [];
+      req.session.appeal.makeAnApplicationDetails = 'makeAnAppealDetails';
+      req.session.appeal.makeAnApplicationEvidence = evidence;
+      req.session.appeal.makeAnApplicationTypes = {
+        value: {
+          code: 'expedite',
+          label: 'Expedite'
+        }
+      };
+      await makeApplicationControllersHelper.postProvideSupportingEvidenceCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(renderStub.calledOnce).to.equal(true);
+      const expectedError = {
+        'key': 'nlrStatement',
+        'text': i18n.validationErrors.nlrStatement,
+        'href': '#nlrStatement'
+      };
+      const renderArgs = renderStub.getCall(0).args;
+      expect(renderArgs[0]).to.equal('templates/check-and-send.njk');
+      expect(renderArgs[1].errors).to.deep.equal({ nlrStatement: expectedError });
+      expect(renderArgs[1].errorList).to.deep.equal([expectedError]);
+    });
+
+    it('should continue if passes validation', async () => {
+      setActiveNlr(req);
+      const evidence: Evidence[] = [];
+      req.session.appeal.makeAnApplicationDetails = 'makeAnAppealDetails';
+      req.session.appeal.makeAnApplicationEvidence = evidence;
+      req.session.appeal.makeAnApplicationTypes = {
+        value: {
+          code: 'expedite',
+          label: 'Expedite'
+        }
+      };
+      req.body = { nlrStatement: 'nlr' };
+      await makeApplicationControllersHelper.postProvideSupportingEvidenceCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(false);
     });
   });
 });

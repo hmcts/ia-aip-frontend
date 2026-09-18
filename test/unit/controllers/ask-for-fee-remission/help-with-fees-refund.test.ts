@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getApplyOption,
@@ -68,7 +68,7 @@ describe('Help with fees refund Controller', () => {
     beforeEach(() => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
         .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
-      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeWithHearing = '144';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
     });
 
@@ -81,14 +81,14 @@ describe('Help with fees refund Controller', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
       setupHelpWithFeesRefundController(middleware);
-      expect(routerGetStub.calledWith(paths.appealSubmitted.helpWithFeesRefund)).to.equal(true);
-      expect(routerPostStub.calledWith(paths.appealSubmitted.helpWithFeesRefund)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.helpWithFeesRefund)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.common.helpWithFeesRefund)).to.equal(true);
     });
 
     it('should return the question', () => {
       const expectedQuestion = {
         title: i18n.pages.helpWithFees.radioButtonsTitle,
-        helpWithFeesHint: i18n.pages.helpWithFees.refundsNote.replace('{{ fee }}', '140'),
+        helpWithFeesHint: i18n.pages.helpWithFees.refundsNote.replace('{{ fee }}', '144'),
         options: [
           {
             value: i18n.pages.helpWithFees.options.wantToApply.value,
@@ -112,7 +112,7 @@ describe('Help with fees refund Controller', () => {
     it('should return the question with option checked', () => {
       const expectedQuestion = {
         title: i18n.pages.helpWithFees.radioButtonsTitle,
-        helpWithFeesHint: i18n.pages.helpWithFees.refundsNote.replace('{{ fee }}', '140'),
+        helpWithFeesHint: i18n.pages.helpWithFees.refundsNote.replace('{{ fee }}', '144'),
         options: [
           {
             value: i18n.pages.helpWithFees.options.wantToApply.value,
@@ -137,9 +137,10 @@ describe('Help with fees refund Controller', () => {
     it('should render help-with-fees.njk template', async () => {
       await getHelpWithFees(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/help-with-fees.njk', {
-        previousPage: paths.appealSubmitted.feeSupportRefund,
-        formAction: paths.appealSubmitted.helpWithFeesRefund,
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees.njk', {
+        previousPage: paths.common.feeSupportRefund,
+        formAction: paths.common.helpWithFeesRefund,
         question: sinon.match.any,
         continueCancelButtons: true,
         refundJourney: true,
@@ -151,7 +152,7 @@ describe('Help with fees refund Controller', () => {
       req.body['answer'] = 'wantToApply';
       req.session.appeal.application.appealType = 'protection';
       await postHelpWithFees()(req as Request, res as Response, next);
-      expect(redirectStub.calledOnceWith(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund)).to.equal(true);
+      expect(redirectStub.calledOnceWith(paths.common.stepsToApplyForHelpWithFeesRefund)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect asylum-support-refund.njk and reset isEdit flag', async () => {
@@ -159,8 +160,9 @@ describe('Help with fees refund Controller', () => {
       req.query = { 'edit': '' };
       await postHelpWithFees()(req as Request, res as Response, next);
       expect(req.session.appeal.application.lateHelpWithFeesOption).to.deep.equal('wantToApply');
-      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.common.stepsToApplyForHelpWithFeesRefund}(?!.*\\bedit\\b)`));
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('when called with edit param should render help-with-fees.njk and update session', async () => {
@@ -174,12 +176,12 @@ describe('Help with fees refund Controller', () => {
       const testData = [
         {
           input: 'wantToApply',
-          expected: paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund,
+          expected: paths.common.stepsToApplyForHelpWithFeesRefund,
           description: 'Steps to apply for help with fees refund page'
         },
         {
           input: 'alreadyApplied',
-          expected: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
+          expected: paths.common.helpWithFeesReferenceNumberRefund,
           description: 'Help with fees reference number page'
         }
       ];
@@ -207,10 +209,10 @@ describe('Help with fees refund Controller', () => {
             answer: error
           },
           errorList: [error],
-          previousPage: paths.appealSubmitted.feeSupportRefund,
+          previousPage: paths.common.feeSupportRefund,
           pageTitle: i18n.pages.helpWithFees.title,
           question: getApplyOption(req.session.appeal),
-          formAction: paths.appealSubmitted.helpWithFeesRefund,
+          formAction: paths.common.helpWithFeesRefund,
           continueCancelButtons: true,
           refundJourney: true
         });

@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getSingleSexTypeHearingQuestion,
   postSingleSexTypeHearingQuestion, setupSingleSexTypeHearingQuestionController
@@ -85,7 +85,7 @@ describe('Hearing Requirements - Other Needs Section: Single sex type hearing Qu
         },
         saveAndContinue: true
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         expectedArgs
       );
     });
@@ -124,7 +124,7 @@ describe('Hearing Requirements - Other Needs Section: Single sex type hearing Qu
         },
         saveAndContinue: true
       };
-      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
@@ -132,6 +132,7 @@ describe('Hearing Requirements - Other Needs Section: Single sex type hearing Qu
       await postSingleSexTypeHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsAllMaleHearing)).to.equal(true);
       expect(req.session.appeal.hearingRequirements.otherNeeds.singleSexTypeAppointment).to.equal('All male');
     });
@@ -141,6 +142,7 @@ describe('Hearing Requirements - Other Needs Section: Single sex type hearing Qu
       await postSingleSexTypeHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsAllFemaleHearing)).to.equal(true);
       expect(req.session.appeal.hearingRequirements.otherNeeds.singleSexTypeAppointment).to.equal('All female');
     });

@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getWitnessesOnHearingQuestion, postWitnessesOnHearingQuestion,
   setupWitnessesOnHearingQuestionController
@@ -88,7 +88,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
         saveAndContinue: true
 
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         expectedArgs
       );
     });
@@ -133,7 +133,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
         saveAndContinue: true
 
       };
-      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to witness names page if answer yes', async () => {

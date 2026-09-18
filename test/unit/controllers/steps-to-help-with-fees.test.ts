@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getStepsToHelpWithFees,
@@ -91,7 +91,8 @@ describe('Steps to help with fees Controller', function () {
     it('should render steps-to-help-with-fees.njk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await getStepsToHelpWithFees(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/steps-to-help-with-fees.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/steps-to-help-with-fees.njk', {
         previousPage: paths.appealStarted.helpWithFees,
         saveAndContinueOnly: true
       });
@@ -144,6 +145,7 @@ describe('Steps to help with fees Controller', function () {
       await postStepsToHelpWithFees(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.helpWithFeesReferenceNumber)).to.equal(true);
     });
 
@@ -161,6 +163,7 @@ describe('Steps to help with fees Controller', function () {
       await postStepsToHelpWithFees(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.common.overview + '?saved')).to.equal(true);
     });
 
@@ -180,8 +183,10 @@ describe('Steps to help with fees Controller', function () {
       await postStepsToHelpWithFees(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('should catch exception and call next with the error', async () => {

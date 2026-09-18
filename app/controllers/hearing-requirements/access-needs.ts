@@ -8,6 +8,10 @@ import { isoLanguages } from '../../data/isoLanguages';
 import { paths } from '../../paths';
 import RefDataService from '../../service/ref-data-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import {
+  convertDynamicListToSelectItemList, preparePostInterpreterLanguageSubmissionObj,
+  retrieveInterpreterDynamicListByDataType
+} from '../../utils/hearing-requirements-utils';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
@@ -98,6 +102,7 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
         req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = answer;
         clearUnnecessaryInterpreterCachedData(req.session.appeal.hearingRequirements);
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated
@@ -190,6 +195,7 @@ function postInterpreterSupportAppellantWitnesses(updateAppealService: UpdateApp
       }
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -262,6 +268,7 @@ function postWitnessesInterpreterNeeds(updateAppealService: UpdateAppealService)
       });
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -390,6 +397,7 @@ function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
       clearUnnecessaryInterpreterCachedData(req.session.appeal.hearingRequirements);
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -556,6 +564,7 @@ function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealServ
       }
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -672,6 +681,7 @@ function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealServic
       }
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -737,23 +747,6 @@ function getPrepareInterpreterLanguageType(req: Request, res: Response, language
   });
 }
 
-function preparePostInterpreterLanguageSubmissionObj(req: Request, languageList: DynamicList): InterpreterLanguageRefData {
-  const interpreterSpokenOrSignLanguage: InterpreterLanguageRefData = {};
-  if (req.body.languageRefData) {
-    interpreterSpokenOrSignLanguage.languageRefData = { ...languageList };
-    for (const languageObj of interpreterSpokenOrSignLanguage.languageRefData.list_items) {
-      if (req.body.languageRefData === languageObj.code) {
-        interpreterSpokenOrSignLanguage.languageRefData.value = languageObj;
-        break;
-      }
-    }
-  } else if (req.body.languageManualEntry && req.body.languageManualEntry.includes('Yes')) {
-    interpreterSpokenOrSignLanguage.languageManualEntry = ['Yes'];
-    interpreterSpokenOrSignLanguage.languageManualEntryDescription = req.body.languageManualEntryDescription;
-  }
-  return interpreterSpokenOrSignLanguage;
-}
-
 function showSelectedLanguage(selectedlanguageCode: Object, languageList) {
   let resultList = languageList;
   if (selectedlanguageCode && languageList) {
@@ -767,32 +760,6 @@ function showSelectedLanguage(selectedlanguageCode: Object, languageList) {
     });
   }
   return resultList;
-}
-
-function convertDynamicListToSelectItemList(obj: DynamicList) {
-  const selectItemList = [];
-  if (obj && obj.list_items) {
-    selectItemList.push({ 'text': 'Select language', value: '' });
-    obj.list_items.forEach((language) => {
-      selectItemList.push({ text: language.label, value: language.code, selected: (obj.value && obj.value.code === language.code) });
-    });
-
-  }
-  return selectItemList;
-}
-
-function convertCommonRefDataToValueList(commonRefData: any): DynamicList {
-  let vauleList: Value[];
-  if (commonRefData) {
-    const commonRefDataObject = JSON.parse(commonRefData);
-    vauleList = [];
-    commonRefDataObject['list_of_values']
-      .filter(obj => obj['active_flag'] === 'Y')
-      .map(obj => {
-        vauleList.push({ label: obj['value_en'], code: obj['key'] });
-      });
-  }
-  return { value: null, list_items: vauleList };
 }
 
 function clearUnnecessaryInterpreterCachedData(hearingRequirements: HearingRequirements) {
@@ -841,6 +808,7 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
       }
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -975,6 +943,7 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
       const onSuccess = async (answer: boolean) => {
         req.session.appeal.hearingRequirements.isHearingRoomNeeded = answer;
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated
@@ -1029,6 +998,7 @@ function postHearingLoopPage(updateAppealService: UpdateAppealService) {
       const onSuccess = async (answer: boolean) => {
         req.session.appeal.hearingRequirements.isHearingLoopNeeded = answer;
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated
@@ -1082,11 +1052,6 @@ function setupHearingAccessNeedsController(middleware: Middleware[], updateAppea
   router.post(paths.submitHearingRequirements.hearingLoop, middleware, postHearingLoopPage(updateAppealService));
 
   return router;
-}
-
-async function retrieveInterpreterDynamicListByDataType(refDataServiceObj: RefDataService, req: Request, dataType: String): Promise<DynamicList> {
-  const data = await refDataServiceObj.getCommonRefData(req, dataType);
-  return convertCommonRefDataToValueList(data);
 }
 
 export {

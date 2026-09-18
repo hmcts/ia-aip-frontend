@@ -38,10 +38,6 @@ module.exports = {
       await I.click('(//a[contains(text(),"Change")])[10]');
     });
 
-    When('I click send', async () => {
-      await I.click('Send');
-    });
-
     When('I click submit your appeal', async () => {
       await I.click('Submit your appeal');
     });
@@ -50,8 +46,8 @@ module.exports = {
       await I.click('Submit');
     });
 
-    When('I click Submit and continue to pay £80 by debit or credit card', async () => {
-      await I.click('Submit and continue to pay £80 by debit or credit card');
+    When('I click Submit and continue to pay £82 by debit or credit card', async () => {
+      await I.click('Submit and continue to pay £82 by debit or credit card');
     });
 
     Then('I check the statement of truth', async () => {
@@ -63,9 +59,9 @@ module.exports = {
         await I.click('Submit');
       } else {
         if (hearingType === 'with') {
-          await I.click('Submit and continue to pay £140 by debit or credit card');
+          await I.click('Submit and continue to pay £144 by debit or credit card');
         } else {
-          await I.click('Submit and continue to pay £80 by debit or credit card');
+          await I.click('Submit and continue to pay £82 by debit or credit card');
         }
       }
     });

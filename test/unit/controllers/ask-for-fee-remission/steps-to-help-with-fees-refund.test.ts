@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getStepsToHelpWithFees,
@@ -77,28 +77,30 @@ describe('Steps to help with fees Refund Controller', function () {
       const middleware = [];
 
       setupStepToHelpWithFeesRefundController(middleware);
-      expect(routerGetStub.calledWith(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund)).to.equal(true);
-      expect(routerPOSTStub.calledWith(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.stepsToApplyForHelpWithFeesRefund)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.common.stepsToApplyForHelpWithFeesRefund)).to.equal(true);
     });
 
     it('should render steps-to-help-with-fees.njk', async () => {
       await getStepsToHelpWithFees(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/steps-to-help-with-fees.njk', {
-        previousPage: paths.appealSubmitted.helpWithFeesRefund,
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/steps-to-help-with-fees.njk', {
+        previousPage: paths.common.helpWithFeesRefund,
         refundJourney: true
       });
     });
 
     it('should redirect help-with-fees-ref-number.njk', async () => {
       await postStepsToHelpWithFees()(req as Request, res as Response, next);
-      expect(redirectStub.calledWith(paths.appealSubmitted.helpWithFeesReferenceNumberRefund)).to.equal(true);
+      expect(redirectStub.calledWith(paths.common.helpWithFeesReferenceNumberRefund)).to.equal(true);
     });
 
     it('when in edit mode should redirect check-and-send.njk and reset isEdit flag', async () => {
       req.query = { 'edit': '' };
       await postStepsToHelpWithFees()(req as Request, res as Response, next);
-      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.helpWithFeesReferenceNumberRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.common.helpWithFeesReferenceNumberRefund}(?!.*\\bedit\\b)`));
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {

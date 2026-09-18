@@ -1,11 +1,21 @@
 import axios from 'axios';
-import CcdSystemService, { getPipValidationSuccess, validateAccessCode } from '../../../app/service/ccd-system-service';
+import config from 'config';
+import CcdSystemService, {
+  getJoinAppealPipValidationSuccess,
+  getPipValidationSuccess, PipValidation,
+  validateAccessCode,
+  isJoinAppealAccessCodeCorrect,
+  doesJoinAppealAccessCodeExist,
+  isJoinAppealAccessCodeNotExpired,
+  isJoinAppealAccessCodeUnused, doesLoggedInEmailMatchCaseNlrEmail
+} from '../../../app/service/ccd-system-service';
 import S2SService from '../../../app/service/s2s-service';
 import { SystemAuthenticationService } from '../../../app/service/system-authentication-service';
 import { addDaysToDate } from '../../../app/utils/date-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('ccd-system-service', () => {
+  const ccdBaseUrl: string = config.get('ccd.apiUrl');
   const caseId = '1234123412341234';
   const accessCode = 'ABCD1234EFGH';
   const invalidCode = 'AAAABBBBCCCC';
@@ -177,11 +187,232 @@ describe('ccd-system-service', () => {
         await new CcdSystemService(authenticationServiceStub as SystemAuthenticationService, s2sServiceStub as S2SService).givenAppellantAccess(caseId, appellantId);
         expect(axiosStub).to.be.calledWith(sinon.match(/.+\/caseworkers\/abc-123-efg\/jurisdictions\/IA\/case-types\/Asylum\/cases\/1234123412341234\/users/),
           { id: appellantId },
-          { headers: {
-            Authorization: 'Bearer user-token',
-            ServiceAuthorization: 'service-token',
-            'content-type': 'application/json'
-          }});
+          {
+            headers: {
+              Authorization: 'Bearer user-token',
+              ServiceAuthorization: 'service-token',
+              'content-type': 'application/json'
+            }
+          });
+      });
+    });
+  });
+
+  function alterDateByDays(date: Date, days: number): Date {
+    const alteredDate = new Date(date);
+    alteredDate.setDate(alteredDate.getDate() + days);
+    return alteredDate;
+  }
+
+  describe('joinAppealPip ', () => {
+    const todayDate = new Date();
+    let pinInPost: PinInPost;
+    let caseData: CaseData;
+    beforeEach(() => {
+      pinInPost = {
+        expiryDate: alterDateByDays(todayDate, 1),
+        accessCode: accessCode,
+        pinUsed: 'No'
+      };
+      caseData = {} as CaseData;
+    });
+
+    it('isJoinAppealAccessCodeCorrect functions should return true if has not expired, has not been used and is correct', async () => {
+      expect(isJoinAppealAccessCodeNotExpired(pinInPost)).to.equal(true);
+      expect(isJoinAppealAccessCodeUnused(pinInPost)).to.equal(true);
+      expect(isJoinAppealAccessCodeCorrect(pinInPost, accessCode)).to.equal(true);
+    });
+
+    it('isJoinAppealAccessCodeNotExpired should return false if pin has expired', async () => {
+      pinInPost.expiryDate = alterDateByDays(todayDate, -1);
+      expect(isJoinAppealAccessCodeNotExpired(pinInPost)).to.equal(false);
+    });
+
+    it('doesLoggedInEmailMatchCaseNlrEmail functions should return true if nlr is on case', async () => {
+      caseData.nlrDetails = { emailAddress: 'idamEmail' };
+      expect(doesLoggedInEmailMatchCaseNlrEmail('idamEmail', caseData)).to.equal(true);
+    });
+
+    it('doesLoggedInEmailMatchCaseNlrEmail should return false if nlr does not match case', async () => {
+      caseData.nlrDetails = { emailAddress: 'idamEmail' };
+      expect(doesLoggedInEmailMatchCaseNlrEmail('differentIdamEmail', caseData)).to.equal(false);
+    });
+
+    it('isJoinAppealAccessCodeUnused should return false if pin has been used', async () => {
+      pinInPost.pinUsed = 'Yes';
+      expect(isJoinAppealAccessCodeUnused(pinInPost)).to.equal(false);
+    });
+
+    it('isJoinAppealAccessCodeCorrect should return false if pin is incorrect', async () => {
+      expect(isJoinAppealAccessCodeCorrect(pinInPost, invalidCode)).to.equal(false);
+    });
+
+    it('doesJoinAppealAccessCodeExist should return false if joinAppealPin is undefined, null or empty', async () => {
+      expect(doesJoinAppealAccessCodeExist(caseData)).to.equal(false);
+      caseData.joinAppealPin = undefined;
+      expect(doesJoinAppealAccessCodeExist(caseData)).to.equal(false);
+      caseData.joinAppealPin = null;
+      expect(doesJoinAppealAccessCodeExist(caseData)).to.equal(false);
+    });
+
+    it('doesJoinAppealAccessCodeExist should return true if pin exists', async () => {
+      caseData = { joinAppealPin: pinInPost } as CaseData;
+      expect(doesJoinAppealAccessCodeExist(caseData)).to.equal(true);
+    });
+
+    it('getJoinAppealPipValidationSuccess should return case summary with accessValidated set to true', async () => {
+      caseData = {
+        appellantGivenNames: 'James',
+        appellantFamilyName: 'Bond',
+        appealReferenceNumber: 'some-appeal'
+      } as CaseData;
+      const response = getJoinAppealPipValidationSuccess(caseId, caseData);
+      expect(response).to.deep.equal({
+        accessValidated: true,
+        caseSummary: {
+          name: 'James Bond',
+          appealReference: 'some-appeal',
+          referenceNumber: caseId
+        }
+      });
+    });
+
+    describe('joinAppealPipValidation', () => {
+      const serviceToken = 'service-token';
+      const systemCaseworkerToken = 'user-token';
+      const systemCaseworkerUUID = 'abc-123-efg';
+      const someIdamEmail = 'user@test.com';
+      const failedResponse = {
+        accessValidated: false
+      };
+
+      const successResponse = {
+        accessValidated: true,
+        caseSummary: {
+          name: 'James Bond',
+          referenceNumber: caseId
+        }
+      };
+
+      let sandbox: sinon.SinonSandbox;
+      let authenticationServiceStub;
+      let s2sServiceStub;
+      let getRequest: sinon.SinonStub;
+      let ccdSystemService: CcdSystemService;
+      beforeEach(() => {
+        sandbox = sinon.createSandbox();
+        authenticationServiceStub = {
+          getCaseworkSystemToken: sandbox.stub().resolves(systemCaseworkerToken),
+          getCaseworkSystemUUID: sandbox.stub().resolves(systemCaseworkerUUID)
+        };
+        s2sServiceStub = {
+          getServiceToken: sandbox.stub().resolves(serviceToken)
+        };
+        ccdSystemService = new CcdSystemService(authenticationServiceStub as SystemAuthenticationService, s2sServiceStub as S2SService);
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('getCaseById should call with expected URL', async () => {
+        getRequest = sandbox.stub(axios, 'get').resolves({});
+        await ccdSystemService.getCaseById(caseId);
+        const expectedUrl: string =
+          `/caseworkers/${systemCaseworkerUUID}/jurisdictions/IA/case-types/Asylum/cases/${caseId}`;
+        expect(getRequest.calledOnceWith(ccdBaseUrl + expectedUrl)).to.equal(true);
+      });
+
+      it('joinAppealPipValidation should return caseIdValid false if getCaseById fails', async () => {
+        getRequest = sandbox.stub(axios, 'get').throws();
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
+        expect(pipValidation.caseIdValid).to.equal(false);
+      });
+
+      it('joinAppealPipValidation should return doesPinExist false if getCaseById valid but no existing pin', async () => {
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
+        expect(pipValidation.caseIdValid).to.equal(true);
+        expect(pipValidation.doesPinExist).to.equal(false);
+      });
+
+      it('joinAppealPipValidation should return pinValid false if doesPinExist true but invalid pin', async () => {
+        pinInPost.accessCode = invalidCode;
+        caseData.joinAppealPin = pinInPost;
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
+        expect(pipValidation.caseIdValid).to.equal(true);
+        expect(pipValidation.doesPinExist).to.equal(true);
+        expect(pipValidation.pinValid).to.equal(false);
+      });
+
+      it('joinAppealPipValidation should return codeUnused false if pinValid true but pin used', async () => {
+        pinInPost.pinUsed = 'Yes';
+        caseData.joinAppealPin = pinInPost;
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
+        expect(pipValidation.caseIdValid).to.equal(true);
+        expect(pipValidation.doesPinExist).to.equal(true);
+        expect(pipValidation.pinValid).to.equal(true);
+        expect(pipValidation.codeUnused).to.equal(false);
+      });
+
+      it('joinAppealPipValidation should return codeNotExpired false if codeUnused true but pin expired', async () => {
+        pinInPost.expiryDate = alterDateByDays(todayDate, -1);
+        caseData.joinAppealPin = pinInPost;
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
+        expect(pipValidation.caseIdValid).to.equal(true);
+        expect(pipValidation.doesPinExist).to.equal(true);
+        expect(pipValidation.pinValid).to.equal(true);
+        expect(pipValidation.codeUnused).to.equal(true);
+        expect(pipValidation.codeNotExpired).to.equal(false);
+      });
+
+
+      it('joinAppealPipValidation should return nlrEmailValid false if getCaseById valid but nlr email not on case', async () => {
+        caseData.joinAppealPin = pinInPost;
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
+        expect(pipValidation.caseIdValid).to.equal(true);
+        expect(pipValidation.doesPinExist).to.equal(true);
+        expect(pipValidation.pinValid).to.equal(true);
+        expect(pipValidation.codeUnused).to.equal(true);
+        expect(pipValidation.codeNotExpired).to.equal(true);
+        expect(pipValidation.nlrEmailValid).to.equal(false);
+      });
+
+      it('joinAppealPipValidation should return nlrEmailValid false if getCaseById valid but current idam email not matching nlr email on case', async () => {
+        caseData.nlrDetails = { emailAddress: 'someOtherEmail@test.com'};
+        caseData.joinAppealPin = pinInPost;
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
+        expect(pipValidation.caseIdValid).to.equal(true);
+        expect(pipValidation.doesPinExist).to.equal(true);
+        expect(pipValidation.pinValid).to.equal(true);
+        expect(pipValidation.codeUnused).to.equal(true);
+        expect(pipValidation.codeNotExpired).to.equal(true);
+        expect(pipValidation.nlrEmailValid).to.equal(false);
+      });
+
+      it('joinAppealPipValidation should return success object if all validation passes', async () => {
+        caseData = {
+          appellantGivenNames: 'James',
+          appellantFamilyName: 'Bond',
+          appealReferenceNumber: 'some-appeal-ref',
+          joinAppealPin: pinInPost,
+          nlrDetails: { emailAddress: someIdamEmail}
+        } as CaseData;
+        getRequest = sandbox.stub(axios, 'get').resolves({data: { case_data: caseData }});
+        const pipValidation: PipValidation = await ccdSystemService.joinAppealPipValidation(caseId, accessCode, someIdamEmail);
+        expect(pipValidation).to.deep.equal({
+          accessValidated: true,
+          caseSummary: {
+            name: 'James Bond',
+            appealReference: 'some-appeal-ref',
+            referenceNumber: caseId
+          }
+        });
       });
     });
   });

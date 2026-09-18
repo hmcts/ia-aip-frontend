@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { getAnythingElseAnswerPage, postAnythingElseAnswerPage, setupCQAnythingElseAnswerController } from '../../../../app/controllers/clarifying-questions/anything-else-answer';
 import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
@@ -136,6 +136,7 @@ describe('Clarifying Questions: Anything else answer controller', () => {
       await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submit.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken')).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(':id', '3'))).to.equal(true);
     });
 

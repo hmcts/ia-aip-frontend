@@ -6,16 +6,28 @@ import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
+import { handleNlrStatementValidation, hasActiveNlr } from '../../utils/utils';
 
+async function getCheckYourAnswersRefundRenderArgs(req: Request): Promise<RenderArgs> {
+  const summaryRows = await createSummaryRowsFrom(req);
+  return {
+    renderPath: 'templates/check-and-send.njk',
+    renderObj: {
+      previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+      summaryRows,
+      hasNlr: hasActiveNlr(req.session.appeal),
+      formAction: paths.common.checkYourAnswersRefund,
+      noSaveForLater: true,
+      buttonText: i18n.common.buttons.submit
+    }
+  };
+}
 async function getCheckYourAnswersRefund(req: Request, res: Response, next: NextFunction) {
   try {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
-    const summaryRows = await createSummaryRowsFrom(req);
-    return res.render('ask-for-fee-remission/check-and-send.njk', {
-      previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
-      summaryRows
-    });
+    const { renderPath, renderObj } = await getCheckYourAnswersRefundRenderArgs(req);
+    return res.render(renderPath, renderObj);
   } catch (error) {
     next(error);
   }
@@ -26,6 +38,13 @@ function postCheckYourAnswersRefund(updateAppealService: UpdateAppealService) {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     try {
+      if (hasActiveNlr(req.session.appeal)) {
+        const renderArgs: RenderArgs = await getCheckYourAnswersRefundRenderArgs(req);
+        const canContinue = handleNlrStatementValidation(req, res, renderArgs);
+        if (!canContinue) {
+          return;
+        }
+      }
       const appeal: Appeal = {
         ...req.session.appeal,
         application: {
@@ -35,12 +54,13 @@ function postCheckYourAnswersRefund(updateAppealService: UpdateAppealService) {
       };
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.REQUEST_FEE_REMISSION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true, refundFeatureEnabled);
+      req.session.refreshCasesList = true;
 
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
       };
-      return res.redirect(paths.appealSubmitted.confirmationRefund);
+      return res.redirect(paths.common.confirmationRefund);
     } catch (error) {
       next(error);
     }
@@ -65,7 +85,7 @@ async function createSummaryRowsFrom(req: Request) {
     const feeStatementRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.feeStatement,
       rowValue,
-      paths.appealSubmitted.feeSupportRefund + editParameter
+      paths.common.feeSupportRefund + editParameter
     );
     rows.push(feeStatementRow);
   }
@@ -74,7 +94,7 @@ async function createSummaryRowsFrom(req: Request) {
     const asylumSupportRefNumberRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.asylumSupportRefNumber,
       [lateAsylumSupportRefNumber],
-      paths.appealSubmitted.asylumSupportRefund + editParameter
+      paths.common.asylumSupportRefund + editParameter
     );
     rows.push(asylumSupportRefNumberRow);
   }
@@ -89,7 +109,7 @@ async function createSummaryRowsFrom(req: Request) {
     const helpWithFeesRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.helpWithFees,
       [helpWithFeeValue],
-      paths.appealSubmitted.helpWithFeesRefund + editParameter
+      paths.common.helpWithFeesRefund + editParameter
     );
     rows.push(helpWithFeesRow);
   }
@@ -98,7 +118,7 @@ async function createSummaryRowsFrom(req: Request) {
     const helpWithFeeRefNumberRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.helpWithFeesRefNumber,
       [lateHelpWithFeesRefNumber],
-      paths.appealSubmitted.helpWithFeesReferenceNumberRefund + editParameter
+      paths.common.helpWithFeesReferenceNumberRefund + editParameter
     );
     rows.push(helpWithFeeRefNumberRow);
   }
@@ -107,7 +127,7 @@ async function createSummaryRowsFrom(req: Request) {
     const localAuthorityLetterRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter,
       application.lateLocalAuthorityLetters.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
-      paths.appealSubmitted.localAuthorityLetterRefund + editParameter,
+      paths.common.localAuthorityLetterRefund + editParameter,
       Delimiter.BREAK_LINE
     );
     rows.push(localAuthorityLetterRow);
@@ -117,8 +137,8 @@ async function createSummaryRowsFrom(req: Request) {
 
 function setupCheckYourAnswersRefundController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.appealSubmitted.checkYourAnswersRefund, middleware, getCheckYourAnswersRefund);
-  router.post(paths.appealSubmitted.checkYourAnswersRefund, middleware, postCheckYourAnswersRefund(updateAppealService));
+  router.get(paths.common.checkYourAnswersRefund, middleware, getCheckYourAnswersRefund);
+  router.post(paths.common.checkYourAnswersRefund, middleware, postCheckYourAnswersRefund(updateAppealService));
   return router;
 }
 

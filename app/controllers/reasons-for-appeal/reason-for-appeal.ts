@@ -10,7 +10,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { addDaysToDate } from '../../utils/date-utils';
 import { getFileUploadError } from '../../utils/upload-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { asBooleanValue, documentIdToDocStoreUrl, hasPendingTimeExtension } from '../../utils/utils';
+import { asBooleanValue, hasPendingTimeExtension } from '../../utils/utils';
 import {
   createStructuredError,
   reasonForAppealDecisionValidation,
@@ -54,6 +54,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_REASONS_FOR_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.refreshCasesList = true;
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -156,6 +157,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
         }
         const appeal: Appeal = { ...req.session.appeal };
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_REASONS_FOR_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated

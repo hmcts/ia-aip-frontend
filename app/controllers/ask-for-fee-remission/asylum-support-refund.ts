@@ -14,8 +14,8 @@ async function getAsylumSupport(req: Request, res: Response, next: NextFunction)
 
     const asylumSupportRefNumber = req.session.appeal.application.lateAsylumSupportRefNumber || null;
     return res.render('appeal-application/fee-support/asylum-support.njk', {
-      previousPage: paths.appealSubmitted.feeSupportRefund,
-      formAction: paths.appealSubmitted.asylumSupportRefund,
+      previousPage: paths.common.feeSupportRefund,
+      formAction: paths.common.asylumSupportRefund,
       asylumSupportRefNumber,
       refundJourney: true
     });
@@ -35,9 +35,9 @@ function postAsylumSupport() {
         return res.render('appeal-application/fee-support/asylum-support.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.appealSubmitted.asylumSupportRefund,
+          previousPage: paths.common.asylumSupportRefund,
           pageTitle: i18n.pages.asylumSupportPage.title,
-          formAction: paths.appealSubmitted.asylumSupportRefund,
+          formAction: paths.common.asylumSupportRefund,
           refundJourney: true
         });
       }
@@ -45,7 +45,7 @@ function postAsylumSupport() {
       const application = req.session.appeal.application;
       application.lateAsylumSupportRefNumber = selectedValue;
       resetJourneyValues(application);
-      return res.redirect(paths.appealSubmitted.checkYourAnswersRefund);
+      return res.redirect(paths.common.checkYourAnswersRefund);
     } catch (error) {
       next(error);
     }
@@ -54,8 +54,8 @@ function postAsylumSupport() {
 
 function setupAsylumSupportRefundController(middleware: Middleware[]): Router {
   const router = Router();
-  router.get(paths.appealSubmitted.asylumSupportRefund, middleware, getAsylumSupport);
-  router.post(paths.appealSubmitted.asylumSupportRefund, middleware, postAsylumSupport());
+  router.get(paths.common.asylumSupportRefund, middleware, getAsylumSupport);
+  router.post(paths.common.asylumSupportRefund, middleware, postAsylumSupport());
   return router;
 }
 

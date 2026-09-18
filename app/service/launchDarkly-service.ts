@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import _ from 'lodash';
+import get from 'lodash/get';
 import { setupSecrets } from '../setupSecrets';
 import Logger from '../utils/logger';
 
@@ -40,7 +40,7 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
     if (process.env.IS_FUNCTIONAL_TEST === 'true') {
       return this.getTestFlagValue(flag);
     }
-    const username = _.get(req, 'idam.userDetails.sub', 'user-is-not-logged-in');
+    const username = get(req, 'idam.userDetails.sub', 'user-is-not-logged-in');
     return ldClient.variation(flag, {  kind: 'user', key: username }, defaultReturn);
   }
 
@@ -56,6 +56,7 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
       case 'dlrm-setaside-feature-flag':
       case 'dlrm-refund-feature-flag':
       case 'dlrm-internal-feature-flag':
+      case 'fee-pay-price':
         return true;
       default:
         return false;

@@ -43,6 +43,7 @@ function postJoinByVideoCallReason(updateAppealService: UpdateAppealService) {
           remoteVideoCallDescription: req.body['reason']
         };
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         return req.body['saveForLater']
           ? handleHearingRequirementsSaveForLater(req, res)
           : getConditionalRedirectUrl(req, res, paths.submitHearingRequirements.otherNeedsMultimediaEvidenceQuestion);

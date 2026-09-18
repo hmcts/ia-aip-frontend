@@ -6,7 +6,7 @@ const testUrl = config.get('testUrl');
 module.exports = {
   sponsorName(I) {
     Given('I should be taken to the has sponsor name page', async () => {
-      I.amOnPage(testUrl + paths.appealStarted.sponsorName);
+      I.waitInUrl(testUrl + paths.appealStarted.sponsorName, 10);
     });
 
     When(/^I enter "([^"]*)" "([^"]*)" as my sponsor's Given and Family Name and click Save and continue$/, async (sponsorGivenNames, sponsorFamilyName) => {

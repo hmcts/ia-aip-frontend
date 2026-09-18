@@ -32,4 +32,4 @@ echo "IA_CUSTOMER_SERVICES_TELEPHONE=111123111" >> "$OUTPUT_FILE"
 echo "CCD_API_URL=https://ccd-data-store-api-ia-case-api-pr-${PR_NUMBER}.preview.platform.hmcts.net" >> "$OUTPUT_FILE"
 echo "IA_CASE_PAYMENTS_API_URL=https://ia-case-api-pr-${PR_NUMBER}-payments-api.preview.platform.hmcts.net" >> "$OUTPUT_FILE"
 echo "PCQ_RETURN_URL=https://localhost:3000/about-appeal" >> "$OUTPUT_FILE"
-
+echo "MAX_DRAFT_APPEALS=5" >> "$OUTPUT_FILE"

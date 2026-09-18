@@ -1,4 +1,3 @@
-import exp from 'constants';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 

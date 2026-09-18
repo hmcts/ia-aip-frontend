@@ -8,6 +8,7 @@ export default {
   'last_modified': '2019-11-13T15:35:31.356',
   'case_data': {
     'journeyType': 'aip',
-    'homeOfficeReferenceNumber': 'A1234564'
+    'homeOfficeReferenceNumber': 'A1234564',
+    'appealType': 'protection'
   }
 };

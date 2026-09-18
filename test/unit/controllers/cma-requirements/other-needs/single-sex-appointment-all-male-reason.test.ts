@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getSingleSexAppointmentAllMaleReason,
   postSingleSexAppointmentAllMaleReason,
@@ -80,7 +80,7 @@ describe('CMA Requirements - Single sex all male Reason controller', () => {
       };
 
       getSingleSexAppointmentAllMaleReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should render template with saved answer', () => {
@@ -101,7 +101,7 @@ describe('CMA Requirements - Single sex all male Reason controller', () => {
       };
 
       getSingleSexAppointmentAllMaleReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -146,7 +146,7 @@ describe('CMA Requirements - Single sex all male Reason controller', () => {
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
 
     });
 

@@ -1,12 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request } from 'express';
 import session from 'express-session';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
-import { appealApplicationStatus, resetFeeSupportSectionStatusAndValues } from '../../../app/utils/tasks-utils';
+import { addNonLegalRepStatus, appealApplicationStatus } from '../../../app/utils/tasks-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('getStatus', () => {
+describe('taskUtils', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let appeal: Appeal;
@@ -206,13 +206,14 @@ describe('getStatus', () => {
     expect(appealApplicationStatus(appeal, false)).to.deep.eq(status);
   });
 
-  it('should update status contactDetails as completed and mark active next task', () => {
+  it('should update status contactDetails as completed no NLR no Sponsor', () => {
     appeal.application.contactDetails = {
       ...appeal.application.contactDetails,
       phone: '07769118762',
       wantsSms: true
     };
     appeal.application.hasSponsor = 'No';
+    appeal.application.hasNonLegalRep = 'No';
     status.contactDetails = {
       ...status.contactDetails,
       completed: true,
@@ -223,7 +224,43 @@ describe('getStatus', () => {
     expect(appealApplicationStatus(appeal, false)).to.deep.eq(status);
   });
 
-  it('should update status contactDetails as completed', () => {
+  it('should update status contactDetails as completed Yes sponsor No NLR', () => {
+    appeal.application.contactDetails = {
+      ...appeal.application.contactDetails,
+      phone: undefined,
+      wantsSms: false,
+      email: 'email@test.com',
+      wantsEmail: true
+    };
+    appeal.application.hasSponsor = 'Yes';
+    appeal.application.sponsorGivenNames = 'sponsorGivenNames';
+    appeal.application.sponsorFamilyName = 'sponsorFamilyName';
+    appeal.application.sponsorAddress = {
+      line1: 'some-line1',
+      line2: 'some-line2',
+      city: 'some-city',
+      postcode: 'some-postcode',
+      county: 'some-county',
+    };
+    appeal.application.sponsorContactDetails = {
+      email: 'email',
+      wantsEmail: true,
+      phone: 'phone',
+      wantsSms: true
+    };
+    appeal.application.sponsorAuthorisation = 'Yes';
+    appeal.application.hasNonLegalRep = 'No';
+    status.contactDetails = {
+      ...status.contactDetails,
+      completed: true,
+      saved: true
+    };
+    status.contactDetails.completed = true;
+    status.decisionType.active = true;
+    expect(appealApplicationStatus(appeal, false)).to.deep.eq(status);
+  });
+
+  it('should update status contactDetails as completed No sponsor Yes NLR', () => {
     appeal.application.contactDetails = {
       ...appeal.application.contactDetails,
       phone: undefined,
@@ -232,6 +269,95 @@ describe('getStatus', () => {
       wantsEmail: true
     };
     appeal.application.hasSponsor = 'No';
+    appeal.application.hasNonLegalRep = 'Yes';
+    appeal.nlrDetails = {
+      givenNames: 'givenNames',
+      familyName: 'familyName',
+      address: 'address',
+      emailAddress: 'emailAddress',
+      phoneNumber: 'phoneNumber',
+      idamId: 'idamId',
+    };
+    status.contactDetails = {
+      ...status.contactDetails,
+      completed: true,
+      saved: true
+    };
+    status.contactDetails.completed = true;
+    status.decisionType.active = true;
+    expect(appealApplicationStatus(appeal, false)).to.deep.eq(status);
+  });
+
+  it('should update status contactDetails as completed Yes sponsor Yes NLR No same person', () => {
+    appeal.application.contactDetails = {
+      ...appeal.application.contactDetails,
+      phone: undefined,
+      wantsSms: false,
+      email: 'email@test.com',
+      wantsEmail: true
+    };
+    appeal.application.hasSponsor = 'Yes';
+    appeal.application.sponsorGivenNames = 'sponsorGivenNames';
+    appeal.application.sponsorFamilyName = 'sponsorFamilyName';
+    appeal.application.sponsorAddress = {
+      line1: 'some-line1',
+      line2: 'some-line2',
+      city: 'some-city',
+      postcode: 'some-postcode',
+      county: 'some-county',
+    };
+    appeal.application.sponsorContactDetails = {
+      email: 'email',
+      wantsEmail: true,
+      phone: 'phone',
+      wantsSms: true
+    };
+    appeal.application.sponsorAuthorisation = 'Yes';
+    appeal.application.isSponsorSameAsNlr = 'No';
+    appeal.application.hasNonLegalRep = 'Yes';
+    appeal.nlrDetails = {
+      givenNames: 'givenNames',
+      familyName: 'familyName',
+      address: 'address',
+      emailAddress: 'emailAddress',
+      phoneNumber: 'phoneNumber',
+      idamId: 'idamId',
+    };
+    status.contactDetails = {
+      ...status.contactDetails,
+      completed: true,
+      saved: true
+    };
+    status.contactDetails.completed = true;
+    status.decisionType.active = true;
+    expect(appealApplicationStatus(appeal, false)).to.deep.eq(status);
+  });
+
+  it('should update status contactDetails as completed Yes sponsor Yes NLR Yes same person', () => {
+    appeal.application.contactDetails = {
+      ...appeal.application.contactDetails,
+      phone: undefined,
+      wantsSms: false,
+      email: 'email@test.com',
+      wantsEmail: true
+    };
+    appeal.application.hasSponsor = 'Yes';
+    appeal.application.hasNonLegalRep = 'Yes';
+    appeal.application.isSponsorSameAsNlr = 'Yes';
+    appeal.nlrDetails = {
+      givenNames: 'givenNames',
+      familyName: 'familyName',
+      addressUk: {
+        line1: 'some-line1',
+        line2: 'some-line2',
+        city: 'some-city',
+        postcode: 'some-postcode',
+        county: 'some-county',
+      },
+      emailAddress: 'emailAddress',
+      phoneNumber: 'phoneNumber',
+      idamId: 'idamId',
+    };
     status.contactDetails = {
       ...status.contactDetails,
       completed: true,
@@ -328,12 +454,198 @@ describe('getStatus', () => {
 
     appealApplicationStatus(appeal, true);
 
-    expect(appeal.application.remissionOption).to.equal(null);
-    expect(appeal.application.asylumSupportRefNumber).to.equal(null);
-    expect(appeal.application.helpWithFeesOption).to.equal(null);
-    expect(appeal.application.helpWithFeesRefNumber).to.equal(null);
-    expect(appeal.application.localAuthorityLetters).to.equal(null);
+    expect(appeal.application.remissionOption).to.be.null;
+    expect(appeal.application.remissionOption || 'none').to.equal('none');
+    expect(appeal.application.asylumSupportRefNumber).to.be.null;
+    expect(appeal.application.asylumSupportRefNumber || 'none').to.equal('none');
+    expect(appeal.application.helpWithFeesOption).to.be.null;
+    expect(appeal.application.helpWithFeesOption || 'none').to.equal('none');
+    expect(appeal.application.helpWithFeesRefNumber).to.be.null;
+    expect(appeal.application.helpWithFeesRefNumber || 'none').to.equal('none');
+    expect(appeal.application.localAuthorityLetters).to.be.null;
+    expect(appeal.application.localAuthorityLetters || 'none').to.equal('none');
     expect(appeal.application.feeSupportPersisted).to.equal(false);
   });
 
+  it('should create NLR tasks with sponsor = No and all details missing', () => {
+    appeal.application.contactDetails = {
+      email: 'email@test.com',
+      wantsEmail: true
+    } as any;
+
+    appeal.application.hasSponsor = 'No';
+    appeal.application.hasNonLegalRep = 'Yes';
+
+    const applicationStatus = addNonLegalRepStatus(appeal);
+
+    expect(applicationStatus.provideNlrEmail).to.deep.equal({
+      id: 'provideNlrEmail',
+      active: true,
+      saved: false,
+      completed: false
+    });
+
+    expect(applicationStatus.provideNlrName).to.deep.equal({
+      id: 'provideNlrName',
+      active: false,
+      saved: false,
+      completed: false
+    });
+
+    expect(applicationStatus.provideNlrAddress).to.deep.equal({
+      id: 'provideNlrAddress',
+      active: false,
+      saved: false,
+      completed: false
+    });
+
+    expect(applicationStatus.provideNlrPhone).to.deep.equal({
+      id: 'provideNlrPhone',
+      active: false,
+      saved: false,
+      completed: false
+    });
+
+    expect(applicationStatus.checkAndSend).to.deep.equal({
+      id: 'checkAndSend',
+      active: false,
+      saved: false,
+      completed: false
+    });
+
+    expect(applicationStatus).to.not.have.property('isNlrSameAsSponsor');
+  });
+
+  it('should activate isNlrSameAsSponsor after email is completed', () => {
+    appeal.application.contactDetails = {
+      email: 'email@test.com',
+      wantsEmail: true
+    } as any;
+
+    appeal.application.hasSponsor = 'Yes';
+    appeal.application.hasNonLegalRep = 'Yes';
+
+    appeal.nlrDetails = {
+      emailAddress: 'nlr@test.com'
+    } as any;
+
+    const applicationStatus = addNonLegalRepStatus(appeal);
+
+    expect(applicationStatus.provideNlrEmail.completed).to.equal(true);
+
+    expect(applicationStatus.isNlrSameAsSponsor).to.deep.equal({
+      id: 'isNlrSameAsSponsor',
+      active: true,
+      saved: false,
+      completed: false
+    });
+  });
+
+  it('should activate address task for UK address when sponsor is same as NLR', () => {
+    appeal.application.contactDetails = {
+      email: 'email@test.com',
+      wantsEmail: true
+    } as any;
+
+    appeal.application.hasSponsor = 'Yes';
+    appeal.application.hasNonLegalRep = 'Yes';
+    appeal.application.isSponsorSameAsNlr = 'Yes';
+
+    appeal.nlrDetails = {
+      emailAddress: 'email@test.com',
+      givenNames: 'John',
+      familyName: 'Smith'
+    } as any;
+
+    const applicationStatus = addNonLegalRepStatus(appeal);
+
+    expect(applicationStatus.provideNlrAddress).to.deep.equal({
+      id: 'provideNlrAddress',
+      active: true,
+      saved: false,
+      completed: false
+    });
+  });
+
+  it('should complete UK address task when required UK fields are provided', () => {
+    appeal.application.contactDetails = {
+      email: 'email@test.com',
+      wantsEmail: true
+    } as any;
+
+    appeal.application.hasSponsor = 'Yes';
+    appeal.application.hasNonLegalRep = 'Yes';
+    appeal.application.isSponsorSameAsNlr = 'Yes';
+
+    appeal.nlrDetails = {
+      emailAddress: 'email@test.com',
+      givenNames: 'John',
+      familyName: 'Smith',
+      addressUk: {
+        line1: '1 High Street',
+        city: 'London',
+        postcode: 'SW1A 1AA'
+      }
+    } as any;
+
+    const applicationStatus = addNonLegalRepStatus(appeal);
+
+    expect(applicationStatus.provideNlrAddress.saved).to.equal(true);
+    expect(applicationStatus.provideNlrAddress.completed).to.equal(true);
+  });
+
+  it('should activate checkAndSend once all NLR details are complete but idamId is missing', () => {
+    appeal.application.contactDetails = {
+      email: 'email@test.com',
+      wantsEmail: true
+    } as any;
+
+    appeal.application.hasSponsor = 'No';
+    appeal.application.hasNonLegalRep = 'Yes';
+
+    appeal.nlrDetails = {
+      emailAddress: 'email@test.com',
+      givenNames: 'John',
+      familyName: 'Smith',
+      address: 'Some address',
+      phoneNumber: '07123456789'
+    } as any;
+
+    const applicationStatus = addNonLegalRepStatus(appeal);
+
+    expect(applicationStatus.checkAndSend).to.deep.equal({
+      id: 'checkAndSend',
+      active: true,
+      saved: false,
+      completed: false
+    });
+  });
+
+  it('should complete checkAndSend once idamId exists', () => {
+    appeal.application.contactDetails = {
+      email: 'email@test.com',
+      wantsEmail: true
+    } as any;
+
+    appeal.application.hasSponsor = 'No';
+    appeal.application.hasNonLegalRep = 'Yes';
+
+    appeal.nlrDetails = {
+      emailAddress: 'email@test.com',
+      givenNames: 'John',
+      familyName: 'Smith',
+      address: 'Some address',
+      phoneNumber: '07123456789',
+      idamId: 'abc123'
+    } as any;
+
+    const applicationStatus = addNonLegalRepStatus(appeal);
+
+    expect(applicationStatus.checkAndSend).to.deep.equal({
+      id: 'checkAndSend',
+      active: false,
+      saved: true,
+      completed: true
+    });
+  });
 });

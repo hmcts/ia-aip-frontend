@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getStart, setupStartController } from '../../../app/controllers/startController';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';

@@ -41,7 +41,7 @@ export default {
       }
     }],
     'appealType': 'refusalOfHumanRights',
-    'feeWithoutHearing': '80',
+    'feeWithoutHearing': '82',
     'feeCode': 'abc',
     'feeVersion': '2',
     'uploadTheNoticeOfDecisionDocs': []

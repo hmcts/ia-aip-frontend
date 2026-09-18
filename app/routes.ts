@@ -33,6 +33,7 @@ import {
   setupStepToHelpWithFeesRefundController
 } from './controllers/ask-for-fee-remission/steps-to-help-with-fees-refund';
 import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
+import { setupCasesListController } from './controllers/cases-list';
 import { setupChangeRepresentationControllers } from './controllers/changing-representation';
 import { setupCQAnythingElseAnswerController } from './controllers/clarifying-questions/anything-else-answer';
 import { setupCQAnythingElseQuestionController } from './controllers/clarifying-questions/anything-else-question';
@@ -124,6 +125,7 @@ import {
   setupHearingBundleFeatureToggleController,
   setupHearingRequirementsFeatureToggleController
 } from './controllers/hearing-requirements/hearings-feature-toggle';
+import { setupHearingNonLegalRepNeedsController } from './controllers/hearing-requirements/non-legal-rep';
 import {
   setupHearingAnythingElseQuestionController
 } from './controllers/hearing-requirements/other-needs/anything-else-question';
@@ -180,6 +182,14 @@ import { setupSubmitHearingRequirementsTaskListController } from './controllers/
 import { setupYourHearingNeedsController } from './controllers/hearing-requirements/your-hearing-needs';
 import { setupIdamController } from './controllers/idam';
 import { setupMakeApplicationControllers } from './controllers/make-application/setup-application-controllers';
+import {
+  setupNonLegalRepresentativeControllers
+} from './controllers/non-legal-representative/add-non-legal-representative';
+import { setupJoinAppealControllers } from './controllers/non-legal-representative/join-appeal';
+import {
+  setupRemoveNonLegalRepresentativeControllers
+} from './controllers/non-legal-representative/remove-non-legal-representative';
+import { setupUpdateNlrDetailsControllers } from './controllers/non-legal-representative/update-nlr-details';
 import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-country/ooc-feature-toggle';
 import {
   setupCheckAndSendController as setupReasonsForAppealCheckAndSendController
@@ -218,21 +228,23 @@ const authenticationService: AuthenticationService = new AuthenticationService(n
 const refDataService: RefDataService = new RefDataService(authenticationService);
 
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
-const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance(), documentManagementService);
+const systemAuthenticationService: SystemAuthenticationService = new SystemAuthenticationService();
+const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, systemAuthenticationService, S2SService.getInstance(), documentManagementService);
 const paymentService: PaymentService = new PaymentService(authenticationService, updateAppealService);
 const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), config.get('addressLookup.url'));
-
+const ccdSystemService: CcdSystemService = new CcdSystemService(systemAuthenticationService, S2SService.getInstance());
 const router = express.Router();
 
 const indexController = setupIndexController();
 const startController = setupStartController();
 const notFoundController = setupNotFoundController();
 const idamController = setupIdamController();
-const startRepresentingMyselfPublicControllers = setupStartRepresentingMyselfControllers(new CcdSystemService(new SystemAuthenticationService(), S2SService.getInstance()));
+const startRepresentingMyselfPublicControllers = setupStartRepresentingMyselfControllers(ccdSystemService);
 
 const middleware = [isJourneyAllowedMiddleware];
 
 const applicationOverview = setupApplicationOverviewController(updateAppealService);
+const casesListController = setupCasesListController(updateAppealService);
 const taskListController = setupTaskListController(middleware);
 const homeOfficeDetailsController = setupHomeOfficeDetailsController(middleware, updateAppealService);
 const typeOfAppealController = setupTypeOfAppealController(middleware, updateAppealService);
@@ -253,7 +265,7 @@ const checkYourAnswersRefundController = setupCheckYourAnswersRefundController(m
 const confirmationRefundController = setConfirmationRefundController(middleware);
 const contactDetailsController = setupContactDetailsController(middleware, { updateAppealService, osPlacesClient });
 const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService, paymentService);
-const confirmationController = setConfirmationController(middleware, updateAppealService);
+const confirmationController = setConfirmationController(middleware);
 const outOfTimeController = setupOutOfTimeController(middleware, { updateAppealService, documentManagementService });
 const reasonsForAppealController = setupReasonsForAppealController(middleware, {
   updateAppealService,
@@ -312,6 +324,7 @@ const provideMoreEvidence = setupProvideMoreEvidenceController(middleware, updat
 const submitHearingRequirementsTaskListController = setupSubmitHearingRequirementsTaskListController([hearingRequirementsMiddleware]);
 const submitHearingRequirementsFeatureToggleController = setupHearingRequirementsFeatureToggleController([hearingRequirementsMiddleware]);
 const submitHearingRequirementsAccessNeedsController = setupHearingAccessNeedsController([hearingRequirementsMiddleware], updateAppealService, refDataService);
+const submitHearingRequirementsNonLegalRepNeedsController = setupHearingNonLegalRepNeedsController([hearingRequirementsMiddleware], updateAppealService, refDataService);
 const witnessesOnHearingQuestionController = setupWitnessesOnHearingQuestionController(middleware, updateAppealService);
 const witnessesOutsideUkQuestionController = setupWitnessesOutsideUkQuestionController(middleware, updateAppealService);
 const witnessNamesController = setupWitnessNamesController(middleware, updateAppealService);
@@ -338,11 +351,15 @@ const hearingDatesToAvoidEnterADateController = setupHearingDatesToAvoidEnterADa
 const hearingDatesToAvoidReasonsController = setupHearingDatesToAvoidReasonController(middleware, updateAppealService);
 const hearingDatesToAvoidAddAnotherDateController = setupHearingDatesToAvoidAddAnotherDateController(middleware);
 const hearingRequirementsCYAController = setupHearingRequirementsCYAController(middleware, updateAppealService);
-const yourHearingNeedsController = setupYourHearingNeedsController(middleware, updateAppealService);
+const yourHearingNeedsController = setupYourHearingNeedsController(middleware);
 const hearingRequirementConfirmationController = setupHearingRequirementsConfirmationPage(middleware);
 const outOfCountryController = setupOutOfCountryController(middleware, updateAppealService);
 const makeApplicationControllers = setupMakeApplicationControllers(middleware, updateAppealService, documentManagementService);
 const changeRepresentationControllers = setupChangeRepresentationControllers(middleware);
+const nonLegalRepresentativeControllers = setupNonLegalRepresentativeControllers(middleware, updateAppealService);
+const removeNonLegalRepresentativeControllers = setupRemoveNonLegalRepresentativeControllers(middleware, updateAppealService);
+const joinAppealControllers = setupJoinAppealControllers(middleware, updateAppealService, ccdSystemService);
+const nlrUpdatePhoneNumberControllers = setupUpdateNlrDetailsControllers(middleware, updateAppealService);
 const ftpaApplicationControlers = setupFtpaApplicationController(middleware, updateAppealService, documentManagementService);
 
 const hearingBundleFeatureToggleController = setupHearingBundleFeatureToggleController(middleware);
@@ -398,6 +415,7 @@ router.use(confirmationController);
 router.use(checkAndSendController);
 router.use(outOfTimeController);
 router.use(applicationOverview);
+router.use(casesListController);
 
 router.use(reasonsForAppealController);
 router.use(reasonsForAppealCYAController);
@@ -415,6 +433,7 @@ router.use(witnessesOnHearingQuestionController);
 router.use(witnessesOutsideUkQuestionController);
 router.use(witnessNamesController);
 router.use(submitHearingRequirementsAccessNeedsController);
+router.use(submitHearingRequirementsNonLegalRepNeedsController);
 router.use(hearingRequirementsOtherNeedsStartPageController);
 router.use(hearingRequirementsOtherNeedsAnythingElseQuestionController);
 router.use(hearingRequirementsOtherNeedsHealthConditionsQuestionController);
@@ -469,6 +488,10 @@ router.use(provideMoreEvidence);
 router.use(outOfCountryController);
 router.use(makeApplicationControllers);
 router.use(changeRepresentationControllers);
+router.use(nonLegalRepresentativeControllers);
+router.use(removeNonLegalRepresentativeControllers);
+router.use(joinAppealControllers);
+router.use(nlrUpdatePhoneNumberControllers);
 router.use(ftpaApplicationControlers);
 
 router.use(hearingBundleFeatureToggleController);

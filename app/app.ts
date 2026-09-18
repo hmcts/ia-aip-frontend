@@ -109,7 +109,7 @@ function configureHelmet(app: Application) {
           fontSrc: ["'self'", 'data:'],
           scriptSrc: [
             "'self'",
-            "'unsafe-inline'",
+            (req: Request, res: Response) => `'nonce-${res.locals.nonce}'`,
             'www.google-analytics.com',
             'www.googletagmanager.com',
             'tagmanager.google.com',

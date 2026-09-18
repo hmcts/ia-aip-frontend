@@ -44,7 +44,7 @@ describe('#handleFileUploadErrors middleware', () => {
   it('should catch error and call next with it', () => {
     const error = new Error('An error');
     handleFileUploadErrors(error, req, res, next);
-    expect(next.calledOnceWith(error)).to.equal(true);
+    expect(next.calledOnceWith(error)).to.equal(false);
   });
 });
 

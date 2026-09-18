@@ -35,8 +35,6 @@ function handleFileUploadErrors(err: any, req: Request, res: Response, next: Nex
     error = `${i18n.validationErrors.fileUpload.incorrectFormat}`;
     errorCode = 'incorrectFormat';
   } else {
-    // Any other upload-parsing failure (e.g. a malformed multipart body) is treated
-    // as a generic upload failure rather than escalating to the global error handler.
     error = i18n.validationErrors.fileUpload.fileCannotBeUploaded;
     errorCode = 'fileCannotBeUploaded';
   }

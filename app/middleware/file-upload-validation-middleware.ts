@@ -27,23 +27,22 @@ const uploadConfiguration = multer({
 function handleFileUploadErrors(err: any, req: Request, res: Response, next: NextFunction) {
   let error: string;
   let errorCode: string;
-  if (err instanceof multer.MulterError) {
-    if (err.code === 'LIMIT_FILE_SIZE') {
-      error = `${i18n.validationErrors.fileUpload.fileTooLarge}`;
-      errorCode = 'fileTooLarge';
-    } else if (err.code === 'LIMIT_FILE_TYPE') {
-      const supported: string = SUPPORTED_FORMATS.join(', ');
-      error = `${i18n.validationErrors.fileUpload.incorrectFormat}`;
-      errorCode = 'incorrectFormat';
-    } else {
-      error = i18n.validationErrors.fileUpload.fileCannotBeUploaded;
-      errorCode = 'fileCannotBeUploaded';
-    }
-    res.locals.errorCode = errorCode;
-    res.locals.multerError = error;
-    return next();
+  if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+    error = `${i18n.validationErrors.fileUpload.fileTooLarge}`;
+    errorCode = 'fileTooLarge';
+  } else if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_TYPE') {
+    const supported: string = SUPPORTED_FORMATS.join(', ');
+    error = `${i18n.validationErrors.fileUpload.incorrectFormat}`;
+    errorCode = 'incorrectFormat';
+  } else {
+    // Any other upload-parsing failure (e.g. a malformed multipart body) is treated
+    // as a generic upload failure rather than escalating to the global error handler.
+    error = i18n.validationErrors.fileUpload.fileCannotBeUploaded;
+    errorCode = 'fileCannotBeUploaded';
   }
-  return next(err);
+  res.locals.errorCode = errorCode;
+  res.locals.multerError = error;
+  return next();
 }
 
 // Middleware to enforce file size limit - needs to be placed before handleFileUploadErrors middleware

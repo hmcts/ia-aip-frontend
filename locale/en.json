@@ -2763,7 +2763,7 @@
             "content": [
               "The Tribunal will inform you when the Home Office Response is available to view . You can sign in to your account to read it.",
               "If there is something you don’t agree with in the Home Office Response you can send this information to the Tribunal. Use the “provide more evidence” link on your appeal page to do this.",
-              "<img src='/assets/images/homeOfficeMaintainDecision.svg'>",
+              "<img src='/assets/images/homeOfficeMaintainDecision.svg' alt=\"Diagram showing the Home Office Response document being sent to the Tribunal\">",
               "Any information or evidence you send to the Tribunal will be considered by the judge when deciding the appeal."
             ]
           },

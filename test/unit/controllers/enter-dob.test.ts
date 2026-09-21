@@ -10,6 +10,7 @@ import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
+
 const express = require('express');
 const proxyquire = require('proxyquire').noCallThru();
 
@@ -318,6 +319,13 @@ describe('Personal Details Controller', function () {
     });
 
     it('should fail validateMidEvent and render appeal-application/personal-details/date-of-birth.njk with error', async () => {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(true)
+      };
+      const { postDateOfBirth } = proxyquire('../../../app/controllers/appeal-application/home-office-details', { config: configStub });
+
       req.body.day = 1;
       req.body.month = 11;
       req.body.year = 1993;
@@ -346,9 +354,11 @@ describe('Personal Details Controller', function () {
             },
             errorList: [errorList],
             previousPage: paths.appealStarted.name,
-            homeOfficeValidationEnabled: false
+            homeOfficeValidationEnabled: true
           }
       );
+
+      sinon.restore();
     });
   });
 })

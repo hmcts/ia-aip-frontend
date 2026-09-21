@@ -161,7 +161,7 @@ Feature: NLR needs
     And I should see error "Fill in only one field"
 
     When I uncheck "Enter the language manually" option
-    Then I should not see "Enter the details of the language you need to request for your non-legal representative" on the page
+    Then I should see "Enter the details of the language you need to request for your non-legal representative" on the page
 
     When I click save and continue
     Then I see the nlr sign interpreter details page

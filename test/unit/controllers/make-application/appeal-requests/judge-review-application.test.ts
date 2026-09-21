@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getJudgeReviewApplication, postJudgeReviewApplication } from '../../../../../app/controllers/make-application/appeal-requests/judge-review-application';
 import { paths } from '../../../../../app/paths';
 import i18n from '../../../../../locale/en.json';
@@ -66,7 +66,8 @@ describe('Appeal application controllers setup', () => {
 
       getJudgeReviewApplication(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('make-application/details-question-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'make-application/details-question-page.njk', {
         ...expectedRenderPayload
       });
     });

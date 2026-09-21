@@ -19,6 +19,6 @@
     "apiUrl": "http://iaPaymentsTestUrl"
   },
   "refData": {
-    "apiUrl": "http://refDataTestUrl"
+    "apiUrl": "REF_DATA_API_URL"
   }
 }

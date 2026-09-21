@@ -8,7 +8,8 @@ import {
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import Logger from '../../../../app/utils/logger';
-import { expect, sinon } from '../../../utils/testUtils';
+import i18n from '../../../../locale/en.json';
+import { expect, setActiveNlr, sinon } from '../../../utils/testUtils';
 
 describe('Hearing Requirements Check and Send controller', () => {
   let sandbox: sinon.SinonSandbox;
@@ -91,6 +92,7 @@ describe('Hearing Requirements Check and Send controller', () => {
       params: {},
       session: {
         appeal: {
+          application: {},
           hearingRequirements: JSON.parse(JSON.stringify(hearingRequirements))
         }
       },
@@ -145,6 +147,7 @@ describe('Hearing Requirements Check and Send controller', () => {
         pageTitle: 'Check your answers',
         formAction: paths.submitHearingRequirements.checkAndSend,
         previousPage: paths.submitHearingRequirements.taskList,
+        hasNlr: false,
         summarySections: [{
           'title': '1. Witnesses',
           'summaryLists': [{
@@ -933,15 +936,15 @@ describe('Hearing Requirements Check and Send controller', () => {
       };
       getCheckAndSendPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
     });
 
-    it('should render CYA template page with requirements when there is no witnesses with spoken and sign language interpreter', () => {
-
+    it('should render CYA template page with requirements when there is no witnesses with spoken and sign language interpreter and with a Nlr', () => {
       const expectedArgs = {
         pageTitle: 'Check your answers',
         formAction: paths.submitHearingRequirements.checkAndSend,
         previousPage: paths.submitHearingRequirements.taskList,
+        hasNlr: false,
         summarySections: [{
           'title': '1. Witnesses',
           'summaryLists': [{
@@ -1495,7 +1498,259 @@ describe('Hearing Requirements Check and Send controller', () => {
       };
       getCheckAndSendPage(req as Request, res as Response, next);
 
-      expect(renderStub.calledWith('templates/check-and-send.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', expectedArgs);
+    });
+
+    describe('NLR summary section', () => {
+      it('should render CYA template page with nlr fields if hasNlr but empty nlr fields', () => {
+        setActiveNlr(req);
+        getCheckAndSendPage(req as Request, res as Response, next);
+        const expectedNlrSection = {
+          title: '3. Non-legal representative', summaryLists: [
+            {
+              title: 'Non-legal representative', summaryRows: [
+                summaryRow('Question', 'Will your non-legal representative attend the hearing?'),
+                summaryRow('Answer', '', '/hearing-non-legal-rep'),
+                summaryRow('Question', 'Will your non-legal representative take part in the hearing from outside the UK?'),
+                summaryRow('Answer', '', '/hearing-non-legal-rep-outside-uk'),
+              ]
+            }
+          ]
+        };
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+          pageTitle: 'Check your answers',
+          hasNlr: true,
+          formAction: paths.submitHearingRequirements.checkAndSend,
+          previousPage: paths.submitHearingRequirements.taskList,
+          summarySections: [sinon.match.object, sinon.match.object, expectedNlrSection, sinon.match.object, sinon.match.object]
+        });
+      });
+
+      it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrAttendingOutsideUk No ', () => {
+        setActiveNlr(req);
+        req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'No';
+        req.session.appeal.hearingRequirements.nlrAttending = 'No';
+        getCheckAndSendPage(req as Request, res as Response, next);
+        const expectedNlrSection = {
+          title: '3. Non-legal representative', summaryLists: [
+            {
+              title: 'Non-legal representative', summaryRows: [
+                summaryRow('Question', 'Will your non-legal representative attend the hearing?'),
+                summaryRow('Answer', 'No', '/hearing-non-legal-rep'),
+                summaryRow('Question', 'Will your non-legal representative take part in the hearing from outside the UK?'),
+                summaryRow('Answer', 'No', '/hearing-non-legal-rep-outside-uk'),
+              ]
+            }
+          ]
+        };
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+          pageTitle: 'Check your answers',
+          hasNlr: true,
+          formAction: paths.submitHearingRequirements.checkAndSend,
+          previousPage: paths.submitHearingRequirements.taskList,
+          summarySections: [sinon.match.object, sinon.match.object, expectedNlrSection, sinon.match.object, sinon.match.object]
+        });
+      });
+
+      it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending Yes ', () => {
+        setActiveNlr(req);
+        req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'No';
+        req.session.appeal.hearingRequirements.nlrAttending = 'Yes';
+        req.session.appeal.hearingRequirements.isNlrInterpreterRequired = 'No';
+        req.session.appeal.hearingRequirements.nlrNeedsStepFreeAccess = 'No';
+        req.session.appeal.hearingRequirements.nlrNeedsHearingLoop = 'No';
+        getCheckAndSendPage(req as Request, res as Response, next);
+        const expectedNlrSection = {
+          title: '3. Non-legal representative', summaryLists: [
+            {
+              title: 'Non-legal representative', summaryRows: [
+                summaryRow('Question', 'Will your non-legal representative attend the hearing?'),
+                summaryRow('Answer', 'Yes', '/hearing-non-legal-rep'),
+                summaryRow('Question', 'Will your non-legal representative need an interpreter at the hearing?'),
+                summaryRow('Answer', 'No', '/hearing-non-legal-rep-interpreter')
+              ]
+            }, {
+              title: 'Step-free access', summaryRows: [
+                summaryRow('Question', 'Will your non-legal representative need step-free access?'),
+                summaryRow('Answer', 'No', '/hearing-non-legal-rep-step-free-access')
+              ]
+            }, {
+              title: 'Hearing loop', summaryRows: [
+                summaryRow('Question', 'Will your non-legal representative need a hearing loop?'),
+                summaryRow('Answer', 'No', '/hearing-non-legal-rep-hearing-loop')
+              ]
+            },
+          ]
+        };
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+          pageTitle: 'Check your answers',
+          hasNlr: true,
+          formAction: paths.submitHearingRequirements.checkAndSend,
+          previousPage: paths.submitHearingRequirements.taskList,
+          summarySections: [sinon.match.object, sinon.match.object, expectedNlrSection, sinon.match.object, sinon.match.object]
+        });
+      });
+
+      it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrAttendingOutsideUk Yes with interpreter but undefined values', () => {
+        setActiveNlr(req);
+        req.session.appeal.hearingRequirements.nlrAttending = 'No';
+        req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'Yes';
+        req.session.appeal.hearingRequirements.isNlrInterpreterRequired = 'Yes';
+        req.session.appeal.hearingRequirements.nlrNeedsStepFreeAccess = 'Yes';
+        req.session.appeal.hearingRequirements.nlrNeedsHearingLoop = 'Yes';
+        req.session.appeal.hearingRequirements.nlrInterpreterSpokenLanguage = undefined;
+        req.session.appeal.hearingRequirements.nlrInterpreterSignLanguage = undefined;
+        getCheckAndSendPage(req as Request, res as Response, next);
+        const expectedNlrSection = {
+          title: '3. Non-legal representative', summaryLists: [
+            {
+              title: 'Non-legal representative', summaryRows: [
+                summaryRow('Question', 'Will your non-legal representative attend the hearing?'),
+                summaryRow('Answer', 'No', '/hearing-non-legal-rep'),
+                summaryRow('Question', 'Will your non-legal representative take part in the hearing from outside the UK?'),
+                summaryRow('Answer', 'Yes', '/hearing-non-legal-rep-outside-uk'),
+                summaryRow('Question', 'Will your non-legal representative need an interpreter at the hearing?'),
+                summaryRow('Answer', 'Yes', '/hearing-non-legal-rep-interpreter')
+              ]
+            }, {
+              title: 'Interpreter', summaryRows: [
+                summaryRow('Question', 'What kind of interpreter do you need to request for your non-legal representative?'),
+                summaryRow('Answer', '', '/hearing-non-legal-rep-interpreter-types')
+              ]
+            }, {
+              title: 'Step-free access', summaryRows: [
+                summaryRow('Question', 'Will your non-legal representative need step-free access?'),
+                summaryRow('Answer', 'Yes', '/hearing-non-legal-rep-step-free-access')
+              ]
+            }, {
+              title: 'Hearing loop', summaryRows: [
+                summaryRow('Question', 'Will your non-legal representative need a hearing loop?'),
+                summaryRow('Answer', 'Yes', '/hearing-non-legal-rep-hearing-loop')
+              ]
+            },
+          ]
+        };
+
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+          pageTitle: 'Check your answers',
+          hasNlr: true,
+          formAction: paths.submitHearingRequirements.checkAndSend,
+          previousPage: paths.submitHearingRequirements.taskList,
+          summarySections: [sinon.match.object, sinon.match.object, expectedNlrSection, sinon.match.object, sinon.match.object]
+        });
+      });
+
+      it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrAttendingOutsideUk Yes with interpreter but no choice', () => {
+        setActiveNlr(req);
+        req.session.appeal.hearingRequirements.nlrAttending = 'No';
+        req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'Yes';
+        req.session.appeal.hearingRequirements.isNlrInterpreterRequired = 'Yes';
+        req.session.appeal.hearingRequirements.nlrNeedsStepFreeAccess = 'Yes';
+        req.session.appeal.hearingRequirements.nlrNeedsHearingLoop = 'Yes';
+        req.session.appeal.hearingRequirements.nlrInterpreterSpokenLanguage = 'something' as any;
+        req.session.appeal.hearingRequirements.nlrInterpreterSignLanguage = 'something' as any;
+        req.session.appeal.hearingRequirements.nlrInterpreterLanguageCategory = ['invalid'];
+
+        getCheckAndSendPage(req as Request, res as Response, next);
+        const expectedNlrSection = {
+          title: '3. Non-legal representative', summaryLists: [
+            {
+              title: 'Non-legal representative', summaryRows: [
+                summaryRow('Question', 'Will your non-legal representative attend the hearing?'),
+                summaryRow('Answer', 'No', '/hearing-non-legal-rep'),
+                summaryRow('Question', 'Will your non-legal representative take part in the hearing from outside the UK?'),
+                summaryRow('Answer', 'Yes', '/hearing-non-legal-rep-outside-uk'),
+                summaryRow('Question', 'Will your non-legal representative need an interpreter at the hearing?'),
+                summaryRow('Answer', 'Yes', '/hearing-non-legal-rep-interpreter')
+              ]
+            }, {
+              title: 'Interpreter', summaryRows: [
+                summaryRow('Question', 'What kind of interpreter do you need to request for your non-legal representative?'),
+                summaryRow('Answer', '', '/hearing-non-legal-rep-interpreter-types')
+              ]
+            }, {
+              title: 'Step-free access', summaryRows: [
+                summaryRow('Question', 'Will your non-legal representative need step-free access?'),
+                summaryRow('Answer', 'Yes', '/hearing-non-legal-rep-step-free-access')
+              ]
+            }, {
+              title: 'Hearing loop', summaryRows: [
+                summaryRow('Question', 'Will your non-legal representative need a hearing loop?'),
+                summaryRow('Answer', 'Yes', '/hearing-non-legal-rep-hearing-loop')
+              ]
+            },
+          ]
+        };
+
+        expect(renderStub.called).to.equal(true);
+        expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+          pageTitle: 'Check your answers',
+          hasNlr: true,
+          formAction: paths.submitHearingRequirements.checkAndSend,
+          previousPage: paths.submitHearingRequirements.taskList,
+          summarySections: [sinon.match.object, sinon.match.object, expectedNlrSection, sinon.match.object, sinon.match.object]
+        });
+      });
+    });
+
+    it('should render CYA template page with nlr fields if hasNlr Yes nlrAttending No nlrAttendingOutsideUk Yes with interpreter with both choices', () => {
+      setActiveNlr(req);
+      req.session.appeal.hearingRequirements.nlrAttending = 'No';
+      req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'Yes';
+      req.session.appeal.hearingRequirements.isNlrInterpreterRequired = 'Yes';
+      req.session.appeal.hearingRequirements.nlrNeedsStepFreeAccess = 'Yes';
+      req.session.appeal.hearingRequirements.nlrNeedsHearingLoop = 'Yes';
+      req.session.appeal.hearingRequirements.nlrInterpreterSpokenLanguage = { languageRefData: { value: { label: 'someSpokenLanguage' } } } as any;
+      req.session.appeal.hearingRequirements.nlrInterpreterSignLanguage = { languageRefData: { value: { label: 'someSignLanguage' } } } as any;
+      req.session.appeal.hearingRequirements.nlrInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+
+      getCheckAndSendPage(req as Request, res as Response, next);
+      const expectedNlrSection = {
+        title: '3. Non-legal representative', summaryLists: [
+          {
+            title: 'Non-legal representative', summaryRows: [
+              summaryRow('Question', 'Will your non-legal representative attend the hearing?'),
+              summaryRow('Answer', 'No', '/hearing-non-legal-rep'),
+              summaryRow('Question', 'Will your non-legal representative take part in the hearing from outside the UK?'),
+              summaryRow('Answer', 'Yes', '/hearing-non-legal-rep-outside-uk'),
+              summaryRow('Question', 'Will your non-legal representative need an interpreter at the hearing?'),
+              summaryRow('Answer', 'Yes', '/hearing-non-legal-rep-interpreter')
+            ]
+          }, {
+            title: 'Interpreter', summaryRows: [
+              summaryRow('Question', 'What kind of interpreter do you need to request for your non-legal representative?'),
+              summaryRow('Answer', 'Spoken language interpreter<br>Sign language interpreter', '/hearing-non-legal-rep-interpreter-types'),
+              summaryRow('Question', 'Tell us about your non-legal representative\'s language requirements'),
+              summaryRow('Answer', 'someSpokenLanguage', '/hearing-non-legal-rep-interpreter-spoken-language-selection'),
+              summaryRow('Question', 'Tell us about your non-legal representative\'s sign language requirements'),
+              summaryRow('Answer', 'someSignLanguage', '/hearing-non-legal-rep-interpreter-sign-language-selection')
+            ]
+          }, {
+            title: 'Step-free access', summaryRows: [
+              summaryRow('Question', 'Will your non-legal representative need step-free access?'),
+              summaryRow('Answer', 'Yes', '/hearing-non-legal-rep-step-free-access')
+            ]
+          }, {
+            title: 'Hearing loop', summaryRows: [
+              summaryRow('Question', 'Will your non-legal representative need a hearing loop?'),
+              summaryRow('Answer', 'Yes', '/hearing-non-legal-rep-hearing-loop')
+            ]
+          },
+        ]
+      };
+
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
+        pageTitle: 'Check your answers',
+        hasNlr: true,
+        formAction: paths.submitHearingRequirements.checkAndSend,
+        previousPage: paths.submitHearingRequirements.taskList,
+        summarySections: [sinon.match.object, sinon.match.object, expectedNlrSection, sinon.match.object, sinon.match.object]
+      });
     });
 
     it('should call next with error', () => {
@@ -1527,4 +1782,52 @@ describe('Hearing Requirements Check and Send controller', () => {
     });
   });
 
+  describe('nlrStatementValidation', () => {
+    it('should render error if fails validation', async () => {
+      setActiveNlr(req);
+
+      await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(renderStub.calledOnce).to.equal(true);
+      const expectedError = {
+        'key': 'nlrStatement',
+        'text': i18n.validationErrors.nlrStatement,
+        'href': '#nlrStatement'
+      };
+      const renderArgs = renderStub.getCall(0).args;
+      expect(renderArgs[0]).to.equal('templates/check-and-send.njk');
+      expect(renderArgs[1].errors).to.deep.equal({ nlrStatement: expectedError });
+      expect(renderArgs[1].errorList).to.deep.equal([expectedError]);
+    });
+
+    it('should continue if passes validation', async () => {
+      setActiveNlr(req);
+      req.body = { nlrStatement: 'nlr' };
+      await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(false);
+    });
+  });
 });
+
+function summaryRow(key: string, value: string, changeLink?: string): SummaryRow {
+  const row = {
+    'key': {
+      'text': key
+    },
+    'value': {
+      'html': value
+    }
+  };
+  if (changeLink) {
+    row['actions'] = {
+      'items': [
+        {
+          'href': changeLink + '?edit',
+          'text': 'Change',
+          'visuallyHiddenText': key
+        }
+      ]
+    };
+  }
+  return row;
+}

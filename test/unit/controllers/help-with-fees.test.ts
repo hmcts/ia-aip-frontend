@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getApplyOption,
@@ -166,7 +166,8 @@ describe('Help with fees Controller', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       await getHelpWithFees(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/help-with-fees.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/help-with-fees.njk', {
         previousPage: paths.appealStarted.feeSupport,
         formAction: paths.appealStarted.helpWithFees,
         question: sinon.match.any,

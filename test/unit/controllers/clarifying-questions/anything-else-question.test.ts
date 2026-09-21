@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getAnythingElseQuestionPage,
   postAnythingElseQuestionPage,
@@ -110,7 +110,7 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
       ];
       getAnythingElseQuestionPage(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         {
           previousPage: paths.awaitingClarifyingQuestionsAnswers.questionsList,
           pageTitle: anythingElseQuestion.value.question,

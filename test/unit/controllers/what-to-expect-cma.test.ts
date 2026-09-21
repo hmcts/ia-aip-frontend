@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { getCmaGuidancePage, setupcmaGuidancePageController } from '../../../app/controllers/cma-requirements/what-to-expect';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -56,7 +56,7 @@ describe('CMA Guidance Controller', function() {
   describe('getWhatToExpectPage', () => {
     it('getCmaGuidancePage should render to guidance  page', function() {
       getCmaGuidancePage(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('case-management-appointment/what-to-expect.njk',{
+      expectRenderedCalledWithArgs(renderStub, 'case-management-appointment/what-to-expect.njk',{
         previousPage : { attributes: { onclick: 'history.go(-1); return false;' } }
       });
     });

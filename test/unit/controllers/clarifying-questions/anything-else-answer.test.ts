@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { getAnythingElseAnswerPage, postAnythingElseAnswerPage, setupCQAnythingElseAnswerController } from '../../../../app/controllers/clarifying-questions/anything-else-answer';
 import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';

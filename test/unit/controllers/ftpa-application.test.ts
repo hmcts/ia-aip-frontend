@@ -25,11 +25,10 @@ import {
 } from '../../../app/controllers/ftpa/ftpa-application';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
-import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { formatDate } from '../../../app/utils/date-utils';
 import i18n from '../../../locale/en.json';
-import { expect, sinon } from '../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../utils/testUtils';
 
 describe('Ftpa application controllers setup', () => {
   let sandbox: sinon.SinonSandbox;
@@ -170,7 +169,8 @@ describe('Ftpa application controllers setup', () => {
 
       await getFtpaReason(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/reason-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/reason-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -195,7 +195,8 @@ describe('Ftpa application controllers setup', () => {
 
       await getFtpaReason(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/reason-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/reason-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -221,7 +222,8 @@ describe('Ftpa application controllers setup', () => {
 
       await getFtpaReason(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/reason-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/reason-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -256,7 +258,8 @@ describe('Ftpa application controllers setup', () => {
 
       await getFtpaOutOfTimeReason(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/reason-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/reason-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -367,7 +370,8 @@ describe('Ftpa application controllers setup', () => {
 
       getProvideFtpaEvidenceQuestion(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/evidence-question-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/evidence-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -416,7 +420,8 @@ describe('Ftpa application controllers setup', () => {
 
       getProvideFtpaOutOfTimeEvidenceQuestion(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/evidence-question-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/evidence-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -545,7 +550,8 @@ describe('Ftpa application controllers setup', () => {
         formSubmitAction: paths.ftpa.ftpaEvidence
       };
       getProvideDocument(req as Request, res as Response, next, config);
-      expect(renderStub).to.be.calledWith('ftpa-application/document-upload-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/document-upload-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -567,7 +573,8 @@ describe('Ftpa application controllers setup', () => {
 
       getProvideEvidenceDocument(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/document-upload-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/document-upload-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -599,7 +606,8 @@ describe('Ftpa application controllers setup', () => {
 
       getProvideOutOfTimeEvidenceDocument(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('ftpa-application/document-upload-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'ftpa-application/document-upload-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -738,8 +746,8 @@ describe('Ftpa application controllers setup', () => {
         'ftpaEvidence',
         'ftpaAppellantEvidenceDocuments')(req as Request, res as Response, next);
 
-      expect(req.session.appeal.ftpaAppellantEvidenceDocuments.length).to.eq(0);
-      expect(req.session.appeal.documentMap.length).to.eq(0);
+      expect(req.session.appeal.ftpaAppellantEvidenceDocuments).to.have.lengthOf(0);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(0);
       expect(redirectStub.calledWith(paths.ftpa.ftpaEvidence)).to.equal(true);
     });
   });
@@ -752,34 +760,32 @@ describe('Ftpa application controllers setup', () => {
       const previousPage = paths.ftpa.ftpaEvidence;
       const summaryLists: SummaryList[] = [{ summaryRows: [] }];
 
-      const expectedRenderPayload = {
+      getFtpaCheckAndSend(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.ftpaApplication.checkYourAnswers.title,
         continuePath: paths.ftpa.ftpaCheckAndSend,
         previousPage,
-        summaryLists
-      };
-      getFtpaCheckAndSend(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/check-and-send.njk', {
-        ...expectedRenderPayload
+        summaryLists,
+        hasNlr: false
       });
     });
 
-    it('should render when no supporting evidence', () => {
-
+    it('should render when no supporting evidence with NLR', () => {
+      setActiveNlr(req);
       req.session.appeal.ftpaProvideEvidence = 'No';
 
       const previousPage = paths.ftpa.ftpaEvidenceQuestion;
       const summaryLists: SummaryList[] = [{ summaryRows: [] }];
 
-      const expectedRenderPayload = {
+      getFtpaCheckAndSend(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.ftpaApplication.checkYourAnswers.title,
         continuePath: paths.ftpa.ftpaCheckAndSend,
         previousPage,
-        summaryLists
-      };
-      getFtpaCheckAndSend(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('templates/check-and-send.njk', {
-        ...expectedRenderPayload
+        summaryLists,
+        hasNlr: true
       });
     });
   });
@@ -804,8 +810,8 @@ describe('Ftpa application controllers setup', () => {
 
       expect(redirectStub.calledWith(paths.ftpa.ftpaConfirmation)).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
-      expect(req.session.appeal.ftpaProvideEvidence).to.eq(undefined);
-      expect(req.session.appeal.ftpaOutOfTimeProvideEvidence).to.eq(undefined);
+      expect(req.session.appeal.ftpaProvideEvidence).to.be.undefined;
+      expect(req.session.appeal.ftpaOutOfTimeProvideEvidence).to.be.undefined;
     });
   });
 
@@ -814,7 +820,8 @@ describe('Ftpa application controllers setup', () => {
 
       getConfirmation(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('templates/confirmation-page.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/confirmation-page.njk', {
         title: i18n.pages.ftpaApplication.ftpaConfirmation.title,
         whatNextListItems: i18n.pages.ftpaApplication.ftpaConfirmation.whatNextListItems
       });
@@ -934,6 +941,32 @@ describe('Ftpa application controllers setup', () => {
       expect(routerPostStub.calledWith(paths.ftpa.ftpaEvidenceUploadFile)).to.equal(true);
       expect(routerPostStub.calledWith(paths.ftpa.ftpaOutOfTimeEvidenceUploadFile)).to.equal(true);
       expect(routerPostStub.calledWith(paths.ftpa.ftpaCheckAndSend)).to.equal(true);
+    });
+  });
+
+  describe('nlrStatementValidation', () => {
+    it('should render error if fails validation', async () => {
+      setActiveNlr(req);
+
+      await postFtpaCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(renderStub.calledOnce).to.equal(true);
+      const expectedError = {
+        'key': 'nlrStatement',
+        'text': i18n.validationErrors.nlrStatement,
+        'href': '#nlrStatement'
+      };
+      const renderArgs = renderStub.getCall(0).args;
+      expect(renderArgs[0]).to.equal('templates/check-and-send.njk');
+      expect(renderArgs[1].errors).to.deep.equal({ nlrStatement: expectedError });
+      expect(renderArgs[1].errorList).to.deep.equal([expectedError]);
+    });
+
+    it('should continue if passes validation', async () => {
+      setActiveNlr(req);
+      req.body = { nlrStatement: 'nlr' };
+      await postFtpaCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(renderStub.calledOnce).to.equal(false);
     });
   });
 });

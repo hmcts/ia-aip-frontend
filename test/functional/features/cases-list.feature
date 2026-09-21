@@ -14,8 +14,33 @@ Feature: Cases list page
     Given I have logged in as an appellant in state "appealSubmitted"
     When I visit the cases list page
     Then I should see the cases list page
-    And I should see a table with 1 appeal
+    And I should see the "Your appeals" h2 heading
+    And I should not see the "Appeals you're representing" h2 heading
+    And I should see 1 table
+    And I should see 1 appeal in table 1
     And I should see "View" link for the appeal
+
+  Scenario: User with single NLR case sees cases list with one repped appeal
+    Given I have logged in as a user with one repped appeal
+    When I visit the cases list page
+    Then I should see the cases list page
+    And I should not see the "Your appeals" h2 heading
+    And I should see the "Appeals you're representing" h2 heading
+    And I should see 1 table
+    And I should see 1 appeal in table 1
+    And I should see "View" link for the appeal
+
+  Scenario: User with multiple cases sees cases list with all appeals repped and unrepped
+    Given I have logged in as a user with multiple appeals both repped and unrepped
+    Then I should see the cases list page
+    And I should see the "Your appeals" h2 heading
+    And I should see the "Appeals you're representing" h2 heading
+    And I should see 2 tables
+    And I should see 2 appeals in table 1
+    And I should see 1 appeal in table 2
+    And I should see appeal reference "DRAFT" in table 1
+    And I should see appeal reference "PA/50100/2024" in table 2
+    And I should see appeal reference "HU/50200/2024" in table 1
 
   Scenario: User with multiple cases sees cases list with all appeals
     Given I have logged in as a user with multiple appeals
@@ -38,7 +63,7 @@ Feature: Cases list page
     Then I should see the confirm create appeal popup
     When I click cancel on the confirm create appeal popup
     Then I should see the cases list page
-    When I click "Create a new appeal" link
+    When I click the Create appeal nav link
     Then I should see the confirm create appeal popup
     When I click confirm on the confirm create appeal popup
     Then I should see the appeal overview page
@@ -56,7 +81,16 @@ Feature: Cases list page
     Then I should see the cases list page
     When I click "View" link for appeal "PA/50100/2024"
     Then I should see the appeal overview page
-    When I visit the cases list page
+    When I click the "Back to view appeals" link
+    Then I should see the cases list page
+    And I should see a table with 3 appeals
+
+  Scenario: User can navigate back to cases list from overview nav link
+    Given I have logged in as a user with multiple appeals
+    Then I should see the cases list page
+    When I click "View" link for appeal "PA/50100/2024"
+    Then I should see the appeal overview page
+    When I click the View appeals nav link
     Then I should see the cases list page
     And I should see a table with 3 appeals
 

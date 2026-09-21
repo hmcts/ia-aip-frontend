@@ -18,7 +18,7 @@ Scenario: Case list functionality works
   Then I should see the appeal overview page
   And I see "Do this next" in subheading
 
-  When I click the "Back to cases list" link
+  When I click the "Back to view appeals" link
   Then I should see the cases list page
   Then I should see a table with 1 appeal
   And I should see appeal reference "DRAFT" in the table

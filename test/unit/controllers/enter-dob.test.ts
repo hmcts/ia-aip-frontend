@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import {
   getDateOfBirthPage,
   postDateOfBirth,
@@ -192,7 +192,8 @@ describe('Personal Details Controller', function () {
       expect(submitStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken')).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.appealStarted.checkAndSend)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -242,8 +243,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/date-of-birth.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/date-of-birth.njk',
         {
           dob: { day: 0 },
           errors: {
@@ -263,8 +263,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/date-of-birth.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/date-of-birth.njk',
         {
           dob: { ...req.body },
           errors: {
@@ -285,8 +284,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/date-of-birth.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/date-of-birth.njk',
         {
           dob: { ...req.body },
           errors: {
@@ -307,8 +305,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/personal-details/date-of-birth.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/personal-details/date-of-birth.njk',
         {
           dob: { ...req.body },
           errors: {

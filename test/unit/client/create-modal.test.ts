@@ -1,4 +1,3 @@
-import { paths } from '../../../app/paths';
 import CreateModal from '../../../client/create-modal';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getTypeOfAppeal,
@@ -91,7 +91,8 @@ describe('Type of appeal Controller', () => {
     it('should render type-of-appeal.njk with payments feature flag OFF', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getTypeOfAppeal(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/type-of-appeal.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/type-of-appeal.njk', {
         types: appealTypes.filter(type => type.value === 'protection' || type.value === 'revocationOfProtection'),
         previousPage: paths.appealStarted.appealOutOfCountry
       });
@@ -100,7 +101,8 @@ describe('Type of appeal Controller', () => {
     it('should render type-of-appeal.njk with payments feature flag ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       await getTypeOfAppeal(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/type-of-appeal.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/type-of-appeal.njk', {
         types: appealTypes,
         previousPage: paths.appealStarted.appealOutOfCountry
       });
@@ -112,7 +114,8 @@ describe('Type of appeal Controller', () => {
       await getTypeOfAppeal(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/type-of-appeal.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/type-of-appeal.njk', {
         types: appealTypes,
         previousPage: paths.appealStarted.appealOutOfCountry
       });
@@ -176,7 +179,8 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/type-of-appeal.njk', {
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/type-of-appeal.njk', {
         types: sinon.match.any,
         errors: { appealType: expectedError },
         errorList: [expectedError],
@@ -213,7 +217,8 @@ describe('Type of appeal Controller', () => {
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('postTypeOfAppeal when clicked on save-and-continue with multiple selections should redirect to the next page', async () => {
@@ -234,7 +239,8 @@ describe('Type of appeal Controller', () => {
       expect(submitRefactoredStub.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true)).to.equal(true);
       expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledOnceWith(paths.appealStarted.taskList)).to.equal(true);
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('postTypeOfAppeal should catch exception and call next with the error', async () => {

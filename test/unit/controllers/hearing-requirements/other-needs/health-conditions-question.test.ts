@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getHearingHealthConditionsQuestion,
   postHearingHealthConditionsQuestion,
@@ -86,7 +86,7 @@ describe('Hearing Requirements - Other Needs Section: Health Conditions Question
         },
         saveAndContinue: true
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         expectedArgs
       );
     });
@@ -126,7 +126,7 @@ describe('Hearing Requirements - Other Needs Section: Health Conditions Question
         saveAndContinue: true
 
       };
-      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {

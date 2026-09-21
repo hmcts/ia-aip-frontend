@@ -1,4 +1,5 @@
-{% set pageTitleName = i18n.pages.hearingRequirements.datesToAvoidSection.enterADatePage.title %}
+{% set source = i18n.pages.hearingRequirements.datesToAvoidSection.enterADatePageNlr if hasNonLegalRep else i18n.pages.hearingRequirements.datesToAvoidSection.enterADatePage %}
+{% set pageTitleName = source.title %}
 {% extends 'layout.njk' %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
@@ -18,13 +19,13 @@
     {% set errorMessage =  errors.year.text if errors.year else errorMessage %}
     {% set errorMessage =  errors.date.text if errors.date else errorMessage %}
 
-    <h1 class="govuk-fieldset__legend--xl govuk-!-margin-top-0">{{ i18n.pages.hearingRequirements.datesToAvoidSection.enterADatePage.heading }}</h1>
+    <h1 class="govuk-fieldset__legend--xl govuk-!-margin-top-0">{{ source.heading }}</h1>
 
-    <p>{{ i18n.pages.hearingRequirements.datesToAvoidSection.enterADatePage.description | eval | safe }}</p>
+    <p>{{ source.description | eval | safe }}</p>
 
     {{ govukDateInput({
       hint: {
-        text: i18n.pages.hearingRequirements.datesToAvoidSection.enterADatePage.hint
+        text: source.hint
       },
       id: 'date',
       name: 'date',

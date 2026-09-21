@@ -1,8 +1,9 @@
+import workerThreads from 'node:worker_threads';
 import { Mockttp } from 'mockttp';
 import cache from '../../cache';
 
 const defaultUserId = '1';
-const emailToUserId: Record<string, string> = {
+export const emailToUserId: Record<string, string> = {
   'no-cases@example.com': '1',
   'has-case@example.com': '2',
   'appeal-submitted@example.com': '3',
@@ -15,9 +16,6 @@ const emailToUserId: Record<string, string> = {
   'awaitingCmaRequirements-with-time_extension@example.com': '10',
   'cmaRequirementsSubmitted@example.com': '11',
   'cmaListed@example.com': '12',
-  'outOfTimeDecisionGranted@example.com': '14',
-  'outOfTimeDecisionRejected@example.com': '15',
-  'outOfTimeDecisionInTime@example.com': '16',
   'preHearing@example.com': '17',
   'decided@example.com': '18',
   'ftpa-out-of-time-application-started@example.com': '19',
@@ -51,19 +49,41 @@ const emailToUserId: Record<string, string> = {
   'pending-payment-stf24w@example.com': '49',
   'submit-hearing-requirements-stf24w@example.com': '50',
   'awaiting-clarifying-questions-answers-stf24w@example.com': '51',
+  'appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr@example.com': '52',
+  'appeal-submitted-with-nlr-email-without-sponsor@example.com': '53',
+  'appeal-submitted-with-nlr-email-with-sponsor@example.com': '54',
+  'appeal-submitted-with-nlr-details-fail@example.com': '55',
+  'appeal-submitted-with-nlr-details@example.com': '56',
+  'nlr-login-with-repped-case@example.com': '57',
+  'appeal-submitted-with-active-nlr@example.com': '58',
+  'nlr-login-with-repped-case-and-sponsor-1@example.com': '59',
+  'appeal-submitted-with-no-nlr-details@example.com': '60',
+  'nlr-login-with-repped-case-and-sponsor-2@example.com': '61',
+  'nlr-login-with-repped-case-2@example.com': '62',
+  'nlr-login-with-repped-case-3@example.com': '63',
+  'appeal-submitted-with-active-nlr-1@example.com': '64',
+  'appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-1@example.com': '65',
+  'appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-2@example.com': '66',
+  'appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-3@example.com': '67',
+  'submitHearingRequirementsAccessNeedsCompleted@example.com': '68',
+  'submitHearingRequirementsAccessNeedsCompletedWithNlrAttending@example.com': '69',
+  'submitHearingRequirementsAccessNeedsCompletedWithNoActiveNlr@example.com': '70',
   'multiple-appeals@example.com': '100',
+  'multiple-appeals-nlr@example.com': '101',
   'setupcase@example.com': '999'
 };
 
 export async function setupGetDetails(server: Mockttp) {
   await server.forGet('/details').thenCallback(async () => {
-    const email = cache.get('email');
+    const workerThread = workerThreads.threadId === 0 ? 0 : workerThreads.threadId - 1;
+    const email = cache.get(`email-${workerThread}`);
     const uid = emailToUserId[email] || defaultUserId;
     return {
       statusCode: 200,
       json: {
         uid,
         email,
+        sub: email,
         forename: 'John',
         surname: 'Smith'
       }

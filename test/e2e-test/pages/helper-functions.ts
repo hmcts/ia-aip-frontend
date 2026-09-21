@@ -1,3 +1,4 @@
+import { emailToUserId } from '../../mock/idam/handlers/getDetails';
 import { getCitizenUserFromThread, UserInfo } from '../service/user-service';
 const { I } = inject();
 let currentUserDetails;
@@ -6,6 +7,13 @@ function signInForUser(email: string) {
   I.fillField('#username', email);
   I.click('Sign in');
   I.wait(1);
+}
+
+function signInForUserWithId(email: string) {
+  I.fillField('#username', email);
+  I.click('Sign in');
+  I.wait(1);
+  return emailToUserId[email];
 }
 
 async function signInForUserFromThread() {
@@ -32,5 +40,6 @@ export {
   fillInDate,
   enterRefNumber,
   signInForUserFromThread,
+  signInForUserWithId,
   currentUserDetails
 };

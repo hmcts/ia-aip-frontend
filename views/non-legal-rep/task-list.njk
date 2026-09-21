@@ -1,0 +1,49 @@
+{% set pageTitleName = pageTitle %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ pageTitle }}</h1>
+  <p class="govuk-body"><b>{{ i18n.pages.addNonLegalRepresentative.paragraphOne }}</b></p>
+  <p class="govuk-body"><b>{{ i18n.pages.addNonLegalRepresentative.paragraphTwo }}</b></p>
+  <p class="govuk-body"><b>{{ i18n.pages.addNonLegalRepresentative.paragraphThree }}</b></p>
+  <ol class="task-list">
+    {% for section in data %}
+      <li>
+        <h2 class="govuk-heading-m">{{ sections[section.sectionId] }}</h2>
+        <ul class="govuk-list">
+          {% for task in section.tasks %}
+            <li class="govuk-!-font-size-24 task-list__item">
+              {% if task.active or task.completed %}
+                <a class="govuk-link" id='{{ task.id }}'
+                   href='{{ tasks[task.id].path }}'
+                   title='{{ tasks[task.id].title }}'>
+                  {{ tasks[task.id].title }}
+                </a>
+              {% else %}
+                {{ tasks[task.id].title }}
+              {% endif %}
+              {% if task.completed %}
+                {{ govukTag({
+                  text: "Saved"
+                }) }}
+              {% elif task.active %}
+                 {{ govukTag({
+                   text: "To do",
+                   classes: "govuk-tag--blue"
+                 }) }}
+              {% else %}
+                {{ govukTag({
+                  text: "Cannot start yet",
+                  classes: "govuk-tag--grey"
+                }) }}
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </li>
+    {% endfor %}
+  </ol>
+{% endblock %}
+

@@ -4,10 +4,8 @@ import moment from 'moment';
 import {
   getDateLetterReceived,
   getDateLetterSent,
-  getHomeOfficeDetails,
-  postDateLetterReceived, 
+  postDateLetterReceived,
   postDateLetterSent,
-  postHomeOfficeDetails,
   setupHomeOfficeDetailsController
 } from '../../../app/controllers/appeal-application/home-office-details';
 import { Events } from '../../../app/data/events';

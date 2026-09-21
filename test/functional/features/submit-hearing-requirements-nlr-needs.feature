@@ -150,8 +150,8 @@ Feature: NLR needs
     And I check page accessibility
 
     When I click save and continue
-    And I should not see error "Please select the language you need to request"
-    And I should not see "Enter the details of the language you need to request for your non-legal representative" on the page
+    And I should see error "Please select the language you need to request"
+    And I should see "Enter the details of the language you need to request for your non-legal representative" on the page
 
     When I check the "Enter the language manually" option
     Then I should see "Enter the details of the language you need to request for your non-legal representative" on the page

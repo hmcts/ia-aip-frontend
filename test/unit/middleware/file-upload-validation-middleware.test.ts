@@ -41,10 +41,12 @@ describe('#handleFileUploadErrors middleware', () => {
     expect(next.callCount).to.equal(1);
   });
 
-  it('should catch error and call next with it', () => {
+  it('should catch a non-multer error and render a generic message without leaking it to next', () => {
     const error = new Error('An error');
     handleFileUploadErrors(error, req, res, next);
-    expect(next.calledOnceWith(error)).to.equal(true);
+    expect(res.locals.multerError).to.equal('The file cannot be uploaded');
+    expect(res.locals.errorCode).to.equal('fileCannotBeUploaded');
+    expect(next.calledOnceWithExactly()).to.equal(true);
   });
 });
 

@@ -19,7 +19,6 @@ function setupSession() {
     return session({
       cookie: {
         httpOnly: true,
-        maxAge: config.get('session.cookie.maxAgeInMs'),
         secure: isSecure,
         sameSite: 'lax'
       },
@@ -34,7 +33,7 @@ function setupSession() {
       secret: config.get('session.redis.secret'),
       resave: false,
       saveUninitialized: true,
-      cookie: { httpOnly: true, secure: false, sameSite: 'lax' }
+      cookie: { httpOnly: true, secure: isSecure, sameSite: 'lax' }
     });
   }
 }

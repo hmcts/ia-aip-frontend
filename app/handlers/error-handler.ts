@@ -18,8 +18,18 @@ function serverErrorHandler(err: any, req: Request, res: Response, next: NextFun
   const logger: Logger = req.app.locals.logger;
   logger.exception(err, logLabel);
 
+  if (res.headersSent) {
+    return next(err);
+  }
+
   res.status(StatusCodes.INTERNAL_SERVER_ERROR);
-  res.render('errors/500.njk', { err });
+  res.render('errors/500.njk', {}, (renderErr: Error, html: string) => {
+    if (renderErr) {
+      logger.exception(renderErr.message, logLabel);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Sorry, something went wrong. Please try again later.');
+    }
+    res.send(html);
+  });
 }
 
 export { pageNotFoundHandler, serverErrorHandler };

@@ -7,6 +7,7 @@ import {
   deportationOrderOptionsValidation,
   DOBValidation,
   emailValidation,
+  gwfReferenceNumberValidation,
   helpWithFeesRefNumberValidation,
   helpWithFeesValidation,
   homeOfficeNumberValidation,
@@ -23,6 +24,8 @@ import {
   sponsorContactDetailsValidation,
   statementOfTruthValidation, statementValidation,
   textAreaValidation,
+  updatedGwfReferenceNumberValidation,
+  updatedHomeOfficeNumberValidation,
   witenessesInterpreterNeedsValidation,
   yesOrNoRequiredValidation
 } from '../../../../app/utils/validations/fields-validations';
@@ -67,6 +70,113 @@ describe('fields-validations', () => {
           href: '#homeOfficeRefNumber',
           key: 'homeOfficeRefNumber',
           text: 'Enter the Home Office reference number'
+        }
+      });
+    });
+  });
+
+  describe('gwfReferenceNumberValidation', () => {
+    it('should validate a GWF reference number', () => {
+      let validations = gwfReferenceNumberValidation({ gwfReferenceNumber: 'GWF123456789' });
+      expect(validations).to.equal(null);
+
+      validations = gwfReferenceNumberValidation({ gwfReferenceNumber: 'GWF12345678' });
+      expect(validations).to.equal(null);
+    });
+
+    it('should fail validation and return empty warning message', () => {
+      const validations = gwfReferenceNumberValidation({ gwfReferenceNumber: '' });
+
+      expect(validations).to.deep.equal({
+        gwfReferenceNumber: {
+          href: '#gwfReferenceNumber',
+          key: 'gwfReferenceNumber',
+          text: 'Enter the GWF reference number'
+        }
+      });
+    });
+
+    it('should fail validation and return invalid message', () => {
+      const validations = gwfReferenceNumberValidation({ gwfReferenceNumber: '123456789' });
+
+      expect(validations).to.deep.equal({
+        gwfReferenceNumber: {
+          href: '#gwfReferenceNumber',
+          key: 'gwfReferenceNumber',
+          text: 'Enter the GWF reference number in the correct format'
+        }
+      });
+    });
+  });
+
+  describe('updatedHomeOfficeNumberValidation', () => {
+    it('should validate a UAN', () => {
+      const validations = updatedHomeOfficeNumberValidation({ homeOfficeRefNumber: '1212-0099-0089-1080' });
+      expect(validations).to.equal(null);
+    });
+
+    const gwfReferences = ['GWF123456789', 'gwf123456789', 'Gwf123456789'];
+    gwfReferences.forEach(gwfReference => {
+      it('should validate a 9 digit GWF reference', () => {
+        const validations = updatedHomeOfficeNumberValidation({ homeOfficeRefNumber: gwfReference });
+        expect(validations).to.equal(null);
+      });
+    });
+
+    it('should fail validation and return empty warning message', () => {
+      const validations = updatedHomeOfficeNumberValidation({ homeOfficeRefNumber: '' });
+
+      expect(validations).to.deep.equal({
+        homeOfficeRefNumber: {
+          href: '#homeOfficeRefNumber',
+          key: 'homeOfficeRefNumber',
+          text: 'Enter the Home Office reference number'
+        }
+      });
+    });
+
+    it('should fail validation and return invalid message', () => {
+      const validations = updatedHomeOfficeNumberValidation({ homeOfficeRefNumber: '123456789' });
+
+      expect(validations).to.deep.equal({
+        homeOfficeRefNumber: {
+          href: '#homeOfficeRefNumber',
+          key: 'homeOfficeRefNumber',
+          text: 'You should enter the UAN or GWF reference exactly as it appears on the decision letter. This can often be found in the \'How to appeal\' section. The UAN is 16 digits with dashes. The GWF starts with the letters \"GWF\" and then has 9 digits. If you need help, please use the Home Office help form in the bullet points on this page.'
+        }
+      });
+    });
+  });
+
+  describe('updatedGwfReferenceNumberValidation', () => {
+    const gwfReferences = ['GWF123456789', 'gwf123456789', 'Gwf123456789'];
+    gwfReferences.forEach(gwfReference => {
+      it('should validate a GWF reference number', () => {
+        const validations = updatedGwfReferenceNumberValidation({ gwfReferenceNumber: gwfReference });
+        expect(validations).to.equal(null);
+      });
+    });
+
+    it('should fail validation and return empty warning message', () => {
+      const validations = updatedGwfReferenceNumberValidation({ gwfReferenceNumber: '' });
+
+      expect(validations).to.deep.equal({
+        gwfReferenceNumber: {
+          href: '#gwfReferenceNumber',
+          key: 'gwfReferenceNumber',
+          text: 'Enter the GWF reference number'
+        }
+      });
+    });
+
+    it('should fail validation and return invalid message', () => {
+      const validations = updatedGwfReferenceNumberValidation({ gwfReferenceNumber: '123456789' });
+
+      expect(validations).to.deep.equal({
+        gwfReferenceNumber: {
+          href: '#gwfReferenceNumber',
+          key: 'gwfReferenceNumber',
+          text: 'You should enter the UAN or GWF reference exactly as it appears on the decision letter. This can often be found in the \'How to appeal\' section. The UAN is 16 digits with dashes. The GWF starts with the letters \"GWF\" and then has 9 digits. If you need help, please use the Home Office help form in the bullet points on this page.'
         }
       });
     });

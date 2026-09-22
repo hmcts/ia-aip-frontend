@@ -129,6 +129,15 @@ Feature: NLR needs
     Then I should see error "You must select at least one kind of interpreter"
     And I check page accessibility
 
+    When I click "Will your non-legal representative need an interpreter, step-free access or a hearing loop at the hearing?" link
+    Then I see "Communication and access support" in title
+
+    When I click continue
+    Then I see "Will your non-legal representative need an interpreter at the hearing?" in title
+
+    When I choose Yes and click save and continue
+    Then I should see the what type of interpreter nlr page
+
     When I check "I need a spoken language interpreter" option
     And I click save and continue
     Then I see "Tell us about your non-legal representative's language requirements" in title

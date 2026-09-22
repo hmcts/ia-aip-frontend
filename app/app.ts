@@ -43,6 +43,7 @@ function createApp() {
   // Inject nonce Id on every request.
   app.use((req, res, next) => {
     res.locals.nonce = uuidv4();
+    res.locals.cspNonce = res.locals.nonce;
     next();
   });
 

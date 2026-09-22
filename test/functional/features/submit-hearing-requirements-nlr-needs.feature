@@ -151,7 +151,7 @@ Feature: NLR needs
 
     When I click save and continue
     And I should see error "Please select the language you need to request"
-    And I should see "Enter the details of the language you need to request for your non-legal representative" on the page
+    And I should not see "Enter the details of the language you need to request for your non-legal representative" on the page
 
     When I check the "Enter the language manually" option
     Then I should see "Enter the details of the language you need to request for your non-legal representative" on the page
@@ -161,7 +161,7 @@ Feature: NLR needs
     And I should see error "Fill in only one field"
 
     When I uncheck "Enter the language manually" option
-    Then I should see "Enter the details of the language you need to request for your non-legal representative" on the page
+    Then I should not see "Enter the details of the language you need to request for your non-legal representative" on the page
 
     When I click save and continue
     Then I see the nlr sign interpreter details page
@@ -169,7 +169,7 @@ Feature: NLR needs
 
     When I click save and continue
     And I should see error "Please select the language you need to request"
-    And I should see "Enter the details of the language you need to request for your non-legal representative" on the page
+    And I should not see "Enter the details of the language you need to request for your non-legal representative" on the page
 
     When I check the "Enter the language manually" option
     Then I should see "Enter the details of the language you need to request for your non-legal representative" on the page
@@ -179,7 +179,7 @@ Feature: NLR needs
     And I should see error "Fill in only one field"
 
     When I uncheck "Enter the language manually" option
-    Then I should see "Enter the details of the language you need to request for your non-legal representative" on the page
+    Then I should not see "Enter the details of the language you need to request for your non-legal representative" on the page
 
     When I click save and continue
     Then I see "Will your non-legal representative need step-free access?" in title

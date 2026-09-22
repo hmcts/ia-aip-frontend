@@ -502,7 +502,7 @@ function getEventsAndStates(ftpaSetAsideFeatureEnabled: boolean,
         );
   }
 
-  const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id, Events.PAY_AND_SUBMIT_APPEAL.id];
+  const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id, Events.PAY_AND_SUBMIT_APPEAL.id, Events.COMPLETE_CASE_REVIEW.id];
   const appealArgumentSectionStates = [
     States.APPEAL_SUBMITTED.id,
     States.CLARIFYING_QUESTIONS_SUBMITTED.id,

@@ -2008,6 +2008,16 @@
             }
           ]
         },
+        "completeCaseReview": {
+          "text": "The Tribunal has issued directions to your appeal",
+          "links": [
+            {
+              "title": "",
+              "text": "Pre-hearing Review and Directions",
+              "href": "{{ paths.common.stfCaseReviewDocumentViewer }}"
+            }
+          ]
+        },
         "paymentAppeal": {
           "text": "You paid for your appeal",
           "links": [
@@ -2281,6 +2291,7 @@
             "date": "Date of the decision",
             "maker": "Who made the decision",
             "remove24wDocument": "Decision document",
+            "stf24wReviewDocument": "Decision document",
             "Refused": "Your request was refused",
             "Granted": "Your request has been granted"
           },
@@ -2375,6 +2386,7 @@
             "date": "Date of the decision",
             "maker": "Who made the decision",
             "remove24wDocument": "Decision document",
+            "stf24wReviewDocument": "Decision document",
             "whatNext": {
               "default": {
                 "granted": "You will be notified when the Tribunal makes the changes the Home Office asked for.",
@@ -2459,6 +2471,11 @@
       },
       "stfRemovalDecision": {
         "title": "Reasons for removal",
+        "dateTimeUploaded": "Document upload date and time",
+        "document": "Document"
+      },
+      "stfCaseReviewDocument": {
+        "title": "Case review letter",
         "dateTimeUploaded": "Document upload date and time",
         "document": "Document"
       },
@@ -4583,7 +4600,8 @@
     },
     "homeOfficeReference": {
       "required": "Enter the Home Office reference number",
-      "invalid": "Enter the Home Office reference number in the correct format"
+      "invalid": "Enter the Home Office reference number in the correct format",
+      "updatedInvalid": "You should enter the UAN or GWF reference exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section. The UAN is 16 digits with dashes. The GWF starts with the letters \"GWF\" and then has 9 digits. If you need help, please use the Home Office help form in the bullet points on this page."
     },
     "gwfReference": {
       "required": "Enter the GWF reference number",

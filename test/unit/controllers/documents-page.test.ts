@@ -85,7 +85,7 @@ describe('Documents controllers setup', () => {
       );
     });
 
-    it('should render documents with an upload date', () => {
+    it('should render documents with a formatted upload date', () => {
       const documents = [
         {
           id: 'document-1',
@@ -109,23 +109,31 @@ describe('Documents controllers setup', () => {
           'documents/documents.njk',
           {
             title: 'Documents',
-            documents
+            documents: [
+              {
+                ...documents[0],
+                documentUploadDate: '7 September 2026'
+              },
+              {
+                ...documents[1],
+                documentUploadDate: '8 September 2026'
+              }
+            ]
           }
       );
     });
 
-    it('should only render one document when the same document URL appears multiple times', () => {
+    it('should render the dated occurrence when the same document has a dated and undated occurrence', () => {
       const documents = [
         {
           id: 'document-1',
-          url: 'https://cdam/documents/document-1',
-          name: 'document-1.pdf',
-          documentUploadDate: '2026-09-07'
+          url: 'https://cdam/documents/504ea75a-53f6-4189-80f4-d4d2eb950c8b',
+          name: 'ftpa_decision_reason_ho.pdf'
         },
         {
           id: 'document-2',
-          url: 'https://cdam/documents/document-1',
-          name: 'document-1.pdf',
+          url: 'https://cdam/documents/504ea75a-53f6-4189-80f4-d4d2eb950c8b',
+          name: 'ftpa_decision_reason_ho.pdf',
           documentUploadDate: '2026-09-07'
         }
       ];
@@ -138,7 +146,38 @@ describe('Documents controllers setup', () => {
           'documents/documents.njk',
           {
             title: 'Documents',
-            documents: [documents[0]]
+            documents: [
+              {
+                ...documents[1],
+                documentUploadDate: '7 September 2026'
+              }
+            ]
+          }
+      );
+    });
+
+    it('should format the document upload date as day month year', () => {
+      const document = {
+        id: 'document-1',
+        url: 'https://cdam/documents/document-1',
+        name: 'document-1.pdf',
+        documentUploadDate: '2026-08-09'
+      };
+
+      req.session.appeal.documentMap = [document];
+
+      getDocuments(req as Request, res as Response, next);
+
+      expect(renderStub).to.have.been.calledOnceWithExactly(
+          'documents/documents.njk',
+          {
+            title: 'Documents',
+            documents: [
+              {
+                ...document,
+                documentUploadDate: '9 August 2026'
+              }
+            ]
           }
       );
     });

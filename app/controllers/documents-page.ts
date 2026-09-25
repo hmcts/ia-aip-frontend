@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
 import { DocumentManagementService } from '../service/document-management-service';
+import { formatDate } from '../utils/date-utils';
 
 function getDocuments(req: Request, res: Response, next: NextFunction) {
   try {
@@ -18,9 +19,14 @@ function getDocuments(req: Request, res: Response, next: NextFunction) {
       }
     });
 
+    const documents = Array.from(uniqueDocuments.values()).map(document => ({
+      ...document,
+      documentUploadDate: formatDate(document.documentUploadDate)
+    }));
+
     res.render('documents/documents.njk', {
       title: 'Documents',
-      documents: Array.from(uniqueDocuments.values())
+      documents
     });
   } catch (e) {
     next(e);

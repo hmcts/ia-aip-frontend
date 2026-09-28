@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import { getTaskList, setupTaskListController } from '../../../app/controllers/appeal-application/task-list';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
@@ -114,7 +114,8 @@ describe('Task List Controller', () => {
       } ];
 
     await getTaskList(req as Request, res as Response, next);
-    expect(renderStub.calledOnceWith('appeal-application/task-list.njk', { data: mockData })).to.equal(true);
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/task-list.njk', { data: mockData });
   });
 
   it('getTaskList should render task-list.njk with status data payments flag ON', async () => {
@@ -137,7 +138,8 @@ describe('Task List Controller', () => {
       } ];
 
     await getTaskList(req as Request, res as Response, next);
-    expect(renderStub.calledOnceWith('appeal-application/task-list.njk', { data: mockData })).to.equal(true);
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/task-list.njk', { data: mockData });
   });
 
   it('getTaskList should render task-list.njk with DLRM flag ON and FeeSupportState', async () => {
@@ -165,7 +167,8 @@ describe('Task List Controller', () => {
     req.session.appeal.application.appealType = 'protection';
     req.session.appeal.application.decisionHearingFeeOption = 'someThing';
     await getTaskList(req as Request, res as Response, next);
-    expect(renderStub.calledOnceWith('appeal-application/task-list.njk', { data: mockData })).to.equal(true);
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/task-list.njk', { data: mockData });
   });
 
   it('getTaskList should catch an exception and call next()', async () => {

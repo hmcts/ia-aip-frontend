@@ -16,7 +16,7 @@ async function getHelpWithFeesRefNumber(req: Request, res: Response, next: NextF
 
     return res.render('appeal-application/fee-support/help-with-fees-reference-number.njk', {
       previousPage: previousPage,
-      formAction: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
+      formAction: paths.common.helpWithFeesReferenceNumberRefund,
       helpWithFeesReferenceNumber,
       refundJourney: true,
       errors: req.session.validationErrors || null
@@ -37,9 +37,9 @@ function postHelpWithFeesRefNumber() {
         return res.render('appeal-application/fee-support/help-with-fees-reference-number.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
+          previousPage: paths.common.helpWithFeesReferenceNumberRefund,
           pageTitle: i18n.pages.helpWithFeesReference.title,
-          formAction: paths.appealSubmitted.helpWithFeesReferenceNumberRefund,
+          formAction: paths.common.helpWithFeesReferenceNumberRefund,
           refundJourney: true
         });
       }
@@ -47,7 +47,7 @@ function postHelpWithFeesRefNumber() {
       const application = req.session.appeal.application;
       application.lateHelpWithFeesRefNumber = selectedValue;
       resetJourneyValues(application);
-      return res.redirect(paths.appealSubmitted.checkYourAnswersRefund);
+      return res.redirect(paths.common.checkYourAnswersRefund);
     } catch (error) {
       next(error);
     }
@@ -62,8 +62,8 @@ function resetJourneyValues(application: AppealApplication) {
 
 function setupHelpWithFeesReferenceNumberRefundController(middleware: Middleware[]): Router {
   const router = Router();
-  router.get(paths.appealSubmitted.helpWithFeesReferenceNumberRefund, middleware, getHelpWithFeesRefNumber);
-  router.post(paths.appealSubmitted.helpWithFeesReferenceNumberRefund, middleware, postHelpWithFeesRefNumber());
+  router.get(paths.common.helpWithFeesReferenceNumberRefund, middleware, getHelpWithFeesRefNumber);
+  router.post(paths.common.helpWithFeesReferenceNumberRefund, middleware, postHelpWithFeesRefNumber());
   return router;
 }
 

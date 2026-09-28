@@ -1,5 +1,6 @@
 {
   "testUrl": "TEST_URL",
+  "exuiUrl": "EXUI_URL",
   "currentEnvironment": "NODE_ENV",
   "httpProxy": "HTTP_PROXY",
   "appInsights": {
@@ -52,6 +53,7 @@
   "iaPayments": {
     "apiUrl": "IA_CASE_PAYMENTS_API_URL"
   },
+  "maxDraftAppeals": "MAX_DRAFT_APPEALS",
   "launchDarkly": {
     "sdkKey": "LAUNCH_DARKLY_SDK_KEY"
   },
@@ -75,7 +77,8 @@
   "functionalTests": "FUNCTIONAL_TESTS",
   "features": {
     "askForMoreTime": "ASK_FOR_MORE_TIME_ENABLED",
-    "timelineEnabled": "TIMELINE_ENABLED"
+    "timelineEnabled": "TIMELINE_ENABLED",
+    "homeOfficeValidationEnabled": "HOME_OFFICE_VALIDATION_ENABLED"
   },
   "testAccounts": {
     "testCaseOfficerUserName": "TEST_CASEOFFICER_USERNAME",

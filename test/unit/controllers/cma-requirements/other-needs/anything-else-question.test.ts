@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getAnythingElseQuestion, postAnythingElseQuestion,
   setupAnythingElseQuestionController
@@ -73,7 +73,7 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
         saveAndContinue: true
 
       };
-      expect(renderStub).to.be.calledWith('templates/radio-question-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk',
         expectedArgs
       );
     });
@@ -112,7 +112,7 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
         saveAndContinue: true
 
       };
-      expect(renderStub.calledWith('templates/radio-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/radio-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {

@@ -34,6 +34,7 @@ export default {
       'sendDirectionActionAvailable': 'No',
       'changeDirectionDueDateActionAvailable': 'No',
       'homeOfficeReferenceNumber': 'A1234567',
+      'appealType': 'protection',
       'currentCaseStateVisibleToJudge': 'appealStarted'
     },
     'security_classification': 'PUBLIC',
@@ -60,6 +61,7 @@ export default {
       'sendDirectionActionAvailable': 'PUBLIC',
       'changeDirectionDueDateActionAvailable': 'PUBLIC',
       'homeOfficeReferenceNumber': 'PUBLIC',
+      'appealType': 'PUBLIC',
       'currentCaseStateVisibleToJudge': 'PUBLIC'
     }
   }, {

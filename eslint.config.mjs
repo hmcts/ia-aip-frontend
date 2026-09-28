@@ -1,6 +1,7 @@
 import tseslint from 'typescript-eslint'
 import importPlugin from 'eslint-plugin-import'
 import chaiFriendly from 'eslint-plugin-chai-friendly'
+import unusedImports from "eslint-plugin-unused-imports";
 
 export default [
   {
@@ -20,10 +21,12 @@ export default [
     },
     plugins: {
       import: importPlugin,
-      'chai-friendly': chaiFriendly
+      'chai-friendly': chaiFriendly,
+      'unused-imports': unusedImports,
     },
     rules: {
       quotes: ['error', 'single', { avoidEscape: true }],
+      'unused-imports/no-unused-imports': 'error',
 
       semi: ['error', 'always'],
       'space-before-function-paren': 'off',
@@ -51,7 +54,6 @@ export default [
           caseInsensitive: true
         },
       }],
-
       'no-unused-expressions': 'off',
       '@typescript-eslint/no-unsafe-function-type': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',

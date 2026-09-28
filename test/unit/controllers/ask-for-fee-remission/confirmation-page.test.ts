@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getConfirmationPage,
@@ -61,12 +61,13 @@ describe('Ask for a refund confirmation page Controller', function () {
       const middleware = [];
 
       setConfirmationRefundController(middleware);
-      expect(routerGetStub.calledWith(paths.appealSubmitted.confirmationRefund)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.confirmationRefund)).to.equal(true);
     });
 
     it('getConfirmationPage should render confirmation-page.njk after submission', () => {
       getConfirmationPage(req as Request, res as Response, next);
-      expect(res.render).to.be.calledOnceWith('ask-for-fee-remission/confirmation-page.njk', {
+      expect(res.render.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(res.render, 'ask-for-fee-remission/confirmation-page.njk', {
         date: addDaysToDate(14),
         paPayLater: false
       });

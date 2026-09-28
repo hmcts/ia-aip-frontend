@@ -27,7 +27,7 @@ function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: 
 
   const savedDates = req.session.appeal.cmaRequirements.datesToAvoid.dates || [];
 
-  const find = savedDates.find((saved) =>
+  const find = savedDates.some((saved) =>
     saved.date.day === req.body.day &&
     saved.date.month === req.body.month &&
     saved.date.year === req.body.year

@@ -126,7 +126,7 @@ You can run the security check as follows:
 
 ```
 yarn test:nsp
-```
+``` 
 
 ### Build pipeline
 

@@ -40,7 +40,7 @@ export default {
     'paymentStatus': 'Payment pending',
     'staffLocation': 'Newport',
     'feeDescription': 'Appeal determined with a hearing',
-    'feeWithHearing': '140',
+    'feeWithHearing': '144',
     'isAriaMigrated': 'No',
     'searchPostcode': 'SW1A 2AA',
     'refundRequested': 'No',

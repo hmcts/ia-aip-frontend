@@ -97,6 +97,7 @@ function uploadHomeOfficeDecisionLetter(updateAppealService: UpdateAppealService
           }
         };
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated
@@ -124,6 +125,7 @@ function deleteHomeOfficeDecisionLetter(updateAppealService: UpdateAppealService
           }
         };
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated

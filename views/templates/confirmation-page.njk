@@ -38,10 +38,22 @@
       </ul>
     </div>
   {% endif %}
+  {% if backToCasesList %}
+    {{ govukButton({
+      text: i18n.pages.successPage.backToCaseList,
+      href: paths.common.casesList
+    }) }}
+  {% elif backToAddNlr %}
   {{ govukButton({
-    text: i18n.pages.successPage.seeProgress,
+    text: i18n.pages.successPage.seeNonLegalRep,
+    href: paths.nonLegalRep.addNonLegalRep
+  }) }}
+  {% else %}
+  {{ govukButton({
+    text: i18n.pages.successPage.seeProgressNlr if isNlr else i18n.pages.successPage.seeProgress,
     href: paths.common.overview
   }) }}
+  {% endif %}
   {{ contactUs() }}
   {% if thingsYouCanDoAfterPaying %}
     <div class="feedback-box govuk-!-margin-top-0">

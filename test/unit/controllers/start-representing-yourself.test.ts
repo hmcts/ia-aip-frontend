@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getConfirmCaseDetails,
   getEnterCaseReference, getEnterSecurityCode,
@@ -60,14 +60,16 @@ describe('start-representing-yourself', () => {
   it('getStartRepresentingYourself', () => {
     getStartRepresentingYourself(req as Request, res as Response, next);
 
-    expect(renderStub).to.be.calledWith('start-representing-yourself/start-representing-yourself.njk', {
+    expect(renderStub.called).to.equal(true);
+    expectRenderedCalledWithArgs(renderStub, 'start-representing-yourself/start-representing-yourself.njk', {
       nextPage: paths.startRepresentingYourself.enterCaseNumber
     });
   });
 
   it('getEnterCaseReference', () => {
     getEnterCaseReference(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledWith('start-representing-yourself/enter-case-reference.njk', {
+    expect(renderStub.called).to.equal(true);
+    expectRenderedCalledWithArgs(renderStub, 'start-representing-yourself/enter-case-reference.njk', {
       previousPage: paths.startRepresentingYourself.start,
       caseReferenceNumber: ''
     });
@@ -79,7 +81,8 @@ describe('start-representing-yourself', () => {
       caseReferenceNumber: caseReferenceNumber
     };
     getEnterCaseReference(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledWith('start-representing-yourself/enter-case-reference.njk', {
+    expect(renderStub.called).to.equal(true);
+    expectRenderedCalledWithArgs(renderStub, 'start-representing-yourself/enter-case-reference.njk', {
       previousPage: paths.startRepresentingYourself.start,
       caseReferenceNumber: caseReferenceNumber
     });
@@ -88,7 +91,8 @@ describe('start-representing-yourself', () => {
   it('getEnterCaseReference with error error caseReferenceNumber', () => {
     req.query.error = 'caseReferenceNumber';
     getEnterCaseReference(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledWith('start-representing-yourself/enter-case-reference.njk', {
+    expect(renderStub.called).to.equal(true);
+    expectRenderedCalledWithArgs(renderStub, 'start-representing-yourself/enter-case-reference.njk', {
       previousPage: paths.startRepresentingYourself.start,
       caseReferenceNumber: '',
       error: {
@@ -111,7 +115,8 @@ describe('start-representing-yourself', () => {
   it('getEnterCaseReference with error pipValidationFailed', () => {
     req.query.error = 'pipValidationFailed';
     getEnterCaseReference(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledWith('start-representing-yourself/enter-case-reference.njk', {
+    expect(renderStub.called).to.equal(true);
+    expectRenderedCalledWithArgs(renderStub, 'start-representing-yourself/enter-case-reference.njk', {
       previousPage: paths.startRepresentingYourself.start,
       caseReferenceNumber: '',
       error: {
@@ -145,7 +150,8 @@ describe('start-representing-yourself', () => {
 
   it('getEnterSecurityCode', () => {
     getEnterSecurityCode(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledWith('start-representing-yourself/enter-security-code.njk', {
+    expect(renderStub.called).to.equal(true);
+    expectRenderedCalledWithArgs(renderStub, 'start-representing-yourself/enter-security-code.njk', {
       previousPage: paths.startRepresentingYourself.enterCaseNumber
     });
   });
@@ -153,7 +159,8 @@ describe('start-representing-yourself', () => {
   it('getEnterSecurityCode with error message', () => {
     req.query.error = 'accessCode';
     getEnterSecurityCode(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledWith('start-representing-yourself/enter-security-code.njk', {
+    expect(renderStub.called).to.equal(true);
+    expectRenderedCalledWithArgs(renderStub, 'start-representing-yourself/enter-security-code.njk', {
       previousPage: paths.startRepresentingYourself.enterCaseNumber,
       error: {
         accessCode: {
@@ -228,7 +235,8 @@ describe('start-representing-yourself', () => {
 
     getConfirmCaseDetails(req as Request, res as Response, next);
 
-    expect(renderStub).to.be.calledWith('start-representing-yourself/confirm-case-details.njk', {
+    expect(renderStub.called).to.equal(true);
+    expectRenderedCalledWithArgs(renderStub, 'start-representing-yourself/confirm-case-details.njk', {
       previousPage: paths.startRepresentingYourself.enterSecurityCode,
       caseDetails: [
         { key: { text: i18n.pages.startRepresentingYourself.confirmDetails.fieldName }, value: { html: 'James Bond' } },

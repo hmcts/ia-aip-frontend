@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getAsylumSupport,
   postAsylumSupport,
@@ -77,16 +77,17 @@ describe('Asylum support refund Controller', function () {
       const middleware = [];
 
       setupAsylumSupportRefundController(middleware);
-      expect(routerGetStub.calledWith(paths.appealSubmitted.asylumSupportRefund)).to.equal(true);
-      expect(routerPOSTStub.calledWith(paths.appealSubmitted.asylumSupportRefund)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.asylumSupportRefund)).to.equal(true);
+      expect(routerPOSTStub.calledWith(paths.common.asylumSupportRefund)).to.equal(true);
     });
 
     it('should render appeal-application/fee-support/asylum-support.njk', async () => {
       await getAsylumSupport(req as Request, res as Response, next);
       const asylumSupportRefNumber = null;
-      expect(renderStub).to.be.calledOnceWith('appeal-application/fee-support/asylum-support.njk', {
-        previousPage: paths.appealSubmitted.feeSupportRefund,
-        formAction: paths.appealSubmitted.asylumSupportRefund,
+      expect(renderStub.calledOnce).to.equal(true);
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/fee-support/asylum-support.njk', {
+        previousPage: paths.common.feeSupportRefund,
+        formAction: paths.common.asylumSupportRefund,
         asylumSupportRefNumber,
         refundJourney: true
       });
@@ -96,7 +97,7 @@ describe('Asylum support refund Controller', function () {
       req.body['asylumSupportRefNumber'] = '12345';
       await postAsylumSupport()(req as Request, res as Response, next);
       expect(req.session.appeal.application.lateAsylumSupportRefNumber).to.deep.equal('12345');
-      expect(redirectStub.calledWith(paths.appealSubmitted.checkYourAnswersRefund)).to.equal(true);
+      expect(redirectStub.calledWith(paths.common.checkYourAnswersRefund)).to.equal(true);
     });
 
     it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
@@ -104,8 +105,9 @@ describe('Asylum support refund Controller', function () {
       req.query = { 'edit': '' };
       await postAsylumSupport()(req as Request, res as Response, next);
       expect(req.session.appeal.application.lateAsylumSupportRefNumber).to.deep.equal('12345');
-      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
-      expect(req.session.appeal.application.isEdit).to.equal(undefined);
+      expect(redirectStub).to.be.calledWithMatch(new RegExp(`${paths.common.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+      expect(req.session.appeal.application.isEdit || 'none').to.equal('none');
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {
@@ -124,16 +126,15 @@ describe('Asylum support refund Controller', function () {
         href: '#asylumSupportRefNumber'
       };
       await postAsylumSupport()(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith(
-        'appeal-application/fee-support/asylum-support.njk',
+      expectRenderedCalledWithArgs(renderStub, 'appeal-application/fee-support/asylum-support.njk',
         {
           errors: {
             asylumSupportRefNumber: error
           },
           errorList: [error],
-          previousPage: paths.appealSubmitted.asylumSupportRefund,
+          previousPage: paths.common.asylumSupportRefund,
           pageTitle: i18n.pages.asylumSupportPage.title,
-          formAction: paths.appealSubmitted.asylumSupportRefund,
+          formAction: paths.common.asylumSupportRefund,
           refundJourney: true
         });
     });
@@ -156,9 +157,12 @@ describe('Asylum support refund Controller', function () {
       application.lateLocalAuthorityLetters = [];
 
       await postAsylumSupport()(req as Request, res as Response, next);
-      expect(application.lateHelpWithFeesOption).to.equal(null);
-      expect(application.lateHelpWithFeesRefNumber).to.equal(null);
-      expect(application.lateLocalAuthorityLetters).to.equal(null);
+      expect(application.lateHelpWithFeesOption).to.be.null;
+      expect(application.lateHelpWithFeesOption || 'none').to.equal('none');
+      expect(application.lateHelpWithFeesRefNumber).to.be.null;
+      expect(application.lateHelpWithFeesRefNumber || 'none').to.equal('none');
+      expect(application.lateLocalAuthorityLetters).to.be.null;
+      expect(application.lateLocalAuthorityLetters || 'none').to.equal('none');
     });
   });
 

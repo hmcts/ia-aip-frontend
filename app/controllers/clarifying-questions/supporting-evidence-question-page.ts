@@ -4,7 +4,6 @@ import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { documentIdToDocStoreUrl } from '../../utils/utils';
 import { yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
 function getSupportingEvidenceQuestionPage(req: Request, res: Response, next: NextFunction) {
@@ -92,6 +91,7 @@ function postSupportingEvidenceQuestionPage(updateAppealService: UpdateAppealSer
             draftClarifyingQuestionsAnswers: updatedQuestions
           };
           const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+          req.session.refreshCasesList = true;
           req.session.appeal = {
             ...req.session.appeal,
             ...appealUpdated

@@ -49,5 +49,9 @@ module.exports = {
     Then(/^I should see "([^"]*)" on the page$/, async (text: string) => {
       await I.see(text);
     });
+
+    Then(/^I should not see "([^"]*)" on the page$/, async (text: string) => {
+      await I.dontSee(text);
+    });
   }
 };

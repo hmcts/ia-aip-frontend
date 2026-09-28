@@ -111,14 +111,6 @@ export const States = {
     id: 'ftpaDecided',
     name: 'FTPA decided'
   },
-  AWAITING_CLARIFYING_QUESTIONS_ANSWERS: {
-    id: 'awaitingClarifyingQuestionsAnswers',
-    name: 'Awaiting clarifying questions answers'
-  },
-  CLARIFYING_QUESTIONS_ANSWERED_SUBMITTED: {
-    id: 'clarifyingQuestionsAnswersSubmitted',
-    name: 'Clarifying questions answers submitted'
-  },
   ADJOURNED: {
     id: 'adjourned',
     name: 'Adjourned'

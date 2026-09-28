@@ -4,6 +4,7 @@ function getCurrentState(eventType: string): string {
   switch (eventType) {
     case 'editAppeal':
     case 'submitAppeal':
+    case 'deleteDraftAppeal':
       return 'appealStarted';
     case 'editReasonsForAppeal':
     case 'submitReasonsForAppeal':
@@ -15,6 +16,8 @@ function getCurrentState(eventType: string): string {
       return 'awaitingClarifyingQuestionsAnswers';
     case 'editCmaRequirements':
       return 'awaitingCmaRequirements';
+    case 'editAipHearingRequirements':
+      return 'submitHearingRequirements';
     case 'submitClarifyingQuestionAnswers':
       return 'clarifyingQuestionsAnswersSubmitted';
     case 'submitCmaRequirements':
@@ -28,6 +31,13 @@ function getCurrentState(eventType: string): string {
     case 'residentJudgeFtpaDecision':
     case 'leadershipJudgeFtpaDecision':
       return 'ftpaDecided';
+    case 'sendInviteToNonLegalRep':
+    case 'provideNonLegalRepDetails':
+    case 'sendPipToNonLegalRep':
+    case 'joinAppealConfirmation':
+    case 'removeNonLegalRep':
+    case 'nlrDetailsUpdated':
+      return null;
     default:
       throw new Error(`Event type ${eventType} no current state set`);
   }

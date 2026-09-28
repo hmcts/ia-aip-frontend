@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { any } from 'joi';
 import * as paymentsApi from '../../../app/api/payments-api';
 import { paths } from '../../../app/paths';
 import { AuthenticationService } from '../../../app/service/authentication-service';
@@ -74,6 +73,7 @@ describe('Payments Service', () => {
     expect(securityHeadersStub.called).to.equal(true);
     expect(createCardPaymentStub.called).to.equal(true);
     expect(submitStub.called).to.equal(true);
+    expect(req.session.refreshCasesList).to.equal(true);
     expect(result).to.deep.equal(createCardPaymentResponse);
     expect(req.session.appeal.paymentReference).to.deep.equal('thePaymentReference');
   });

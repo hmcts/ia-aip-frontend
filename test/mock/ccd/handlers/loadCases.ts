@@ -14,9 +14,6 @@ const usersToCaseData: Record<string, any[]> = {
   '10': [mockData.awaitingCmaRequirementsWithTimeExtensions],
   '11': [mockData.submittedCmaRequirements],
   '12': [mockData.cmaListed],
-  '14': [mockData.outOfTimeDecisionGranted],
-  '15': [mockData.outOfTimeDecisionRejected],
-  '16': [mockData.outOfTimeDecisionInTime],
   '17': [mockData.uploadAddendumEvidence],
   '18': [mockData.decided],
   '19': [mockData.ftpaOutOfTimeApplicationStarted],
@@ -50,14 +47,66 @@ const usersToCaseData: Record<string, any[]> = {
   '49': [mockData.pendingPaymentSTF24W],
   '50': [mockData.submitHearingRequirementsSTF24W],
   '51': [mockData.clarifyingQuestionsSTF24W],
+  '52': [mockData.startAppealUpToHasSponsorOrNlr],
+  '53': [mockData.appealSubmittedWithNlrEmailWithoutSponsor],
+  '54': [mockData.appealSubmittedWithNlrEmailWithSponsor],
+  '55': [mockData.appealSubmittedWithNlrDetails],
+  '56': [mockData.appealSubmittedWithNlrDetails2],
+  '57': [mockData.appealSubmittedWithNlrId],
+  '58': [mockData.appealSubmittedWithNlrId2],
+  '59': [mockData.appealSubmittedWithNlrIdWithSponsor],
+  '60': [mockData.appealSubmittedWithNoNlrDetails],
+  '61': [mockData.appealSubmittedWithNlrIdWithSponsor2],
+  '62': [mockData.appealSubmittedWithNlrId2],
+  '63': [mockData.appealSubmittedWithNlrId3],
+  '64': [mockData.appealSubmittedWithNlrId],
+  '65': [mockData.startAppealUpToHasSponsorOrNlr2],
+  '66': [mockData.startAppealUpToHasSponsorOrNlr3],
+  '67': [mockData.startAppealUpToHasSponsorOrNlr4],
+  '68': [mockData.submitHearingRequirementsAccessNeedsCompleted],
+  '69': [mockData.submitHearingRequirementsAccessNeedsCompletedNlrAttending],
+  '70': [mockData.submitHearingRequirementsAccessNeedsCompletedNoActiveNlr],
+  '1001': [mockData.multipleAppealCase1001],
+  '1002': [mockData.multipleAppealCase1002],
+  '1003': [mockData.multipleAppealCase1003],
 };
 
 export async function setupLoadCases(server: Mockttp) {
+  // Handler for loading a single case by ID
   await server.forGet(
-    /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases/
+    /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/(\d+)$/
   ).thenCallback(async (request) => {
     const match = request.url.match(
-      /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases/
+      /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases\/(\d+)$/
+    );
+    const caseId = match ? match[4] : undefined;
+    if (!caseId) {
+      return {
+        statusCode: 400,
+        json: { error: 'Missing caseId param' }
+      };
+    }
+    // Search all cases across all users to find the case by ID
+    const allCases = Object.values(usersToCaseData).flat();
+    const caseData = allCases.find((c: any) => String(c.id) === caseId);
+    if (caseData) {
+      return {
+        statusCode: 200,
+        json: caseData
+      };
+    }
+    return {
+      statusCode: 404,
+      json: { error: 'Case not found' }
+    };
+  });
+
+  // Handler for listing all cases for a user
+  await server.forGet(
+    /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases$/
+  ).thenCallback(async (request) => {
+    const match = request.url.match(
+      /\/citizens\/([^/]+)\/jurisdictions\/([^/]+)\/case-types\/([^/]+)\/cases$/
     );
     const userId = match ? match[1] : undefined;
     if (!userId) {

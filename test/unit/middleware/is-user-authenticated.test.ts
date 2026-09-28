@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { isUserAuthenticated } from '../../../app/middleware/is-user-authenticated';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -47,6 +47,7 @@ describe('is-user-authenticated middleware', () => {
   it('should set redirect url', () => {
     isUserAuthenticated(req as Request, res as Response, next);
 
-    expect(req.session.redirectUrl).to.equal(undefined);
+    expect(req.session.redirectUrl).to.be.undefined;
+    expect(req.session.redirectUrl || 'none').to.equal('none');
   });
 });

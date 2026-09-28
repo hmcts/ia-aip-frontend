@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import session from 'express-session';
 import {
   getTaskList,
@@ -6,7 +6,7 @@ import {
 } from '../../../../app/controllers/hearing-requirements/task-list';
 import { paths } from '../../../../app/paths';
 import Logger from '../../../../app/utils/logger';
-import { expect, sinon } from '../../../utils/testUtils';
+import { expect, setActiveNlr, sinon } from '../../../utils/testUtils';
 
 const express = require('express');
 
@@ -94,25 +94,159 @@ describe('Submit Hearing Requirements Task List Controller', () => {
   });
 
   it('getTaskList should render task-list.njk with status data', () => {
-    const mockData = [ {
+    const mockData = [{
       'sectionId': 'witnesses',
-      'tasks': [ { 'id': 'witnesses', 'saved': false, 'completed': false, 'active': true }]
+      'tasks': [{ 'id': 'witnesses', 'saved': false, 'completed': false, 'active': true }]
     }, {
       'sectionId': 'accessNeeds',
-      'tasks': [ { 'id': 'accessNeeds', 'saved': false, 'completed': false, 'active': false } ]
+      'tasks': [{ 'id': 'accessNeeds', 'saved': false, 'completed': false, 'active': false }]
     }, {
       'sectionId': 'otherNeeds',
-      'tasks': [ { 'id': 'otherNeeds', 'saved': false, 'completed': false, 'active': false } ]
+      'tasks': [{ 'id': 'otherNeeds', 'saved': false, 'completed': false, 'active': false }]
     }, {
       'sectionId': 'datesToAvoid',
-      'tasks': [ { 'id': 'datesToAvoid', 'saved': false, 'completed': false, 'active': false } ]
+      'tasks': [{ 'id': 'datesToAvoid', 'saved': false, 'completed': false, 'active': false }]
     }, {
       'sectionId': 'checkAndSend',
-      'tasks': [ { 'id': 'checkAndSend', 'saved': false, 'completed': false, 'active': false } ]
-    } ];
+      'tasks': [{ 'id': 'checkAndSend', 'saved': false, 'completed': false, 'active': false }]
+    }];
 
     getTaskList(req as Request, res as Response, next);
-    expect(renderStub).to.be.calledOnceWith('hearing-requirements/task-list.njk', {
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/task-list.njk', {
+      previousPage: paths.common.overview,
+      data: mockData
+    });
+  });
+
+  it('getTaskList should render task-list.njk with status data for nlr', () => {
+    setActiveNlr(req);
+    const mockData = [{
+      'sectionId': 'witnesses',
+      'tasks': [{ 'id': 'witnesses', 'saved': false, 'completed': false, 'active': true }]
+    }, {
+      'sectionId': 'accessNeeds',
+      'tasks': [{ 'id': 'accessNeeds', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'nlrNeeds',
+      'tasks': [{ 'id': 'nlrAttending', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'otherNeeds',
+      'tasks': [{ 'id': 'otherNeeds', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'datesToAvoid',
+      'tasks': [{ 'id': 'datesToAvoid', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'checkAndSend',
+      'tasks': [{ 'id': 'checkAndSend', 'saved': false, 'completed': false, 'active': false }]
+    }];
+
+    getTaskList(req as Request, res as Response, next);
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/task-list.njk', {
+      previousPage: paths.common.overview,
+      data: mockData
+    });
+  });
+
+  it('getTaskList should render task-list.njk with status data for nlr if areNlrRequirementsNeeded true if nlrAttending', () => {
+    setActiveNlr(req);
+    req.session.appeal.hearingRequirements.nlrAttending = 'Yes';
+    const mockData = [{
+      'sectionId': 'witnesses',
+      'tasks': [{ 'id': 'witnesses', 'saved': false, 'completed': false, 'active': true }]
+    }, {
+      'sectionId': 'accessNeeds',
+      'tasks': [{ 'id': 'accessNeeds', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'nlrNeeds',
+      'tasks': [
+        { 'id': 'nlrAttending', 'saved': true, 'completed': true, 'active': false },
+        { 'id': 'nlrNeeds', 'saved': false, 'completed': false, 'active': true }
+      ]
+    }, {
+      'sectionId': 'otherNeeds',
+      'tasks': [{ 'id': 'otherNeeds', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'datesToAvoid',
+      'tasks': [{ 'id': 'datesToAvoid', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'checkAndSend',
+      'tasks': [{ 'id': 'checkAndSend', 'saved': false, 'completed': false, 'active': false }]
+    }];
+
+    getTaskList(req as Request, res as Response, next);
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/task-list.njk', {
+      previousPage: paths.common.overview,
+      data: mockData
+    });
+  });
+
+  it('getTaskList should render task-list.njk with status data for nlr if areNlrRequirementsNeeded true if not nlrAttending', () => {
+    setActiveNlr(req);
+    req.session.appeal.hearingRequirements.nlrAttending = 'No';
+    req.session.appeal.hearingRequirements.nlrAttendingOutsideUk = 'Yes';
+    const mockData = [{
+      'sectionId': 'witnesses',
+      'tasks': [{ 'id': 'witnesses', 'saved': false, 'completed': false, 'active': true }]
+    }, {
+      'sectionId': 'accessNeeds',
+      'tasks': [{ 'id': 'accessNeeds', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'nlrNeeds',
+      'tasks': [
+        { 'id': 'nlrAttending', 'saved': true, 'completed': true, 'active': false },
+        { 'id': 'nlrNeeds', 'saved': false, 'completed': false, 'active': true }
+      ]
+    }, {
+      'sectionId': 'otherNeeds',
+      'tasks': [{ 'id': 'otherNeeds', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'datesToAvoid',
+      'tasks': [{ 'id': 'datesToAvoid', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'checkAndSend',
+      'tasks': [{ 'id': 'checkAndSend', 'saved': false, 'completed': false, 'active': false }]
+    }];
+
+    getTaskList(req as Request, res as Response, next);
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/task-list.njk', {
+      previousPage: paths.common.overview,
+      data: mockData
+    });
+  });
+
+  it('getTaskList should render task-list.njk with status data for nlr if areNlrRequirementsNeeded true if not nlrAttending incomplete', () => {
+    setActiveNlr(req);
+    req.session.appeal.hearingRequirements.nlrAttending = 'No';
+    req.session.appeal.hearingRequirements.isHearingLoopNeeded = false;
+    const mockData = [{
+      'sectionId': 'witnesses',
+      'tasks': [{ 'id': 'witnesses', 'saved': false, 'completed': false, 'active': true }]
+    }, {
+      'sectionId': 'accessNeeds',
+      'tasks': [{ 'id': 'accessNeeds', 'saved': true, 'completed': true, 'active': false }]
+    }, {
+      'sectionId': 'nlrNeeds',
+      'tasks': [
+        { 'id': 'nlrAttending', 'saved': true, 'completed': false, 'active': true }
+      ]
+    }, {
+      'sectionId': 'otherNeeds',
+      'tasks': [{ 'id': 'otherNeeds', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'datesToAvoid',
+      'tasks': [{ 'id': 'datesToAvoid', 'saved': false, 'completed': false, 'active': false }]
+    }, {
+      'sectionId': 'checkAndSend',
+      'tasks': [{ 'id': 'checkAndSend', 'saved': false, 'completed': false, 'active': false }]
+    }];
+
+    getTaskList(req as Request, res as Response, next);
+    expect(renderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(renderStub, 'hearing-requirements/task-list.njk', {
       previousPage: paths.common.overview,
       data: mockData
     });

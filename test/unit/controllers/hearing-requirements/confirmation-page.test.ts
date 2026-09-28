@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { getConfirmationPage } from '../../../../app/controllers/cma-requirements/confirmation-page';
 import { setupHearingRequirementsConfirmationPage } from '../../../../app/controllers/hearing-requirements/confirmation-page';
 import { paths } from '../../../../app/paths';
@@ -57,7 +57,7 @@ describe('Hearing Requirements Confirmation Controller', () => {
         }
       };
       getConfirmationPage(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/confirmation-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/confirmation-page.njk', expectedArgs);
     });
 
     it('should call next with error', () => {

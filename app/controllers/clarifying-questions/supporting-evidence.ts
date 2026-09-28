@@ -48,6 +48,7 @@ function postSupportingEvidenceUpload(documentManagementService: DocumentManagem
           draftClarifyingQuestionsAnswers
         };
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated
@@ -92,6 +93,7 @@ function getSupportingEvidenceDelete(documentManagementService: DocumentManageme
           draftClarifyingQuestionsAnswers
         };
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated

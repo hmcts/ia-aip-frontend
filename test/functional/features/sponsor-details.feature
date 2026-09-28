@@ -74,9 +74,9 @@ Feature: Sponsor details
     When I enter an out of country address of "28 The Street, Ukraine, 23234"
     And I click "Save and continue" button
     And I check page accessibility
-    And I should be taken to the has sponsor page
-    Then I see "Do you have a sponsor?" in title
-    When I choose Yes and click continue
+    And I should be taken to the has sponsor or nlr page
+    Then I see "Do you have a sponsor or a non-legal representative?" in title
+    When I select "Yes" for sponsor and "No" for non-legal representative and click continue
     And I check page accessibility
     Then I should be taken to the has sponsor name page
     And I see "What is your sponsor's name?" in title
@@ -98,7 +98,8 @@ Feature: Sponsor details
     And I check page accessibility
     And I should be taken to the has sponsor authorisation page
     Then I see "Do you agree to let your sponsor have access to information about your appeal?" in title
-    When I choose Yes and click continue
+    When I choose Yes and click Save and continue
     And I check page accessibility
     Then I should see the task-list page
+
 

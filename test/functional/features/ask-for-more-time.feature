@@ -35,14 +35,14 @@ Feature: Ask for more time page
     And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click send
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
     And I check page accessibility
     Then I am on the overview page
 
-  Scenario: AFMT - Reasons For Appeal without evidence
+  Scenario: AFMT - Awaiting Reasons For Appeal without evidence
     Given I have logged in as an appellant in state "awaitingReasonsForAppeal"
     When I visit the overview page
     Then I click Ask for more time
@@ -56,7 +56,7 @@ Feature: Ask for more time page
     And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click send
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
@@ -77,7 +77,7 @@ Feature: Ask for more time page
     And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click send
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
@@ -115,14 +115,14 @@ Feature: Ask for more time page
     And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click send
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
     And I check page accessibility
     Then I am on the overview page
 
-  Scenario: AFMT - Awaiting Cma requirements without evidence @trythis
+  Scenario: AFMT - Awaiting Cma requirements without evidence
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
     When I visit the overview page
     Then I click Ask for more time
@@ -136,7 +136,7 @@ Feature: Ask for more time page
     And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click send
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
@@ -174,7 +174,7 @@ Feature: Ask for more time page
     And I check page accessibility
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click send
+    When I click "Confirm and send" button
     And I check page accessibility
     Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button

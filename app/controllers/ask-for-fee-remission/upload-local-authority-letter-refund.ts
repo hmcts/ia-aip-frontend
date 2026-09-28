@@ -21,15 +21,15 @@ async function getLocalAuthorityLetterRefund(req: Request, res: Response, next: 
       };
     }
     const localAuthorityLetterEvidences = req.session.appeal.application.lateLocalAuthorityLetters || [];
-    const previousPage = paths.appealSubmitted.feeSupportRefund;
+    const previousPage = paths.common.feeSupportRefund;
 
     res.render('appeal-application/fee-support/upload-local-authority-letter.njk', {
       title: i18n.pages.uploadLocalAuthorityLetter.title,
       evidenceListTitle,
-      formSubmitAction: paths.appealSubmitted.localAuthorityLetterRefund,
-      evidenceUploadAction: paths.appealSubmitted.localAuthorityLetterUploadRefund,
+      formSubmitAction: paths.common.localAuthorityLetterRefund,
+      evidenceUploadAction: paths.common.localAuthorityLetterUploadRefund,
       evidences: localAuthorityLetterEvidences,
-      evidenceCTA: paths.appealSubmitted.localAuthorityLetterDeleteRefund,
+      evidenceCTA: paths.common.localAuthorityLetterDeleteRefund,
       previousPage: previousPage,
       saveForLaterCTA: paths.common.overview,
       ...validationErrors && { error: validationErrors },
@@ -50,9 +50,9 @@ function postLocalAuthorityLetterRefund() {
       const authLetterUploads = req.session.appeal.application.lateLocalAuthorityLetters || [];
       if (authLetterUploads.length > 0) {
         resetJourneyValues(req.session.appeal.application);
-        return res.redirect(paths.appealSubmitted.checkYourAnswersRefund);
+        return res.redirect(paths.common.checkYourAnswersRefund);
       } else {
-        return res.redirect(`${paths.appealSubmitted.localAuthorityLetterRefund}?error=noFileSelected`);
+        return res.redirect(`${paths.common.localAuthorityLetterRefund}?error=noFileSelected`);
       }
     } catch (error) {
       next(error);
@@ -67,7 +67,7 @@ function validate(req: Request, res: Response, next: NextFunction) {
       errorCode = res.locals.errorCode;
     }
     if (errorCode) {
-      return res.redirect(`${paths.appealSubmitted.localAuthorityLetterRefund}?error=${errorCode}`);
+      return res.redirect(`${paths.common.localAuthorityLetterRefund}?error=${errorCode}`);
     }
     next();
   } catch (e) {
@@ -84,9 +84,9 @@ function uploadLocalAuthorityLetterRefund(documentManagementService: DocumentMan
         localAuthorityLetterEvidences.push(localAuthorityLetter);
         const application = req.session.appeal.application;
         application.lateLocalAuthorityLetters = localAuthorityLetterEvidences;
-        return res.redirect(paths.appealSubmitted.localAuthorityLetterRefund);
+        return res.redirect(paths.common.localAuthorityLetterRefund);
       }
-      return res.redirect(`${paths.appealSubmitted.localAuthorityLetterRefund}?error=noFileSelected`);
+      return res.redirect(`${paths.common.localAuthorityLetterRefund}?error=noFileSelected`);
     } catch (e) {
       next(e);
     }
@@ -100,7 +100,7 @@ function deleteLocalAuthorityLetterRefund(documentManagementService: DocumentMan
         await documentManagementService.deleteFile(req, req.query.id as string);
         const application = req.session.appeal.application;
         application.lateLocalAuthorityLetters = req.session.appeal.application.lateLocalAuthorityLetters.filter(document => document.fileId !== req.query.id);
-        return res.redirect(paths.appealSubmitted.localAuthorityLetterRefund);
+        return res.redirect(paths.common.localAuthorityLetterRefund);
       }
     } catch (e) {
       next(e);
@@ -119,10 +119,10 @@ function resetJourneyValues(application: AppealApplication) {
 class SetupLocalAuthorityLetterRefundController {
   initialise(middleware: any[], updateAppealService, documentManagementService: DocumentManagementService): any {
     const router = Router();
-    router.get(paths.appealSubmitted.localAuthorityLetterRefund, middleware, getLocalAuthorityLetterRefund);
-    router.post(paths.appealSubmitted.localAuthorityLetterRefund, middleware, postLocalAuthorityLetterRefund());
-    router.post(paths.appealSubmitted.localAuthorityLetterUploadRefund, middleware, validate, uploadLocalAuthorityLetterRefund(documentManagementService));
-    router.get(paths.appealSubmitted.localAuthorityLetterDeleteRefund, middleware, deleteLocalAuthorityLetterRefund(documentManagementService));
+    router.get(paths.common.localAuthorityLetterRefund, middleware, getLocalAuthorityLetterRefund);
+    router.post(paths.common.localAuthorityLetterRefund, middleware, postLocalAuthorityLetterRefund());
+    router.post(paths.common.localAuthorityLetterUploadRefund, middleware, validate, uploadLocalAuthorityLetterRefund(documentManagementService));
+    router.get(paths.common.localAuthorityLetterDeleteRefund, middleware, deleteLocalAuthorityLetterRefund(documentManagementService));
     return router;
   }
 }

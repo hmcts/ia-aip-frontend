@@ -1,10 +1,7 @@
 import { Request } from 'express';
 import { v4 as uuid } from 'uuid';
-import { FEATURE_FLAGS } from '../data/constants';
 import { AuthenticationService } from './authentication-service';
 import { CdamDocumentManagementService } from './cdam-document-management-service';
-import { DmDocumentManagementService } from './dm-document-management-service';
-import LaunchDarklyService from './launchDarkly-service';
 
 class DocumentManagementService {
   private cdamDocumentManagementService: CdamDocumentManagementService;

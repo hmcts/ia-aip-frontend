@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getHearingAnythingElseReason,
   postHearingAnythingElseReason, setupHearingAnythingElseReasonController
@@ -82,7 +82,7 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Reason contr
       };
 
       getHearingAnythingElseReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should render template with saved answer', () => {
@@ -103,7 +103,7 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Reason contr
       };
 
       getHearingAnythingElseReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -141,13 +141,14 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Reason contr
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
 
     });
 
     it('should validate and redirect to next page', async () => {
       req.body['reason'] = 'the answer here';
       await postHearingAnythingElseReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(submit.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
       expect(redirectStub.calledWith(paths.submitHearingRequirements.taskList)).to.equal(true);
     });

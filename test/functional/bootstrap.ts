@@ -12,6 +12,8 @@ import dmHandlers from '../mock/document-management-store/handlers';
 import idamHandlers from '../mock/idam/handlers';
 import { setupPcqHealth } from '../mock/pcq/handlers/health';
 import { setupPostcodeLookup } from '../mock/postcode-lookup/handlers/postcodeLookup';
+import { setupSignLanguage } from '../mock/refdata/handlers/sign-language';
+import { setupInterpreterLanguage } from '../mock/refdata/handlers/spoken-language';
 import { setupLease } from '../mock/s2s/handlers/lease';
 
 // Your main app
@@ -43,6 +45,7 @@ export async function bootstrap() {
   await startMockServer(20003, dmHandlers);
   await startMockServer(20004, [ setupLease ]);
   await startMockServer(20005, [ setupPcqHealth ]);
+  await startMockServer(20006, [ setupInterpreterLanguage, setupSignLanguage ]);
   logger.trace('servers set up', logLabel);
 
   // Start main app
@@ -77,19 +80,22 @@ export function failureCheck() {
   const testState = testStateHelper.readTestState();
   // eslint-disable-next-line no-console
   console.log('---------------------');
-  const uniqueTitles = Array.from(new Set(testState.testsRun));
+  const uniqueTitles = new Set(testState.testsRun);
   // eslint-disable-next-line no-console
-  console.log('Total scenarios run: ' + uniqueTitles.length);
+  console.log('Total scenarios run: ' + uniqueTitles.size);
+  const uniqueTitlesPassed = new Set(testState.testsPassed);
   // eslint-disable-next-line no-console
-  console.log('Scenarios passed: ' + testState.testsPassed.length);
+  console.log('Scenarios passed: ' + uniqueTitlesPassed.size);
   // eslint-disable-next-line no-console
   console.log('---------------------');
-  if (uniqueTitles.length > 0 && testState.testsPassed.length === uniqueTitles.length) {
+  if (uniqueTitles.size > 0 && uniqueTitlesPassed.size === uniqueTitles.size) {
     process.exit(0);
   } else {
-    const failedTests = uniqueTitles.filter(title => !testState.testsPassed.includes(title));
+    for (const title of uniqueTitlesPassed) {
+      uniqueTitles.delete(title);
+    }
     // eslint-disable-next-line no-console
-    console.log('Scenarios failed: ', failedTests);
+    console.log('Scenarios failed: ', uniqueTitles);
     process.exit(1);
   }
 }

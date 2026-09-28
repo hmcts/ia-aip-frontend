@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import {
   getSingleSexHearingAllFemaleReason,
   postSingleSexHearingAllFemaleReason, setupSingleSexHearingAllFemaleReasonController
@@ -88,7 +88,7 @@ describe('Hearing Requirements - Single sex all female Reason controller', () =>
       };
 
       getSingleSexHearingAllFemaleReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should render template with saved answer', () => {
@@ -109,7 +109,7 @@ describe('Hearing Requirements - Single sex all female Reason controller', () =>
       };
 
       getSingleSexHearingAllFemaleReason(req as Request, res as Response, next);
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should catch error and call next with error', () => {
@@ -154,7 +154,7 @@ describe('Hearing Requirements - Single sex all female Reason controller', () =>
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
-      expect(renderStub.calledWith('templates/textarea-question-page.njk', expectedArgs)).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'templates/textarea-question-page.njk', expectedArgs);
 
     });
 
@@ -163,6 +163,7 @@ describe('Hearing Requirements - Single sex all female Reason controller', () =>
       await postSingleSexHearingAllFemaleReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token'])).to.equal(true);
+      expect(req.session.refreshCasesList).to.equal(true);
       expect(redirectStub.calledWith(paths.submitHearingRequirements.otherNeedsPrivateHearingQuestion)).to.equal(true);
     });
 

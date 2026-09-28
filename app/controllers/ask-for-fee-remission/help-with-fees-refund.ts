@@ -39,8 +39,8 @@ async function getHelpWithFees(req: Request, res: Response, next: NextFunction) 
     appeal.application.isEdit = _.has(req.query, 'edit');
 
     return res.render('appeal-application/fee-support/help-with-fees.njk', {
-      previousPage: paths.appealSubmitted.feeSupportRefund,
-      formAction: paths.appealSubmitted.helpWithFeesRefund,
+      previousPage: paths.common.feeSupportRefund,
+      formAction: paths.common.helpWithFeesRefund,
       question: getApplyOption(req.session.appeal),
       continueCancelButtons: true,
       refundJourney: true,
@@ -62,10 +62,10 @@ function postHelpWithFees() {
         return res.render('appeal-application/fee-support/help-with-fees.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.appealSubmitted.feeSupportRefund,
+          previousPage: paths.common.feeSupportRefund,
           pageTitle: i18n.pages.helpWithFees.title,
           question: getApplyOption(req.session.appeal),
-          formAction: paths.appealSubmitted.helpWithFeesRefund,
+          formAction: paths.common.helpWithFeesRefund,
           continueCancelButtons: true,
           refundJourney: true
         });
@@ -83,9 +83,9 @@ function postHelpWithFees() {
 function getHelpWithFeesRedirectPage(selectedOption: string): string {
   switch (selectedOption) {
     case i18n.pages.helpWithFees.options.wantToApply.value:
-      return paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund;
+      return paths.common.stepsToApplyForHelpWithFeesRefund;
     case i18n.pages.helpWithFees.options.alreadyApplied.value:
-      return paths.appealSubmitted.helpWithFeesReferenceNumberRefund;
+      return paths.common.helpWithFeesReferenceNumberRefund;
     default:
       throw new Error('The selected help with fees page option is not valid. Please check the value.');
   }
@@ -93,8 +93,8 @@ function getHelpWithFeesRedirectPage(selectedOption: string): string {
 
 function setupHelpWithFeesRefundController(middleware: Middleware[]): Router {
   const router = Router();
-  router.get(paths.appealSubmitted.helpWithFeesRefund, middleware, getHelpWithFees);
-  router.post(paths.appealSubmitted.helpWithFeesRefund, middleware, postHelpWithFees());
+  router.get(paths.common.helpWithFeesRefund, middleware, getHelpWithFees);
+  router.post(paths.common.helpWithFeesRefund, middleware, postHelpWithFees());
   return router;
 }
 

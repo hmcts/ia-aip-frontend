@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { eligibilityQuestionGet, eligibilityQuestionPost, getEligible, getIneligible, setupEligibilityController } from '../../../app/controllers/eligibility';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
@@ -59,7 +59,8 @@ describe('Type of appeal Controller', () => {
       req.session.eligibility = {};
       await eligibilityQuestionGet(req as Request, res as Response, next);
 
-      expect(renderStub).to.be.calledWith('eligibility/eligibility-question.njk', {
+      expect(renderStub.called).to.equal(true);
+      expectRenderedCalledWithArgs(renderStub, 'eligibility/eligibility-question.njk', {
         question: i18n.eligibilityOOCFlag[0].question,
         description: i18n.eligibilityOOCFlag[0].description,
         modal: i18n.eligibilityOOCFlag[0].modal,
@@ -107,7 +108,7 @@ describe('Type of appeal Controller', () => {
       req.session.eligibility = {};
 
       getEligible(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledWith('eligibility/eligible-page.njk',
+      expectRenderedCalledWithArgs(renderStub, 'eligibility/eligible-page.njk',
         {
           previousPage: `${paths.common.questions}?id=123`
         }

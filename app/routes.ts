@@ -101,6 +101,7 @@ import { setupCMARequirementsStartPageController } from './controllers/cma-requi
 import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
 import { setupcmaGuidancePageController } from './controllers/cma-requirements/what-to-expect';
 import { setupDetailViewersController } from './controllers/detail-viewers';
+import { setupDocumentsController } from './controllers/documents-page';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';
 import { setupFooterController } from './controllers/footer';
@@ -273,6 +274,7 @@ const reasonsForAppealController = setupReasonsForAppealController(middleware, {
 });
 const reasonsForAppealCYAController = setupReasonsForAppealCheckAndSendController(middleware, updateAppealService);
 const detailViewersController = setupDetailViewersController(documentManagementService);
+const documentsPageController = setupDocumentsController(documentManagementService);
 const eligibilityController = setupEligibilityController();
 const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();
@@ -498,6 +500,7 @@ router.use(hearingBundleFeatureToggleController);
 router.use(outOfCountryFeatureToggleController);
 
 router.use(detailViewersController);
+router.use(documentsPageController);
 router.use(forbiddenController);
 router.use(deportationOrderController);
 

@@ -183,6 +183,10 @@
                       {% endif %}
               </div>
           {% endif %}
+          <div class="side-menu__section">
+            <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.documents.sectionHeading }}</h2>
+                   <p><a class="govuk-link" href='{{ paths.common.documentsPage }}'>{{ i18n.pages.overviewPage.documents.viewDocuments }}</a></p>
+        </div>
           {% if showHearingRequests %}
               <div class="side-menu__section">
                   <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.hearingRequests.sectionHeading }}</h2>

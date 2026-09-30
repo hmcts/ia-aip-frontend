@@ -28,6 +28,7 @@ import {
   getRemittalDocumentsViewer,
   getRespondentApplicationSummaryRows,
   getStfRemovalDecisionDocumentViewer,
+  getStfCaseReviewDocumentViewer,
   getUpdatedDecisionAndReasonsViewer,
   getUpdatedTribunalDecisionWithRule32Viewer,
   setupCmaRequirementsViewer,
@@ -197,6 +198,50 @@ describe('DetailViewController', () => {
       getStfRemovalDecisionDocumentViewer(req as Request, res as Response, next);
       expect(next.calledOnceWith(error)).to.equal(true);
     });
+  });
+
+  describe('getStfCaseReviewDocumentViewer', () => {
+    beforeEach(() => {
+      req.session.appeal.tribunalDocuments = [
+        {
+          fileId: 'uuid',
+          name: 'filename',
+          description: 'description here',
+          dateUploaded: '2020-02-21',
+          id: '2',
+          tag: 'appealResponse'
+        },
+        {
+          fileId: 'uuid2',
+          name: 'filename2',
+          description: 'description here 2',
+          dateUploaded: '2020-02-25',
+          id: '1',
+          tag: 'stf24WeeksCaseReviewAppeallantDocument'
+        }
+      ];
+    });
+
+    it('should render details-viewer template', () => {
+      getStfCaseReviewDocumentViewer(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+
+      const [template, actualViewModel] = renderStub.firstCall.args;
+
+      expect(template).to.equal('templates/details-viewer.njk');
+      expect(actualViewModel.title).to.equal(i18n.pages.detailViewers.stfCaseReviewDocument.title);
+      expect(actualViewModel.data.length).to.equal(2);
+      expect(actualViewModel.data[0].value.html).to.contain('filename2').and.to.contain('uuid2');
+      expect(actualViewModel.previousPage).to.equal(paths.common.overview);
+    });
+
+    it('getStfCaseReviewDocumentViewer should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = renderStub.throws(error);
+      getStfCaseReviewDocumentViewer(req as Request, res as Response, next);
+      expect(next.calledOnceWith(error)).to.equal(true);
+    });
+
   });
 
   describe('getHomeOfficeWithdrawLetter', () => {

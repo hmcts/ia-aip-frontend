@@ -1,3 +1,4 @@
+import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
@@ -6,14 +7,17 @@ import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { getRedirectPage } from '../../utils/utils';
+import { asBooleanValue, getRedirectPage } from '../../utils/utils';
 import {
   appellantInUkValidation,
   createStructuredError,
   dateLeftUkValidation,
   gwfReferenceNumberValidation,
-  oocHrEeaValidation
+  oocHrEeaValidation,
+  updatedGwfReferenceNumberValidation
 } from '../../utils/validations/fields-validations';
+
+const homeOfficeValidationEnabled = asBooleanValue(config.get('features.homeOfficeValidationEnabled'));
 
 async function getAppellantInUk(req: Request, res: Response, next: NextFunction) {
   try {
@@ -171,27 +175,30 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body, 'gwfReferenceNumber')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview);
       }
-      const validation = gwfReferenceNumberValidation(req.body);
+      const validation = homeOfficeValidationEnabled ? updatedGwfReferenceNumberValidation(req.body) : gwfReferenceNumberValidation(req.body);
       if (validation) {
         return renderGwfReferenceError(req, res, validation);
       }
+      const referenceNumberUpperCase: string = req.body.gwfReferenceNumber.toUpperCase();
       const appeal: Appeal = {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
-          gwfReferenceNumber: req.body.gwfReferenceNumber
+          gwfReferenceNumber: referenceNumberUpperCase
         }
       };
 
-      const pageId: string = 'editAppealcuiGwfReferenceNumber';
-      const midEventData = { gwfReferenceNumber: req.body.gwfReferenceNumber };
-      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      if (homeOfficeValidationEnabled) {
+        const pageId: string = 'editAppealcuiGwfReferenceNumber';
+        const midEventData = { gwfReferenceNumber: referenceNumberUpperCase };
+        const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
-      if (midEventErrors?.length > 0) {
-        const errorListObj = {
-          gwfReferenceNumber: createStructuredError('gwfReferenceNumber', midEventErrors[0])
-        };
-        return renderGwfReferenceError(req, res, errorListObj);
+        if (midEventErrors?.length > 0) {
+          const errorListObj = {
+            gwfReferenceNumber: createStructuredError('gwfReferenceNumber', midEventErrors[0])
+          };
+          return renderGwfReferenceError(req, res, errorListObj);
+        }
       }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;

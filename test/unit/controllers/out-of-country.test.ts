@@ -510,7 +510,7 @@ describe('Out of Country Controller', function () {
 
     it('should render out-of-country/gwf-reference.njk', async () => {
       await getGwfReference(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/gwf-reference.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/gwf-reference.njk', {
         gwfReferenceNumber: req.session.appeal.application.gwfReferenceNumber,
         previousPage: paths.appealStarted.taskList,
         homeOfficeValidationEnabled: false
@@ -541,7 +541,7 @@ describe('Out of Country Controller', function () {
       getGwfReference = outOfCountryController.getGwfReference;
 
       getGwfReference(req as Request, res as Response, next);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/gwf-reference.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/gwf-reference.njk', {
         gwfReferenceNumber: req.session.appeal.application.gwfReferenceNumber,
         previousPage: paths.appealStarted.taskList,
         homeOfficeValidationEnabled: true
@@ -596,7 +596,7 @@ describe('Out of Country Controller', function () {
       await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/gwf-reference.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/gwf-reference.njk', {
         errors: { gwfReferenceNumber: fieldError },
         errorList: [errorList],
         gwfReferenceNumber: req.body['gwfReferenceNumber'],
@@ -621,11 +621,12 @@ describe('Out of Country Controller', function () {
       await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/gwf-reference.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/gwf-reference.njk', {
         errors: { gwfReferenceNumber: fieldError },
         errorList: [errorList],
         gwfReferenceNumber: req.body['gwfReferenceNumber'],
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled: false
       });
     });
 
@@ -707,11 +708,12 @@ describe('Out of Country Controller', function () {
       await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/gwf-reference.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/gwf-reference.njk', {
         errors: { gwfReferenceNumber: fieldError },
         errorList: [errorList],
         gwfReferenceNumber: req.body['gwfReferenceNumber'],
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled: true
       });
     });
 
@@ -731,11 +733,12 @@ describe('Out of Country Controller', function () {
       await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledOnceWith('appeal-application/out-of-country/gwf-reference.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/out-of-country/gwf-reference.njk', {
         errors: { gwfReferenceNumber: fieldError },
         errorList: [errorList],
         gwfReferenceNumber: req.body['gwfReferenceNumber'],
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled: true
       });
     });
 
@@ -763,7 +766,7 @@ describe('Out of Country Controller', function () {
         text: errorMessage
       };
       expect(submitRefactoredStub.called).to.equal(false);
-      expect(renderStub).to.be.calledWith(
+      expectRenderedCalledWithArgs(renderStub,
           'appeal-application/out-of-country/gwf-reference.njk',
           {
             errors: {
@@ -772,7 +775,7 @@ describe('Out of Country Controller', function () {
             errorList: [errorList],
             gwfReferenceNumber: 'GWF123456789',
             previousPage: paths.appealStarted.taskList,
-            homeOfficeValidationEnabled: false
+            homeOfficeValidationEnabled: true
           });
       });
   });

@@ -25,9 +25,9 @@ const express = require('express');
 
 function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
   return [{
-    key: { text: 'In the UK' },
+    key: { text: 'Currently living in the UK' },
     value: { html: 'No' },
-    actions: { items: [{ href: '/in-the-uk?edit', text: 'Change', visuallyHiddenText: 'In the UK' }] }
+    actions: { items: [{ href: '/in-the-uk?edit', text: 'Change', visuallyHiddenText: 'Currently living in the UK' }] }
   }, {
     key: { text: 'Appeal type' },
     value: { html: 'Protection' },
@@ -139,9 +139,9 @@ function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
 
 function getMockedSummaryRowsPayment(appealType = 'protection'): SummaryRow[] {
   return [{
-    key: { text: 'In the UK' },
+    key: { text: 'Currently living in the UK' },
     value: { html: 'No' },
-    actions: { items: [{ href: '/in-the-uk?edit', text: 'Change', visuallyHiddenText: 'In the UK' }] }
+    actions: { items: [{ href: '/in-the-uk?edit', text: 'Change', visuallyHiddenText: 'Currently living in the UK' }] }
   }, {
     key: { text: 'Appeal type' },
     value: { html: i18n.appealTypes[appealType].name },

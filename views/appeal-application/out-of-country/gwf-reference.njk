@@ -22,7 +22,14 @@
       <p>{{ i18n.pages.gwfReference.label }}</p>
       <p>{{ i18n.pages.gwfReference.description }}</p>
 
-      <p>{{ i18n.pages.gwfReference.footNote | safe  }}</p>
+      <ul class="govuk-list govuk-list--bullet">
+        {% for hint in i18n.pages.gwfReference.hints %}
+          <li>{{ hint }}</li>
+        {% endfor %}
+        {% if homeOfficeValidationEnabled %}
+          <li>{{ i18n.common.homeOfficeHelpForm | safe }}</li>
+        {% endif %}
+      </ul>
 
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       

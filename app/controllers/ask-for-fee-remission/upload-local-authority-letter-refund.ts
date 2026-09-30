@@ -17,7 +17,7 @@ async function getLocalAuthorityLetterRefund(req: Request, res: Response, next: 
     let validationErrors: ValidationErrors;
     if (req.query.error) {
       validationErrors = {
-        uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload[`${req.query.error}`])
+        uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${req.query.error}`])
       };
     }
     const localAuthorityLetterEvidences = req.session.appeal.application.lateLocalAuthorityLetters || [];

@@ -18,7 +18,8 @@ import {
   dateLetterSentValidation,
   dateOfBirthValidation,
   homeOfficeNumberValidation,
-  nationalityValidation
+  nationalityValidation,
+  updatedHomeOfficeNumberValidation
 } from '../../utils/validations/fields-validations';
 
 const homeOfficeValidationEnabled = asBooleanValue(config.get('features.homeOfficeValidationEnabled'));
@@ -59,26 +60,30 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body, 'homeOfficeRefNumber')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview);
       }
-      const validation = homeOfficeNumberValidation(req.body);
+      const validation = homeOfficeValidationEnabled ? updatedHomeOfficeNumberValidation(req.body) : homeOfficeNumberValidation(req.body);
       if (validation) {
         return renderHomeOfficeDetailsError(req, res, validation);
       }
+      const referenceNumberUpperCase: string = req.body.homeOfficeRefNumber.toUpperCase();
       const appeal: Appeal = {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
-          homeOfficeRefNumber: req.body.homeOfficeRefNumber
+          homeOfficeRefNumber: referenceNumberUpperCase
         }
       };
-      const pageId: string = 'editAppealcuiHomeOfficeReferenceNumber';
-      const midEventData = { homeOfficeReferenceNumber: req.body.homeOfficeRefNumber };
-      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
-      if (midEventErrors?.length > 0) {
-        const errorListObj = {
-          homeOfficeRefNumber: createStructuredError('homeOfficeRefNumber', midEventErrors[0])
-        };
-        return renderHomeOfficeDetailsError(req, res, errorListObj);
+      if (homeOfficeValidationEnabled) {
+        const pageId: string = 'editAppealcuiHomeOfficeReferenceNumber';
+        const midEventData = { homeOfficeReferenceNumber: referenceNumberUpperCase };
+        const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
+        if (midEventErrors?.length > 0) {
+          const errorListObj = {
+            homeOfficeRefNumber: createStructuredError('homeOfficeRefNumber', midEventErrors[0])
+          };
+          return renderHomeOfficeDetailsError(req, res, errorListObj);
+        }
       }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
@@ -151,22 +156,24 @@ function postNamePage(updateAppealService: UpdateAppealService) {
         }
       };
 
-      const pageId: string = 'editAppealcuiAppellantName';
-      const midEventData = {
-        appellantGivenNames: req.body.givenNames,
-        appellantFamilyName: req.body.familyName
-      };
-      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      if (homeOfficeValidationEnabled) {
+        const pageId: string = 'editAppealcuiAppellantName';
+        const midEventData = {
+          appellantGivenNames: req.body.givenNames,
+          appellantFamilyName: req.body.familyName
+        };
+        const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
-      if (midEventErrors?.length > 0) {
-        const fieldErrors = {
-          givenNames: createStructuredError('givenNames', i18n.validationErrors.errorSummary),
-          familyName: createStructuredError('familyName', i18n.validationErrors.errorSummary)
-        };
-        const errorListObj = {
-          givenNames: createStructuredError('givenNames', midEventErrors[0])
-        };
-        return renderNamePageError(req, res, fieldErrors, errorListObj);
+        if (midEventErrors?.length > 0) {
+          const fieldErrors = {
+            givenNames: createStructuredError('givenNames', i18n.validationErrors.errorSummary),
+            familyName: createStructuredError('familyName', i18n.validationErrors.errorSummary)
+          };
+          const errorListObj = {
+            givenNames: createStructuredError('givenNames', midEventErrors[0])
+          };
+          return renderNamePageError(req, res, fieldErrors, errorListObj);
+        }
       }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
@@ -236,18 +243,20 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
         }
       };
 
-      const pageId: string = 'editAppealcuiAppellantDob';
-      const midEventData = { appellantDateOfBirth: toIsoDate(appeal.application.personalDetails.dob) };
-      const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      if (homeOfficeValidationEnabled) {
+        const pageId: string = 'editAppealcuiAppellantDob';
+        const midEventData = { appellantDateOfBirth: toIsoDate(appeal.application.personalDetails.dob) };
+        const midEventErrors = await updateAppealService.validateMidEvent(Events.EDIT_APPEAL, pageId, appeal, midEventData, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
-      if (midEventErrors?.length > 0) {
-        const fieldErrors = {
-          day: createStructuredError('day', i18n.validationErrors.errorSummary)
-        };
-        const errorListObj = {
-          day: createStructuredError('day', midEventErrors[0])
-        };
-        return renderDateOfBirthError(req, res, fieldErrors, errorListObj);
+        if (midEventErrors?.length > 0) {
+          const fieldErrors = {
+            day: createStructuredError('day', i18n.validationErrors.errorSummary)
+          };
+          const errorListObj = {
+            day: createStructuredError('day', midEventErrors[0])
+          };
+          return renderDateOfBirthError(req, res, fieldErrors, errorListObj);
+        }
       }
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;

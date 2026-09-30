@@ -313,6 +313,13 @@ describe('Home Office Details Controller', function () {
     });
 
     it('should fail validateMidEvent and render personal-details/name.njk with error', async () => {
+      const configStub = {
+        get: sinon.stub()
+            .withArgs('features.homeOfficeValidationEnabled')
+            .returns(true)
+      };
+      const { postNamePage } = proxyquire('../../../app/controllers/appeal-application/home-office-details', { config: configStub });
+
       req.body.givenNames = 'Lewis';
       req.body.familyName = 'Williams';
       const errorMessage = 'You should enter the details exactly as they appear on the decision letter, so that we can verify them';
@@ -346,8 +353,10 @@ describe('Home Office Details Controller', function () {
             errorList: [errorList],
             personalDetails: { familyName: req.body.familyName, givenNames: req.body.givenNames },
             previousPage: paths.appealStarted.details,
-            homeOfficeValidationEnabled: false
+            homeOfficeValidationEnabled: true
           });
+
+      sinon.restore();
     });
   });
 });

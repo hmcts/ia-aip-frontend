@@ -55,6 +55,8 @@ declare global {
   interface DocumentMap {
     id: string;
     url: string;
+    name: string;
+    documentUploadDate: string;
   }
 
   interface TimeExtensionEventMap {
@@ -76,7 +78,7 @@ declare global {
     decisionMaker?: string;
     decisionReason?: string;
     refusalOfRemoval24wDocument?: Evidence;
-  }
+    completeCaseReviewDocument?: Evide  }
 
   interface Evidence {
     id?: string;

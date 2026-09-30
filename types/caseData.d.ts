@@ -2,6 +2,7 @@ interface SupportingDocument {
   document_url: string;
   document_filename: string;
   document_binary_url: string;
+  dateUploaded?: string;
 }
 
 interface DocumentWithMetaData {
@@ -339,6 +340,7 @@ interface Application {
   decisionMaker?: string;
   decisionReason?: string;
   refusalOfRemoval24wDocument?: SupportingDocument;
+  completeCaseReviewDocument?: SupportingDocument;
 }
 
 interface DateToAvoid {

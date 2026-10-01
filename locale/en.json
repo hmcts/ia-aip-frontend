@@ -455,11 +455,6 @@
       "footNote": "Call the Home Office on <strong>+44 (0)161 877 5919</strong> (9am-3pm, Monday to Friday) if you cannot find the correct number.",
       "homeOfficeReferenceNumberLabel": "Enter your Home Office reference number",
       "hints": [
-        "Your Home Office reference number is usually on the first page of your Home Office decision letter",
-        "It is usually either 9 numbers or 16 numbers with dashes, for example 123456789 or 1234-1234-1234-1234",
-        "<strong>Do not</strong> enter any reference that includes a letter, for example A246893521"
-      ],
-      "updatedHints": [
         "You should enter the reference number exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section.",
         "Your UAN reference will be a 16-digit number, for example 1234-1234-1234-1234; you should include all the numbers with the dashes as they appear",
         "Your GWF reference will be a 9-digit number starting with GWF, for example GWF123456789"
@@ -4542,6 +4537,7 @@
       "addressPostcode": "You need to provide your updated Postcode"
     },
     "acceptanceStatement": "Select if you believe the information you have given is true.",
+    "hoDataNotMatchingOnSubmit": "The information entered does not match the details held by the Home Office.  You should enter the HO reference and appellant's name exactly as they appear on the decision letter so that we can verify them. These can often be found in the 'How to appeal' section. Please also check if the appellant's date of birth is correct.",
     "addAnotherNlrAgreement": "Select the checkbox if you understand that adding another non-legal representative will remove the access of the current non-legal representative to the appeal",
     "removeNlrAgreement": "Select the checkbox if you understand that removing your non-legal representative will remove their access to this appeal",
     "removeNlrSelfAgreement": "Select the checkbox if you understand that removing yourself as non-legal representative will remove your access to this appeal",

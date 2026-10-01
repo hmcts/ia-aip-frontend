@@ -4542,7 +4542,6 @@
       "addressPostcode": "You need to provide your updated Postcode"
     },
     "acceptanceStatement": "Select if you believe the information you have given is true.",
-    "hoDataNotMatchingOnSubmit": "The information entered does not match the details held by the Home Office.  You should enter the HO reference and appellant's name exactly as they appear on the decision letter so that we can verify them. These can often be found in the 'How to appeal' section. Please also check if the appellant's date of birth is correct.",
     "addAnotherNlrAgreement": "Select the checkbox if you understand that adding another non-legal representative will remove the access of the current non-legal representative to the appeal",
     "removeNlrAgreement": "Select the checkbox if you understand that removing your non-legal representative will remove their access to this appeal",
     "removeNlrSelfAgreement": "Select the checkbox if you understand that removing yourself as non-legal representative will remove your access to this appeal",
@@ -4903,7 +4902,8 @@
       "title": "You cannot currently use the service",
       "description": "You cannot use this service because you are in detention.",
       "optionsList": [
-        "You can use form <a target=\\\"_blank\\\" href=\\\"https://www.gov.uk/government/publications/form-iaft-5dia-appeal-to-the-first-tier-tribunal-information-sheet\\\">IAFT-1</a> to appeal by post"
+        "If you are in an immigration removal centre, you can <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/form-iaft-5dia-appeal-to-the-first-tier-tribunal-information-sheet\">use form IAFT-DIA</a> to appeal by post or fax.",
+        "If you are in a prison, you can <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">use the current online service</a> to appeal online or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
       ]
     },
     {
@@ -4947,8 +4947,7 @@
       "title": "You cannot currently use the service",
       "description": "You cannot use this service because you are in detention.",
       "optionsList": [
-        "If you are in an immigration removal centre, you can <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/form-iaft-5dia-appeal-to-the-first-tier-tribunal-information-sheet\">use form IAFT-DIA</a> to appeal by post or fax.",
-        "If you are in a prison, you can <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">use the current online service</a> to appeal online or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
+        "You can use form <a target=\\\"_blank\\\" href=\\\"https://www.gov.uk/government/publications/form-iaft-5dia-appeal-to-the-first-tier-tribunal-information-sheet\\\">IAFT-1</a> to appeal by post"
       ]
     }
   ]

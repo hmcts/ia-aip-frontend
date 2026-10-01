@@ -23,7 +23,7 @@
 
       <ul class="govuk-list govuk-list--bullet">
         {% for hint in i18n.pages.homeOfficePage.hints %}
-          <li>{{ hint }}</li>
+          <li>{{ hint | safe }}</li>
         {% endfor %}
         {% if homeOfficeValidationEnabled %}
           <li>{{ i18n.common.homeOfficeHelpForm | safe }}</li>

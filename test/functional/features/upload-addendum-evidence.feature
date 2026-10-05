@@ -10,7 +10,7 @@ Feature: upload addendum evidence
     And I check page accessibility
     Then I should see the provide more evidence page
 
-    When I click "Upload file" button
+    When I click "Upload" button
     And I check page accessibility
     Then I should see error summary
 
@@ -18,15 +18,15 @@ Feature: upload addendum evidence
     And I check page accessibility
     Then I should see error summary
 
-    Given I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
+    Given I choose a file that is "INVALID_TOO_BIG" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
 
-    Given I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
+    Given I choose a file that is "INVALID_FORMAT" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
 
-    Given I choose a file that is "VALID" and click the "Upload file" button
+    Given I choose a file that is "VALID" and click the "Upload" button
     And I check page accessibility
     When I click "Continue" button
     And I check page accessibility

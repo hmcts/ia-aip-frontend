@@ -179,11 +179,12 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);
       const hearingDetails = getHearingDetails(req);
-      let showPayLaterLink = isCitizen && (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus);
+      let showPayLaterLink = isCitizen && (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !isPostDecisionState(appealStatus) && !appealEnded;
       if (refundFeatureEnabled) {
         showPayLaterLink = (req.session.appeal.application.refundConfirmationApplied || payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req))
           && !isPostDecisionState(appealStatus)
-          && !isRemissionApprovedOrPartiallyApproved(req.session.appeal);
+          && !isRemissionApprovedOrPartiallyApproved(req.session.appeal)
+          && !appealEnded;
       }
 
       const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(appealStatus, isCitizen);

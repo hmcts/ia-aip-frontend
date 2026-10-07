@@ -1,4 +1,5 @@
 import { addAriaExpandedAttribute,addAriaExpandedEventListener } from './aria-utils';
+import { addBackLinkEventListener } from './back-link';
 import CookiesBanner from './cookies-banner';
 import CreateModal from './create-modal';
 import DeleteModal from './delete-modal';
@@ -28,6 +29,7 @@ function initialize() {
   addAriaExpandedEventListener();
   addStatelessEventListener();
   addNationalityEventListener();
+  addBackLinkEventListener();
 }
 
 export {

@@ -12,7 +12,11 @@
         <h2 class="govuk-heading-s">{{ section.title }}</h2>
       {% endif %}
       {% for item in section.content %}
-        <p>{{ item | eval | safe }}</p>
+        {% if item.startsWith('<ul') or item.startsWith('<li') or item.startsWith('</ul') or item.startsWith('<img') %}
+          {{ item | eval | safe }}
+        {% else %}
+          <p>{{ item | eval | safe }}</p>
+        {% endif %}
       {% endfor %}
     {% endfor %}
   </div>

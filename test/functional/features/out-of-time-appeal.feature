@@ -38,7 +38,7 @@ Feature: Out of Time appeal @outOfTimeAppeal
 
     Then I see "Upload your Home Office decision letter" in title
 
-    When I click "Upload file" button
+    When I click "Upload" button
     And I check page accessibility
     Then I should see error summary
 
@@ -46,11 +46,11 @@ Feature: Out of Time appeal @outOfTimeAppeal
     And I check page accessibility
     Then I should see error summary
 
-    Given I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
+    Given I choose a file that is "INVALID_TOO_BIG" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
 
-    And I choose a file that is "VALID" and click the "Upload file" button
+    And I choose a file that is "VALID" and click the "Upload" button
     And I check page accessibility
     And I click "Save and continue" button
     And I check page accessibility

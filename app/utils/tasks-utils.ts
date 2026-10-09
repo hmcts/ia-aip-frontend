@@ -150,7 +150,7 @@ function appealApplicationStatus(appeal: Appeal, drlmSetAsideFlag: Boolean): App
 
 }
 
-function submitHearingRequirementsStatus(appeal: Appeal, hasNonLegalRep: boolean) {
+function submitHearingRequirementsStatus(appeal: Appeal, hasNonLegalRep: boolean, isCurrently24Weeks: boolean) {
 
   const witnessesOnHearing: boolean = _.has(appeal, 'hearingRequirements.witnessesOnHearing');
   const witnessesOutsideUK: boolean = _.has(appeal, 'hearingRequirements.witnessesOutsideUK');
@@ -191,9 +191,10 @@ function submitHearingRequirementsStatus(appeal: Appeal, hasNonLegalRep: boolean
   const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');
 
   const otherNeedsNonLegalRep: boolean = areNlrRequirementsNeeded ? nlrNeedsTask.completed : nlrAttendingTask.completed;
+  const otherNeedsCompleted = _.has(appeal, 'hearingRequirements.otherNeeds.anythingElse');
   const otherNeedsTask: Task = {
     saved: otherNeeds,
-    completed: _.has(appeal, 'hearingRequirements.otherNeeds.anythingElse'),
+    completed: otherNeedsCompleted,
     active: hasNonLegalRep ? otherNeedsNonLegalRep : accessNeedsTask.completed
   };
 
@@ -210,13 +211,13 @@ function submitHearingRequirementsStatus(appeal: Appeal, hasNonLegalRep: boolean
   const datesToAvoidTask: Task = {
     saved: !!_.get(appeal, 'hearingRequirements.datesToAvoid'),
     completed: datesToAvoidCompleted,
-    active: otherNeedsTask.completed
+    active: isCurrently24Weeks ? false : otherNeedsTask.completed
   };
 
   const checkAndSend: Task = {
     saved: false,
     completed: false,
-    active: datesToAvoidCompleted
+    active: isCurrently24Weeks ? otherNeedsCompleted : datesToAvoidCompleted
   };
 
   const returnObject = {

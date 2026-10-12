@@ -11,7 +11,7 @@ export const idamConfig: IdamConfig = {
   idamApiUrl: config.get('idam.apiUrl'),
   idamLoginUrl: loginUrl,
   idamUserLoginUrl: loginUrl,
-  idamRegistrationUrl: `${config.get('idam.webUrl')}/users/selfRegister`,
+  idamRegistrationUrl: `${config.get('idam.webUrl')}/o/authorize`,
   idamSecret: config.get('idam.secret'),
   idamClientID: config.get('microservice'),
   openId: true,

@@ -30,7 +30,7 @@ describe('creates url', () => {
 
     const loginUrl = getIdamLoginUrl(req as Request);
 
-    expect(loginUrl).contains('/users/selfRegister');
+    expect(loginUrl).contains('/o/authorize');
   });
 
   it('getIdamLoginUrl for login', () => {

@@ -4,7 +4,7 @@ import cache from '../../cache';
 const skipLogin = process.env.SKIP_LOGIN === 'true';
 
 export async function setupRegisterPage(server: Mockttp) {
-  await server.forGet('/users/selfRegister').thenCallback(async (request) => {
+  await server.forGet('/o/authorize').thenCallback(async (request) => {
     const url = new URL(request.url, 'http://localhost');
     const redirectUri = url.searchParams.get('redirect_uri') ?? '';
     const stateParam = url.searchParams.get('state') ?? '';

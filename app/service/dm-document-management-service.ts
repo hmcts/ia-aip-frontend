@@ -132,7 +132,12 @@ class DmDocumentManagementService {
     return this.upload(userId, headers, uploadData)
       .then(response => {
         const res: DocumentManagementStoreResponse = JSON.parse(response);
-        const documentMapperId: string = this.addToDocumentMapper(res._embedded.documents[0]._links.self.href, req.session.appeal.documentMap);
+        const documentMapperId: string = this.addToDocumentMapper(
+            res._embedded.documents[0]._links.self.href,
+            res._embedded.documents[0].originalDocumentName,
+            res._embedded.documents[0].createdOn,
+            req.session.appeal.documentMap
+        );
         return {
           fileId: documentMapperId,
           name: res._embedded.documents[0].originalDocumentName
@@ -177,11 +182,19 @@ class DmDocumentManagementService {
    * @param documentUrl the document url to be inserted in the map
    * @param documentMap the document map array.
    */
-  public addToDocumentMapper(documentUrl: string, documentMap: DocumentMap[]) {
+  public addToDocumentMapper(
+      documentUrl: string,
+      documentName: string,
+      documentUploadDate: string,
+      documentMap: DocumentMap[]
+  ) {
     const documentId: string = uuid();
+
     documentMap.push({
       id: documentId,
-      url: documentUrl
+      url: documentUrl,
+      name: documentName,
+      documentUploadDate: documentUploadDate
     });
 
     return documentId;

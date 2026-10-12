@@ -8,7 +8,7 @@ import { makeApplicationControllersHelper } from '../make-application-controller
 function getJudgeReviewApplication(req: Request, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
-      askJudgeReview: createStructuredError('askJudgeReview', i18n.validationErrors.makeApplication.askJudgeReview)
+      askJudgeReview: createStructuredError('makeAnApplicationDetails', i18n.validationErrors.makeApplication.askJudgeReview)
     },
     makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askJudgeReview.description,
     makeAnApplicationDetailsHint: i18n.pages.makeApplication.askJudgeReview.hint,

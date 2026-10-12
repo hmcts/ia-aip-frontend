@@ -28,19 +28,19 @@ Feature: Reason for appeal
     And I check page accessibility
     Then I see "/case-building/provide-supporting-evidence" in current url
 
-    Then I click "Upload file" button
+    Then I click "Upload" button
     And I check page accessibility
     Then I should see error summary
 
-    When I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
+    When I choose a file that is "INVALID_TOO_BIG" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
 
-    When I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
+    When I choose a file that is "INVALID_FORMAT" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
 
-    When I choose a file that is "VALID" and click the "Upload file" button
+    When I choose a file that is "VALID" and click the "Upload" button
     And I check page accessibility
     And I click "Save and continue" button
     And I check page accessibility

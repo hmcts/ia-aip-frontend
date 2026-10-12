@@ -63,6 +63,8 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
       paths.common.checkYourAnswersRefund,
       paths.common.confirmationRefund,
       paths.common.stfRemovalDecisionDocumentViewer,
+      paths.common.documentsPage,
+      paths.common.documentDownload,
       paths.common.stfCaseReviewDocumentViewer
     ]);
     allowedPaths = [

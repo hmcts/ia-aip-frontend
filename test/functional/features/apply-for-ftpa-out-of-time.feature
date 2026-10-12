@@ -21,7 +21,7 @@ Feature: Apply for FTPA as an appellant in person out of time
     Then I see "/ftpa-out-of-time-evidence" in current url
     Then I should see "Provide supporting evidence" on the page
 
-    When I click "Upload file" button
+    When I click "Upload" button
     And I check page accessibility
     Then I should see error summary
 
@@ -29,15 +29,15 @@ Feature: Apply for FTPA as an appellant in person out of time
     And I check page accessibility
     Then I should see error summary
 
-    Given I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
+    Given I choose a file that is "INVALID_TOO_BIG" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
 
-    Given I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
+    Given I choose a file that is "INVALID_FORMAT" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
 
-    Given I choose a file that is "VALID" and click the "Upload file" button
+    Given I choose a file that is "VALID" and click the "Upload" button
     And I check page accessibility
     When I click "Continue" button
     And I check page accessibility
@@ -54,7 +54,7 @@ Feature: Apply for FTPA as an appellant in person out of time
     Then I see "/ftpa-evidence" in current url
     Then I should see "Provide supporting evidence" on the page
 
-    When I click "Upload file" button
+    When I click "Upload" button
     And I check page accessibility
     Then I should see error summary
 
@@ -62,15 +62,15 @@ Feature: Apply for FTPA as an appellant in person out of time
     And I check page accessibility
     Then I should see error summary
 
-    Given I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
+    Given I choose a file that is "INVALID_TOO_BIG" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
 
-    Given I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
+    Given I choose a file that is "INVALID_FORMAT" and click the "Upload" button
     And I check page accessibility
     Then I should see error summary
 
-    Given I choose a file that is "VALID" and click the "Upload file" button
+    Given I choose a file that is "VALID" and click the "Upload" button
     And I check page accessibility
     When I click "Continue" button
     And I check page accessibility

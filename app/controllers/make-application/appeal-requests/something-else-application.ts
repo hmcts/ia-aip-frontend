@@ -8,7 +8,7 @@ import { makeApplicationControllersHelper } from '../make-application-controller
 function getOtherAppealApplication(req: Request, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
-      askSomethingElse: createStructuredError('askSomethingElse', i18n.validationErrors.makeApplication.askSomethingElse)
+      askSomethingElse: createStructuredError('makeAnApplicationDetails', i18n.validationErrors.makeApplication.askSomethingElse)
     },
     makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askSomethingElse.description,
     makeAnApplicationDetailsHint: i18n.pages.makeApplication.askSomethingElse.hint,

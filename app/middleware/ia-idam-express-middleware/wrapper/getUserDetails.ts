@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const getUserDetails = async (authToken: string, args: IdamConfig) => {
-  const userDetailsEndpoint = args.openId ? '/o/userinfo' : '/details';
+  const userDetailsEndpoint = '/o/userinfo';
   const url = `${args.idamApiUrl}${userDetailsEndpoint}`;
   const options = {
     headers: { Authorization: `Bearer ${authToken}` }

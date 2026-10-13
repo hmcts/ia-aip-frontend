@@ -40,7 +40,7 @@ describe('creates url', () => {
 
     const loginUrl = getIdamLoginUrl(req as Request);
 
-    expect(loginUrl).contains('/login');
+    expect(loginUrl).contains('/o/authorize');
   });
 
   // TODO: add tests for getConditionalRedirectUrl method

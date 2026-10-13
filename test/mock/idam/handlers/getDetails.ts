@@ -74,7 +74,7 @@ export const emailToUserId: Record<string, string> = {
 };
 
 export async function setupGetDetails(server: Mockttp) {
-  await server.forGet('/details').thenCallback(async () => {
+  await server.forGet('/o/userinfo').thenCallback(async () => {
     const workerThread = workerThreads.threadId === 0 ? 0 : workerThreads.threadId - 1;
     const email = cache.get(`email-${workerThread}`);
     const uid = emailToUserId[email] || defaultUserId;

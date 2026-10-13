@@ -23,7 +23,7 @@ export async function setupRegisterPage(server: Mockttp) {
             <title>Register - HMCTS Access</title>
             </head><body>
             <h1>Register - HMCTS Access</h1>
-            <form action="/login" method="post">
+            <form action="/o/authorize" method="post">
             Username: <input type="text" id="username" name="username"/><br />
             Password: <input type="text" id="password" name="password"/><br />
             <input type="text" name="redirect_uri" value="${redirectUri}"/>

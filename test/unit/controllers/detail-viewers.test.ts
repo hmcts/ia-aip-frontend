@@ -650,7 +650,7 @@ describe('DetailViewController', () => {
       };
 
       expectedSummaryRows = [
-        { key: { text: 'In the UK' }, value: { html: 'Yes' } },
+        { key: { text: 'Currently living in the UK' }, value: { html: 'Yes' } },
         {
           key: { text: 'Home Office reference number' },
           value: { html: 'A1234567' }
@@ -693,7 +693,7 @@ describe('DetailViewController', () => {
 
       expectedSummaryRowsWithDlrmFeeRemission = {
         'aboutAppealRows': [
-          { key: { text: 'In the UK' }, value: { html: 'Yes' } },
+          { key: { text: 'Currently living in the UK' }, value: { html: 'Yes' } },
           { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
           { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
           {
@@ -1539,7 +1539,7 @@ describe('DetailViewController', () => {
 
       const expectedSummaryRowsWithDlrmFeeRemission = {
         'aboutAppealRows': [
-          { key: { text: 'In the UK' }, value: { html: 'Yes' } },
+          { key: { text: 'Currently living in the UK' }, value: { html: 'Yes' } },
           { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
           { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
           {
@@ -2128,7 +2128,7 @@ describe('DetailViewController', () => {
       };
 
       expectedSummaryRows = [
-        { key: { text: 'In the UK' }, value: { html: 'No' } },
+        { key: { text: 'Currently living in the UK' }, value: { html: 'No' } },
         { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
         { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
         {
@@ -2347,7 +2347,7 @@ describe('DetailViewController', () => {
       };
 
       expectedSummaryRows = [
-        { key: { text: 'In the UK' }, value: { html: 'No' } },
+        { key: { text: 'Currently living in the UK' }, value: { html: 'No' } },
         { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
         { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
         {

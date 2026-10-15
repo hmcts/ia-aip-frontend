@@ -2,6 +2,7 @@ interface SupportingDocument {
   document_url: string;
   document_filename: string;
   document_binary_url: string;
+  dateUploaded?: string;
 }
 
 interface DocumentWithMetaData {
@@ -27,6 +28,8 @@ interface CcdCaseDetails {
   last_modified?: string;
   error?: string;
   message?: string;
+  status?: number;
+  callbackErrors?: string[];
 }
 
 interface CaseListItem {

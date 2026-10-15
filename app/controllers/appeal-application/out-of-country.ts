@@ -148,7 +148,8 @@ function getGwfReference(req: Request, res: Response, next: NextFunction) {
     const { gwfReferenceNumber } = req.session.appeal.application || null;
     res.render('appeal-application/out-of-country/gwf-reference.njk', {
       gwfReferenceNumber,
-      previousPage: paths.appealStarted.taskList
+      previousPage: paths.appealStarted.taskList,
+      homeOfficeValidationEnabled
     });
   } catch (getGwfReferenceError) {
     next(getGwfReferenceError);
@@ -164,7 +165,8 @@ function renderGwfReferenceError(req: Request, res: Response, errorList: Validat
         errors: fieldErrors,
         errorList: Object.values(errorList),
         gwfReferenceNumber: req.body.gwfReferenceNumber,
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.taskList,
+        homeOfficeValidationEnabled
       }
   );
 }

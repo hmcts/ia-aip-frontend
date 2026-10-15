@@ -16,7 +16,8 @@ const PATHS = {
   'provide more evidence': paths.common.provideMoreEvidenceForm,
   'provide more evidence check': paths.common.provideMoreEvidenceCheck,
   'provide more evidence sent': paths.common.provideMoreEvidenceConfirmation,
-  'why evidence late': paths.common.whyEvidenceLate
+  'why evidence late': paths.common.whyEvidenceLate,
+  'what type of interpreter nlr': paths.submitHearingRequirements.nlrHearingInterpreterTypes
 };
 
 module.exports = {
@@ -104,7 +105,7 @@ module.exports = {
     });
 
     Then(/^I see "([^"]*)" in title$/, async (title: string) => {
-      await I.see(title, 'h1');
+      await I.waitForText(title, 5, 'h1');
     });
 
     Then(/^I see "([^"]*)" as a "([^"]*)" element$/, async (text: string, element: string) => {

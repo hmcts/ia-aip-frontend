@@ -151,7 +151,7 @@ export default class CookiesBanner implements ICookies {
   }
 
   addCookie(name, value) {
-    document.cookie = `${name}=${value}; expires=${this.expiryDate}; path=/`;
+    document.cookie = `${name}=${value}; expires=${this.expiryDate}; path=/; SameSite=Lax`;
   }
 
   removeCookie(name) {

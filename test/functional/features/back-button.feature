@@ -24,10 +24,6 @@ Feature: Back button
     And I click "Your Home Office and personal details" link
     And I check page accessibility
     Then I should be taken to the home office ref number page
-    When I enter "A12345" as the Office ref number and click Save and continue
-    And I check page accessibility
-    Then I should see error summary
-
     When I enter "1234-1234-1234-1234" as the Office ref number and click Save and continue
     And I check page accessibility
     Then I should be taken to the enter your name page

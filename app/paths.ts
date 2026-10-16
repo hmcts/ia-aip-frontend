@@ -205,7 +205,7 @@ const paths = {
   common: {
     // index, start, idam endpoints and overview
     index: '/',
-    login: '/login',
+    login: '/o/authorize',
     logout: '/logout',
     redirectUrl: '/redirectUrl',
     start: '/start-appeal',

@@ -1,6 +1,6 @@
 import url from 'url';
 
-const defaultQueryStringParams = { response_type: 'code', "scope": "openid profile roles" };
+const defaultQueryStringParams = { response_type: 'code', scope: 'openid profile roles' };
 
 const loginUrl = (options = {}, args: IdamConfig = {}) => {
   const queryString = Object.assign({

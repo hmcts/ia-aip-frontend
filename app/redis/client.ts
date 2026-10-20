@@ -20,7 +20,7 @@ function toNewRedisUrl(url:string):string{
 
 function createRedisClient(url:string, factory=createClient){
   const client=factory({url: toNewRedisUrl(url)})
-  client.onError('error',(err: Error)=> logger.exception('Error starting Redis client:${err.message}', logLabel))
+  client.on('error',(err: Error)=> logger.exception('Error starting Redis client:${err.message}', logLabel))
   client.connect()
       .then(()=>logger.trace('Connected to Redis client',logLabel))
       .catch((err:Error) => logger.exception('Cannot connect to Redis client: ${err.message}', logLabel ));

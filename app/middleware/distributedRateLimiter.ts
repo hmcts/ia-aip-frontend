@@ -17,26 +17,14 @@ export const skip = (req: any) => {
   return !(roles.length === 0 || roles.includes('citizen'));
 };
 
-export const sendCommand = (...args: string[]): Promise<RedisReply> => {
-  return new Promise<RedisReply>((resolve, reject) => {
-    redisClient.send_command(args[0], args.slice(1), (err: Error, reply) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(reply);
-      }
-    });
-  });
-};
+export const sendCommand = (...args: string[]): Promise<RedisReply> =>
+    redisClient.sendCommand(args) as Promise<RedisReply>
 
 export const citizenLimiter = rateLimit({
   windowMs: 60 * 1000 * 30,
   limit: 10,
 
-  store: new RedisStore({
-    sendCommand
-  }),
-
+  store: redisClient ? new RedisStore({sendCommand}) : undefined,
   keyGenerator,
   skip,
 

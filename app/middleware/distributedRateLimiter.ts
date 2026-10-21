@@ -18,7 +18,7 @@ export const skip = (req: any) => {
 };
 
 export const sendCommand = (...args: string[]): Promise<RedisReply> =>
-    redisClient.sendCommand(args) as Promise<RedisReply>
+    redisClient.sendCommand(args);
 
 export const citizenLimiter = rateLimit({
   windowMs: 60 * 1000 * 30,

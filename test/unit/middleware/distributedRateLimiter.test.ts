@@ -1,9 +1,7 @@
 import {
   keyGenerator,
   skip,
-  sendCommand
 } from '../../../app/middleware/distributedRateLimiter';
-import { redisClient } from '../../../app/redis/client';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('distributedRateLimiter', () => {

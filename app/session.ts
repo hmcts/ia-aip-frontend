@@ -1,8 +1,8 @@
 import config from 'config';
-import { RedisStore} from "connect-redis";
+import { RedisStore} from 'connect-redis';
 import { redisClient } from './redis/client';
 import Logger, { getLogLabel } from './utils/logger';
-import {number} from "joi";
+
 
 const session = require('express-session');
 

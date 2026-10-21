@@ -20,7 +20,9 @@ import {
   getUpdateTribunalDecisionHistory
 } from '../../../app/utils/timeline-utils';
 import { expect, sinon } from '../../utils/testUtils';
-import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
+import {
+  expectedEventsWithTimeExtensionsData
+} from '../mockData/events/expectation/expected-events-with-time-extensions';
 
 describe('timeline-utils', () => {
   let sandbox: sinon.SinonSandbox;
@@ -234,7 +236,7 @@ describe('timeline-utils', () => {
       ] as HistoryEvent[];
       req.session.appeal.history = history;
       const result = constructSection(
-          appealHearingRequirementsSectionEvents, filterEventsForHearingRequirementsSection(req as Request), null, req as Request);
+        appealHearingRequirementsSectionEvents, filterEventsForHearingRequirementsSection(req as Request), null, req as Request);
 
       expect(result).to.deep.eq(
         [{
@@ -323,7 +325,7 @@ describe('timeline-utils', () => {
       ] as HistoryEvent[];
       req.session.appeal.history = history;
       const result = constructSection(
-          appealHearingRequirementsSectionEvents, filterEventsForHearingRequirementsSection(req as Request), null, req as Request);
+        appealHearingRequirementsSectionEvents, filterEventsForHearingRequirementsSection(req as Request), null, req as Request);
 
       expect(result).to.deep.eq(
         [{
@@ -549,28 +551,28 @@ describe('timeline-utils', () => {
             'href': '{{ paths.common.makeAnApplicationViewer }}/1'
           }]
         },
-        {
-          'id': '2',
-          'date': '12 July 2021',
-          'dateObject': new Date('2021-07-12T00:00:00.00Z'),
-          'text': 'Your request to remove the statutory 24 week timeframe was refused.',
-          'links': [{
-            'title': 'What the Tribunal said',
-            'text': 'Reason for decision',
-            'href': '{{ paths.common.makeAnApplicationViewer }}/2'
+          {
+            'id': '2',
+            'date': '12 July 2021',
+            'dateObject': new Date('2021-07-12T00:00:00.00Z'),
+            'text': 'Your request to remove the statutory 24 week timeframe was refused.',
+            'links': [{
+              'title': 'What the Tribunal said',
+              'text': 'Reason for decision',
+              'href': '{{ paths.common.makeAnApplicationViewer }}/2'
+            }]
+          },
+          {
+            'date': '10 July 2021',
+            'dateObject': new Date('2021-07-10T00:00:00.00Z'),
+            'text': 'You sent the Tribunal a request.',
+            'id': '2',
+            'links': [{
+              'title': 'What you sent',
+              'text': 'Your request',
+              'href': '{{ paths.common.makeAnApplicationViewer }}/2'
+            }]
           }]
-        },
-        {
-          'date': '10 July 2021',
-          'dateObject': new Date('2021-07-10T00:00:00.00Z'),
-          'text': 'You sent the Tribunal a request.',
-          'id': '2',
-          'links': [{
-            'title': 'What you sent',
-            'text': 'Your request',
-            'href': '{{ paths.common.makeAnApplicationViewer }}/2'
-          }]
-        }]
       );
     });
 
@@ -607,17 +609,17 @@ describe('timeline-utils', () => {
             'href': '{{ paths.common.makeAnApplicationViewer }}/4'
           }]
         },
-        {
-          'date': '20 July 2021',
-          'dateObject': new Date('2021-07-20T00:00:00.00Z'),
-          'text': 'The Home Office sent the Tribunal a request.',
-          'id': '4',
-          'links': [{
-            'title': 'What the Home Office sent',
-            'text': 'The Home Office request',
-            'href': '{{ paths.common.makeAnApplicationViewer }}/4'
+          {
+            'date': '20 July 2021',
+            'dateObject': new Date('2021-07-20T00:00:00.00Z'),
+            'text': 'The Home Office sent the Tribunal a request.',
+            'id': '4',
+            'links': [{
+              'title': 'What the Home Office sent',
+              'text': 'The Home Office request',
+              'href': '{{ paths.common.makeAnApplicationViewer }}/4'
+            }]
           }]
-        }]
       );
     });
 
@@ -1053,15 +1055,110 @@ describe('timeline-utils', () => {
   });
 
   describe('getEventsAndStates', () => {
-    it('should return relevant events and states when uploadAddendumEvidence feature enabled', () => {
-      const eventsAndStates = getEventsAndStates(false, false);
-      expect(eventsAndStates.appealArgumentSectionEvents).to.have.lengthOf(19);
-      expect(eventsAndStates.appealArgumentSectionStates).to.have.lengthOf(18);
+    const appealArgumentSectionEvents = [
+      Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+      Events.UPLOAD_ADDITIONAL_EVIDENCE_HOME_OFFICE.id,
+      Events.SUBMIT_REASONS_FOR_APPEAL.id,
+      Events.BUILD_CASE.id,
+      Events.REQUEST_RESPONDENT_REVIEW.id,
+      Events.REQUEST_RESPONDENT_REVIEW.id,
+      Events.REQUEST_RESPONSE_REVIEW.id,
+      Events.SUBMIT_CMA_REQUIREMENTS.id,
+      Events.LIST_CMA.id,
+      Events.REQUEST_HEARING_REQUIREMENTS_FEATURE.id,
+      Events.END_APPEAL.id,
+      Events.END_APPEAL_AUTOMATICALLY.id,
+      Events.RECORD_OUT_OF_TIME_DECISION.id,
+      Events.REMOVE_STATUTORY_TIMEFRAME.id,
+      Events.MARK_AS_READY_FOR_UT_TRANSFER.id,
+      Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
+      Events.UPLOAD_ADDENDUM_EVIDENCE_HOME_OFFICE.id,
+      Events.UPLOAD_ADDENDUM_EVIDENCE.id,
+      Events.UPLOAD_ADDENDUM_EVIDENCE_ADMIN_OFFICER.id
+    ];
+
+    const appealHearingRequirementsSectionEvents = [
+      Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
+      Events.STITCHING_BUNDLE_COMPLETE.id,
+      Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+      Events.LIST_CASE.id,
+      Events.RECORD_ADJOURNMENT_DETAILS.id,
+      Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id
+    ];
+
+    const appealDecisionSectionEvents = [
+      Events.SEND_DECISION_AND_REASONS.id,
+      Events.MARK_APPEAL_AS_REMITTED.id,
+      Events.APPLY_FOR_FTPA_APPELLANT.id,
+      Events.APPLY_FOR_FTPA_RESPONDENT.id,
+      Events.LEADERSHIP_JUDGE_FTPA_DECISION.id,
+      Events.RESIDENT_JUDGE_FTPA_DECISION.id
+    ];
+
+    const appealDetailsSectionEvents = [
+      Events.SUBMIT_APPEAL.id,
+      Events.PAY_AND_SUBMIT_APPEAL.id
+    ];
+
+    const appealArgumentSectionStates = [
+      States.APPEAL_SUBMITTED.id,
+      States.CLARIFYING_QUESTIONS_SUBMITTED.id,
+      States.REASONS_FOR_APPEAL_SUBMITTED.id,
+      States.CASE_UNDER_REVIEW.id,
+      States.AWAITING_REASONS_FOR_APPEAL.id,
+      States.RESPONDENT_REVIEW.id,
+      States.AWAITING_CLARIFYING_QUESTIONS.id,
+      States.CMA_REQUIREMENTS_SUBMITTED.id,
+      States.CMA_LISTED.id,
+      States.SUBMIT_HEARING_REQUIREMENTS.id,
+      States.ENDED.id,
+      States.CASE_BUILDING.id,
+      States.LISTING.id,
+      States.PREPARE_FOR_HEARING.id,
+      States.REMITTED.id,
+      States.PRE_HEARING.id,
+      States.DECISION.id,
+      States.DECIDED.id
+    ];
+
+    it('ftpaSetAsideFeatureEnabled feature disabled and hasStf24WeeksCaseReviewDoc false', () => {
+      const eventAndStates = getEventsAndStates(false, false);
+      expect(eventAndStates.appealArgumentSectionEvents).to.deep.equal(appealArgumentSectionEvents);
+      expect(eventAndStates.appealHearingRequirementsSectionEvents).to.deep.equal(appealHearingRequirementsSectionEvents);
+      expect(eventAndStates.appealArgumentSectionStates).to.deep.equal(appealArgumentSectionStates);
+      expect(eventAndStates.appealDecisionSectionEvents).to.deep.equal(appealDecisionSectionEvents);
+      expect(eventAndStates.appealDetailsSectionEvents).to.deep.equal(appealDetailsSectionEvents);
     });
 
-    it('should return relevant events when hearingBundle and uploadAddendumEvidence features enabled', () => {
-      const eventsAndStates = getEventsAndStates(false, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents).to.have.lengthOf(6);
+    it('ftpaSetAsideFeatureEnabled feature enabled and hasStf24WeeksCaseReviewDoc false', () => {
+      const eventAndStates = getEventsAndStates(true, false);
+      expect(eventAndStates.appealArgumentSectionEvents).to.deep.equal(appealArgumentSectionEvents);
+      expect(eventAndStates.appealHearingRequirementsSectionEvents).to.deep.equal(appealHearingRequirementsSectionEvents);
+      expect(eventAndStates.appealArgumentSectionStates).to.deep.equal(appealArgumentSectionStates);
+      expect(eventAndStates.appealDecisionSectionEvents).to.not.deep.equal(appealDecisionSectionEvents);
+      expect(eventAndStates.appealDecisionSectionEvents).to.deep.equal([...appealDecisionSectionEvents, Events.DECIDE_FTPA_APPLICATION.id]);
+      expect(eventAndStates.appealDetailsSectionEvents).to.deep.equal(appealDetailsSectionEvents);
+    });
+
+    it('ftpaSetAsideFeatureEnabled feature disabled and hasStf24WeeksCaseReviewDoc true', () => {
+      const eventAndStates = getEventsAndStates(false, true);
+      expect(eventAndStates.appealArgumentSectionEvents).to.deep.equal(appealArgumentSectionEvents);
+      expect(eventAndStates.appealHearingRequirementsSectionEvents).to.deep.equal(appealHearingRequirementsSectionEvents);
+      expect(eventAndStates.appealArgumentSectionStates).to.deep.equal(appealArgumentSectionStates);
+      expect(eventAndStates.appealDecisionSectionEvents).to.deep.equal(appealDecisionSectionEvents);
+      expect(eventAndStates.appealDetailsSectionEvents).to.not.deep.equal(appealDetailsSectionEvents);
+      expect(eventAndStates.appealDetailsSectionEvents).to.deep.equal([...appealDetailsSectionEvents, Events.COMPLETE_CASE_REVIEW.id]);
+    });
+
+    it('ftpaSetAsideFeatureEnabled feature enabled and hasStf24WeeksCaseReviewDoc true', () => {
+      const eventAndStates = getEventsAndStates(true, true);
+      expect(eventAndStates.appealArgumentSectionEvents).to.deep.equal(appealArgumentSectionEvents);
+      expect(eventAndStates.appealHearingRequirementsSectionEvents).to.deep.equal(appealHearingRequirementsSectionEvents);
+      expect(eventAndStates.appealArgumentSectionStates).to.deep.equal(appealArgumentSectionStates);
+      expect(eventAndStates.appealDecisionSectionEvents).to.not.deep.equal(appealDecisionSectionEvents);
+      expect(eventAndStates.appealDecisionSectionEvents).to.deep.equal([...appealDecisionSectionEvents, Events.DECIDE_FTPA_APPLICATION.id]);
+      expect(eventAndStates.appealDetailsSectionEvents).to.not.deep.equal(appealDetailsSectionEvents);
+      expect(eventAndStates.appealDetailsSectionEvents).to.deep.equal([...appealDetailsSectionEvents, Events.COMPLETE_CASE_REVIEW.id]);
     });
   });
 
@@ -1192,15 +1289,35 @@ describe('timeline-utils', () => {
 
     it('should handle both hearingDocuments and reheardHearingDocumentsCollection by time', () => {
       req.session.appeal.hearingDocuments = [
-        { tag: 'hearingNotice', fileId: 'some-id-4567', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T17:00:00.000000' } as Evidence,
-        { tag: 'hearingNoticeRelisted', fileId: 'some-id-2345', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T12:00:00.000000' } as Evidence
+        {
+          tag: 'hearingNotice',
+          fileId: 'some-id-4567',
+          dateUploaded: '2024-01-01',
+          dateTimeUploaded: '2024-01-01T17:00:00.000000'
+        } as Evidence,
+        {
+          tag: 'hearingNoticeRelisted',
+          fileId: 'some-id-2345',
+          dateUploaded: '2024-01-01',
+          dateTimeUploaded: '2024-01-01T12:00:00.000000'
+        } as Evidence
       ];
       req.session.appeal.reheardHearingDocumentsCollection = [
         {
           value: {
             reheardHearingDocs: [
-              { tag: 'reheardHearingNotice', fileId: 'some-id-5678', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T15:00:00.000000' } as Evidence,
-              { tag: 'reheardHearingNoticeRelisted', fileId: 'some-id-7891', dateUploaded: '2024-01-01', dateTimeUploaded: '2024-01-01T17:00:52.000000' } as Evidence
+              {
+                tag: 'reheardHearingNotice',
+                fileId: 'some-id-5678',
+                dateUploaded: '2024-01-01',
+                dateTimeUploaded: '2024-01-01T15:00:00.000000'
+              } as Evidence,
+              {
+                tag: 'reheardHearingNoticeRelisted',
+                fileId: 'some-id-7891',
+                dateUploaded: '2024-01-01',
+                dateTimeUploaded: '2024-01-01T17:00:52.000000'
+              } as Evidence
             ]
           }
         }
@@ -1221,7 +1338,7 @@ describe('timeline-utils', () => {
 
   describe('getAppealApplicationHistory', () => {
     it('should return the correct sections when paymentStatus is "Paid" and refundFeatureEnabled is true', async () => {
-
+      const someDate = new Date('2020-04-14T08:00:30.233Z');
       const history = [
         {
           'id': 'uploadAdditionalEvidence',
@@ -1236,6 +1353,13 @@ describe('timeline-utils', () => {
           'user': {
             'id': 'legal-rep'
           }
+        },
+        {
+          'id': 'completeCaseReview',
+          'createdDate': someDate.toISOString(),
+          'user': {
+            'id': 'legal-officer'
+          }
         }
       ] as HistoryEvent[];
 
@@ -1243,6 +1367,13 @@ describe('timeline-utils', () => {
       req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
       req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
       req.session.appeal.application.isLateRemissionRequest = true;
+      req.session.appeal.tribunalDocuments = [{
+        fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+        name: 'stf24WeeksCaseReviewAppeallantDocument.PDF',
+        id: '1',
+        tag: 'stf24WeeksCaseReviewAppeallantDocument',
+        dateUploaded: '2021-06-01'
+      }];
 
       const fakeUpdateAppealService = {
         getAuthenticationService: sinon.stub().returns({
@@ -1271,6 +1402,18 @@ describe('timeline-utils', () => {
 
       const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
       expect(result.appealRemissionSection).to.deep.eq(expectedResult);
+      expect(result.appealDetailsSection).to.deep.contain({
+        'date': '14 April 2020',
+        'dateObject': someDate,
+        'text': 'The Tribunal has issued directions to your appeal',
+        'links': [
+          {
+            'title': '',
+            'text': 'Pre-hearing Review and Directions',
+            'href': '{{ paths.common.stfCaseReviewDocumentViewer }}'
+          }
+        ]
+      });
     });
 
     it('should return the correct sections when fee remission is decided', async () => {
@@ -1279,6 +1422,13 @@ describe('timeline-utils', () => {
         {
           'id': 'recordRemissionDecision',
           'createdDate': '2024-03-07'
+        },
+        {
+          'id': 'completeCaseReview',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-officer'
+          }
         }
       ] as HistoryEvent[];
 
@@ -1287,6 +1437,13 @@ describe('timeline-utils', () => {
       req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
       req.session.appeal.application.remissionDecision = 'approved';
       req.session.appeal.application.isLateRemissionRequest = true;
+      req.session.appeal.tribunalDocuments = [{
+        fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+        name: 'someOtherTag.PDF',
+        id: '1',
+        tag: 'someOtherTag',
+        dateUploaded: '2021-06-01'
+      }];
 
       const fakeUpdateAppealService = {
         getAuthenticationService: sinon.stub().returns({
@@ -1327,6 +1484,7 @@ describe('timeline-utils', () => {
 
       const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
       expect(result.appealRemissionDecisionSection).to.deep.eq(expectedResult);
+      expect(result.appealDetailsSection).to.be.empty;
     });
 
     it('should return the correct sections when fee remission is requested', async () => {

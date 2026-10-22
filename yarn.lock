@@ -4881,7 +4881,7 @@ __metadata:
   linkType: hard
 
 "baseline-browser-mapping@npm:^2.9.0":
-  version: 2.10.0
+  version: 2.11.0
   resolution: "baseline-browser-mapping@npm:2.10.0"
   bin:
     baseline-browser-mapping: dist/cli.cjs
@@ -4960,7 +4960,7 @@ __metadata:
   linkType: hard
 
 "body-parser@npm:~1.20.3":
-  version: 1.20.4
+  version: 1.20.6
   resolution: "body-parser@npm:1.20.4"
   dependencies:
     bytes: "npm:~3.1.2"
@@ -5006,7 +5006,7 @@ __metadata:
   linkType: hard
 
 "brace-expansion@npm:^5.0.2":
-  version: 5.0.9
+  version: 5.0.12
   resolution: "brace-expansion@npm:5.0.4"
   dependencies:
     balanced-match: "npm:^4.0.2"
@@ -5117,7 +5117,7 @@ __metadata:
   linkType: hard
 
 "browserslist@npm:^4.0.0, browserslist@npm:^4.24.0, browserslist@npm:^4.27.0, browserslist@npm:^4.28.1":
-  version: 4.28.1
+  version: 4.28.7
   resolution: "browserslist@npm:4.28.1"
   dependencies:
     baseline-browser-mapping: "npm:^2.9.0"
@@ -6945,7 +6945,7 @@ __metadata:
   linkType: hard
 
 "dompurify@npm:^3.4.13":
-  version: 3.4.13
+  version: 3.4.16
   resolution: "dompurify@npm:3.4.13"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
@@ -7956,7 +7956,7 @@ __metadata:
   linkType: hard
 
 "fast-uri@npm:^3.0.1":
-  version: 3.1.5
+  version: 3.1.8
   resolution: "fast-uri@npm:3.1.2"
   checksum: 10/1dff04865b2a38d3e0659deadfbf72efdf83a776bfbf9667e4aa9e5a3ec31bc341cda9622136b32b7652a857c8ba11896794186e8f876f8b2b72731fce8622f6
   languageName: node
@@ -8222,7 +8222,7 @@ __metadata:
   linkType: hard
 
 "follow-redirects@npm:^1.16.0":
-  version: 1.16.0
+  version: 1.16.1
   resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
     debug:
@@ -9458,7 +9458,7 @@ __metadata:
   linkType: hard
 
 "ip-address@npm:^10.0.1, ip-address@npm:^10.2.0":
-  version: 10.3.1
+  version: 10.7.4
   resolution: "ip-address@npm:10.2.0"
   checksum: 10/12fec399e1af5753ac322e47a6d81a50d3a528b3abb17c09525b2a2edcaedcca628c40520706f7037bc4d8e951b0296c47e7b86d0a8e6e2335c8f0ba4afcfac1
   languageName: node
@@ -10228,7 +10228,7 @@ __metadata:
   linkType: hard
 
 "joi@npm:^18.2.8":
-  version: 18.2.8
+  version: 18.2.9
   resolution: "joi@npm:18.2.8"
   dependencies:
     "@hapi/address": "npm:^5.1.1"
@@ -11758,7 +11758,7 @@ __metadata:
   linkType: hard
 
 "moment@npm:^2.19.3, moment@npm:^2.30.1":
-  version: 2.30.1
+  version: 2.31.0
   resolution: "moment@npm:2.30.1"
   checksum: 10/ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
   languageName: node
@@ -11827,7 +11827,7 @@ __metadata:
   linkType: hard
 
 "multer@npm:^2.3.0":
-  version: 2.3.0
+  version: 2.4.0
   resolution: "multer@npm:2.3.0"
   dependencies:
     append-field: "npm:^1.0.0"
@@ -12724,7 +12724,7 @@ __metadata:
   linkType: hard
 
 "pbkdf2@npm:^3.1.2, pbkdf2@npm:^3.1.5":
-  version: 3.1.5
+  version: 3.1.7
   resolution: "pbkdf2@npm:3.1.5"
   dependencies:
     create-hash: "npm:^1.2.0"
@@ -13301,7 +13301,7 @@ __metadata:
   linkType: hard
 
 "proxy-addr@npm:^2.0.7, proxy-addr@npm:~2.0.7":
-  version: 2.0.7
+  version: 2.0.8
   resolution: "proxy-addr@npm:2.0.7"
   dependencies:
     forwarded: "npm:0.2.0"
@@ -13453,7 +13453,7 @@ __metadata:
   linkType: hard
 
 "qs@npm:^6.12.3":
-  version: 6.15.2
+  version: 6.16.0
   resolution: "qs@npm:6.15.0"
   dependencies:
     side-channel: "npm:^1.1.0"
@@ -13462,7 +13462,7 @@ __metadata:
   linkType: hard
 
 "qs@npm:^6.14.0, qs@npm:^6.15.2":
-  version: 6.15.3
+  version: 6.16.0
   resolution: "qs@npm:6.15.3"
   dependencies:
     es-define-property: "npm:^1.0.1"
@@ -13472,7 +13472,7 @@ __metadata:
   linkType: hard
 
 "qs@npm:~6.14.0":
-  version: 6.15.2
+  version: 6.16.0
   resolution: "qs@npm:6.14.2"
   dependencies:
     side-channel: "npm:^1.1.0"

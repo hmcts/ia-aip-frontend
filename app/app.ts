@@ -43,6 +43,7 @@ function createApp() {
   // Inject nonce Id on every request.
   app.use((req, res, next) => {
     res.locals.nonce = uuidv4();
+    res.locals.cspNonce = res.locals.nonce;
     next();
   });
 
@@ -109,7 +110,7 @@ function configureHelmet(app: Application) {
           fontSrc: ["'self'", 'data:'],
           scriptSrc: [
             "'self'",
-            "'unsafe-inline'",
+            (req: Request, res: Response) => `'nonce-${res.locals.nonce}'`,
             'www.google-analytics.com',
             'www.googletagmanager.com',
             'tagmanager.google.com',

@@ -3,7 +3,7 @@ import Logger, { getLogLabel } from '../../../app/utils/logger';
 import * as progression from '../service/case-progression-service';
 import { createCaseFromThread } from '../service/ccd-service';
 import { createCitizenUser } from '../service/user-service';
-import { currentUserDetails, signInForUserFromThread, signInForUserWithId } from './helper-functions';
+import { currentUserDetails, loginAsUser, signInForUserFromThread, signInForUserWithId } from './helper-functions';
 
 const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
@@ -62,6 +62,10 @@ module.exports = {
       await I.seeInTitle('Sign in - HMCTS Access');
     });
 
+    Then(/^I should see the "([^"]*)" page$/, async (text: string) => {
+      await I.seeInTitle(text);
+    });
+
     Then('I should see the Create an account page', async () => {
       await I.seeInTitle('Self Register - HMCTS Access');
     });
@@ -80,27 +84,21 @@ module.exports = {
     });
 
     Given('I log in as an appellant ready to submit appeal', async () => {
-      await I.fillField('#username', 'readyToSubmitAppealDONOTSUBMIT@mailnesia.com');
-      await I.fillField('#password', 'Apassword123');
-      await I.click('Sign in');
+      await loginAsUser(I, 'readyToSubmitAppealDONOTSUBMIT@mailnesia.com', 'Apassword123');
       await navigateFromCasesListToOverview(I);
       await I.waitForText('Do this next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given('I sign in as the appellant', async () => {
-      await I.fillField('#username', currentUserDetails.email);
-      await I.fillField('#password', currentUserDetails.password);
-      await I.click('Sign in');
+      await loginAsUser(I, currentUserDetails.email, currentUserDetails.password);
       await navigateFromCasesListToOverview(I);
       await I.waitForText('Do this next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given(/^I sign in as an appellant$/, async () => {
-      await I.fillField('#username', 'ia_citizen8943692@hmcts.net');
-      await I.fillField('#password', 'Apassword123');
-      await I.click('Sign in');
+      await loginAsUser(I, 'ia_citizen8943692@hmcts.net', 'Apassword123');
       await navigateFromCasesListToOverview(I);
       await I.waitForText('Nothing to do next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);

@@ -21,7 +21,11 @@ async function signInForUserFromThread() {
   await loginAsUser(I, user.email, user.password);
 }
 
-async function loginAsUser(I, email: string, password: string) {
+async function loginAsUser(I, email: string, password: string, exui?: boolean) {
+  if (!exui) {
+    await I.waitForText('Sign in or create an account', 15);
+    await I.click('Sign in', '.govuk-button');
+  }
   await I.waitForText('Enter your email address', 15);
   await I.fillField('#email', email);
   await I.click('Continue', '.govuk-button');

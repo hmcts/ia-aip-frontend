@@ -35,7 +35,7 @@ module.exports = {
     When(/^I sign in as a Case Officer and Request Home Office data$/, async () => {
       await I.amOnPage(exUiUrl);
       await I.waitForText('Enter your email address', 45);
-      await loginAsUser(I, caseOfficerUserName, caseOfficerPassword);
+      await loginAsUser(I, caseOfficerUserName, caseOfficerPassword, true);
       await I.waitForText('Case list', 45);
       await I.amOnPage(caseUrl);
       await I.waitForText('Do this next', 45);
@@ -151,7 +151,7 @@ module.exports = {
       await I.waitForText('Sign out', 45);
       await I.click('Sign out');
       await I.waitForText('Enter your email address', 45);
-      await loginAsUser(I, adminOfficerUserName, adminOfficerPassword);
+      await loginAsUser(I, adminOfficerUserName, adminOfficerPassword, true);
       await I.waitForText('Case list', 45);
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 45);
@@ -174,7 +174,7 @@ module.exports = {
     When(/^I sign in as a Case Officer and Create the case summary$/, async () => {
       await I.click('Sign out');
       await I.waitForText('Enter your email address', 45);
-      await loginAsUser(I, caseOfficerUserName, caseOfficerPassword);
+      await loginAsUser(I, caseOfficerUserName, caseOfficerPassword, true);
       await I.waitForText('Case list', 45);
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 45);
@@ -234,7 +234,7 @@ module.exports = {
     When(/^I sign in as a Judge and Prepare Decision and Reasons$/, async () => {
       await I.click('Sign out');
       await I.waitForText('Enter your email address', 45);
-      await loginAsUser(I, judgeUserName, judgePassword);
+      await loginAsUser(I, judgeUserName, judgePassword, true);
       await I.waitForText('Case list', 45);
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 45);
@@ -275,7 +275,7 @@ module.exports = {
     When(/^I sign in as a Case Officer and End the appeal$/, async () => {
       await I.amOnPage(exUiUrl);
       await I.waitForText('Enter your email address', 45);
-      await loginAsUser(I, caseOfficerUserName, caseOfficerPassword);
+      await loginAsUser(I, caseOfficerUserName, caseOfficerPassword, true);
       await I.waitForText('Case list', 45);
       await I.amOnPage(exUiUrl + 'cases/case-details/' + getCitizenUserFromThread().caseId);
       await I.waitForText('Do this next', 45);

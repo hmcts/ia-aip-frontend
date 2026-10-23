@@ -17,7 +17,7 @@ module.exports = {
           await I.amOnPage(exuiBaseUrl + '/auth/logout');
           await I.amOnPage(exuiBaseUrl);
           await I.waitForElement('#email', 30);
-          await loginAsUser(I, config.get('testAccounts.testLawFirmAUsername'), process.env.TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD);
+          await loginAsUser(I, config.get('testAccounts.testLawFirmAUsername'), process.env.TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD, true);
         }
       }
       await I.checkIfExUiLogInIsSuccessful();

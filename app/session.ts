@@ -1,6 +1,8 @@
 import config from 'config';
+import { RedisStore} from 'connect-redis';
 import { redisClient } from './redis/client';
 import Logger, { getLogLabel } from './utils/logger';
+
 
 const session = require('express-session');
 
@@ -13,13 +15,11 @@ const logLabel: string = getLogLabel(__filename);
 function setupSession() {
   logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
   if (useRedis) {
-    logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
-    const RedisStore = require('connect-redis')(session);
+    logger.trace(`connecting to reddis on ['${config.get('session.redis.url')}]`, logLabel);
 
     return session({
       cookie: {
         httpOnly: true,
-        maxAge: config.get('session.cookie.maxAgeInMs'),
         secure: isSecure,
         sameSite: 'lax'
       },
@@ -27,7 +27,7 @@ function setupSession() {
       saveUninitialized: true,
       secret: config.get('session.redis.secret'),
       rolling: true,
-      store: new RedisStore({ client: redisClient })
+      store: new RedisStore({ client: redisClient, ttl: config.get<number>('session.cookie.maxAgeInMs')})
     });
   } else {
     return session({

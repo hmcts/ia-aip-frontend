@@ -24,14 +24,14 @@ async function signInForUserFromThread() {
 async function loginAsUser(I, email: string, password: string, exui?: boolean) {
   if (!exui) {
     await I.waitForText('Sign in or create an account', 15);
-    await I.click('Sign in', '.govuk-button');
+    await I.click('//*[contains(@class, \'govuk-button\') and contains(text(),\'Sign in\')]');
   }
   await I.waitForText('Enter your email address', 15);
   await I.fillField('#email', email);
-  await I.click('Continue', '.govuk-button');
+  await I.click('//*[contains(@class, \'govuk-button\') and contains(text(),\'Continue\')]');
   await I.waitForText('Enter your password', 15);
   await I.fillField('#password', password);
-  await I.click('Continue', '.govuk-button');
+  await I.click('//*[contains(@class, \'govuk-button\') and contains(text(),\'Continue\')]');
   await I.wait(1);
 }
 

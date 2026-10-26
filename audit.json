@@ -19,6 +19,7 @@
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/start-appeal_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/%5C%22https:/www.gov.uk/government/publications/form-iaft-5dia-appeal-to-the-first-tier-tribunal-information-sheet%5C%22_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/accessibility-statement_GET": "ignore",
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/create-new-appeal_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=0_GET": "ignore",
   "10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/start-appeal_GET": "ignore",
   "10055_CSP: X-WebKit-CSP_https://immigration-appeal.aat.platform.hmcts.net/start-appeal_GET": "ignore",

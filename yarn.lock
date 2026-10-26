@@ -3319,15 +3319,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/multer@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@types/multer@npm:2.0.0"
-  dependencies:
-    "@types/express": "npm:*"
-  checksum: 10/87ddd5b39fd572b1d98f84908738eed9fef53fc20628bff066d43b3bcf70481f51010a997554ed65c97121e7b8fe44b59a24cd68ccf59c3d7c64bbffb8c5a127
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:*":
   version: 25.3.3
   resolution: "@types/node@npm:25.3.3"
@@ -5950,18 +5941,6 @@ __metadata:
   version: 0.0.1
   resolution: "concat-map@npm:0.0.1"
   checksum: 10/9680699c8e2b3af0ae22592cb764acaf973f292a7b71b8a06720233011853a58e256c89216a10cbe889727532fd77f8bcd49a760cedfde271b8e006c20e079f2
-  languageName: node
-  linkType: hard
-
-"concat-stream@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "concat-stream@npm:2.0.0"
-  dependencies:
-    buffer-from: "npm:^1.0.0"
-    inherits: "npm:^2.0.3"
-    readable-stream: "npm:^3.0.2"
-    typedarray: "npm:^0.0.6"
-  checksum: 10/250e576d0617e7c58e1c4b2dd6fe69560f316d2c962a409f9f3aac794018499ddb31948b1e4296f217008e124cd5d526432097745157fe504b5d9f3dc469eadb
   languageName: node
   linkType: hard
 
@@ -9142,7 +9121,6 @@ __metadata:
     "@types/express-session": "npm:^1.18.2"
     "@types/lodash": "npm:^4.17.24"
     "@types/mocha": "npm:10.0.10"
-    "@types/multer": "npm:^2.0.0"
     "@types/node": "npm:^24.10.15"
     "@types/nunjucks": "npm:^3.2.6"
     "@types/sinon": "npm:^21.0.0"
@@ -9196,7 +9174,6 @@ __metadata:
     mochawesome: "npm:^7.1.4"
     mockttp: "npm:^4.2.3"
     moment: "npm:^2.30.1"
-    multer: "npm:^2.3.0"
     nl2br: "npm:^0.0.3"
     nocache: "npm:^4.0.0"
     nodemon: "npm:^3.1.14"
@@ -11815,26 +11792,13 @@ __metadata:
   linkType: hard
 
 "multer@npm:^2.0.2":
-  version: 2.2.0
-  resolution: "multer@npm:2.1.1"
-  dependencies:
-    append-field: "npm:^1.0.0"
-    busboy: "npm:^1.6.0"
-    concat-stream: "npm:^2.0.0"
-    type-is: "npm:^1.6.18"
-  checksum: 10/fb22868caaed37d725715c14c60b740b81665265da3a026bb61954414f65b99f76b360128413b8a2a7cc1a95ecae28a42bf831fe172bb79682d19ec105b556bd
-  languageName: node
-  linkType: hard
-
-"multer@npm:^2.3.0":
   version: 2.5.0
-  resolution: "multer@npm:2.3.0"
+  resolution: "multer@npm:2.5.0"
   dependencies:
     append-field: "npm:^1.0.0"
     busboy: "npm:^1.6.0"
-    concat-stream: "npm:^2.0.0"
     type-is: "npm:^1.6.18"
-  checksum: 10/bd939b7d364aea9d859eb7ff7f86811b0ae620e9d4b5684d3ef33e9b336f062b053c06fc2f3d292a5e373835e84828d68ce8bc35aad63df0c5ba5769f146c50e
+  checksum: 10/c5b968f51f69df631059bb01088c15d0e670853fcfed029af3cf8167ef50f798bb6344143eb1884708bd0de34317d1b4696d74aa93c482390e7d291172958ae9
   languageName: node
   linkType: hard
 
@@ -13681,7 +13645,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^3.0.2, readable-stream@npm:^3.4.0, readable-stream@npm:^3.6.0, readable-stream@npm:^3.6.2":
+"readable-stream@npm:^3.4.0, readable-stream@npm:^3.6.0, readable-stream@npm:^3.6.2":
   version: 3.6.2
   resolution: "readable-stream@npm:3.6.2"
   dependencies:
@@ -15718,13 +15682,6 @@ __metadata:
   dependencies:
     is-typedarray: "npm:^1.0.0"
   checksum: 10/7c850c3433fbdf4d04f04edfc751743b8f577828b8e1eb93b95a3bce782d156e267d83e20fb32b3b47813e69a69ab5e9b5342653332f7d21c7d1210661a7a72c
-  languageName: node
-  linkType: hard
-
-"typedarray@npm:^0.0.6":
-  version: 0.0.6
-  resolution: "typedarray@npm:0.0.6"
-  checksum: 10/2cc1bcf7d8c1237f6a16c04efc06637b2c5f2d74e58e84665445cf87668b85a21ab18dd751fa49eee6ae024b70326635d7b79ad37b1c370ed2fec6aeeeb52714
   languageName: node
   linkType: hard
 

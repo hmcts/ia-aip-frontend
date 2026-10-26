@@ -1265,7 +1265,7 @@ function getStfCaseReviewDocumentViewer(req: Request, res: Response, next: NextF
     const fileNameFormatted = fileNameFormatter(doc.name);
     const data = [
       addSummaryRow(i18n.pages.detailViewers.stfCaseReviewDocument.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${fileNameFormatted}</a>`]),
-      addSummaryRow(i18n.pages.detailViewers.stfCaseReviewDocument.dateTimeUploaded, [moment(doc.dateTimeUploaded).format(dateTimeFormat)]),
+      addSummaryRow(i18n.pages.detailViewers.stfCaseReviewDocument.dateUploaded, [moment(doc.dateUploaded).format(dayMonthYearFormat)]),
     ];
     return res.render('templates/details-viewer.njk', {
       title: i18n.pages.detailViewers.stfCaseReviewDocument.title,

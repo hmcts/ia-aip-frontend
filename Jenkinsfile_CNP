@@ -123,6 +123,8 @@ withPipeline("nodejs", product, component) {
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
   }
 
+  enableSecurityScan();
+
   afterAlways('functionalTest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'accessibility-issues.json'
     stage('Accessibility Check') {

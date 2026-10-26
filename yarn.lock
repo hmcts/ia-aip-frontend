@@ -7000,7 +7000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:3.4.17":
+"dompurify@npm:^3.4.13":
   version: 3.4.17
   resolution: "dompurify@npm:3.4.17"
   dependencies:

@@ -1,4 +1,5 @@
 import { getCitizenUserFromThread } from '../../service/user-service';
+import { loginAsUser } from '../helper-functions';
 
 const config = require('config');
 
@@ -15,10 +16,8 @@ module.exports = {
         } else {
           await I.amOnPage(exuiBaseUrl + '/auth/logout');
           await I.amOnPage(exuiBaseUrl);
-          await I.waitForElement('#username', 30);
-          await I.fillField('#username', config.get('testAccounts.testLawFirmAUsername'));
-          await I.fillField('#password', process.env.TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD);
-          await I.click('Sign in');
+          await I.waitForElement('#email', 30);
+          await loginAsUser(I, config.get('testAccounts.testLawFirmAUsername'), process.env.TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD, true);
         }
       }
       await I.checkIfExUiLogInIsSuccessful();

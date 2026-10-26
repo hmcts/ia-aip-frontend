@@ -220,7 +220,7 @@ module.exports = {
     });
 
     When('I go to view the grabbed appeal', async () => {
-      await I.amOnPage(`${testUrl}${paths.common.overview}?caseId=${caseId}`);
+      await I.amOnPage(`${testUrl}${paths.common.loadCase}?caseId=${caseId}`);
     });
   }
 }

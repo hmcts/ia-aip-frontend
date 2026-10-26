@@ -8,18 +8,21 @@ const useRedis: boolean = config.get('session.useRedis') === true;
 
 //TLS requires this in new redis version
 function toNewRedisUrl(url:string):string{
+    const parsed = new URL(url);
+    parsed.password = parsed.username;
+    parsed.username = '';
+    if (parsed.searchParams.get('tls')==='true'){
+        parsed.protocol='rediss:';
+        parsed.searchParams.delete('tls');
+    }
+
     logger.trace('REDIS URL: ' + url, logLabel);
-    if(!/[?&]tls=true\b/.test(url)) return url;
-    return url
-        .replace(/^redis:/, 'rediss:')
-        .replace(/([?&])tls=true&?/,'$1')
-        .replace(/[?&]$/,'');
+    logger.trace('REDIS PARSED: ' + parsed.toString(), logLabel);
+    return parsed.toString();
 }
 
 function createRedisClient(url:string, factory=createClient){
-    const newUrl = toNewRedisUrl(url);
-    logger.trace('new redis url: ' + newUrl, logLabel);
-    const client=factory({url: newUrl});
+    const client=factory({url: toNewRedisUrl(url)});
     client.on('error',(err: Error)=> logger.exception(`Error starting Redis client:${err.message}`, logLabel));
     client.connect()
       .then(()=>logger.trace('Connected to Redis client',logLabel))

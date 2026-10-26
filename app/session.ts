@@ -21,14 +21,13 @@ function setupSession() {
       cookie: {
         httpOnly: true,
         secure: isSecure,
-        sameSite: 'lax',
-        maxAge: 'session.cookie.maxAgeinMs'
+        sameSite: 'lax'
       },
       resave: true,
       saveUninitialized: true,
       secret: config.get('session.redis.secret'),
       rolling: true,
-      store: new RedisStore({ client: redisClient})
+      store: new RedisStore({ client: redisClient, ttl: config.get<number> ('session.cookies.maxAgeInMs')/1000})
     });
   } else {
     return session({

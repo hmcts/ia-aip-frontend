@@ -111,6 +111,7 @@ async function createCaseInState(user: UserInfo, state: State, appealType: strin
   if (['protection', 'revocationOfProtection'].includes(appealType)) {
     await triggerEvent(user, JSON.stringify(events.requestHoData), 'caseOfficer');
   }
+  await triggerEvent(user, JSON.stringify(events.completeCaseReview), 'caseOfficer');
   await triggerEvent(user, JSON.stringify(events.requestRespondentEvidence), 'caseOfficer');
   if (state === State.awaitingRespondentEvidence) {
     return;

@@ -16,6 +16,6 @@ Scenario: NoC Happy path LR to AiP
    And I click "Continue" button
    Then I see the confirm case details page with the correct information
    When I click "Continue" button
-   Then I am on the self register page
+   Then I am on the IDAM sign in or create account page
    When I have logged back in for the e2e
    Then I should see the appeal overview page with the legal rep case details

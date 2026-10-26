@@ -2464,7 +2464,7 @@
       },
       "stfCaseReviewDocument": {
         "title": "Case review letter",
-        "dateTimeUploaded": "Document upload date and time",
+        "dateUploaded": "Date uploaded",
         "document": "Document"
       },
       "homeOfficeWithdrawLetter": {

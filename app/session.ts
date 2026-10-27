@@ -27,7 +27,7 @@ function setupSession() {
       saveUninitialized: true,
       secret: config.get('session.redis.secret'),
       rolling: true,
-      store: new RedisStore({ client: redisClient, ttl: config.get<number> ('session.cookies.maxAgeInMs')/1000})
+      store: new RedisStore({ client: redisClient, ttl: config.get<number> ('session.cookie.maxAgeInMs')/1000})
     });
   } else {
     return session({

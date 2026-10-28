@@ -97,7 +97,68 @@ withNightlyPipeline(type, product, component) {
     env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'true'
     env.APPLICATIONINSIGHTS_NO_DIAGNOSTIC_CHANNEL = 'true'
 
-    enableSecurityScan(urlExclusions: urlExclusions, scanType: "frontend")
+    if (!params.skipFortifyScan) {
+        enableFortifyScan()
+    }
+    if (!params.skipCrossBrowserTests) {
+        enableCrossBrowserTest()
+    }
+    if (!params.skipSecurityScan) {
+        enableSecurityScan(urlExclusions: urlExclusions, scanType: "frontend")
+    }
+    if (!params.skipFullFunctionalTests) {
+        enableFullFunctionalTest(180)
+    }
+
+//    mutation tests not yet implemented
+//    enableMutationTest()
+
+    afterAlways('build') {
+        if (!params.skipSmokeTest) {
+            stage('Smoke Test') {
+                builder.yarn('test:smoke')
+            }
+        }
+
+        if (!params.skipUnitTests) {
+            stage('Unit Tests') {
+                builder.yarn('test:unit')
+                publishHTML target: [
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : "mochawesome-report",
+                        reportFiles          : "mochawesome.html",
+                        reportName           : "Unit & Smoke Test Report"
+                ]
+                publishHTML target: [
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : "test/coverage/html",
+                        reportFiles          : "index.html",
+                        reportName           : "Code Coverage Report"
+                ]
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
+            }
+        }
+    }
+
+    before('fortify-scan') {
+        sh "chmod +x ./test/java/gradlew"
+    }
+
+    afterAlways('fortify-scan') {
+        publishHTML target: [
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "Fortify Scan",
+                reportFiles          : "FortifyScanReport.html",
+                reportName           : "Fortify Scan Report"
+        ]
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+    }
 
     afterAlways('securityScan') {
         publishHTML target: [
@@ -108,5 +169,43 @@ withNightlyPipeline(type, product, component) {
                 reportFiles          : "activescan.html",
                 reportName           : "Security Scan Report"
         ]
+    }
+
+    afterAlways('crossBrowserTest') {
+        publishHTML([
+                reportName           : 'Cross Browser Tests',
+                reportDir            : "functional-output/crossbrowser/reports/",
+                reportFiles          : "${dir('functional-output/crossbrowser/reports') { findFiles(glob: '**/records.html').join(',') ?: 'Not found' }}",
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true
+        ])
+    }
+
+    afterAlways('mutationTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/mutation/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'Mutation tests'
+        ])
+    }
+
+    afterAlways('fullFunctionalTest') {
+        builder.yarn('generate-report')
+        publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "allure-report",
+                reportFiles          : 'index.html',
+                reportName           : 'Functional E2E Tests'
+        ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-report/**/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'allure-results/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/accessibility/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'accessibility-issues.json'
     }
 }

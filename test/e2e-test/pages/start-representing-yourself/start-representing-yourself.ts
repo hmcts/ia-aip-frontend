@@ -143,19 +143,20 @@ async function waitForNocEmailSent(user: UserInfo): Promise<string> {
   const delay = 2000;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    logger.trace(`Checking for notification email, attempt ${attempt}`, logLabel);
+    logger.traceWorker(`Checking for notification email, attempt ${attempt}`, logLabel);
     const response = await notifyClient.getNotifications('email', '', '', '');
     const filteredResponse = response.data.notifications
       .filter((item: any) => item.template.id === 'c79d396a-7551-4f2c-854c-b84677fbc19e'
         && item.reference.includes(user.caseId));
-    logger.trace(`Found ${filteredResponse.length} matching notifications`, logLabel);
+    logger.traceWorker(`Found ${filteredResponse.length} matching notifications`, logLabel);
     if (filteredResponse.length > 0 && filteredResponse[0].status === 'delivered') {
-      logger.trace(`Notification email found: ${filteredResponse[0].id}`, logLabel);
+      logger.traceWorker(`Notification email found: ${filteredResponse[0].id}`, logLabel);
       return filteredResponse[0].body;
     }
     if (attempt < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, delay));
+    } else {
+      throw new Error(`Notification was not sent within ${maxAttempts * delay / 1000} seconds.`);
     }
   }
-  throw new Error(`Notification was not sent within ${maxAttempts * delay / 1000} seconds.`);
 }

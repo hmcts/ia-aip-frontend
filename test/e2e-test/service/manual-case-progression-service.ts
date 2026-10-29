@@ -1,3 +1,4 @@
+import { loginAsUser } from '../pages/helper-functions';
 import { getCitizenUserFromThread } from './user-service';
 
 const config = require('config');
@@ -33,10 +34,8 @@ module.exports = {
 
     When(/^I sign in as a Case Officer and Request Home Office data$/, async () => {
       await I.amOnPage(exUiUrl);
-      await I.waitForText('Sign in or create an account', 45);
-      await I.fillField('#username', caseOfficerUserName);
-      await I.fillField('#password', caseOfficerPassword);
-      await I.click('Sign in');
+      await I.waitForText('Enter your email address', 45);
+      await loginAsUser(I, caseOfficerUserName, caseOfficerPassword, true);
       await I.waitForText('Case list', 45);
       await I.amOnPage(caseUrl);
       await I.waitForText('Do this next', 45);
@@ -151,10 +150,8 @@ module.exports = {
     When(/^I sign in as an Admin Officer and List the case$/, async () => {
       await I.waitForText('Sign out', 45);
       await I.click('Sign out');
-      await I.waitForText('Sign in', 45);
-      await I.fillField('#username', adminOfficerUserName);
-      await I.fillField('#password', adminOfficerPassword);
-      await I.click('Sign in');
+      await I.waitForText('Enter your email address', 45);
+      await loginAsUser(I, adminOfficerUserName, adminOfficerPassword, true);
       await I.waitForText('Case list', 45);
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 45);
@@ -176,9 +173,8 @@ module.exports = {
 
     When(/^I sign in as a Case Officer and Create the case summary$/, async () => {
       await I.click('Sign out');
-      await I.fillField('#username', caseOfficerUserName);
-      await I.fillField('#password', caseOfficerPassword);
-      await I.click('Sign in');
+      await I.waitForText('Enter your email address', 45);
+      await loginAsUser(I, caseOfficerUserName, caseOfficerPassword, true);
       await I.waitForText('Case list', 45);
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 45);
@@ -237,9 +233,8 @@ module.exports = {
 
     When(/^I sign in as a Judge and Prepare Decision and Reasons$/, async () => {
       await I.click('Sign out');
-      await I.fillField('#username', judgeUserName);
-      await I.fillField('#password', judgePassword);
-      await I.click('Sign in');
+      await I.waitForText('Enter your email address', 45);
+      await loginAsUser(I, judgeUserName, judgePassword, true);
       await I.waitForText('Case list', 45);
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 45);
@@ -279,10 +274,8 @@ module.exports = {
 
     When(/^I sign in as a Case Officer and End the appeal$/, async () => {
       await I.amOnPage(exUiUrl);
-      await I.waitForText('Sign in or create an account', 45);
-      await I.fillField('#username', caseOfficerUserName);
-      await I.fillField('#password', caseOfficerPassword);
-      await I.click('Sign in');
+      await I.waitForText('Enter your email address', 45);
+      await loginAsUser(I, caseOfficerUserName, caseOfficerPassword, true);
       await I.waitForText('Case list', 45);
       await I.amOnPage(exUiUrl + 'cases/case-details/' + getCitizenUserFromThread().caseId);
       await I.waitForText('Do this next', 45);

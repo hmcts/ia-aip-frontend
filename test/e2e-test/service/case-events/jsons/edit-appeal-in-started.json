@@ -95,6 +95,7 @@
     ],
     "appellantInUkPreviousSelection": "Yes",
     "hasSponsor": "No",
+    "hasNonLegalRep": "No",
     "appellantHasFixedAddress": "Yes",
     "subscriptions": [
       {

@@ -18,10 +18,21 @@ function signInForUserWithId(email: string) {
 
 async function signInForUserFromThread() {
   const user: UserInfo = getCitizenUserFromThread();
-  I.fillField('#username', user.email);
-  I.fillField('#password', user.password);
-  I.click('Sign in');
-  I.wait(1);
+  await loginAsUser(I, user.email, user.password);
+}
+
+async function loginAsUser(I, email: string, password: string, exui?: boolean) {
+  if (!exui) {
+    await I.waitForText('Sign in or create an account', 15);
+    await I.click('//*[contains(@class, \'govuk-button\') and contains(text(),\'Sign in\')]');
+  }
+  await I.waitForText('Enter your email address', 15);
+  await I.fillField('#email', email);
+  await I.click('//*[contains(@class, \'govuk-button\') and contains(text(),\'Continue\')]');
+  await I.waitForText('Enter your password', 15);
+  await I.fillField('#password', password);
+  await I.click('//*[contains(@class, \'govuk-button\') and contains(text(),\'Continue\')]');
+  await I.wait(1);
 }
 
 function fillInDate(day, month, year) {
@@ -41,5 +52,6 @@ export {
   enterRefNumber,
   signInForUserFromThread,
   signInForUserWithId,
+  loginAsUser,
   currentUserDetails
 };

@@ -106,6 +106,7 @@ async function getUserToken(userConfig: UserInfo) {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
+        validateStatus: () => true,
         params: {
           grant_type: 'password',
           redirect_uri: redirectUrl,

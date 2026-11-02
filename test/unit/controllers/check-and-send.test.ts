@@ -728,6 +728,9 @@ describe('Check and Send Controller', () => {
     });
 
     it('should fail validation and render error when 422 response', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
       req.session.appeal = createDummyAppealApplication();
       req.body = { statement: 'acceptance' };
       updateAppealService.submitEventToCcd = validateStub.returns({
@@ -753,7 +756,7 @@ describe('Check and Send Controller', () => {
       expect(resRedirectSpy.calledOnceWith(paths.appealSubmitted.confirmation)).to.equal(false);
       expect(submitStub.called).to.equal(false);
 
-      expect(renderStub).to.be.calledOnceWith('appeal-application/check-and-send.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'appeal-application/check-and-send.njk', {
         error: expectedError,
         errorList: Object.values(expectedError),
         summaryRows: sinon.match.any,

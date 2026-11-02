@@ -4960,7 +4960,7 @@ __metadata:
   linkType: hard
 
 "body-parser@npm:~1.20.3":
-  version: 1.20.6
+  version: 1.20.9
   resolution: "body-parser@npm:1.20.4"
   dependencies:
     bytes: "npm:~3.1.2"
@@ -6946,13 +6946,13 @@ __metadata:
 
 "dompurify@npm:^3.4.13":
   version: 3.4.17
-  resolution: "dompurify@npm:3.4.17"
+  resolution: "dompurify@npm:3.4.13"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10/ae03c068bd351d1201a24a9667cb302c65939f45a0c357edec8b84133108e19ac74f355c2d8b0f30baadadd7f0be2db300d269aa80d3ee15872712ca9ff4e1a8
+  checksum: 10/0db0a309a868a38aca042f606b37446977c35ee4501850a8c1bf2781337d79871daf1f4344bbf5b545f2a8c62e4d4e192c8fd6f1ff49ecec7c865c55a0aefee3
   languageName: node
   linkType: hard
 
@@ -7956,7 +7956,7 @@ __metadata:
   linkType: hard
 
 "fast-uri@npm:^3.0.1":
-  version: 3.1.8
+  version: 3.1.9
   resolution: "fast-uri@npm:3.1.2"
   checksum: 10/1dff04865b2a38d3e0659deadfbf72efdf83a776bfbf9667e4aa9e5a3ec31bc341cda9622136b32b7652a857c8ba11896794186e8f876f8b2b72731fce8622f6
   languageName: node
@@ -11827,7 +11827,7 @@ __metadata:
   linkType: hard
 
 "multer@npm:^2.3.0":
-  version: 2.4.0
+  version: 2.5.0
   resolution: "multer@npm:2.3.0"
   dependencies:
     append-field: "npm:^1.0.0"
@@ -13453,7 +13453,7 @@ __metadata:
   linkType: hard
 
 "qs@npm:^6.12.3":
-  version: 6.16.0
+  version: 6.16.1
   resolution: "qs@npm:6.15.0"
   dependencies:
     side-channel: "npm:^1.1.0"
@@ -13462,7 +13462,7 @@ __metadata:
   linkType: hard
 
 "qs@npm:^6.14.0, qs@npm:^6.15.2":
-  version: 6.16.0
+  version: 6.16.1
   resolution: "qs@npm:6.15.3"
   dependencies:
     es-define-property: "npm:^1.0.1"
@@ -13472,7 +13472,7 @@ __metadata:
   linkType: hard
 
 "qs@npm:~6.14.0":
-  version: 6.16.0
+  version: 6.16.1
   resolution: "qs@npm:6.14.2"
   dependencies:
     side-channel: "npm:^1.1.0"
@@ -14427,7 +14427,7 @@ __metadata:
   linkType: hard
 
 "serialize-javascript@npm:^6.0.2":
-  version: 6.0.2
+  version: 7.1.4
   resolution: "serialize-javascript@npm:6.0.2"
   dependencies:
     randombytes: "npm:^2.1.0"

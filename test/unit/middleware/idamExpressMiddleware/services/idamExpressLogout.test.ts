@@ -92,7 +92,7 @@ describe('idamExpressLogout', () => {
         expect(cookieGet.callCount).to.equal(1);
         expect(requestDeleteStub.callCount).to.equal(1);
         expect(requestDeleteStub.calledWith(logoutUrl, options)).to.equal(true);
-        expect(cookieRemove.called).to.equal(false);
+        expect(cookieRemove.called).to.equal(true);
       });
     });
   });

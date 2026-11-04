@@ -69,7 +69,7 @@ function getHearingCentreEmail(req: Request): string {
     case 'glasgowTribunalsCentre':
       return config.get('hearingCentres.glasgowEmail');
     default:
-      return '';
+      return config.get('customerServices.email');
   }
 }
 export {

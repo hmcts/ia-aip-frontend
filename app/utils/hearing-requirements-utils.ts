@@ -113,7 +113,7 @@ function getInterpreterRenderObject(interpreterLanguageType: InterpreterLanguage
     dropdownListText: source.dropdownListText,
     checkBoxText: source.checkBoxText,
     languageManuallyText: source.languageManuallyText,
-    languageManualEntry: interpreterLanguageType?.languageManualEntry?.includes('Yes') || isManualEntry || false,
+    languageManualEntry: isManualEntry ?? (interpreterLanguageType?.languageManualEntry?.includes('Yes') || false),
     languageManualEntryDescription: interpreterLanguageType?.languageManualEntryDescription || '',
     items: convertDynamicListToSelectItemList(interpreterSpokenSignLanguageDynamicList)
   };

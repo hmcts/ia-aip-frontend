@@ -173,8 +173,10 @@ module.exports = {
     When(/^I create a new draft appeal "([0-9]*)" times$/, async (times: string) => {
       const count = parseInt(times);
       for (let i = 0; i < count; i++) {
-        await I.amOnPage(testUrl + paths.common.createNewAppeal);
-        await I.waitInUrl(paths.common.overview, 30);
+        await I.click(`#${i18n.components.header.createNewAppealNavId}`);
+        await I.waitForVisible(`#${i18n.pages.casesList.createAppealModal.id}-confirm`, 30);
+        await I.click(`#${i18n.pages.casesList.createAppealModal.id}-confirm`);
+        await I.waitForInvisible(`#${i18n.pages.casesList.createAppealModal.id}-confirm`, 30);
       }
     });
 
@@ -220,7 +222,7 @@ module.exports = {
     });
 
     When('I go to view the grabbed appeal', async () => {
-      await I.amOnPage(`${testUrl}${paths.common.overview}?caseId=${caseId}`);
+      await I.amOnPage(`${testUrl}${paths.common.loadCase}?caseId=${caseId}`);
     });
   }
 }

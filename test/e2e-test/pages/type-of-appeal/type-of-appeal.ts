@@ -58,23 +58,23 @@ module.exports = {
     });
 
     When('I select appeal type Human Rights', async () => {
-      I.checkOption('#appealType-3');
+      I.checkOption('#appealType-2');
     });
 
     When('I select appeal type European Economic Area', async () => {
-      I.checkOption('#appealType-5');
+      I.checkOption('#appealType-3');
     });
 
     When('I select appeal type Revocation of Protection Status', async () => {
-      I.checkOption('#appealType-7');
+      I.checkOption('#appealType-4');
     });
 
     When('I select appeal type Deprivation of Citizenship', async () => {
-      I.checkOption('#appealType-9');
+      I.checkOption('#appealType-5');
     });
 
     When('I select appeal type EU Settlement Scheme', async () => {
-      I.checkOption('#appealType-11');
+      I.checkOption('#appealType-6');
     });
 
     Then('I should see the type of appeal page', async () => {

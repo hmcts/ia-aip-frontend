@@ -545,7 +545,8 @@ describe('update-appeal-service', () => {
         askForMoreTime: {
           reason: null
         },
-        hearingRequirements: {} as Partial<HearingRequirements>
+        hearingRequirements: {} as Partial<HearingRequirements>,
+        qmLegalRepresentativeQueries: {} as Partial<CcdQmQueryObj>
       } as Partial<Appeal>;
 
       witness1 = { witnessPartyId: '1', witnessGivenNames: 'witness', witnessFamilyName: '1' };
@@ -1341,6 +1342,56 @@ describe('update-appeal-service', () => {
         exceptionalCircumstances: 'someExceptionalCircumstances'
       });
     });
+
+    it('converts qmLegalRepresentativeQueries', () => {
+      emptyApplication.qmLegalRepresentativeQueries = {
+        roleOnCase: 'someRole',
+        caseMessages: [
+          {
+            id: '1',
+            body: 'Test message',
+            name: 'John Smith',
+            subject: 'Test subject',
+            createdBy: 'John Smith',
+            createdOn: '2026-01-01',
+            messageType: 'question',
+            isHearingRelated: true,
+            attachments: [{
+              fileId: 'fileId',
+              name: 'name'
+            }]
+          }
+        ]
+      };
+      emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
+
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData.qmLegalRepresentativeQueries).deep.equal({
+        roleOnCase: 'someRole',
+        caseMessages: [
+          {
+            value: {
+              id: '1',
+              body: 'Test message',
+              name: 'John Smith',
+              subject: 'Test subject',
+              createdBy: 'John Smith',
+              createdOn: '2026-01-01',
+              messageType: 'question',
+              isHearingRelated: true,
+              attachments: [{
+                'value': {
+                  'document_binary_url': 'someurl/binary',
+                  'document_filename': 'name',
+                  'document_url': 'someurl'
+                }
+              }]
+            }
+          }
+        ]
+      });
+    });
   });
 
   describe('mapCcdCaseToAppeal', () => {
@@ -2082,6 +2133,58 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.nlrDetails.address).to.equal('some address');
       });
     });
+
+    it('converts qmLegalRepresentativeQueries', () => {
+      const caseData: Partial<CaseData> = {
+        qmLegalRepresentativeQueries: {
+          roleOnCase: 'someRole',
+          caseMessages: [
+            {
+              value: {
+                id: '1',
+                body: 'Test message',
+                name: 'John Smith',
+                subject: 'Test subject',
+                createdBy: 'John Smith',
+                createdOn: '2026-01-01',
+                messageType: 'NewQuery',
+                isHearingRelated: 'Yes',
+                attachments: [{
+                  'value': {
+                    'document_binary_url': 'someurl/binary',
+                    'document_filename': 'name',
+                    'document_url': 'someurl'
+                  }
+                }]
+              }
+            }
+          ]
+        }
+      } as Partial<CaseData>;
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+
+      const appealData = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+      expect(appealData.qmLegalRepresentativeQueries.roleOnCase).to.equal('someRole');
+      expect(appealData.qmLegalRepresentativeQueries.caseMessages).to.have.lengthOf(1);
+      expect(appealData.qmLegalRepresentativeQueries.caseMessages[0]).to.deep.contain(
+        {
+          id: '1',
+          body: 'Test message',
+          name: 'John Smith',
+          subject: 'Test subject',
+          createdBy: 'John Smith',
+          createdOn: '2026-01-01',
+          messageType: 'NewQuery',
+          isHearingRelated: 'Yes'
+        });
+      expect(appealData.qmLegalRepresentativeQueries.caseMessages[0].attachments).to.have.lengthOf(1);
+      expect(appealData.qmLegalRepresentativeQueries.caseMessages[0].attachments[0].name).to.equal('name');
+    });
+
   });
 
   describe('map the refundConfirmationApplied from Yes value', () => {
@@ -2141,8 +2244,16 @@ describe('update-appeal-service', () => {
       ];
 
       const documentMap: DocumentMap[] = [
-        { id: '1', url: 'http://example.com/doc1' },
-        { id: '2', url: 'http://example.com/doc2' }
+        {
+          id: '1', url: 'http://example.com/doc1',
+          name: '',
+          documentUploadDate: ''
+        },
+        {
+          id: '2', url: 'http://example.com/doc2',
+          name: '',
+          documentUploadDate: ''
+        }
       ];
 
       const expected: Collection<Document>[] = [

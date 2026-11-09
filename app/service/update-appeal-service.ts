@@ -99,7 +99,6 @@ export default class UpdateAppealService {
     return req.session.appeal;
   }
 
-
   async deleteDraftAppeal(req: Request): Promise<void> {
     const caseId = req.params.id;
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
@@ -236,6 +235,47 @@ export default class UpdateAppealService {
       logger.exception(`midEventValidation for ${event.id} failed with errors: ${errors}`, logLabel);
     }
     return errors;
+  }
+
+  mapQmQueriesCcdToAppeal(ccdQmQueryObj: CcdQmQueryObj, documentMap: DocumentMap[]): QmQueryObj {
+    return {
+      roleOnCase: ccdQmQueryObj.roleOnCase,
+      caseMessages: ccdQmQueryObj?.caseMessages.map(idValue => {
+        const ccdQmQuery = idValue.value;
+        return {
+          id: ccdQmQuery.id,
+          body: ccdQmQuery.body,
+          name: ccdQmQuery.name,
+          subject: ccdQmQuery.subject,
+          createdBy: ccdQmQuery.createdBy,
+          createdOn: ccdQmQuery.createdOn,
+          messageType: ccdQmQuery.messageType,
+          isHearingRelated: ccdQmQuery.isHearingRelated,
+          attachments: this.mapSupportingDocumentsToEvidence(ccdQmQuery.attachments, documentMap)
+        };
+      })
+    };
+  }
+
+  mapQmQueriesAppealToCcd(qmQueryObj: QmQueryObj, documentMap: DocumentMap[]): CcdQmQueryObj {
+    return {
+      roleOnCase: qmQueryObj.roleOnCase,
+      caseMessages: qmQueryObj.caseMessages.map(query => {
+        return {
+          value: {
+            id: query.id,
+            body: query.body,
+            name: query.name,
+            subject: query.subject,
+            createdBy: query.createdBy,
+            createdOn: query.createdOn,
+            messageType: query.messageType,
+            isHearingRelated: query.isHearingRelated,
+            attachments: this.mapEvidencesToSupportingDocument(query.attachments, documentMap)
+          }
+        };
+      })
+    };
   }
 
   mapCcdCaseToAppeal(ccdCase: CcdCaseDetails): Appeal {
@@ -833,6 +873,7 @@ export default class UpdateAppealService {
         time: listHearingLength,
         date: listHearingDate
       },
+      ...caseData.qmLegalRepresentativeQueries && { qmLegalRepresentativeQueries: this.mapQmQueriesCcdToAppeal(caseData.qmLegalRepresentativeQueries, documentMap) },
       ...caseData.respondentDocuments && { respondentDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.respondentDocuments, documentMap) },
       ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments, documentMap) },
       ...caseData.additionalEvidenceDocuments && { additionalEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.additionalEvidenceDocuments, documentMap) },
@@ -964,6 +1005,9 @@ export default class UpdateAppealService {
       },
       ...appeal.ftpaAppellantOutOfTimeDocuments && {
         ftpaAppellantOutOfTimeDocuments: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantOutOfTimeDocuments, appeal.documentMap, 'ftpaAppellantOutOfTimeDocuments')
+      },
+      ...appeal.qmLegalRepresentativeQueries && {
+        qmLegalRepresentativeQueries: this.mapQmQueriesAppealToCcd(appeal.qmLegalRepresentativeQueries, appeal.documentMap)
       },
       ...appeal.hasNlrSubmitted && { hasNlrSubmitted: appeal.hasNlrSubmitted },
       ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },
@@ -1149,6 +1193,19 @@ export default class UpdateAppealService {
         document_binary_url: `${documentUrl}/binary`
       }
     };
+  }
+
+  private mapEvidencesToSupportingDocument(evidences: Evidence[], documentMap: DocumentMap[]): Collection<SupportingDocument>[] {
+    return evidences.map((evidence: Evidence) => {
+      const documentUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
+      return {
+        value: {
+          document_filename: evidence.name,
+          document_url: documentUrl,
+          document_binary_url: `${documentUrl}/binary`
+        }
+      };
+    });
   }
 
   private mapEvidenceToReheardHearingDocs(evidence: Evidence, documentMap: DocumentMap[]): Collection<DocumentWithMetaData> {

@@ -489,6 +489,16 @@ function typeOfAppealValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function askQueryValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    queries: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.selectAskQuery
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
 function payNowValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     answer: Joi.string().required().messages({
@@ -792,6 +802,7 @@ export {
   statementOfTruthValidation,
   addressValidation,
   typeOfAppealValidation,
+  askQueryValidation,
   oocHrEeaValidation,
   appellantInUkValidation,
   reasonForAppealDecisionValidation,

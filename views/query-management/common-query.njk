@@ -1,0 +1,24 @@
+{% set pageTitleName = query.pageTitle %}
+{% extends "layout.njk" %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ query.pageTitle }}</h1>
+  <div>
+    {% for text in query.bodyParagraphs %}
+      <p class="govuk-body">{{ text | eval | safe }}</p>
+    {% endfor %}
+  </div>
+
+  <h2 class="govuk-heading-l">{{ i18n.pages.askQuery.anythingElseTitle }}</h2>
+  <p class="govuk-body">{{ i18n.pages.askQuery.anythingElseText }}<a href="{{ paths.common.sendMessage }}">{{ i18n.pages.askQuery.sendAMessage }}</a>.</p>
+  {{ govukInsetText({
+    text: i18n.pages.askQuery.anythingElseHint
+  }) }}
+  {{ govukButton({
+    text: i18n.pages.askQuery.returnToOverview,
+    href: paths.common.overview
+  }) }}
+  {{ contactUs() }}
+
+{% endblock %}

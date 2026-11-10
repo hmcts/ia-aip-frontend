@@ -192,6 +192,7 @@ import {
 } from './controllers/non-legal-representative/remove-non-legal-representative';
 import { setupUpdateNlrDetailsControllers } from './controllers/non-legal-representative/update-nlr-details';
 import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-country/ooc-feature-toggle';
+import { setupAskQueryController } from './controllers/query-management/ask-query';
 import {
   setupCheckAndSendController as setupReasonsForAppealCheckAndSendController
 } from './controllers/reasons-for-appeal/check-and-send';
@@ -369,6 +370,7 @@ const outOfCountryFeatureToggleController = setupOutOfCountryFeatureToggleContro
 
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 const deportationOrderController = setupDeportationOrderController(middleware, updateAppealService);
+const askQueryController = setupAskQueryController();
 
 // not protected by idam
 router.use(indexController);
@@ -503,5 +505,6 @@ router.use(detailViewersController);
 router.use(documentsPageController);
 router.use(forbiddenController);
 router.use(deportationOrderController);
+router.use(askQueryController);
 
 export { router };

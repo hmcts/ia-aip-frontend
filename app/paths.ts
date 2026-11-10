@@ -335,7 +335,13 @@ const paths = {
     cookies: '/cookie-policy',
     termsAndConditions: '/terms-and-conditions',
     privacyPolicy: '/privacy-policy',
-    accessibility: '/accessibility-statement'
+    accessibility: '/accessibility-statement',
+
+    //Query Management
+    askQuery: '/ask-a-query',
+    commonQueries: '/ask-a-query/view-answer',
+    sendMessage: '/ask-a-query/send-message',
+    viewQueries: '/view-queries'
   },
   nonLegalRep: {
     // Non Legal Rep endpoints

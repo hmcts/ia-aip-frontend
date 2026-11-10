@@ -265,7 +265,7 @@
     },
     "decisionTypePage": {
       "title": "How do you want your appeal to be decided?",
-      "hint" : {
+      "hint": {
         "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><p class='govuk-body govuk-!-font-weight-bold'>If you choose with a hearing</p><p>A judge will decide your appeal at a hearing that you can attend.</p><p class='govuk-body govuk-!-font-weight-bold'>If you choose without a hearing</p><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
         "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><p class='govuk-body govuk-!-font-weight-bold'>If you choose with a hearing</p><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £144.</p><p class='govuk-body govuk-!-font-weight-bold'>If you choose without a hearing</p><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £82.</p><p>Select an option</p>"
       },
@@ -1140,6 +1140,8 @@
     "overviewPage": {
       "title": "Your appeal overview",
       "contactUs": "Contact us for help",
+      "askQuery": "Ask a query",
+      "viewQueries": "View queries",
       "askAQuestion": "Ask a question or get help in your language",
       "telephone": "Telephone:",
       "telephoneNumber": "0300 123 1711",
@@ -3478,6 +3480,38 @@
       "readMore": "Read more about appealing an immigration or asylum decision",
       "organisationHelp": "Find organisations that can help you with your appeal"
     },
+    "askQuery": {
+      "title": "Ask a query",
+      "commonQueries": [
+        {
+          "value": "requestForUpdates",
+          "name": "Example choice 1",
+          "examples": "Including general progress updates, details of hearing dates and timescales for decisions being issued.",
+          "pageTitle": "Some example title 1",
+          "bodyParagraphs": ["Some body text", "some body text for second paragraph"]
+        },
+        {
+          "value": "shareCodeEnquiries",
+          "name": "Example choice 2",
+          "pageTitle": "Some example title 2",
+          "bodyParagraphs": ["Some body text", "some body text for second paragraph", "<strong>a third and final paragraph</strong>"]
+        },
+        {
+          "value": "someThirdValue",
+          "name": "A third example choice",
+          "pageTitle": "Some third example title",
+          "bodyParagraphs": ["Some body text"]
+        }
+      ],
+      "customQueryValue": "askQueryMessage",
+      "customQuery": "Ask a query via message",
+      "customQueryHintText": "We try to answer messages within 10 working days, but it could take longer.",
+      "anythingElseTitle": "Anything else",
+      "anythingElseText": "If you still need help, you can ",
+      "sendAMessage": "send a message",
+      "anythingElseHint": "We try to answer messages within 10 working days, but it could take longer.",
+      "returnToOverview": "Return to appeal overview"
+    },
     "clarifyingQuestionsList": {
       "title": "Questions about your appeal",
       "sections": {
@@ -4295,9 +4329,9 @@
       "label": "You can find your GWF reference number on any letters or emails from the Home Office about your application to enter the UK. For example, GWF12345678",
       "homeOfficeReferenceNumberLabel": "Enter your GWF reference number",
       "hints": [
-      "You should enter the reference number exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section.",
-      "Your GWF reference will be a 9-digit number starting with GWF, for example GWF123456789"
-    ]
+        "You should enter the reference number exactly as it appears on the decision letter. This can often be found in the 'How to appeal' section.",
+        "Your GWF reference will be a 9-digit number starting with GWF, for example GWF123456789"
+      ]
     },
     "hrInside": {
       "title": "What date did you leave the UK after your application to stay in the country was refused?",
@@ -4479,6 +4513,7 @@
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "selectAnAppealType": "Select an appeal type",
+    "selectAskQuery": "Select a query option",
     "appellantInUk": "Select yes if you are currently living in the United Kingdom",
     "nlrStatement": "You must select one of the options under the Non-legal representative statement of truth as you have a non-legal representative on this case",
     "oocHrEea": "Select yes if you are were living outside the United Kingdom when you made your application",

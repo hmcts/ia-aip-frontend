@@ -1,6 +1,6 @@
 import {
   appellantNamesValidation,
-  askForMoreTimeValidation,
+  askForMoreTimeValidation, askQueryValidation,
   asylumSupportValidation,
   contactDetailsValidation,
   dateValidation,
@@ -1615,6 +1615,25 @@ describe('fields-validations', () => {
         }
       };
       expect(validationResult).to.deep.equal(expectedResponse);
+    });
+  });
+
+  describe('askQueryValidation', () => {
+    it('should fail validation on none given', () => {
+      const validationResult = askQueryValidation({ queries: undefined });
+      const expectedResponse = {
+        'queries': {
+          'key': 'queries',
+          'text': 'Select a query option',
+          'href': '#queries'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should pass validation if some value given', () => {
+      const validationResult = askQueryValidation({ queries: 'anything' });
+      expect(validationResult).to.equal(null);
     });
   });
 });

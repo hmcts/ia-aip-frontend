@@ -340,6 +340,7 @@ const paths = {
     //Query Management
     askQuery: '/ask-a-query',
     commonQueries: '/ask-a-query/view-answer',
+    sendMessagePermission: '/ask-a-query/send-message-permission',
     sendMessage: '/ask-a-query/send-message',
     viewQueries: '/view-queries'
   },

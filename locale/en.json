@@ -3512,6 +3512,19 @@
       "anythingElseHint": "We try to answer messages within 10 working days, but it could take longer.",
       "returnToOverview": "Return to appeal overview"
     },
+    "sendMessagePermission": {
+      "title": "Send a message",
+      "subsectionOne":"Sharing this message with the other party",
+      "paragraphOne": "All messages sent using this system are shared with the other party in the case as well as being sent to the IAC service",
+      "subsectionTwo": "Asking not to share your message",
+      "paragraphTwo": "You can ask not to share your message with the ohter party. The reasons for not sharing your message must be valid and the judge may decide that your message should be shared.",
+      "preList": "Valid reasons for keeping a message between you and the IAC service include the message being about:",
+      "listOptions": ["abc", "xyz"],
+      "paragraphThree": "If you need to send a message to the IAC service and you do not want the other party to see it, email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a>.",
+      "helpText": "Explain why the message should be kept between you and the IAC service and make sure you include your full name and reference.",
+      "statementTitle": "Confirm your message can be shared",
+      "statement": "Yes, I agree my message can be shared with the other party"
+    },
     "clarifyingQuestionsList": {
       "title": "Questions about your appeal",
       "sections": {
@@ -4572,6 +4585,7 @@
       "addressPostcode": "You need to provide your updated Postcode"
     },
     "acceptanceStatement": "Select if you believe the information you have given is true.",
+    "sendMessagePermissionStatement": "Select the checkbox if you agree that your message can be shared with the other party.",
     "hoDataNotMatchingOnSubmit": "The information entered does not match the details held by the Home Office.  You should enter the HO reference and appellant's name exactly as they appear on the decision letter so that we can verify them. These can often be found in the 'How to appeal' section. Please also check if the appellant's date of birth is correct.",
     "addAnotherNlrAgreement": "Select the checkbox if you understand that adding another non-legal representative will remove the access of the current non-legal representative to the appeal",
     "removeNlrAgreement": "Select the checkbox if you understand that removing your non-legal representative will remove their access to this appeal",

@@ -2,9 +2,15 @@ import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
 import { appealTypes } from '../../data/appeal-types';
 import { FEATURE_FLAGS } from '../../data/constants';
+import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
-import { askQueryValidation, typeOfAppealValidation } from '../../utils/validations/fields-validations';
+import UpdateAppealService from '../../service/update-appeal-service';
+import {
+  askQueryValidation,
+  statementValidation,
+  typeOfAppealValidation
+} from '../../utils/validations/fields-validations';
 
 function getAskQueryPage(req: Request, res: Response, next: NextFunction) {
   try {
@@ -33,7 +39,7 @@ function postAskQueryPage(req: Request, res: Response, next: NextFunction) {
     if (chosenCommonQueryValue) {
       return res.redirect(`${paths.common.commonQueries}?queryValue=${req.body['queries']}`);
     } else {
-      return res.redirect(paths.common.sendMessage);
+      return res.redirect(paths.common.sendMessagePermission);
     }
   } catch (e) {
     next(e);
@@ -49,7 +55,6 @@ function getCommonQueryPage(req: Request, res: Response, next: NextFunction) {
       return res.redirect(paths.common.askQuery);
     }
     return res.render('query-management/common-query.njk', {
-
       previousPage: paths.common.askQuery,
       query: queryObj
     });
@@ -58,15 +63,45 @@ function getCommonQueryPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function getSendMessagePermissionPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('query-management/send-message-permission.njk', {
+      previousPage: paths.common.askQuery
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postSendMessagePermissionPage() {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = statementValidation(req.body, i18n.validationErrors.sendMessagePermissionStatement);
+      if (validation) {
+        return res.render('query-management/send-message-permission.njk', {
+          previousPage: paths.common.askQuery,
+          error: validation,
+          errorList: Object.values(validation)
+        });
+      }
+
+      return res.redirect(paths.common.sendMessage);
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
 function setupAskQueryController(): Router {
   const router = Router();
   router.get(paths.common.askQuery, getAskQueryPage);
   router.post(paths.common.askQuery, postAskQueryPage);
   router.get(paths.common.commonQueries, getCommonQueryPage);
+  router.get(paths.common.sendMessagePermission, getSendMessagePermissionPage);
+  router.post(paths.common.sendMessagePermission, postSendMessagePermissionPage());
   return router;
 }
 
 export {
-  setupAskQueryController,
-  getAskQueryPage
+  setupAskQueryController
 };

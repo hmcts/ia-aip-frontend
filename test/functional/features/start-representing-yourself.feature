@@ -58,4 +58,4 @@ Feature: Start Representing Yourself
 
     # confirm case details
     And I click "Continue" button
-    Then I see "/users/selfRegister" in current url
+    Then I see "/o/authorize" in current url

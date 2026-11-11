@@ -4,7 +4,7 @@ import cache from '../../cache';
 const skipLogin = process.env.SKIP_LOGIN === 'true';
 
 export async function setupRegisterPage(server: Mockttp) {
-  await server.forGet('/users/selfRegister').thenCallback(async (request) => {
+  await server.forGet('/o/authorize').thenCallback(async (request) => {
     const url = new URL(request.url, 'http://localhost');
     const redirectUri = url.searchParams.get('redirect_uri') ?? '';
     const stateParam = url.searchParams.get('state') ?? '';
@@ -23,7 +23,7 @@ export async function setupRegisterPage(server: Mockttp) {
             <title>Register - HMCTS Access</title>
             </head><body>
             <h1>Register - HMCTS Access</h1>
-            <form action="/login" method="post">
+            <form action="/o/authorize" method="post">
             Username: <input type="text" id="username" name="username"/><br />
             Password: <input type="text" id="password" name="password"/><br />
             <input type="text" name="redirect_uri" value="${redirectUri}"/>

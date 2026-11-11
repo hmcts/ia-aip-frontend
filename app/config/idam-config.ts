@@ -3,7 +3,7 @@ import { setupSecrets } from '../setupSecrets';
 import Logger from '../utils/logger';
 
 const config = setupSecrets();
-const loginUrl = `${config.get('idam.webUrl')}/login`;
+const loginUrl = `${config.get('idam.webUrl')}/o/authorize`;
 
 export const idamConfig: IdamConfig = {
   redirectUri: 'https://localhost:3000/redirectUrl',
@@ -11,7 +11,7 @@ export const idamConfig: IdamConfig = {
   idamApiUrl: config.get('idam.apiUrl'),
   idamLoginUrl: loginUrl,
   idamUserLoginUrl: loginUrl,
-  idamRegistrationUrl: `${config.get('idam.webUrl')}/users/selfRegister`,
+  idamRegistrationUrl: `${config.get('idam.webUrl')}/o/authorize`,
   idamSecret: config.get('idam.secret'),
   idamClientID: config.get('microservice'),
   openId: true,

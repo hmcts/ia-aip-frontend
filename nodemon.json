@@ -1,6 +1,6 @@
 {
   "watch": ["app/**/*", "views/**/*", "locale/en.json"],
-  "ext": "ts,js,json,html,css,scss,json",
+  "ext": "ts,js,json,html,css,scss,json,njk",
   "restartable": "rs",
   "ignore": [".git", "node_modules/**/node_modules"],
   "verbose": true,

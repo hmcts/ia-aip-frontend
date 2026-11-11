@@ -276,6 +276,16 @@ declare global {
     parentId?: string;
   }
 
+  interface TableQmQuery {
+    id: string;
+    subject: string;
+    createdBy: string;
+    createdOn: string;
+    updatedBy: string;
+    updatedOn: string;
+    status: string;
+  }
+
   interface NlrDetails {
     givenNames?: string;
     familyName?: string;

@@ -1,0 +1,81 @@
+{% set pageTitleName = i18n.pages.viewQueries.title %}
+{% extends 'layout.njk' %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+
+{% block content %}
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+
+        <h1 class="govuk-heading-xl">
+          {{ pageTitleName }}
+        </h1>
+
+        {% if citizenQueries|length > 0 %}
+          {% set queryRows = [] %}
+
+          {% for query in citizenQueries %}
+            {% set queryRows = (queryRows.push(
+              [
+                { html: '<a href="/view-query/' + query.id + '" class="govuk-link">' + query.subject + '</a>' },
+                { text: query.createdBy or '' },
+                { text: query.createdOn or '' },
+                { text: query.updatedBy or '' },
+                { text: query.updatedOn or '' },
+                { text: query.status or '' }
+              ]
+            ), queryRows) %}
+          {% endfor %}
+
+          {{ govukTable({
+            firstCellIsHeader: false,
+            head: [
+              { text: i18n.pages.viewQueries.th.subject },
+              { text: i18n.pages.viewQueries.th.sentBy },
+              { text: i18n.pages.viewQueries.th.sentOn },
+              { text: i18n.pages.viewQueries.th.updatedBy },
+              { text: i18n.pages.viewQueries.th.updatedOn },
+              { text: i18n.pages.viewQueries.th.status }
+            ],
+            rows: queryRows
+          }) }}
+
+        {% else %}
+          <p>No queries have been sent.</p>
+        {% endif %}
+
+        {% if oldLegalRepQueries|length > 0 %}
+          <h1 class="govuk-heading-l">
+            i18n.pages.viewQueries.legalRepTitle
+          </h1>
+          {% set legalQueryRows = [] %}
+
+          {% for query in oldLegalRepQueries %}
+            {% set legalQueryRows = (legalQueryRows.push(
+              [
+                { html: '<a href="/view-lr-query/' + query.id + '" class="govuk-link">' + query.subject + '</a>' },
+                { text: query.sentBy or '' },
+                { text: query.sentOn or '' },
+                { text: query.updatedBy or '' },
+                { text: query.updatedOn or '' },
+                { text: query.status or '' }
+              ]
+            ), legalQueryRows) %}
+          {% endfor %}
+
+          {{ govukTable({
+            firstCellIsHeader: false,
+            head: [
+              { text: i18n.pages.viewQueries.th.subject },
+              { text: i18n.pages.viewQueries.th.sentBy },
+              { text: i18n.pages.viewQueries.th.sentOn },
+              { text: i18n.pages.viewQueries.th.updatedBy },
+              { text: i18n.pages.viewQueries.th.updatedOn },
+              { text: i18n.pages.viewQueries.th.status }
+            ],
+            rows: legalQueryRows
+          }) }}
+        {% endif %}
+    </div>
+  </div>
+{% endblock %}

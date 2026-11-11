@@ -346,7 +346,9 @@ const paths = {
     sendMessageDelete: '/ask-a-query/send-message/delete',
     sendMessageCya: '/ask-a-query/send-message/confirm',
     sendMessageConfirmation: '/ask-a-query/send-message/confirmation',
-    viewQueries: '/view-queries'
+    viewQueries: '/view-queries',
+    viewQuery: '/view-query/:id',
+    viewLrQuery: '/view-lr-query/:id'
   },
   nonLegalRep: {
     // Non Legal Rep endpoints

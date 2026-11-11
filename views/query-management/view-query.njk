@@ -1,0 +1,73 @@
+{% set pageTitleName = i18n.pages.viewQuery.title %}
+{% extends 'layout.njk' %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">
+    {{ pageTitleName }}
+  </h1>
+  {% if parentQuery.attachments|length > 0 %}
+    {% set attachmentsHtml = [] %}
+    {% for doc in parentQuery.attachments %}
+      {% set attachmentsHtml = (attachmentsHtml.push(
+        '<a class="govuk-link" href="/view/document/' + doc.fileId + '">' + doc.name + '</a>'
+      ), attachmentsHtml) %}
+    {% endfor  %}
+  {% else %}
+    {% set attachmentsHtml = i18n.pages.viewQuery.card.noAttachments %}
+  {% endif  %}
+
+  {% set parentRows = [
+     { key: { text: i18n.pages.viewQuery.card.subject }, value: { text: parentQuery.subject } },
+     { key: { text: i18n.pages.viewQuery.card.body }, value: { text: parentQuery.body } },
+     { key: { text: i18n.pages.viewQuery.card.attachments }, value: { html: attachmentsHtml } },
+     { key: { text: i18n.pages.viewQuery.card.isHearingRelated }, value: { text: parentQuery.isHearingRelated } }
+   ] %}
+   {% if parentQuery.isHearingRelated === 'Yes' %}
+     {% set parentRows = (parentRows.push(
+       { key: { text: i18n.pages.viewQuery.card.hearingDate }, value: { text: parentQuery.hearingDate } }
+     ), parentRows) %}
+   {% endif %}
+   {% set parentRows = (parentRows.push(
+    { key: { text: i18n.pages.viewQuery.card.createdBy }, value: { text: parentQuery.name } },
+    { key: { text: i18n.pages.viewQuery.card.createdOn }, value: { text: parentQuery.createdOn } }
+   ), parentRows) %}
+  {{ govukSummaryList({
+    card: { title: { text: i18n.pages.viewQuery.card.parentHeading } },
+    rows: parentRows
+  }) }}
+
+  {% if childrenQueries|length > 0 %}
+    {% for childQuery in childrenQueries %}
+      {% if childQuery.messageType === 'Respond' %}
+        {% set cardHeading = i18n.pages.viewQuery.card.responseHeading %}
+      {% elif childQuery.messageType === 'Followup' %}
+        {% set cardHeading = i18n.pages.viewQuery.card.followUpHeading %}
+      {% else %}
+        {% set cardHeading = i18n.pages.viewQuery.card.defaultChildHeading %}
+      {% endif %}
+
+      {% if childQuery.attachments|length > 0 %}
+        {% set attachmentsHtml = '' %}
+        {% for doc in childQuery.attachments %}
+          {% set attachmentsHtml = attachmentsHtml +
+            '<a class="govuk-link" href="/view/document/' + doc.fileId + '">' + doc.name + '</a></br>'
+           %}
+        {% endfor  %}
+      {% else %}
+        {% set attachmentsHtml = i18n.pages.viewQuery.card.noAttachments %}
+      {% endif  %}
+      {% set childRows = [
+         { key: { text: i18n.pages.viewQuery.card.subject }, value: { text: childQuery.subject } },
+         { key: { text: i18n.pages.viewQuery.card.body }, value: { text: childQuery.body } },
+         { key: { text: i18n.pages.viewQuery.card.attachments }, value: { html: attachmentsHtml } },
+         { key: { text: i18n.pages.viewQuery.card.createdBy }, value: { text: childQuery.name } },
+         { key: { text: i18n.pages.viewQuery.card.createdOn }, value: { text: childQuery.createdOn } }
+       ] %}
+      {{ govukSummaryList({
+        card: { title: { text: cardHeading } },
+        rows: childRows
+      }) }}
+    {% endfor %}
+  {% endif %}
+{% endblock %}

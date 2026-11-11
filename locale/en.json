@@ -3571,6 +3571,35 @@
         "This should be by <b>{{ date }}</b> but may take longer than that"
       ]
     },
+    "viewQueries": {
+      "title": "View queries",
+      "legalRepTitle": "Previous legal rep queries",
+      "th": {
+        "subject": "Query subject",
+        "sentBy": "Sent by",
+        "sentOn": "Sent on",
+        "updatedBy": "Last updated by",
+        "updatedOn": "Last updated on",
+        "status": "Status"
+      }
+    },
+    "viewQuery": {
+      "title": "View query",
+      "card": {
+        "parentHeading": "Your original query",
+        "responseHeading": "IAC service response",
+        "followUpHeading": "Your follow-up query",
+        "defaultChildHeading": "Message",
+        "subject": "Message subject",
+        "body": "Message details",
+        "attachments": "Attachments",
+        "noAttachments": "No documents attached",
+        "createdBy": "Sent by",
+        "createdOn": "Sent on",
+        "isHearingRelated": "Is this query related to a hearing?",
+        "hearingDate": "Date of hearing"
+      }
+    },
     "clarifyingQuestionsList": {
       "title": "Questions about your appeal",
       "sections": {

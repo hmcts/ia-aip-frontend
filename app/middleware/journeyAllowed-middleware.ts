@@ -65,6 +65,7 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
       paths.common.stfRemovalDecisionDocumentViewer,
       paths.common.documentsPage,
       paths.common.documentDownload,
+      // TODO add all the new QM paths here
       paths.common.stfCaseReviewDocumentViewer
     ]);
     allowedPaths = [

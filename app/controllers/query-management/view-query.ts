@@ -1,0 +1,129 @@
+import { NextFunction, Request, Response, Router } from 'express';
+import { paths } from '../../paths';
+import UpdateAppealService from '../../service/update-appeal-service';
+import { formatDate } from '../../utils/date-utils';
+
+function getParentQuery(queries: QmQuery[], query: QmQuery) {
+  if (query.parentId) {
+    return queries.find(query => query.id === query.parentId);
+  }
+  return query;
+}
+
+function getChildQuery(queries: QmQuery[], query: QmQuery) {
+  const sortedChildren: QmQuery[] = getChildrenQueries(queries, query);
+  if (sortedChildren.length > 0) {
+    return sortedChildren[0];
+  }
+  return query;
+}
+
+function getChildrenQueries(queries: QmQuery[], query: QmQuery) {
+  return queries
+    .filter(qmQuery => qmQuery?.parentId === query.id)
+    .sort((a, b) => new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime());
+}
+
+enum MessageStatus {
+  CLOSED = 'Closed',
+  AWAITING_RESPONSE = 'Awaiting response',
+  RESPONDED = 'Responded',
+  FOLLOW_UP_RESPONSE = 'Awaiting response to follow up',
+  UNKNOWN = 'Unknown'
+}
+
+function getStatus(query: QmQuery): MessageStatus {
+  if (query?.isClosed == 'Yes') {
+    return MessageStatus.CLOSED;
+  }
+  switch (query.messageType) {
+    case 'NewQuery':
+      return MessageStatus.AWAITING_RESPONSE;
+    case 'Respond':
+      return MessageStatus.RESPONDED;
+    case 'Followup':
+      return MessageStatus.FOLLOW_UP_RESPONSE;
+    case 'NewQueryQualifyingQuestionOptions':
+    case 'NewQueryQualifyingQuestionDetail':
+    case 'HMCTS':
+      return MessageStatus.UNKNOWN;
+  }
+}
+
+function convertQueriesToTableValues(queries: QmQuery[]) {
+  return queries
+    .filter(qmQuery => !qmQuery.parentId)
+    .map(query => {
+        const parentQuery = getParentQuery(queries, query);
+        const childQuery = getChildQuery(queries, query);
+        return {
+          id: query.id,
+          subject: query.subject,
+          createdBy: parentQuery.name,
+          createdOn: formatDate(parentQuery.createdOn),
+          updatedBy: childQuery.name,
+          updatedOn: formatDate(childQuery.createdOn),
+          status: getStatus(childQuery)
+        };
+      }
+    );
+}
+
+function getViewQueriesPage(req: Request, res: Response, next: NextFunction) {
+  const citizenQueries: TableQmQuery[] = convertQueriesToTableValues(req.session.appeal?.qmCitizenQueries?.caseMessages || []);
+  const legalRepQueries: TableQmQuery[] = convertQueriesToTableValues(req.session.appeal?.qmLegalRepresentativeQueries?.caseMessages || []);
+  try {
+    return res.render('query-management/view-queries.njk', {
+      previousPage: paths.common.overview,
+      citizenQueries: citizenQueries,
+      legalRepQueries: legalRepQueries
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function formatQueryForView(query: QmQuery) {
+  if (query.hearingDate) {
+    query.hearingDate = formatDate(query.hearingDate);
+  }
+  if (query.createdOn) {
+    query.createdOn = formatDate(query.createdOn);
+  }
+  return query;
+}
+
+function getViewQueryPage(req: Request, res: Response, next: NextFunction) {
+  const queryId = req.params.id;
+  const queries = (req.session.appeal?.qmCitizenQueries?.caseMessages || []);
+  const selectedParentQuery: QmQuery = formatQueryForView(queries.find(q => q.id === queryId));
+  const childrenQueries: QmQuery[] = getChildrenQueries(queries, selectedParentQuery)
+    .map(query => formatQueryForView(query));
+  const latestChildQuery = childrenQueries.length > 0 ? childrenQueries[0] : selectedParentQuery;
+  const latestChildStatus = getStatus(latestChildQuery);
+  if (!selectedParentQuery) {
+    return res.redirect(paths.common.viewQueries);
+  }
+  console.log(selectedParentQuery.attachments)
+  try {
+    return res.render('query-management/view-query.njk', {
+      previousPage: paths.common.overview,
+      parentQuery: selectedParentQuery,
+      childrenQueries: childrenQueries,
+      latestChildStatus: latestChildStatus
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function setupViewQueryController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+  const router = Router();
+  router.get(paths.common.viewQueries, middleware, getViewQueriesPage);
+  router.get(paths.common.viewQuery, middleware, getViewQueryPage);
+  return router;
+}
+
+export {
+  setupViewQueryController
+};

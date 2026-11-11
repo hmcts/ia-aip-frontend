@@ -370,7 +370,7 @@ const outOfCountryFeatureToggleController = setupOutOfCountryFeatureToggleContro
 
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 const deportationOrderController = setupDeportationOrderController(middleware, updateAppealService);
-const askQueryController = setupAskQueryController();
+const askQueryController = setupAskQueryController(middleware, updateAppealService, documentManagementService);
 
 // not protected by idam
 router.use(indexController);

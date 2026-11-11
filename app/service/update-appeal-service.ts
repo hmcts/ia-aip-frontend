@@ -251,7 +251,10 @@ export default class UpdateAppealService {
           createdOn: ccdQmQuery.createdOn,
           messageType: ccdQmQuery.messageType,
           isHearingRelated: ccdQmQuery.isHearingRelated,
-          attachments: this.mapSupportingDocumentsToEvidence(ccdQmQuery.attachments, documentMap)
+          hearingDate: ccdQmQuery.hearingDate,
+          isClosed: ccdQmQuery.isClosed,
+          parentId: ccdQmQuery.parentId,
+          attachments: ccdQmQuery.attachments ? this.mapSupportingDocumentsToEvidence(ccdQmQuery.attachments, documentMap) : []
         };
       })
     };
@@ -260,7 +263,7 @@ export default class UpdateAppealService {
   mapQmQueriesAppealToCcd(qmQueryObj: QmQueryObj, documentMap: DocumentMap[]): CcdQmQueryObj {
     return {
       roleOnCase: qmQueryObj.roleOnCase,
-      caseMessages: qmQueryObj.caseMessages.map(query => {
+      caseMessages: (qmQueryObj.caseMessages || []).map(query => {
         return {
           value: {
             id: query.id,
@@ -271,7 +274,10 @@ export default class UpdateAppealService {
             createdOn: query.createdOn,
             messageType: query.messageType,
             isHearingRelated: query.isHearingRelated,
-            attachments: this.mapEvidencesToSupportingDocument(query.attachments, documentMap)
+            hearingDate: query.hearingDate,
+            isClosed: query.isClosed,
+            parentId: query.parentId,
+            attachments: query.attachments ? this.mapEvidencesToSupportingDocument(query.attachments, documentMap) : []
           }
         };
       })
@@ -874,6 +880,7 @@ export default class UpdateAppealService {
         date: listHearingDate
       },
       ...caseData.qmLegalRepresentativeQueries && { qmLegalRepresentativeQueries: this.mapQmQueriesCcdToAppeal(caseData.qmLegalRepresentativeQueries, documentMap) },
+      ...caseData.qmCitizenQueries && { qmCitizenQueries: this.mapQmQueriesCcdToAppeal(caseData.qmCitizenQueries, documentMap) },
       ...caseData.respondentDocuments && { respondentDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.respondentDocuments, documentMap) },
       ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments, documentMap) },
       ...caseData.additionalEvidenceDocuments && { additionalEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.additionalEvidenceDocuments, documentMap) },
@@ -1006,8 +1013,11 @@ export default class UpdateAppealService {
       ...appeal.ftpaAppellantOutOfTimeDocuments && {
         ftpaAppellantOutOfTimeDocuments: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantOutOfTimeDocuments, appeal.documentMap, 'ftpaAppellantOutOfTimeDocuments')
       },
-      ...appeal.qmLegalRepresentativeQueries && {
+      ...appeal.qmLegalRepresentativeQueries?.caseMessages && {
         qmLegalRepresentativeQueries: this.mapQmQueriesAppealToCcd(appeal.qmLegalRepresentativeQueries, appeal.documentMap)
+      },
+      ...appeal.qmCitizenQueries?.caseMessages && {
+        qmCitizenQueries: this.mapQmQueriesAppealToCcd(appeal.qmCitizenQueries, appeal.documentMap)
       },
       ...appeal.hasNlrSubmitted && { hasNlrSubmitted: appeal.hasNlrSubmitted },
       ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },

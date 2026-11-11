@@ -21,7 +21,7 @@
       <li>{{ text }}</li>
     {% endfor %}
   </ul>
-  <p class="govuk-body">{{ i18n.pages.sendMessagePermission.paragraphThree }}</p>
+  <p class="govuk-body">{{ i18n.pages.sendMessagePermission.paragraphThree | safe }}</p>
   {{ govukInsetText({
     text: i18n.pages.sendMessagePermission.helpText
   }) }}
@@ -48,10 +48,8 @@
         text: error['statement'].text
       } if error['statement']
     }) }}
-    {{ govukButton({
-      text: 'Continue',
-      preventDoubleClick: true
-    }) }}
+    {{ continueButton() }}
+    {{ cancelButtonWithHref(paths.common.overview) }}
   </form>
 
   {{ contactUs() }}

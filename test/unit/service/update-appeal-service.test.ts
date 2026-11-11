@@ -546,7 +546,8 @@ describe('update-appeal-service', () => {
           reason: null
         },
         hearingRequirements: {} as Partial<HearingRequirements>,
-        qmLegalRepresentativeQueries: {} as Partial<CcdQmQueryObj>
+        qmLegalRepresentativeQueries: {} as Partial<CcdQmQueryObj>,
+        qmCitizenQueries: {} as Partial<CcdQmQueryObj>
       } as Partial<Appeal>;
 
       witness1 = { witnessPartyId: '1', witnessGivenNames: 'witness', witnessFamilyName: '1' };
@@ -1392,6 +1393,56 @@ describe('update-appeal-service', () => {
         ]
       });
     });
+
+    it('converts qmCitizenQueries', () => {
+      emptyApplication.qmCitizenQueries = {
+        roleOnCase: 'someRole',
+        caseMessages: [
+          {
+            id: '1',
+            body: 'Test message',
+            name: 'John Smith',
+            subject: 'Test subject',
+            createdBy: 'John Smith',
+            createdOn: '2026-01-01',
+            messageType: 'question',
+            isHearingRelated: true,
+            attachments: [{
+              fileId: 'fileId',
+              name: 'name'
+            }]
+          }
+        ]
+      };
+      emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
+
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData.qmCitizenQueries).deep.equal({
+        roleOnCase: 'someRole',
+        caseMessages: [
+          {
+            value: {
+              id: '1',
+              body: 'Test message',
+              name: 'John Smith',
+              subject: 'Test subject',
+              createdBy: 'John Smith',
+              createdOn: '2026-01-01',
+              messageType: 'question',
+              isHearingRelated: true,
+              attachments: [{
+                'value': {
+                  'document_binary_url': 'someurl/binary',
+                  'document_filename': 'name',
+                  'document_url': 'someurl'
+                }
+              }]
+            }
+          }
+        ]
+      });
+    });
   });
 
   describe('mapCcdCaseToAppeal', () => {
@@ -2183,6 +2234,57 @@ describe('update-appeal-service', () => {
         });
       expect(appealData.qmLegalRepresentativeQueries.caseMessages[0].attachments).to.have.lengthOf(1);
       expect(appealData.qmLegalRepresentativeQueries.caseMessages[0].attachments[0].name).to.equal('name');
+    });
+
+    it('converts qmCitizenQueries', () => {
+      const caseData: Partial<CaseData> = {
+        qmCitizenQueries: {
+          roleOnCase: 'someRole',
+          caseMessages: [
+            {
+              value: {
+                id: '1',
+                body: 'Test message',
+                name: 'John Smith',
+                subject: 'Test subject',
+                createdBy: 'John Smith',
+                createdOn: '2026-01-01',
+                messageType: 'NewQuery',
+                isHearingRelated: 'Yes',
+                attachments: [{
+                  'value': {
+                    'document_binary_url': 'someurl/binary',
+                    'document_filename': 'name',
+                    'document_url': 'someurl'
+                  }
+                }]
+              }
+            }
+          ]
+        }
+      } as Partial<CaseData>;
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+
+      const appealData = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+      expect(appealData.qmCitizenQueries.roleOnCase).to.equal('someRole');
+      expect(appealData.qmCitizenQueries.caseMessages).to.have.lengthOf(1);
+      expect(appealData.qmCitizenQueries.caseMessages[0]).to.deep.contain(
+        {
+          id: '1',
+          body: 'Test message',
+          name: 'John Smith',
+          subject: 'Test subject',
+          createdBy: 'John Smith',
+          createdOn: '2026-01-01',
+          messageType: 'NewQuery',
+          isHearingRelated: 'Yes'
+        });
+      expect(appealData.qmCitizenQueries.caseMessages[0].attachments).to.have.lengthOf(1);
+      expect(appealData.qmCitizenQueries.caseMessages[0].attachments[0].name).to.equal('name');
     });
 
   });

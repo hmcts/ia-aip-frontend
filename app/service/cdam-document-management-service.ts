@@ -45,6 +45,13 @@ export class CdamUploadData {
   jurisdictionId: string;
 }
 
+export class CdamMultiUploadData {
+  files: Express.Multer.File[];
+  classification: Classification;
+  caseTypeId: string;
+  jurisdictionId: string;
+}
+
 class CdamDocumentManagementService {
   private authenticationService: AuthenticationService;
 
@@ -72,6 +79,30 @@ class CdamDocumentManagementService {
     form.append('classification', uploadData.classification);
     form.append('caseTypeId', uploadData.caseTypeId);
     form.append('jurisdictionId', uploadData.jurisdictionId);
+    const options: any = this.createOptions(
+      headers,
+      form.getHeaders()
+    );
+
+    const response = await axios.post(url, form, options);
+    return JSON.stringify(response.data);
+  }
+
+  private async uploadMultiple(headers: SecurityHeaders, multiUploadData: CdamMultiUploadData): Promise<any> {
+    const url = `${cdamDocumentManagementBaseUrl}/cases/documents`;
+    const form = new FormData();
+    multiUploadData.files.forEach(file => {
+      const buffer = Buffer.isBuffer(file.buffer)
+        ? file.buffer
+        : Buffer.from(file.buffer);
+      form.append('files', buffer, {
+        filename: file.originalname,
+        contentType: file.mimetype
+      });
+    });
+    form.append('classification', multiUploadData.classification);
+    form.append('caseTypeId', multiUploadData.caseTypeId);
+    form.append('jurisdictionId', multiUploadData.jurisdictionId);
     const options: any = this.createOptions(
       headers,
       form.getHeaders()
@@ -119,15 +150,53 @@ class CdamDocumentManagementService {
       .then(response => {
         const res = JSON.parse(response);
         const documentMapperId: string = this.addToDocumentMapper(
-            res.documents[0]._links.self.href,
-            res.documents[0].originalDocumentName,
-            new Date(res.documents[0].createdOn).toISOString(),
-            req.session.appeal.documentMap
+          res.documents[0]._links.self.href,
+          res.documents[0].originalDocumentName,
+          new Date(res.documents[0].createdOn).toISOString(),
+          req.session.appeal.documentMap
         );
         return {
           fileId: documentMapperId,
           name: res.documents[0].originalDocumentName
         } as DocumentUploadResponse;
+      });
+  }
+
+  /**
+   * Entry point to upload endpoint used to upload files to the document management service,
+   * this endpoint takes multiple files.
+   * @param req - the request that contains all necessary information
+   * @param files - the files for upload
+   * @property {string} req.idam.userDetails.uid - the user id
+   */
+  async uploadFiles(req: Request, files: Express.Multer.File[]): Promise<DocumentUploadResponse[]> {
+    const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
+    const userId: string = req.idam.userDetails.uid;
+
+    logger.trace(`Received call to upload files for user with id: '${userId}'`, logLabel);
+
+    const uploadData = {
+      files: files,
+      classification: Classification.restricted,
+      caseTypeId: 'Asylum',
+      jurisdictionId: 'IA'
+    };
+    return this.uploadMultiple(headers, uploadData)
+      .then(response => {
+        const res = JSON.parse(response);
+        return res.documents.map(doc => {
+          const documentMapperId: string = this.addToDocumentMapper(
+            doc._links.self.href,
+            doc.originalDocumentName,
+            new Date(doc.createdOn).toISOString(),
+            req.session.appeal.documentMap
+          );
+
+          return {
+            fileId: documentMapperId,
+            name: doc.originalDocumentName
+          } as DocumentUploadResponse;
+        });
       });
   }
 
@@ -175,10 +244,10 @@ class CdamDocumentManagementService {
    * @param documentMap the document map array.
    */
   public addToDocumentMapper(
-      documentUrl: string,
-      documentName: string,
-      documentUploadDate: string,
-      documentMap: DocumentMap[]
+    documentUrl: string,
+    documentName: string,
+    documentUploadDate: string,
+    documentMap: DocumentMap[]
   ) {
     const documentId: string = uuid();
 

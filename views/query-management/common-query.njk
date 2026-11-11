@@ -6,7 +6,7 @@
   <h1 class="govuk-heading-l">{{ query.pageTitle }}</h1>
   <div>
     {% for text in query.bodyParagraphs %}
-      <p class="govuk-body">{{ text | eval | safe }}</p>
+      {{ text | eval | safe }}
     {% endfor %}
   </div>
 

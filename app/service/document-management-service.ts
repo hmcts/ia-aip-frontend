@@ -22,6 +22,17 @@ class DocumentManagementService {
   }
 
   /**
+   * Entry point to upload endpoint used to upload files to the document management service,
+   * this endpoint takes multiple files.
+   * @param req - the request that contains all necessary information
+   * @param files - the files for upload
+   * @property {string} req.idam.userDetails.uid - the user id
+   */
+  async uploadFiles(req: Request, files: Express.Multer.File[]): Promise<DocumentUploadResponse[]> {
+    return this.cdamDocumentManagementService.uploadFiles(req, files);
+  }
+
+  /**
    * Entry point to delete endpoint used to delete files from the document management service
    * @param req - the request that contains all necessary information
    * @property {string} req.idam.userDetails.uid - the user id

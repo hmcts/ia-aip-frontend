@@ -3486,21 +3486,37 @@
         {
           "value": "requestForUpdates",
           "name": "Example choice 1",
-          "examples": "Including general progress updates, details of hearing dates and timescales for decisions being issued.",
+          "examples": "An example of hint text",
           "pageTitle": "Some example title 1",
-          "bodyParagraphs": ["Some body text", "some body text for second paragraph"]
+          "bodyParagraphs": [
+            "<p class=\"govuk-body\">An example of a p tag in use</p>",
+            "<ul class=\"govuk-list govuk-list--bullet\">",
+            "<li>example of a list item 1</li>",
+            "<li>example of a list item 2</li>",
+            "<li>example of a third list item</li>",
+            "</ul>",
+            "<p class=\"govuk-body\"><strong>example of bold p tag</strong></p>",
+            "<p class=\"govuk-body\"><em>example of italic p tag</em></p>",
+            "<p class=\"govuk-body\"><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='#'>example of a link open in new tab</a></p>",
+            "<p class=\"govuk-body\"><a class='govuk-link' href='#'>example of a link open in same tab</a></p>"
+          ]
         },
         {
           "value": "shareCodeEnquiries",
           "name": "Example choice 2",
           "pageTitle": "Some example title 2",
-          "bodyParagraphs": ["Some body text", "some body text for second paragraph", "<strong>a third and final paragraph</strong>"]
+          "bodyParagraphs": [
+            "<p class=\"govuk-body\">An example of a p tag in use</p>",
+            "<p class=\"govuk-body\">some body text for second paragraph</p>"
+          ]
         },
         {
           "value": "someThirdValue",
           "name": "A third example choice",
           "pageTitle": "Some third example title",
-          "bodyParagraphs": ["Some body text"]
+          "bodyParagraphs": [
+            "<p class=\"govuk-body\">Some body text</p>"
+          ]
         }
       ],
       "customQueryValue": "askQueryMessage",
@@ -3513,17 +3529,47 @@
       "returnToOverview": "Return to appeal overview"
     },
     "sendMessagePermission": {
-      "title": "Send a message",
-      "subsectionOne":"Sharing this message with the other party",
+      "title": "Message sharing permission",
+      "subsectionOne": "Sharing this message with the other party",
       "paragraphOne": "All messages sent using this system are shared with the other party in the case as well as being sent to the IAC service",
       "subsectionTwo": "Asking not to share your message",
-      "paragraphTwo": "You can ask not to share your message with the ohter party. The reasons for not sharing your message must be valid and the judge may decide that your message should be shared.",
+      "paragraphTwo": "You can ask not to share your message with the other party. The reasons for not sharing your message must be valid and the judge may decide that your message should be shared.",
       "preList": "Valid reasons for keeping a message between you and the IAC service include the message being about:",
-      "listOptions": ["abc", "xyz"],
+      "listOptions": [
+        "abc",
+        "xyz"
+      ],
       "paragraphThree": "If you need to send a message to the IAC service and you do not want the other party to see it, email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a>.",
       "helpText": "Explain why the message should be kept between you and the IAC service and make sure you include your full name and reference.",
       "statementTitle": "Confirm your message can be shared",
       "statement": "Yes, I agree my message can be shared with the other party"
+    },
+    "sendMessage": {
+      "title": "Send a message",
+      "subjectLabel": "Message subject",
+      "subjectHint": "The subject should be a summary of your message",
+      "subjectId": "messageSubject",
+      "messageLabel": "Message details",
+      "messageHint": "Include as many details as possible so case workers can respond to your message",
+      "messageId": "messageDetails",
+      "isHearingRelated": {
+        "label": "Is this query related to a hearing?",
+        "hint": "Select Yes if this query is related to a hearing and provide the date of the hearing",
+        "dateCya": "Date of hearing",
+        "dateHint": "For example, 31 05 2019",
+        "dateLegend": "The field to enter the date of your hearing"
+      },
+      "uploadDocsCya": "Supporting documents",
+      "uploadDocsLabel": "<b>Upload documents (optional)</b>",
+      "uploadDocsHintOne": "Only upload documents related to your message.",
+      "uploadDocsHintTwo": "To upload documents to progress your claim, use the appropriate upload options."
+    },
+    "sendMessageConfirmation": {
+      "title": "You have sent your message",
+      "whatNextListItems": [
+        "A Tribunal Caseworker will look at your message and respond if deemed necessary",
+        "This should be by <b>{{ date }}</b> but may take longer than that"
+      ]
     },
     "clarifyingQuestionsList": {
       "title": "Questions about your appeal",
@@ -4653,6 +4699,15 @@
     },
     "eligibility": {
       "selectYesOrNo": "Select either yes or no"
+    },
+    "sendMessage": {
+      "subject": "Please enter a message subject",
+      "details": "Please enter message details",
+      "isHearingRelated": "Please select Yes if this query is related to a hearing",
+      "date": {
+        "missing": "Please enter the date of your hearing",
+        "inPast": "Your hearing date must be in the future"
+      }
     },
     "emptyReasonAppealIsLate": "Enter the reason your appeal is late",
     "reasonForAppeal": {

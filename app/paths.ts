@@ -342,6 +342,10 @@ const paths = {
     commonQueries: '/ask-a-query/view-answer',
     sendMessagePermission: '/ask-a-query/send-message-permission',
     sendMessage: '/ask-a-query/send-message',
+    sendMessageUpload: '/ask-a-query/send-message/upload',
+    sendMessageDelete: '/ask-a-query/send-message/delete',
+    sendMessageCya: '/ask-a-query/send-message/confirm',
+    sendMessageConfirmation: '/ask-a-query/send-message/confirmation',
     viewQueries: '/view-queries'
   },
   nonLegalRep: {

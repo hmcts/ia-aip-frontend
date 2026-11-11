@@ -233,6 +233,15 @@ function appellantNamesValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function messageSendValidation(obj: object) {
+  const schema = Joi.object({
+    messageSubject: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sendMessage.subject }),
+    messageDetails: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sendMessage.details }),
+    isHearingRelated: Joi.string().required().messages({ 'any.required': i18n.validationErrors.sendMessage.isHearingRelated })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 function sponsorNamesValidation(obj: object) {
   const schema = Joi.object({
     sponsorGivenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorGivenNames }),
@@ -691,6 +700,48 @@ function isDateInRange(dateFrom: string, dateTo: string, obj, dateMissingErrMsg:
   return validate(toValidate, schema, true);
 }
 
+function futureDateValidation(obj): ValidationErrors {
+  const { year, month, day } = obj;
+  const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
+    moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';
+
+  const toValidate = {
+    ...obj,
+    date
+  };
+
+  const dateFrom = moment().format('YYYY MM DD');
+  const schema = Joi.object({
+    day: Joi.number().empty('').required().integer().min(1).max(31).messages({
+      'any.required': i18n.validationErrors.sendMessage.date.missing,
+      'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.max': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
+    }),
+    month: Joi.number().empty('').required().integer().min(1).max(12).required().messages({
+      'any.required': i18n.validationErrors.sendMessage.date.missing,
+      'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.max': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
+    }),
+    year: Joi.number().empty('').required().integer().min(1900).required().messages({
+      'any.required': i18n.validationErrors.sendMessage.date.missing,
+      'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
+    }),
+    date: Joi.date().required().min(dateFrom).messages({
+      'any.required': i18n.validationErrors.sendMessage.date.missing,
+      'date.min': i18n.validationErrors.sendMessage.date.inPast,
+      'date.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
+    })
+  }).unknown(true);
+
+  return validate(toValidate, schema, true);
+}
+
 function remissionOptionsValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     answer: Joi.string().required().messages({
@@ -837,6 +888,8 @@ export {
   nonLegalRepPhoneValidation,
   isSamePersonValidation,
   statementValidation,
+  messageSendValidation,
+  futureDateValidation,
   nlrStatementValidation,
   deportationOrderOptionsValidation
 };

@@ -223,6 +223,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showChangeRepresentation: appealInProgress,
         showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, isCitizen),
         showAskForFeeRemission,
+        showQueryManagement: isCitizen && ![States.APPEAL_STARTED.id].includes(appealStatus || ''),
         showNonLegalRep: isCitizen && ![States.APPEAL_STARTED.id, States.ENDED.id].includes(appealStatus || ''),
         hasNonLegalRep: hasNlr,
         addNonLegalRepPath: hasNlr ? paths.nonLegalRep.addAnotherNonLegalRep : paths.nonLegalRep.addNonLegalRep,

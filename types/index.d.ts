@@ -1,4 +1,3 @@
-import { Multer } from 'multer';
 import { Readable } from 'stream';
 import Logger from '../app/utils/logger';
 

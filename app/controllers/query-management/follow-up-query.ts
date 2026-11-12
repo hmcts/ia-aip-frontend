@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto';
 import { NextFunction, Request, Response, Router } from 'express';
-import moment from 'moment/moment';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
@@ -9,11 +8,9 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { addDaysToDate } from '../../utils/date-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getFileUploadError } from '../../utils/upload-utils';
-import { formatTextForCYA, toIsoDate } from '../../utils/utils';
+import { formatTextForCYA } from '../../utils/utils';
 import {
-  askQueryValidation,
-  createStructuredError, followUpQueryValidation, futureDateValidation,
-  messageSendValidation,
+  createStructuredError, followUpQueryValidation,
   statementValidation
 } from '../../utils/validations/fields-validations';
 

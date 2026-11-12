@@ -56,9 +56,11 @@ module.exports = {
       await I.see('You can now access your case. You will first need to create an account or sign in if you already have one.');
     });
 
-    Then(/^I am on the IDAM sign in or create account page$/, async () => {
-      await I.waitForText('Sign in or create an account', 30);
-      await I.seeInCurrentUrl('sign-in-or-create');
+    Then(/^I am on the self register page$/, async () => {
+      await I.seeInCurrentUrl('o/authorize');
+      await I.waitForText('Sign in to your account.', 30);
+      await I.click('Sign in to your account');
+      await I.waitForElement('#username', 30);
     });
 
     When('I get the NoC required data from the sent notification', async () => {

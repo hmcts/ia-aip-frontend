@@ -3564,6 +3564,7 @@
       "uploadDocsHintOne": "Only upload documents related to your message.",
       "uploadDocsHintTwo": "To upload documents to progress your claim, use the appropriate upload options."
     },
+    "followUpQueryTitle": "Follow up query",
     "sendMessageConfirmation": {
       "title": "You have sent your message",
       "whatNextListItems": [

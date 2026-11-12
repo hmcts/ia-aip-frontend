@@ -19,6 +19,11 @@ import {
 
 function getAskQueryPage(req: Request, res: Response, next: NextFunction) {
   try {
+    delete (req.session.appeal.messageSubject);
+    delete (req.session.appeal.messageDetails);
+    delete (req.session.appeal.messageDocs);
+    delete (req.session.appeal.hearingDate);
+    delete (req.session.appeal.isHearingRelated);
     return res.render('query-management/ask-query.njk', {
       previousPage: paths.common.overview,
       commonQueries: i18n.pages.askQuery.commonQueries
@@ -103,13 +108,16 @@ function getSendMessagePage(req: Request, res: Response, next: NextFunction) {
     const errors = { 'file-upload': createStructuredError('file-upload', getFileUploadError(errCode)) };
     return res.render('query-management/send-message.njk', {
       previousPage: paths.common.sendMessagePermission,
+      title: i18n.pages.sendMessage.title,
       subject: req.session.appeal?.messageSubject,
       details: req.session.appeal?.messageDetails,
       evidenceUploadAction: paths.common.sendMessageUpload,
       evidences: req.session.appeal?.messageDocs || [],
       evidenceCTA: paths.common.sendMessageDelete,
+      shouldAskAboutHearing: true,
       hearingDate: req.session.appeal?.hearingDate,
       isHearingRelated: req.session.appeal?.isHearingRelated,
+      formAction: paths.common.sendMessage,
       errors: errCode ? errors : undefined,
       errorList: errCode ? Object.values(errors) : undefined
     });
@@ -143,14 +151,17 @@ function postSendMessagePage() {
         }
         return res.render('query-management/send-message.njk', {
           previousPage: paths.common.sendMessagePermission,
+          title: i18n.pages.sendMessage.title,
           subject: req.body?.[i18n.pages.sendMessage.subjectId],
           details: req.body?.[i18n.pages.sendMessage.messageId],
           evidenceUploadAction: paths.common.sendMessageUpload,
           evidences: req.session.appeal?.messageDocs || [],
           evidenceCTA: paths.common.sendMessageDelete,
+          shouldAskAboutHearing: true,
           isHearingRelated: req.session.appeal?.isHearingRelated,
           hearingDate: req.session.appeal?.hearingDate,
           hearingErrorMessage: hearingErrorMessage,
+          formAction: paths.common.sendMessage,
           errors: validation,
           errorList: Object.values(validation)
         });
@@ -171,7 +182,7 @@ function uploadSendMessageEvidence() {
       req.session.appeal.hearingDate = { day: req.body?.['day'], month: req.body?.['month'], year: req.body?.['year'] };
 
       if (req.file) {
-        const messageDocs: MulterFile[] = req.session.appeal?.messageDocs || [];
+        const messageDocs: MulterFile[] = req.session.appeal.messageDocs ? [...req.session.appeal.messageDocs] : [];
         const id = messageDocs.length + 1;
         messageDocs.push({ ...req.file, id });
         req.session.appeal.messageDocs = messageDocs;
@@ -187,11 +198,11 @@ function uploadSendMessageEvidence() {
   };
 }
 
-function deleteHomeOfficeDecisionLetter() {
+function deleteSendMessageEvidence() {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.query.id) {
-        const messageDocs: MulterFile[] = req.session.appeal?.messageDocs || [];
+        const messageDocs: MulterFile[] = req.session.appeal.messageDocs ? [...req.session.appeal.messageDocs] : [];
         req.session.appeal.messageDocs = messageDocs.filter(file => file.id != req.query.id)
           .map((doc, index) => {
             return { ...doc, id: (index + 1) };
@@ -284,10 +295,13 @@ function postSendMessageCya(updateAppealService: UpdateAppealService, documentMa
       if (req.session.appeal.messageDocs) {
         qmQuery.attachments = await documentManagementService.uploadFiles(req, req.session.appeal.messageDocs);
       }
+      const appeal: Appeal = {
+        ...req.session.appeal
+      };
       if (req.session.appeal.qmCitizenQueries && req.session.appeal.qmCitizenQueries.caseMessages && req.session.appeal.qmCitizenQueries.caseMessages.length > 0) {
-        req.session.appeal.qmCitizenQueries.caseMessages.push(qmQuery);
+        appeal.qmCitizenQueries.caseMessages.push(qmQuery);
       } else {
-        req.session.appeal.qmCitizenQueries = {
+        appeal.qmCitizenQueries = {
           roleOnCase: '',
           caseMessages: [qmQuery]
         };
@@ -298,10 +312,6 @@ function postSendMessageCya(updateAppealService: UpdateAppealService, documentMa
       delete (req.session.appeal.messageDocs);
       delete (req.session.appeal.hearingDate);
       delete (req.session.appeal.isHearingRelated);
-
-      const appeal: Appeal = {
-        ...req.session.appeal
-      };
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.ASK_QUERY, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.refreshCasesList = true;
@@ -339,7 +349,7 @@ function setupAskQueryController(middleware: Middleware[], updateAppealService: 
   router.post(paths.common.sendMessagePermission, middleware, postSendMessagePermissionPage());
   router.get(paths.common.sendMessage, middleware, getSendMessagePage);
   router.post(paths.common.sendMessageUpload, middleware, uploadSendMessageEvidence());
-  router.get(paths.common.sendMessageDelete, middleware, deleteHomeOfficeDecisionLetter());
+  router.get(paths.common.sendMessageDelete, middleware, deleteSendMessageEvidence());
   router.post(paths.common.sendMessage, middleware, postSendMessagePage());
   router.get(paths.common.sendMessageCya, middleware, getSendMessageCya);
   router.post(paths.common.sendMessageCya, middleware, postSendMessageCya(updateAppealService, documentManagementService));

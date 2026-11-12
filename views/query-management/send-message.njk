@@ -1,4 +1,4 @@
-{% set pageTitleName = i18n.pages.sendMessage.title %}
+{% set pageTitleName = title %}
 {% extends "layout.njk" %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
@@ -13,7 +13,7 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <h1 class="govuk-heading-l">{{ i18n.pages.sendMessage.title }}</h1>
+  <h1 class="govuk-heading-l">{{ title }}</h1>
 
   {% set hearingDateHtml %}
     {{ govukDateInput({
@@ -62,7 +62,7 @@
     }) }}
   {% endset %}
 
-  <form action="{{ paths.common.sendMessage }}" method="post">
+  <form action="{{ formAction }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukInput({
         label: { text: i18n.pages.sendMessage.subjectLabel },
@@ -84,36 +84,38 @@
           text: errors[i18n.pages.sendMessage.messageId].text
         } if errors[i18n.pages.sendMessage.messageId]
     }) }}
-    {{ govukRadios({
-      idPrefix: 'isHearingRelated',
-      name: 'isHearingRelated',
-      fieldset: {
-        legend: {
-          text: i18n.pages.sendMessage.isHearingRelated.label
-        }
-      },
-      hint: {
-        text: i18n.pages.sendMessage.isHearingRelated.hint
-      },
-      items: [
-          {
-              value: "Yes",
-              text: "Yes",
-              conditional: {
-                html: hearingDateHtml
-              },
-              checked: isHearingRelated == "Yes"
-          },
-          {
-              value: "No",
-              text: "No",
-              checked: isHearingRelated == "No"
+    {% if shouldAskAboutHearing %}
+      {{ govukRadios({
+        idPrefix: 'isHearingRelated',
+        name: 'isHearingRelated',
+        fieldset: {
+          legend: {
+            text: i18n.pages.sendMessage.isHearingRelated.label
           }
-      ],
-      errorMessage: {
-          text: hearingErrorMessage
-      } if hearingErrorMessage
-    }) }}
+        },
+        hint: {
+          text: i18n.pages.sendMessage.isHearingRelated.hint
+        },
+        items: [
+            {
+                value: "Yes",
+                text: "Yes",
+                conditional: {
+                  html: hearingDateHtml
+                },
+                checked: isHearingRelated == "Yes"
+            },
+            {
+                value: "No",
+                text: "No",
+                checked: isHearingRelated == "No"
+            }
+        ],
+        errorMessage: {
+            text: hearingErrorMessage
+        } if hearingErrorMessage
+      }) }}
+    {% endif %}
     <div class="govuk-inset-text">
       {{ govukFileUpload({
         id: "file-upload",

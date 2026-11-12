@@ -242,6 +242,14 @@ function messageSendValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function followUpQueryValidation(obj: object) {
+  const schema = Joi.object({
+    messageSubject: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sendMessage.subject }),
+    messageDetails: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sendMessage.details })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 function sponsorNamesValidation(obj: object) {
   const schema = Joi.object({
     sponsorGivenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorGivenNames }),
@@ -890,6 +898,7 @@ export {
   statementValidation,
   messageSendValidation,
   futureDateValidation,
+  followUpQueryValidation,
   nlrStatementValidation,
   deportationOrderOptionsValidation
 };

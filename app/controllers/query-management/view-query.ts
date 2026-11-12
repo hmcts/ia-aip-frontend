@@ -13,7 +13,7 @@ function getParentQuery(queries: QmQuery[], query: QmQuery) {
 function getChildQuery(queries: QmQuery[], query: QmQuery) {
   const sortedChildren: QmQuery[] = getChildrenQueries(queries, query);
   if (sortedChildren.length > 0) {
-    return sortedChildren[0];
+    return sortedChildren[sortedChildren.length - 1];
   }
   return query;
 }
@@ -21,7 +21,7 @@ function getChildQuery(queries: QmQuery[], query: QmQuery) {
 function getChildrenQueries(queries: QmQuery[], query: QmQuery) {
   return queries
     .filter(qmQuery => qmQuery?.parentId === query.id)
-    .sort((a, b) => new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime());
+    .sort((a, b) => new Date(a.createdOn).getTime() - new Date(b.createdOn).getTime());
 }
 
 enum MessageStatus {
@@ -60,9 +60,9 @@ function convertQueriesToTableValues(queries: QmQuery[]) {
           id: query.id,
           subject: query.subject,
           createdBy: parentQuery.name,
-          createdOn: formatDate(parentQuery.createdOn),
+          createdOn: formatDate(parentQuery.createdOn, true),
           updatedBy: childQuery.name,
-          updatedOn: formatDate(childQuery.createdOn),
+          updatedOn: formatDate(childQuery.createdOn, true),
           status: getStatus(childQuery)
         };
       }
@@ -70,8 +70,10 @@ function convertQueriesToTableValues(queries: QmQuery[]) {
 }
 
 function getViewQueriesPage(req: Request, res: Response, next: NextFunction) {
-  const citizenQueries: TableQmQuery[] = convertQueriesToTableValues(req.session.appeal?.qmCitizenQueries?.caseMessages || []);
-  const legalRepQueries: TableQmQuery[] = convertQueriesToTableValues(req.session.appeal?.qmLegalRepresentativeQueries?.caseMessages || []);
+  const citizenQmQueries = req.session.appeal.qmCitizenQueries ? [...req.session.appeal?.qmCitizenQueries?.caseMessages] : [];
+  const citizenQueries: TableQmQuery[] = convertQueriesToTableValues(citizenQmQueries);
+  const legalRepQmQueries = req.session.appeal.qmLegalRepresentativeQueries ? [...req.session.appeal?.qmLegalRepresentativeQueries?.caseMessages] : [];
+  const legalRepQueries: TableQmQuery[] = convertQueriesToTableValues(legalRepQmQueries);
   try {
     return res.render('query-management/view-queries.njk', {
       previousPage: paths.common.overview,
@@ -84,35 +86,38 @@ function getViewQueriesPage(req: Request, res: Response, next: NextFunction) {
 }
 
 function formatQueryForView(query: QmQuery) {
+  const newQuery: QmQuery = { ...query };
   if (query.hearingDate) {
-    query.hearingDate = formatDate(query.hearingDate, true);
+    newQuery.hearingDate = formatDate(newQuery.hearingDate, true);
   }
   if (query.createdOn) {
-    query.createdOn = formatDate(query.createdOn, true);
+    newQuery.createdOn = formatDate(newQuery.createdOn, true);
   }
-  return query;
+  return newQuery;
 }
 
 function getViewQueryPage(req: Request, res: Response, next: NextFunction) {
+  delete (req.session.appeal.messageSubject);
+  delete (req.session.appeal.messageDetails);
+  delete (req.session.appeal.messageDocs);
+
   const queryId = req.params.id;
   const queries = (req.session.appeal?.qmCitizenQueries?.caseMessages || []);
   const selectedParentQuery: QmQuery = formatQueryForView(queries.find(q => q.id === queryId));
   const childrenQueries: QmQuery[] = getChildrenQueries(queries, selectedParentQuery)
     .map(query => formatQueryForView(query));
-  const latestChildQuery = childrenQueries.length > 0 ? childrenQueries[0] : selectedParentQuery;
+  const latestChildQuery = childrenQueries.length > 0 ? childrenQueries[childrenQueries.length - 1] : selectedParentQuery;
   const latestChildStatus = getStatus(latestChildQuery);
   if (!selectedParentQuery) {
     return res.redirect(paths.common.viewQueries);
   }
   const renderObj = {
-    previousPage: paths.common.overview,
+    previousPage: paths.common.viewQueries,
     parentQuery: selectedParentQuery,
     childrenQueries: childrenQueries,
     latestChildStatus: latestChildStatus,
-    followUpPath: paths.common.askQuery
-    // followUpPath: paths.common.askFollowUpQuery
+    followUpPath: paths.common.followUpQuery.replace(':id', selectedParentQuery.id)
   };
-  // responseByDate
   if (latestChildStatus === MessageStatus.CLOSED) {
     renderObj['closedQueryDate'] = latestChildQuery.createdOn;
   } else if ([MessageStatus.AWAITING_RESPONSE, MessageStatus.FOLLOW_UP_RESPONSE].includes(latestChildStatus)) {

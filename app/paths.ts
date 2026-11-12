@@ -348,7 +348,13 @@ const paths = {
     sendMessageConfirmation: '/ask-a-query/send-message/confirmation',
     viewQueries: '/view-queries',
     viewQuery: '/view-query/:id',
-    viewLrQuery: '/view-lr-query/:id'
+    viewLrQuery: '/view-lr-query/:id',
+    followUpQueryPermission: '/follow-up-query-permission/:id',
+    followUpQuery: '/follow-up-query/:id',
+    followUpQueryUpload: '/follow-up-query/upload/:id',
+    followUpQueryDelete: '/follow-up-query/delete/:id',
+    followUpQueryCya: '/follow-up-query/send-message/confirm/:id',
+    followUpQueryConfirmation: '/follow-up-query/confirmation/:id',
   },
   nonLegalRep: {
     // Non Legal Rep endpoints

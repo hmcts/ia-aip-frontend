@@ -202,6 +202,12 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const hasSponsor = application?.hasSponsor === 'Yes';
       const hasNlr = hasActiveNlr(req.session.appeal);
       const appealInProgress = isAppealInProgress(appealStatus, isCitizen);
+      delete (req.session.appeal.messageSubject);
+      delete (req.session.appeal.messageDetails);
+      delete (req.session.appeal.messageDocs);
+      delete (req.session.appeal.hearingDate);
+      delete (req.session.appeal.isHearingRelated);
+
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
         appealRefNumber: appealRefNumber,

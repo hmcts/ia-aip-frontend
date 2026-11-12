@@ -21,9 +21,13 @@
   {% set parentRows = [
      { key: { text: i18n.pages.viewQuery.card.subject }, value: { text: parentQuery.subject } },
      { key: { text: i18n.pages.viewQuery.card.body }, value: { text: parentQuery.body } },
-     { key: { text: i18n.pages.viewQuery.card.attachments }, value: { html: attachmentsHtml } },
-     { key: { text: i18n.pages.viewQuery.card.isHearingRelated }, value: { text: parentQuery.isHearingRelated } }
+     { key: { text: i18n.pages.viewQuery.card.attachments }, value: { html: attachmentsHtml } }
    ] %}
+   {% if parentQuery.isHearingRelated %}
+     {% set parentRows = (parentRows.push(
+       { key: { text: i18n.pages.viewQuery.card.isHearingRelated }, value: { text: parentQuery.isHearingRelated } }
+     ), parentRows) %}
+   {% endif %}
    {% if parentQuery.isHearingRelated === 'Yes' %}
      {% set parentRows = (parentRows.push(
        { key: { text: i18n.pages.viewQuery.card.hearingDate }, value: { text: parentQuery.hearingDate } }

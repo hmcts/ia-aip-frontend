@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { formatDate } from '../../utils/date-utils';
+import { addDaysAndFormat, formatDate } from '../../utils/date-utils';
 
 function getParentQuery(queries: QmQuery[], query: QmQuery) {
   if (query.parentId) {
@@ -28,7 +28,7 @@ enum MessageStatus {
   CLOSED = 'Closed',
   AWAITING_RESPONSE = 'Awaiting response',
   RESPONDED = 'Responded',
-  FOLLOW_UP_RESPONSE = 'Awaiting response to follow up',
+  FOLLOW_UP_RESPONSE = 'Awaiting response to follow-up',
   UNKNOWN = 'Unknown'
 }
 
@@ -85,10 +85,10 @@ function getViewQueriesPage(req: Request, res: Response, next: NextFunction) {
 
 function formatQueryForView(query: QmQuery) {
   if (query.hearingDate) {
-    query.hearingDate = formatDate(query.hearingDate);
+    query.hearingDate = formatDate(query.hearingDate, true);
   }
   if (query.createdOn) {
-    query.createdOn = formatDate(query.createdOn);
+    query.createdOn = formatDate(query.createdOn, true);
   }
   return query;
 }
@@ -104,14 +104,23 @@ function getViewQueryPage(req: Request, res: Response, next: NextFunction) {
   if (!selectedParentQuery) {
     return res.redirect(paths.common.viewQueries);
   }
-  console.log(selectedParentQuery.attachments)
+  const renderObj = {
+    previousPage: paths.common.overview,
+    parentQuery: selectedParentQuery,
+    childrenQueries: childrenQueries,
+    latestChildStatus: latestChildStatus,
+    followUpPath: paths.common.askQuery
+    // followUpPath: paths.common.askFollowUpQuery
+  };
+  // responseByDate
+  if (latestChildStatus === MessageStatus.CLOSED) {
+    renderObj['closedQueryDate'] = latestChildQuery.createdOn;
+  } else if ([MessageStatus.AWAITING_RESPONSE, MessageStatus.FOLLOW_UP_RESPONSE].includes(latestChildStatus)) {
+    renderObj['responseByDate'] = addDaysAndFormat(latestChildQuery.createdOn, 10, true);
+  }
+
   try {
-    return res.render('query-management/view-query.njk', {
-      previousPage: paths.common.overview,
-      parentQuery: selectedParentQuery,
-      childrenQueries: childrenQueries,
-      latestChildStatus: latestChildStatus
-    });
+    return res.render('query-management/view-query.njk', renderObj);
   } catch (e) {
     next(e);
   }

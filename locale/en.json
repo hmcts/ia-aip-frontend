@@ -3598,7 +3598,18 @@
         "createdOn": "Sent on",
         "isHearingRelated": "Is this query related to a hearing?",
         "hearingDate": "Date of hearing"
-      }
+      },
+      "awaitingResponse": {
+        "heading": "The IAC Service is reviewing the message",
+        "text": "Our team will read the message and try to respond by {{ responseByDate }}. It may take longer than this."
+      },
+      "responded": {
+        "heading": "Send a follow-up message",
+        "text": "Only send follow-up messages related to the original query.",
+        "text2": "Sending follow-up messages that are not related will delay the court's response."
+      },
+      "followUpButton": "Send a follow-up message",
+      "closed": "This message has been closed by court staff on {{ closedQueryDate }}"
     },
     "clarifyingQuestionsList": {
       "title": "Questions about your appeal",

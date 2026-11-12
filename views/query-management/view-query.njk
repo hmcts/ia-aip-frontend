@@ -1,6 +1,7 @@
 {% set pageTitleName = i18n.pages.viewQuery.title %}
 {% extends 'layout.njk' %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% block content %}
   <h1 class="govuk-heading-xl">
@@ -70,4 +71,24 @@
       }) }}
     {% endfor %}
   {% endif %}
+
+  {% if latestChildStatus === 'Closed' %}
+    {{ govukWarningText({
+      html: i18n.pages.viewQuery.closed | eval | safe,
+      iconFallbackText: "Warning"
+    }) }}
+  {% elif latestChildStatus === 'Responded' %}
+    <h2 class="govuk-heading-m">{{ i18n.pages.viewQuery.responded.heading }}</h2>
+    <p class="govuk-body">{{ i18n.pages.viewQuery.responded.text }}</p>
+    <p class="govuk-body">{{ i18n.pages.viewQuery.responded.text2 }}</p>
+    {{ govukButton({
+      text: i18n.pages.viewQuery.followUpButton,
+      href: followUpPath,
+      classes: "govuk-button--secondary"
+    }) }}
+  {% else %}
+    <h2 class="govuk-heading-m">{{ i18n.pages.viewQuery.awaitingResponse.heading }}</h2>
+    <p class="govuk-body">{{ i18n.pages.viewQuery.awaitingResponse.text | eval | safe }}</p>
+  {% endif %}
+
 {% endblock %}

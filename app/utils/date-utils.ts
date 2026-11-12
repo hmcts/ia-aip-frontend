@@ -8,16 +8,29 @@ const timeFormat = 'h:mm a';
 const dateTimeFormat = 'DD MMMM YYYY HH:mm';
 
 export const addDaysToDate = (days: number) => {
-  return moment().add(days,'days').format(dayMonthYearFormat);
+  return moment().add(days, 'days').format(dayMonthYearFormat);
 };
 
-const formatDate = (date: string) => {
-  return moment(date).format(dayMonthYearFormat);
+const dateToMoment = (date: string, shouldStrictFormat?: boolean) => {
+  if (shouldStrictFormat) {
+    return moment(date, ['YYYY-MM-DD', 'DD MMMM YYYY', 'YYYY-MM-DDTHH:mm:ss.SSS[Z]'], true);
+  }
+  return moment(date);
+};
+
+const formatDate = (date: string, shouldStrictFormat?: boolean) => {
+  return dateToMoment(date, shouldStrictFormat).format(dayMonthYearFormat);
+};
+
+const addDaysAndFormat = (date: string, days: number, shouldStrictFormat?: boolean) => {
+  return dateToMoment(date, shouldStrictFormat).add(days, 'days').format(dayMonthYearFormat);
+
 };
 
 export {
   dayMonthYearFormat,
   formatDate,
+  addDaysAndFormat,
   timeFormat,
   dateTimeFormat
 };

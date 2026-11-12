@@ -85,11 +85,13 @@
     <h2 class="govuk-heading-m">{{ i18n.pages.viewQuery.responded.heading }}</h2>
     <p class="govuk-body">{{ i18n.pages.viewQuery.responded.text }}</p>
     <p class="govuk-body">{{ i18n.pages.viewQuery.responded.text2 }}</p>
-    {{ govukButton({
-      text: i18n.pages.viewQuery.followUpButton,
-      href: followUpPath,
-      classes: "govuk-button--secondary"
-    }) }}
+    {% if includeFollowUp %}
+      {{ govukButton({
+        text: i18n.pages.viewQuery.followUpButton,
+        href: followUpPath,
+        classes: "govuk-button--secondary"
+      }) }}
+    {% endif %}
   {% else %}
     <h2 class="govuk-heading-m">{{ i18n.pages.viewQuery.awaitingResponse.heading }}</h2>
     <p class="govuk-body">{{ i18n.pages.viewQuery.awaitingResponse.text | eval | safe }}</p>

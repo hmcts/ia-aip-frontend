@@ -115,7 +115,40 @@ function getViewQueryPage(req: Request, res: Response, next: NextFunction) {
     previousPage: paths.common.viewQueries,
     parentQuery: selectedParentQuery,
     childrenQueries: childrenQueries,
+    includeFollowUp: true,
     latestChildStatus: latestChildStatus,
+    followUpPath: paths.common.followUpQuery.replace(':id', selectedParentQuery.id)
+  };
+  if (latestChildStatus === MessageStatus.CLOSED) {
+    renderObj['closedQueryDate'] = latestChildQuery.createdOn;
+  } else if ([MessageStatus.AWAITING_RESPONSE, MessageStatus.FOLLOW_UP_RESPONSE].includes(latestChildStatus)) {
+    renderObj['responseByDate'] = addDaysAndFormat(latestChildQuery.createdOn, 10, true);
+  }
+
+  try {
+    return res.render('query-management/view-query.njk', renderObj);
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getViewLrQueryPage(req: Request, res: Response, next: NextFunction) {
+  const queryId = req.params.id;
+  const queries = (req.session.appeal?.qmCitizenQueries?.caseMessages || []);
+  const selectedParentQuery: QmQuery = formatQueryForView(queries.find(q => q.id === queryId));
+  const childrenQueries: QmQuery[] = getChildrenQueries(queries, selectedParentQuery)
+    .map(query => formatQueryForView(query));
+  const latestChildQuery = childrenQueries.length > 0 ? childrenQueries[childrenQueries.length - 1] : selectedParentQuery;
+  const latestChildStatus = getStatus(latestChildQuery);
+  if (!selectedParentQuery) {
+    return res.redirect(paths.common.viewQueries);
+  }
+  const renderObj = {
+    previousPage: paths.common.viewQueries,
+    parentQuery: selectedParentQuery,
+    childrenQueries: childrenQueries,
+    latestChildStatus: latestChildStatus,
+    includeFollowUp: false,
     followUpPath: paths.common.followUpQuery.replace(':id', selectedParentQuery.id)
   };
   if (latestChildStatus === MessageStatus.CLOSED) {
@@ -135,6 +168,7 @@ function setupViewQueryController(middleware: Middleware[], updateAppealService:
   const router = Router();
   router.get(paths.common.viewQueries, middleware, getViewQueriesPage);
   router.get(paths.common.viewQuery, middleware, getViewQueryPage);
+  router.get(paths.common.viewLrQuery, middleware, getViewLrQueryPage);
   return router;
 }
 

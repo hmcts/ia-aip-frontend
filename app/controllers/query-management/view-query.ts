@@ -70,9 +70,9 @@ function convertQueriesToTableValues(queries: QmQuery[]) {
 }
 
 function getViewQueriesPage(req: Request, res: Response, next: NextFunction) {
-  const citizenQmQueries = req.session.appeal.qmCitizenQueries ? [...req.session.appeal?.qmCitizenQueries?.caseMessages] : [];
+  const citizenQmQueries = req.session.appeal?.qmCitizenQueries?.caseMessages ? [...req.session.appeal.qmCitizenQueries.caseMessages] : [];
   const citizenQueries: TableQmQuery[] = convertQueriesToTableValues(citizenQmQueries);
-  const legalRepQmQueries = req.session.appeal.qmLegalRepresentativeQueries ? [...req.session.appeal?.qmLegalRepresentativeQueries?.caseMessages] : [];
+  const legalRepQmQueries = req.session.appeal?.qmLegalRepresentativeQueries?.caseMessages ? [...req.session.appeal.qmLegalRepresentativeQueries.caseMessages] : [];
   const legalRepQueries: TableQmQuery[] = convertQueriesToTableValues(legalRepQmQueries);
   try {
     return res.render('query-management/view-queries.njk', {

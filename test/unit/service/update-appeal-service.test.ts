@@ -1380,6 +1380,9 @@ describe('update-appeal-service', () => {
               createdBy: 'John Smith',
               createdOn: '2026-01-01',
               messageType: 'question',
+              hearingDate: undefined,
+              isClosed: undefined,
+              parentId: undefined,
               isHearingRelated: true,
               attachments: [{
                 'value': {
@@ -1431,6 +1434,9 @@ describe('update-appeal-service', () => {
               createdOn: '2026-01-01',
               messageType: 'question',
               isHearingRelated: true,
+              hearingDate: undefined,
+              isClosed: undefined,
+              parentId: undefined,
               attachments: [{
                 'value': {
                   'document_binary_url': 'someurl/binary',

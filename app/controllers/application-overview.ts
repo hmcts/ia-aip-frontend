@@ -18,7 +18,7 @@ import Logger, { getLogLabel } from '../utils/logger';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
-import { hasActiveNlr, hasPendingTimeExtension, yesNoToBool } from '../utils/utils';
+import { deleteTemporaryQueryFields, hasActiveNlr, hasPendingTimeExtension, yesNoToBool } from '../utils/utils';
 import { ErrorCode } from './cases-list';
 
 const logger: Logger = new Logger();
@@ -202,11 +202,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const hasSponsor = application?.hasSponsor === 'Yes';
       const hasNlr = hasActiveNlr(req.session.appeal);
       const appealInProgress = isAppealInProgress(appealStatus, isCitizen);
-      delete (req.session.appeal.messageSubject);
-      delete (req.session.appeal.messageDetails);
-      delete (req.session.appeal.messageDocs);
-      delete (req.session.appeal.hearingDate);
-      delete (req.session.appeal.isHearingRelated);
+      deleteTemporaryQueryFields(req);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,

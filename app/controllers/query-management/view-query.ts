@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addDaysAndFormat, formatDate } from '../../utils/date-utils';
+import { deleteTemporaryQueryFields } from '../../utils/utils';
 
 function getParentQuery(queries: QmQuery[], query: QmQuery) {
   if (query.parentId) {
@@ -97,10 +98,7 @@ function formatQueryForView(query: QmQuery) {
 }
 
 function getViewQueryPage(req: Request, res: Response, next: NextFunction) {
-  delete (req.session.appeal.messageSubject);
-  delete (req.session.appeal.messageDetails);
-  delete (req.session.appeal.messageDocs);
-
+  deleteTemporaryQueryFields(req);
   const queryId = req.params.id;
   const queries = (req.session.appeal?.qmCitizenQueries?.caseMessages || []);
   const selectedParentQuery: QmQuery = formatQueryForView(queries.find(q => q.id === queryId));
@@ -117,7 +115,7 @@ function getViewQueryPage(req: Request, res: Response, next: NextFunction) {
     childrenQueries: childrenQueries,
     includeFollowUp: true,
     latestChildStatus: latestChildStatus,
-    followUpPath: paths.common.followUpQuery.replace(':id', selectedParentQuery.id)
+    followUpPath: paths.common.followUpQueryPermission.replace(':id', selectedParentQuery.id)
   };
   if (latestChildStatus === MessageStatus.CLOSED) {
     renderObj['closedQueryDate'] = latestChildQuery.createdOn;

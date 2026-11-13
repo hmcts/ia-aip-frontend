@@ -78,10 +78,12 @@ describe('fields-validations', () => {
   describe('gwfReferenceNumberValidation', () => {
     it('should validate a GWF reference number', () => {
       let validations = gwfReferenceNumberValidation({ gwfReferenceNumber: 'GWF123456789' });
-      expect(validations).to.equal(null);
+      expect(validations).to.be.null;
+      expect(validations || 'none').to.equal('none');
 
       validations = gwfReferenceNumberValidation({ gwfReferenceNumber: 'GWF12345678' });
-      expect(validations).to.equal(null);
+      expect(validations).to.be.null;
+      expect(validations || 'none').to.equal('none');
     });
 
     it('should fail validation and return empty warning message', () => {
@@ -112,14 +114,16 @@ describe('fields-validations', () => {
   describe('updatedHomeOfficeNumberValidation', () => {
     it('should validate a UAN', () => {
       const validations = updatedHomeOfficeNumberValidation({ homeOfficeRefNumber: '1212-0099-0089-1080' });
-      expect(validations).to.equal(null);
+      expect(validations).to.be.null;
+      expect(validations || 'none').to.equal('none');
     });
 
     const gwfReferences = ['GWF123456789', 'gwf123456789', 'Gwf123456789'];
     gwfReferences.forEach(gwfReference => {
       it('should validate a 9 digit GWF reference', () => {
         const validations = updatedHomeOfficeNumberValidation({ homeOfficeRefNumber: gwfReference });
-        expect(validations).to.equal(null);
+        expect(validations).to.be.null;
+        expect(validations || 'none').to.equal('none');
       });
     });
 
@@ -153,7 +157,8 @@ describe('fields-validations', () => {
     gwfReferences.forEach(gwfReference => {
       it('should validate a GWF reference number', () => {
         const validations = updatedGwfReferenceNumberValidation({ gwfReferenceNumber: gwfReference });
-        expect(validations).to.equal(null);
+        expect(validations).to.be.null;
+        expect(validations || 'none').to.equal('none');
       });
     });
 

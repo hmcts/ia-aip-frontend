@@ -13,7 +13,7 @@ function getParentQuery(queries: QmQuery[], query: QmQuery) {
 function getChildQuery(queries: QmQuery[], query: QmQuery) {
   const sortedChildren: QmQuery[] = getChildrenQueries(queries, query);
   if (sortedChildren.length > 0) {
-    return sortedChildren[sortedChildren.length - 1];
+    return sortedChildren.at(-1);
   }
   return query;
 }
@@ -106,7 +106,7 @@ function getViewQueryPage(req: Request, res: Response, next: NextFunction) {
   const selectedParentQuery: QmQuery = formatQueryForView(queries.find(q => q.id === queryId));
   const childrenQueries: QmQuery[] = getChildrenQueries(queries, selectedParentQuery)
     .map(query => formatQueryForView(query));
-  const latestChildQuery = childrenQueries.length > 0 ? childrenQueries[childrenQueries.length - 1] : selectedParentQuery;
+  const latestChildQuery = childrenQueries.length > 0 ? childrenQueries.at(-1) : selectedParentQuery;
   const latestChildStatus = getStatus(latestChildQuery);
   if (!selectedParentQuery) {
     return res.redirect(paths.common.viewQueries);
@@ -138,7 +138,7 @@ function getViewLrQueryPage(req: Request, res: Response, next: NextFunction) {
   const selectedParentQuery: QmQuery = formatQueryForView(queries.find(q => q.id === queryId));
   const childrenQueries: QmQuery[] = getChildrenQueries(queries, selectedParentQuery)
     .map(query => formatQueryForView(query));
-  const latestChildQuery = childrenQueries.length > 0 ? childrenQueries[childrenQueries.length - 1] : selectedParentQuery;
+  const latestChildQuery = childrenQueries.length > 0 ? childrenQueries.at(-1) : selectedParentQuery;
   const latestChildStatus = getStatus(latestChildQuery);
   if (!selectedParentQuery) {
     return res.redirect(paths.common.viewQueries);

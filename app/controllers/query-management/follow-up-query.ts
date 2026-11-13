@@ -30,7 +30,7 @@ function getFollowUpPermissionPage(req: Request, res: Response, next: NextFuncti
 }
 
 function postFollowUpPermissionPage() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     try {
       const parentId = req.params['id'];
       const validation = statementValidation(req.body, i18n.validationErrors.sendMessagePermissionStatement);
@@ -73,7 +73,7 @@ function getFollowUpPage(req: Request, res: Response, next: NextFunction) {
 }
 
 function postFollowUpPage() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     try {
       const parentId = req.params['id'];
       req.session.appeal.messageSubject = req.body?.[i18n.pages.sendMessage.subjectId];
@@ -102,7 +102,7 @@ function postFollowUpPage() {
 }
 
 function uploadFollowUpEvidence() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     try {
       req.session.appeal.messageSubject = req.body?.[i18n.pages.sendMessage.subjectId];
       req.session.appeal.messageDetails = req.body?.[i18n.pages.sendMessage.messageId];
@@ -125,7 +125,7 @@ function uploadFollowUpEvidence() {
 }
 
 function deleteFollowUpEvidence() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     try {
       const parentId = req.params['id'];
       if (req.query.id) {
@@ -210,7 +210,7 @@ function postFollowUpCya(updateAppealService: UpdateAppealService, documentManag
       const appeal: Appeal = {
         ...req.session.appeal
       };
-      if (req.session.appeal.qmCitizenQueries && req.session.appeal.qmCitizenQueries.caseMessages && req.session.appeal.qmCitizenQueries.caseMessages.length > 0) {
+      if (req.session.appeal?.qmCitizenQueries?.caseMessages?.length > 0) {
         appeal.qmCitizenQueries.caseMessages.push(qmQuery);
       } else {
         appeal.qmCitizenQueries = {

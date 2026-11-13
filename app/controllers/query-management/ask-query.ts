@@ -45,7 +45,7 @@ function postAskQueryPage(req: Request, res: Response, next: NextFunction) {
       });
     }
     const chosenCommonQueryValue = i18n.pages.askQuery.commonQueries
-      .find(query => query.value === req.body['queries']);
+      .some(query => query.value === req.body['queries']);
     if (chosenCommonQueryValue) {
       return res.redirect(`${paths.common.commonQueries}?queryValue=${req.body['queries']}`);
     } else {
@@ -84,7 +84,7 @@ function getSendMessagePermissionPage(req: Request, res: Response, next: NextFun
 }
 
 function postSendMessagePermissionPage() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     try {
       const validation = statementValidation(req.body, i18n.validationErrors.sendMessagePermissionStatement);
       if (validation) {
@@ -127,7 +127,7 @@ function getSendMessagePage(req: Request, res: Response, next: NextFunction) {
 }
 
 function postSendMessagePage() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     try {
       req.session.appeal.messageSubject = req.body?.[i18n.pages.sendMessage.subjectId];
       req.session.appeal.messageDetails = req.body?.[i18n.pages.sendMessage.messageId];
@@ -174,7 +174,7 @@ function postSendMessagePage() {
 }
 
 function uploadSendMessageEvidence() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     try {
       req.session.appeal.messageSubject = req.body?.[i18n.pages.sendMessage.subjectId];
       req.session.appeal.messageDetails = req.body?.[i18n.pages.sendMessage.messageId];
@@ -199,7 +199,7 @@ function uploadSendMessageEvidence() {
 }
 
 function deleteSendMessageEvidence() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.query.id) {
         const messageDocs: MulterFile[] = req.session.appeal.messageDocs ? [...req.session.appeal.messageDocs] : [];
@@ -258,7 +258,7 @@ function buildSummaryRows(req: Request): SummaryRow[] {
     const hearingDate: AppealDate = req.session.appeal.hearingDate;
     summaryRows.push(addSummaryRow(
       i18n.pages.sendMessage.isHearingRelated.dateCya,
-      [hearingDate.day, moment.months(parseInt(hearingDate.month, 10) - 1), hearingDate.year],
+      [hearingDate.day, moment.months(Number.parseInt(hearingDate.month, 10) - 1), hearingDate.year],
       paths.common.sendMessage,
       Delimiter.SPACE));
   }
@@ -298,7 +298,7 @@ function postSendMessageCya(updateAppealService: UpdateAppealService, documentMa
       const appeal: Appeal = {
         ...req.session.appeal
       };
-      if (req.session.appeal.qmCitizenQueries && req.session.appeal.qmCitizenQueries.caseMessages && req.session.appeal.qmCitizenQueries.caseMessages.length > 0) {
+      if (req.session.appeal?.qmCitizenQueries?.caseMessages?.length > 0) {
         appeal.qmCitizenQueries.caseMessages.push(qmQuery);
       } else {
         appeal.qmCitizenQueries = {

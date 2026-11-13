@@ -4,7 +4,7 @@ import cache from '../../cache';
 const workerThreads = require('node:worker_threads');
 
 export async function setupLoginRedirect(server: Mockttp) {
-  await server.forPost('/login').thenCallback(async (request: CompletedRequest) => {
+  await server.forPost('/o/authorize').thenCallback(async (request: CompletedRequest) => {
     const rawBody = request.body;
 
     const text = await rawBody.getText();

@@ -31,24 +31,22 @@ function getFollowUpPermissionPage(req: Request, res: Response, next: NextFuncti
   }
 }
 
-function postFollowUpPermissionPage() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const parentId = req.params['id'];
-      const validation = statementValidation(req.body, i18n.validationErrors.sendMessagePermissionStatement);
-      if (validation) {
-        return res.render('query-management/send-message-permission.njk', {
-          previousPage: getQueryPath(paths.common.viewQuery, parentId),
-          error: validation,
-          errorList: Object.values(validation)
-        });
-      }
-
-      return res.redirect(getQueryPath(paths.common.followUpQuery, parentId));
-    } catch (error) {
-      next(error);
+function postFollowUpPermissionPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    const parentId = req.params['id'];
+    const validation = statementValidation(req.body, i18n.validationErrors.sendMessagePermissionStatement);
+    if (validation) {
+      return res.render('query-management/send-message-permission.njk', {
+        previousPage: getQueryPath(paths.common.viewQuery, parentId),
+        error: validation,
+        errorList: Object.values(validation)
+      });
     }
-  };
+
+    return res.redirect(getQueryPath(paths.common.followUpQuery, parentId));
+  } catch (error) {
+    next(error);
+  }
 }
 
 function getFollowUpPage(req: Request, res: Response, next: NextFunction) {
@@ -74,45 +72,30 @@ function getFollowUpPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postFollowUpPage() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const isFollowUpMessage: boolean = Object.keys(req.params).includes('id');
-      setMessageDetailsFromBody(req, !isFollowUpMessage);
-      const parentId = req.params['id'];
-      const validation: ValidationErrors = followUpQueryValidation(req.body);
-      if (validation) {
-        return res.render('query-management/send-message.njk', {
-          previousPage: getQueryPath(paths.common.followUpQueryPermission, parentId),
-          title: i18n.pages.followUpQueryTitle,
-          subject: req.body?.[i18n.pages.sendMessage.subjectId],
-          details: req.body?.[i18n.pages.sendMessage.messageId],
-          evidenceUploadAction: getQueryPath(paths.common.followUpQueryUpload, parentId),
-          evidences: req.session.appeal?.messageDocs || [],
-          evidenceCTA: getQueryPath(paths.common.followUpQueryDelete, parentId),
-          shouldAskAboutHearing: false,
-          formAction: getQueryPath(paths.common.followUpQuery, parentId),
-          errors: validation,
-          errorList: Object.values(validation)
-        });
-      }
-      return res.redirect(getQueryPath(paths.common.followUpQueryCya, parentId));
-    } catch (e) {
-      next(e);
+function postFollowUpPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    setMessageDetailsFromBody(req, false);
+    const parentId = req.params['id'];
+    const validation: ValidationErrors = followUpQueryValidation(req.body);
+    if (validation) {
+      return res.render('query-management/send-message.njk', {
+        previousPage: getQueryPath(paths.common.followUpQueryPermission, parentId),
+        title: i18n.pages.followUpQueryTitle,
+        subject: req.body?.[i18n.pages.sendMessage.subjectId],
+        details: req.body?.[i18n.pages.sendMessage.messageId],
+        evidenceUploadAction: getQueryPath(paths.common.followUpQueryUpload, parentId),
+        evidences: req.session.appeal?.messageDocs || [],
+        evidenceCTA: getQueryPath(paths.common.followUpQueryDelete, parentId),
+        shouldAskAboutHearing: false,
+        formAction: getQueryPath(paths.common.followUpQuery, parentId),
+        errors: validation,
+        errorList: Object.values(validation)
+      });
     }
-  };
-}
-
-function uploadFollowUpEvidence() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    return uploadEvidence(req, res, next);
-  };
-}
-
-function deleteFollowUpEvidence() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    return deleteEvidence(req, res, next);
-  };
+    return res.redirect(getQueryPath(paths.common.followUpQueryCya, parentId));
+  } catch (e) {
+    next(e);
+  }
 }
 
 function getFollowUpCya(req: Request, res: Response, next: NextFunction) {
@@ -156,7 +139,7 @@ function buildSummaryRows(req: Request): SummaryRow[] {
   return summaryRows;
 }
 
-function postFollowUpCya(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
+function postFollowUpCya(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService, postQueryFn = postQuery) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const parentId = req.params['id'];
@@ -165,7 +148,7 @@ function postFollowUpCya(updateAppealService: UpdateAppealService, documentManag
         parentId: parentId
       };
 
-      await postQuery(req, specificQmFieldsToAdd, documentManagementService, updateAppealService);
+      await postQueryFn(req, specificQmFieldsToAdd, documentManagementService, updateAppealService);
 
       return res.redirect(getQueryPath(paths.common.followUpQueryConfirmation, parentId));
     } catch (e) {
@@ -176,7 +159,7 @@ function postFollowUpCya(updateAppealService: UpdateAppealService, documentManag
 
 function getFollowUpConfirmation(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('templates/confirmation-page.njk', {
+    return res.render('templates/confirmation-page.njk', {
       title: i18n.pages.sendMessageConfirmation.title,
       whatNextListItems: i18n.pages.sendMessageConfirmation.whatNextListItems,
       date: addDaysToDate(10)
@@ -189,11 +172,11 @@ function getFollowUpConfirmation(req: Request, res: Response, next: NextFunction
 function setupFollowUpQueryController(middleware: Middleware[], updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.common.followUpQueryPermission, middleware, getFollowUpPermissionPage);
-  router.post(paths.common.followUpQueryPermission, middleware, postFollowUpPermissionPage());
+  router.post(paths.common.followUpQueryPermission, middleware, postFollowUpPermissionPage);
   router.get(paths.common.followUpQuery, middleware, getFollowUpPage);
-  router.post(paths.common.followUpQueryUpload, middleware, uploadFollowUpEvidence());
-  router.get(paths.common.followUpQueryDelete, middleware, deleteFollowUpEvidence());
-  router.post(paths.common.followUpQuery, middleware, postFollowUpPage());
+  router.post(paths.common.followUpQueryUpload, middleware, uploadEvidence);
+  router.get(paths.common.followUpQueryDelete, middleware, deleteEvidence);
+  router.post(paths.common.followUpQuery, middleware, postFollowUpPage);
   router.get(paths.common.followUpQueryCya, middleware, getFollowUpCya);
   router.post(paths.common.followUpQueryCya, middleware, postFollowUpCya(updateAppealService, documentManagementService));
   router.get(paths.common.followUpQueryConfirmation, middleware, getFollowUpConfirmation);

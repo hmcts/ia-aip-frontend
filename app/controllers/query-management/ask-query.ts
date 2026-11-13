@@ -79,23 +79,21 @@ function getSendMessagePermissionPage(req: Request, res: Response, next: NextFun
   }
 }
 
-function postSendMessagePermissionPage() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const validation = statementValidation(req.body, i18n.validationErrors.sendMessagePermissionStatement);
-      if (validation) {
-        return res.render('query-management/send-message-permission.njk', {
-          previousPage: paths.common.askQuery,
-          error: validation,
-          errorList: Object.values(validation)
-        });
-      }
-
-      return res.redirect(paths.common.sendMessage);
-    } catch (error) {
-      next(error);
+function postSendMessagePermissionPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    const validation = statementValidation(req.body, i18n.validationErrors.sendMessagePermissionStatement);
+    if (validation) {
+      return res.render('query-management/send-message-permission.njk', {
+        previousPage: paths.common.askQuery,
+        error: validation,
+        errorList: Object.values(validation)
+      });
     }
-  };
+
+    return res.redirect(paths.common.sendMessage);
+  } catch (error) {
+    next(error);
+  }
 }
 
 function getSendMessagePage(req: Request, res: Response, next: NextFunction) {
@@ -122,61 +120,46 @@ function getSendMessagePage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postSendMessagePage() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const isFollowUpMessage: boolean = Object.keys(req.params).includes('id');
-      setMessageDetailsFromBody(req, !isFollowUpMessage);
-      let validation: ValidationErrors = messageSendValidation(req.body);
-      if (req.body?.['isHearingRelated'] == 'Yes') {
-        const dateValidation: ValidationErrors = futureDateValidation(req.body);
-        if (validation || dateValidation) {
-          validation = { ...validation, ...dateValidation };
-        }
+function postSendMessagePage(req: Request, res: Response, next: NextFunction) {
+  try {
+    setMessageDetailsFromBody(req, true);
+    let validation: ValidationErrors = messageSendValidation(req.body);
+    if (req.body?.['isHearingRelated'] == 'Yes') {
+      const dateValidation: ValidationErrors = futureDateValidation(req.body);
+      if (validation || dateValidation) {
+        validation = { ...validation, ...dateValidation };
       }
-      if (validation) {
-        const hearingDateKeys = ['isHearingRelated', 'date', 'day', 'month', 'year'];
-        let hearingErrorMessage: string;
-        for (const key of hearingDateKeys) {
-          if (validation[key]) {
-            hearingErrorMessage = validation[key].text;
-            break;
-          }
-        }
-        return res.render('query-management/send-message.njk', {
-          previousPage: paths.common.sendMessagePermission,
-          title: i18n.pages.sendMessage.title,
-          subject: req.body?.[i18n.pages.sendMessage.subjectId],
-          details: req.body?.[i18n.pages.sendMessage.messageId],
-          evidenceUploadAction: paths.common.sendMessageUpload,
-          evidences: req.session.appeal?.messageDocs || [],
-          evidenceCTA: paths.common.sendMessageDelete,
-          shouldAskAboutHearing: true,
-          isHearingRelated: req.session.appeal?.isHearingRelated,
-          hearingDate: req.session.appeal?.hearingDate,
-          hearingErrorMessage: hearingErrorMessage,
-          formAction: paths.common.sendMessage,
-          errors: validation,
-          errorList: Object.values(validation)
-        });
-      }
-      return res.redirect(paths.common.sendMessageCya);
-    } catch (e) {
-      next(e);
     }
-  };
-}
-
-function uploadSendMessageEvidence() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    return uploadEvidence(req, res, next);
-  };
-}
-
-function deleteSendMessageEvidence() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    return deleteEvidence(req, res, next);
-  };
+    if (validation) {
+      const hearingDateKeys = ['isHearingRelated', 'date', 'day', 'month', 'year'];
+      let hearingErrorMessage: string;
+      for (const key of hearingDateKeys) {
+        if (validation[key]) {
+          hearingErrorMessage = validation[key].text;
+          break;
+        }
+      }
+      return res.render('query-management/send-message.njk', {
+        previousPage: paths.common.sendMessagePermission,
+        title: i18n.pages.sendMessage.title,
+        subject: req.body?.[i18n.pages.sendMessage.subjectId],
+        details: req.body?.[i18n.pages.sendMessage.messageId],
+        evidenceUploadAction: paths.common.sendMessageUpload,
+        evidences: req.session.appeal?.messageDocs || [],
+        evidenceCTA: paths.common.sendMessageDelete,
+        shouldAskAboutHearing: true,
+        isHearingRelated: req.session.appeal?.isHearingRelated,
+        hearingDate: req.session.appeal?.hearingDate,
+        hearingErrorMessage: hearingErrorMessage,
+        formAction: paths.common.sendMessage,
+        errors: validation,
+        errorList: Object.values(validation)
+      });
+    }
+    return res.redirect(paths.common.sendMessageCya);
+  } catch (e) {
+    next(e);
+  }
 }
 
 function getSendMessageCya(req: Request, res: Response, next: NextFunction) {
@@ -225,7 +208,7 @@ function buildSummaryRows(req: Request): SummaryRow[] {
       Delimiter.SPACE));
   }
 
-  if (req.session.appeal?.messageDocs && req.session.appeal?.messageDocs.length > 0) {
+  if (req.session.appeal?.messageDocs?.length > 0) {
     const evidenceText = req.session.appeal.messageDocs.map((evidence) => evidence.originalname);
     summaryRows.push(addSummaryRow(i18n.pages.sendMessage.uploadDocsCya, evidenceText, paths.common.sendMessage, Delimiter.BREAK_LINE));
   }
@@ -233,7 +216,7 @@ function buildSummaryRows(req: Request): SummaryRow[] {
   return summaryRows;
 }
 
-function postSendMessageCya(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
+function postSendMessageCya(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService, postQueryFn = postQuery) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const specificQmFieldsToAdd: QmQuery = {
@@ -244,7 +227,7 @@ function postSendMessageCya(updateAppealService: UpdateAppealService, documentMa
         specificQmFieldsToAdd.hearingDate = toIsoDate(req.session.appeal.hearingDate);
       }
 
-      await postQuery(req, specificQmFieldsToAdd, documentManagementService, updateAppealService);
+      await postQueryFn(req, specificQmFieldsToAdd, documentManagementService, updateAppealService);
 
       return res.redirect(paths.common.sendMessageConfirmation);
     } catch (e) {
@@ -255,7 +238,7 @@ function postSendMessageCya(updateAppealService: UpdateAppealService, documentMa
 
 function getSendMessageConfirmation(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('templates/confirmation-page.njk', {
+    return res.render('templates/confirmation-page.njk', {
       title: i18n.pages.sendMessageConfirmation.title,
       whatNextListItems: i18n.pages.sendMessageConfirmation.whatNextListItems,
       date: addDaysToDate(10)
@@ -271,11 +254,11 @@ function setupAskQueryController(middleware: Middleware[], updateAppealService: 
   router.post(paths.common.askQuery, middleware, postAskQueryPage);
   router.get(paths.common.commonQueries, middleware, getCommonQueryPage);
   router.get(paths.common.sendMessagePermission, middleware, getSendMessagePermissionPage);
-  router.post(paths.common.sendMessagePermission, middleware, postSendMessagePermissionPage());
+  router.post(paths.common.sendMessagePermission, middleware, postSendMessagePermissionPage);
   router.get(paths.common.sendMessage, middleware, getSendMessagePage);
-  router.post(paths.common.sendMessageUpload, middleware, uploadSendMessageEvidence());
-  router.get(paths.common.sendMessageDelete, middleware, deleteSendMessageEvidence());
-  router.post(paths.common.sendMessage, middleware, postSendMessagePage());
+  router.post(paths.common.sendMessageUpload, middleware, uploadEvidence);
+  router.get(paths.common.sendMessageDelete, middleware, deleteEvidence);
+  router.post(paths.common.sendMessage, middleware, postSendMessagePage);
   router.get(paths.common.sendMessageCya, middleware, getSendMessageCya);
   router.post(paths.common.sendMessageCya, middleware, postSendMessageCya(updateAppealService, documentManagementService));
   router.get(paths.common.sendMessageConfirmation, middleware, getSendMessageConfirmation);
@@ -283,5 +266,16 @@ function setupAskQueryController(middleware: Middleware[], updateAppealService: 
 }
 
 export {
+  getAskQueryPage,
+  postAskQueryPage,
+  getCommonQueryPage,
+  getSendMessagePermissionPage,
+  postSendMessagePermissionPage,
+  getSendMessagePage,
+  postSendMessagePage,
+  getSendMessageCya,
+  buildSummaryRows,
+  postSendMessageCya,
+  getSendMessageConfirmation,
   setupAskQueryController
 };

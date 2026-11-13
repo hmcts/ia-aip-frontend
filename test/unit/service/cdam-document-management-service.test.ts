@@ -9,7 +9,7 @@ import {
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
 import Logger from '../../../app/utils/logger';
-import { expect, sinon, validateUuid } from '../../utils/testUtils';
+import { expect, makeFileMock, sinon, validateUuid } from '../../utils/testUtils';
 
 const config = require('config');
 
@@ -273,18 +273,3 @@ describe('cdam-document-management-service', () => {
     });
   });
 });
-
-function makeFileMock(suffix: string) {
-  return {
-    fieldname: `file${suffix}`,
-    originalname: `file${suffix}.pdf`,
-    encoding: '7bit',
-    mimetype: 'text/plain',
-    size: 4,
-    buffer: Buffer.from(`test${suffix}`),
-    stream: {} as any,
-    destination: '',
-    filename: '',
-    path: ''
-  };
-}

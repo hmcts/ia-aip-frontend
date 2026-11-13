@@ -7,7 +7,7 @@ const dayMonthYearFormat = 'DD MMMM YYYY';
 const timeFormat = 'h:mm a';
 const dateTimeFormat = 'DD MMMM YYYY HH:mm';
 
-export const addDaysToDate = (days: number) => {
+const addDaysToDate = (days: number) => {
   return moment().add(days, 'days').format(dayMonthYearFormat);
 };
 
@@ -28,6 +28,7 @@ const addDaysAndFormat = (date: string, days: number, shouldStrictFormat?: boole
 };
 
 export {
+  addDaysToDate,
   dayMonthYearFormat,
   formatDate,
   addDaysAndFormat,

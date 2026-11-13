@@ -708,7 +708,7 @@ function isDateInRange(dateFrom: string, dateTo: string, obj, dateMissingErrMsg:
   return validate(toValidate, schema, true);
 }
 
-function futureDateValidation(obj): ValidationErrors {
+function futureDateValidation(obj: any): ValidationErrors {
   const { year, month, day } = obj;
   const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
     moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';

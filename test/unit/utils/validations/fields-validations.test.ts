@@ -6,7 +6,7 @@ import {
   dateValidation,
   deportationOrderOptionsValidation,
   DOBValidation,
-  emailValidation,
+  emailValidation, followUpQueryValidation, futureDateValidation,
   gwfReferenceNumberValidation,
   helpWithFeesRefNumberValidation,
   helpWithFeesValidation,
@@ -15,7 +15,8 @@ import {
   interpreterSupportSelectionValidation,
   interpreterTypesSelectionValidation,
   isDateInRange,
-  joinAppealValidation, nlrStatementValidation, nonLegalRepContactDetailsValidation, nonLegalRepPhoneValidation,
+  joinAppealValidation,
+  messageSendValidation, nlrStatementValidation, nonLegalRepContactDetailsValidation, nonLegalRepPhoneValidation,
   postcodeValidation,
   reasonForAppealDecisionValidation,
   remissionOptionsValidation,
@@ -46,20 +47,17 @@ describe('fields-validations', () => {
   describe('homeOfficeNumberValidation', () => {
     it('should validate a UAN', () => {
       const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: '1212-0099-0089-1080' });
-      expect(validations).to.be.null;
-      expect(validations || 'none').to.equal('none');
+      expectToBeNull(validations);
     });
 
     it('should validate a 9 digit CID reference', () => {
       const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: '121210801' });
-      expect(validations).to.be.null;
-      expect(validations || 'none').to.equal('none');
+      expectToBeNull(validations);
     });
 
     it('should validate an 8 digit CID reference', () => {
       const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: '12121080' });
-      expect(validations).to.be.null;
-      expect(validations || 'none').to.equal('none');
+      expectToBeNull(validations);
     });
 
     it('should fail validation and return empty warning message', () => {
@@ -78,12 +76,10 @@ describe('fields-validations', () => {
   describe('gwfReferenceNumberValidation', () => {
     it('should validate a GWF reference number', () => {
       let validations = gwfReferenceNumberValidation({ gwfReferenceNumber: 'GWF123456789' });
-      expect(validations).to.be.null;
-      expect(validations || 'none').to.equal('none');
+      expectToBeNull(validations);
 
       validations = gwfReferenceNumberValidation({ gwfReferenceNumber: 'GWF12345678' });
-      expect(validations).to.be.null;
-      expect(validations || 'none').to.equal('none');
+      expectToBeNull(validations);
     });
 
     it('should fail validation and return empty warning message', () => {
@@ -114,16 +110,14 @@ describe('fields-validations', () => {
   describe('updatedHomeOfficeNumberValidation', () => {
     it('should validate a UAN', () => {
       const validations = updatedHomeOfficeNumberValidation({ homeOfficeRefNumber: '1212-0099-0089-1080' });
-      expect(validations).to.be.null;
-      expect(validations || 'none').to.equal('none');
+      expectToBeNull(validations);
     });
 
     const gwfReferences = ['GWF123456789', 'gwf123456789', 'Gwf123456789'];
     gwfReferences.forEach(gwfReference => {
       it('should validate a 9 digit GWF reference', () => {
         const validations = updatedHomeOfficeNumberValidation({ homeOfficeRefNumber: gwfReference });
-        expect(validations).to.be.null;
-        expect(validations || 'none').to.equal('none');
+      expectToBeNull(validations);
       });
     });
 
@@ -157,8 +151,8 @@ describe('fields-validations', () => {
     gwfReferences.forEach(gwfReference => {
       it('should validate a GWF reference number', () => {
         const validations = updatedGwfReferenceNumberValidation({ gwfReferenceNumber: gwfReference });
-        expect(validations).to.be.null;
-        expect(validations || 'none').to.equal('none');
+        expectToBeNull(validations);
+
       });
     });
 
@@ -202,8 +196,7 @@ describe('fields-validations', () => {
     it('should validate', () => {
       const validDate = { day: '1', month: '1', year: '2000' };
       const validations = dateValidation(validDate, errors);
-      expect(validations).to.be.null;
-      expect(validations || 'none').to.equal('none');
+      expectToBeNull(validations);
     });
 
     it('fields cannot be empty', () => {
@@ -335,8 +328,7 @@ describe('fields-validations', () => {
     it('can have fields that are not part of date', () => {
       const validDate = { day: '1', month: '1', year: '2000', saveAndContiune: 'saveAndContiune' };
       const validations = dateValidation(validDate, errors);
-      expect(validations).to.be.null;
-      expect(validations || 'none').to.equal('none');
+      expectToBeNull(validations);
     });
 
     it('date is empty ', () => {
@@ -353,8 +345,7 @@ describe('fields-validations', () => {
   describe('appellantNameValidation', () => {
     it('should validate a name', () => {
       const validationResult = appellantNamesValidation({ givenNames: 'givenNames', familyName: 'familyName' });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
     });
 
     it('should fail validation when given names is blank', () => {
@@ -384,8 +375,8 @@ describe('fields-validations', () => {
     it('should validate an email Address', () => {
       const object = { 'email-value': 'alejandro@exmple.net' };
       const validationResult = emailValidation(object);
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should fail email validation and return "string.empty" type', () => {
@@ -436,8 +427,7 @@ describe('fields-validations', () => {
       const key: string = 'aKey';
       const validations = textAreaValidation(text, key);
 
-      expect(validations).to.be.null;
-      expect(validations || 'none').to.equal('none');
+      expectToBeNull(validations);
     });
 
     it('should fail validation', () => {
@@ -461,8 +451,8 @@ describe('fields-validations', () => {
     it('should validate if statement present', () => {
       const object = { 'statement': 'acceptance' };
       const validationResult = statementOfTruthValidation(object);
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should fail validation and return "any.required" type', () => {
@@ -484,8 +474,8 @@ describe('fields-validations', () => {
     it('should validate if statement present', () => {
       const object = { 'statement': 'acceptance' };
       const validationResult = statementValidation(object, 'error message');
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should fail validation and return "any.required" type', () => {
@@ -506,8 +496,8 @@ describe('fields-validations', () => {
     it('should validate if statement present', () => {
       const object = { 'nlrStatement': 'acceptance' };
       const validationResult = nlrStatementValidation(object);
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should fail validation and return "any.required" type', () => {
@@ -558,8 +548,8 @@ describe('fields-validations', () => {
 
     it('should pass validation when an email is entered', () => {
       const validationResult = contactDetailsValidation({ contactDetails: 'email', 'email-value': 'foo@bar.com' });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should fail validation if no mobile phone number entered entered', () => {
@@ -588,8 +578,8 @@ describe('fields-validations', () => {
         contactDetails: 'text-message',
         'text-message-value': '07899999999'
       });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should pass validation when an international mobile phone number is entered', () => {
@@ -636,8 +626,8 @@ describe('fields-validations', () => {
         'email-value': 'foo@bar.com',
         'text-message-value': '07899999999'
       });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should pass validation when an invalid email entered but only text-message selected', () => {
@@ -646,8 +636,8 @@ describe('fields-validations', () => {
         'email-value': 'invalid',
         'text-message-value': '07899999999'
       });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should pass validation when an invalid mobile number entered but only email selected', () => {
@@ -656,8 +646,8 @@ describe('fields-validations', () => {
         'email-value': 'foo@bar.com',
         'text-message-value': 'invalid'
       });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should fail validation when an email and mobile phone number are not entered', () => {
@@ -790,8 +780,8 @@ describe('fields-validations', () => {
         sponsorContactDetails: 'email',
         'email-value': 'foo@bar.com'
       });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should fail validation if no mobile phone number entered entered', () => {
@@ -841,8 +831,8 @@ describe('fields-validations', () => {
         sponsorContactDetails: 'text-message',
         'text-message-value': '07899999999'
       });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should fail validation when an international mobile phone number is entered', () => {
@@ -886,8 +876,8 @@ describe('fields-validations', () => {
         'email-value': 'foo@bar.com',
         'text-message-value': '07899999999'
       });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should pass validation when an invalid email entered but only text-message selected', () => {
@@ -896,8 +886,8 @@ describe('fields-validations', () => {
         'email-value': 'invalid',
         'text-message-value': '07899999999'
       });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should pass validation when an invalid mobile number entered but only email selected', () => {
@@ -906,8 +896,8 @@ describe('fields-validations', () => {
         'email-value': 'foo@bar.com',
         'text-message-value': 'invalid'
       });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should fail validation when an email and mobile phone number are not entered', () => {
@@ -949,8 +939,8 @@ describe('fields-validations', () => {
     it('no error if yes selected', () => {
       const validationResult = yesOrNoRequiredValidation({ answer: 'yes' }, 'error message');
 
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('error if yes on no not selected', () => {
@@ -969,8 +959,8 @@ describe('fields-validations', () => {
     it('should validate if statement present', () => {
       const object = { 'applicationReason': 'some reason text here' };
       const validationResult = reasonForAppealDecisionValidation(object);
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
+      
     });
 
     it('should fail validation and return "string.empty" type', () => {
@@ -1037,8 +1027,7 @@ describe('fields-validations', () => {
     it('should validate', () => {
       const validDate = { day: '1', month: '1', year: '2020' };
       const validations = isDateInRange('1-1-2019', '1-1-2021', validDate, dateMissingErrorMsg);
-      expect(validations).to.be.null;
-      expect(validations || 'none').to.equal('none');
+      expectToBeNull(validations);
     });
 
     it('fields cannot be empty', () => {
@@ -1137,9 +1126,7 @@ describe('fields-validations', () => {
       const validDate = { day: '1', month: '6', year: '2020' };
       validations = isDateInRange('1-1-2019', '1-1-2021', validDate, dateMissingErrorMsg);
 
-      expect(validations).to.be.null;
-      expect(validations || 'none').to.equal('none');
-
+      expectToBeNull(validations);
     });
   });
 
@@ -1147,8 +1134,7 @@ describe('fields-validations', () => {
     it('should validate if remission option present', () => {
       const object = { 'answer': 'asylumSupportFromHo' };
       const validationResult = remissionOptionsValidation(object);
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
     });
 
     it('should fail validation and return "string.empty if remission option is not selected" ', () => {
@@ -1180,15 +1166,7 @@ describe('fields-validations', () => {
     it('should validate if asylum support ref number is present" ', () => {
       const object = { 'asylumSupportRefNumber': 'test' };
       const validationResult = asylumSupportValidation(object);
-      const expectedResponse = {
-        asylumSupportRefNumber: {
-          href: '#asylumSupportRefNumber',
-          key: 'asylumSupportRefNumber',
-          text: 'Enter your asylum support reference number'
-        }
-      };
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
     });
 
     it('should fail validation and return "string.empty if fees option is not selected" ', () => {
@@ -1263,8 +1241,7 @@ describe('fields-validations', () => {
   describe('interpreterSupportSelectionValidation', () => {
     it('should validate interpreter support selection', () => {
       const validationResult = interpreterSupportSelectionValidation({ selections: 'isInterpreterServicesNeeded' });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
     });
 
     it('should fail validate when selection is blank', () => {
@@ -1282,8 +1259,7 @@ describe('fields-validations', () => {
   describe('witenessesInterpreterNeedsValidation', () => {
     it('should validate witness selection', () => {
       const validationResult = witenessesInterpreterNeedsValidation({ selections: 'witness 1' });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
     });
 
     it('should fail validate when selection is blank', () => {
@@ -1301,8 +1277,7 @@ describe('fields-validations', () => {
   describe('interpreterTypesSelectionValidation', () => {
     it('should validate interpreter type selection', () => {
       const validationResult = interpreterTypesSelectionValidation({ selections: 'spokenLanguageInterpreter' });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
     });
 
     it('should fail validate when selection is blank', () => {
@@ -1369,8 +1344,7 @@ describe('fields-validations', () => {
         languageManualEntryDescription: 'language',
         languageRefData: ''
       });
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
     });
   });
 
@@ -1394,8 +1368,7 @@ describe('fields-validations', () => {
         joinAppealAccessCode: 'someAccessCode'
       };
       const validationResult = joinAppealValidation(object);
-      expect(validationResult).to.be.null;
-      expect(validationResult || 'none').to.equal('none');
+      expectToBeNull(validationResult);
     });
 
     it('should fail validation if reference empty and return "string.empty" type', () => {
@@ -1636,9 +1609,219 @@ describe('fields-validations', () => {
       expect(validationResult).to.deep.equal(expectedResponse);
     });
 
+    it('should fail validation on empty value', () => {
+      const validationResult = askQueryValidation({ queries: '' });
+      const expectedResponse = {
+        'queries': {
+          'key': 'queries',
+          'text': '"queries" is not allowed to be empty',
+          'href': '#queries'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
     it('should pass validation if some value given', () => {
       const validationResult = askQueryValidation({ queries: 'anything' });
-      expect(validationResult).to.equal(null);
+      expectToBeNull(validationResult);
     });
   });
+
+  describe('messageSendValidation', () => {
+    it('should validate message send fields', () => {
+      const validationResult = messageSendValidation({ messageSubject: 'givenNames', messageDetails: 'familyName', isHearingRelated: 'Yes' });
+      expectToBeNull(validationResult);
+    });
+
+    it('should fail validation message send fields when empty', () => {
+      const validationResult = messageSendValidation({ messageSubject: '', messageDetails: '', isHearingRelated: '' });
+      expect(validationResult).to.deep.equal({
+        'isHearingRelated': {
+          'href': '#isHearingRelated',
+          'key': 'isHearingRelated',
+          'text': '"isHearingRelated" is not allowed to be empty'
+        },
+        'messageDetails': {
+          'href': '#messageDetails',
+          'key': 'messageDetails',
+          'text': 'Please enter message details'
+        },
+        'messageSubject': {
+          'href': '#messageSubject',
+          'key': 'messageSubject',
+          'text': 'Please enter a message subject'
+        }
+      });
+    });
+
+    it('should fail validation message send fields when null', () => {
+      const validationResult = messageSendValidation({});
+      expect(validationResult).to.deep.equal({
+        'isHearingRelated': {
+          'href': '#isHearingRelated',
+          'key': 'isHearingRelated',
+          'text': 'Please select Yes if this query is related to a hearing'
+        },
+        'messageDetails': {
+          'href': '#messageDetails',
+          'key': 'messageDetails',
+          'text': '"messageDetails" is required'
+        },
+        'messageSubject': {
+          'href': '#messageSubject',
+          'key': 'messageSubject',
+          'text': '"messageSubject" is required'
+        }
+      });
+    });
+  });
+
+  describe('followUpQueryValidation', () => {
+    it('should validate message send fields', () => {
+      const validationResult = followUpQueryValidation({ messageSubject: 'givenNames', messageDetails: 'familyName'});
+      expectToBeNull(validationResult);
+    });
+
+    it('should fail validation message send fields when empty', () => {
+      const validationResult = followUpQueryValidation({ messageSubject: '', messageDetails: '' });
+      expect(validationResult).to.deep.equal({
+        'messageDetails': {
+          'href': '#messageDetails',
+          'key': 'messageDetails',
+          'text': 'Please enter message details'
+        },
+        'messageSubject': {
+          'href': '#messageSubject',
+          'key': 'messageSubject',
+          'text': 'Please enter a message subject'
+        }
+      });
+    });
+
+    it('should fail validation message send fields when null', () => {
+      const validationResult = followUpQueryValidation({});
+      expect(validationResult).to.deep.equal({
+        'messageDetails': {
+          'href': '#messageDetails',
+          'key': 'messageDetails',
+          'text': '"messageDetails" is required'
+        },
+        'messageSubject': {
+          'href': '#messageSubject',
+          'key': 'messageSubject',
+          'text': '"messageSubject" is required'
+        }
+      });
+    });
+  });
+
+  describe('futureDateValidation', () => {
+    let sandbox: sinon.SinonSandbox;
+    let clock: sinon.SinonFakeTimers;
+    beforeEach(() => {
+      sandbox = sinon.createSandbox();
+      clock = sandbox.useFakeTimers(new Date('2025-06-15'));
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+      clock.restore();
+    });
+    it('should validate', () => {
+      const validDate = { day: '1', month: '1', year: '2026' };
+      const validations = futureDateValidation(validDate);
+      expectToBeNull(validations);
+    });
+
+    it('fields cannot be empty', () => {
+      let notValidDate = { day: '', month: '', year: '' };
+      let validations = futureDateValidation(notValidDate);
+
+      const expectedError = 'Please enter the date of your hearing';
+      expect(validations).to.deep.equal({
+        day: createError('day', expectedError)
+      });
+
+      notValidDate = { day: '1', month: '', year: '' };
+      validations = futureDateValidation(notValidDate);
+
+      expect(validations).to.deep.equal({
+        month: createError('month', expectedError)
+      });
+
+      notValidDate = { day: '1', month: '1', year: '' };
+      validations = futureDateValidation(notValidDate);
+
+      expect(validations).to.deep.equal({
+        year: createError('year', expectedError)
+      });
+    });
+
+    it('fields must be numbers', () => {
+      let notValidDate = { day: 'a', month: 'b', year: 'c' };
+      const expectedError = i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat;
+      let validations = futureDateValidation(notValidDate);
+
+      expect(validations).to.deep.equal(
+        {
+          day: createError('day', expectedError)
+        });
+
+      notValidDate = { day: '2', month: 'b', year: 'c' };
+      validations = futureDateValidation(notValidDate);
+
+      expect(validations).to.deep.equal(
+        {
+          month: createError('month', expectedError)
+        });
+
+      notValidDate = { day: '2', month: '1', year: 'c' };
+      validations = futureDateValidation(notValidDate);
+
+      expect(validations).to.deep.equal(
+        {
+          year: createError('year', expectedError)
+        });
+    });
+
+    it('fields must be integers', () => {
+      const notValidDate = { day: '1.1', month: '2.2', year: '1000.1' };
+      const validations = futureDateValidation(notValidDate);
+      const expectedError = i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat;
+
+      expect(validations).to.deep.equal(
+        {
+          day: createError('day', expectedError)
+        });
+    });
+
+    it('fields must greater than 0', () => {
+      // not sure how we can do this for day and month
+      const notValidDate = { day: '0', month: '0', year: '0' };
+      const validations = futureDateValidation(notValidDate);
+      const expectedError = i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat;
+
+      expect(validations).to.deep.equal(
+        {
+          day: createError('day', expectedError)
+        });
+    });
+
+    it('date must be in future', () => {
+      const notValidDate = { day: '1', month: '1', year: '2022' };
+      const validations = futureDateValidation(notValidDate);
+      const expectedError = 'Enter a date between 1-1-2019 and 1-1-2021';
+
+      expect(validations).to.deep.equal(
+        {
+          date: createError('date', 'Your hearing date must be in the future')
+        });
+    });
+  });
+
 });
+
+function expectToBeNull(value: any) {
+  expect(value).to.be.null;
+  expect(value || 'none').to.equal('none');
+}

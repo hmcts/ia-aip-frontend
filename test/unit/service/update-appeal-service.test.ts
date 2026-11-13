@@ -1356,7 +1356,7 @@ describe('update-appeal-service', () => {
             createdBy: 'John Smith',
             createdOn: '2026-01-01',
             messageType: 'question',
-            isHearingRelated: true,
+            isHearingRelated: 'Yes',
             attachments: [{
               fileId: 'fileId',
               name: 'name'
@@ -1383,7 +1383,7 @@ describe('update-appeal-service', () => {
               hearingDate: undefined,
               isClosed: undefined,
               parentId: undefined,
-              isHearingRelated: true,
+              isHearingRelated: 'Yes',
               attachments: [{
                 'value': {
                   'document_binary_url': 'someurl/binary',
@@ -1397,7 +1397,7 @@ describe('update-appeal-service', () => {
       });
     });
 
-    it('converts qmCitizenQueries', () => {
+    it('converts qmCitizenQueries with attachments', () => {
       emptyApplication.qmCitizenQueries = {
         roleOnCase: 'someRole',
         caseMessages: [
@@ -1409,7 +1409,10 @@ describe('update-appeal-service', () => {
             createdBy: 'John Smith',
             createdOn: '2026-01-01',
             messageType: 'question',
-            isHearingRelated: true,
+            isHearingRelated: 'Yes',
+            hearingDate: '2027-01-01',
+            isClosed: 'Yes',
+            parentId: 'some-id',
             attachments: [{
               fileId: 'fileId',
               name: 'name'
@@ -1433,10 +1436,10 @@ describe('update-appeal-service', () => {
               createdBy: 'John Smith',
               createdOn: '2026-01-01',
               messageType: 'question',
-              isHearingRelated: true,
-              hearingDate: undefined,
-              isClosed: undefined,
-              parentId: undefined,
+              isHearingRelated: 'Yes',
+              hearingDate: '2027-01-01',
+              isClosed: 'Yes',
+              parentId: 'some-id',
               attachments: [{
                 'value': {
                   'document_binary_url': 'someurl/binary',
@@ -1444,6 +1447,52 @@ describe('update-appeal-service', () => {
                   'document_url': 'someurl'
                 }
               }]
+            }
+          }
+        ]
+      });
+    });
+
+    it('converts qmCitizenQueries without attachments', () => {
+      emptyApplication.qmCitizenQueries = {
+        roleOnCase: 'someRole',
+        caseMessages: [
+          {
+            id: '1',
+            body: 'Test message',
+            name: 'John Smith',
+            subject: 'Test subject',
+            createdBy: 'John Smith',
+            createdOn: '2026-01-01',
+            messageType: 'question',
+            isHearingRelated: 'Yes',
+            hearingDate: '2027-01-01',
+            isClosed: 'Yes',
+            parentId: 'some-id'
+          }
+        ]
+      };
+      emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
+
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData.qmCitizenQueries).deep.equal({
+        roleOnCase: 'someRole',
+        caseMessages: [
+          {
+            value: {
+              id: '1',
+              body: 'Test message',
+              name: 'John Smith',
+              subject: 'Test subject',
+              createdBy: 'John Smith',
+              createdOn: '2026-01-01',
+              messageType: 'question',
+              isHearingRelated: 'Yes',
+              hearingDate: '2027-01-01',
+              isClosed: 'Yes',
+              parentId: 'some-id',
+              attachments: []
             }
           }
         ]
@@ -2242,7 +2291,7 @@ describe('update-appeal-service', () => {
       expect(appealData.qmLegalRepresentativeQueries.caseMessages[0].attachments[0].name).to.equal('name');
     });
 
-    it('converts qmCitizenQueries', () => {
+    it('converts qmCitizenQueries with attachments', () => {
       const caseData: Partial<CaseData> = {
         qmCitizenQueries: {
           roleOnCase: 'someRole',
@@ -2257,6 +2306,9 @@ describe('update-appeal-service', () => {
                 createdOn: '2026-01-01',
                 messageType: 'NewQuery',
                 isHearingRelated: 'Yes',
+                hearingDate: '2027-01-01',
+                isClosed: 'Yes',
+                parentId: 'some-id',
                 attachments: [{
                   'value': {
                     'document_binary_url': 'someurl/binary',
@@ -2291,6 +2343,56 @@ describe('update-appeal-service', () => {
         });
       expect(appealData.qmCitizenQueries.caseMessages[0].attachments).to.have.lengthOf(1);
       expect(appealData.qmCitizenQueries.caseMessages[0].attachments[0].name).to.equal('name');
+    });
+
+    it('converts qmCitizenQueries without attachments', () => {
+      const caseData: Partial<CaseData> = {
+        qmCitizenQueries: {
+          roleOnCase: 'someRole',
+          caseMessages: [
+            {
+              value: {
+                id: '1',
+                body: 'Test message',
+                name: 'John Smith',
+                subject: 'Test subject',
+                createdBy: 'John Smith',
+                createdOn: '2026-01-01',
+                messageType: 'NewQuery',
+                isHearingRelated: 'Yes',
+                hearingDate: '2027-01-01',
+                isClosed: 'Yes',
+                parentId: 'some-id',
+                attachments: []
+              }
+            }
+          ]
+        }
+      } as Partial<CaseData>;
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+
+      const appealData = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+      expect(appealData.qmCitizenQueries.roleOnCase).to.equal('someRole');
+      expect(appealData.qmCitizenQueries.caseMessages).to.have.lengthOf(1);
+      expect(appealData.qmCitizenQueries.caseMessages[0]).to.deep.contain(
+        {
+          id: '1',
+          body: 'Test message',
+          name: 'John Smith',
+          subject: 'Test subject',
+          createdBy: 'John Smith',
+          createdOn: '2026-01-01',
+          messageType: 'NewQuery',
+          isHearingRelated: 'Yes',
+          hearingDate: '2027-01-01',
+          isClosed: 'Yes',
+          parentId: 'some-id'
+        });
+      expect(appealData.qmCitizenQueries.caseMessages[0].attachments).to.have.lengthOf(0);
     });
 
   });

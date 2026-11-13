@@ -1,7 +1,11 @@
 import axios from 'axios';
 import { Request } from 'express';
 import { AuthenticationService } from '../../../app/service/authentication-service';
-import { CdamDocumentManagementService, CdamUploadData } from '../../../app/service/cdam-document-management-service';
+import {
+  CdamDocumentManagementService,
+  CdamMultiUploadData,
+  CdamUploadData, Classification
+} from '../../../app/service/cdam-document-management-service';
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
 import Logger from '../../../app/utils/logger';
@@ -94,6 +98,23 @@ describe('cdam-document-management-service', () => {
 
   });
 
+  describe('CdamDocumentManagementService uploadFiles', () => {
+    it('should upload files', async () => {
+      req.session.appeal.documentMap = [];
+
+      const documentUploadResponse = '{"documents":[{"originalDocumentName":"file.pdf","createdOn":"2024-06-01T12:00:00Z","_links":{"self":{"href":"http://store/documents/doc-id"}}}, {"originalDocumentName":"fileTwo.pdf","createdOn":"2024-06-02T12:00:00Z","_links":{"self":{"href":"http://store/documents/doc-id-two"}}}]}';
+      const resolved = new Promise((r) => r(documentUploadResponse));
+
+      const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+      const uploadStub = sandbox.stub(CdamDocumentManagementService.prototype, 'uploadMultiple' as any).returns(resolved);
+      const documentManagementService = new CdamDocumentManagementService(authenticationService);
+      await documentManagementService.uploadFiles(req as Request, []);
+
+      expect(uploadStub.calledWith(sinon.match.any, sinon.match.any)).to.equal(true);
+      expect(req.session.appeal.documentMap).to.have.lengthOf(2);
+    });
+  });
+
   describe('Helper methods @helper', () => {
     it('addToDocumentMapper should store url and return back a uuid', () => {
 
@@ -149,18 +170,7 @@ describe('cdam-document-management-service', () => {
     });
 
     describe('upload', () => {
-      const fileMock = {
-        fieldname: 'file',
-        originalname: 'file.pdf',
-        encoding: '7bit',
-        mimetype: 'text/plain',
-        size: 4,
-        buffer: Buffer.from('test'),
-        stream: {} as any,
-        destination: '',
-        filename: '',
-        path: ''
-      };
+      const fileMock = makeFileMock('');
       it('should call axios.post with correct params and return stringified data', async () => {
         const axiosPostStub = sandbox.stub(axios, 'post').resolves({ data: { foo: 'bar' } });
         const formGetHeadersStub = sandbox.stub().returns({ 'content-type': 'multipart/form-data' });
@@ -189,6 +199,42 @@ describe('cdam-document-management-service', () => {
           jurisdictionId: 'IA'
         };
         expect(documentManagementService['upload'](headers, uploadData as CdamUploadData)).to.be.rejectedWith('fail');
+      });
+    });
+
+    describe('uploadMultiple', () => {
+      const fileMockOne = makeFileMock('-one');
+      const fileMockTwo = makeFileMock('-two');
+      const files = [fileMockOne, fileMockTwo];
+      it('should call axios.post with correct params and return stringified data', async () => {
+        const axiosPostStub = sandbox.stub(axios, 'post').resolves({ data: { foo: 'bar' } });
+        const formGetHeadersStub = sandbox.stub().returns({ 'content-type': 'multipart/form-data' });
+        sandbox.stub(require('form-data').prototype, 'append').callsFake(sandbox.stub());
+        sandbox.stub(require('form-data').prototype, 'getHeaders').callsFake(formGetHeadersStub);
+        const headers = { userToken: 'user', serviceToken: 'service' };
+        const uploadData: CdamMultiUploadData = {
+          files: files,
+          classification: Classification.restricted,
+          caseTypeId: 'Asylum',
+          jurisdictionId: 'IA'
+        };
+        const result = await documentManagementService['uploadMultiple'](headers, uploadData);
+        expect(axiosPostStub.callCount).to.equal(1);
+        expect(result).to.eq(JSON.stringify({ foo: 'bar' }));
+      });
+
+      it('should throw if axios.post fails', async () => {
+        sandbox.stub(require('axios'), 'post').rejects(new Error('fail'));
+        const formGetHeadersStub = sandbox.stub().returns({});
+        sandbox.stub(require('form-data').prototype, 'getHeaders').callsFake(formGetHeadersStub);
+        const headers = { userToken: 'user', serviceToken: 'service' };
+        const uploadData: CdamMultiUploadData = {
+          files: files,
+          classification: Classification.restricted,
+          caseTypeId: 'Asylum',
+          jurisdictionId: 'IA'
+        };
+        expect(documentManagementService['uploadMultiple'](headers, uploadData)).to.be.rejectedWith('fail');
       });
     });
 
@@ -227,3 +273,18 @@ describe('cdam-document-management-service', () => {
     });
   });
 });
+
+function makeFileMock(suffix: string) {
+  return {
+    fieldname: `file${suffix}`,
+    originalname: `file${suffix}.pdf`,
+    encoding: '7bit',
+    mimetype: 'text/plain',
+    size: 4,
+    buffer: Buffer.from(`test${suffix}`),
+    stream: {} as any,
+    destination: '',
+    filename: '',
+    path: ''
+  };
+}

@@ -32,7 +32,7 @@ interface Document {
   _links: Links;
 }
 
-enum Classification {
+export enum Classification {
   public = 'PUBLIC',
   private = 'PRIVATE',
   restricted = 'RESTRICTED'

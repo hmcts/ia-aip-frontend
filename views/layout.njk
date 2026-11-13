@@ -153,6 +153,11 @@
   <a class="cancel-button" href="{{ previousPage }}">{{ i18n.common.buttons.cancel }}</a>
 {% endmacro %}
 
+
+{% macro cancelButtonWithHref(href) %}
+  <a class="cancel-button" href="{{ href }}">{{ i18n.common.buttons.cancel }}</a>
+{% endmacro %}
+
 {% macro cancelButtonWithAttributes(previousPage, errors=None) %}
   {# Check if errors is present #}
   {% if error or errors %}

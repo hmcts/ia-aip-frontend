@@ -1,0 +1,57 @@
+{% set pageTitleName = i18n.pages.sendMessagePermission.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <h1 class="govuk-heading-l">{{ i18n.pages.sendMessagePermission.title }}</h1>
+  <h2 class="govuk-heading-m">{{ i18n.pages.sendMessagePermission.subsectionOne }}</h1>
+  <p class="govuk-body">{{ i18n.pages.sendMessagePermission.paragraphOne }}</p>
+  <h2 class="govuk-heading-m">{{ i18n.pages.sendMessagePermission.subsectionTwo }}</h1>
+  <p class="govuk-body">{{ i18n.pages.sendMessagePermission.paragraphTwo }}</p>
+  <p class="govuk-body">{{ i18n.pages.sendMessagePermission.preList }}</p>
+  <ul class='govuk-list govuk-list--bullet'>
+    {% for text in i18n.pages.sendMessagePermission.listOptions %}
+      <li>{{ text }}</li>
+    {% endfor %}
+  </ul>
+  <p class="govuk-body">{{ i18n.pages.sendMessagePermission.paragraphThree | safe }}</p>
+  {{ govukInsetText({
+    text: i18n.pages.sendMessagePermission.helpText
+  }) }}
+
+  <form action="{{ paths.common.sendMessagePermission }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukCheckboxes({
+      idPrefix: "statement",
+      name: "statement",
+      fieldset: {
+        legend: {
+          html: "<h3 class='govuk-heading-s'>" + i18n.pages.sendMessagePermission.statementTitle + "</h3>",
+          isPageHeading: false,
+          classes: "govuk-fieldset__legend--l"
+        }
+      },
+      items: [
+        {
+          value: "acceptance",
+          text: i18n.pages.sendMessagePermission.statement
+        }
+      ],
+      errorMessage: {
+        text: error['statement'].text
+      } if error['statement']
+    }) }}
+    {{ continueButton() }}
+    {{ cancelButtonWithHref(paths.common.overview) }}
+  </form>
+
+  {{ contactUs() }}
+
+{% endblock %}

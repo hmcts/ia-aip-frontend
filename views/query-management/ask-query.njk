@@ -1,0 +1,58 @@
+{% set pageTitleName = i18n.pages.askQuery.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block content %}
+
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  {% set options = [] %}
+  {% for query in commonQueries %}
+    {% set options = (options.push(
+      {
+        value: query.value,
+        text: query.name,
+        hint: {
+          text: query.examples
+        }
+      }), options) %}
+  {% endfor %}
+
+  {% set options = (options.push(
+    {
+      value: i18n.pages.askQuery.customQueryValue,
+      text: i18n.pages.askQuery.customQuery,
+      hint: {
+        text: i18n.pages.askQuery.customQueryHintText
+      }
+    }), options) %}
+
+  <form action="{{ paths.common.askQuery }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukRadios({
+      idPrefix: "query",
+      id: "queries",
+      name: "queries",
+      fieldset: {
+        legend: {
+          text:  i18n.pages.askQuery.title,
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--l"
+        }
+      },
+      errorMessage: {
+        text: errors['queries'].text
+      } if errors['queries'],
+      items: options
+    }) }}
+
+    {{ saveButton({name: 'continue', text: 'Continue'}) }}
+  </form>
+
+  {{ contactUs() }}
+
+{% endblock %}

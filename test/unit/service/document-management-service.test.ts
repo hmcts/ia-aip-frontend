@@ -52,6 +52,18 @@ describe('document-management-service', () => {
     });
   });
 
+  describe('DocumentManagementService uploadFiles', () => {
+    it('should call CDAM', async () => {
+
+      const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+      const cdamStub = sandbox.stub(CdamDocumentManagementService.prototype, 'uploadFiles' as any);
+      const documentManagementService = new DocumentManagementService(authenticationService);
+      await documentManagementService.uploadFiles(req as Request, []);
+
+      expect(cdamStub.calledWith(req)).to.equal(true);
+    });
+  });
+
   describe('DocumentManagementService deleteFile', () => {
     it('should call CDAM', async () => {
 

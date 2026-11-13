@@ -335,7 +335,26 @@ const paths = {
     cookies: '/cookie-policy',
     termsAndConditions: '/terms-and-conditions',
     privacyPolicy: '/privacy-policy',
-    accessibility: '/accessibility-statement'
+    accessibility: '/accessibility-statement',
+
+    //Query Management
+    askQuery: '/ask-a-query',
+    commonQueries: '/ask-a-query/view-answer',
+    sendMessagePermission: '/ask-a-query/send-message-permission',
+    sendMessage: '/ask-a-query/send-message',
+    sendMessageUpload: '/ask-a-query/send-message/upload',
+    sendMessageDelete: '/ask-a-query/send-message/delete',
+    sendMessageCya: '/ask-a-query/send-message/confirm',
+    sendMessageConfirmation: '/ask-a-query/send-message/confirmation',
+    viewQueries: '/view-queries',
+    viewQuery: '/view-query/:id',
+    viewLrQuery: '/view-lr-query/:id',
+    followUpQueryPermission: '/follow-up-query-permission/:id',
+    followUpQuery: '/follow-up-query/:id',
+    followUpQueryUpload: '/follow-up-query/upload/:id',
+    followUpQueryDelete: '/follow-up-query/delete/:id',
+    followUpQueryCya: '/follow-up-query/send-message/confirm/:id',
+    followUpQueryConfirmation: '/follow-up-query/confirmation/:id',
   },
   nonLegalRep: {
     // Non Legal Rep endpoints

@@ -1,0 +1,184 @@
+{% set pageTitleName = title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% from "components/evidence-list.njk" import evidenceList with context %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <h1 class="govuk-heading-l">{{ title }}</h1>
+
+  {% set hearingDateHtml %}
+    {{ govukDateInput({
+      fieldset: {
+        legend: {
+          text: i18n.pages.sendMessage.isHearingRelated.dateLegend,
+          isPageHeading: false,
+          classes: "sr-only"
+        },
+        classes: "top-padding-5"
+      },
+      hint: {
+        text: i18n.pages.sendMessage.isHearingRelated.dateHint
+      },
+      id: 'date',
+      name: 'date',
+      items: [
+        {
+          id: 'day',
+          name: "day",
+          classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
+          value: hearingDate.day,
+          attributes: {
+          max: 31
+        }
+        },
+        {
+          id: 'month',
+          name: "month",
+          classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
+          value: hearingDate.month,
+          attributes: {
+          max: 12
+        }
+        },
+        {
+          id: 'year',
+          name: "year",
+          classes: "govuk-input--width-4 govuk-input--error" if errorMessage else "govuk-input--width-4",
+          value: hearingDate.year,
+          attributes: {
+          max: 9999
+        }
+        }
+      ]
+    }) }}
+  {% endset %}
+
+  <form action="{{ formAction }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukInput({
+        label: { text: i18n.pages.sendMessage.subjectLabel },
+        hint: { text: i18n.pages.sendMessage.subjectHint },
+        id: i18n.pages.sendMessage.subjectId,
+        name: i18n.pages.sendMessage.subjectId,
+        value: subject,
+        errorMessage: {
+            text:  errors[i18n.pages.sendMessage.subjectId].text
+        } if errors[i18n.pages.sendMessage.subjectId]
+    }) }}
+    {{ govukTextarea({
+        name: i18n.pages.sendMessage.messageId,
+        id: i18n.pages.sendMessage.messageId,
+        label: { text: i18n.pages.sendMessage.messageLabel },
+        hint: { text: i18n.pages.sendMessage.messageHint },
+        value: details,
+        errorMessage: {
+          text: errors[i18n.pages.sendMessage.messageId].text
+        } if errors[i18n.pages.sendMessage.messageId]
+    }) }}
+    {% if shouldAskAboutHearing %}
+      {{ govukRadios({
+        idPrefix: 'isHearingRelated',
+        name: 'isHearingRelated',
+        fieldset: {
+          legend: {
+            text: i18n.pages.sendMessage.isHearingRelated.label
+          }
+        },
+        hint: {
+          text: i18n.pages.sendMessage.isHearingRelated.hint
+        },
+        items: [
+            {
+                value: "Yes",
+                text: "Yes",
+                conditional: {
+                  html: hearingDateHtml
+                },
+                checked: isHearingRelated == "Yes"
+            },
+            {
+                value: "No",
+                text: "No",
+                checked: isHearingRelated == "No"
+            }
+        ],
+        errorMessage: {
+            text: hearingErrorMessage
+        } if hearingErrorMessage
+      }) }}
+    {% endif %}
+    <div class="govuk-inset-text">
+      {{ govukFileUpload({
+        id: "file-upload",
+        name: "file-upload",
+        label: {
+          html: i18n.pages.sendMessage.uploadDocsLabel | safe
+        },
+        hint: {
+          html: '<p>' + i18n.pages.sendMessage.uploadDocsHintOne + '</br>' +
+          i18n.pages.sendMessage.uploadDocsHintTwo + '</p>'
+        },
+        errorMessage: {
+          text: errors['file-upload'].text
+        } if errors['file-upload']
+      }) }}
+
+      {{ govukButton({
+        text: i18n.common.buttons.uploadFile,
+        name: 'uploadFile',
+        classes: "govuk-button--secondary",
+        attributes: {
+          formEnctype: 'multipart/form-data',
+          formaction: evidenceUploadAction + '?_csrf=' + csrfToken
+        }
+      }) }}
+    </div>
+    <div aria-live="polite" aria-atomic="true" class="govuk-visually-hidden" id="evidence-status">
+      {{ evidences | length }} {{ "files uploaded" if evidences | length != 1 else "file uploaded" }}
+    </div>
+    <table class="govuk-table" id="files-uploaded">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" colspan="2">
+          {% if evidences | length > 1 %}
+            {{ i18n.components.evidenceList.title }}
+          {% else %}
+            {{ i18n.components.evidenceList.singleFileTitle }}
+          {% endif %}
+        </th>
+      </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+      {% for evidence in evidences %}
+        <tr class="govuk-table__row evidence">
+          <td class="govuk-table__cell">
+            {{ evidence.originalname }}
+          </td>
+          <td class="govuk-table__cell">
+            <a class="govuk-link" href="{{ evidenceCTA }}?id={{ evidence.id }}">{{ i18n.components.evidenceList.delete }}<span class="govuk-visually-hidden"> {{ evidence.originalname }}</span></a>
+          </td>
+        </tr>
+      {% else %}
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">{{ i18n.components.evidenceList.emptyList }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+    {{ continueButton() }}
+    {{ cancelButtonWithHref(paths.common.overview) }}
+  </form>
+
+  {{ contactUs() }}
+
+{% endblock %}

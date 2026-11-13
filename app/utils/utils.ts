@@ -313,3 +313,11 @@ export function handleNlrStatementValidation(req: Request, res: Response, render
   };
   return true;
 }
+
+export function deleteTemporaryQueryFields(req: Request) {
+  delete req.session.appeal.messageSubject;
+  delete req.session.appeal.messageDetails;
+  delete req.session.appeal.messageDocs;
+  delete req.session.appeal.hearingDate;
+  delete req.session.appeal.isHearingRelated;
+}

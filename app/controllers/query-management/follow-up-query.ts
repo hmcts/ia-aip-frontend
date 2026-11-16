@@ -118,22 +118,24 @@ function getFollowUpCya(req: Request, res: Response, next: NextFunction) {
 }
 
 function buildSummaryRows(req: Request): SummaryRow[] {
+  const parentId = req.params['id'];
+  const followUpQueryPath = getQueryPath(paths.common.followUpQuery, parentId);
   const summaryRows: SummaryRow[] = [
     addSummaryRow(
       i18n.pages.sendMessage.subjectLabel,
       [formatTextForCYA(req.session.appeal.messageSubject)],
-      paths.common.followUpQuery
+      followUpQueryPath
     ),
     addSummaryRow(
       i18n.pages.sendMessage.messageLabel,
       [formatTextForCYA(req.session.appeal.messageDetails)],
-      paths.common.followUpQuery
+      followUpQueryPath
     ),
   ];
 
   if (req.session.appeal?.messageDocs && req.session.appeal?.messageDocs.length > 0) {
     const evidenceText = req.session.appeal.messageDocs.map((evidence) => evidence.originalname);
-    summaryRows.push(addSummaryRow(i18n.pages.sendMessage.uploadDocsCya, evidenceText, paths.common.followUpQuery, Delimiter.BREAK_LINE));
+    summaryRows.push(addSummaryRow(i18n.pages.sendMessage.uploadDocsCya, evidenceText, followUpQueryPath, Delimiter.BREAK_LINE));
   }
 
   return summaryRows;
@@ -184,5 +186,13 @@ function setupFollowUpQueryController(middleware: Middleware[], updateAppealServ
 }
 
 export {
+  getFollowUpPermissionPage,
+  postFollowUpPermissionPage,
+  getFollowUpPage,
+  postFollowUpPage,
+  getFollowUpCya,
+  buildSummaryRows,
+  postFollowUpCya,
+  getFollowUpConfirmation,
   setupFollowUpQueryController
 };

@@ -61,6 +61,10 @@ describe('Follow up query controller', () => {
     next = sandbox.stub();
   });
 
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   describe('getFollowUpPermissionPage', () => {
     it('renders page correctly', () => {
       getFollowUpPermissionPage(req as Request, res as Response, next);
@@ -392,8 +396,8 @@ describe('Follow up query controller', () => {
 
   describe('setupFollowUpQueryController', () => {
     it('should setup the routes', () => {
-      const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
+      const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
       setupFollowUpQueryController([], updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService);
       expect(routerGetStub.calledWith(paths.common.followUpQueryPermission)).to.equal(true);

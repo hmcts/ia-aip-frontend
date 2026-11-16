@@ -1,19 +1,18 @@
 import { Request, Response } from 'express';
 import { Session } from 'express-session';
 import {
-  getParentQuery,
+  convertQueriesToTableValues,
+  formatQueryForView,
   getChildQuery,
   getChildrenQueries,
+  getParentQuery,
   getStatus,
-  convertQueriesToTableValues,
   getViewQueriesPage,
-  formatQueryForView,
-  getViewQueryPage, setupViewQueryController
+  getViewQueryPage,
+  setupViewQueryController
 } from '../../../../app/controllers/query-management/view-query';
 import { paths } from '../../../../app/paths';
-import { DocumentManagementService } from '../../../../app/service/document-management-service';
-import UpdateAppealService from '../../../../app/service/update-appeal-service';
-import { expect, makeFileMock, sinon } from '../../../utils/testUtils';
+import { createQueryMock, expect, makeFileMock, sinon } from '../../../utils/testUtils';
 
 const express = require('express');
 
@@ -24,8 +23,6 @@ describe('View queries controller', () => {
   let next: sinon.SinonStub;
   let renderStub: sinon.SinonStub;
   let redirectStub: sinon.SinonStub;
-  let updateAppealService: Partial<UpdateAppealService>;
-  let documentManagementService: Partial<DocumentManagementService>;
   const hearingDate: AppealDate = { day: '01', month: '01', year: '1999' };
 
   beforeEach(() => {
@@ -58,6 +55,10 @@ describe('View queries controller', () => {
     } as Partial<Response>;
 
     next = sandbox.stub();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
   });
 
   describe('getParentQuery', () => {
@@ -152,21 +153,6 @@ describe('View queries controller', () => {
       expect(getStatus(query as Partial<QmQuery>)).to.equal('Closed');
     });
   });
-
-  function createQueryMock(suffix: string, hasParentId?: boolean, parentId?: string, createdByCitizen?: boolean, futureDate?: boolean, isClosed?: boolean) {
-    const date = new Date(2026, 1, 1).toISOString();
-    const future = new Date(2030, 2, 2).toISOString();
-
-    return {
-      id: 'someId' + suffix,
-      subject: 'someSubject' + suffix,
-      createdBy: createdByCitizen ? 'citizenIdamUid' : 'otherIdamUid',
-      createdOn: futureDate ? future : date,
-      messageType: 'NewQuery' as CcdQmQueryMessageType,
-      parentId: hasParentId ? parentId : undefined,
-      isClosed: isClosed ? 'Yes' : 'No' as 'Yes' | 'No'
-    };
-  }
 
   function createTableQueryMock(suffix: string, createdByCitizen?: boolean, updatedByCitizen?: boolean, createdFutureDate?: boolean, updatedFutureDate?: boolean, status?: string) {
     return {

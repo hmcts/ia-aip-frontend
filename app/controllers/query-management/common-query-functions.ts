@@ -21,8 +21,8 @@ export function getQueryPath(path: string, id: string) {
 }
 
 export function uploadEvidence(req: Request, res: Response, next: NextFunction) {
-  const isFollowUpMessage: boolean = Object.keys(req.params).includes('id');
   try {
+    const isFollowUpMessage: boolean = req.params && Object.keys(req.params).includes('id');
     setMessageDetailsFromBody(req, !isFollowUpMessage);
     const path = isFollowUpMessage ? getQueryPath(paths.common.followUpQuery, req.params['id']) : paths.common.sendMessage;
     if (req.file) {
@@ -31,7 +31,7 @@ export function uploadEvidence(req: Request, res: Response, next: NextFunction) 
       messageDocs.push({ ...req.file, id });
       req.session.appeal.messageDocs = messageDocs;
       return res.redirect(path);
-    } else if (res.locals.errorCode) {
+    } else if (res?.locals?.errorCode) {
       return res.redirect(`${path}?errorCode=${res.locals.errorCode}`);
     } else {
       return res.redirect(`${path}?errorCode=noFileSelected`);
@@ -42,9 +42,9 @@ export function uploadEvidence(req: Request, res: Response, next: NextFunction) 
 }
 
 export function deleteEvidence(req: Request, res: Response, next: NextFunction) {
-  const isFollowUpMessage: boolean = Object.keys(req.params).includes('id');
-  const path = isFollowUpMessage ? getQueryPath(paths.common.followUpQuery, req.params['id']) : paths.common.sendMessage;
   try {
+    const isFollowUpMessage: boolean = req.params && Object.keys(req.params).includes('id');
+    const path = isFollowUpMessage ? getQueryPath(paths.common.followUpQuery, req.params['id']) : paths.common.sendMessage;
     if (req.query.id) {
       const messageDocs: MulterFile[] = req.session.appeal.messageDocs ? [...req.session.appeal.messageDocs] : [];
       req.session.appeal.messageDocs = messageDocs.filter(file => file.id != req.query.id)
@@ -61,8 +61,9 @@ export function deleteEvidence(req: Request, res: Response, next: NextFunction) 
 }
 
 export function getAppellantFullName(req: Request) {
-  const personalDetails = req.session.appeal.application.personalDetails;
-  return `${personalDetails.givenNames} ${personalDetails.familyName}`;
+  const givenName = req.session.appeal?.application?.personalDetails?.givenNames || '';
+  const familyName = req.session.appeal?.application?.personalDetails?.familyName || '';
+  return `${givenName} ${familyName}`;
 }
 
 export async function postQuery(req: Request, specificQmFieldsToAdd: QmQuery, documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService) {
@@ -75,7 +76,7 @@ export async function postQuery(req: Request, specificQmFieldsToAdd: QmQuery, do
     createdOn: new Date().toISOString(),
     ...specificQmFieldsToAdd
   };
-  if (req.session.appeal.messageDocs) {
+  if (req.session.appeal?.messageDocs) {
     qmQuery.attachments = await documentManagementService.uploadFiles(req, req.session.appeal.messageDocs);
   }
   const appeal: Appeal = {
@@ -90,17 +91,16 @@ export async function postQuery(req: Request, specificQmFieldsToAdd: QmQuery, do
     };
   }
 
-
   const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.ASK_QUERY, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
   req.session.refreshCasesList = true;
 
-  deleteTemporaryQueryFields(req);
   req.session.appeal = {
     ...req.session.appeal,
     ...appealUpdated
   };
+  deleteTemporaryQueryFields(req);
 }
 
 export function getNameFromId(query: QmQuery, idamId: string) {
-  return query.createdBy === idamId ? 'You' : 'HMCTS Staff';
+  return query?.createdBy === idamId ? 'You' : 'HMCTS Staff';
 }

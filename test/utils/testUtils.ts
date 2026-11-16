@@ -55,6 +55,21 @@ function makeFileMock(suffix: string) {
   };
 }
 
+function createQueryMock(suffix: string, hasParentId?: boolean, parentId?: string, createdByCitizen?: boolean, futureDate?: boolean, isClosed?: boolean) {
+  const date = new Date(2026, 1, 1).toISOString();
+  const future = new Date(2030, 2, 2).toISOString();
+
+  return {
+    id: 'someId' + suffix,
+    subject: 'someSubject' + suffix,
+    createdBy: createdByCitizen ? 'citizenIdamUid' : 'otherIdamUid',
+    createdOn: futureDate ? future : date,
+    messageType: 'NewQuery' as CcdQmQueryMessageType,
+    parentId: hasParentId ? parentId : undefined,
+    isClosed: isClosed ? 'Yes' : 'No' as 'Yes' | 'No'
+  };
+}
+
 export {
   expect,
   sinon,
@@ -62,5 +77,6 @@ export {
   buildExpectedRequiredError,
   makeFileMock,
   buildExpectedError,
-  setActiveNlr
+  setActiveNlr,
+  createQueryMock
 };

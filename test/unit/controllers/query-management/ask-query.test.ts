@@ -58,6 +58,10 @@ describe('Ask query controller', () => {
     next = sandbox.stub();
   });
 
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   describe('getAskQueryPage', () => {
     it('renders page correctly and deletes temporary query fields', () => {
       req.session.appeal.messageSubject = 'someValue';

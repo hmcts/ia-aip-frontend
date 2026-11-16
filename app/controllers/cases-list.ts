@@ -123,8 +123,8 @@ function setupCasesListController(updateAppealService: UpdateAppealService): Rou
   const createNewAppealMiddleware = useRedis
     ? [getCreateNewAppeal(updateAppealService), citizenLimiter]
     : [getCreateNewAppeal(updateAppealService)];
-  router.get(paths.common.createNewAppeal, createNewAppealMiddleware);
-  router.get(paths.common.deleteDraftAppeal, getDeleteDraftAppeal(updateAppealService));
+  router.post(paths.common.createNewAppeal, createNewAppealMiddleware);
+  router.post(paths.common.deleteDraftAppeal, getDeleteDraftAppeal(updateAppealService));
   router.get(paths.common.refreshCasesList, refreshCasesList());
   return router;
 }

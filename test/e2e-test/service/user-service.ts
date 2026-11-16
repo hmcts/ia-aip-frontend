@@ -126,7 +126,7 @@ async function getUserToken(userConfig: UserInfo) {
 
 async function getUserId(userToken: string) {
   try {
-    const userDetails = await axios.get(`${idamUrl}/details`, {
+    const userDetails = await axios.get(`${idamUrl}/o/userinfo`, {
       headers: {
         'Authorization': userToken
       }

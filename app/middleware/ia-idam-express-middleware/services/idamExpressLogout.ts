@@ -23,9 +23,10 @@ const idamExpressLogout = (args: IdamConfig = {}) => {
     };
 
     try {
-      await axios.delete(logoutUrl, options);
-      logger.trace('Token successfully deleted', logLabel);
       cookies.remove(res, tokenCookieName);
+      logger.trace('Token successfully deleted', logLabel);
+      await axios.delete(logoutUrl, options);
+
       next();
     } catch (error) {
       logger.exception(`Token deletion failed with error ${error}`, logLabel);

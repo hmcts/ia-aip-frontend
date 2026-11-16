@@ -176,6 +176,7 @@ describe('Ask query controller', () => {
       getSendMessagePermissionPage(req as Request, res as Response, next);
 
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message-permission.njk', {
+        formAction: paths.common.sendMessagePermission,
         previousPage: paths.common.askQuery
       });
     });
@@ -196,6 +197,7 @@ describe('Ask query controller', () => {
 
       const error = buildExpectedError('statement', i18n.validationErrors.sendMessagePermissionStatement);
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message-permission.njk', {
+        formAction: paths.common.sendMessagePermission,
         previousPage: paths.common.askQuery,
         error: { statement: error },
         errorList: [error]
@@ -480,6 +482,7 @@ describe('Ask query controller', () => {
         continuePath: paths.common.sendMessageCya,
         previousPage: paths.common.sendMessage,
         cancelPath: paths.common.overview,
+        noContactUs: true,
         summaryRows: sinon.match.any
       });
     });

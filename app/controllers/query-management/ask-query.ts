@@ -72,7 +72,8 @@ function getCommonQueryPage(req: Request, res: Response, next: NextFunction) {
 function getSendMessagePermissionPage(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('query-management/send-message-permission.njk', {
-      previousPage: paths.common.askQuery
+      previousPage: paths.common.askQuery,
+      formAction: paths.common.sendMessagePermission
     });
   } catch (e) {
     next(e);
@@ -85,6 +86,7 @@ function postSendMessagePermissionPage(req: Request, res: Response, next: NextFu
     if (validation) {
       return res.render('query-management/send-message-permission.njk', {
         previousPage: paths.common.askQuery,
+        formAction: paths.common.sendMessagePermission,
         error: validation,
         errorList: Object.values(validation)
       });
@@ -173,6 +175,7 @@ function getSendMessageCya(req: Request, res: Response, next: NextFunction) {
       continuePath: paths.common.sendMessageCya,
       previousPage: paths.common.sendMessage,
       cancelPath: paths.common.overview,
+      noContactUs: true,
       summaryRows
     });
   } catch (e) {

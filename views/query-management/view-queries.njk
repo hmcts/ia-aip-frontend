@@ -54,8 +54,8 @@
             {% set legalQueryRows = (legalQueryRows.push(
               [
                 { html: '<a href="/view-lr-query/' + query.id + '" class="govuk-link">' + query.subject + '</a>' },
-                { text: query.sentBy or '' },
-                { text: query.sentOn or '' },
+                { text: query.createdBy or '' },
+                { text: query.createdOn or '' },
                 { text: query.updatedBy or '' },
                 { text: query.updatedOn or '' },
                 { text: query.status or '' }

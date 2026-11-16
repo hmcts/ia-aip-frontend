@@ -24,7 +24,8 @@ function getFollowUpPermissionPage(req: Request, res: Response, next: NextFuncti
   try {
     const parentId = req.params['id'];
     return res.render('query-management/send-message-permission.njk', {
-      previousPage: getQueryPath(paths.common.viewQuery, parentId)
+      previousPage: getQueryPath(paths.common.viewQuery, parentId),
+      formAction: getQueryPath(paths.common.followUpQueryPermission, parentId),
     });
   } catch (e) {
     next(e);
@@ -38,6 +39,7 @@ function postFollowUpPermissionPage(req: Request, res: Response, next: NextFunct
     if (validation) {
       return res.render('query-management/send-message-permission.njk', {
         previousPage: getQueryPath(paths.common.viewQuery, parentId),
+        formAction: getQueryPath(paths.common.followUpQueryPermission, parentId),
         error: validation,
         errorList: Object.values(validation)
       });
@@ -110,6 +112,7 @@ function getFollowUpCya(req: Request, res: Response, next: NextFunction) {
       continuePath: getQueryPath(paths.common.followUpQueryCya, parentId),
       previousPage: getQueryPath(paths.common.followUpQuery, parentId),
       cancelPath: getQueryPath(paths.common.viewQuery, parentId),
+      noContactUs: true,
       summaryRows
     });
   } catch (e) {

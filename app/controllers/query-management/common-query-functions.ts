@@ -100,3 +100,7 @@ export async function postQuery(req: Request, specificQmFieldsToAdd: QmQuery, do
     ...appealUpdated
   };
 }
+
+export function getNameFromId(query: QmQuery, idamId: string) {
+  return query.createdBy === idamId ? 'You' : 'HMCTS Staff';
+}

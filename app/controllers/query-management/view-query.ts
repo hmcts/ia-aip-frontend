@@ -3,6 +3,7 @@ import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addDaysAndFormat, formatDate } from '../../utils/date-utils';
 import { deleteTemporaryQueryFields } from '../../utils/utils';
+import { getNameFromId } from './common-query-functions';
 
 function getParentQuery(queries: QmQuery[], query: QmQuery) {
   if (query.parentId) {
@@ -51,7 +52,7 @@ function getStatus(query: QmQuery): MessageStatus {
   }
 }
 
-function convertQueriesToTableValues(queries: QmQuery[]) {
+function convertQueriesToTableValues(queries: QmQuery[], idamId: string) {
   return queries
     .filter(qmQuery => !qmQuery.parentId)
     .map(query => {
@@ -60,9 +61,9 @@ function convertQueriesToTableValues(queries: QmQuery[]) {
         return {
           id: query.id,
           subject: query.subject,
-          createdBy: parentQuery.name,
+          createdBy: getNameFromId(parentQuery, idamId),
           createdOn: formatDate(parentQuery.createdOn, true),
-          updatedBy: childQuery.name,
+          updatedBy: getNameFromId(childQuery, idamId),
           updatedOn: formatDate(childQuery.createdOn, true),
           status: getStatus(childQuery)
         };
@@ -71,22 +72,23 @@ function convertQueriesToTableValues(queries: QmQuery[]) {
 }
 
 function getViewQueriesPage(req: Request, res: Response, next: NextFunction) {
+  const idamId: string = req.idam?.userDetails?.uid || '';
   const citizenQmQueries = req.session.appeal?.qmCitizenQueries?.caseMessages ? [...req.session.appeal.qmCitizenQueries.caseMessages] : [];
-  const citizenQueries: TableQmQuery[] = convertQueriesToTableValues(citizenQmQueries);
+  const citizenQueries: TableQmQuery[] = convertQueriesToTableValues(citizenQmQueries, idamId);
   const legalRepQmQueries = req.session.appeal?.qmLegalRepresentativeQueries?.caseMessages ? [...req.session.appeal.qmLegalRepresentativeQueries.caseMessages] : [];
-  const legalRepQueries: TableQmQuery[] = convertQueriesToTableValues(legalRepQmQueries);
+  const legalRepQueries: TableQmQuery[] = convertQueriesToTableValues(legalRepQmQueries, idamId);
   try {
     return res.render('query-management/view-queries.njk', {
       previousPage: paths.common.overview,
       citizenQueries: citizenQueries,
-      legalRepQueries: legalRepQueries
+      oldLegalRepQueries: legalRepQueries
     });
   } catch (e) {
     next(e);
   }
 }
 
-function formatQueryForView(query: QmQuery) {
+function formatQueryForView(query: QmQuery, idamId: string) {
   const newQuery: QmQuery = { ...query };
   if (query.hearingDate) {
     newQuery.hearingDate = formatDate(newQuery.hearingDate, true);
@@ -94,79 +96,53 @@ function formatQueryForView(query: QmQuery) {
   if (query.createdOn) {
     newQuery.createdOn = formatDate(newQuery.createdOn, true);
   }
+  if (query.createdBy) {
+    newQuery.name = getNameFromId(newQuery, idamId);
+  }
   return newQuery;
 }
 
-function getViewQueryPage(req: Request, res: Response, next: NextFunction) {
-  deleteTemporaryQueryFields(req);
-  const queryId = req.params.id;
-  const queries = (req.session.appeal?.qmCitizenQueries?.caseMessages || []);
-  const selectedParentQuery: QmQuery = formatQueryForView(queries.find(q => q.id === queryId));
-  const childrenQueries: QmQuery[] = getChildrenQueries(queries, selectedParentQuery)
-    .map(query => formatQueryForView(query));
-  const latestChildQuery = childrenQueries.length > 0 ? childrenQueries.at(-1) : selectedParentQuery;
-  const latestChildStatus = getStatus(latestChildQuery);
-  if (!selectedParentQuery) {
-    return res.redirect(paths.common.viewQueries);
-  }
-  const renderObj = {
-    previousPage: paths.common.viewQueries,
-    parentQuery: selectedParentQuery,
-    childrenQueries: childrenQueries,
-    includeFollowUp: true,
-    latestChildStatus: latestChildStatus,
-    followUpPath: paths.common.followUpQueryPermission.replace(':id', selectedParentQuery.id)
-  };
-  if (latestChildStatus === MessageStatus.CLOSED) {
-    renderObj['closedQueryDate'] = latestChildQuery.createdOn;
-  } else if ([MessageStatus.AWAITING_RESPONSE, MessageStatus.FOLLOW_UP_RESPONSE].includes(latestChildStatus)) {
-    renderObj['responseByDate'] = addDaysAndFormat(latestChildQuery.createdOn, 10, true);
-  }
+function getViewQueryPage(isCitizenQuery: boolean) {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    deleteTemporaryQueryFields(req);
+    const queries = (isCitizenQuery ? req.session.appeal?.qmCitizenQueries : req.session.appeal?.qmCitizenQueries)?.caseMessages || [];
+    const queryId = req.params.id;
+    const idamId: string = req.idam?.userDetails?.uid || '';
+    const selectedParentQuery: QmQuery = formatQueryForView(queries.find(q => q.id === queryId), idamId);
+    const childrenQueries: QmQuery[] = getChildrenQueries(queries, selectedParentQuery)
+      .map(query => formatQueryForView(query, idamId));
+    const latestChildQuery = childrenQueries.length > 0 ? childrenQueries.at(-1) : selectedParentQuery;
+    const latestChildStatus = getStatus(latestChildQuery);
+    if (!selectedParentQuery) {
+      return res.redirect(paths.common.viewQueries);
+    }
+    const renderObj = {
+      previousPage: paths.common.viewQueries,
+      parentQuery: selectedParentQuery,
+      childrenQueries: childrenQueries,
+      latestChildStatus: latestChildStatus,
+      includeFollowUp: isCitizenQuery,
+      followUpPath: paths.common.followUpQueryPermission.replace(':id', selectedParentQuery.id)
+    };
+    if (latestChildStatus === MessageStatus.CLOSED) {
+      renderObj['closedQueryDate'] = latestChildQuery.createdOn;
+    } else if ([MessageStatus.AWAITING_RESPONSE, MessageStatus.FOLLOW_UP_RESPONSE].includes(latestChildStatus)) {
+      renderObj['responseByDate'] = addDaysAndFormat(latestChildQuery.createdOn, 10, true);
+    }
 
-  try {
-    return res.render('query-management/view-query.njk', renderObj);
-  } catch (e) {
-    next(e);
-  }
+    try {
+      return res.render('query-management/view-query.njk', renderObj);
+    } catch (e) {
+      next(e);
+    }
+  };
 }
 
-function getViewLrQueryPage(req: Request, res: Response, next: NextFunction) {
-  const queryId = req.params.id;
-  const queries = (req.session.appeal?.qmCitizenQueries?.caseMessages || []);
-  const selectedParentQuery: QmQuery = formatQueryForView(queries.find(q => q.id === queryId));
-  const childrenQueries: QmQuery[] = getChildrenQueries(queries, selectedParentQuery)
-    .map(query => formatQueryForView(query));
-  const latestChildQuery = childrenQueries.length > 0 ? childrenQueries.at(-1) : selectedParentQuery;
-  const latestChildStatus = getStatus(latestChildQuery);
-  if (!selectedParentQuery) {
-    return res.redirect(paths.common.viewQueries);
-  }
-  const renderObj = {
-    previousPage: paths.common.viewQueries,
-    parentQuery: selectedParentQuery,
-    childrenQueries: childrenQueries,
-    latestChildStatus: latestChildStatus,
-    includeFollowUp: false,
-    followUpPath: paths.common.followUpQuery.replace(':id', selectedParentQuery.id)
-  };
-  if (latestChildStatus === MessageStatus.CLOSED) {
-    renderObj['closedQueryDate'] = latestChildQuery.createdOn;
-  } else if ([MessageStatus.AWAITING_RESPONSE, MessageStatus.FOLLOW_UP_RESPONSE].includes(latestChildStatus)) {
-    renderObj['responseByDate'] = addDaysAndFormat(latestChildQuery.createdOn, 10, true);
-  }
-
-  try {
-    return res.render('query-management/view-query.njk', renderObj);
-  } catch (e) {
-    next(e);
-  }
-}
-
-function setupViewQueryController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupViewQueryController(middleware: Middleware[]): Router {
   const router = Router();
   router.get(paths.common.viewQueries, middleware, getViewQueriesPage);
-  router.get(paths.common.viewQuery, middleware, getViewQueryPage);
-  router.get(paths.common.viewLrQuery, middleware, getViewLrQueryPage);
+  router.get(paths.common.viewQuery, middleware, getViewQueryPage(true));
+  router.get(paths.common.viewLrQuery, middleware, getViewQueryPage(false));
   return router;
 }
 

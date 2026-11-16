@@ -68,5 +68,8 @@
     </form>
   {% endif %}
 
-  {{ contactUs() }}
+  {% if noContactUs %}
+  {% else %}
+    {{ contactUs() }}
+  {% endif %}
 {% endblock %}

@@ -26,7 +26,7 @@
     text: i18n.pages.sendMessagePermission.helpText
   }) }}
 
-  <form action="{{ paths.common.sendMessagePermission }}" method="post">
+  <form action="{{ formAction }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukCheckboxes({
       idPrefix: "statement",

@@ -66,6 +66,7 @@ describe('Follow up query controller', () => {
       getFollowUpPermissionPage(req as Request, res as Response, next);
 
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message-permission.njk', {
+        formAction: '/follow-up-query-permission/1234',
         previousPage: '/view-query/1234'
       });
     });
@@ -86,6 +87,7 @@ describe('Follow up query controller', () => {
 
       const error = buildExpectedError('statement', i18n.validationErrors.sendMessagePermissionStatement);
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message-permission.njk', {
+        formAction: '/follow-up-query-permission/1234',
         previousPage: '/view-query/1234',
         error: { statement: error },
         errorList: [error]
@@ -243,6 +245,7 @@ describe('Follow up query controller', () => {
         continuePath: '/follow-up-query/send-message/confirm/1234',
         previousPage: '/follow-up-query/1234',
         cancelPath: '/view-query/1234',
+        noContactUs: true,
         summaryRows: sinon.match.any
       });
     });

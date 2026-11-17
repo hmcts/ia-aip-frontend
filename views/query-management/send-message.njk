@@ -64,21 +64,23 @@
 
   <form action="{{ formAction }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    {{ govukInput({
-        label: { text: i18n.pages.sendMessage.subjectLabel },
-        hint: { text: i18n.pages.sendMessage.subjectHint },
-        id: i18n.pages.sendMessage.subjectId,
-        name: i18n.pages.sendMessage.subjectId,
-        value: subject,
-        errorMessage: {
-            text:  errors[i18n.pages.sendMessage.subjectId].text
-        } if errors[i18n.pages.sendMessage.subjectId]
-    }) }}
+    {% if hasSubject %}
+      {{ govukInput({
+          label: { text: i18n.pages.sendMessage.subjectLabel },
+          hint: { text: i18n.pages.sendMessage.subjectHint },
+          id: i18n.pages.sendMessage.subjectId,
+          name: i18n.pages.sendMessage.subjectId,
+          value: subject,
+          errorMessage: {
+              text:  errors[i18n.pages.sendMessage.subjectId].text
+          } if errors[i18n.pages.sendMessage.subjectId]
+      }) }}
+    {% endif %}
     {{ govukTextarea({
         name: i18n.pages.sendMessage.messageId,
         id: i18n.pages.sendMessage.messageId,
-        label: { text: i18n.pages.sendMessage.messageLabel },
-        hint: { text: i18n.pages.sendMessage.messageHint },
+        label: { text: customLabel if customLabel else i18n.pages.sendMessage.messageLabel },
+        hint: { text: customHint if customHint else i18n.pages.sendMessage.messageHint },
         value: details,
         errorMessage: {
           text: errors[i18n.pages.sendMessage.messageId].text
@@ -178,7 +180,5 @@
     {{ continueButton() }}
     {{ cancelButtonWithHref(paths.common.overview) }}
   </form>
-
-  {{ contactUs() }}
 
 {% endblock %}

@@ -127,7 +127,7 @@ describe('Follow up query controller', () => {
         {
           previousPage: '/follow-up-query-permission/1234',
           title: i18n.pages.followUpQueryTitle,
-          subject: undefined,
+          hasSubject: false,
           details: undefined,
           evidenceUploadAction: '/follow-up-query/upload/1234',
           evidences: [],
@@ -156,7 +156,7 @@ describe('Follow up query controller', () => {
         {
           previousPage: '/follow-up-query-permission/1234',
           title: i18n.pages.followUpQueryTitle,
-          subject: 'someSubject',
+          hasSubject: false,
           details: 'someDetails',
           evidenceUploadAction: '/follow-up-query/upload/1234',
           evidences: [fileOne, fileTwo],
@@ -181,21 +181,20 @@ describe('Follow up query controller', () => {
   describe('postFollowUpPage', () => {
     it('postFollowUpPage renders with error if base validation fails with empty fields', () => {
       postFollowUpPage(req as Request, res as Response, next);
-      const subjectError = buildExpectedRequiredError('messageSubject');
       const detailsError = buildExpectedRequiredError('messageDetails');
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message.njk',
         {
           previousPage: '/follow-up-query-permission/1234',
           title: i18n.pages.followUpQueryTitle,
-          subject: undefined,
+          hasSubject: false,
           details: undefined,
           evidenceUploadAction: '/follow-up-query/upload/1234',
           evidences: [],
           evidenceCTA: '/follow-up-query/delete/1234',
           shouldAskAboutHearing: false,
           formAction: '/follow-up-query/1234',
-          errors: { messageDetails: detailsError, messageSubject: subjectError },
-          errorList: [subjectError, detailsError]
+          errors: { messageDetails: detailsError },
+          errorList: [detailsError]
         });
     });
 
@@ -207,7 +206,7 @@ describe('Follow up query controller', () => {
       postFollowUpPage(req as Request, res as Response, next);
 
       expect(renderStub).to.not.be.called;
-      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/send-message/confirm/1234');
+      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/confirm/1234');
     });
 
     it('catches error if thrown', () => {
@@ -228,14 +227,6 @@ describe('Follow up query controller', () => {
       expect(renderStub).not.to.be.called;
     });
 
-    it('getFollowUpCya redirects back to sendMessage if missing messageSubject from req', () => {
-      req.session.appeal.messageDetails = 'something';
-      getFollowUpCya(req as Request, res as Response, next);
-
-      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/1234');
-      expect(renderStub).not.to.be.called;
-    });
-
     it('getFollowUpCya renders cya with summary rows', () => {
       req.session.appeal.messageDetails = 'something';
       req.session.appeal.messageSubject = 'something';
@@ -246,7 +237,7 @@ describe('Follow up query controller', () => {
       expect(redirectStub).not.to.be.called;
       expectRenderedCalledOnceWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.checkYourAnswers.title,
-        continuePath: '/follow-up-query/send-message/confirm/1234',
+        continuePath: '/follow-up-query/confirm/1234',
         previousPage: '/follow-up-query/1234',
         cancelPath: '/view-query/1234',
         noContactUs: true,
@@ -274,16 +265,6 @@ describe('Follow up query controller', () => {
       const actualRows = buildSummaryRows(req as Request, );
 
       expect(actualRows).to.deep.equal([{
-        key: { text: 'Message subject' },
-        value: { html: 'subject' },
-        actions: {
-          items: [{
-            href: '/follow-up-query/1234',
-            text: 'Change',
-            visuallyHiddenText: 'Message subject'
-          }]
-        }
-      }, {
         key: { text: 'Message details' },
         value: { html: 'details' },
         actions: {
@@ -306,16 +287,6 @@ describe('Follow up query controller', () => {
       const actualRows = buildSummaryRows(req as Request);
 
       expect(actualRows).to.deep.equal([{
-        key: { text: 'Message subject' },
-        value: { html: 'subject' },
-        actions: {
-          items: [{
-            href: '/follow-up-query/1234',
-            text: 'Change',
-            visuallyHiddenText: 'Message subject'
-          }]
-        }
-      }, {
         key: { text: 'Message details' },
         value: { html: 'details' },
         actions: {

@@ -137,6 +137,11 @@ describe('isJourneyAllowedMiddleware', () => {
       paths.common.followUpQueryDelete,
       paths.common.followUpQueryCya,
       paths.common.followUpQueryConfirmation,
+      paths.common.closeQuery,
+      paths.common.closeQueryUpload,
+      paths.common.closeQueryDelete,
+      paths.common.closeQueryCya,
+      paths.common.closeQueryConfirmation,
       paths.common.documentDownload,
       paths.common.stfCaseReviewDocumentViewer
     ];

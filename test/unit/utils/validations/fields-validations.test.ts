@@ -1689,11 +1689,6 @@ describe('fields-validations', () => {
           'href': '#messageDetails',
           'key': 'messageDetails',
           'text': 'Please enter message details'
-        },
-        'messageSubject': {
-          'href': '#messageSubject',
-          'key': 'messageSubject',
-          'text': 'Please enter a message subject'
         }
       });
     });
@@ -1705,11 +1700,6 @@ describe('fields-validations', () => {
           'href': '#messageDetails',
           'key': 'messageDetails',
           'text': '"messageDetails" is required'
-        },
-        'messageSubject': {
-          'href': '#messageSubject',
-          'key': 'messageSubject',
-          'text': '"messageSubject" is required'
         }
       });
     });

@@ -286,6 +286,7 @@ describe('View queries controller', () => {
       expect(redirectStub).to.not.be.called;
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/view-query.njk', {
         'childrenQueries': [],
+        'closeQueryPath': '/close-query/' + queryOne.id,
         'closedQueryDate': '02 March 2030',
         'followUpPath': '/follow-up-query-permission/' + queryOne.id,
         'includeFollowUp': true,
@@ -303,6 +304,7 @@ describe('View queries controller', () => {
       expect(redirectStub).to.not.be.called;
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/view-query.njk', {
         'childrenQueries': [formatQueryForView(queryOne, 'citizenIdamUid')],
+        'closeQueryPath': '/close-query/' + queryTwo.id,
         'closedQueryDate': '02 March 2030',
         'followUpPath': '/follow-up-query-permission/' + queryTwo.id,
         'includeFollowUp': true,
@@ -321,6 +323,7 @@ describe('View queries controller', () => {
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/view-query.njk', {
         'childrenQueries': [],
         'responseByDate': '11 February 2026',
+        'closeQueryPath': '/close-query/' + queryThree.id,
         'followUpPath': '/follow-up-query-permission/' + queryThree.id,
         'includeFollowUp': true,
         'latestChildStatus': 'Awaiting response',

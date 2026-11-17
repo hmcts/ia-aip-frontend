@@ -2,62 +2,65 @@ import { randomUUID } from 'node:crypto';
 import { NextFunction, Request, Response } from 'express';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
-import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { deleteTemporaryQueryFields } from '../../utils/utils';
 
-export function setMessageDetailsFromBody(req: Request, hasHearingQuestions: boolean) {
-  req.session.appeal.messageSubject = req.body?.[i18n.pages.sendMessage.subjectId];
+export function setMessageDetailsFromBody(req: Request, isInitialMessage: boolean) {
   req.session.appeal.messageDetails = req.body?.[i18n.pages.sendMessage.messageId];
-  if (hasHearingQuestions) {
+  if (isInitialMessage) {
+    req.session.appeal.messageSubject = req.body?.[i18n.pages.sendMessage.subjectId];
     req.session.appeal.isHearingRelated = req.body?.['isHearingRelated'];
     req.session.appeal.hearingDate = { day: req.body?.['day'], month: req.body?.['month'], year: req.body?.['year'] };
   }
 }
 
 export function getQueryPath(path: string, id: string) {
-  return path.replace(':id', id);
+  return id ? path.replace(':id', id) : path;
 }
 
-export function uploadEvidence(req: Request, res: Response, next: NextFunction) {
-  try {
-    const isFollowUpMessage: boolean = req.params && Object.keys(req.params).includes('id');
-    setMessageDetailsFromBody(req, !isFollowUpMessage);
-    const path = isFollowUpMessage ? getQueryPath(paths.common.followUpQuery, req.params['id']) : paths.common.sendMessage;
-    if (req.file) {
-      const messageDocs: MulterFile[] = req.session.appeal.messageDocs ? [...req.session.appeal.messageDocs] : [];
-      const id = messageDocs.length + 1;
-      messageDocs.push({ ...req.file, id });
-      req.session.appeal.messageDocs = messageDocs;
-      return res.redirect(path);
-    } else if (res?.locals?.errorCode) {
-      return res.redirect(`${path}?errorCode=${res.locals.errorCode}`);
-    } else {
-      return res.redirect(`${path}?errorCode=noFileSelected`);
+export function uploadEvidence(path: string) {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const isInitialMessage: boolean = !(req.params && Object.keys(req.params).includes('id'));
+      setMessageDetailsFromBody(req, isInitialMessage);
+
+      const queryPath = getQueryPath(path, req?.params ? req.params['id'] : undefined);
+      if (req.file) {
+        const messageDocs: MulterFile[] = req.session.appeal.messageDocs ? [...req.session.appeal.messageDocs] : [];
+        const id = messageDocs.length + 1;
+        messageDocs.push({ ...req.file, id });
+        req.session.appeal.messageDocs = messageDocs;
+        return res.redirect(queryPath);
+      } else if (res?.locals?.errorCode) {
+        return res.redirect(`${queryPath}?errorCode=${res.locals.errorCode}`);
+      } else {
+        return res.redirect(`${queryPath}?errorCode=noFileSelected`);
+      }
+    } catch (e) {
+      next(e);
     }
-  } catch (e) {
-    next(e);
-  }
+  };
 }
 
-export function deleteEvidence(req: Request, res: Response, next: NextFunction) {
-  try {
-    const isFollowUpMessage: boolean = req.params && Object.keys(req.params).includes('id');
-    const path = isFollowUpMessage ? getQueryPath(paths.common.followUpQuery, req.params['id']) : paths.common.sendMessage;
-    if (req.query.id) {
-      const messageDocs: MulterFile[] = req.session.appeal.messageDocs ? [...req.session.appeal.messageDocs] : [];
-      req.session.appeal.messageDocs = messageDocs.filter(file => file.id != req.query.id)
-        .map((doc, index) => {
-          return { ...doc, id: (index + 1) };
-        });
-      return res.redirect(path);
-    } else {
-      return res.redirect(`${path}?errorCode=noFileExists`);
+export function deleteEvidence(path: string) {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const queryPath = getQueryPath(path, req?.params ? req.params['id'] : undefined);
+      if (req.query.id) {
+        const messageDocs: MulterFile[] = req.session.appeal.messageDocs ? [...req.session.appeal.messageDocs] : [];
+        req.session.appeal.messageDocs = messageDocs.filter(file => file.id != req.query.id)
+          .map((doc, index) => {
+            return { ...doc, id: (index + 1) };
+          });
+        return res.redirect(queryPath);
+      } else {
+        return res.redirect(`${queryPath}?errorCode=noFileExists`);
+      }
+    } catch (e) {
+      next(e);
     }
-  } catch (e) {
-    next(e);
-  }
+  };
 }
 
 export function getAppellantFullName(req: Request) {
@@ -66,12 +69,12 @@ export function getAppellantFullName(req: Request) {
   return `${givenName} ${familyName}`;
 }
 
-export async function postQuery(req: Request, specificQmFieldsToAdd: QmQuery, documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService) {
+export async function postQuery(req: Request, specificQmFieldsToAdd: QmQuery, documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService, extraBody = '') {
+  const body: string = extraBody + req.session.appeal.messageDetails;
   const qmQuery: QmQuery = {
     id: randomUUID(),
-    body: req.session.appeal.messageDetails,
+    body: body,
     name: getAppellantFullName(req),
-    subject: req.session.appeal.messageSubject,
     createdBy: req.idam.userDetails.uid,
     createdOn: new Date().toISOString(),
     ...specificQmFieldsToAdd

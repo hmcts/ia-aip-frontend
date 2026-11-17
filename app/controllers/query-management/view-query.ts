@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../../paths';
 import { addDaysAndFormat, formatDate } from '../../utils/date-utils';
 import { deleteTemporaryQueryFields } from '../../utils/utils';
-import { getNameFromId } from './common-query-functions';
+import { getNameFromId, getQueryPath } from './common-query-functions';
 
 function getParentQuery(queries: QmQuery[], query: QmQuery): QmQuery {
   return queries.find(({ id }) => id === query.parentId) ?? query;
@@ -120,7 +120,8 @@ function getViewQueryPage(isCitizenQuery: boolean) {
         childrenQueries: childrenQueries,
         latestChildStatus: latestChildStatus,
         includeFollowUp: isCitizenQuery,
-        followUpPath: paths.common.followUpQueryPermission.replace(':id', selectedParentQuery.id)
+        followUpPath: getQueryPath(paths.common.followUpQueryPermission, selectedParentQuery.id),
+        closeQueryPath: getQueryPath(paths.common.closeQuery, selectedParentQuery.id)
       };
       if (latestChildStatus === MessageStatus.CLOSED) {
         renderObj['closedQueryDate'] = latestChildQuery.createdOn;
@@ -134,6 +135,7 @@ function getViewQueryPage(isCitizenQuery: boolean) {
     }
   };
 }
+
 
 function setupViewQueryController(middleware: Middleware[]): Router {
   const router = Router();

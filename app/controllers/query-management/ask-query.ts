@@ -105,6 +105,7 @@ function getSendMessagePage(req: Request, res: Response, next: NextFunction) {
     return res.render('query-management/send-message.njk', {
       previousPage: paths.common.sendMessagePermission,
       title: i18n.pages.sendMessage.title,
+      hasSubject: true,
       subject: req.session.appeal?.messageSubject,
       details: req.session.appeal?.messageDetails,
       evidenceUploadAction: paths.common.sendMessageUpload,
@@ -144,6 +145,7 @@ function postSendMessagePage(req: Request, res: Response, next: NextFunction) {
       return res.render('query-management/send-message.njk', {
         previousPage: paths.common.sendMessagePermission,
         title: i18n.pages.sendMessage.title,
+        hasSubject: true,
         subject: req.body?.[i18n.pages.sendMessage.subjectId],
         details: req.body?.[i18n.pages.sendMessage.messageId],
         evidenceUploadAction: paths.common.sendMessageUpload,
@@ -224,6 +226,7 @@ function postSendMessageCya(updateAppealService: UpdateAppealService, documentMa
     try {
       const specificQmFieldsToAdd: QmQuery = {
         messageType: 'NewQuery',
+        subject: req.session.appeal.messageSubject,
         isHearingRelated: req.session.appeal.isHearingRelated
       };
       if (req.session.appeal.isHearingRelated == 'Yes') {
@@ -259,8 +262,8 @@ function setupAskQueryController(middleware: Middleware[], updateAppealService: 
   router.get(paths.common.sendMessagePermission, middleware, getSendMessagePermissionPage);
   router.post(paths.common.sendMessagePermission, middleware, postSendMessagePermissionPage);
   router.get(paths.common.sendMessage, middleware, getSendMessagePage);
-  router.post(paths.common.sendMessageUpload, middleware, uploadEvidence);
-  router.get(paths.common.sendMessageDelete, middleware, deleteEvidence);
+  router.post(paths.common.sendMessageUpload, middleware, uploadEvidence(paths.common.sendMessage));
+  router.get(paths.common.sendMessageDelete, middleware, deleteEvidence(paths.common.sendMessage));
   router.post(paths.common.sendMessage, middleware, postSendMessagePage);
   router.get(paths.common.sendMessageCya, middleware, getSendMessageCya);
   router.post(paths.common.sendMessageCya, middleware, postSendMessageCya(updateAppealService, documentManagementService));

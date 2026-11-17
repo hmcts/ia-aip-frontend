@@ -238,6 +238,7 @@ describe('Ask query controller', () => {
           previousPage: paths.common.sendMessagePermission,
           title: i18n.pages.sendMessage.title,
           subject: undefined,
+          hasSubject: true,
           details: undefined,
           evidenceUploadAction: paths.common.sendMessageUpload,
           evidences: [],
@@ -268,6 +269,7 @@ describe('Ask query controller', () => {
         {
           previousPage: paths.common.sendMessagePermission,
           title: i18n.pages.sendMessage.title,
+          hasSubject: true,
           subject: 'someSubject',
           details: 'someDetails',
           evidenceUploadAction: paths.common.sendMessageUpload,
@@ -304,6 +306,7 @@ describe('Ask query controller', () => {
           title: i18n.pages.sendMessage.title,
           subject: undefined,
           details: undefined,
+          hasSubject: true,
           evidenceUploadAction: paths.common.sendMessageUpload,
           evidences: [],
           evidenceCTA: paths.common.sendMessageDelete,
@@ -336,6 +339,7 @@ describe('Ask query controller', () => {
           title: i18n.pages.sendMessage.title,
           subject: 'someSubject',
           details: 'someDetails',
+          hasSubject: true,
           evidenceUploadAction: paths.common.sendMessageUpload,
           evidences: files,
           evidenceCTA: paths.common.sendMessageDelete,
@@ -357,6 +361,7 @@ describe('Ask query controller', () => {
           title: i18n.pages.sendMessage.title,
           subject: 'someSubject',
           details: 'someDetails',
+          hasSubject: true,
           evidenceUploadAction: paths.common.sendMessageUpload,
           evidences: files,
           evidenceCTA: paths.common.sendMessageDelete,
@@ -379,6 +384,7 @@ describe('Ask query controller', () => {
           subject: 'someSubject',
           details: 'someDetails',
           evidenceUploadAction: paths.common.sendMessageUpload,
+          hasSubject: true,
           evidences: files,
           evidenceCTA: paths.common.sendMessageDelete,
           shouldAskAboutHearing: true,
@@ -410,6 +416,7 @@ describe('Ask query controller', () => {
           title: i18n.pages.sendMessage.title,
           subject: 'someSubject',
           details: 'someDetails',
+          hasSubject: true,
           evidenceUploadAction: paths.common.sendMessageUpload,
           evidences: files,
           evidenceCTA: paths.common.sendMessageDelete,
@@ -610,6 +617,7 @@ describe('Ask query controller', () => {
     it('postMessage with hearingRelated and redirects', async () => {
       const postQueryStub = sandbox.stub().resolves();
       req.session.appeal.isHearingRelated = 'Yes';
+      req.session.appeal.messageSubject = 'someSubject';
       req.session.appeal.hearingDate = hearingDate;
       await postSendMessageCya(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService, postQueryStub)(req as Request, res as Response, next);
       expect(postQueryStub).to.have.been.calledOnceWithExactly(
@@ -617,10 +625,11 @@ describe('Ask query controller', () => {
         {
           messageType: 'NewQuery',
           isHearingRelated: 'Yes',
-          hearingDate: '1999-01-01'
+          hearingDate: '1999-01-01',
+          subject: 'someSubject'
         },
         documentManagementService,
-        updateAppealService
+        updateAppealService,
       );
 
       expect(res.redirect).to.have.been.calledOnceWithExactly(
@@ -633,13 +642,15 @@ describe('Ask query controller', () => {
     it('postMessage with no hearingRelated and redirects', async () => {
       const postQueryStub = sandbox.stub().resolves();
       req.session.appeal.isHearingRelated = 'No';
+      req.session.appeal.messageSubject = 'someSubject';
       req.session.appeal.hearingDate = hearingDate;
       await postSendMessageCya(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService, postQueryStub)(req as Request, res as Response, next);
       expect(postQueryStub).to.have.been.calledOnceWithExactly(
         req,
         {
           messageType: 'NewQuery',
-          isHearingRelated: 'No'
+          isHearingRelated: 'No',
+          subject: 'someSubject'
         },
         documentManagementService,
         updateAppealService

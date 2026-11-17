@@ -96,5 +96,12 @@
     <h2 class="govuk-heading-m">{{ i18n.pages.viewQuery.awaitingResponse.heading }}</h2>
     <p class="govuk-body">{{ i18n.pages.viewQuery.awaitingResponse.text | eval | safe }}</p>
   {% endif %}
+  {% if latestChildStatus !== 'Closed' %}
+    {{ govukButton({
+      text: i18n.pages.viewQuery.closeQueryButton,
+      href: closeQueryPath,
+      classes: "govuk-button"
+    }) }}
+  {% endif %}
 
 {% endblock %}

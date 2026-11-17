@@ -59,7 +59,7 @@ function getFollowUpPage(req: Request, res: Response, next: NextFunction) {
     return res.render('query-management/send-message.njk', {
       previousPage: getQueryPath(paths.common.followUpQueryPermission, parentId),
       title: i18n.pages.followUpQueryTitle,
-      subject: req.session.appeal?.messageSubject,
+      hasSubject: false,
       details: req.session.appeal?.messageDetails,
       evidenceUploadAction: getQueryPath(paths.common.followUpQueryUpload, parentId),
       evidences: req.session.appeal?.messageDocs || [],
@@ -83,7 +83,7 @@ function postFollowUpPage(req: Request, res: Response, next: NextFunction) {
       return res.render('query-management/send-message.njk', {
         previousPage: getQueryPath(paths.common.followUpQueryPermission, parentId),
         title: i18n.pages.followUpQueryTitle,
-        subject: req.body?.[i18n.pages.sendMessage.subjectId],
+        hasSubject: false,
         details: req.body?.[i18n.pages.sendMessage.messageId],
         evidenceUploadAction: getQueryPath(paths.common.followUpQueryUpload, parentId),
         evidences: req.session.appeal?.messageDocs || [],
@@ -103,7 +103,7 @@ function postFollowUpPage(req: Request, res: Response, next: NextFunction) {
 function getFollowUpCya(req: Request, res: Response, next: NextFunction) {
   try {
     const parentId = req.params['id'];
-    if (!req.session.appeal?.messageDetails || !req.session.appeal?.messageSubject) {
+    if (!req.session.appeal?.messageDetails) {
       return res.redirect(getQueryPath(paths.common.followUpQuery, parentId));
     }
     const summaryRows: SummaryRow[] = buildSummaryRows(req);
@@ -124,11 +124,6 @@ function buildSummaryRows(req: Request): SummaryRow[] {
   const parentId = req.params['id'];
   const followUpQueryPath = getQueryPath(paths.common.followUpQuery, parentId);
   const summaryRows: SummaryRow[] = [
-    addSummaryRow(
-      i18n.pages.sendMessage.subjectLabel,
-      [formatTextForCYA(req.session.appeal.messageSubject)],
-      followUpQueryPath
-    ),
     addSummaryRow(
       i18n.pages.sendMessage.messageLabel,
       [formatTextForCYA(req.session.appeal.messageDetails)],
@@ -179,8 +174,8 @@ function setupFollowUpQueryController(middleware: Middleware[], updateAppealServ
   router.get(paths.common.followUpQueryPermission, middleware, getFollowUpPermissionPage);
   router.post(paths.common.followUpQueryPermission, middleware, postFollowUpPermissionPage);
   router.get(paths.common.followUpQuery, middleware, getFollowUpPage);
-  router.post(paths.common.followUpQueryUpload, middleware, uploadEvidence);
-  router.get(paths.common.followUpQueryDelete, middleware, deleteEvidence);
+  router.post(paths.common.followUpQueryUpload, middleware, uploadEvidence(paths.common.followUpQuery));
+  router.get(paths.common.followUpQueryDelete, middleware, deleteEvidence(paths.common.followUpQuery));
   router.post(paths.common.followUpQuery, middleware, postFollowUpPage);
   router.get(paths.common.followUpQueryCya, middleware, getFollowUpCya);
   router.post(paths.common.followUpQueryCya, middleware, postFollowUpCya(updateAppealService, documentManagementService));

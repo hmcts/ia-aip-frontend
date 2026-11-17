@@ -82,6 +82,11 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
       paths.common.followUpQueryDelete,
       paths.common.followUpQueryCya,
       paths.common.followUpQueryConfirmation,
+      paths.common.closeQuery,
+      paths.common.closeQueryUpload,
+      paths.common.closeQueryDelete,
+      paths.common.closeQueryCya,
+      paths.common.closeQueryConfirmation,
       paths.common.stfCaseReviewDocumentViewer
     ]);
     allowedPaths = [

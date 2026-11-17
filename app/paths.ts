@@ -353,8 +353,13 @@ const paths = {
     followUpQuery: '/follow-up-query/:id',
     followUpQueryUpload: '/follow-up-query/upload/:id',
     followUpQueryDelete: '/follow-up-query/delete/:id',
-    followUpQueryCya: '/follow-up-query/send-message/confirm/:id',
+    followUpQueryCya: '/follow-up-query/confirm/:id',
     followUpQueryConfirmation: '/follow-up-query/confirmation/:id',
+    closeQuery: '/close-query/:id',
+    closeQueryUpload: '/close-query/upload/:id',
+    closeQueryDelete: '/close-query/delete/:id',
+    closeQueryCya: '/close-query/confirm/:id',
+    closeQueryConfirmation: '/close-query/confirmation/:id',
   },
   nonLegalRep: {
     // Non Legal Rep endpoints

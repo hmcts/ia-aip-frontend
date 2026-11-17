@@ -244,7 +244,6 @@ function messageSendValidation(obj: object) {
 
 function followUpQueryValidation(obj: object) {
   const schema = Joi.object({
-    messageSubject: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sendMessage.subject }),
     messageDetails: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sendMessage.details })
   }).unknown();
   return validate(obj, schema);

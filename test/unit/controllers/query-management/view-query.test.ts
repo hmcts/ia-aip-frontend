@@ -130,6 +130,8 @@ describe('View queries controller', () => {
       expect(getStatus(query as Partial<QmQuery>)).to.equal('Responded');
       query.messageType = 'Followup';
       expect(getStatus(query as Partial<QmQuery>)).to.equal('Awaiting response to follow-up');
+      query['body'] = 'Request for query closure. Some reason.';
+      expect(getStatus(query as Partial<QmQuery>)).to.equal('Awaiting response to closure request');
       query.messageType = 'NewQueryQualifyingQuestionOptions';
       expect(getStatus(query as Partial<QmQuery>)).to.equal('Unknown');
       query.messageType = 'NewQueryQualifyingQuestionDetail';

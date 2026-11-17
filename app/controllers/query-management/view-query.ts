@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { addDaysAndFormat, formatDate } from '../../utils/date-utils';
 import { deleteTemporaryQueryFields } from '../../utils/utils';
@@ -27,6 +28,7 @@ enum MessageStatus {
   AWAITING_RESPONSE = 'Awaiting response',
   RESPONDED = 'Responded',
   FOLLOW_UP_RESPONSE = 'Awaiting response to follow-up',
+  CLOSURE_REQUEST = 'Awaiting response to closure request',
   UNKNOWN = 'Unknown'
 }
 
@@ -40,7 +42,7 @@ function getStatus(query: QmQuery): MessageStatus {
     case 'Respond':
       return MessageStatus.RESPONDED;
     case 'Followup':
-      return MessageStatus.FOLLOW_UP_RESPONSE;
+      return query?.body?.startsWith(i18n.pages.closeQuery.messageDetailsPrefix) ? MessageStatus.CLOSURE_REQUEST : MessageStatus.FOLLOW_UP_RESPONSE;
     case 'NewQueryQualifyingQuestionOptions':
     case 'NewQueryQualifyingQuestionDetail':
     case 'HMCTS':
@@ -125,7 +127,7 @@ function getViewQueryPage(isCitizenQuery: boolean) {
       };
       if (latestChildStatus === MessageStatus.CLOSED) {
         renderObj['closedQueryDate'] = latestChildQuery.createdOn;
-      } else if ([MessageStatus.AWAITING_RESPONSE, MessageStatus.FOLLOW_UP_RESPONSE].includes(latestChildStatus)) {
+      } else {
         renderObj['responseByDate'] = addDaysAndFormat(latestChildQuery.createdOn, 10, true);
       }
 

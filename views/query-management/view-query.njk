@@ -47,7 +47,11 @@
       {% if childQuery.messageType === 'Respond' %}
         {% set cardHeading = i18n.pages.viewQuery.card.responseHeading %}
       {% elif childQuery.messageType === 'Followup' %}
-        {% set cardHeading = i18n.pages.viewQuery.card.followUpHeading %}
+        {% if childQuery.body.startsWith(i18n.pages.closeQuery.messageDetailsPrefix) %}
+          {% set cardHeading = i18n.pages.viewQuery.card.closureRequestHeading %}
+        {% else %}
+          {% set cardHeading = i18n.pages.viewQuery.card.followUpHeading %}
+        {% endif %}
       {% else %}
         {% set cardHeading = i18n.pages.viewQuery.card.defaultChildHeading %}
       {% endif %}
@@ -63,7 +67,6 @@
         {% set attachmentsHtml = i18n.pages.viewQuery.card.noAttachments %}
       {% endif  %}
       {% set childRows = [
-         { key: { text: i18n.pages.viewQuery.card.subject }, value: { text: childQuery.subject } },
          { key: { text: i18n.pages.viewQuery.card.body }, value: { text: childQuery.body } },
          { key: { text: i18n.pages.viewQuery.card.attachments }, value: { html: attachmentsHtml } },
          { key: { text: i18n.pages.viewQuery.card.createdBy }, value: { text: childQuery.name } },

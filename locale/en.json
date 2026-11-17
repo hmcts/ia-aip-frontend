@@ -3590,6 +3590,7 @@
         "parentHeading": "Your original query",
         "responseHeading": "HMCTS staff response",
         "followUpHeading": "Your follow-up query",
+        "closureRequestHeading": "Your closure request",
         "defaultChildHeading": "Message",
         "subject": "Message subject",
         "body": "Message details",

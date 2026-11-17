@@ -246,14 +246,14 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
 function hasNewMessage(appeal: Appeal): boolean {
   const queries: QmQuery[] = appeal?.qmCitizenQueries?.caseMessages || [];
-  return queries.filter(qmQuery => {
+  return queries.some(qmQuery => {
     if (!qmQuery.parentId) {
       const latestChildQuery: QmQuery = getChildQuery(queries, qmQuery);
       return latestChildQuery.messageType === 'Respond' && latestChildQuery.isClosed !== 'Yes';
     } else {
       return false;
     }
-  }).length > 0;
+  });
 }
 
 function getShowAskForFeeRemission(refundFeatureEnabled: any, paAppealTypeAipPaymentOption: string, application: AppealApplication, paymentStatus: string) {

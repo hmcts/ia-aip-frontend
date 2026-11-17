@@ -20,7 +20,7 @@ export function getQueryPath(path: string, id: string) {
 }
 
 export function uploadEvidence(path: string) {
-  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     try {
       const isInitialMessage: boolean = !(req.params && Object.keys(req.params).includes('id'));
       setMessageDetailsFromBody(req, isInitialMessage);
@@ -44,7 +44,7 @@ export function uploadEvidence(path: string) {
 }
 
 export function deleteEvidence(path: string) {
-  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     try {
       const queryPath = getQueryPath(path, req?.params ? req.params['id'] : undefined);
       if (req.query.id) {

@@ -101,7 +101,7 @@ function formatQueryForView(query: QmQuery, idamId: string) {
 }
 
 function getViewQueryPage(isCitizenQuery: boolean) {
-  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     try {
       deleteTemporaryQueryFields(req);
       const queries = (isCitizenQuery ? req.session.appeal?.qmCitizenQueries : req.session.appeal?.qmLegalRepresentativeQueries)?.caseMessages || [];

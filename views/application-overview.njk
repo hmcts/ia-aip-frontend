@@ -5,6 +5,12 @@
 {% set i18nToUse = i18nTransformed if isNonLegalRep else i18n %}
 
 {% block content %}
+  {% if hasNewMessage %}
+    {{ govukNotificationBanner({
+      titleText: 'Important',
+      html: i18n.pages.overviewPage.messageBannerHtml | eval
+    }) }}
+  {% endif %}
   <div class="govuk-width-container">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">

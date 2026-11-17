@@ -20,6 +20,7 @@ import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
 import { deleteTemporaryQueryFields, hasActiveNlr, hasPendingTimeExtension, yesNoToBool } from '../utils/utils';
 import { ErrorCode } from './cases-list';
+import { getChildQuery } from './query-management/view-query';
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
@@ -191,7 +192,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const showAppealRequests = showAppealRequestSection(appealStatus, isCitizen);
       const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(appealStatus, isCitizen);
       const showHearingRequests = isCitizen && showHearingRequestSection(appealStatus)
-          && !isPostDecisionState(appealStatus);
+        && !isPostDecisionState(appealStatus);
 
       const application = req.session.appeal.application;
 
@@ -233,6 +234,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showAskForSomethingInEndedState,
         isNonLegalRep: !isCitizen,
         isPostDecisionState: isPostDecisionState(appealStatus),
+        hasNewMessage: hasNewMessage(req.session.appeal),
         previousPage: paths.common.casesList,
         previousPageText: i18n.components.back.backToCasesList
       });
@@ -240,6 +242,18 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       next(e);
     }
   };
+}
+
+function hasNewMessage(appeal: Appeal): boolean {
+  const queries: QmQuery[] = appeal?.qmCitizenQueries?.caseMessages || [];
+  return queries.filter(qmQuery => {
+    if (!qmQuery.parentId) {
+      const latestChildQuery: QmQuery = getChildQuery(queries, qmQuery);
+      return latestChildQuery.messageType === 'Respond' && latestChildQuery.isClosed !== 'Yes';
+    } else {
+      return false;
+    }
+  }).length > 0;
 }
 
 function getShowAskForFeeRemission(refundFeatureEnabled: any, paAppealTypeAipPaymentOption: string, application: AppealApplication, paymentStatus: string) {
@@ -295,5 +309,6 @@ export {
   showAppealRequestSectionInAppealEndedStatus,
   showFtpaApplicationLink,
   isAppealInProgress,
+  hasNewMessage,
   getAppellantName
 };

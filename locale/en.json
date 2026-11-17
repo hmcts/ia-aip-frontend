@@ -1139,6 +1139,7 @@
     },
     "overviewPage": {
       "title": "Your appeal overview",
+      "messageBannerHtml": "A new message is available to respond to in <a href='{{ paths.common.viewQueries }}' class='govuk-link'>view queries</a>.",
       "contactUs": "Contact us for help",
       "askQuery": "Ask a query",
       "viewQueries": "View queries",

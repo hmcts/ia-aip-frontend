@@ -7,7 +7,7 @@ import {
   getAppealRefNumber,
   getAppellantName,
   getApplicationOverview,
-  getHearingDetails, getLoadCase,
+  getHearingDetails, getLoadCase, hasNewMessage,
   isAppealInProgress,
   isPostDecisionState,
   setupApplicationOverviewController,
@@ -204,6 +204,7 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      hasNewMessage: false,
       showHearingRequests: false,
       showPayLaterLink: false,
       hearingDetails: null,
@@ -303,6 +304,7 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: true,
       showAppealRequests: true,
       showAppealRequestsInAppealEndedStatus: false,
+      hasNewMessage: false,
       showHearingRequests: false,
       showQueryManagement: true,
       showPayLaterLink: false,
@@ -404,6 +406,7 @@ describe('Confirmation Page Controller', () => {
       showQueryManagement: true,
       showAppealRequests: true,
       showAppealRequestsInAppealEndedStatus: false,
+      hasNewMessage: false,
       showHearingRequests: false,
       showPayLaterLink: false,
       hearingDetails: null,
@@ -468,6 +471,7 @@ describe('Confirmation Page Controller', () => {
       showQueryManagement: false,
       showAppealRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      hasNewMessage: false,
       showHearingRequests: false,
       showPayLaterLink: false,
       hearingDetails: null,
@@ -531,6 +535,7 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      hasNewMessage: false,
       showQueryManagement: true,
       showHearingRequests: false,
       showPayLaterLink: false,
@@ -604,6 +609,7 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      hasNewMessage: false,
       showHearingRequests: false,
       showPayLaterLink: false,
       hearingDetails: null,
@@ -676,6 +682,7 @@ describe('Confirmation Page Controller', () => {
       showQueryManagement: false,
       showAppealRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      hasNewMessage: false,
       showHearingRequests: false,
       showPayLaterLink: false,
       hearingDetails: null,
@@ -762,6 +769,7 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      hasNewMessage: false,
       showHearingRequests: false,
       showPayLaterLink: false,
       hearingDetails: null,
@@ -870,6 +878,7 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      hasNewMessage: false,
       showHearingRequests: false,
       showPayLaterLink: false,
       hearingDetails: null,
@@ -878,6 +887,87 @@ describe('Confirmation Page Controller', () => {
       showAskForFeeRemission: false,
       showAskForSomethingInEndedState: false,
       showNonLegalRep: false,
+      isNonLegalRep: false,
+      hasNonLegalRep: false,
+      isPostDecisionState: false,
+      previousPage: paths.common.casesList,
+      updateNlrPath: paths.nonLegalRep.updateName,
+      addNonLegalRepPath: paths.nonLegalRep.addNonLegalRep,
+      previousPageText: i18n.components.back.backToCasesList
+    });
+  });
+
+  it('getApplicationOverview should render application-overview.njk with hasNewMessage', async () => {
+    req.idam = {
+      userDetails: {
+        uid: 'anId',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer',
+        sub: 'email@test.com'
+      }
+    };
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.appealReferenceNumber = 'DRAFT';
+    req.session.appeal.qmCitizenQueries = {
+      roleOnCase: '',
+      caseMessages: [
+        { messageType: 'NewQuery' },
+        { messageType: 'HMCTS' },
+        { messageType: 'Respond', isClosed: 'No' }
+      ]
+    };
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    const expectedStages = [{
+      title: 'Your appeal<br/> details',
+      ariaLabel: 'Your appeal details stage',
+      active: true,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> argument',
+      ariaLabel: 'Your appeal argument stage',
+      active: false,
+      completed: false
+    }, {
+      title: 'Your hearing<br/> details',
+      ariaLabel: 'Your hearing details stage',
+      active: false,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> decision',
+      ariaLabel: 'Your appeal decision stage',
+      active: false,
+      completed: false
+    }];
+
+    expect(resRenderStub.calledOnce).to.equal(true);
+    expectRenderedCalledOnceWithArgs(resRenderStub, 'application-overview.njk', {
+      name: 'Alex Developer',
+      appealRefNumber: null,
+      applicationNextStep: expectedNextStep,
+      history: expectedHistory,
+      stages: expectedStages,
+      saved: false,
+      ended: false,
+      transferredToUt: false,
+      askForMoreTimeInFlight: false,
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false,
+      showAppealRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
+      hasNewMessage: true,
+      showHearingRequests: false,
+      showPayLaterLink: false,
+      hearingDetails: null,
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false,
+      showAskForFeeRemission: false,
+      showAskForSomethingInEndedState: false,
+      showNonLegalRep: false,
+      showQueryManagement: false,
       isNonLegalRep: false,
       hasNonLegalRep: false,
       isPostDecisionState: false,
@@ -1270,7 +1360,11 @@ describe('Confirmation Page Controller', () => {
     expect(showAppealRequestSection(States.APPEAL_SUBMITTED.id, false)).to.equal(false);
     expect(showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, false)).to.equal(false);
     expect(isAppealInProgress(States.APPEAL_SUBMITTED.id, false)).to.equal(false);
-    expect(showFtpaApplicationLink({ ...req.session.appeal, appealStatus: States.FTPA_SUBMITTED.id, ftpaAppellantApplicationDate: '2020-01-01' }, false)).to.equal(false);
+    expect(showFtpaApplicationLink({
+      ...req.session.appeal,
+      appealStatus: States.FTPA_SUBMITTED.id,
+      ftpaAppellantApplicationDate: '2020-01-01'
+    }, false)).to.equal(false);
   });
 
   describe('getApplicationOverview with DLRM refund enabled paymentLink', function () {
@@ -1420,5 +1514,63 @@ describe('Confirmation Page Controller', () => {
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     expect(res.redirect).to.have.been.calledWith(paths.common.casesList);
+  });
+
+  describe('hasNewMessage', () => {
+    it('returns false when no queries', () => {
+      expect(hasNewMessage({} as Appeal)).to.equal(false);
+    });
+
+    it('returns false when no queries without parentId', () => {
+      const appeal: Appeal = {
+        qmCitizenQueries: {
+          caseMessages: [
+            { parentId: 'someId' },
+            { parentId: 'someId2' },
+            { parentId: 'someId3' }
+          ]
+        }
+      } as Appeal;
+      expect(hasNewMessage(appeal)).to.equal(false);
+    });
+
+    it('returns false when queries contain without parentId are not respond', () => {
+      const appeal: Appeal = {
+        qmCitizenQueries: {
+          caseMessages: [
+            { messageType: 'NewQuery' },
+            { messageType: 'HMCTS' },
+            { messageType: 'Followup' }
+          ]
+        }
+      } as Appeal;
+      expect(hasNewMessage(appeal)).to.equal(false);
+    });
+
+    it('returns false when queries contain without parentId are respond but are closed', () => {
+      const appeal: Appeal = {
+        qmCitizenQueries: {
+          caseMessages: [
+            { messageType: 'NewQuery' },
+            { messageType: 'HMCTS' },
+            { messageType: 'Respond', isClosed: 'Yes' }
+          ]
+        }
+      } as Appeal;
+      expect(hasNewMessage(appeal)).to.equal(false);
+    });
+
+    it('returns true when queries contain without parentId are respond and not closed', () => {
+      const appeal: Appeal = {
+        qmCitizenQueries: {
+          caseMessages: [
+            { messageType: 'NewQuery' },
+            { messageType: 'HMCTS' },
+            { messageType: 'Respond', isClosed: 'No' }
+          ]
+        }
+      } as Appeal;
+      expect(hasNewMessage(appeal)).to.equal(true);
+    });
   });
 });

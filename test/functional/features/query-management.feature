@@ -15,8 +15,8 @@ Feature: Query management
     And I should not see the new message banner
     And I should see the queries table with 5 queries
     And I should see row 1 with values "Some unresponded query subject", "You", "11 November 2026", "You", "11 November 2026", "Awaiting response"
-    And I should see row 2 with values "Query that has been closed", "You", "11 November 2026", "HMCTS Staff", "11 November 2026", "Closed"
-    And I should see row 3 with values "Query that has been responded to", "You", "11 November 2026", "HMCTS Staff", "11 November 2026", "Responded"
+    And I should see row 2 with values "Query that has been closed", "You", "11 November 2026", "IAC Service", "11 November 2026", "Closed"
+    And I should see row 3 with values "Query that has been responded to", "You", "11 November 2026", "IAC Service", "11 November 2026", "Responded"
     And I should see row 4 with values "Query that has been followed up", "You", "11 November 2026", "You", "11 November 2026", "Awaiting response to follow-up"
     And I should see row 5 with values "Query that has been requested to close", "You", "11 November 2026", "You", "11 November 2026", "Awaiting response to closure request"
     And I check page accessibility
@@ -37,7 +37,7 @@ Feature: Query management
     Then I see "View query" in title
     And I see 2 query cards
     And I see query card 1 with title "Your original query", subject "Query that has been closed", details "Some query that has been closed", attachments "No documents attached", hearingRelated "", hearing date "", sent by "You", sent on "11 November 2026"
-    And I see query card 2 with title "HMCTS staff response", subject "", details "Reason to close this query", attachments "No documents attached", hearingRelated "", hearing date "", sent by "HMCTS Staff", sent on "11 November 2026"
+    And I see query card 2 with title "IAC Service response", subject "", details "Reason to close this query", attachments "No documents attached", hearingRelated "", hearing date "", sent by "IAC Service", sent on "11 November 2026"
     And I dont see the reviewing message text
     And I dont see the responded text
     And I see the closed text
@@ -50,7 +50,7 @@ Feature: Query management
     Then I see "View query" in title
     And I see 2 query cards
     And I see query card 1 with title "Your original query", subject "Query that has been responded to", details "Some query that has been responded to", attachments "No documents attached", hearingRelated "Yes", hearing date "01 January 2027", sent by "You", sent on "11 November 2026"
-    And I see query card 2 with title "HMCTS staff response", subject "", details "Some response to the query", attachments "No documents attached", hearingRelated "", hearing date "", sent by "HMCTS Staff", sent on "11 November 2026"
+    And I see query card 2 with title "IAC Service response", subject "", details "Some response to the query", attachments "No documents attached", hearingRelated "", hearing date "", sent by "IAC Service", sent on "11 November 2026"
     And I dont see the reviewing message text
     And I see the responded text
     And I dont see the closed text
@@ -63,7 +63,7 @@ Feature: Query management
     Then I see "View query" in title
     And I see 3 query cards
     And I see query card 1 with title "Your original query", subject "Query that has been followed up", details "Some query to follow up to details", attachments "No documents attached", hearingRelated "No", hearing date "", sent by "You", sent on "11 November 2026"
-    And I see query card 2 with title "HMCTS staff response", subject "", details "Some response to the query", attachments "No documents attached", hearingRelated "", hearing date "", sent by "HMCTS Staff", sent on "11 November 2026"
+    And I see query card 2 with title "IAC Service response", subject "", details "Some response to the query", attachments "No documents attached", hearingRelated "", hearing date "", sent by "IAC Service", sent on "11 November 2026"
     And I see query card 3 with title "Your follow-up query", subject "", details "Some follow up to the response", attachments "No documents attached", hearingRelated "", hearing date "", sent by "You", sent on "11 November 2026"
     And I see the reviewing message text
     And I dont see the responded text

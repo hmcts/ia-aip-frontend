@@ -160,9 +160,9 @@ describe('View queries controller', () => {
     return {
       id: 'someId' + suffix,
       subject: 'someSubject' + suffix,
-      createdBy: createdByCitizen ? 'You' : 'HMCTS Staff',
+      createdBy: createdByCitizen ? 'You' : 'IAC Service',
       createdOn: createdFutureDate ? '02 March 2030' : '01 February 2026',
-      updatedBy: updatedByCitizen ? 'You' : 'HMCTS Staff',
+      updatedBy: updatedByCitizen ? 'You' : 'IAC Service',
       updatedOn: updatedFutureDate ? '02 March 2030' : '01 February 2026',
       status: status
     };

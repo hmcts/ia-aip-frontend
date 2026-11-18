@@ -443,13 +443,13 @@ describe('Common query functions', () => {
 
   describe('getNameFromId', () => {
     const query = { createdBy: undefined };
-    it('returns HMCTS Staff if no query createdBy', () => {
-      expect(getNameFromId(query, 'idamId')).to.equal('HMCTS Staff');
+    it('returns IAC Service if no query createdBy', () => {
+      expect(getNameFromId(query, 'idamId')).to.equal('IAC Service');
     });
 
-    it('returns HMCTS Staff if idam id does not match query created by', () => {
+    it('returns IAC Service if idam id does not match query created by', () => {
       query.createdBy = 'otherId';
-      expect(getNameFromId(query, 'idamId')).to.equal('HMCTS Staff');
+      expect(getNameFromId(query, 'idamId')).to.equal('IAC Service');
     });
 
     it('returns You if idam id does match query created by', () => {

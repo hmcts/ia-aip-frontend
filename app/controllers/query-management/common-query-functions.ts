@@ -105,5 +105,5 @@ export async function postQuery(req: Request, specificQmFieldsToAdd: QmQuery, do
 }
 
 export function getNameFromId(query: QmQuery, idamId: string) {
-  return query?.createdBy === idamId ? 'You' : 'HMCTS Staff';
+  return query?.createdBy === idamId ? 'You' : 'IAC Service';
 }

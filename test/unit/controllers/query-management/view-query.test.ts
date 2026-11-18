@@ -261,14 +261,14 @@ describe('View queries controller', () => {
     const queryTwo = createQueryMock('Two', false, '', true);
     const queryThree = createQueryMock('Three', false);
     const queries = [queryOne, queryThree, queryTwo];
-    it('getViewQueryPage redirects to viewQueries if no valid parent query', async () => {
+    it('getViewQueryPage redirects to viewQueries if no valid parent query', () => {
       req.session.appeal.messageSubject = 'someValue';
       req.session.appeal.messageDetails = 'someValue';
       req.session.appeal.messageDocs = [makeFileMock('')];
       req.session.appeal.hearingDate = hearingDate;
       req.session.appeal.isHearingRelated = 'Yes';
 
-      await getViewQueryPage(false)(req as Request, res as Response, next);
+      getViewQueryPage(false)(req as Request, res as Response, next);
 
       expect(req.session.appeal.messageSubject).to.be.undefined;
       expect(req.session.appeal.messageDetails).to.be.undefined;
@@ -280,10 +280,10 @@ describe('View queries controller', () => {
       expect(redirectStub).to.be.calledOnceWith(paths.common.viewQueries);
     });
 
-    it('getViewQueryPage renders to page if valid parent query One', async () => {
+    it('getViewQueryPage renders to page if valid parent query One', () => {
       req.session.appeal.qmCitizenQueries = { roleOnCase: '', caseMessages: queries };
       req.params.id = queryOne.id;
-      await getViewQueryPage(true)(req as Request, res as Response, next);
+      getViewQueryPage(true)(req as Request, res as Response, next);
 
       expect(redirectStub).to.not.be.called;
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/view-query.njk', {
@@ -298,10 +298,10 @@ describe('View queries controller', () => {
       });
     });
 
-    it('getViewQueryPage renders to page if valid parent query Two', async () => {
+    it('getViewQueryPage renders to page if valid parent query Two', () => {
       req.session.appeal.qmCitizenQueries = { roleOnCase: '', caseMessages: queries };
       req.params.id = queryTwo.id;
-      await getViewQueryPage(true)(req as Request, res as Response, next);
+      getViewQueryPage(true)(req as Request, res as Response, next);
 
       expect(redirectStub).to.not.be.called;
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/view-query.njk', {
@@ -316,10 +316,10 @@ describe('View queries controller', () => {
       });
     });
 
-    it('getViewQueryPage renders to page if valid parent query Three', async () => {
+    it('getViewQueryPage renders to page if valid parent query Three', () => {
       req.session.appeal.qmCitizenQueries = { roleOnCase: '', caseMessages: queries };
       req.params.id = queryThree.id;
-      await getViewQueryPage(true)(req as Request, res as Response, next);
+      getViewQueryPage(true)(req as Request, res as Response, next);
 
       expect(redirectStub).to.not.be.called;
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/view-query.njk', {
@@ -334,34 +334,34 @@ describe('View queries controller', () => {
       });
     });
 
-    it('getViewQueryPage redirects if LR with only citizen queries', async () => {
+    it('getViewQueryPage redirects if LR with only citizen queries', () => {
       req.session.appeal.qmCitizenQueries = { roleOnCase: '', caseMessages: queries };
       req.params.id = queryThree.id;
 
-      await getViewQueryPage(false)(req as Request, res as Response, next);
+      getViewQueryPage(false)(req as Request, res as Response, next);
 
       expect(renderStub).to.not.be.called;
       expect(redirectStub).to.be.calledOnceWith(paths.common.viewQueries);
     });
 
-    it('getViewQueryPage redirects if citizen with only LR queries', async () => {
+    it('getViewQueryPage redirects if citizen with only LR queries', () => {
       req.session.appeal.qmLegalRepresentativeQueries = { roleOnCase: '', caseMessages: queries };
       req.params.id = queryThree.id;
 
-      await getViewQueryPage(true)(req as Request, res as Response, next);
+      getViewQueryPage(true)(req as Request, res as Response, next);
 
       expect(renderStub).to.not.be.called;
       expect(redirectStub).to.be.calledOnceWith(paths.common.viewQueries);
     });
 
-    it('catches error if thrown', async () => {
+    it('catches error if thrown', () => {
       const error = new Error('the error');
       renderStub.throws(error);
 
       req.session.appeal.qmCitizenQueries = { roleOnCase: '', caseMessages: queries };
       req.params.id = queryThree.id;
 
-      await getViewQueryPage(true)(req as Request, res as Response, next);
+      getViewQueryPage(true)(req as Request, res as Response, next);
 
       expect(next.calledOnceWith(error)).to.equal(true);
     });

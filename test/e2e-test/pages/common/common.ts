@@ -197,7 +197,7 @@ module.exports = {
       await I.see(title, '.govuk-summary-list');
     });
 
-    When(/^I wait for ([^"]*) seconds$/, async (waitTime: string) => {
+    When(/^I wait for ([^"]*) seconds?$/, async (waitTime: string) => {
       await I.wait(waitTime);
     });
 

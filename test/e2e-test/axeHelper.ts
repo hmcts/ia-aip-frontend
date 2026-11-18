@@ -128,8 +128,12 @@ function addViolations(violations: ReadableAxeResult[]) {
     return !existingKeys.has(key);
   });
 
+  // TODO ignoring specific conditional aria-expanded violation caused by govuk component until https://github.com/alphagov/govuk-frontend/pull/7503 is resolved
+  const ignoredViolations = uniqueViolations.filter((violation) => {
+    return violation?.targetHtmlObject?.[0] !== '#isHearingRelated' && violation?.issue !== 'Elements must only use supported ARIA attributes';
+  });
   // Add unique violations to the existing list
-  issues.violations.push(...uniqueViolations);
+  issues.violations.push(...ignoredViolations);
   writeIssues(issues);
 }
 

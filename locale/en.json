@@ -3532,7 +3532,7 @@
     "sendMessagePermission": {
       "title": "Message sharing permission",
       "subsectionOne": "Sharing this message with the other party",
-      "paragraphOne": "All messages sent using this system are shared with the other party in the case as well as being sent to HMCTS staff",
+      "paragraphOne": "All messages sent using this system are shared with the other party in the case as well as being sent to HMCTS staff.",
       "subsectionTwo": "Asking not to share your message",
       "paragraphTwo": "You can ask not to share your message with the other party. The reasons for not sharing your message must be valid and the judge may decide that your message should be shared.",
       "preList": "Valid reasons for keeping a message between you and HMCTS staff include the message being about:",
@@ -3618,7 +3618,7 @@
     "closeQuery": {
       "title": "Request closure of query",
       "desc": "Why are you requesting closure of this query?",
-      "help": "If you choose to request close this query, HMCTS staff will mark this message thread as closed if deemed suitable for closure and no further responses will be made.",
+      "help": "If you choose to request close this query, HMCTS staff will mark this message thread as closed if deemed suitable for closure and no further responses will be made",
       "messageDetailsPrefix": "Request for query closure. "
     },
     "clarifyingQuestionsList": {
@@ -4681,7 +4681,7 @@
       "addressPostcode": "You need to provide your updated Postcode"
     },
     "acceptanceStatement": "Select if you believe the information you have given is true.",
-    "sendMessagePermissionStatement": "Select the checkbox if you agree that your message can be shared with the other party.",
+    "sendMessagePermissionStatement": "Select the checkbox if you agree that your message can be shared with the other party",
     "hoDataNotMatchingOnSubmit": "The information entered does not match the details held by the Home Office.  You should enter the HO reference and appellant's name exactly as they appear on the decision letter so that we can verify them. These can often be found in the 'How to appeal' section. Please also check if the appellant's date of birth is correct.",
     "addAnotherNlrAgreement": "Select the checkbox if you understand that adding another non-legal representative will remove the access of the current non-legal representative to the appeal",
     "removeNlrAgreement": "Select the checkbox if you understand that removing your non-legal representative will remove their access to this appeal",

@@ -68,6 +68,7 @@ export const emailToUserId: Record<string, string> = {
   'submitHearingRequirementsAccessNeedsCompleted@example.com': '68',
   'submitHearingRequirementsAccessNeedsCompletedWithNlrAttending@example.com': '69',
   'submitHearingRequirementsAccessNeedsCompletedWithNoActiveNlr@example.com': '70',
+  'appealWithQueries@example.com': '71',
   'multiple-appeals@example.com': '100',
   'multiple-appeals-nlr@example.com': '101',
   'setupcase@example.com': '999'

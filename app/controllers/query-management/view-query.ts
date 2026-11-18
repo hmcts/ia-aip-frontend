@@ -79,6 +79,7 @@ function getViewQueriesPage(req: Request, res: Response, next: NextFunction) {
     return res.render('query-management/view-queries.njk', {
       previousPage: paths.common.overview,
       citizenQueries: citizenQueries,
+      // TODO remove this if not wanting to see old LR queries
       oldLegalRepQueries: legalRepQueries
     });
   } catch (e) {
@@ -143,6 +144,7 @@ function setupViewQueryController(middleware: Middleware[]): Router {
   const router = Router();
   router.get(paths.common.viewQueries, middleware, getViewQueriesPage);
   router.get(paths.common.viewQuery, middleware, getViewQueryPage(true));
+  // TODO remove this if not wanting to see old LR queries
   router.get(paths.common.viewLrQuery, middleware, getViewQueryPage(false));
   return router;
 }

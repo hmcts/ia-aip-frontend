@@ -108,100 +108,100 @@ describe('Common query functions', () => {
   });
 
   describe('uploadEvidence', () => {
-    it('redirects to noFileSelected if no file found', async () => {
-      await uploadEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+    it('redirects to noFileSelected if no file found', () => {
+      uploadEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
 
       expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message?errorCode=noFileSelected');
     });
 
-    it('redirects to multerErrorCode if res.locals.errorCode', async () => {
+    it('redirects to multerErrorCode if res.locals.errorCode', () => {
       res.locals = { errorCode: 'someRandomErrorCode' };
 
-      await uploadEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      uploadEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
 
       expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message?errorCode=someRandomErrorCode');
     });
 
-    it('redirects to correct path if file appended successfully with existing messageDocs', async () => {
+    it('redirects to correct path if file appended successfully with existing messageDocs', () => {
       const fileOne: MulterFile = makeFileMock('One');
       const fileTwo: MulterFile = makeFileMock('Two');
       req.session.appeal.messageDocs = [fileOne];
       req.file = fileTwo;
-      await uploadEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      uploadEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
 
       fileTwo.id = 2;
       expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message');
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
     });
 
-    it('redirects to correct path if file appended successfully with no messageDocs', async () => {
+    it('redirects to correct path if file appended successfully with no messageDocs', () => {
       const fileOne: MulterFile = makeFileMock('One');
       req.file = fileOne;
-      await uploadEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      uploadEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
 
       fileOne.id = 1;
       expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message');
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne]);
     });
 
-    it('redirects to noFileSelected if no file found for followUp message', async () => {
+    it('redirects to noFileSelected if no file found for followUp message', () => {
       req.params = { 'id': 'someId' };
-      await uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
 
       expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId?errorCode=noFileSelected');
     });
 
-    it('redirects to multerErrorCode if res.locals.errorCode for followUp message', async () => {
+    it('redirects to multerErrorCode if res.locals.errorCode for followUp message', () => {
       req.params = { 'id': 'someId' };
       res.locals = { errorCode: 'someRandomErrorCode' };
 
-      await uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
 
       expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId?errorCode=someRandomErrorCode');
     });
 
-    it('redirects to correct path if file appended successfully with existing messageDocs for followUp message', async () => {
+    it('redirects to correct path if file appended successfully with existing messageDocs for followUp message', () => {
       req.params = { 'id': 'someId' };
       const fileOne: MulterFile = makeFileMock('One');
       const fileTwo: MulterFile = makeFileMock('Two');
       req.session.appeal.messageDocs = [fileOne];
       req.file = fileTwo;
-      await uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
 
       fileTwo.id = 2;
       expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId');
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
     });
 
-    it('redirects to correct path if file appended successfully with no messageDocs for followUp message', async () => {
+    it('redirects to correct path if file appended successfully with no messageDocs for followUp message', () => {
       req.params = { 'id': 'someId' };
       const fileOne: MulterFile = makeFileMock('One');
       req.file = fileOne;
-      await uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
 
       fileOne.id = 1;
       expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId');
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne]);
     });
 
-    it('catches error if thrown', async () => {
+    it('catches error if thrown', () => {
       const error = new Error('the error');
       redirectStub.throws(error);
 
-      await uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
 
       expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('deleteEvidence', () => {
-    it('redirects to noFileExists if no query id', async () => {
-      await deleteEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+    it('redirects to noFileExists if no query id', () => {
+      deleteEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
 
       expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message?errorCode=noFileExists');
     });
 
-    it('filters out given id and redirects if found id in messageDocs', async () => {
+    it('filters out given id and redirects if found id in messageDocs', () => {
       const fileOne: MulterFile = makeFileMock('One');
       const fileTwo: MulterFile = makeFileMock('Two');
 
@@ -209,7 +209,7 @@ describe('Common query functions', () => {
       req.session.appeal.messageDocs = [fileOne, fileTwo];
 
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
-      await deleteEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      deleteEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
 
       expect(req.session.appeal.messageDocs).to.not.deep.contain(fileOne);
       expect(req.session.appeal.messageDocs).to.not.deep.contain(fileTwo);
@@ -221,7 +221,7 @@ describe('Common query functions', () => {
       expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message');
     });
 
-    it('does not filter out given id but still redirects if no found id in messageDocs', async () => {
+    it('does not filter out given id but still redirects if no found id in messageDocs', () => {
       const fileOne: MulterFile = makeFileMock('One');
       const fileTwo: MulterFile = makeFileMock('Two');
 
@@ -229,7 +229,7 @@ describe('Common query functions', () => {
       req.session.appeal.messageDocs = [fileOne, fileTwo];
 
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
-      await deleteEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      deleteEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
 
       expect(req.session.appeal.messageDocs).to.not.deep.equal([fileOne, fileTwo]);
 
@@ -241,14 +241,14 @@ describe('Common query functions', () => {
       expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message');
     });
 
-    it('redirects to noFileExists if no query id for followUp', async () => {
+    it('redirects to noFileExists if no query id for followUp', () => {
       req.params = { id: 'someId' };
-      await deleteEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      deleteEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
 
       expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId?errorCode=noFileExists');
     });
 
-    it('filters out given id and redirects if found id in messageDocs for followUp', async () => {
+    it('filters out given id and redirects if found id in messageDocs for followUp', () => {
       const fileOne: MulterFile = makeFileMock('One');
       const fileTwo: MulterFile = makeFileMock('Two');
 
@@ -257,7 +257,7 @@ describe('Common query functions', () => {
       req.session.appeal.messageDocs = [fileOne, fileTwo];
 
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
-      await deleteEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      deleteEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
 
       expect(req.session.appeal.messageDocs).to.not.deep.contain(fileOne);
       expect(req.session.appeal.messageDocs).to.not.deep.contain(fileTwo);
@@ -269,7 +269,7 @@ describe('Common query functions', () => {
       expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId');
     });
 
-    it('does not filter out given id but still redirects if no found id in messageDocs for followUp', async () => {
+    it('does not filter out given id but still redirects if no found id in messageDocs for followUp', () => {
       const fileOne: MulterFile = makeFileMock('One');
       const fileTwo: MulterFile = makeFileMock('Two');
 
@@ -278,7 +278,7 @@ describe('Common query functions', () => {
       req.session.appeal.messageDocs = [fileOne, fileTwo];
 
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
-      await deleteEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      deleteEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
 
       expect(req.session.appeal.messageDocs).to.not.deep.equal([fileOne, fileTwo]);
 
@@ -290,11 +290,11 @@ describe('Common query functions', () => {
       expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId');
     });
 
-    it('catches error if thrown', async () => {
+    it('catches error if thrown', () => {
       const error = new Error('the error');
       redirectStub.throws(error);
 
-      await deleteEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      deleteEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
 
       expect(next.calledOnceWith(error)).to.equal(true);
     });

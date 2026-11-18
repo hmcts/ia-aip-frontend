@@ -1,4 +1,4 @@
-@query-management
+@query-management @testy-test
 Feature: Query management
 
   Scenario: View messages
@@ -85,7 +85,7 @@ Feature: Query management
     And I dont see the follow up button
     And I check page accessibility
 
-  Scenario: Common queries
+  Scenario: Common queries  @testy-test
     Given I have logged in as an appellant with email "appealWithQueries@example.com"
     Then I see "aa asd" in title
     And I see "Send a message" link

@@ -134,7 +134,7 @@ module.exports = {
     });
 
     When('I see the ask query option', async () => {
-      const div: Locator = locate('div.govuk-radios__item').withChild('label.govuk-radios__label').withText('Send a message via message');
+      const div: Locator = locate('div.govuk-radios__item').withChild('label.govuk-radios__label').withText('Send a message to the Immigration & Asylum Chamber');
       await I.seeElement(div);
       await I.seeElement(div.find('div.govuk-hint').withText('We try to answer messages within 10 working days, but it could take longer.'));
     });

@@ -275,7 +275,7 @@ declare global {
     parentId?: string;
   }
 
-  interface TableQmQuery {
+  interface TableQmMessage {
     id: string;
     subject: string;
     createdBy: string;

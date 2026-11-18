@@ -18,9 +18,9 @@ import Logger, { getLogLabel } from '../utils/logger';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
-import { deleteTemporaryQueryFields, hasActiveNlr, hasPendingTimeExtension, yesNoToBool } from '../utils/utils';
+import { deleteTemporaryMessageFields, hasActiveNlr, hasPendingTimeExtension, yesNoToBool } from '../utils/utils';
 import { ErrorCode } from './cases-list';
-import { getChildQuery } from './query-management/view-query';
+import { getChildMessage } from './query-management/view-message';
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
@@ -203,7 +203,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const hasSponsor = application?.hasSponsor === 'Yes';
       const hasNlr = hasActiveNlr(req.session.appeal);
       const appealInProgress = isAppealInProgress(appealStatus, isCitizen);
-      deleteTemporaryQueryFields(req);
+      deleteTemporaryMessageFields(req);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -248,7 +248,7 @@ function hasNewMessage(appeal: Appeal): boolean {
   const queries: QmQuery[] = appeal?.qmCitizenQueries?.caseMessages || [];
   return queries.some(qmQuery => {
     if (!qmQuery.parentId) {
-      const latestChildQuery: QmQuery = getChildQuery(queries, qmQuery);
+      const latestChildQuery: QmQuery = getChildMessage(queries, qmQuery);
       return latestChildQuery.messageType === 'Respond' && latestChildQuery.isClosed !== 'Yes';
     } else {
       return false;

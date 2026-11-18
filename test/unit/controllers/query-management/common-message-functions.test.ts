@@ -3,11 +3,11 @@ import {
   deleteEvidence,
   getAppellantFullName,
   getNameFromId,
-  getQueryPath,
-  postQuery,
+  getMessagePath,
+  postMessage,
   setMessageDetailsFromBody,
   uploadEvidence
-} from '../../../../app/controllers/query-management/common-query-functions';
+} from '../../../../app/controllers/query-management/common-message-functions';
 import { Events } from '../../../../app/data/events';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
@@ -95,31 +95,31 @@ describe('Common query functions', () => {
     });
   });
 
-  describe('getQueryPath', () => {
+  describe('getMessagePath', () => {
     it('replaces :id with id', () => {
-      expect(getQueryPath('test/:id', 'someId')).to.equal('test/someId');
-      expect(getQueryPath('test/:somethingElseid', 'someId')).to.equal('test/:somethingElseid');
+      expect(getMessagePath('test/:id', 'someId')).to.equal('test/someId');
+      expect(getMessagePath('test/:somethingElseid', 'someId')).to.equal('test/:somethingElseid');
     });
 
     it('returns base path if no id given', () => {
-      expect(getQueryPath('test/:id', undefined)).to.equal('test/:id');
-      expect(getQueryPath('anything', undefined)).to.equal('anything');
+      expect(getMessagePath('test/:id', undefined)).to.equal('test/:id');
+      expect(getMessagePath('anything', undefined)).to.equal('anything');
     });
   });
 
   describe('uploadEvidence', () => {
     it('redirects to noFileSelected if no file found', () => {
-      uploadEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      uploadEvidence('/send-message')(req as Request, res as Response, next);
 
-      expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message?errorCode=noFileSelected');
+      expect(redirectStub).to.be.calledOnceWith('/send-message?errorCode=noFileSelected');
     });
 
     it('redirects to multerErrorCode if res.locals.errorCode', () => {
       res.locals = { errorCode: 'someRandomErrorCode' };
 
-      uploadEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      uploadEvidence('/send-message')(req as Request, res as Response, next);
 
-      expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message?errorCode=someRandomErrorCode');
+      expect(redirectStub).to.be.calledOnceWith('/send-message?errorCode=someRandomErrorCode');
     });
 
     it('redirects to correct path if file appended successfully with existing messageDocs', () => {
@@ -127,37 +127,37 @@ describe('Common query functions', () => {
       const fileTwo: MulterFile = makeFileMock('Two');
       req.session.appeal.messageDocs = [fileOne];
       req.file = fileTwo;
-      uploadEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      uploadEvidence('/send-message')(req as Request, res as Response, next);
 
       fileTwo.id = 2;
-      expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message');
+      expect(redirectStub).to.be.calledOnceWith('/send-message');
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
     });
 
     it('redirects to correct path if file appended successfully with no messageDocs', () => {
       const fileOne: MulterFile = makeFileMock('One');
       req.file = fileOne;
-      uploadEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      uploadEvidence('/send-message')(req as Request, res as Response, next);
 
       fileOne.id = 1;
-      expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message');
+      expect(redirectStub).to.be.calledOnceWith('/send-message');
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne]);
     });
 
     it('redirects to noFileSelected if no file found for followUp message', () => {
       req.params = { 'id': 'someId' };
-      uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      uploadEvidence('/follow-up-message/:id')(req as Request, res as Response, next);
 
-      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId?errorCode=noFileSelected');
+      expect(redirectStub).to.be.calledOnceWith('/follow-up-message/someId?errorCode=noFileSelected');
     });
 
     it('redirects to multerErrorCode if res.locals.errorCode for followUp message', () => {
       req.params = { 'id': 'someId' };
       res.locals = { errorCode: 'someRandomErrorCode' };
 
-      uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      uploadEvidence('/follow-up-message/:id')(req as Request, res as Response, next);
 
-      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId?errorCode=someRandomErrorCode');
+      expect(redirectStub).to.be.calledOnceWith('/follow-up-message/someId?errorCode=someRandomErrorCode');
     });
 
     it('redirects to correct path if file appended successfully with existing messageDocs for followUp message', () => {
@@ -166,10 +166,10 @@ describe('Common query functions', () => {
       const fileTwo: MulterFile = makeFileMock('Two');
       req.session.appeal.messageDocs = [fileOne];
       req.file = fileTwo;
-      uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      uploadEvidence('/follow-up-message/:id')(req as Request, res as Response, next);
 
       fileTwo.id = 2;
-      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId');
+      expect(redirectStub).to.be.calledOnceWith('/follow-up-message/someId');
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
     });
 
@@ -177,10 +177,10 @@ describe('Common query functions', () => {
       req.params = { 'id': 'someId' };
       const fileOne: MulterFile = makeFileMock('One');
       req.file = fileOne;
-      uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      uploadEvidence('/follow-up-message/:id')(req as Request, res as Response, next);
 
       fileOne.id = 1;
-      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId');
+      expect(redirectStub).to.be.calledOnceWith('/follow-up-message/someId');
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne]);
     });
 
@@ -188,7 +188,7 @@ describe('Common query functions', () => {
       const error = new Error('the error');
       redirectStub.throws(error);
 
-      uploadEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      uploadEvidence('/follow-up-message/:id')(req as Request, res as Response, next);
 
       expect(next.calledOnceWith(error)).to.equal(true);
     });
@@ -196,9 +196,9 @@ describe('Common query functions', () => {
 
   describe('deleteEvidence', () => {
     it('redirects to noFileExists if no query id', () => {
-      deleteEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      deleteEvidence('/send-message')(req as Request, res as Response, next);
 
-      expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message?errorCode=noFileExists');
+      expect(redirectStub).to.be.calledOnceWith('/send-message?errorCode=noFileExists');
     });
 
     it('filters out given id and redirects if found id in messageDocs', () => {
@@ -209,7 +209,7 @@ describe('Common query functions', () => {
       req.session.appeal.messageDocs = [fileOne, fileTwo];
 
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
-      deleteEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      deleteEvidence('/send-message')(req as Request, res as Response, next);
 
       expect(req.session.appeal.messageDocs).to.not.deep.contain(fileOne);
       expect(req.session.appeal.messageDocs).to.not.deep.contain(fileTwo);
@@ -218,7 +218,7 @@ describe('Common query functions', () => {
       expect(req.session.appeal.messageDocs).to.deep.contain(fileTwo);
       expect(req.session.appeal.messageDocs).to.deep.equal([fileTwo]);
 
-      expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message');
+      expect(redirectStub).to.be.calledOnceWith('/send-message');
     });
 
     it('does not filter out given id but still redirects if no found id in messageDocs', () => {
@@ -229,7 +229,7 @@ describe('Common query functions', () => {
       req.session.appeal.messageDocs = [fileOne, fileTwo];
 
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
-      deleteEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      deleteEvidence('/send-message')(req as Request, res as Response, next);
 
       expect(req.session.appeal.messageDocs).to.not.deep.equal([fileOne, fileTwo]);
 
@@ -238,14 +238,14 @@ describe('Common query functions', () => {
       expect(req.session.appeal.messageDocs).to.deep.contain(fileTwo);
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
 
-      expect(redirectStub).to.be.calledOnceWith('/ask-a-query/send-message');
+      expect(redirectStub).to.be.calledOnceWith('/send-message');
     });
 
     it('redirects to noFileExists if no query id for followUp', () => {
       req.params = { id: 'someId' };
-      deleteEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      deleteEvidence('/follow-up-message/:id')(req as Request, res as Response, next);
 
-      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId?errorCode=noFileExists');
+      expect(redirectStub).to.be.calledOnceWith('/follow-up-message/someId?errorCode=noFileExists');
     });
 
     it('filters out given id and redirects if found id in messageDocs for followUp', () => {
@@ -257,7 +257,7 @@ describe('Common query functions', () => {
       req.session.appeal.messageDocs = [fileOne, fileTwo];
 
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
-      deleteEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      deleteEvidence('/follow-up-message/:id')(req as Request, res as Response, next);
 
       expect(req.session.appeal.messageDocs).to.not.deep.contain(fileOne);
       expect(req.session.appeal.messageDocs).to.not.deep.contain(fileTwo);
@@ -266,7 +266,7 @@ describe('Common query functions', () => {
       expect(req.session.appeal.messageDocs).to.deep.contain(fileTwo);
       expect(req.session.appeal.messageDocs).to.deep.equal([fileTwo]);
 
-      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId');
+      expect(redirectStub).to.be.calledOnceWith('/follow-up-message/someId');
     });
 
     it('does not filter out given id but still redirects if no found id in messageDocs for followUp', () => {
@@ -278,7 +278,7 @@ describe('Common query functions', () => {
       req.session.appeal.messageDocs = [fileOne, fileTwo];
 
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
-      deleteEvidence('/follow-up-query/:id')(req as Request, res as Response, next);
+      deleteEvidence('/follow-up-message/:id')(req as Request, res as Response, next);
 
       expect(req.session.appeal.messageDocs).to.not.deep.equal([fileOne, fileTwo]);
 
@@ -287,14 +287,14 @@ describe('Common query functions', () => {
       expect(req.session.appeal.messageDocs).to.deep.contain(fileTwo);
       expect(req.session.appeal.messageDocs).to.deep.equal([fileOne, fileTwo]);
 
-      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/someId');
+      expect(redirectStub).to.be.calledOnceWith('/follow-up-message/someId');
     });
 
     it('catches error if thrown', () => {
       const error = new Error('the error');
       redirectStub.throws(error);
 
-      deleteEvidence('/ask-a-query/send-message')(req as Request, res as Response, next);
+      deleteEvidence('/send-message')(req as Request, res as Response, next);
 
       expect(next.calledOnceWith(error)).to.equal(true);
     });
@@ -331,7 +331,7 @@ describe('Common query functions', () => {
     });
   });
 
-  describe('postQuery', () => {
+  describe('postMessage', () => {
     let uploadStub: sinon.SinonStub;
     let submitStub: sinon.SinonStub;
     beforeEach(() => {
@@ -363,7 +363,7 @@ describe('Common query functions', () => {
       const fileOne = makeFileMock('One');
       req.session.appeal.messageDocs = [fileOne];
       uploadStub.resolves([{ fileId: 'someId', name: 'someName' } as Evidence]);
-      await postQuery(req as Request, { isHearingRelated: 'No' }, documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService);
+      await postMessage(req as Request, { isHearingRelated: 'No' }, documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService);
 
       const expectedAppeal: Appeal = {
         messageDetails: 'someMessageDetails',
@@ -412,7 +412,7 @@ describe('Common query functions', () => {
         }
       } as AppealApplication;
 
-      await postQuery(req as Request, { isClosed: 'Yes' }, documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService);
+      await postMessage(req as Request, { isClosed: 'Yes' }, documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService);
       expect(uploadStub).to.not.be.called;
 
       const expectedAppeal: Appeal = {
@@ -443,13 +443,13 @@ describe('Common query functions', () => {
 
   describe('getNameFromId', () => {
     const query = { createdBy: undefined };
-    it('returns IAC Service if no query createdBy', () => {
-      expect(getNameFromId(query, 'idamId')).to.equal('IAC Service');
+    it('returns Immigration & Asylum Chamber if no query createdBy', () => {
+      expect(getNameFromId(query, 'idamId')).to.equal('Immigration & Asylum Chamber');
     });
 
-    it('returns IAC Service if idam id does not match query created by', () => {
+    it('returns Immigration & Asylum Chamber if idam id does not match query created by', () => {
       query.createdBy = 'otherId';
-      expect(getNameFromId(query, 'idamId')).to.equal('IAC Service');
+      expect(getNameFromId(query, 'idamId')).to.equal('Immigration & Asylum Chamber');
     });
 
     it('returns You if idam id does match query created by', () => {

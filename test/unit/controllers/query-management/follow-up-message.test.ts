@@ -9,8 +9,8 @@ import {
   postFollowUpCya,
   postFollowUpPage,
   postFollowUpPermissionPage,
-  setupFollowUpQueryController
-} from '../../../../app/controllers/query-management/follow-up-query';
+  setupFollowUpMessageController
+} from '../../../../app/controllers/query-management/follow-up-message';
 import { paths } from '../../../../app/paths';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
@@ -18,7 +18,7 @@ import i18n from '../../../../locale/en.json';
 import { buildExpectedError, buildExpectedRequiredError, expect, makeFileMock, sinon } from '../../../utils/testUtils';
 const express = require('express');
 
-describe('Follow up query controller', () => {
+describe('Follow-up message controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -70,8 +70,8 @@ describe('Follow up query controller', () => {
       getFollowUpPermissionPage(req as Request, res as Response, next);
 
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message-permission.njk', {
-        formAction: '/follow-up-query-permission/1234',
-        previousPage: '/view-query/1234'
+        formAction: '/follow-up-message-permission/1234',
+        previousPage: '/view-message/1234'
       });
     });
 
@@ -91,8 +91,8 @@ describe('Follow up query controller', () => {
 
       const error = buildExpectedError('statement', i18n.validationErrors.sendMessagePermissionStatement);
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message-permission.njk', {
-        formAction: '/follow-up-query-permission/1234',
-        previousPage: '/view-query/1234',
+        formAction: '/follow-up-message-permission/1234',
+        previousPage: '/view-message/1234',
         error: { statement: error },
         errorList: [error]
       });
@@ -105,7 +105,7 @@ describe('Follow up query controller', () => {
 
       postFollowUpPermissionPage(req as Request, res as Response, next);
 
-      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/1234');
+      expect(redirectStub).to.be.calledOnceWith('/follow-up-message/1234');
       expect(renderStub).to.not.be.called;
     });
 
@@ -125,15 +125,15 @@ describe('Follow up query controller', () => {
 
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message.njk',
         {
-          previousPage: '/follow-up-query-permission/1234',
-          title: i18n.pages.followUpQueryTitle,
+          previousPage: '/follow-up-message-permission/1234',
+          title: i18n.pages.followUpMessageTitle,
           hasSubject: false,
           details: undefined,
-          evidenceUploadAction: '/follow-up-query/upload/1234',
+          evidenceUploadAction: '/follow-up-message/upload/1234',
           evidences: [],
-          evidenceCTA: '/follow-up-query/delete/1234',
+          evidenceCTA: '/follow-up-message/delete/1234',
           shouldAskAboutHearing: false,
-          formAction: '/follow-up-query/1234',
+          formAction: '/follow-up-message/1234',
           errors: undefined,
           errorList: undefined
         });
@@ -154,15 +154,15 @@ describe('Follow up query controller', () => {
       const error = buildExpectedError('file-upload', i18n.validationErrors.fileUpload.noFileSelected);
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message.njk',
         {
-          previousPage: '/follow-up-query-permission/1234',
-          title: i18n.pages.followUpQueryTitle,
+          previousPage: '/follow-up-message-permission/1234',
+          title: i18n.pages.followUpMessageTitle,
           hasSubject: false,
           details: 'someDetails',
-          evidenceUploadAction: '/follow-up-query/upload/1234',
+          evidenceUploadAction: '/follow-up-message/upload/1234',
           evidences: [fileOne, fileTwo],
-          evidenceCTA: '/follow-up-query/delete/1234',
+          evidenceCTA: '/follow-up-message/delete/1234',
           shouldAskAboutHearing: false,
-          formAction: '/follow-up-query/1234',
+          formAction: '/follow-up-message/1234',
           errors: { 'file-upload': error },
           errorList: [error]
         });
@@ -184,15 +184,15 @@ describe('Follow up query controller', () => {
       const detailsError = buildExpectedRequiredError('messageDetails');
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message.njk',
         {
-          previousPage: '/follow-up-query-permission/1234',
-          title: i18n.pages.followUpQueryTitle,
+          previousPage: '/follow-up-message-permission/1234',
+          title: i18n.pages.followUpMessageTitle,
           hasSubject: false,
           details: undefined,
-          evidenceUploadAction: '/follow-up-query/upload/1234',
+          evidenceUploadAction: '/follow-up-message/upload/1234',
           evidences: [],
-          evidenceCTA: '/follow-up-query/delete/1234',
+          evidenceCTA: '/follow-up-message/delete/1234',
           shouldAskAboutHearing: false,
-          formAction: '/follow-up-query/1234',
+          formAction: '/follow-up-message/1234',
           errors: { messageDetails: detailsError },
           errorList: [detailsError]
         });
@@ -206,7 +206,7 @@ describe('Follow up query controller', () => {
       postFollowUpPage(req as Request, res as Response, next);
 
       expect(renderStub).to.not.be.called;
-      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/confirm/1234');
+      expect(redirectStub).to.be.calledOnceWith('/follow-up-message/confirm/1234');
     });
 
     it('catches error if thrown', () => {
@@ -223,7 +223,7 @@ describe('Follow up query controller', () => {
     it('getFollowUpCya redirects back to sendMessage if missing messageDetails from req', () => {
       getFollowUpCya(req as Request, res as Response, next);
 
-      expect(redirectStub).to.be.calledOnceWith('/follow-up-query/1234');
+      expect(redirectStub).to.be.calledOnceWith('/follow-up-message/1234');
       expect(renderStub).not.to.be.called;
     });
 
@@ -237,9 +237,9 @@ describe('Follow up query controller', () => {
       expect(redirectStub).not.to.be.called;
       expectRenderedCalledOnceWithArgs(renderStub, 'templates/check-and-send.njk', {
         pageTitle: i18n.pages.checkYourAnswers.title,
-        continuePath: '/follow-up-query/confirm/1234',
-        previousPage: '/follow-up-query/1234',
-        cancelPath: '/view-query/1234',
+        continuePath: '/follow-up-message/confirm/1234',
+        previousPage: '/follow-up-message/1234',
+        cancelPath: '/view-message/1234',
         noContactUs: true,
         summaryRows: sinon.match.any
       });
@@ -269,7 +269,7 @@ describe('Follow up query controller', () => {
         value: { html: 'details' },
         actions: {
           items: [{
-            href: '/follow-up-query/1234',
+            href: '/follow-up-message/1234',
             text: 'Change',
             visuallyHiddenText: 'Message details'
           }]
@@ -291,7 +291,7 @@ describe('Follow up query controller', () => {
         value: { html: 'details' },
         actions: {
           items: [{
-            href: '/follow-up-query/1234',
+            href: '/follow-up-message/1234',
             text: 'Change',
             visuallyHiddenText: 'Message details'
           }]
@@ -301,7 +301,7 @@ describe('Follow up query controller', () => {
         value: { html: 'fileone.pdf<br>filetwo.pdf' },
         actions: {
           items: [{
-            href: '/follow-up-query/1234',
+            href: '/follow-up-message/1234',
             text: 'Change',
             visuallyHiddenText: 'Supporting documents'
           }]
@@ -325,7 +325,7 @@ describe('Follow up query controller', () => {
       );
 
       expect(res.redirect).to.have.been.calledOnceWithExactly(
-        '/follow-up-query/confirmation/1234'
+        '/follow-up-message/confirmation/1234'
       );
 
       expect(next).not.to.have.been.called;
@@ -365,21 +365,21 @@ describe('Follow up query controller', () => {
     });
   });
 
-  describe('setupFollowUpQueryController', () => {
+  describe('setupFollowUpMessageController', () => {
     it('should setup the routes', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
-      setupFollowUpQueryController([], updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService);
-      expect(routerGetStub.calledWith(paths.common.followUpQueryPermission)).to.equal(true);
-      expect(routerPostStub.calledWith(paths.common.followUpQueryPermission)).to.equal(true);
-      expect(routerGetStub.calledWith(paths.common.followUpQuery)).to.equal(true);
-      expect(routerPostStub.calledWith(paths.common.followUpQueryUpload)).to.equal(true);
-      expect(routerGetStub.calledWith(paths.common.followUpQueryDelete)).to.equal(true);
-      expect(routerPostStub.calledWith(paths.common.followUpQuery)).to.equal(true);
-      expect(routerGetStub.calledWith(paths.common.followUpQueryCya)).to.equal(true);
-      expect(routerPostStub.calledWith(paths.common.followUpQueryCya)).to.equal(true);
-      expect(routerGetStub.calledWith(paths.common.followUpQueryConfirmation)).to.equal(true);
+      setupFollowUpMessageController([], updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService);
+      expect(routerGetStub.calledWith(paths.common.followUpMessagePermission)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.common.followUpMessagePermission)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.followUpMessage)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.common.followUpMessageUpload)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.followUpMessageDelete)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.common.followUpMessage)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.followUpMessageCya)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.common.followUpMessageCya)).to.equal(true);
+      expect(routerGetStub.calledWith(paths.common.followUpMessageConfirmation)).to.equal(true);
     });
   });
 

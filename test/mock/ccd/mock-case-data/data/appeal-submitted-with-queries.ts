@@ -40,7 +40,7 @@ export default {
             'id': '1',
             'body': 'Some unresponded query details',
             'name': 'Some appellant',
-            'subject': 'Some unresponded query subject',
+            'subject': 'Some unresponded message subject',
             'createdBy': '71',
             'createdOn': '2026-11-11T14:54:51.265Z',
             'attachments': [
@@ -74,7 +74,7 @@ export default {
           'id': 'ab077b67-7ec4-4871-ab5d-e188584ab0c5',
           'value': {
             'id': '3',
-            'body': 'Reason to close this query',
+            'body': 'Reason to close this message',
             'name': 'Some appellant',
             'createdBy': '1234-1234-1234-1234',
             'createdOn': '2026-11-11T14:55:40.752Z',
@@ -170,7 +170,7 @@ export default {
           'id': '08f0d92d-200d-4e35-a8f7-ce2148e58ea0',
           'value': {
             'id': '10',
-            'body': 'Request for query closure. Some details of why I want to close this.',
+            'body': 'Request for message closure. Some details of why I want to close this.',
             'name': 'Some appellant',
             'createdBy': '71',
             'createdOn': '2026-11-11T15:10:52.860Z',

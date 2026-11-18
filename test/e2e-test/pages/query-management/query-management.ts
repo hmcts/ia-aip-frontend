@@ -4,11 +4,11 @@ module.exports = {
   queryManagement(I) {
     When(/^I should see the new message banner$/, async () => {
       await I.see('Important', 'div.govuk-notification-banner__header');
-      await I.see('A new message is available to respond to in view queries.', 'div.govuk-notification-banner__content');
+      await I.see('A new message is available to respond to in view messages.', 'div.govuk-notification-banner__content');
     });
 
     When(/^I should not see the new message banner$/, async () => {
-      await I.dontSee('A new message is available to respond to in view queries.', 'div.govuk-notification-banner__content');
+      await I.dontSee('A new message is available to respond to in view messages.', 'div.govuk-notification-banner__content');
     });
 
     When(/^I should see the queries table with ([0-9]+) queries$/, async (numberOfQueries: string) => {
@@ -84,10 +84,10 @@ module.exports = {
 
     When(/^I (see|dont see) the reviewing message text$/, async (visible: string) => {
       if (visible === 'see') {
-        await I.see('The IAC Service are reviewing the message');
+        await I.see('The Immigration & Asylum Chamber are reviewing the message');
         await I.see('Our team will read the message and try to respond by 21 November 2026. It may take longer than this.');
       } else {
-        await I.dontSee('The IAC Service are reviewing the message');
+        await I.dontSee('The Immigration & Asylum Chamber are reviewing the message');
         await I.dontSee('Our team will read the message and try to respond by 21 November 2026. It may take longer than this.');
       }
     });
@@ -95,28 +95,28 @@ module.exports = {
     When(/^I (see|dont see) the responded text$/, async (visible: string) => {
       if (visible === 'see') {
         await I.see('Send a follow-up message', 'h2.govuk-heading-m');
-        await I.see('Only send follow-up messages related to the original query.', 'p.govuk-body');
+        await I.see('Only send follow-up messages related to the original message.', 'p.govuk-body');
         await I.see('Sending follow-up messages that are not related will delay the court\'s response.', 'p.govuk-body');
       } else {
         await I.dontSee('Send a follow-up message',);
-        await I.dontSee('Only send follow-up messages related to the original query.');
+        await I.dontSee('Only send follow-up messages related to the original message.');
         await I.dontSee('Sending follow-up messages that are not related will delay the court\'s response.');
       }
     });
 
     When(/^I (see|dont see) the closed text$/, async (visible: string) => {
       if (visible === 'see') {
-        await I.see('This message has been closed by the IAC Service on 11 November 2026', 'strong.govuk-warning-text__text');
+        await I.see('This message has been closed by the Immigration & Asylum Chamber on 11 November 2026', 'strong.govuk-warning-text__text');
       } else {
-        await I.dontSee('This message has been closed by the IAC Service on 11 November 2026');
+        await I.dontSee('This message has been closed by the Immigration & Asylum Chamber on 11 November 2026');
       }
     });
 
     When(/^I (see|dont see) the close query request button$/, async (visible: string) => {
       if (visible === 'see') {
-        await I.see('Request to close this query', 'a');
+        await I.see('Request to close this message', 'a');
       } else {
-        await I.dontSee('Request to close this query');
+        await I.dontSee('Request to close this message');
       }
     });
 
@@ -134,7 +134,7 @@ module.exports = {
     });
 
     When('I see the ask query option', async () => {
-      const div: Locator = locate('div.govuk-radios__item').withChild('label.govuk-radios__label').withText('Ask a query via message');
+      const div: Locator = locate('div.govuk-radios__item').withChild('label.govuk-radios__label').withText('Send a message via message');
       await I.seeElement(div);
       await I.seeElement(div.find('div.govuk-hint').withText('We try to answer messages within 10 working days, but it could take longer.'));
     });
@@ -154,15 +154,15 @@ module.exports = {
 
     When('I see the message sharing permission page content', async () => {
       await I.see('Sharing this message with the other party', 'h2.govuk-heading-m');
-      await I.see('All messages sent using this system are shared with the other party in the case as well as being sent to the IAC Service.', 'p.govuk-body');
+      await I.see('All messages sent using this system are shared with the other party in the case as well as being sent to the Immigration & Asylum Chamber.', 'p.govuk-body');
 
       await I.see('Asking not to share your message', 'h2.govuk-heading-m');
       await I.see('You can ask not to share your message with the other party. The reasons for not sharing your message must be valid and the judge may decide that your message should be shared.', 'p.govuk-body');
-      await I.see('Valid reasons for keeping a message between you and the IAC Service include the message being about:', 'p.govuk-body');
+      await I.see('Valid reasons for keeping a message between you and the Immigration & Asylum Chamber include the message being about:', 'p.govuk-body');
       await I.see('abc', 'li');
       await I.see('xyz', 'li');
-      await I.see('If you need to send a message to the IAC Service and you do not want the other party to see it, email contactia@justice.gov.uk.', 'p.govuk-body');
-      await I.see('Explain why the message should be kept between you and the IAC Service and make sure you include your full name and reference.', 'div.govuk-inset-text');
+      await I.see('If you need to send a message to the Immigration & Asylum Chamber and you do not want the other party to see it, email contactia@justice.gov.uk.', 'p.govuk-body');
+      await I.see('Explain why the message should be kept between you and the Immigration & Asylum Chamber and make sure you include your full name and reference.', 'div.govuk-inset-text');
 
       await I.see('Confirm your message can be shared', 'h3.govuk-heading-s');
       await I.see('Yes, I agree my message can be shared with the other party', 'label.govuk-label');
@@ -186,9 +186,9 @@ module.exports = {
       await I.see('Include as many details as possible so case workers can respond to your message', detailsDivLocator.find('div.govuk-hint'));
       await I.seeElement(detailsDivLocator.find('textarea.govuk-textarea'));
 
-      const hearingDivLocator = locate('div.govuk-form-group').withDescendant('legend.govuk-fieldset__legend').withText('Is this query related to a hearing?');
+      const hearingDivLocator = locate('div.govuk-form-group').withDescendant('legend.govuk-fieldset__legend').withText('Is this message related to a hearing?');
       await I.seeElement(hearingDivLocator);
-      await I.see('Select Yes if this query is related to a hearing and provide the date of the hearing', hearingDivLocator.find('div.govuk-hint'));
+      await I.see('Select Yes if this message is related to a hearing and provide the date of the hearing', hearingDivLocator.find('div.govuk-hint'));
       await I.seeElement(hearingDivLocator.find('label.govuk-radios__label').withText('Yes'));
       await I.seeElement(hearingDivLocator.find('label.govuk-radios__label').withText('No'));
 
@@ -272,7 +272,7 @@ module.exports = {
       await I.see('See your appeal progress', 'a.govuk-button');
     });
 
-    When('I see the Follow up query page content', async () => {
+    When('I see the Follow-up message page content', async () => {
       const detailsDivLocator = locate('div.govuk-form-group').withChild('label.govuk-label').withText('Message details');
       await I.seeElement(detailsDivLocator);
       await I.see('Include as many details as possible so case workers can respond to your message', detailsDivLocator.find('div.govuk-hint'));
@@ -287,9 +287,9 @@ module.exports = {
 
 
     When('I see the Close query request page content', async () => {
-      const detailsDivLocator = locate('div.govuk-form-group').withChild('label.govuk-label').withText('Why are you requesting closure of this query?');
+      const detailsDivLocator = locate('div.govuk-form-group').withChild('label.govuk-label').withText('Why are you requesting closure of this message?');
       await I.seeElement(detailsDivLocator);
-      await I.see('If you choose to request close this query, the IAC Service will mark this message thread as closed if deemed suitable for closure and no further responses will be made', detailsDivLocator.find('div.govuk-hint'));
+      await I.see('If you choose to request close this message, the Immigration & Asylum Chamber will mark this message thread as closed if deemed suitable for closure and no further responses will be made', detailsDivLocator.find('div.govuk-hint'));
       await I.seeElement(detailsDivLocator.find('textarea.govuk-textarea'));
 
       const uploadDivLocator = locate('div.govuk-inset-text').withChild('button.govuk-button').withText('Upload');

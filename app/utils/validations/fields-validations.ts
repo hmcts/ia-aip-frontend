@@ -242,7 +242,7 @@ function messageSendValidation(obj: object) {
   return validate(obj, schema);
 }
 
-function followUpQueryValidation(obj: object) {
+function followUpMessageValidation(obj: object) {
   const schema = Joi.object({
     messageDetails: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sendMessage.details })
   }).unknown();
@@ -505,10 +505,10 @@ function typeOfAppealValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
-function askQueryValidation(obj: object): null | ValidationErrors {
+function messageListValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     queries: Joi.string().required().messages({
-      'any.required': i18n.validationErrors.selectAskQuery
+      'any.required': i18n.validationErrors.selectmessageList
     })
   }).unknown();
 
@@ -860,7 +860,7 @@ export {
   statementOfTruthValidation,
   addressValidation,
   typeOfAppealValidation,
-  askQueryValidation,
+  messageListValidation,
   oocHrEeaValidation,
   appellantInUkValidation,
   reasonForAppealDecisionValidation,
@@ -897,7 +897,7 @@ export {
   statementValidation,
   messageSendValidation,
   futureDateValidation,
-  followUpQueryValidation,
+  followUpMessageValidation,
   nlrStatementValidation,
   deportationOrderOptionsValidation
 };

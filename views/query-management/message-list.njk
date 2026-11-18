@@ -1,4 +1,4 @@
-{% set pageTitleName = i18n.pages.askQuery.title %}
+{% set pageTitleName = i18n.pages.messageList.title %}
 {% extends "layout.njk" %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
@@ -24,14 +24,14 @@
 
   {% set options = (options.push(
     {
-      value: i18n.pages.askQuery.customQueryValue,
-      text: i18n.pages.askQuery.customQuery,
+      value: i18n.pages.messageList.customMessageValue,
+      text: i18n.pages.messageList.customMessage,
       hint: {
-        text: i18n.pages.askQuery.customQueryHintText
+        text: i18n.pages.messageList.customMessageHintText
       }
     }), options) %}
 
-  <form action="{{ paths.common.askQuery }}" method="post">
+  <form action="{{ paths.common.messageList }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukRadios({
       idPrefix: "query",
@@ -39,7 +39,7 @@
       name: "queries",
       fieldset: {
         legend: {
-          text:  i18n.pages.askQuery.title,
+          text:  i18n.pages.messageList.title,
           isPageHeading: true,
           classes: "govuk-fieldset__legend--l"
         }

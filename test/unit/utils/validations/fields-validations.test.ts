@@ -1,12 +1,12 @@
 import {
   appellantNamesValidation,
-  askForMoreTimeValidation, askQueryValidation,
+  askForMoreTimeValidation, messageListValidation,
   asylumSupportValidation,
   contactDetailsValidation,
   dateValidation,
   deportationOrderOptionsValidation,
   DOBValidation,
-  emailValidation, followUpQueryValidation, futureDateValidation,
+  emailValidation, followUpMessageValidation, futureDateValidation,
   gwfReferenceNumberValidation,
   helpWithFeesRefNumberValidation,
   helpWithFeesValidation,
@@ -1596,9 +1596,9 @@ describe('fields-validations', () => {
     });
   });
 
-  describe('askQueryValidation', () => {
+  describe('messageListValidation', () => {
     it('should fail validation on none given', () => {
-      const validationResult = askQueryValidation({ queries: undefined });
+      const validationResult = messageListValidation({ queries: undefined });
       const expectedResponse = {
         'queries': {
           'key': 'queries',
@@ -1610,7 +1610,7 @@ describe('fields-validations', () => {
     });
 
     it('should fail validation on empty value', () => {
-      const validationResult = askQueryValidation({ queries: '' });
+      const validationResult = messageListValidation({ queries: '' });
       const expectedResponse = {
         'queries': {
           'key': 'queries',
@@ -1622,7 +1622,7 @@ describe('fields-validations', () => {
     });
 
     it('should pass validation if some value given', () => {
-      const validationResult = askQueryValidation({ queries: 'anything' });
+      const validationResult = messageListValidation({ queries: 'anything' });
       expectToBeNull(validationResult);
     });
   });
@@ -1660,7 +1660,7 @@ describe('fields-validations', () => {
         'isHearingRelated': {
           'href': '#isHearingRelated',
           'key': 'isHearingRelated',
-          'text': 'Please select Yes if this query is related to a hearing'
+          'text': 'Please select Yes if this message is related to a hearing'
         },
         'messageDetails': {
           'href': '#messageDetails',
@@ -1676,14 +1676,14 @@ describe('fields-validations', () => {
     });
   });
 
-  describe('followUpQueryValidation', () => {
+  describe('followUpMessageValidation', () => {
     it('should validate message send fields', () => {
-      const validationResult = followUpQueryValidation({ messageSubject: 'givenNames', messageDetails: 'familyName'});
+      const validationResult = followUpMessageValidation({ messageSubject: 'givenNames', messageDetails: 'familyName'});
       expectToBeNull(validationResult);
     });
 
     it('should fail validation message send fields when empty', () => {
-      const validationResult = followUpQueryValidation({ messageSubject: '', messageDetails: '' });
+      const validationResult = followUpMessageValidation({ messageSubject: '', messageDetails: '' });
       expect(validationResult).to.deep.equal({
         'messageDetails': {
           'href': '#messageDetails',
@@ -1694,7 +1694,7 @@ describe('fields-validations', () => {
     });
 
     it('should fail validation message send fields when null', () => {
-      const validationResult = followUpQueryValidation({});
+      const validationResult = followUpMessageValidation({});
       expect(validationResult).to.deep.equal({
         'messageDetails': {
           'href': '#messageDetails',

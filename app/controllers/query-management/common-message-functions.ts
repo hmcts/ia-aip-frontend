@@ -4,7 +4,7 @@ import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { deleteTemporaryQueryFields } from '../../utils/utils';
+import { deleteTemporaryMessageFields } from '../../utils/utils';
 
 export function setMessageDetailsFromBody(req: Request, isInitialMessage: boolean) {
   req.session.appeal.messageDetails = req.body?.[i18n.pages.sendMessage.messageId];
@@ -15,7 +15,7 @@ export function setMessageDetailsFromBody(req: Request, isInitialMessage: boolea
   }
 }
 
-export function getQueryPath(path: string, id: string) {
+export function getMessagePath(path: string, id: string) {
   return id ? path.replace(':id', id) : path;
 }
 
@@ -25,17 +25,17 @@ export function uploadEvidence(path: string) {
       const isInitialMessage: boolean = !(req.params && Object.keys(req.params).includes('id'));
       setMessageDetailsFromBody(req, isInitialMessage);
 
-      const queryPath = getQueryPath(path, req?.params ? req.params['id'] : undefined);
+      const messagePath = getMessagePath(path, req?.params ? req.params['id'] : undefined);
       if (req.file) {
         const messageDocs: MulterFile[] = req.session.appeal.messageDocs ? [...req.session.appeal.messageDocs] : [];
         const id = messageDocs.length + 1;
         messageDocs.push({ ...req.file, id });
         req.session.appeal.messageDocs = messageDocs;
-        return res.redirect(queryPath);
+        return res.redirect(messagePath);
       } else if (res?.locals?.errorCode) {
-        return res.redirect(`${queryPath}?errorCode=${res.locals.errorCode}`);
+        return res.redirect(`${messagePath}?errorCode=${res.locals.errorCode}`);
       } else {
-        return res.redirect(`${queryPath}?errorCode=noFileSelected`);
+        return res.redirect(`${messagePath}?errorCode=noFileSelected`);
       }
     } catch (e) {
       next(e);
@@ -46,16 +46,16 @@ export function uploadEvidence(path: string) {
 export function deleteEvidence(path: string) {
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
-      const queryPath = getQueryPath(path, req?.params ? req.params['id'] : undefined);
+      const messagePath = getMessagePath(path, req?.params ? req.params['id'] : undefined);
       if (req.query.id) {
         const messageDocs: MulterFile[] = req.session.appeal.messageDocs ? [...req.session.appeal.messageDocs] : [];
         req.session.appeal.messageDocs = messageDocs.filter(file => file.id != req.query.id)
           .map((doc, index) => {
             return { ...doc, id: (index + 1) };
           });
-        return res.redirect(queryPath);
+        return res.redirect(messagePath);
       } else {
-        return res.redirect(`${queryPath}?errorCode=noFileExists`);
+        return res.redirect(`${messagePath}?errorCode=noFileExists`);
       }
     } catch (e) {
       next(e);
@@ -69,7 +69,7 @@ export function getAppellantFullName(req: Request) {
   return `${givenName} ${familyName}`;
 }
 
-export async function postQuery(req: Request, specificQmFieldsToAdd: QmQuery, documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService, extraBody = '') {
+export async function postMessage(req: Request, specificQmFieldsToAdd: QmQuery, documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService, extraBody = '') {
   const body: string = extraBody + req.session.appeal.messageDetails;
   const qmQuery: QmQuery = {
     id: randomUUID(),
@@ -101,9 +101,9 @@ export async function postQuery(req: Request, specificQmFieldsToAdd: QmQuery, do
     ...req.session.appeal,
     ...appealUpdated
   };
-  deleteTemporaryQueryFields(req);
+  deleteTemporaryMessageFields(req);
 }
 
 export function getNameFromId(query: QmQuery, idamId: string) {
-  return query?.createdBy === idamId ? 'You' : 'IAC Service';
+  return query?.createdBy === idamId ? 'You' : 'Immigration & Asylum Chamber';
 }

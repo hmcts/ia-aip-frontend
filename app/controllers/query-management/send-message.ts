@@ -7,40 +7,40 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { addDaysToDate } from '../../utils/date-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getFileUploadError } from '../../utils/upload-utils';
-import { deleteTemporaryQueryFields, formatTextForCYA, toIsoDate } from '../../utils/utils';
+import { deleteTemporaryMessageFields, formatTextForCYA, toIsoDate } from '../../utils/utils';
 import {
-  askQueryValidation,
+  messageListValidation,
   createStructuredError,
   futureDateValidation,
   messageSendValidation,
   statementValidation
 } from '../../utils/validations/fields-validations';
-import { deleteEvidence, postQuery, setMessageDetailsFromBody, uploadEvidence } from './common-query-functions';
+import { deleteEvidence, postMessage, setMessageDetailsFromBody, uploadEvidence } from './common-message-functions';
 
-function getAskQueryPage(req: Request, res: Response, next: NextFunction) {
+function getMessageListPage(req: Request, res: Response, next: NextFunction) {
   try {
-    deleteTemporaryQueryFields(req);
-    return res.render('query-management/ask-query.njk', {
+    deleteTemporaryMessageFields(req);
+    return res.render('query-management/message-list.njk', {
       previousPage: paths.common.overview,
-      commonQueries: i18n.pages.askQuery.commonQueries
+      commonQueries: i18n.pages.messageList.commonQueries
     });
   } catch (e) {
     next(e);
   }
 }
 
-function postAskQueryPage(req: Request, res: Response, next: NextFunction) {
+function postMessageListPage(req: Request, res: Response, next: NextFunction) {
   try {
-    const validation = askQueryValidation(req.body);
+    const validation = messageListValidation(req.body);
     if (validation) {
-      return res.render('query-management/ask-query.njk', {
+      return res.render('query-management/message-list.njk', {
         previousPage: paths.common.overview,
-        commonQueries: i18n.pages.askQuery.commonQueries,
+        commonQueries: i18n.pages.messageList.commonQueries,
         errors: validation,
         errorList: Object.values(validation)
       });
     }
-    const chosenCommonQueryValue = i18n.pages.askQuery.commonQueries
+    const chosenCommonQueryValue = i18n.pages.messageList.commonQueries
       .some(query => query.value === req.body['queries']);
     if (chosenCommonQueryValue) {
       return res.redirect(`${paths.common.commonQueries}?queryValue=${req.body['queries']}`);
@@ -55,13 +55,13 @@ function postAskQueryPage(req: Request, res: Response, next: NextFunction) {
 function getCommonQueryPage(req: Request, res: Response, next: NextFunction) {
   try {
     const queryValue = req?.query?.['queryValue'];
-    const queryObj = i18n.pages.askQuery.commonQueries
+    const queryObj = i18n.pages.messageList.commonQueries
       .find(query => query.value === queryValue);
     if (!queryObj) {
-      return res.redirect(paths.common.askQuery);
+      return res.redirect(paths.common.messageList);
     }
     return res.render('query-management/common-query.njk', {
-      previousPage: paths.common.askQuery,
+      previousPage: paths.common.messageList,
       query: queryObj
     });
   } catch (e) {
@@ -72,7 +72,7 @@ function getCommonQueryPage(req: Request, res: Response, next: NextFunction) {
 function getSendMessagePermissionPage(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('query-management/send-message-permission.njk', {
-      previousPage: paths.common.askQuery,
+      previousPage: paths.common.messageList,
       formAction: paths.common.sendMessagePermission
     });
   } catch (e) {
@@ -85,7 +85,7 @@ function postSendMessagePermissionPage(req: Request, res: Response, next: NextFu
     const validation = statementValidation(req.body, i18n.validationErrors.sendMessagePermissionStatement);
     if (validation) {
       return res.render('query-management/send-message-permission.njk', {
-        previousPage: paths.common.askQuery,
+        previousPage: paths.common.messageList,
         formAction: paths.common.sendMessagePermission,
         error: validation,
         errorList: Object.values(validation)
@@ -221,7 +221,7 @@ function buildSummaryRows(req: Request): SummaryRow[] {
   return summaryRows;
 }
 
-function postSendMessageCya(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService, postQueryFn = postQuery) {
+function postSendMessageCya(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService, postMessageFn = postMessage) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const specificQmFieldsToAdd: QmQuery = {
@@ -233,7 +233,7 @@ function postSendMessageCya(updateAppealService: UpdateAppealService, documentMa
         specificQmFieldsToAdd.hearingDate = toIsoDate(req.session.appeal.hearingDate);
       }
 
-      await postQueryFn(req, specificQmFieldsToAdd, documentManagementService, updateAppealService);
+      await postMessageFn(req, specificQmFieldsToAdd, documentManagementService, updateAppealService);
 
       return res.redirect(paths.common.sendMessageConfirmation);
     } catch (e) {
@@ -254,10 +254,10 @@ function getSendMessageConfirmation(req: Request, res: Response, next: NextFunct
   }
 }
 
-function setupAskQueryController(middleware: Middleware[], updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService): Router {
+function setupmessageListController(middleware: Middleware[], updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService): Router {
   const router = Router();
-  router.get(paths.common.askQuery, middleware, getAskQueryPage);
-  router.post(paths.common.askQuery, middleware, postAskQueryPage);
+  router.get(paths.common.messageList, middleware, getMessageListPage);
+  router.post(paths.common.messageList, middleware, postMessageListPage);
   router.get(paths.common.commonQueries, middleware, getCommonQueryPage);
   router.get(paths.common.sendMessagePermission, middleware, getSendMessagePermissionPage);
   router.post(paths.common.sendMessagePermission, middleware, postSendMessagePermissionPage);
@@ -272,8 +272,8 @@ function setupAskQueryController(middleware: Middleware[], updateAppealService: 
 }
 
 export {
-  getAskQueryPage,
-  postAskQueryPage,
+  getMessageListPage,
+  postMessageListPage,
   getCommonQueryPage,
   getSendMessagePermissionPage,
   postSendMessagePermissionPage,
@@ -283,5 +283,5 @@ export {
   buildSummaryRows,
   postSendMessageCya,
   getSendMessageConfirmation,
-  setupAskQueryController
+  setupmessageListController
 };

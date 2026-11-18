@@ -1139,10 +1139,10 @@
     },
     "overviewPage": {
       "title": "Your appeal overview",
-      "messageBannerHtml": "A new message is available to respond to in <a href='{{ paths.common.viewQueries }}' class='govuk-link'>view queries</a>.",
+      "messageBannerHtml": "A new message is available to respond to in <a href='{{ paths.common.viewMessages }}' class='govuk-link'>view messages</a>.",
       "contactUs": "Contact us for help",
-      "askQuery": "Ask a query",
-      "viewQueries": "View queries",
+      "messageList": "Send a message",
+      "viewMessages": "View messages",
       "askAQuestion": "Ask a question or get help in your language",
       "telephone": "Telephone:",
       "telephoneNumber": "0300 123 1711",
@@ -3481,8 +3481,8 @@
       "readMore": "Read more about appealing an immigration or asylum decision",
       "organisationHelp": "Find organisations that can help you with your appeal"
     },
-    "askQuery": {
-      "title": "Ask a query",
+    "messageList": {
+      "title": "What do you want to do",
       "commonQueries": [
         {
           "value": "requestForUpdates",
@@ -3520,9 +3520,9 @@
           ]
         }
       ],
-      "customQueryValue": "askQueryMessage",
-      "customQuery": "Ask a query via message",
-      "customQueryHintText": "We try to answer messages within 10 working days, but it could take longer.",
+      "customMessageValue": "messageListMessage",
+      "customMessage": "Send a message to the Immigration & Asylum Chamber",
+      "customMessageHintText": "We try to answer messages within 10 working days, but it could take longer.",
       "anythingElseTitle": "Anything else",
       "anythingElseText": "If you still need help, you can ",
       "sendAMessage": "send a message",
@@ -3532,16 +3532,16 @@
     "sendMessagePermission": {
       "title": "Message sharing permission",
       "subsectionOne": "Sharing this message with the other party",
-      "paragraphOne": "All messages sent using this system are shared with the other party in the case as well as being sent to the IAC Service.",
+      "paragraphOne": "All messages sent using this system are shared with the other party in the case as well as being sent to the Immigration & Asylum Chamber.",
       "subsectionTwo": "Asking not to share your message",
       "paragraphTwo": "You can ask not to share your message with the other party. The reasons for not sharing your message must be valid and the judge may decide that your message should be shared.",
-      "preList": "Valid reasons for keeping a message between you and the IAC Service include the message being about:",
+      "preList": "Valid reasons for keeping a message between you and the Immigration & Asylum Chamber include the message being about:",
       "listOptions": [
         "abc",
         "xyz"
       ],
-      "paragraphThree": "If you need to send a message to the IAC Service and you do not want the other party to see it, email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a>.",
-      "helpText": "Explain why the message should be kept between you and the IAC Service and make sure you include your full name and reference.",
+      "paragraphThree": "If you need to send a message to the Immigration & Asylum Chamber and you do not want the other party to see it, email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a>.",
+      "helpText": "Explain why the message should be kept between you and the Immigration & Asylum Chamber and make sure you include your full name and reference.",
       "statementTitle": "Confirm your message can be shared",
       "statement": "Yes, I agree my message can be shared with the other party"
     },
@@ -3554,8 +3554,8 @@
       "messageHint": "Include as many details as possible so case workers can respond to your message",
       "messageId": "messageDetails",
       "isHearingRelated": {
-        "label": "Is this query related to a hearing?",
-        "hint": "Select Yes if this query is related to a hearing and provide the date of the hearing",
+        "label": "Is this message related to a hearing?",
+        "hint": "Select Yes if this message is related to a hearing and provide the date of the hearing",
         "dateCya": "Date of hearing",
         "dateHint": "For example, 31 05 2019",
         "dateLegend": "The field to enter the date of your hearing"
@@ -3565,7 +3565,7 @@
       "uploadDocsHintOne": "Only upload documents related to your message.",
       "uploadDocsHintTwo": "To upload documents to progress your claim, use the appropriate upload options."
     },
-    "followUpQueryTitle": "Follow up query",
+    "followUpMessageTitle": "Follow-up message",
     "sendMessageConfirmation": {
       "title": "You have sent your message",
       "whatNextListItems": [
@@ -3573,11 +3573,11 @@
         "This should be by <b>{{ date }}</b> but may take longer than that"
       ]
     },
-    "viewQueries": {
-      "title": "View queries",
-      "legalRepTitle": "Previous legal rep queries",
+    "viewMessages": {
+      "title": "View messages",
+      "legalRepTitle": "Previous legal rep messages",
       "th": {
-        "subject": "Query subject",
+        "subject": "Message subject",
         "sentBy": "Sent by",
         "sentOn": "Sent on",
         "updatedBy": "Last updated by",
@@ -3585,12 +3585,12 @@
         "status": "Status"
       }
     },
-    "viewQuery": {
-      "title": "View query",
+    "viewMessage": {
+      "title": "View message",
       "card": {
-        "parentHeading": "Your original query",
-        "responseHeading": "IAC Service response",
-        "followUpHeading": "Your follow-up query",
+        "parentHeading": "Your original message",
+        "responseHeading": "Immigration & Asylum Chamber response",
+        "followUpHeading": "Your follow-up message",
         "closureRequestHeading": "Your closure request",
         "defaultChildHeading": "Message",
         "subject": "Message subject",
@@ -3599,27 +3599,27 @@
         "noAttachments": "No documents attached",
         "createdBy": "Sent by",
         "createdOn": "Sent on",
-        "isHearingRelated": "Is this query related to a hearing?",
+        "isHearingRelated": "Is this message related to a hearing?",
         "hearingDate": "Date of hearing"
       },
       "awaitingResponse": {
-        "heading": "The IAC Service are reviewing the message",
+        "heading": "The Immigration & Asylum Chamber are reviewing the message",
         "text": "Our team will read the message and try to respond by {{ responseByDate }}. It may take longer than this."
       },
       "responded": {
         "heading": "Send a follow-up message",
-        "text": "Only send follow-up messages related to the original query.",
+        "text": "Only send follow-up messages related to the original message.",
         "text2": "Sending follow-up messages that are not related will delay the court's response."
       },
       "followUpButton": "Send a follow-up message",
-      "closeQueryButton": "Request to close this query",
-      "closed": "This message has been closed by the IAC Service on {{ closedQueryDate }}"
+      "closeMessageButton": "Request to close this message",
+      "closed": "This message has been closed by the Immigration & Asylum Chamber on {{ closedMessageDate }}"
     },
-    "closeQuery": {
-      "title": "Request closure of query",
-      "desc": "Why are you requesting closure of this query?",
-      "help": "If you choose to request close this query, the IAC Service will mark this message thread as closed if deemed suitable for closure and no further responses will be made",
-      "messageDetailsPrefix": "Request for query closure. "
+    "closeMessage": {
+      "title": "Request closure of message",
+      "desc": "Why are you requesting closure of this message?",
+      "help": "If you choose to request close this message, the Immigration & Asylum Chamber will mark this message thread as closed if deemed suitable for closure and no further responses will be made",
+      "messageDetailsPrefix": "Request for message closure. "
     },
     "clarifyingQuestionsList": {
       "title": "Questions about your appeal",
@@ -4622,7 +4622,7 @@
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "selectAnAppealType": "Select an appeal type",
-    "selectAskQuery": "Select a query option",
+    "selectmessageList": "Select a query option",
     "appellantInUk": "Select yes if you are currently living in the United Kingdom",
     "nlrStatement": "You must select one of the options under the Non-legal representative statement of truth as you have a non-legal representative on this case",
     "oocHrEea": "Select yes if you are were living outside the United Kingdom when you made your application",
@@ -4753,14 +4753,14 @@
     "sendMessage": {
       "subject": "Please enter a message subject",
       "details": "Please enter message details",
-      "isHearingRelated": "Please select Yes if this query is related to a hearing",
+      "isHearingRelated": "Please select Yes if this message is related to a hearing",
       "date": {
         "missing": "Please enter the date of your hearing",
         "inPast": "Your hearing date must be in the future"
       }
     },
-    "closeQuery": {
-      "fieldRequired": "Please explain why you want to close this query"
+    "closeMessage": {
+      "fieldRequired": "Please explain why you want to close this message"
     },
     "emptyReasonAppealIsLate": "Enter the reason your appeal is late",
     "reasonForAppeal": {
@@ -4916,7 +4916,7 @@
     },
     "contactUs": {
       "heading": "Contact us for help",
-      "content": "<div><p>Ask a question or get help in your language.</p></div><div><p class='govuk-body govuk-!-margin-bottom-0'>Telephone: 0300 123 1711</p></div><div><p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>Monday to Friday, 8:30am to 5pm</p><a href='https://www.gov.uk/call-charges' target='_blank' rel='noopener noreferrer' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>Find out about call charges (opens in a new tab)</a><p>Email: <a href='mailto:contactia@justice.gov.uk' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>contactia@justice.gov.uk</a></p><p>We aim to get back to you within 5 days.</p></div><div><p>If you would like to message the IAC Service via the online messaging service, please <a href='/ask-a-query' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>ask a query</a>.</p></div><div><p> We aim to get back to you via message within 10 days</p></div>"
+      "content": "<div><p>Ask a question or get help in your language.</p></div><div><p class='govuk-body govuk-!-margin-bottom-0'>Telephone: 0300 123 1711</p></div><div><p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>Monday to Friday, 8:30am to 5pm</p><a href='https://www.gov.uk/call-charges' target='_blank' rel='noopener noreferrer' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>Find out about call charges (opens in a new tab)</a><p>Email: <a href='mailto:contactia@justice.gov.uk' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>contactia@justice.gov.uk</a></p><p>We aim to get back to you within 5 days.</p></div><div><p>If you would like to message the Immigration & Asylum Chamber via the online messaging service, please <a href='' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>send a message</a>.</p></div><div><p> We aim to get back to you via message within 10 days</p></div>"
     },
     "contactUsErrorPages": {
       "telephone": "Telephone: 0300 123 1711",

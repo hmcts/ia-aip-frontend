@@ -2,14 +2,14 @@ import { Request, Response } from 'express';
 import moment from 'moment';
 import {
   buildSummaryRows,
-  getAskQueryPage,
+  getMessageListPage,
   getCommonQueryPage, getSendMessageConfirmation, getSendMessageCya,
   getSendMessagePage,
   getSendMessagePermissionPage,
-  postAskQueryPage, postSendMessageCya,
+  postMessageListPage, postSendMessageCya,
   postSendMessagePage,
-  postSendMessagePermissionPage, setupAskQueryController
-} from '../../../../app/controllers/query-management/ask-query';
+  postSendMessagePermissionPage, setupmessageListController
+} from '../../../../app/controllers/query-management/send-message';
 import { paths } from '../../../../app/paths';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
@@ -17,7 +17,7 @@ import i18n from '../../../../locale/en.json';
 import { buildExpectedError, buildExpectedRequiredError, expect, makeFileMock, sinon } from '../../../utils/testUtils';
 const express = require('express');
 
-describe('Ask query controller', () => {
+describe('Send message controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -26,7 +26,7 @@ describe('Ask query controller', () => {
   let redirectStub: sinon.SinonStub;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
-  const commonQueryVals: string[] = i18n.pages.askQuery.commonQueries.map(query => query.value);
+  const commonQueryVals: string[] = i18n.pages.messageList.commonQueries.map(query => query.value);
   const hearingDate: AppealDate = { day: '01', month: '01', year: '1999' };
 
   beforeEach(() => {
@@ -62,7 +62,7 @@ describe('Ask query controller', () => {
     sandbox.restore();
   });
 
-  describe('getAskQueryPage', () => {
+  describe('getMessageListPage', () => {
     it('renders page correctly and deletes temporary query fields', () => {
       req.session.appeal.messageSubject = 'someValue';
       req.session.appeal.messageDetails = 'someValue';
@@ -70,11 +70,11 @@ describe('Ask query controller', () => {
       req.session.appeal.hearingDate = { day: '1', month: '1', year: '1999' };
       req.session.appeal.isHearingRelated = 'Yes';
 
-      getAskQueryPage(req as Request, res as Response, next);
+      getMessageListPage(req as Request, res as Response, next);
 
-      expectRenderedCalledOnceWithArgs(renderStub, 'query-management/ask-query.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'query-management/message-list.njk', {
         previousPage: paths.common.overview,
-        commonQueries: i18n.pages.askQuery.commonQueries
+        commonQueries: i18n.pages.messageList.commonQueries
       });
 
       expect(req.session.appeal.messageSubject).to.be.undefined;
@@ -88,20 +88,20 @@ describe('Ask query controller', () => {
       const error = new Error('the error');
       renderStub.throws(error);
 
-      getAskQueryPage(req as Request, res as Response, next);
+      getMessageListPage(req as Request, res as Response, next);
 
       expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
-  describe('postAskQueryPage', () => {
+  describe('postMessageListPage', () => {
     it('renders page with error if validation fails', () => {
-      postAskQueryPage(req as Request, res as Response, next);
+      postMessageListPage(req as Request, res as Response, next);
 
       const error = buildExpectedError('queries', 'Select a query option');
-      expectRenderedCalledOnceWithArgs(renderStub, 'query-management/ask-query.njk', {
+      expectRenderedCalledOnceWithArgs(renderStub, 'query-management/message-list.njk', {
         previousPage: paths.common.overview,
-        commonQueries: i18n.pages.askQuery.commonQueries,
+        commonQueries: i18n.pages.messageList.commonQueries,
         errors: { queries: error },
         errorList: [error]
       });
@@ -113,9 +113,9 @@ describe('Ask query controller', () => {
       it(`redirects to common query page if ${queryVal} chosen`, () => {
         req.body['queries'] = queryVal;
 
-        postAskQueryPage(req as Request, res as Response, next);
+        postMessageListPage(req as Request, res as Response, next);
 
-        expect(redirectStub).to.be.calledOnceWith(`/ask-a-query/view-answer?queryValue=${queryVal}`);
+        expect(redirectStub).to.be.calledOnceWith(`/message-list/view-common-query?queryValue=${queryVal}`);
         expect(renderStub).to.not.be.called;
       });
     }
@@ -125,7 +125,7 @@ describe('Ask query controller', () => {
       expect(commonQueryVals).to.not.contain(queryVal);
       req.body['queries'] = queryVal;
 
-      postAskQueryPage(req as Request, res as Response, next);
+      postMessageListPage(req as Request, res as Response, next);
 
       expect(redirectStub).to.be.calledOnceWith(paths.common.sendMessagePermission);
       expect(renderStub).to.not.be.called;
@@ -135,19 +135,19 @@ describe('Ask query controller', () => {
       const error = new Error('the error');
       renderStub.throws(error);
 
-      postAskQueryPage(req as Request, res as Response, next);
+      postMessageListPage(req as Request, res as Response, next);
 
       expect(next.calledOnceWith(error)).to.equal(true);
     });
   });
 
   describe('getCommonQueryPage', () => {
-    it('redirects to askQuery page if no value found', () => {
+    it('redirects to messageList page if no value found', () => {
       req.query['queryValue'] = 'someNonCommonQueryVal';
 
       getCommonQueryPage(req as Request, res as Response, next);
 
-      expect(redirectStub).to.be.calledOnceWith(paths.common.askQuery);
+      expect(redirectStub).to.be.calledOnceWith(paths.common.messageList);
       expect(renderStub).to.not.be.called;
     });
 
@@ -159,8 +159,8 @@ describe('Ask query controller', () => {
 
         expect(redirectStub).to.not.be.called;
         expectRenderedCalledOnceWithArgs(renderStub, 'query-management/common-query.njk', {
-          previousPage: paths.common.askQuery,
-          query: i18n.pages.askQuery.commonQueries.find(query => query.value === queryVal)
+          previousPage: paths.common.messageList,
+          query: i18n.pages.messageList.commonQueries.find(query => query.value === queryVal)
         });
       });
     }
@@ -181,7 +181,7 @@ describe('Ask query controller', () => {
 
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message-permission.njk', {
         formAction: paths.common.sendMessagePermission,
-        previousPage: paths.common.askQuery
+        previousPage: paths.common.messageList
       });
     });
 
@@ -202,7 +202,7 @@ describe('Ask query controller', () => {
       const error = buildExpectedError('statement', i18n.validationErrors.sendMessagePermissionStatement);
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message-permission.njk', {
         formAction: paths.common.sendMessagePermission,
-        previousPage: paths.common.askQuery,
+        previousPage: paths.common.messageList,
         error: { statement: error },
         errorList: [error]
       });
@@ -299,7 +299,7 @@ describe('Ask query controller', () => {
       postSendMessagePage(req as Request, res as Response, next);
       const subjectError = buildExpectedRequiredError('messageSubject');
       const detailsError = buildExpectedRequiredError('messageDetails');
-      const hearingError = buildExpectedError('isHearingRelated', 'Please select Yes if this query is related to a hearing');
+      const hearingError = buildExpectedError('isHearingRelated', 'Please select Yes if this message is related to a hearing');
       expectRenderedCalledOnceWithArgs(renderStub, 'query-management/send-message.njk',
         {
           previousPage: paths.common.sendMessagePermission,
@@ -313,7 +313,7 @@ describe('Ask query controller', () => {
           shouldAskAboutHearing: true,
           isHearingRelated: undefined,
           hearingDate: { day: undefined, month: undefined, year: undefined },
-          hearingErrorMessage: 'Please select Yes if this query is related to a hearing',
+          hearingErrorMessage: 'Please select Yes if this message is related to a hearing',
           formAction: paths.common.sendMessage,
           errors: { isHearingRelated: hearingError, messageDetails: detailsError, messageSubject: subjectError },
           errorList: [subjectError, detailsError, hearingError]
@@ -522,7 +522,7 @@ describe('Ask query controller', () => {
         value: { html: 'subject' },
         actions: {
           items: [{
-            href: '/ask-a-query/send-message',
+            href: '/send-message',
             text: 'Change',
             visuallyHiddenText: 'Message subject'
           }]
@@ -532,19 +532,19 @@ describe('Ask query controller', () => {
         value: { html: 'details' },
         actions: {
           items: [{
-            href: '/ask-a-query/send-message',
+            href: '/send-message',
             text: 'Change',
             visuallyHiddenText: 'Message details'
           }]
         }
       }, {
-        key: { text: 'Is this query related to a hearing?' },
+        key: { text: 'Is this message related to a hearing?' },
         value: { html: 'Yes' },
         actions: {
           items: [{
-            href: '/ask-a-query/send-message',
+            href: '/send-message',
             text: 'Change',
-            visuallyHiddenText: 'Is this query related to a hearing?'
+            visuallyHiddenText: 'Is this message related to a hearing?'
           }]
         }
       }, {
@@ -552,7 +552,7 @@ describe('Ask query controller', () => {
         value: { html: '01 January 1999' },
         actions: {
           items: [{
-            href: '/ask-a-query/send-message',
+            href: '/send-message',
             text: 'Change',
             visuallyHiddenText: 'Date of hearing'
           }]
@@ -574,7 +574,7 @@ describe('Ask query controller', () => {
         value: { html: 'subject' },
         actions: {
           items: [{
-            href: '/ask-a-query/send-message',
+            href: '/send-message',
             text: 'Change',
             visuallyHiddenText: 'Message subject'
           }]
@@ -584,19 +584,19 @@ describe('Ask query controller', () => {
         value: { html: 'details' },
         actions: {
           items: [{
-            href: '/ask-a-query/send-message',
+            href: '/send-message',
             text: 'Change',
             visuallyHiddenText: 'Message details'
           }]
         }
       }, {
-        key: { text: 'Is this query related to a hearing?' },
+        key: { text: 'Is this message related to a hearing?' },
         value: { html: 'No' },
         actions: {
           items: [{
-            href: '/ask-a-query/send-message',
+            href: '/send-message',
             text: 'Change',
-            visuallyHiddenText: 'Is this query related to a hearing?'
+            visuallyHiddenText: 'Is this message related to a hearing?'
           }]
         }
       }, {
@@ -604,7 +604,7 @@ describe('Ask query controller', () => {
         value: { html: 'fileone.pdf<br>filetwo.pdf' },
         actions: {
           items: [{
-            href: '/ask-a-query/send-message',
+            href: '/send-message',
             text: 'Change',
             visuallyHiddenText: 'Supporting documents'
           }]
@@ -697,14 +697,14 @@ describe('Ask query controller', () => {
     });
   });
 
-  describe('setupAskQueryController', () => {
+  describe('setupmessageListController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       
-      setupAskQueryController([], updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService);
-      expect(routerGetStub.calledWith(paths.common.askQuery)).to.equal(true);
-      expect(routerPostStub.calledWith(paths.common.askQuery)).to.equal(true);
+      setupmessageListController([], updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService);
+      expect(routerGetStub.calledWith(paths.common.messageList)).to.equal(true);
+      expect(routerPostStub.calledWith(paths.common.messageList)).to.equal(true);
       expect(routerGetStub.calledWith(paths.common.commonQueries)).to.equal(true);
       expect(routerGetStub.calledWith(paths.common.sendMessagePermission)).to.equal(true);
       expect(routerPostStub.calledWith(paths.common.sendMessagePermission)).to.equal(true);

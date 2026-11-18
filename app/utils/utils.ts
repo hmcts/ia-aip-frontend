@@ -314,7 +314,7 @@ export function handleNlrStatementValidation(req: Request, res: Response, render
   return true;
 }
 
-export function deleteTemporaryQueryFields(req: Request) {
+export function deleteTemporaryMessageFields(req: Request) {
   delete req.session.appeal.messageSubject;
   delete req.session.appeal.messageDetails;
   delete req.session.appeal.messageDocs;

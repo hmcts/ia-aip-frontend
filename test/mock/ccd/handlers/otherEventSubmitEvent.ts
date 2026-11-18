@@ -56,6 +56,7 @@ function getNextState(body: EventSubmitBody): string {
     case 'joinAppealConfirmation':
     case 'removeNonLegalRep':
     case 'nlrDetailsUpdated':
+    case 'queryManagementRaiseQuery':
       return null;
     default:
       throw new Error(`Event type ${eventId} no next state set`);

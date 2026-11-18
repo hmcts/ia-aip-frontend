@@ -2,6 +2,7 @@
 {% extends "layout.njk" %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% block content %}
   {% if errorList %}
@@ -19,6 +20,11 @@
       isPageHeading: true
     }
     }) %}
+    {% if question.insetText %}
+      {{ govukInsetText({
+        text: question.insetText
+      }) }}
+    {% endif %}
     {% if question.description %}
         {{ govukTextarea({
             name: question.name,

@@ -5,6 +5,7 @@ import appealSubmittedWithNlrId3 from './data/appeal-submitted-with-nlr-id-3';
 import appealSubmittedWithNlrIdWithSponsor from './data/appeal-submitted-with-nlr-id-with-sponsor';
 import appealSubmittedWithNlrIdWithSponsor2 from './data/appeal-submitted-with-nlr-id-with-sponsor-2';
 import appealSubmittedWithNoNlrDetails from './data/appeal-submitted-with-no-nlr-details';
+import appealSubmittedWithQueries from './data/appeal-submitted-with-queries';
 import appealSubmittedWithNlrDetails from './data/appealSubmittedWithNlrDetails';
 import appealSubmittedWithNlrDetails2 from './data/appealSubmittedWithNlrDetails-2';
 import appealSubmittedWithNlrEmailWithoutSponsor from './data/appealSubmittedWithNlrEmailWithoutSponsor';
@@ -13,10 +14,14 @@ import appealUpToFeeChoice from './data/appealUpToFeeChoice';
 import appealWithHomeOfficeDetails from './data/appealWithHomeOfficeDetails';
 import appealWithHomeOfficeDetailsAndName from './data/appealWithHomeOfficeDetailsAndName';
 import appealWithHomeOfficeDetailsNameAndDateOfBirth from './data/appealWithHomeOfficeDetailsNameAndDateOfBirth';
-import appealWithHomeOfficeDetailsNameDateOfBirthAndNationality from './data/appealWithHomeOfficeDetailsNameDateOfBirthAndNationality';
-import appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal from './data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal';
-import appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress from './data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress';
-import appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal from './data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal';
+import appealWithHomeOfficeDetailsNameDateOfBirthAndNationality
+  from './data/appealWithHomeOfficeDetailsNameDateOfBirthAndNationality';
+import appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal
+  from './data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal';
+import appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress
+  from './data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndAddress';
+import appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal
+  from './data/appealWithHomeOfficeDetailsNameDateOfBirthNationalityAndReasonForAppeal';
 import appealWithHomeOfficeReference from './data/appealWithHomeOfficeReference';
 import startAppealUpToHasSponsorOrNlr from './data/appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr';
 import startAppealUpToHasSponsorOrNlr2 from './data/appealWithPersonalAndContactDetailsUpToHasSponsorOrNlr-2';
@@ -31,11 +36,10 @@ import clarifyingQuestionsCaseDataWithTimeExtensions from './data/clarifying-que
 import cmaListed from './data/cmaListed';
 import decided from './data/decided';
 import endedAppeal from './data/endedAppeal';
-import euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal from './data/euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal';
+import euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal
+  from './data/euOrEUSSOrHUAppealWithHomeOfficeDetailsNameDateOfBirthNationalityAddressAndReasonForAppeal';
 import ftpaOutOfTimeApplicationStarted from './data/ftpa-out-of-time-application-started';
-import { multipleAppealCase1001 } from './data/multiple-appeals';
-import { multipleAppealCase1002 } from './data/multiple-appeals';
-import { multipleAppealCase1003 } from './data/multiple-appeals';
+import { multipleAppealCase1001, multipleAppealCase1002, multipleAppealCase1003 } from './data/multiple-appeals';
 import multipleAppealsES from './data/multiple-appeals-es';
 import multipleAppealsNlrES from './data/multiple-appeals-nlr-es';
 import outOfTimeDecisionGranted from './data/out-of-time-decision-granted';
@@ -47,7 +51,8 @@ import partialAwaitingReasonsForAppealCaseData from './data/partial-awaiting-rea
 import startRepresentingYourself from './data/start-representing-yourself';
 import appealSubmittedSTF24W from './data/statutory-timeframe-24-weeks/appeal-submitted';
 import awaitingReasonsForAppealSTF24W from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal';
-import awaitingReasonsForAppealPartialSTF24W from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-partial';
+import awaitingReasonsForAppealPartialSTF24W
+  from './data/statutory-timeframe-24-weeks/awaiting-reasons-for-appeal-partial';
 import awaitingRespondentEvidenceSTF24W from './data/statutory-timeframe-24-weeks/awaiting-respondent-evidence';
 import caseUnderReviewSTF24W from './data/statutory-timeframe-24-weeks/case-under-review';
 import clarifyingQuestionsSTF24W from './data/statutory-timeframe-24-weeks/clarifying-questions';
@@ -61,8 +66,10 @@ import reasonsForAppealSubmittedSTF24W from './data/statutory-timeframe-24-weeks
 import respondentReviewSTF24W from './data/statutory-timeframe-24-weeks/respondent-review';
 import submitHearingRequirementsSTF24W from './data/statutory-timeframe-24-weeks/submit-hearing-requirements';
 import submitHearingRequirementsAccessNeedsCompleted from './data/submit-hearing-requirements-access-needs-complete';
-import submitHearingRequirementsAccessNeedsCompletedNlrAttending from './data/submit-hearing-requirements-access-needs-complete-nlr-attending';
-import submitHearingRequirementsAccessNeedsCompletedNoActiveNlr from './data/submit-hearing-requirements-access-needs-complete-no-active-nlr';
+import submitHearingRequirementsAccessNeedsCompletedNlrAttending
+  from './data/submit-hearing-requirements-access-needs-complete-nlr-attending';
+import submitHearingRequirementsAccessNeedsCompletedNoActiveNlr
+  from './data/submit-hearing-requirements-access-needs-complete-no-active-nlr';
 import submittedCmaRequirements from './data/submitted-cma-requirements';
 import uploadAddendumEvidence from './data/upload-addendum-evidence';
 
@@ -131,6 +138,7 @@ export default {
   submitHearingRequirementsAccessNeedsCompleted,
   submitHearingRequirementsAccessNeedsCompletedNlrAttending,
   submitHearingRequirementsAccessNeedsCompletedNoActiveNlr,
+  appealSubmittedWithQueries,
   multipleAppealCase1001,
   multipleAppealCase1002,
   multipleAppealCase1003

@@ -9,10 +9,6 @@ module.exports = {
       I.amOnPage(testUrl + paths.common.eligible);
     });
 
-    When('I click continue', async () => {
-      I.click('Continue');
-    });
-
     Then('I should see the eligible page', async () => {
       I.seeInSource(i18n.pages.eligiblePage.heading);
     });

@@ -335,7 +335,31 @@ const paths = {
     cookies: '/cookie-policy',
     termsAndConditions: '/terms-and-conditions',
     privacyPolicy: '/privacy-policy',
-    accessibility: '/accessibility-statement'
+    accessibility: '/accessibility-statement',
+
+    //Query Management
+    messageList: '/message-list',
+    commonQueries: '/message-list/view-common-query',
+    sendMessagePermission: '/send-message-permission',
+    sendMessage: '/send-message',
+    sendMessageUpload: '/send-message/upload',
+    sendMessageDelete: '/send-message/delete',
+    sendMessageCya: '/send-message/confirm',
+    sendMessageConfirmation: '/send-message/confirmation',
+    viewMessages: '/view-messages',
+    viewMessage: '/view-message/:id',
+    viewLrMessage: '/view-lr-message/:id',
+    followUpMessagePermission: '/follow-up-message-permission/:id',
+    followUpMessage: '/follow-up-message/:id',
+    followUpMessageUpload: '/follow-up-message/upload/:id',
+    followUpMessageDelete: '/follow-up-message/delete/:id',
+    followUpMessageCya: '/follow-up-message/confirm/:id',
+    followUpMessageConfirmation: '/follow-up-message/confirmation/:id',
+    closeMessage: '/close-message/:id',
+    closeMessageUpload: '/close-message/upload/:id',
+    closeMessageDelete: '/close-message/delete/:id',
+    closeMessageCya: '/close-message/confirm/:id',
+    closeMessageConfirmation: '/close-message/confirmation/:id',
   },
   nonLegalRep: {
     // Non Legal Rep endpoints

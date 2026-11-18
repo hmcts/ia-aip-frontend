@@ -192,6 +192,10 @@ import {
 } from './controllers/non-legal-representative/remove-non-legal-representative';
 import { setupUpdateNlrDetailsControllers } from './controllers/non-legal-representative/update-nlr-details';
 import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-country/ooc-feature-toggle';
+import { setupCloseMessageController } from './controllers/query-management/close-message';
+import { setupFollowUpMessageController } from './controllers/query-management/follow-up-message';
+import { setupmessageListController } from './controllers/query-management/send-message';
+import { setupViewMessageController } from './controllers/query-management/view-message';
 import {
   setupCheckAndSendController as setupReasonsForAppealCheckAndSendController
 } from './controllers/reasons-for-appeal/check-and-send';
@@ -369,6 +373,10 @@ const outOfCountryFeatureToggleController = setupOutOfCountryFeatureToggleContro
 
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 const deportationOrderController = setupDeportationOrderController(middleware, updateAppealService);
+const messageListController = setupmessageListController(middleware, updateAppealService, documentManagementService);
+const followUpQueryController = setupFollowUpMessageController(middleware, updateAppealService, documentManagementService);
+const closeMessageController = setupCloseMessageController(middleware, updateAppealService, documentManagementService);
+const viewMessageController = setupViewMessageController(middleware);
 
 // not protected by idam
 router.use(indexController);
@@ -503,5 +511,9 @@ router.use(detailViewersController);
 router.use(documentsPageController);
 router.use(forbiddenController);
 router.use(deportationOrderController);
+router.use(messageListController);
+router.use(followUpQueryController);
+router.use(closeMessageController);
+router.use(viewMessageController);
 
 export { router };

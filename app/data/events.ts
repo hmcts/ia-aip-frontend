@@ -168,6 +168,11 @@ export const Events = {
     summary: 'Create case summary',
     description: 'Create case summary'
   },
+  ASK_QUERY: {
+    id: 'queryManagementRaiseQuery',
+    summary: 'Raise Query',
+    description: 'Query management raise query'
+  },
   APPLY_FOR_FTPA_APPELLANT: {
     id: 'applyForFTPAAppellant',
     summary: 'Apply for FTPA Appellant',

@@ -1,4 +1,4 @@
-@updateHearingRequirementsFeature @testy
+@updateHearingRequirementsFeature
 Feature: Make Application to update hearing requirements
   In order to update hearing requirements for my hearing
   As a citizen

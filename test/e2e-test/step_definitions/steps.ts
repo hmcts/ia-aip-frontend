@@ -40,6 +40,7 @@ const { nationality } = require('../pages/personal-details/personal-details-nati
 const { oocAddress } = require('../pages/personal-details/personal-details-ooc-address');
 const { selectAddress } = require('../pages/personal-details/personal-details-select-address');
 const { uploadAddendumEvidence } = require('../pages/provide-more-evidence/upload-addendum-evidence');
+const { queryManagement } = require('../pages/query-management/query-management');
 const { reasonsForAppeal } = require('../pages/reasons-for-appeal/reasons-for-appeal');
 const { reasonsForAppealConfirmation } = require('../pages/reasons-for-appeal/reasons-for-appeal-confirmation');
 const { reasonsForAppealCYA } = require('../pages/reasons-for-appeal/reasons-for-appeal-cya');
@@ -58,7 +59,7 @@ const { manualCaseProgression } = require('../service/manual-case-progression-se
 const { I } = inject();
 
 Before((test) => {
-  test.retries(15);
+  test.retries(0);
 });
 
 common(I);
@@ -108,6 +109,7 @@ clarifyingQuestions(I);
 submitHearingRequirements(I);
 cmaRequirements(I);
 uploadAddendumEvidence(I);
+queryManagement(I);
 makeHearingApplication(I);
 makeAppealApplication(I);
 changeRepresentation(I);

@@ -4,21 +4,21 @@ import { expect } from '../../utils/testUtils';
 describe('transformPerspective', () => {
   describe('primitive values', () => {
     it('returns null unchanged', () => {
-      expect(transformPerspective(null, true)).to.be.null;
-      expect(transformPerspective(null, true) || 'none').to.equal('none');
+      expect(transformPerspective(null)).to.be.null;
+      expect(transformPerspective(null) || 'none').to.equal('none');
     });
 
     it('returns undefined unchanged', () => {
-      expect(transformPerspective(undefined, true)).to.be.undefined;
-      expect(transformPerspective(undefined, true) || 'none').to.equal('none');
+      expect(transformPerspective(undefined)).to.be.undefined;
+      expect(transformPerspective(undefined) || 'none').to.equal('none');
     });
 
     it('returns numbers unchanged', () => {
-      expect(transformPerspective(42, true)).to.equal(42);
+      expect(transformPerspective(42)).to.equal(42);
     });
 
     it('returns booleans unchanged', () => {
-      expect(transformPerspective(true, true)).to.equal(true);
+      expect(transformPerspective(true)).to.equal(true);
     });
   });
 
@@ -32,7 +32,7 @@ describe('transformPerspective', () => {
         }
       };
 
-      const result = transformPerspective(input, true);
+      const result = transformPerspective(input);
 
       expect(result).to.deep.equal({
         title: 'The appellant disagrees',
@@ -45,7 +45,7 @@ describe('transformPerspective', () => {
     it('transforms arrays', () => {
       const input = ['You disagree', 'You must respond'];
 
-      const result = transformPerspective(input, true);
+      const result = transformPerspective(input);
 
       expect(result).to.deep.equal([
         'The appellant disagrees',
@@ -57,7 +57,7 @@ describe('transformPerspective', () => {
       const input = { text: 'You disagree' };
       const clone = JSON.parse(JSON.stringify(input));
 
-      transformPerspective(input, true);
+      transformPerspective(input);
 
       expect(input).to.deep.equal(clone);
     });
@@ -67,28 +67,28 @@ describe('transformPerspective', () => {
   describe('structured phrase replacements', () => {
 
     it('replaces "You have"', () => {
-      expect(transformPerspective('You have applied', true))
+      expect(transformPerspective('You have applied'))
         .to.equal('The appellant has applied');
     });
 
     it('replaces "You disagree"', () => {
-      expect(transformPerspective('You disagree', true))
+      expect(transformPerspective('You disagree'))
         .to.equal('The appellant disagrees');
     });
 
     it('replaces "Tell us"', () => {
-      expect(transformPerspective('Tell us why', true))
+      expect(transformPerspective('Tell us why'))
         .to.equal('The appellant needs to tell us why');
     });
 
     it('replaces numbered call instruction', () => {
-      expect(transformPerspective('1. Call the tribunal', true))
+      expect(transformPerspective('1. Call the tribunal'))
         .to.equal('1. They should call the tribunal');
     });
 
     it('handles complex sentence rule', () => {
       const input = 'You might not get more time. You must act.';
-      const output = transformPerspective(input, true);
+      const output = transformPerspective(input);
 
       expect(output)
         .to.equal('The appellant might not get more time. They must act.');
@@ -99,22 +99,22 @@ describe('transformPerspective', () => {
   describe('lowercase replacements', () => {
 
     it('replaces "you disagree"', () => {
-      expect(transformPerspective('If you disagree', true))
+      expect(transformPerspective('If you disagree'))
         .to.equal('If the appellant disagrees');
     });
 
     it('replaces "you do"', () => {
-      expect(transformPerspective('If you do not respond', true))
+      expect(transformPerspective('If you do not respond'))
         .to.equal('If they do not respond');
     });
 
     it('replaces "you believe"', () => {
-      expect(transformPerspective('you believe this is wrong', true))
+      expect(transformPerspective('you believe this is wrong'))
         .to.equal('they believe this is wrong');
     });
 
     it('replaces "with you"', () => {
-      expect(transformPerspective('We will meet with you', true))
+      expect(transformPerspective('We will meet with you'))
         .to.equal('We will meet with them');
     });
 
@@ -123,17 +123,17 @@ describe('transformPerspective', () => {
   describe('possessive handling', () => {
 
     it('replaces "Your appeal"', () => {
-      expect(transformPerspective('Your appeal is listed', true))
+      expect(transformPerspective('Your appeal is listed'))
         .to.equal("The appellant's appeal is listed");
     });
 
     it('replaces "your application"', () => {
-      expect(transformPerspective('your application was refused', true))
+      expect(transformPerspective('your application was refused'))
         .to.equal("the appellant's application was refused");
     });
 
     it('replaces "yourself"', () => {
-      expect(transformPerspective('You can represent yourself', true))
+      expect(transformPerspective('You can represent yourself'))
         .to.equal('The appellant can represent themself');
     });
 
@@ -143,7 +143,7 @@ describe('transformPerspective', () => {
 
     it('fixes double appellant send application case', () => {
       const input = "The appellant must send the appellant's application";
-      const result = transformPerspective(input, true);
+      const result = transformPerspective(input);
 
       expect(result)
         .to.equal('They must send their application');
@@ -151,7 +151,7 @@ describe('transformPerspective', () => {
 
     it('fixes "they do not pay the fee"', () => {
       const input = 'they do not pay the fee';
-      const result = transformPerspective(input, true);
+      const result = transformPerspective(input);
 
       expect(result)
         .to.equal('the appellant does not pay the fee');
@@ -165,7 +165,7 @@ describe('transformPerspective', () => {
       const input =
         'Click <a href={{ paths.makeApplication.judgesReview }}>here</a> now';
 
-      const result = transformPerspective(input, true);
+      const result = transformPerspective(input);
 
       expect(result).to.equal('Click here now');
     });
@@ -174,7 +174,7 @@ describe('transformPerspective', () => {
       const input =
         'Click <a href="{{ paths.common.provideMoreEvidenceForm }}">here</a> now';
 
-      const result = transformPerspective(input, true);
+      const result = transformPerspective(input);
 
       expect(result).to.equal('Click here now');
     });
@@ -183,7 +183,7 @@ describe('transformPerspective', () => {
       const input =
         'Apply <a href={{ paths.ftpa.ftpaApplication }}>here</a> today';
 
-      const result = transformPerspective(input, true);
+      const result = transformPerspective(input);
 
       expect(result).to.equal('Apply  today');
     });
@@ -194,7 +194,7 @@ describe('transformPerspective', () => {
 
     it('does not modify handlebars expressions', () => {
       const input = 'You must respond by {{ deadline }}';
-      const result = transformPerspective(input, true);
+      const result = transformPerspective(input);
 
       expect(result)
         .to.equal('The appellant must respond by {{ deadline }}');
@@ -204,7 +204,7 @@ describe('transformPerspective', () => {
       const input =
         'You have until {{ date }} to send {{ document }}';
 
-      const result = transformPerspective(input, true);
+      const result = transformPerspective(input);
 
       expect(result)
         .to.equal('The appellant has until {{ date }} to send {{ document }}');
@@ -214,7 +214,7 @@ describe('transformPerspective', () => {
   describe('HTML preservation', () => {
     it('preserves HTML tags', () => {
       const input = '<p>You disagree with the decision</p>';
-      const result = transformPerspective(input, true);
+      const result = transformPerspective(input);
 
       expect(result)
         .to.equal('<p>The appellant disagrees with the decision</p>');
@@ -1016,7 +1016,7 @@ describe('transformPerspective', () => {
         }
       }
     };
-    const result = transformPerspective(bigData, true);
+    const result = transformPerspective(bigData);
     expect(result).to.deep.equal(expectedData);
   });
 });

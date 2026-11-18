@@ -5,6 +5,12 @@
 {% set i18nToUse = i18nTransformed if isNonLegalRep else i18n %}
 
 {% block content %}
+  {% if hasNewMessage %}
+    {{ govukNotificationBanner({
+      titleText: 'Important',
+      html: i18n.pages.overviewPage.messageBannerHtml | eval
+    }) }}
+  {% endif %}
   <div class="govuk-width-container">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
@@ -200,6 +206,10 @@
           {% endif %}
         <div class="contact-us-component">
           <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.contactUs }}</h2>
+          {% if showQueryManagement %}
+            <p><a href='{{ paths.common.messageList }}' class='govuk-link'>{{ i18n.pages.overviewPage.messageList }}</a></p>
+            <p><a href='{{ paths.common.viewMessages }}' class='govuk-link'>{{ i18n.pages.overviewPage.viewMessages }}</a></p>
+          {% endif %}
           <p>{{ i18n.pages.overviewPage.askAQuestion }}</p>
           <p>
             {{ i18n.pages.overviewPage.telephone }}<br>

@@ -5,6 +5,7 @@ Feature: Add a non-legal representative
 
   Scenario: No NLR details
     Given I have logged in as an appellant with email "appeal-submitted-with-no-nlr-details@example.com"
+    And I should not see the new message banner
     And I click "Add a non-legal representative" link
     Then I should be taken to the add non legal representative page
     And I should see the add non legal representative page content without sponsor

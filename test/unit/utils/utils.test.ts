@@ -303,7 +303,11 @@ describe('utils', () => {
 
     it('documentIdToDocStoreUrl should retrieve the doc store url using key', () => {
       const documentMap: DocumentMap[] = [
-        { id: '00000000-0000-0000-0000-000000000000', url: 'http://someDocumentUrl/' }
+        {
+          id: '00000000-0000-0000-0000-000000000000', url: 'http://someDocumentUrl/',
+          name: '',
+          documentUploadDate: ''
+        }
       ];
       const result = documentIdToDocStoreUrl('00000000-0000-0000-0000-000000000000', documentMap);
       expect(result).to.be.a('string');

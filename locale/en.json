@@ -60,7 +60,8 @@
     "contents": "Contents",
     "nextPage": "Next page >",
     "previousPage": "< Previous page",
-    "homeOfficeHelpForm": "If you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>"
+    "homeOfficeHelpForm": "If you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>",
+    "updatedHomeOfficeHelpForm": "If the format of your reference number does not match one of the above examples or if you see an error that directs you to contact the Home Office, please fill in the <a class=\"govuk-link\" target=\"_blank\" href=\"https://submit.forms.service.gov.uk/form/264619/get-information-to-support-your-appeal-with-hm-courts-tribunals-service\">Home Office help form</a>"
   },
   "pages": {
     "index": {

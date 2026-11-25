@@ -9,7 +9,7 @@ nodejs:
   ingressHost: ${SERVICE_FQDN}
   environment:
     IDAM_WEB_URL: https://idam-web-public.aat.platform.hmcts.net
-    IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
+    IDAM_API_URL: https://idam-web-public.aat.platform.hmcts.net
     S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
     CCD_API_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
     REDIS_URL: redis://{{ .Release.Name }}-redis-master
@@ -24,7 +24,7 @@ nodejs:
     BANNER_MESSAGE_HTML: 'Please note, the service will be unavailable on Thursday 31st July 2025 between 8:30pm to 12:30am'
     # Set HOME_OFFICE_VALIDATION_ENABLED: "true" if you want to run the updated validation and against the HO validation API mid-event call in Preview (The backend must also be set to true for this); otherwise leave at "false".
     # (you can use any valid UAN at the end; but in the application you must enter the expected UAN, name and DOB in order to proceed past validation)
-    HOME_OFFICE_VALIDATION_ENABLED: false # Do not remove this environment variable!
+    HOME_OFFICE_VALIDATION_ENABLED: true # Do not remove this environment variable!
   keyVaults:
     ia:
       secrets:

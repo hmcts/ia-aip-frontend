@@ -8,7 +8,7 @@ import { makeApplicationControllersHelper } from '../make-application-controller
 function getReinstateAppealApplication(req: Request, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
-      askReinstate: createStructuredError('askReinstate', i18n.validationErrors.makeApplication.askReinstate)
+      askReinstate: createStructuredError('makeAnApplicationDetails', i18n.validationErrors.makeApplication.askReinstate)
     },
     makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askReinstate.description,
     makeAnApplicationDetailsHint: i18n.pages.makeApplication.askReinstate.hint,

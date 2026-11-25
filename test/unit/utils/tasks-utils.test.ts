@@ -3,7 +3,11 @@ import session from 'express-session';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
-import { addNonLegalRepStatus, appealApplicationStatus } from '../../../app/utils/tasks-utils';
+import {
+  addNonLegalRepStatus,
+  appealApplicationStatus,
+  submitHearingRequirementsStatus
+} from '../../../app/utils/tasks-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('taskUtils', () => {
@@ -648,4 +652,57 @@ describe('taskUtils', () => {
       completed: true
     });
   });
+
+  it('should activate checkAndSend for non 24w with datesToAvoid completion', () => {
+    appeal.hearingRequirements = {
+      witnessesOnHearing: false,
+      witnessesOutsideUK: false,
+      isHearingLoopNeeded: false,
+      otherNeeds: { anythingElse: false },
+      datesToAvoid: { dates: [], isDateCannotAttend: false }
+    };
+
+    const applicationStatus = submitHearingRequirementsStatus(appeal, false, false);
+
+    expect(applicationStatus.checkAndSend).to.deep.equal({
+      active: true,
+      saved: false,
+      completed: false
+    });
+  });
+
+  it('should not activate checkAndSend for non 24w without datesToAvoid completion', () => {
+    appeal.hearingRequirements = {
+      witnessesOnHearing: false,
+      witnessesOutsideUK: false,
+      isHearingLoopNeeded: false,
+      otherNeeds: { anythingElse: false }
+    };
+
+    const applicationStatus = submitHearingRequirementsStatus(appeal, false, false);
+
+    expect(applicationStatus.checkAndSend).to.deep.equal({
+      active: false,
+      saved: false,
+      completed: false
+    });
+  });
+
+  it('should activate checkAndSend for 24w without datesToAvoid completion', () => {
+    appeal.hearingRequirements = {
+      witnessesOnHearing: false,
+      witnessesOutsideUK: false,
+      isHearingLoopNeeded: false,
+      otherNeeds: { anythingElse: false }
+    };
+
+    const applicationStatus = submitHearingRequirementsStatus(appeal, false, true);
+
+    expect(applicationStatus.checkAndSend).to.deep.equal({
+      active: true,
+      saved: false,
+      completed: false
+    });
+  });
+
 });

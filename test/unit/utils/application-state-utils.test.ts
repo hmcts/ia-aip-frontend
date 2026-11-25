@@ -451,7 +451,7 @@ describe('application-state-utils', () => {
           ],
           info: {
             title: 'Helpful Information',
-            url: '<a class=\"govuk-link\" href=\"https://www.gov.uk/courts-tribunals/upper-tribunal-immigration-and-asylum-chamber\" target=\"_blank\">Find out more about the Upper Tribunal, including contact details</a>. (Opens in a new window)'
+            url: '<a class=\"govuk-link\" href=\"https://www.gov.uk/courts-tribunals/upper-tribunal-immigration-and-asylum-chamber\" target=\"_blank\">Find out more about the Upper Tribunal, including contact details</a>. (opens in a new tab)'
           },
           usefulDocuments: {
             title: 'What happens next',

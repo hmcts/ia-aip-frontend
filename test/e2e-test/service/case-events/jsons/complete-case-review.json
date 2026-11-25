@@ -1,0 +1,7 @@
+{
+  "event": {
+    "id": "completeCaseReview",
+    "summary": "Complete case review"
+  },
+  "case_data": {}
+}

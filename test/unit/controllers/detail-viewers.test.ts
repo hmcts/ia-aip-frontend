@@ -27,6 +27,7 @@ import {
   getReasonsForAppealViewer,
   getRemittalDocumentsViewer,
   getRespondentApplicationSummaryRows,
+  getStfCaseReviewDocumentViewer,
   getStfRemovalDecisionDocumentViewer,
   getUpdatedDecisionAndReasonsViewer,
   getUpdatedTribunalDecisionWithRule32Viewer,
@@ -199,6 +200,50 @@ describe('DetailViewController', () => {
     });
   });
 
+  describe('getStfCaseReviewDocumentViewer', () => {
+    beforeEach(() => {
+      req.session.appeal.tribunalDocuments = [
+        {
+          fileId: 'uuid',
+          name: 'filename',
+          description: 'description here',
+          dateUploaded: '2020-02-21',
+          id: '2',
+          tag: 'appealResponse'
+        },
+        {
+          fileId: 'uuid2',
+          name: 'filename2',
+          description: 'description here 2',
+          dateUploaded: '2020-02-25',
+          id: '1',
+          tag: 'stf24WeeksCaseReviewAppeallantDocument'
+        }
+      ];
+    });
+
+    it('should render details-viewer template', () => {
+      getStfCaseReviewDocumentViewer(req as Request, res as Response, next);
+      expect(renderStub.called).to.equal(true);
+
+      const [template, actualViewModel] = renderStub.firstCall.args;
+
+      expect(template).to.equal('templates/details-viewer.njk');
+      expect(actualViewModel.title).to.equal(i18n.pages.detailViewers.stfCaseReviewDocument.title);
+      expect(actualViewModel.data.length).to.equal(2);
+      expect(actualViewModel.data[0].value.html).to.contain('filename2').and.to.contain('uuid2');
+      expect(actualViewModel.previousPage).to.equal(paths.common.overview);
+    });
+
+    it('getStfCaseReviewDocumentViewer should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = renderStub.throws(error);
+      getStfCaseReviewDocumentViewer(req as Request, res as Response, next);
+      expect(next.calledOnceWith(error)).to.equal(true);
+    });
+
+  });
+
   describe('getHomeOfficeWithdrawLetter', () => {
     beforeEach(() => {
       req.session.appeal.respondentDocuments = [
@@ -300,7 +345,7 @@ describe('DetailViewController', () => {
   describe('getDocumentViewer', () => {
     it('should display file', async () => {
       req.params.documentId = '1';
-      req.session.appeal.documentMap = [{ id: '1', url: 'documentStoreUrl' }];
+      req.session.appeal.documentMap = [{ id: '1', url: 'documentStoreUrl', name: '1', documentUploadDate: '2021-07-26+01:00' }];
 
       const fetchResponse = {
         headers: { 'content-type': 'image/png' },
@@ -320,7 +365,7 @@ describe('DetailViewController', () => {
 
     it('getDocumentViewer should catch exception and call next with the error', async () => {
       req.params.documentId = '1';
-      req.session.appeal.documentMap = [{ id: '1', url: 'documentStoreUrl' }];
+      req.session.appeal.documentMap = [{ id: '1', url: 'documentStoreUrl', name: '1', documentUploadDate: '2021-07-26+01:00'  }];
       const error = new Error('an error');
       documentManagementService.fetchFile = sandbox.stub().throws(error);
       await getDocumentViewer(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
@@ -345,10 +390,12 @@ describe('DetailViewController', () => {
 
       req.session.appeal.documentMap = [{
         id: '00000',
-        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
+        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641',
+        name: '1', documentUploadDate: '2021-07-26+01:00'
       }, {
         id: '00001',
-        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192',
+        name: '1', documentUploadDate: '2021-07-26+01:00'
       }];
 
       const expectedSummaryRows = [{
@@ -381,10 +428,12 @@ describe('DetailViewController', () => {
       };
       req.session.appeal.documentMap = [{
         id: '00000',
-        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
+        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641',
+        name: '1', documentUploadDate: '2021-07-26+01:00'
       }, {
         id: '00001',
-        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192',
+        name: '1', documentUploadDate: '2021-07-26+01:00'
       }];
 
       const error = new Error('an error');
@@ -418,10 +467,12 @@ describe('DetailViewController', () => {
 
       req.session.appeal.documentMap = [{
         id: '00000',
-        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
+        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641',
+        name: '1', documentUploadDate: '2021-07-26+01:00'
       }, {
         id: '00001',
-        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192',
+        name: '1', documentUploadDate: '2021-07-26+01:00'
       }];
 
       const expectedSummaryRows = [{
@@ -473,10 +524,12 @@ describe('DetailViewController', () => {
 
       req.session.appeal.documentMap = [{
         id: '00000',
-        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
+        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641',
+        name: '1', documentUploadDate: '2021-07-26+01:00'
       }, {
         id: '00001',
-        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192',
+        name: '1', documentUploadDate: '2021-07-26+01:00'
       }];
 
       const error = new Error('an error');
@@ -587,25 +640,29 @@ describe('DetailViewController', () => {
         documentMap: [
           {
             id: '318c373c-dd10-4deb-9590-04282653715d',
-            url: 'http://dm-store:8080/documents/c69d78f4-e9cb-48b6-8d13-1e566d2d1e5c'
+            url: 'http://dm-store:8080/documents/c69d78f4-e9cb-48b6-8d13-1e566d2d1e5c',
+            name: '1', documentUploadDate: '2021-07-26+01:00'
           },
           {
             id: '9e33677f-92cf-4b72-b183-ce09ee72aafd',
-            url: 'http://dm-store:8080/documents/8fa0f52e-4760-4ee3-9d4e-f38b9cd37a42'
+            url: 'http://dm-store:8080/documents/8fa0f52e-4760-4ee3-9d4e-f38b9cd37a42',
+            name: '1', documentUploadDate: '2021-07-26+01:00'
           },
           {
             id: 'f1d73cba-a117-4a0c-acf3-d8b787c984d7',
-            url: 'http://dm-store:8080/documents/3cae9ca9-b0fc-4eff-ab9d-2772187f5474'
+            url: 'http://dm-store:8080/documents/3cae9ca9-b0fc-4eff-ab9d-2772187f5474',
+            name: '1', documentUploadDate: '2021-07-26+01:00'
           },
           {
             id: '3d8bf49d-766f-4f41-b814-e82a04dec002',
-            url: 'http://dm-store:8080/documents/a9e25073-b9a3-4af6-a586-ae3b2444b850'
+            url: 'http://dm-store:8080/documents/a9e25073-b9a3-4af6-a586-ae3b2444b850',
+            name: '1', documentUploadDate: '2021-07-26+01:00'
           }
         ]
       };
 
       expectedSummaryRows = [
-        { key: { text: 'In the UK' }, value: { html: 'Yes' } },
+        { key: { text: 'Currently living in the UK' }, value: { html: 'Yes' } },
         {
           key: { text: 'Home Office reference number' },
           value: { html: 'A1234567' }
@@ -648,7 +705,7 @@ describe('DetailViewController', () => {
 
       expectedSummaryRowsWithDlrmFeeRemission = {
         'aboutAppealRows': [
-          { key: { text: 'In the UK' }, value: { html: 'Yes' } },
+          { key: { text: 'Currently living in the UK' }, value: { html: 'Yes' } },
           { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
           { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
           {
@@ -731,14 +788,16 @@ describe('DetailViewController', () => {
       });
     });
 
-
     it('should add NLR details if present DLRM', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows.push(
         { key: { text: 'Non-legal representative\'s name' }, value: { html: 'some name' } },
         { key: { text: 'Non-legal representative\'s email' }, value: { html: 'someEmail' } },
         { key: { text: 'Non-legal representative\'s phone number' }, value: { html: 'some phone' } },
-        { key: { text: 'Non-legal representative\'s address' }, value: { html: 'some line1<br>some city<br>some postcode' } },
+        {
+          key: { text: 'Non-legal representative\'s address' },
+          value: { html: 'some line1<br>some city<br>some postcode' }
+        },
         { key: { text: 'Non-legal representative\'s address' }, value: { html: 'someAddress' } }
       );
 
@@ -783,6 +842,9 @@ describe('DetailViewController', () => {
     });
 
     it('should add NLR details and no sponsor details if present non DLRM with sponsor same', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
       expectedSummaryRows.splice(9, 0, { key: { text: 'Sponsor' }, value: { html: 'Yes' } });
       expectedSummaryRows.push(
         { key: { text: 'Non-legal representative\'s name' }, value: { html: 'some name' } },
@@ -813,8 +875,10 @@ describe('DetailViewController', () => {
       });
     });
 
-
     it('should add NLR details with sponsor details if present non DLRM with sponsor not same', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(false);
       expectedSummaryRows.splice(9, 0, { key: { text: 'Sponsor' }, value: { html: 'Yes' } });
       expectedSummaryRows.splice(10, 0, { key: { text: 'Sponsor\'s name' }, value: { html: 'NAME' } });
       expectedSummaryRows.splice(11, 0, { key: { text: 'Sponsor has access to information' }, value: { html: 'No' } });
@@ -848,7 +912,6 @@ describe('DetailViewController', () => {
         data: expectedSummaryRows
       });
     });
-
 
     it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and has sponsor not in Uk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
@@ -965,8 +1028,8 @@ describe('DetailViewController', () => {
     describe('Remission details', () => {
       beforeEach(() => {
         req.session.appeal.documentMap = [
-          { id: '1', url: 'someurl1' },
-          { id: '2', url: 'someUrl2' }
+          { id: '1', url: 'someurl1', name: '1', documentUploadDate: '2021-07-26+01:00' },
+          { id: '2', url: 'someUrl2', name: '1', documentUploadDate: '2021-07-26+01:00' }
         ];
       });
 
@@ -1494,7 +1557,7 @@ describe('DetailViewController', () => {
 
       const expectedSummaryRowsWithDlrmFeeRemission = {
         'aboutAppealRows': [
-          { key: { text: 'In the UK' }, value: { html: 'Yes' } },
+          { key: { text: 'Currently living in the UK' }, value: { html: 'Yes' } },
           { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
           { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
           {
@@ -2065,25 +2128,29 @@ describe('DetailViewController', () => {
         documentMap: [
           {
             id: '318c373c-dd10-4deb-9590-04282653715d',
-            url: 'http://dm-store:8080/documents/c69d78f4-e9cb-48b6-8d13-1e566d2d1e5c'
+            url: 'http://dm-store:8080/documents/c69d78f4-e9cb-48b6-8d13-1e566d2d1e5c',
+            name: '1', documentUploadDate: '2021-07-26+01:00'
           },
           {
             id: '9e33677f-92cf-4b72-b183-ce09ee72aafd',
-            url: 'http://dm-store:8080/documents/8fa0f52e-4760-4ee3-9d4e-f38b9cd37a42'
+            url: 'http://dm-store:8080/documents/8fa0f52e-4760-4ee3-9d4e-f38b9cd37a42',
+            name: '1', documentUploadDate: '2021-07-26+01:00'
           },
           {
             id: 'f1d73cba-a117-4a0c-acf3-d8b787c984d7',
-            url: 'http://dm-store:8080/documents/3cae9ca9-b0fc-4eff-ab9d-2772187f5474'
+            url: 'http://dm-store:8080/documents/3cae9ca9-b0fc-4eff-ab9d-2772187f5474',
+            name: '1', documentUploadDate: '2021-07-26+01:00'
           },
           {
             id: '3d8bf49d-766f-4f41-b814-e82a04dec002',
-            url: 'http://dm-store:8080/documents/a9e25073-b9a3-4af6-a586-ae3b2444b850'
+            url: 'http://dm-store:8080/documents/a9e25073-b9a3-4af6-a586-ae3b2444b850',
+            name: '1', documentUploadDate: '2021-07-26+01:00'
           }
         ]
       };
 
       expectedSummaryRows = [
-        { key: { text: 'In the UK' }, value: { html: 'No' } },
+        { key: { text: 'Currently living in the UK' }, value: { html: 'No' } },
         { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
         { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
         {
@@ -2284,25 +2351,29 @@ describe('DetailViewController', () => {
         documentMap: [
           {
             id: '318c373c-dd10-4deb-9590-04282653715d',
-            url: 'http://dm-store:8080/documents/c69d78f4-e9cb-48b6-8d13-1e566d2d1e5c'
+            url: 'http://dm-store:8080/documents/c69d78f4-e9cb-48b6-8d13-1e566d2d1e5c',
+            name: '1', documentUploadDate: '2021-07-26+01:00'
           },
           {
             id: '9e33677f-92cf-4b72-b183-ce09ee72aafd',
-            url: 'http://dm-store:8080/documents/8fa0f52e-4760-4ee3-9d4e-f38b9cd37a42'
+            url: 'http://dm-store:8080/documents/8fa0f52e-4760-4ee3-9d4e-f38b9cd37a42',
+            name: '1', documentUploadDate: '2021-07-26+01:00'
           },
           {
             id: 'f1d73cba-a117-4a0c-acf3-d8b787c984d7',
-            url: 'http://dm-store:8080/documents/3cae9ca9-b0fc-4eff-ab9d-2772187f5474'
+            url: 'http://dm-store:8080/documents/3cae9ca9-b0fc-4eff-ab9d-2772187f5474',
+            name: '1', documentUploadDate: '2021-07-26+01:00'
           },
           {
             id: '3d8bf49d-766f-4f41-b814-e82a04dec002',
-            url: 'http://dm-store:8080/documents/a9e25073-b9a3-4af6-a586-ae3b2444b850'
+            url: 'http://dm-store:8080/documents/a9e25073-b9a3-4af6-a586-ae3b2444b850',
+            name: '1', documentUploadDate: '2021-07-26+01:00'
           }
         ]
       };
 
       expectedSummaryRows = [
-        { key: { text: 'In the UK' }, value: { html: 'No' } },
+        { key: { text: 'Currently living in the UK' }, value: { html: 'No' } },
         { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
         { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
         {
@@ -4023,7 +4094,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
+      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision, false);
       expect(addSummaryRowStub).to.have.been.callCount(9);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason'])).to.equal(true);
@@ -4032,7 +4103,7 @@ describe('DetailViewController', () => {
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.reason, ['Reason not enough'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.date, ['14 July 2021'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.maker, ['Tribunal Caseworker'])).to.equal(true);
-      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.remove24wDocument,[`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/654321'>eman</a>`])).to.equal(true);
+      expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.remove24wDocument, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/654321'>eman</a>`])).to.equal(true);
     });
   });
 
@@ -4137,7 +4208,7 @@ describe('DetailViewController', () => {
         }
       };
 
-      getRespondentApplicationSummaryRows(application);
+      getRespondentApplicationSummaryRows(application, false);
       expect(addSummaryRowStub).to.have.been.callCount(9);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal'])).to.equal(true);
       expect(addSummaryRowStub.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason'])).to.equal(true);

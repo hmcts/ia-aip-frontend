@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { FEATURE_FLAGS } from '../../../app/data/constants';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import {
@@ -16,7 +15,6 @@ import {
   getStateName,
   handleNlrStatementValidation,
   hasPendingTimeExtension,
-  isFeePayPriceEnabled,
   isRemissionDecisionDecided,
   isUpdateTribunalDecide,
   isUpdateTribunalDecideWithRule31,
@@ -569,23 +567,6 @@ describe('utils', () => {
       const witnessNameFormatted: String = formatWitnessName(witnessName);
       const expected = 'GivenName1 GivenName2';
       expect(witnessNameFormatted).to.equals(expected);
-    });
-  });
-
-  describe('isFeePayPriceEnabled', () => {
-    it('should return true when fee pay price flag is enabled', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, FEATURE_FLAGS.FEE_PAY_PRICE, sinon.match.any).resolves(true);
-      const result = await isFeePayPriceEnabled(req as Request);
-      expect(result).to.equal(true);
-    });
-
-    it('should return false when fee pay price flag is disabled', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, FEATURE_FLAGS.FEE_PAY_PRICE, sinon.match.any).resolves(false);
-
-      const result = await isFeePayPriceEnabled(req as Request);
-      expect(result).to.equal(false);
     });
   });
 

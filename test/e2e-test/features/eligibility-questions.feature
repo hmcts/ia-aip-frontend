@@ -60,4 +60,6 @@ Feature: Eligibility
   Scenario: Citizen can continue already started appeal
     Given I am on home page
     When I click "Sign in to continue with your appeal" button
-    Then I should see the sign in page
+    Then I should see the "Sign in or create an account" page
+    When I click "Sign in" button
+    Then I should see the "Enter your email address" page

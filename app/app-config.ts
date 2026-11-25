@@ -31,6 +31,7 @@ function configureNunjucks(app: express.Application) {
   nunjucksEnv.addGlobal('notificationBannerEnabled', bannerEnabled);
   nunjucksEnv.addGlobal('notificationBannerTitle', bannerTitle);
   nunjucksEnv.addGlobal('notificationBannerMessageHtml', bannerMessageHtml);
+  // TODO: REMOVE EVAL FILTER oNCE ALL EVAL (and safe) IS REMOVED FROM NUNJUCKS FILES!!!
   nunjucksEnv.addFilter('eval', function(text: string) {
     return nunjucks.renderString(text, this.ctx);
   });

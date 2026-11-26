@@ -12,9 +12,6 @@
 
   <h2 class="govuk-heading-m">{{ i18n.pages.messageList.anythingElseTitle }}</h2>
   <p class="govuk-body">{{ i18n.pages.messageList.anythingElseText }}<a href="{{ paths.common.sendMessagePermission }}">{{ i18n.pages.messageList.sendAMessage }}</a>.</p>
-  {{ govukInsetText({
-    text: i18n.pages.messageList.anythingElseHint
-  }) }}
   {{ govukButton({
     text: i18n.pages.messageList.returnToOverview,
     href: paths.common.overview

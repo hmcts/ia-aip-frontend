@@ -105,5 +105,5 @@ export async function postMessage(req: Request, specificQmFieldsToAdd: QmQuery, 
 }
 
 export function getNameFromId(query: QmQuery, idamId: string) {
-  return query?.createdBy === idamId ? 'You' : 'Immigration & Asylum Chamber';
+  return query?.createdBy === idamId ? 'You' : 'The Tribunal';
 }

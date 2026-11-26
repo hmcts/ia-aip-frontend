@@ -443,13 +443,13 @@ describe('Common query functions', () => {
 
   describe('getNameFromId', () => {
     const query = { createdBy: undefined };
-    it('returns Immigration & Asylum Chamber if no query createdBy', () => {
-      expect(getNameFromId(query, 'idamId')).to.equal('Immigration & Asylum Chamber');
+    it('returns The Tribunal if no query createdBy', () => {
+      expect(getNameFromId(query, 'idamId')).to.equal('The Tribunal');
     });
 
-    it('returns Immigration & Asylum Chamber if idam id does not match query created by', () => {
+    it('returns The Tribunal if idam id does not match query created by', () => {
       query.createdBy = 'otherId';
-      expect(getNameFromId(query, 'idamId')).to.equal('Immigration & Asylum Chamber');
+      expect(getNameFromId(query, 'idamId')).to.equal('The Tribunal');
     });
 
     it('returns You if idam id does match query created by', () => {

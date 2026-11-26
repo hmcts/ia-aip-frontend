@@ -84,10 +84,10 @@ module.exports = {
 
     When(/^I (see|dont see) the reviewing message text$/, async (visible: string) => {
       if (visible === 'see') {
-        await I.see('The Immigration & Asylum Chamber are reviewing the message');
+        await I.see('The Tribunal are reviewing the message');
         await I.see('Our team will read the message and try to respond by 21 November 2026. It may take longer than this.');
       } else {
-        await I.dontSee('The Immigration & Asylum Chamber are reviewing the message');
+        await I.dontSee('The Tribunal are reviewing the message');
         await I.dontSee('Our team will read the message and try to respond by 21 November 2026. It may take longer than this.');
       }
     });
@@ -106,9 +106,9 @@ module.exports = {
 
     When(/^I (see|dont see) the closed text$/, async (visible: string) => {
       if (visible === 'see') {
-        await I.see('This message has been closed by the Immigration & Asylum Chamber on 11 November 2026', 'strong.govuk-warning-text__text');
+        await I.see('This message has been closed by the Tribunal on 11 November 2026', 'strong.govuk-warning-text__text');
       } else {
-        await I.dontSee('This message has been closed by the Immigration & Asylum Chamber on 11 November 2026');
+        await I.dontSee('This message has been closed by the Tribunal on 11 November 2026');
       }
     });
 
@@ -134,9 +134,8 @@ module.exports = {
     });
 
     When('I see the ask query option', async () => {
-      const div: Locator = locate('div.govuk-radios__item').withChild('label.govuk-radios__label').withText('Send a message to the Immigration & Asylum Chamber');
+      const div: Locator = locate('div.govuk-radios__item').withChild('label.govuk-radios__label').withText('Send a message to the Tribunal');
       await I.seeElement(div);
-      await I.seeElement(div.find('div.govuk-hint').withText('We try to answer messages within 10 working days, but it could take longer.'));
     });
 
     When(/^I select option "([^"]*)"$/, async (optionLabel: string) => {
@@ -148,21 +147,20 @@ module.exports = {
     When('I see the anything else section', async () => {
       await I.see('Anything else', 'h2.govuk-heading-m');
       await I.see('If you still need help, you can send a message.', 'p.govuk-body');
-      await I.see('We try to answer messages within 10 working days, but it could take longer.', 'div.govuk-inset-text');
       await I.see('Return to appeal overview', 'a.govuk-button');
     });
 
     When('I see the message sharing permission page content', async () => {
       await I.see('Sharing this message with the other party', 'h2.govuk-heading-m');
-      await I.see('All messages sent using this system are shared with the other party in the case as well as being sent to the Immigration & Asylum Chamber.', 'p.govuk-body');
+      await I.see('All messages sent using this system are shared with the other party in the case as well as being sent to the Tribunal.', 'p.govuk-body');
 
       await I.see('Asking not to share your message', 'h2.govuk-heading-m');
       await I.see('You can ask not to share your message with the other party. The reasons for not sharing your message must be valid and the judge may decide that your message should be shared.', 'p.govuk-body');
-      await I.see('Valid reasons for keeping a message between you and the Immigration & Asylum Chamber include the message being about:', 'p.govuk-body');
+      await I.see('Valid reasons for keeping a message between you and the Tribunal include the message being about:', 'p.govuk-body');
       await I.see('abc', 'li');
       await I.see('xyz', 'li');
-      await I.see('If you need to send a message to the Immigration & Asylum Chamber and you do not want the other party to see it, email contactia@justice.gov.uk.', 'p.govuk-body');
-      await I.see('Explain why the message should be kept between you and the Immigration & Asylum Chamber and make sure you include your full name and reference.', 'div.govuk-inset-text');
+      await I.see('If you need to send a message to the Tribunal and you do not want the other party to see it, email contactia@justice.gov.uk.', 'p.govuk-body');
+      await I.see('Explain why the message should be kept between you and the Tribunal and make sure you include your full name and reference.', 'div.govuk-inset-text');
 
       await I.see('Confirm your message can be shared', 'h3.govuk-heading-s');
       await I.see('Yes, I agree my message can be shared with the other party', 'label.govuk-label');
@@ -289,7 +287,7 @@ module.exports = {
     When('I see the Close query request page content', async () => {
       const detailsDivLocator = locate('div.govuk-form-group').withChild('label.govuk-label').withText('Why are you requesting closure of this message?');
       await I.seeElement(detailsDivLocator);
-      await I.see('If you choose to request close this message, the Immigration & Asylum Chamber will mark this message thread as closed if deemed suitable for closure and no further responses will be made', detailsDivLocator.find('div.govuk-hint'));
+      await I.see('If you choose to request close this message, the Tribunal will mark this message thread as closed if deemed suitable for closure and no further responses will be made', detailsDivLocator.find('div.govuk-hint'));
       await I.seeElement(detailsDivLocator.find('textarea.govuk-textarea'));
 
       const uploadDivLocator = locate('div.govuk-inset-text').withChild('button.govuk-button').withText('Upload');

@@ -160,9 +160,9 @@ describe('View messages controller', () => {
     return {
       id: 'someId' + suffix,
       subject: 'someSubject' + suffix,
-      createdBy: createdByCitizen ? 'You' : 'Immigration & Asylum Chamber',
+      createdBy: createdByCitizen ? 'You' : 'The Tribunal',
       createdOn: createdFutureDate ? '02 March 2030' : '01 February 2026',
-      updatedBy: updatedByCitizen ? 'You' : 'Immigration & Asylum Chamber',
+      updatedBy: updatedByCitizen ? 'You' : 'The Tribunal',
       updatedOn: updatedFutureDate ? '02 March 2030' : '01 February 2026',
       status: status
     };

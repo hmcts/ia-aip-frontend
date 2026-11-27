@@ -31,7 +31,9 @@ export default class PaymentService {
     };
     req.app.locals.logger.trace(`Creating Card Payment with fee ${JSON.stringify(fee)} for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Payments Service');
     const event = req.session.appeal.appealStatus === 'appealStarted' ? Events.EDIT_APPEAL : Events.PAYMENT_APPEAL;
-    const results = await paymentApi.createCardPayment(securityHeaders, body, getUrl(req.protocol, req.hostname, paths.common.finishPayment));
+    const serviceRequestReference = req.session.appeal.serviceRequestReference;
+    const hasServiceRequestAlready = req.session.appeal.hasServiceRequestAlready;
+    const results = await paymentApi.createCardPayment(securityHeaders, body, getUrl(req.protocol, req.hostname, paths.common.finishPayment), serviceRequestReference, hasServiceRequestAlready);
     const appeal: Appeal = {
       ...req.session.appeal,
       paymentReference: results.reference

@@ -170,6 +170,8 @@ declare global {
     paymentReference?: string;
     paymentStatus?: string;
     paymentDate?: string;
+    serviceRequestReference?: string;
+    hasServiceRequestAlready?: string;
     isFeePaymentEnabled?: string;
     paAppealTypeAipPaymentOption?: string;
     feeWithHearing?: string;

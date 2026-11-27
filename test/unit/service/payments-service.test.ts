@@ -67,11 +67,28 @@ describe('Payments Service', () => {
     sandbox.restore();
   });
 
-  it('should createCardPayment', async() => {
+  it('should createCardPayment without service request', async() => {
     const result = await paymentService.createCardPayment(req as Request, 'theFee');
 
     expect(securityHeadersStub.called).to.equal(true);
     expect(createCardPaymentStub.called).to.equal(true);
+    expect(createCardPaymentStub.firstCall.args[3]).to.be.undefined;
+    expect(createCardPaymentStub.firstCall.args[4]).to.be.undefined;
+    expect(submitStub.called).to.equal(true);
+    expect(req.session.refreshCasesList).to.equal(true);
+    expect(result).to.deep.equal(createCardPaymentResponse);
+    expect(req.session.appeal.paymentReference).to.deep.equal('thePaymentReference');
+  });
+
+  it('should createCardPayment with service request when hasServiceRequestAlready is Yes', async() => {
+    req.session.appeal.serviceRequestReference = 'theServiceRequestRef';
+    req.session.appeal.hasServiceRequestAlready = 'Yes';
+    const result = await paymentService.createCardPayment(req as Request, 'theFee');
+
+    expect(securityHeadersStub.called).to.equal(true);
+    expect(createCardPaymentStub.called).to.equal(true);
+    expect(createCardPaymentStub.firstCall.args[3]).to.equal('theServiceRequestRef');
+    expect(createCardPaymentStub.firstCall.args[4]).to.equal('Yes');
     expect(submitStub.called).to.equal(true);
     expect(req.session.refreshCasesList).to.equal(true);
     expect(result).to.deep.equal(createCardPaymentResponse);

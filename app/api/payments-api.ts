@@ -3,14 +3,20 @@ import config from 'config';
 
 const paymentsApiUrl: string = config.get('payments.apiUrl');
 
-async function createCardPayment(headers, body, returnUrl): Promise<any> {
-  const url = `${paymentsApiUrl}/card-payments`;
+async function createCardPayment(headers, body, returnUrl, serviceRequestReference?: string, hasServiceRequestAlready?: string): Promise<any> {
+  const useServiceRequest = hasServiceRequestAlready === 'Yes' && serviceRequestReference;
+  const url = useServiceRequest
+    ? `${paymentsApiUrl}/service-request/${serviceRequestReference}/card-payments`
+    : `${paymentsApiUrl}/card-payments`;
+  const serviceCallbackUrl = useServiceRequest
+    ? `${config.get('iaPayments.apiUrl')}/service-request-update`
+    : `${config.get('iaPayments.apiUrl')}/payment-updates`;
   const options = {
     headers: {
       Authorization: headers.userToken,
       ServiceAuthorization: headers.serviceToken,
       'return-url': returnUrl,
-      'service-callback-url': `${config.get('iaPayments.apiUrl')}/payment-updates`
+      'service-callback-url': serviceCallbackUrl
     }
   };
   const response = await axios.post(url, body, options);

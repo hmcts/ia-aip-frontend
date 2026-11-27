@@ -22,10 +22,12 @@ describe('payments-api', () => {
     sandbox.restore();
   });
 
-  it('should call create card payment endpoint', async () => {
-    await paymentsApi.createCardPayment(headers, {}, 'http://aReturnUrl');
+  it('should call service request card payment endpoint', async () => {
+    await paymentsApi.createCardPayment(headers, {}, 'http://aReturnUrl', 'theServiceRequestRef');
 
     expect(rpPostStub.called).to.equal(true);
+    expect(rpPostStub.firstCall.args[0]).to.include('/service-request/theServiceRequestRef/card-payments');
+    expect(rpPostStub.firstCall.args[2].headers['service-callback-url']).to.include('/service-request-update');
   });
 
   it('should call paymentsDetails endpoint', async () => {

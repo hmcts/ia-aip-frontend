@@ -2133,6 +2133,58 @@ describe('update-appeal-service', () => {
     });
   });
 
+  describe('serviceRequestReference mapping', () => {
+    it('should map serviceRequestReference from caseData', () => {
+      const caseData: Partial<CaseData> = {
+        'serviceRequestReference': 'SR-12345-67890'
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+      expect(mappedAppeal.serviceRequestReference).to.equal('SR-12345-67890');
+    });
+
+    it('should not include serviceRequestReference if not present in caseData', () => {
+      const caseData: Partial<CaseData> = {};
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+      expect(mappedAppeal.serviceRequestReference).to.be.undefined;
+    });
+  });
+
+  describe('hasServiceRequestAlready mapping', () => {
+    it('should map hasServiceRequestAlready from caseData', () => {
+      const caseData: Partial<CaseData> = {
+        'hasServiceRequestAlready': 'Yes'
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+      expect(mappedAppeal.hasServiceRequestAlready).to.equal('Yes');
+    });
+
+    it('should not include hasServiceRequestAlready if not present in caseData', () => {
+      const caseData: Partial<CaseData> = {};
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+      expect(mappedAppeal.hasServiceRequestAlready).to.be.undefined;
+    });
+  });
+
   describe('mapAdditionalEvidenceDocumentsToDocumentsCaseData', () => {
     it('should map additional evidence documents to documents case data', () => {
       const evidences: AdditionalEvidenceDocument[] = [

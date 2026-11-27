@@ -67,11 +67,13 @@ describe('Payments Service', () => {
     sandbox.restore();
   });
 
-  it('should createCardPayment', async() => {
+  it('should createCardPayment with serviceRequestReference', async() => {
+    req.session.appeal.serviceRequestReference = 'theServiceRequestRef';
     const result = await paymentService.createCardPayment(req as Request, 'theFee');
 
     expect(securityHeadersStub.called).to.equal(true);
     expect(createCardPaymentStub.called).to.equal(true);
+    expect(createCardPaymentStub.firstCall.args[3]).to.equal('theServiceRequestRef');
     expect(submitStub.called).to.equal(true);
     expect(req.session.refreshCasesList).to.equal(true);
     expect(result).to.deep.equal(createCardPaymentResponse);

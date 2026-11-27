@@ -436,41 +436,65 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
     try {
       let event;
       let redirectUrl;
-      const paymentDetails = JSON.parse(await paymentService.getPaymentDetails(req, req.session.appeal.paymentReference));
+      const ccdCaseId = req.session.appeal.ccdCaseId;
+      const paymentReference = req.session.appeal.paymentReference;
+      const serviceRequestReference = req.session.appeal.serviceRequestReference;
+      const appealStatus = req.session.appeal.appealStatus;
+
+      req.app.locals.logger.trace(`Finish payment called for ccd id: ${ccdCaseId}`, 'Finishing payment');
+      req.app.locals.logger.trace(`Payment reference: ${paymentReference}`, 'Finishing payment');
+      req.app.locals.logger.trace(`Service request reference: ${serviceRequestReference}`, 'Finishing payment');
+      req.app.locals.logger.trace(`Appeal status: ${appealStatus}`, 'Finishing payment');
+
+      const paymentDetails = JSON.parse(await paymentService.getPaymentDetails(req, paymentReference));
+      req.app.locals.logger.trace(`Payment details status: ${paymentDetails.status}`, 'Finishing payment');
+      req.app.locals.logger.trace(`Payment details: ${JSON.stringify(paymentDetails)}`, 'Finishing payment');
+
       const dlrmRefundFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
 
       if (paymentDetails.status === 'Success') {
+        const paymentDate = moment(paymentDetails.status_histories.filter(event => event.status === 'Success')[0].date_created).format('D MMM YYYY');
+        req.app.locals.logger.trace(`Payment success - payment date: ${paymentDate}`, 'Finishing payment');
+
         const appeal: Appeal = {
           ...req.session.appeal,
           paymentStatus: 'Paid',
-          paymentDate: moment(paymentDetails.status_histories.filter(event => event.status === 'Success')[0].date_created).format('D MMM YYYY'),
+          paymentDate: paymentDate,
           isFeePaymentEnabled: 'Yes',
           application: {
             ...req.session.appeal.application,
             refundConfirmationApplied: false
           }
         };
-        req.app.locals.logger.trace('Payment success', 'Finishing payment');
-        if (req.session.appeal.appealStatus === 'appealStarted') {
+
+        if (appealStatus === 'appealStarted') {
           event = Events.SUBMIT_APPEAL;
           redirectUrl = paths.appealSubmitted.confirmation;
         } else {
           event = Events.PAYMENT_APPEAL;
           redirectUrl = paths.common.confirmationPayment;
         }
+        req.app.locals.logger.trace(`Using event: ${event.id}, redirect URL: ${redirectUrl}`, 'Finishing payment');
+
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true, dlrmRefundFlag);
+        req.app.locals.logger.trace(`Appeal updated successfully, new payment status: ${appealUpdated.paymentStatus}`, 'Finishing payment');
+
         req.session.refreshCasesList = true;
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated
         };
+        req.app.locals.logger.trace(`Redirecting to: ${redirectUrl}`, 'Finishing payment');
         return res.redirect(redirectUrl);
       } else {
         req.app.locals.logger.exception(`Payment error with status ${paymentDetails.status}`, 'Finishing payment');
-        const url = req.session.appeal.appealStatus === 'appealStarted' ? paths.appealStarted.checkAndSend : paths.common.overview;
+        req.app.locals.logger.trace(`Payment failed - full details: ${JSON.stringify(paymentDetails)}`, 'Finishing payment');
+        const url = appealStatus === 'appealStarted' ? paths.appealStarted.checkAndSend : paths.common.overview;
+        req.app.locals.logger.trace(`Redirecting to error page: ${url}`, 'Finishing payment');
         return res.redirect(url);
       }
     } catch (error) {
+      req.app.locals.logger.exception(`Error in finish payment: ${error}`, 'Finishing payment');
       next(error);
     }
   };
